@@ -4,7 +4,7 @@
     complete data/byte preflights; caller-owned repeated searches are charged
     separately through the collection and comparison wrappers. *)
 val no_charge : int -> unit
-module Make (Charge : sig val charge : int -> unit end) : sig
+module Make (_ : sig val charge : int -> unit end) : sig
   val preflight : Bioc_wire.Json.t -> unit
   val serialization : Bioc_wire.Json.t -> unit
   val append_string : string -> string -> string

@@ -27,38 +27,42 @@ merged normally on 2026-10-06 Pacific as
 `ddf8e8a6031e342ac9fda7b94b03ae35f859bb20`, after its exact 42-job gate and
 independent 53-archive audit. Its separate
 [actual-main run 37561753806](https://github.com/logannye/biocompiler/actions/runs/37561753806)
-is still pending; merge does not establish actual-main acceptance.
+is still running with failed unit shards/accounting; merge does not establish
+actual-main acceptance.
 
-PR85 remains open. [Run 37551706364](https://github.com/logannye/biocompiler/actions/runs/37551706364)
-cannot pass because its installed policy-prebuilt comparison used original wheel
-RECORD bytes for pip's rewritten installed RECORD. The correction is committed
-as `59c514d72` in `codex/session-release-corrections`. It preserves every original
-wheel row and authenticates the exact installed mutation/restoration; independent
-source review and 29 guarded tests on each supported Python passed. A fresh full
-release gate and artifact audit are required before merge. Remaining healthy
-jobs of the failed attempt are retained, not transferred as new acceptance.
+PR85 remains open at `0b2fc34b8`. Its latest
+[run 37563795844](https://github.com/logannye/biocompiler/actions/runs/37563795844)
+failed both preflights on missing exact source restoration; downstream native
+work was skipped. The earlier installed-RECORD correction is included in that
+source, but neither its pure controls nor older release results accept this
+attempt. Release corrections remain separately owned; this selection increment
+does not change PR85 or start another release run.
 
-Public selection at `70f81df1c` passed all 23 native suites and the original
-component SDK campaign in run `37561211151`; its selection SDK stage failed when
-a successful fixture command produced an empty log that the validator rejected.
-The narrow log-authentication correction is being completed separately. Selection
-compile remains unimplemented. Use the [session handoff](semantic-mrna-session-handoff.md)
-for the final pushed branches, live gates and exact resume instructions. Older
-checkpoint sections below preserve historical evidence and do not override this
-closure status.
+The corrected public selection source `fbd2230e8` passed
+[development run 37562370369](https://github.com/logannye/biocompiler/actions/runs/37562370369).
+The current isolated branch `codex/dev-policy/selection-generation` starts there
+and implements the reviewed metered generation design. Its source, static, hosted
+and release milestones remain separate; the earlier successful development run
+does not accept the new compiler route. Older checkpoint sections below preserve
+historical evidence and do not override this status.
+
+Current local validation covers 29 SDK/transport/witness checks plus 113 source/inventory checks on Python 3.11.15 and 3.14.6, and both strict Python type gates on 3.11.15. The source inventories preserve all prior metadata through explicit projections: 62 whole-kernel families, the preceding 19 component rules, previous public API witness meaning and 40 source-context rules/43 contexts. The additive component rule covers metered generation; none of these static inventories claims native execution. All 3,785 prior migration entries, contracts, authority fields and test links remain, with two new entries (3,787 total). The first native checkpoint `9c782d2b5` failed strict interface warnings in run `37570769562`; narrow interface corrections now require a fresh complete hosted run.
 
 **Shipping order:** ship the accepted bounded component compiler first; finish
 finite selection as the next increment; then expand semantics and RNA architecture
 in separate complete profiles. Helpers, finite-machine lowering and multiple RNA
-members do not delay merging an independently accepted current profile.
+members do not delay merging an independently accepted current profile. The user
+selected **state machines and staged regimens** as the next complete semantic
+profile after the current selection-generation gate. This priority does not
+grant molecular lowering or material acceptance to currently authorable machines.
 
 | Remaining increment | Concrete exit | Current boundary |
 | --- | --- | --- |
-| Current component release | Complete PR85 gate and artifact audit, normal merge, fresh actual-main gate and audit | Installed-RECORD correction reviewed; fresh full gate required |
-| Public selection checking/export | Native check/replay/export, complete losing-input provenance, exact paired artifacts and independent development audit | All 23 native suites passed; selection SDK log correction and fresh development run required |
-| Selection compilation | Meter candidate generation, expose compile through the same independent checker, then pass installed/offline and release gates | Next coherent implementation batch; final candidate size is not generation-work accounting |
+| Current component release | Complete PR85 gate and artifact audit, normal merge, fresh actual-main gate and audit | Latest preflight failed; separately owned release work remains open |
+| Public selection checking/export | Native check/replay/export, complete losing-input provenance, exact paired artifacts and independent development audit | Corrected source `fbd2230e8` has a successful hosted development run; no new release acceptance inferred |
+| Selection compilation | Meter candidate generation, expose compile through the same independent checker, then pass installed/offline and release gates | Current source batch; guarded Python controls pass, native hosted validation and audit required |
 | Coverage closure | Complete individual contextual rules, public authoring paths, exclusion diagnostics and semantic/edit-propagation witnesses | Existing ledgers retain explicit gaps; counts are not exhaustive semantic proof |
-| Further complete profiles | Finite-machine lowering, additional resource mappings, helper/dependency checking and multiple RNA members | Separate later increments; each requires complete source-to-material acceptance |
+| Next complete profile | State machines and staged regimens with explicit source-to-material contracts | User-selected next priority after selection generation; wider resource/helper/multi-RNA work remains separate |
 
 For fast delivery, keep one frozen release candidate and one active development
 increment. Reuse the focused hosted build and stable audit tooling, review and run
@@ -134,7 +138,7 @@ checked native bounded profile.
 - [x] Save a portable tracked session handoff, evidence index and reviewed next selection-compile design.
 - [x] Review and commit the installed-RECORD correction as `59c514d72`; 29 guarded tests passed per supported Python.
 - [ ] Pass the corrected full PR85 gate and independent artifact audit, merge normally, and validate actual main.
-- [ ] Pass and independently audit the complete public selection SDK development campaign; retain the 23-suite success separately from the failed combined run.
+- [ ] Independently audit the successful public selection development run at `fbd2230e8`, then validate the complete metered selection-generation increment on its own exact revision: 26 native suites, unchanged 26 component SDK observations and 35 selection SDK observations. Prior run results remain separate.
 
 These checkboxes record the stated completed task only; they do not close the
 broader SM acceptance items below.
@@ -1115,7 +1119,7 @@ The session's first major completion gate is SM-08:
 5. Batch coherent implementation, independent tests, focused review and hosted feedback. Do not cancel healthy work for documentation changes. The old 8c61 run finished before the leased PR update: all ten unit shards and both accounting jobs passed; the unavailable macOS interpreter caused the failed release. Preserve its diagnosis and every earlier run as distinct evidence.
 6. Develop the next bounded alternative-selection profile in the isolated `work/policy-material-selection` worktree, from independently audited `395935f00`, including corrected release source `278f452ec`. The release candidate remains frozen. Integrate the selection profile only after the reusable-component slice passes its installed/release acceptance; its own native/public/export/installed acceptance remains separate. Adopt the narrow complete-inner-check profile below for SM-05.5. Start with explicitly supplied material variants of one unchanged executable component program, keeping exactly two component slots, one driver instance, the existing three boundary links, zero helpers, no added hidden steps and one RNA member. A and B remain separate programs, never competing alternatives.
 
-**SM-05.5 implementation in progress.** The first isolated source batch adds closed typed selection-request records and a neutral complete-candidate codec; its 18-suite hosted development run and independent artifact audit passed. The next coherent batch adds the complete outer-candidate codec, closed common-authority reconstruction and a producer-independent selector with independent same-program short/long fixtures. Those sources are committed at `8f7b67368`, independently reviewed and pass 90 static controls on both supported Pythons. The corrected head `395935f00` passed all 21 hosted native suites and the independent retained-artifact audit. Public check/replay/export is implemented and independently source reviewed at `d56016590`, with one original-bound work/publication scope, complete selection manifests, fresh outer export and passing local Python/static controls. Its first hosted build failed before tests at a nonexistent child-codec fingerprint call; the narrow original-bound hashing correction is committed and independently reviewed at `af062c550`. Fresh 23-suite hosted validation and the independent artifact audit are next. Selection compilation requires separately metered candidate generation and remains the following coherent task; final candidate size cannot substitute for generation-work accounting. Public selection native/SDK execution, installed and release/main acceptance remain open. This parallel work does not advance the frozen release candidate or close SM-05.5.
+**SM-05.5 implementation in progress.** The selection codecs, same-program authority checker and public check/replay/export route are source implemented; the corrected public route at `fbd2230e8` passed development run `37562370369`. A separate current increment now adds metered Core generation under `compile-policy-component-selection` and the separate `policy_component_selection_producer` capability. One original-bound owner covers generation, complete checking and actual response admission, while existing producer local ceilings remain. Generation keeps all losing candidates, returns no artifact and must equal fresh standalone Verify checking/replay. The current hosted campaign requires 26 native suites, the unchanged 26 component SDK observations and 35 selection observations. Local Python/static results and historical hosted successes do not complete this new source's native gate, independent artifact audit, installed/release acceptance or actual-main acceptance. The next profile selected by the user is explicit bounded state machines and staged regimens, after this selection-generation gate.
 
 **Prepared contract.** A separate versioned selection envelope retains the complete supplied original component request and candidate for every alternative, a closed finite alternative census, a common additional length predicate, supplied nonnegative integer ranks, the fixed ascending ASCII ID tie order and aggregate work/publication bounds. Existing component requests and their inner checks remain unchanged. Every alternative, including every eventual loser, must independently pass the complete inner component checker and discharge all original obligations. Only fresh abstract `Policy_component_material_check.checked_material` values and their checked context/assembly/structure chain authorize the exact RNA used by outer selection. Saved reports, decoded PASS text, producer lengths and winner-only inner acceptance confer no selection authority.
 

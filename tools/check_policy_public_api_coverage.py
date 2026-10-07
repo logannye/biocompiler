@@ -28,12 +28,12 @@ LEDGER = "protocol/policy-public-api-coverage-v0.1.json"
 SCHEMA = "biocompiler.policy_public_api_coverage.v0.1"
 CLAIM = "Static public-source inventory and reviewed witness links only; neither executed coverage nor semantic/native/material/release acceptance."
 RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Generated or inherited dataclass runtime protocols are represented by reviewed decorator/field/base contracts, not an exhaustive runtime-attribute census; Python record equality is not symbolic policy comparison."
-# Reviewed separately from source-body pins. This literal binds all122 witness
-# meanings/owners and all786 coverage classifications, so refreshing file/AST
+# Reviewed separately from source-body pins. This literal binds all129 witness
+# meanings/owners and all790 coverage classifications, so refreshing file/AST
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "3045dcf7ea8e976ba6d9de2eaec754cba09047cc9978aa6de83597979d3f409d"
+REVIEWED_METADATA_SHA256 = "59239c96840218569d770e9322cfc0693f7f05a0d79564abde6d1912bc8aab2b"
 PACKAGE = "src/biocompiler/policy"
 MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model native observations operational patterns programs requirements serialization space state time validation values".split())
 CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection")
@@ -62,6 +62,7 @@ OPERATIONS = {
     "core_policy_component_material.PolicyComponentMaterialClient.check": ("check-policy-component-material", ("request", "candidate", "limits")),
     "core_policy_component_material.PolicyComponentMaterialClient.replay": ("replay-policy-component-material", ("request", "candidate", "limits", "report")),
     "core_policy_component_material.PolicyComponentMaterialClient.export": ("export-policy-component-material", ("request", "candidate", "limits")),
+    "core_policy_component_selection.PolicyComponentSelectionClient.compile": ("compile-policy-component-selection", ("request", "limits")),
     "core_policy_component_selection.PolicyComponentSelectionClient.check": ("check-policy-component-selection", ("request", "candidate", "limits")),
     "core_policy_component_selection.PolicyComponentSelectionClient.replay": ("replay-policy-component-selection", ("request", "candidate", "limits", "report")),
     "core_policy_component_selection.PolicyComponentSelectionClient.export": ("export-policy-component-selection", ("request", "candidate", "limits")),

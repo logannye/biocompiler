@@ -1,13 +1,11 @@
 # Bounded material selection for one component policy
 
-This is the contract for the next semantic compiler increment. Implementation
-has started in isolation. The request and neutral child-candidate codecs passed
-hosted development validation and independent artifact auditing at `4eca5722a`.
-The outer-candidate, common-authority and selection-checker sources are under
-review in the next batch; their native validation, public routing and export
-acceptance remain open. A decoded request or candidate grants no
-acceptance capability. The existing component profile retains its own release
-and actual-main gates.
+This is the contract for the bounded component-selection profile. Its public
+check/replay/export development run passed at `fbd2230e8`; the current isolated
+increment adds metered Core generation and requires its own hosted validation
+and independent artifact audit. No prior result accepts the new generation
+path. A decoded request or candidate grants no acceptance capability. The
+existing component profile retains its own release and actual-main gates.
 
 ## Original inputs and supported scope
 
@@ -177,9 +175,49 @@ own hosted validation still required. The prior component route and its A/B
 exports do not establish those exits. The development lane therefore retains its
 original component campaign and adds a separate same-A selection campaign.
 
-Selection compilation remains unsupported until candidate-generation work is
-bounded and charged throughout lowering, specialization and construction. A
-caller may separately compile each complete child request and supply those
-candidates for fresh selection checking; this does not create a selection-compile
-operation or grant acceptance before every child and the complete catalog pass.
-Installed/offline and full release/main acceptance are subsequent gates.
+## Metered Core generation
+
+`compile-policy-component-selection` accepts exactly the complete original
+`request` and preservation `limits`. Its separate
+`policy_component_selection_producer` capability retains the complete verification
+profile with a single compile operation, `artifact: withheld` and
+`generation_work: shared_original_scope`. Verify continues to advertise only
+check/replay/export and cannot invoke production. Python's explicit Core client
+and `policy.component_selection.compile` negotiate both exact profiles; missing
+capabilities, wrong roles, cancellation and native failure have no fallback.
+
+Generation visits every original in ASCII-ID order and proposes a complete
+candidate census. It reuses source admission, implementation lowering, component
+arrangement and construction, with count-only callbacks charging their actual
+traversals, comparisons, attempted matches and serialization passes. The existing
+source 8M, arrangement 1M and construction 50M local work ceilings remain active;
+newly covered output/staging work charges only the enclosing meter. Calls without
+the new callback retain the old local thresholds and diagnostics.
+
+One original-bound scope owns generation, the existing checker and actual-frame
+publication. Generation does not consume or replace each child's unchanged
+check allowance. Failed searches are charged, caught scope exhaustion remains
+terminal, and a final-size debit cannot replace dynamic-work accounting. Any
+unsupported child or generation exception aborts the invocation. An incomplete
+candidate remains in the census for independent rejection rather than becoming
+an excluded loser.
+
+The producer proposes a length/rank/ASCII-ID winner from untrusted candidate
+material. The independent checker then checks every child once under the same
+scope and determines its own winner. No successful producer label grants
+acceptance. `usage.charged_work` continues to describe the checking-phase delta,
+so the complete result equals fresh Verify checking/replay of the generated
+candidate; earlier generation still counts toward the private shared limits.
+Compilation returns no artifact. Exact FASTA/manifest publication requires the
+existing fresh export operation.
+
+The hosted witness retains the preceding component campaign and all existing
+selection observations except the superseded Core-compile-unsupported control.
+Its 35 selection observations add Core generation, exact fresh Verify equality,
+17/18-nucleotide winners, no eligible result, original-order and losing-rank
+invalidation, and a corrupt losing molecule with refreshed candidate hashes.
+Deterministic candidate order does not normalize the authored original array:
+permuting originals changes its authority and invalidates saved replay even if
+the candidate and RNA remain equal. Pure transport tests and source inventories
+do not establish this hosted execution. Installed/offline and full release/main
+acceptance remain subsequent gates.

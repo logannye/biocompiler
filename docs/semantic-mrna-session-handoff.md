@@ -12,6 +12,30 @@ and [machine-readable checkpoint/evidence index](semantic-mrna-handoff/2026-10-0
 Generated evidence stays in its original worktree; this packet copies no large
 artifacts, executables, environments, credentials or patient data.
 
+## Active selection-generation increment
+
+The current branch is `codex/dev-policy/selection-generation` in
+`work/policy-material-selection`, based on `fbd2230e8`. The preceding public
+selection development run `37562370369` has succeeded since the closure snapshot.
+This branch adds metered Core selection generation under the reviewed design;
+its new source has no inherited native or release acceptance. Guarded Python adapter/SDK/witness checks (29) and inventory/source checks (113) have passed on installed Python 3.11.15 and 3.14.6 across focused runs, with process, network and native loading denied. The initial 142-test runs encountered a concurrent interface-pin update only in source-context tests; the affected 113-check reruns passed after the reviewed update. These local checks do not establish native or hosted release acceptance. Strict core and policy Python typing also passed on 3.11.15.
+
+The initial native checkpoint `9c782d2b5` reached hosted compilation in run `37570769562` and failed strict interface warnings before native validation. Five narrow interface corrections preserve runtime source: four comment-separation fixes and an anonymous functor-signature parameter. A fresh integrated-source hosted run and artifact audit remain required.
+
+Keep the original three Verify operations and the full component campaign.
+The new producer profile and 35-observation selection witness supersede only
+Core's former compile-unsupported control; Verify still cannot compile. Complete
+new native validation and an exact-source artifact audit before promoting this
+increment. The user selected state machines and staged regimens as the following
+profile; do not start that work by treating an authorable machine as an accepted
+molecular implementation.
+
+One read-only release refresh found PR85 still open at `0b2fc34b8`, with
+`37563795844` failed on exact-source-restoration preflight checks. Main remains
+`ddf8e8a603`; its separate run `37561753806` is still running with failures already
+recorded. Preserve that separately owned release work. The remaining sections
+and dated packet below retain the earlier closure evidence and ownership map.
+
 ## Scope and completed source work
 
 The target remains semantic correctness from the Python therapeutic-design DSL

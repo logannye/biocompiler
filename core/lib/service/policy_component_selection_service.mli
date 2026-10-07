@@ -19,6 +19,7 @@ val prepare : executable:Protocol.executable -> request:Protocol.request ->
 
 val producer_operation : string
 val producer_profile : Json.t
+
 (** Core-only generation callback returns an untrusted complete candidate.
     Generation and mandatory fresh checking share the original owner through
     final-frame admission. Compile does not export or confer producer authority. *)

@@ -115,12 +115,14 @@ CONTEXT_IDS = ('source.context.compatibility.reference_value',
  'source.context.access.state_reset',
  'source.context.access.message_payload',
  'source.context.access.message_state_correlation')
-SOURCE_PINS = {'core/lib/checker/policy_admission.ml': '7d8ba644a491438afce37fbd15f0a5c0ad466b077cc29fd145a28704d3b2a6d9',
- 'core/lib/checker/policy_check.ml': '2aad7572b04cb20fdac3a162c4185cc1b976b895d578a249f230ae7e368b2bd1',
+SOURCE_PINS = {'core/lib/checker/policy_admission.ml': '185cd8857caf6ee43461fde6b9c064745cb9a9d692ca16c848134b9777a53745',
+ 'core/lib/checker/policy_check.ml': 'd8fc6d8a30ede74b89d90aca49d7ec77756761f317205e9bf96a906760ccd054',
+ 'core/lib/checker/policy_generation_meter.ml': '13c4647bc0efcb50f239af693e8fa3281fdbca4115ce4e5a84bcd4e9a4a1b965',
+ 'core/lib/checker/policy_generation_meter.mli': 'f1bb20416d692f4d0aa72b92028f75f6ea5ca532ae90e1d7593b424e703bf4ba',
  'core/lib/checker/policy_implementation_binding_check.ml': 'af77acf6c93f5d7635ce7f4729afac40da4febf38705733ff031a50e5403211a',
  'core/lib/domain/policy_document.ml': 'db2860b602d63df29d1a8240417f8632c37693b797f9561e00395bd1fd2f95dc',
  'core/lib/domain/policy_material_context.ml': '12d4f24d00a364e5148f283d19c1b2e7fd56f031d68948941dca0950da43b2a0',
- 'core/lib/domain/policy_operating_domain.ml': 'bad7552eaf0642d051f1d7a1cf70ccc3e3e216b2ce5659b9a7ace4577660fd08',
+ 'core/lib/domain/policy_operating_domain.ml': 'bbdc0925c24c95852f356a513c1707f330da3b936227a24e0234730a9deb5384',
  'core/lib/domain/policy_operational.ml': 'bd5d03f8acefed68ab0a8059041774479426928266351b325535a124e3e23d34',
  'core/lib/domain/policy_schema.ml': 'ea829a61d0584e98e4c63a3df6404988dec0d6af4bdf3faef31158420be2b2c5',
  'core/lib/realization_checker/policy_material_context_check.ml': '7abd2fb441d9dd0491f61bab33e6d54d613c09e643cffa9e9d6658b8511f6d11',
@@ -135,7 +137,7 @@ AST_PINS = {'src/biocompiler/policy/model.py': 'e2cfabc143415a86d1e3e2c42ba74489
 INPUT_PINS = {'core/test/data/policy_documents_v01.json': 'c4c7f3251c882ed739eb3b733bb0eea0cd2965470e02e6293196e114b0a3aded',
  'core/test/data/policy_operational_v01.json': 'bd9dfbb65c456b75fa401049341e85a6de882e8f130b4c76dfdadd9b6dd08968',
  'core/test/data/policy_realization_source_v01.json': 'fa4008fb9196ed1a318a2b293f452d19227b9562c5d1dece16183e2110ceec51'}
-REVIEWED_DECLARATIONS_SHA256 = '669803616f63fae728494cf781fad87d04ee51e039b4b99d3f1c667a4118d37c'
+REVIEWED_DECLARATIONS_SHA256 = '4ddf3f0558a8e202891e175a576736f22483ed3519f7b9d4342bc4b8ece2dbde'
 SYNTAX_LEDGER = "protocol/policy-semantic-coverage-v0.1.json"
 FAMILY_LEDGER = "protocol/policy-material-rule-coverage-v0.1.json"
 
@@ -331,7 +333,8 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
         else:
             require(row["ast"] is None, "OCaml source must not claim inferred AST semantics")
         require(digest(raw) == SOURCE_PINS[name], "Unreviewed complete source pin: " + name)
-        require(row["disposition"] in {"source_rule_owner", "source_codec_dependency", "deferred_boundary", "inert_ast_dependency"}, "Unknown source disposition")
+        require(row["disposition"] in {"source_rule_owner", "source_codec_dependency", "deferred_boundary", "inert_ast_dependency",
+                                       "shared_metering_dependency"}, "Unknown source disposition")
     inert_helper(read(root, AST_HELPER))
     for group, is_context in ((ledger["rules"], False), (ledger["contexts"], True)):
         for row in group:

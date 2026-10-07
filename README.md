@@ -22,8 +22,9 @@ and unresolved empirical status.
 
 The bounded Python-policy → mRNA compiler has source implementations and hosted
 development validation. **Complete release acceptance and production-wide native
-cutover remain pending.** The newest public selection check/replay/export
-increment still awaits hosted acceptance; selection compilation is not available.
+cutover remain pending.** The public selection check/replay/export development
+run passed at `fbd2230e8`. The current branch adds metered Core selection
+compilation; its new native path still requires hosted validation and audit.
 The [semantic mRNA development plan](docs/semantic-mrna-development-plan.md) is
 the maintained source of implementation, validation and release status. The
 [session handoff](docs/semantic-mrna-session-handoff.md) records the exact restart
@@ -36,7 +37,7 @@ point and outstanding gates.
 | Implementation lowering and checking | A bounded truth-policy family lowers to supplied typed primitives and connections. Independent source and candidate runtimes compare observable behavior over the complete declared finite domain; separate requirement checks retain every original obligation. |
 | Material and context binding | Supplied whole-graph contracts and a separate reusable-component composition path connect implementations to sequence templates. Checks retain model identities, interfaces, recipient and timing contracts, resource capacities and payload cardinality. The current component family joins two components into one RNA member. |
 | Exact construction and export | Independent checking reconstructs sequence derivation, coordinates, coding regions, chemistry and material correspondence. Fresh export publishes the exact RNA FASTA and complete manifest together. |
-| Finite material selection | The new source increment checks every supplied alternative under one common policy, then applies a length predicate and deterministic ranking. A failed or omitted alternative cannot become a convenient exclusion. Public hosted acceptance is pending; metered candidate generation remains the next prerequisite for compilation. |
+| Finite material selection | Every supplied alternative is checked under one common policy before a length predicate and deterministic ranking are applied. The new Core generation route charges generation and checking to one original-bound scope and retains every loser. Its hosted validation and complete release acceptance remain pending. |
 
 The authoring language is intentionally broader than the executable subset.
 Coordination, quantification, complex spatial relationships and inheritance are
@@ -126,7 +127,8 @@ These filenames represent supplied inputs, not files created by the authoring
 example. See the [material workflow](docs/policy-material-acceptance.md) for their
 complete authority and resource requirements. Component composition uses the
 dedicated Python `policy.component_material` API. Selection check/replay/export
-is being validated on the `codex/policy-material-selection` development branch.
+has a metered compile extension on the `codex/dev-policy/selection-generation`
+development branch, pending its own hosted validation.
 Neither route implicitly converts an arbitrary authored policy.
 
 ## Existing workflows and remaining scope
@@ -145,9 +147,10 @@ hosted acceptance remains part of the migration.
 Supporting DNA/reference utilities do not add another therapeutic product target.
 
 Next work follows the [development plan](docs/semantic-mrna-development-plan.md):
-finish release acceptance, meter selection candidate generation, close remaining
-semantic and public API coverage, and extend complete profiles for additional
-state-machine lowering, helpers and multiple RNA members. **Rich-policy Studio
+finish release acceptance and selection-generation validation, close remaining
+semantic and public API coverage, and then add the user-selected state-machine
+and staged-regimen profile. Helpers and multiple RNA members retain their own
+complete-profile obligations. **Rich-policy Studio
 and conversational authoring are deferred.** Existing Studio workflows belong to
 their documented legacy profiles.
 

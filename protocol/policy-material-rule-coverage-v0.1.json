@@ -15,7 +15,7 @@
   "sources": [
     {
       "path": "core/bin/core/main.ml",
-      "sha256": "c2b74123b24c1c8fe476729b476a59a9f57daacf521379d4c80a6a0d79f5e924",
+      "sha256": "f586816392c3b22072c7e2a0d7a0063d621911e0957519f442e0a9727451ecad",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -124,7 +124,7 @@
     },
     {
       "path": "core/lib/checker/policy_admission.ml",
-      "sha256": "7d8ba644a491438afce37fbd15f0a5c0ad466b077cc29fd145a28704d3b2a6d9",
+      "sha256": "185cd8857caf6ee43461fde6b9c064745cb9a9d692ca16c848134b9777a53745",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -142,7 +142,7 @@
     },
     {
       "path": "core/lib/checker/policy_admission.mli",
-      "sha256": "0497f05a06a6aa2b28366077aff8d5374a56bf07d0f52924c9755f4edc725c1d",
+      "sha256": "5ff3e8bf9b7a12da3f2afb5f006ba1b32643777ef9b0beb509b55da515ffe8f3",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -153,7 +153,7 @@
     },
     {
       "path": "core/lib/checker/policy_check.ml",
-      "sha256": "2aad7572b04cb20fdac3a162c4185cc1b976b895d578a249f230ae7e368b2bd1",
+      "sha256": "d8fc6d8a30ede74b89d90aca49d7ec77756761f317205e9bf96a906760ccd054",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -170,7 +170,7 @@
     },
     {
       "path": "core/lib/checker/policy_check.mli",
-      "sha256": "231e58a02154c0d72131dcf45cca75392e4881762403c339134e77143fb63794",
+      "sha256": "7ef1d1adfe8e35b356ca84ac603fdb743aff0f33fa33525369fd285be2516176",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -181,7 +181,7 @@
     },
     {
       "path": "core/lib/checker/policy_correspondence.ml",
-      "sha256": "437bbb1dcbf1a988a98d7f0520d822e1049052bdd9b1fe61a223f73ccbdcc54b",
+      "sha256": "12f7b455aec1e4aacf2e261de065979a550c1d2a84c58ff901166d545e499c35",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -197,7 +197,7 @@
     },
     {
       "path": "core/lib/checker/policy_correspondence.mli",
-      "sha256": "a80bacf3f9cebd9ec2dad3f60b0d7f0c83028fa455a594e0cab2509e244f9da9",
+      "sha256": "04a61c09a03520988a19dda0e7806fe8e69e5c24749158f4a1b2be69984770ec",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -205,6 +205,28 @@
       },
       "disposition": "dependency",
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/checker/policy_generation_meter.ml",
+      "disposition": "dependency",
+      "reason": "Shared count-only generation accounting dependency; independent material rule meaning and witnesses are retained.",
+      "sha256": "13c4647bc0efcb50f239af693e8fa3281fdbca4115ce4e5a84bcd4e9a4a1b965",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_generation_meter.mli",
+      "disposition": "dependency",
+      "reason": "Shared count-only generation accounting dependency; independent material rule meaning and witnesses are retained.",
+      "sha256": "f1bb20416d692f4d0aa72b92028f75f6ea5ca532ae90e1d7593b424e703bf4ba",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
     },
     {
       "path": "core/lib/checker/policy_implementation_binding_check.ml",
@@ -265,13 +287,13 @@
     },
     {
       "path": "core/lib/checker/policy_realization_admission.ml",
-      "sha256": "3cf0e5b4931051da873140691b0b74e98bea1d51f68db8db157bd6ac4283ecda",
+      "sha256": "6b22b165a96a1aa1b8ab8a73d1485f375e2eb08ef2ffb4e3901d6366d9023b49",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 2,
-          "Diagnostic.require": 1,
-          "require": 11,
+          "Diagnostic.require": 2,
+          "require": 12,
           "supported": 11
         },
         "profile_literals": {
@@ -283,7 +305,7 @@
     },
     {
       "path": "core/lib/checker/policy_realization_admission.mli",
-      "sha256": "b778ff7e4a21c49aafba051741e0a4f5e287be6f537e247255ba7db540362c2c",
+      "sha256": "2dd528a0d2d89666d9a960c3dfea626916abe766bbc974a8aaf0ee7c3c23f701",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -294,7 +316,7 @@
     },
     {
       "path": "core/lib/compiler/construction_producer.ml",
-      "sha256": "c59acedb2cd0a40bce344278c1bc9cbd90644046eb30a45006cda495e4de689e",
+      "sha256": "6f36a03c157b48bc7f0ed2688e30084b1b1a9cadc4ed3b907fc4adffc71ee67d",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -313,7 +335,7 @@
     },
     {
       "path": "core/lib/compiler/construction_producer.mli",
-      "sha256": "540f28bb8be1e88e3e7daa5cbdc41d44d8c3ba27ee8d61765be3647ba1175b58",
+      "sha256": "89533d371dc7e698eb0240dc3c2a47d715534547ac285d5d21a4f30bda740719",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -324,7 +346,7 @@
     },
     {
       "path": "core/lib/compiler/policy_component_lowering.ml",
-      "sha256": "1411327566b59a1d99a123f9a48c52441c13b9f3ab66f18ec587cf26f7aa315f",
+      "sha256": "9e6dc223872e739f516a8602254028b37f29a5bf29be348959f751aa7811f0b0",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -339,7 +361,7 @@
     },
     {
       "path": "core/lib/compiler/policy_component_lowering.mli",
-      "sha256": "fa5342d327682a6f44cda0d942568d4e3b323de61bbf337c1acad9f80aab3164",
+      "sha256": "aced09ced9c22d4f06520f30d4e077198ba01e04cb832a0360bc79e4b1254a24",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -350,7 +372,7 @@
     },
     {
       "path": "core/lib/compiler/policy_implementation_lowering.ml",
-      "sha256": "ca278d98039620eba89f6aaec11008f35bc589748a3479b598e26e732b249681",
+      "sha256": "6deb817e9ab4623bbc339fa5e42633f35e75aa56c6e119def509175a9764eccb",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -365,7 +387,7 @@
     },
     {
       "path": "core/lib/compiler/policy_implementation_lowering.mli",
-      "sha256": "c3fac71eba7c2b7bc263169b8a6314142e95bd6bea774cba20e36fe1a6c358c0",
+      "sha256": "894af56fc2275960c62597eed090fc1112a67ca96ce0ef3ac7cdc7babb215af2",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -376,7 +398,7 @@
     },
     {
       "path": "core/lib/compiler/policy_lowering.ml",
-      "sha256": "e78d39ea6a7cf92547c899c6eb758604c236053fbd763832b03a1318a9d6a6ed",
+      "sha256": "9cd1d929568d6802166cc60dc64db421dfc753530d9667ab0fb298199add47d6",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -387,7 +409,7 @@
     },
     {
       "path": "core/lib/compiler/policy_lowering.mli",
-      "sha256": "4b6415b68caae88f5994c8a90e8bbebf73fe907d69aed2d865d703d305636af6",
+      "sha256": "aaebf77357465d3191e28953b0ff8b6dbc35bc910a3b5ea6101b1e141c8d383f",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -395,6 +417,38 @@
       },
       "disposition": "dependency",
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/compiler/recoding_producer.ml",
+      "disposition": "dependency",
+      "reason": "Shared count-only generation accounting dependency; independent material rule meaning and witnesses are retained.",
+      "sha256": "3c5897fc0680a9ee746bbebc59203e104e9ef9a6a5787b9967652d2e8dbb2dab",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "require": 30
+        },
+        "profile_literals": {
+          "biocompiler.construction_producer.resources.v1": 1,
+          "biocompiler.molecule_coordinate_path.v0.1": 1,
+          "biocompiler.molecule_coordinate_space.v0.1": 1,
+          "biocompiler.molecule_index_span.v0.1": 1,
+          "biocompiler.ocaml.recoding_producer.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/compiler/recoding_producer.mli",
+      "disposition": "dependency",
+      "reason": "Shared count-only generation accounting dependency; independent material rule meaning and witnesses are retained.",
+      "sha256": "523903e1f7eaa529a05564a2716b6f87b6608d234c27db09fbc8242a295fd363",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
     },
     {
       "path": "core/lib/domain/construction_content.ml",
@@ -930,11 +984,11 @@
     },
     {
       "path": "core/lib/domain/policy_operating_domain.ml",
-      "sha256": "bad7552eaf0642d051f1d7a1cf70ccc3e3e216b2ce5659b9a7ace4577660fd08",
+      "sha256": "bbdc0925c24c95852f356a513c1707f330da3b936227a24e0234730a9deb5384",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 4,
+          "Diagnostic.fail": 5,
           "Diagnostic.require": 1,
           "require": 27
         },
@@ -948,7 +1002,7 @@
     },
     {
       "path": "core/lib/domain/policy_operating_domain.mli",
-      "sha256": "b5a700541f8a58b2dd83c21f01bdf6b1646082eafbe196e810b18e7414817201",
+      "sha256": "cbaa01212d62d053ac045151b20b31cc2fa95aa4f5e08db93ea0ab2ee044c095",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1043,7 +1097,7 @@
     },
     {
       "path": "core/lib/producer_service/policy_component_material_producer.ml",
-      "sha256": "23d721ecbe733d64927e1bfa1b950751194e9c8d9738da0e6eb725c5cd510eec",
+      "sha256": "106200a230a1eb27373362412e5f53acb99e3190d41ff0a64d3d30e94b84164d",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1054,7 +1108,7 @@
     },
     {
       "path": "core/lib/producer_service/policy_component_material_producer.mli",
-      "sha256": "242fe988b98e5856465b50d6751866432b75ba7f537d7b97fcab664948d05d3f",
+      "sha256": "8b082327497955b7f3137d55df0cddc3d24ec492ce3cd448ece0e6269555348e",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1062,6 +1116,28 @@
       },
       "disposition": "outside_route",
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/producer_service/policy_component_selection_producer.ml",
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json.",
+      "sha256": "a2961ec002049305ba82505a0bc81ad79cdccd1f32d8fdff1685cf5634f5acfb",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/producer_service/policy_component_selection_producer.mli",
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json.",
+      "sha256": "df30b6a90fb9f94c75f0fe93d48935bbbc66de91e992f4c2d0cb27b187ac83e2",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
     },
     {
       "path": "core/lib/producer_service/policy_implementation_producer.ml",
@@ -1135,7 +1211,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "374cb431711de44513604878f1bac480eb379a614cf176fc68522ecacca839c9",
+      "sha256": "5d6be9fffa94bd9b7a160da4348cf1add3d77e6d5326add8d32ef330c73812c9",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1149,7 +1225,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.mli",
-      "sha256": "cfb8163de2734616ba9f8d9b2c3bd8a430f2e0d2f5969f148d59496c9f94adfd",
+      "sha256": "b38ad3667b8166bcac2582db5cbba300c94f5acd326651f04dcb055377cdbb6d",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1597,12 +1673,12 @@
     },
     {
       "path": "core/lib/service/policy_component_selection_service.ml",
-      "sha256": "dd0bd5db00635e75df91717eca02099ed8a5e217289d9d5ff5d86a829b4b533b",
+      "sha256": "070130aac8acb39308c3fe2de26c582e7bcd3909c549bb201018c506d6108108",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 2,
-          "Diagnostic.require": 4,
+          "Diagnostic.require": 5,
           "require": 4
         },
         "profile_literals": {
@@ -1618,7 +1694,7 @@
     },
     {
       "path": "core/lib/service/policy_component_selection_service.mli",
-      "sha256": "966a5b36fd260c5e94718328b4d6034618a4378cfe0ad29d826371b9190e99e3",
+      "sha256": "c492eecc86b131de06d005cd045a2044ffc325e4cef0bb874f75678c29a8cc90",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1911,13 +1987,13 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_selection.py",
-      "sha256": "e0098c9f9be524571591f59c11a5989f79e89c3341dce5c4e5b71e1f7351ca7d",
+      "sha256": "3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 14,
-          "Raise": 26
+          "FunctionDef": 15,
+          "Raise": 28
         },
         "profile_literals": {
           "biocompiler.core.policy_component_selection.v1": 1,
@@ -2018,11 +2094,11 @@
     },
     {
       "path": "src/biocompiler/policy/component_selection.py",
-      "sha256": "49a77e61c1c2951d5f746986ed9815f5e34f0487a0e97fc0dc447d7a01f1222a",
+      "sha256": "10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
-          "FunctionDef": 4
+          "FunctionDef": 5
         },
         "profile_literals": {}
       },

@@ -502,6 +502,11 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.core_policy_component_selection.COMPILE_OPERATION": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.core_policy_component_selection.EXPORT_SCHEMA": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
       "status": "dependency",
@@ -538,6 +543,11 @@
       "witnesses": []
     },
     "biocompiler.core_policy_component_selection.PREMISE": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_selection.PRODUCER_PROFILE": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
       "status": "dependency",
       "witnesses": []
@@ -592,6 +602,18 @@
         "selection.profiles",
         "selection.integer",
         "selection.negotiation"
+      ]
+    },
+    "biocompiler.core_policy_component_selection.PolicyComponentSelectionClient.compile": {
+      "scope": "Selected synthetic selection transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "selection.compile_role",
+        "selection.compile_routes",
+        "selection.compile_snapshot",
+        "selection.compile_losers",
+        "selection.compile_negotiation",
+        "selection.compile_failure"
       ]
     },
     "biocompiler.core_policy_component_selection.PolicyComponentSelectionClient.export": {
@@ -1859,6 +1881,13 @@
       "status": "shared_invariant",
       "witnesses": [
         "selection.sdk_routes"
+      ]
+    },
+    "biocompiler.policy.component_selection.compile": {
+      "scope": "Selected synthetic selection transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "selection.compile_sdk"
       ]
     },
     "biocompiler.policy.component_selection.export": {
@@ -7813,6 +7842,17 @@
         "syntax_sha256": "cee966b4f73c164c3d4fec811d6d0dd24bd6a1753e3191298f2426221491afe6"
       },
       {
+        "id": "biocompiler.core_policy_component_selection.COMPILE_OPERATION",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_selection.py",
+          "symbol": "COMPILE_OPERATION"
+        },
+        "syntax_sha256": "dae0fa4765b631a7bd167b74d5447e1d5258769b26a90118d918367339c12930"
+      },
+      {
         "id": "biocompiler.core_policy_component_selection.EXPORT_SCHEMA",
         "kind": "value",
         "scope": "dependency",
@@ -7901,6 +7941,17 @@
         "syntax_sha256": "46af5099bb96f364426e79abca91a399eb5f3df03acb77900828d6a69bc41abd"
       },
       {
+        "id": "biocompiler.core_policy_component_selection.PRODUCER_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PROFILE, 'operations': [COMPILE_OPERATION], 'artifact': 'withheld', 'generation_work': 'shared_original_scope'}",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_selection.py",
+          "symbol": "PRODUCER_PROFILE"
+        },
+        "syntax_sha256": "a804541a82bc6c22b364444047681a134f75c693a5967a3700ec5ffabcfaf97b"
+      },
+      {
         "id": "biocompiler.core_policy_component_selection.PROFILE",
         "kind": "value",
         "scope": "dependency",
@@ -7942,7 +7993,7 @@
           "path": "src/biocompiler/core_policy_component_selection.py",
           "symbol": "PolicyComponentSelectionClient"
         },
-        "syntax_sha256": "565ef504e3c176d2bd2f02c472b91c0f0226d04fe424951222ac38bceef01d09"
+        "syntax_sha256": "6a2bb7aaaaaae6c3529dfcf9830b26bd439173f54c37a00f22e511a4c47e1f15"
       },
       {
         "id": "biocompiler.core_policy_component_selection.PolicyComponentSelectionClient._call",
@@ -7953,7 +8004,7 @@
           "path": "src/biocompiler/core_policy_component_selection.py",
           "symbol": "PolicyComponentSelectionClient._call"
         },
-        "syntax_sha256": "9bfc3b7a8af539b0a23647f2bbec2b78b7b77d95c3e08785ec8c0a18634bda6a"
+        "syntax_sha256": "740aed8fd3b5652d8533826a0a9ee83244930f0c9d0e3abc06b93cae51207e50"
       },
       {
         "id": "biocompiler.core_policy_component_selection.PolicyComponentSelectionClient.check",
@@ -7965,6 +8016,17 @@
           "symbol": "PolicyComponentSelectionClient.check"
         },
         "syntax_sha256": "5ccf2cd0e33706ae5a27145303c2dd19ed9ae96426c9b263c984f08053e21b84"
+      },
+      {
+        "id": "biocompiler.core_policy_component_selection.PolicyComponentSelectionClient.compile",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, limits: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyComponentSelectionResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_selection.py",
+          "symbol": "PolicyComponentSelectionClient.compile"
+        },
+        "syntax_sha256": "25f50b01009fe05ccc80dac413bf84245a89ca5281c053571299d08f9ed126ba"
       },
       {
         "id": "biocompiler.core_policy_component_selection.PolicyComponentSelectionClient.export",
@@ -8184,7 +8246,7 @@
           "path": "src/biocompiler/core_policy_component_selection.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "f493633a9f7f72a6d00ce03bd22ae3d0c9ff1ad1c5da5d543aa387299f5caa9a"
+        "syntax_sha256": "dcc5adced9c98f5cd90fe07c9f82a5072401fa9897a4e9a065ada8537bf122b8"
       },
       {
         "id": "biocompiler.core_policy_component_selection._sequence",
@@ -9637,6 +9699,17 @@
           "symbol": "check"
         },
         "syntax_sha256": "82a91e4e08fd49f38e61c62c48cf2b80aec2db4c483e749c2da885c6f4a9be79"
+      },
+      {
+        "id": "biocompiler.policy.component_selection.compile",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: JsonValue, *, limits: JsonValue, client: PolicyComponentSelectionClient, cancelled: Callable[[], bool] | None=None -> PolicyComponentSelectionResult",
+        "source": {
+          "path": "src/biocompiler/policy/component_selection.py",
+          "symbol": "compile"
+        },
+        "syntax_sha256": "3805de5dc6986103c4b107d8f60c87bd411001da9fa0bc3b555b8c0de70f12ab"
       },
       {
         "id": "biocompiler.policy.component_selection.export",
@@ -15883,7 +15956,7 @@
       "src/biocompiler/core_client.py": "c8d65a42c1f92cbd75cb5edd176a9463657e03509be8ed487496d78b17be00fc",
       "src/biocompiler/core_policy.py": "9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e",
       "src/biocompiler/core_policy_component_material.py": "9afc9ad3a0ad1d7a4b85d8630667f742496f9e1fdb9248e792e8abd5863c2f8c",
-      "src/biocompiler/core_policy_component_selection.py": "e0098c9f9be524571591f59c11a5989f79e89c3341dce5c4e5b71e1f7351ca7d",
+      "src/biocompiler/core_policy_component_selection.py": "3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2",
       "src/biocompiler/core_policy_implementation.py": "b0a1c56ed960e146153dcb1f89ac28cc0f809a79716a7f7c1e096496b4bcf556",
       "src/biocompiler/core_policy_material.py": "df30c5b165ab92ffb88a3713c277791da6d95c8da3589a59c6fc3904c955ecb3",
       "src/biocompiler/core_policy_operational.py": "089805c81bf6f84e5cf5e264b6ed89babedc3d692e2a7605429aa388e6d5ed02",
@@ -15894,7 +15967,7 @@
       "src/biocompiler/policy/chassis.py": "21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1",
       "src/biocompiler/policy/cli.py": "beaff7cf4994019f24fab7361e588a3702b32bb16d357bda42e16000a5060d0f",
       "src/biocompiler/policy/component_material.py": "24da1db993f5f56ff516ad3b2d14667731f681ebe9f1c9ae6898d0728bd5eaba",
-      "src/biocompiler/policy/component_selection.py": "49a77e61c1c2951d5f746986ed9815f5e34f0487a0e97fc0dc447d7a01f1222a",
+      "src/biocompiler/policy/component_selection.py": "10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80",
       "src/biocompiler/policy/coordination.py": "ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9",
       "src/biocompiler/policy/deployment.py": "cddace3d45f04ecd722a47849325c9ff6a41fc166b0e23253c2377f037eae29f",
       "src/biocompiler/policy/effects.py": "2e228309b98defa71730cac3e2b8883a9e86c9f63f0d5c25b37bf70b27a02578",
@@ -16916,6 +16989,14 @@
         ]
       },
       {
+        "operation": "compile-policy-component-selection",
+        "owner": "biocompiler.core_policy_component_selection.PolicyComponentSelectionClient.compile",
+        "payload_fields": [
+          "request",
+          "limits"
+        ]
+      },
+      {
         "operation": "check-policy-component-selection",
         "owner": "biocompiler.core_policy_component_selection.PolicyComponentSelectionClient.check",
         "payload_fields": [
@@ -17643,7 +17724,7 @@
     },
     "selection.archive": {
       "distinction": "Fresh synthetic export callbacks publish deterministic exact FASTA/manifest ZIP pairs retaining the complete catalog.",
-      "file_sha256": "44e4474428edd7f1d1107ab6d0407a33e2dc9f8290d58f55da61801d9369460a",
+      "file_sha256": "52df2d0cc93f4a162aeb04bfc2e50a77a5e2712c585e18f031bdd5a3ca48cd9d",
       "path": "tests/test_policy_component_selection.py",
       "role": "positive",
       "symbol": "PolicyComponentSelectionSdkTests.test_fresh_pair_is_reproducible_and_retains_full_catalog",
@@ -17651,15 +17732,71 @@
     },
     "selection.census": {
       "distinction": "Synthetic complete-census, ordering, rank, exact length, nested evidence and claim mutations reject.",
-      "file_sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionTransportTests.test_census_order_rank_length_feedback_and_nested_claim_mutations_reject",
       "syntax_sha256": "974d5325ae3ce6d8684c3159854e20c8c21f781971520bdc5fad43aea672474c"
     },
+    "selection.compile_failure": {
+      "distinction": "Malformed generated censuses, unexpected artifacts, upgraded empirical claims, timeout, cancellation and backend rejection have no Python fallback.",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "path": "tests/test_core_policy_component_selection.py",
+      "role": "rejection",
+      "symbol": "PolicyComponentSelectionTransportTests.test_compile_rejects_incomplete_census_or_artifact_and_has_no_fallback",
+      "syntax_sha256": "8849043bd795c5a49c542cc5e33771445ed54982d0b125cd9e9f733a01064116"
+    },
+    "selection.compile_losers": {
+      "distinction": "Synthetic generated candidates remain deterministic across original order, while changed loser/order authority invalidates saved replay; failed and ineligible alternatives retain their distinct outcomes.",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "path": "tests/test_core_policy_component_selection.py",
+      "role": "mixed",
+      "symbol": "PolicyComponentSelectionTransportTests.test_compile_keeps_all_losers_and_permuted_original_authority",
+      "syntax_sha256": "baf5b66eb3b30a6159d76cd2c6424453fe09eb4d5e1a656dfa28aa9d5ce15892"
+    },
+    "selection.compile_negotiation": {
+      "distinction": "Absent or altered producer capabilities stop synthetic generation before its call; verification capability meaning remains unchanged.",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "path": "tests/test_core_policy_component_selection.py",
+      "role": "rejection",
+      "symbol": "PolicyComponentSelectionTransportTests.test_compile_missing_or_changed_profile_never_calls_production",
+      "syntax_sha256": "eb19a9f770e0c354d425914fa72bdc24ec06aca1685379b28c49365f11ea2ade"
+    },
+    "selection.compile_role": {
+      "distinction": "An explicit Core role is required before transport and the separate producer profile leaves the three-route verification profile unchanged.",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "path": "tests/test_core_policy_component_selection.py",
+      "role": "mixed",
+      "symbol": "PolicyComponentSelectionTransportTests.test_compile_requires_core_before_any_transport_and_preserves_verification_profile",
+      "syntax_sha256": "f3a88fa7141f91b1e34ab0f796c2ecfc55dd4199db5f90c7de0e31324033c54e"
+    },
+    "selection.compile_routes": {
+      "distinction": "A synthetic Core generation result equals fresh Verify checking/replay and retains complete candidates without an artifact.",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "path": "tests/test_core_policy_component_selection.py",
+      "role": "positive",
+      "symbol": "PolicyComponentSelectionTransportTests.test_compile_candidate_equals_fresh_verify_without_artifact",
+      "syntax_sha256": "c6947824fcb07ab76c4b03d21f457b962aaa8afc2581837ead45ae5018bca066"
+    },
+    "selection.compile_sdk": {
+      "distinction": "The public compile helper delegates to explicit Core and returns fresh complete synthetic evidence without Python policy admission or artifact publication.",
+      "file_sha256": "52df2d0cc93f4a162aeb04bfc2e50a77a5e2712c585e18f031bdd5a3ca48cd9d",
+      "path": "tests/test_policy_component_selection.py",
+      "role": "positive",
+      "symbol": "PolicyComponentSelectionSdkTests.test_compile_uses_explicit_core_without_artifact_or_python_admission",
+      "syntax_sha256": "e331b1c958b10ffed66481dd9fbf7b01b812b942e54ab282fcd1b37ec1ff36f1"
+    },
+    "selection.compile_snapshot": {
+      "distinction": "Synthetic compile negotiation cannot mutate the snapshotted complete originals sent to Core.",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "path": "tests/test_core_policy_component_selection.py",
+      "role": "mixed",
+      "symbol": "PolicyComponentSelectionTransportTests.test_compile_snapshots_originals_before_negotiation",
+      "syntax_sha256": "e4d2c456a29a6ad4352ef9f3c31ca2c2d62b74031ce965329ba391affdac8318"
+    },
     "selection.destination": {
       "distinction": "An existing destination rejects before the export callback; a malformed synthetic export preserves existing output.",
-      "file_sha256": "44e4474428edd7f1d1107ab6d0407a33e2dc9f8290d58f55da61801d9369460a",
+      "file_sha256": "52df2d0cc93f4a162aeb04bfc2e50a77a5e2712c585e18f031bdd5a3ca48cd9d",
       "path": "tests/test_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionSdkTests.test_existing_output_is_guarded_before_native_and_bad_export_never_publishes",
@@ -17667,7 +17804,7 @@
     },
     "selection.failed_loser": {
       "distinction": "A synthetic failed loser remains inner_not_accepted with eligibility unknown and cannot authorize an export.",
-      "file_sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_failed_loser_is_not_an_ineligible_success",
@@ -17675,7 +17812,7 @@
     },
     "selection.grammar": {
       "distinction": "Malformed complete candidate census, IDs and ranks reject before a synthetic transport invocation.",
-      "file_sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionTransportTests.test_original_and_candidate_census_grammar_rejects_before_native",
@@ -17683,7 +17820,7 @@
     },
     "selection.integer": {
       "distinction": "Exact integer-bit and synthetic result preflight bounds apply before fingerprint work.",
-      "file_sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_integer_and_result_preflight_are_exact_and_precede_fingerprints",
@@ -17691,7 +17828,7 @@
     },
     "selection.loser": {
       "distinction": "A changed losing rank invalidates synthetic saved-wrapper replay despite unchanged winner and RNA.",
-      "file_sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionTransportTests.test_loser_edit_invalidates_replay_even_with_unchanged_selected_rna",
@@ -17699,7 +17836,7 @@
     },
     "selection.manifest": {
       "distinction": "Synthetic outer manifests retain losing originals, selected-child authority and exact paired material bytes.",
-      "file_sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionTransportTests.test_outer_manifest_retains_losers_selected_child_and_exact_pair",
@@ -17707,7 +17844,7 @@
     },
     "selection.negotiation": {
       "distinction": "Synthetic capability downgrade, timeout and backend rejection have no Python fallback.",
-      "file_sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionTransportTests.test_capability_downgrade_and_native_failures_have_no_fallback",
@@ -17715,7 +17852,7 @@
     },
     "selection.original": {
       "distinction": "Public preparation copies complete originals inertly and never upgrades an explicit resource profile.",
-      "file_sha256": "44e4474428edd7f1d1107ab6d0407a33e2dc9f8290d58f55da61801d9369460a",
+      "file_sha256": "52df2d0cc93f4a162aeb04bfc2e50a77a5e2712c585e18f031bdd5a3ca48cd9d",
       "path": "tests/test_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionSdkTests.test_prepare_is_inert_and_never_upgrades_explicit_budgets",
@@ -17723,7 +17860,7 @@
     },
     "selection.profiles": {
       "distinction": "Original resource profiles retain the old node ceiling and admit the separate explicit v0.2 ceiling within exact bounds.",
-      "file_sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_v1_limits_remain_fixed_and_v2_is_explicit",
@@ -17731,7 +17868,7 @@
     },
     "selection.publication": {
       "distinction": "Repeated nested reports, manifest and actual synthetic frame count cumulatively against publication limits.",
-      "file_sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_cumulative_publication_counts_repeated_nested_values",
@@ -17739,31 +17876,31 @@
     },
     "selection.rank": {
       "distinction": "Synthetic rank ties, length predicate and proposed winner remain bound to the complete original selection.",
-      "file_sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_rank_tie_predicate_and_proposed_winner_are_bound",
       "syntax_sha256": "e1f002f30f256229712fc627644c666bc1778b48476648ee90483cc5c9974cdc"
     },
     "selection.routes": {
-      "distinction": "Three synthetic selection routes retain complete supplied originals and replay wrapper; no selection compile API is exposed.",
-      "file_sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427",
+      "distinction": "Three synthetic selection verification routes retain complete supplied originals and replay wrapper; Core generation is a separately negotiated API.",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "positive",
-      "symbol": "PolicyComponentSelectionTransportTests.test_all_three_routes_preserve_complete_originals_and_have_no_compile",
-      "syntax_sha256": "73aa0afadad3bb95db6d8d042dc3c2699109dd4a163de6a83dc528da76f14861"
+      "symbol": "PolicyComponentSelectionTransportTests.test_all_three_verification_routes_preserve_complete_originals",
+      "syntax_sha256": "3f315fe7cb48dae338dd089dd30df6c9c786d564d9db638fc620e7b45e2577ae"
     },
     "selection.sdk_routes": {
-      "distinction": "Public selection check and replay wrappers retain the complete saved synthetic result without a compile API.",
-      "file_sha256": "44e4474428edd7f1d1107ab6d0407a33e2dc9f8290d58f55da61801d9369460a",
+      "distinction": "Public selection check and replay wrappers retain the complete saved synthetic result; Core generation is a separate helper.",
+      "file_sha256": "52df2d0cc93f4a162aeb04bfc2e50a77a5e2712c585e18f031bdd5a3ca48cd9d",
       "path": "tests/test_policy_component_selection.py",
       "role": "positive",
       "symbol": "PolicyComponentSelectionSdkTests.test_check_replay_routes_retain_complete_saved_wrapper",
-      "syntax_sha256": "fa27aa5352b1c843d45f03e89734a2d7691e4c91778fcc2ccfca66332ad11cf1"
+      "syntax_sha256": "f8a8fd2cf27664ed40e0a6e79783586ef1e8277dce2aae421c1d99732e160d16"
     },
     "selection.snapshot": {
       "distinction": "Synthetic transport snapshots preserve complete inputs and immutable result views.",
-      "file_sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427",
+      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_snapshot_and_result_are_immutable",

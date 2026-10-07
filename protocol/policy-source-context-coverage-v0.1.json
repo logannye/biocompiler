@@ -2,9 +2,9 @@
   "schema_version": "biocompiler.policy_source_context_coverage.v0.1",
   "claim_scope": "reviewed_source_unit_scope_slice_only",
   "reviewed_source": {
-    "head": "a85b1112ff35ba988a71cc969bfabdfefb354cfe",
-    "tree": "7d22ca4c27eafcd36f018b3f262ef87404a3caf6",
-    "source_note": "Production source unchanged at this review; witness-only follow-ups do not transfer hosted evidence."
+    "head": "fbd2230e82d6ba448ae5aa4cdf33ebc0978df16b",
+    "tree": "e2d6a5cbf7a8b2d346245f1e5d9441a4c30a1b9c",
+    "source_note": "Base revision for the count-only selection-generation reanchor; exact current source is bound by the reviewed source pins below. Source predicates, contextual meaning and open witness scope are unchanged. No hosted execution or acceptance transfers from this base."
   },
   "counts": {
     "rules": 40,
@@ -32,14 +32,26 @@
   "sources": [
     {
       "path": "core/lib/checker/policy_admission.ml",
-      "sha256": "7d8ba644a491438afce37fbd15f0a5c0ad466b077cc29fd145a28704d3b2a6d9",
+      "sha256": "185cd8857caf6ee43461fde6b9c064745cb9a9d692ca16c848134b9777a53745",
       "disposition": "deferred_boundary",
       "ast": null
     },
     {
       "path": "core/lib/checker/policy_check.ml",
-      "sha256": "2aad7572b04cb20fdac3a162c4185cc1b976b895d578a249f230ae7e368b2bd1",
+      "sha256": "d8fc6d8a30ede74b89d90aca49d7ec77756761f317205e9bf96a906760ccd054",
       "disposition": "source_rule_owner",
+      "ast": null
+    },
+    {
+      "path": "core/lib/checker/policy_generation_meter.ml",
+      "sha256": "13c4647bc0efcb50f239af693e8fa3281fdbca4115ce4e5a84bcd4e9a4a1b965",
+      "disposition": "shared_metering_dependency",
+      "ast": null
+    },
+    {
+      "path": "core/lib/checker/policy_generation_meter.mli",
+      "sha256": "f1bb20416d692f4d0aa72b92028f75f6ea5ca532ae90e1d7593b424e703bf4ba",
+      "disposition": "shared_metering_dependency",
       "ast": null
     },
     {
@@ -62,7 +74,7 @@
     },
     {
       "path": "core/lib/domain/policy_operating_domain.ml",
-      "sha256": "bad7552eaf0642d051f1d7a1cf70ccc3e3e216b2ce5659b9a7ace4577660fd08",
+      "sha256": "bbdc0925c24c95852f356a513c1707f330da3b936227a24e0234730a9deb5384",
       "disposition": "deferred_boundary",
       "ast": null
     },
@@ -11422,8 +11434,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 258,
-          "last_line": 258,
+          "first_line": 266,
+          "last_line": 266,
           "region_sha256": "57fea4e05e04ab79f5640db755ddf87058bed2588bef10849681917306c77cc5",
           "python_symbols": [],
           "python_calls": []
@@ -11465,8 +11477,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 258,
-          "last_line": 258,
+          "first_line": 266,
+          "last_line": 266,
           "region_sha256": "57fea4e05e04ab79f5640db755ddf87058bed2588bef10849681917306c77cc5",
           "python_symbols": [],
           "python_calls": []
@@ -11508,8 +11520,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 259,
-          "last_line": 259,
+          "first_line": 267,
+          "last_line": 267,
           "region_sha256": "ddf3361be6a6e8f9e3a53a7ab9dbd178b440d7f639c8a5a94feffdd8a6a47286",
           "python_symbols": [],
           "python_calls": []
@@ -11551,8 +11563,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 259,
-          "last_line": 259,
+          "first_line": 267,
+          "last_line": 267,
           "region_sha256": "ddf3361be6a6e8f9e3a53a7ab9dbd178b440d7f639c8a5a94feffdd8a6a47286",
           "python_symbols": [],
           "python_calls": []
@@ -11594,8 +11606,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 261,
-          "last_line": 261,
+          "first_line": 269,
+          "last_line": 269,
           "region_sha256": "da86e73c43cf03bf8cdbebeff323f0261fb457d3c2bf4b2fa9897acea7b1b3fc",
           "python_symbols": [],
           "python_calls": []
@@ -11641,8 +11653,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 262,
-          "last_line": 262,
+          "first_line": 270,
+          "last_line": 270,
           "region_sha256": "59c3a9d95ebb644e863b6f86ffdb7d1b3f5d48c30c39af7d91c3e2510958c2d4",
           "python_symbols": [],
           "python_calls": []
@@ -11688,8 +11700,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 262,
-          "last_line": 262,
+          "first_line": 270,
+          "last_line": 270,
           "region_sha256": "59c3a9d95ebb644e863b6f86ffdb7d1b3f5d48c30c39af7d91c3e2510958c2d4",
           "python_symbols": [],
           "python_calls": []
@@ -11725,8 +11737,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 22,
-          "last_line": 27,
+          "first_line": 29,
+          "last_line": 34,
           "region_sha256": "1cb12d7d6f4a7c07b9ba9c84df3a9fca32f8061beea986cddbb0e3c72f1058a5",
           "python_symbols": [],
           "python_calls": []
@@ -11765,8 +11777,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 22,
-          "last_line": 27,
+          "first_line": 29,
+          "last_line": 34,
           "region_sha256": "1cb12d7d6f4a7c07b9ba9c84df3a9fca32f8061beea986cddbb0e3c72f1058a5",
           "python_symbols": [],
           "python_calls": []
@@ -11805,8 +11817,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 22,
-          "last_line": 27,
+          "first_line": 29,
+          "last_line": 34,
           "region_sha256": "1cb12d7d6f4a7c07b9ba9c84df3a9fca32f8061beea986cddbb0e3c72f1058a5",
           "python_symbols": [],
           "python_calls": []
@@ -11845,8 +11857,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 22,
-          "last_line": 27,
+          "first_line": 29,
+          "last_line": 34,
           "region_sha256": "1cb12d7d6f4a7c07b9ba9c84df3a9fca32f8061beea986cddbb0e3c72f1058a5",
           "python_symbols": [],
           "python_calls": []
@@ -11885,8 +11897,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 22,
-          "last_line": 27,
+          "first_line": 29,
+          "last_line": 34,
           "region_sha256": "1cb12d7d6f4a7c07b9ba9c84df3a9fca32f8061beea986cddbb0e3c72f1058a5",
           "python_symbols": [],
           "python_calls": []
@@ -11925,8 +11937,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 22,
-          "last_line": 27,
+          "first_line": 29,
+          "last_line": 34,
           "region_sha256": "1cb12d7d6f4a7c07b9ba9c84df3a9fca32f8061beea986cddbb0e3c72f1058a5",
           "python_symbols": [],
           "python_calls": []
@@ -11965,8 +11977,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 22,
-          "last_line": 27,
+          "first_line": 29,
+          "last_line": 34,
           "region_sha256": "1cb12d7d6f4a7c07b9ba9c84df3a9fca32f8061beea986cddbb0e3c72f1058a5",
           "python_symbols": [],
           "python_calls": []
@@ -12010,8 +12022,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 219,
-          "last_line": 225,
+          "first_line": 227,
+          "last_line": 233,
           "region_sha256": "cd9076bdf98cb17712093c26aef290645e2117a34bee6ca93545326d6519b594",
           "python_symbols": [],
           "python_calls": []
@@ -12055,8 +12067,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 219,
-          "last_line": 225,
+          "first_line": 227,
+          "last_line": 233,
           "region_sha256": "cd9076bdf98cb17712093c26aef290645e2117a34bee6ca93545326d6519b594",
           "python_symbols": [],
           "python_calls": []
@@ -12100,8 +12112,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 219,
-          "last_line": 225,
+          "first_line": 227,
+          "last_line": 233,
           "region_sha256": "cd9076bdf98cb17712093c26aef290645e2117a34bee6ca93545326d6519b594",
           "python_symbols": [],
           "python_calls": []
@@ -12145,8 +12157,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 219,
-          "last_line": 225,
+          "first_line": 227,
+          "last_line": 233,
           "region_sha256": "cd9076bdf98cb17712093c26aef290645e2117a34bee6ca93545326d6519b594",
           "python_symbols": [],
           "python_calls": []
@@ -12229,8 +12241,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 21,
-          "last_line": 21,
+          "first_line": 28,
+          "last_line": 28,
           "region_sha256": "ab3fb9cc8ddde322ca57b0e7dee77d981f2cf10f7399e1a79fb4446b6503ebff",
           "python_symbols": [],
           "python_calls": []
@@ -12271,8 +12283,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 82,
-          "last_line": 84,
+          "first_line": 90,
+          "last_line": 92,
           "region_sha256": "da1b952fa9b431456b5a3a3b7392c71e3ce6a0cbb9566afe343f96c2b218c884",
           "python_symbols": [],
           "python_calls": []
@@ -12315,8 +12327,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 85,
-          "last_line": 86,
+          "first_line": 93,
+          "last_line": 94,
           "region_sha256": "650142af953371381dcbceba09c31a97f7f6b3bd6d9d115f30bbbb565068eb7c",
           "python_symbols": [],
           "python_calls": []
@@ -12359,8 +12371,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 85,
-          "last_line": 86,
+          "first_line": 93,
+          "last_line": 94,
           "region_sha256": "650142af953371381dcbceba09c31a97f7f6b3bd6d9d115f30bbbb565068eb7c",
           "python_symbols": [],
           "python_calls": []
@@ -12405,8 +12417,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 87,
-          "last_line": 88,
+          "first_line": 95,
+          "last_line": 96,
           "region_sha256": "5d26a051d16b05ddd9bcbaa0740e2dfdea1cd5858724b54facb656c1390fbc2d",
           "python_symbols": [],
           "python_calls": []
@@ -12451,8 +12463,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 87,
-          "last_line": 88,
+          "first_line": 95,
+          "last_line": 96,
           "region_sha256": "5d26a051d16b05ddd9bcbaa0740e2dfdea1cd5858724b54facb656c1390fbc2d",
           "python_symbols": [],
           "python_calls": []
@@ -12496,8 +12508,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 227,
-          "last_line": 230,
+          "first_line": 235,
+          "last_line": 238,
           "region_sha256": "54a69a5a29e0f20226d890ee46fe9ccf874ebae0f330169f9f1971e25fd92afe",
           "python_symbols": [],
           "python_calls": []
@@ -12538,8 +12550,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 231,
-          "last_line": 233,
+          "first_line": 239,
+          "last_line": 241,
           "region_sha256": "7afc4460ced1110ab13619325c3e1864563e4cb031036926fb9cb7ede36580bc",
           "python_symbols": [],
           "python_calls": []
@@ -12580,8 +12592,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 232,
-          "last_line": 233,
+          "first_line": 240,
+          "last_line": 241,
           "region_sha256": "edaafa0f24f08378e39ee87bc072cee4072348d2779ae8a739735da291354637",
           "python_symbols": [],
           "python_calls": []
@@ -12623,8 +12635,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 234,
-          "last_line": 235,
+          "first_line": 242,
+          "last_line": 243,
           "region_sha256": "63c32e40ac19c5cf690e5d0b668519d456f3bf32337ab8f30d3e823807b3c503",
           "python_symbols": [],
           "python_calls": []
@@ -12666,8 +12678,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 236,
-          "last_line": 236,
+          "first_line": 244,
+          "last_line": 244,
           "region_sha256": "7b2dc78fd3b0b7c8696c2ec8c46284cda23c2d2869b9a834253deff0bc1b2328",
           "python_symbols": [],
           "python_calls": []
@@ -12711,8 +12723,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 66,
-          "last_line": 71,
+          "first_line": 74,
+          "last_line": 79,
           "region_sha256": "0c23921740fa80e543822867d2f5f93ca4cb7b7c1d35463f1d0621bd20b909d5",
           "python_symbols": [],
           "python_calls": []
@@ -12769,8 +12781,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 69,
-          "last_line": 71,
+          "first_line": 77,
+          "last_line": 79,
           "region_sha256": "b2bfe224a70d7cbf98ee8a39dc1ade7d99c4ecf5372e34fc9881b732d444af66",
           "python_symbols": [],
           "python_calls": []
@@ -12827,8 +12839,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 69,
-          "last_line": 71,
+          "first_line": 77,
+          "last_line": 79,
           "region_sha256": "b2bfe224a70d7cbf98ee8a39dc1ade7d99c4ecf5372e34fc9881b732d444af66",
           "python_symbols": [],
           "python_calls": []
@@ -12873,8 +12885,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 61,
-          "last_line": 65,
+          "first_line": 69,
+          "last_line": 73,
           "region_sha256": "9ada7251eb0a836cdb654bf1bd9b1a1fa7a014341b4ad1632d53d6b7685c191e",
           "python_symbols": [],
           "python_calls": []
@@ -12917,8 +12929,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 100,
-          "last_line": 107,
+          "first_line": 108,
+          "last_line": 115,
           "region_sha256": "0e3d6595ca3b13fe8493c62d99323b5aa807be9d946c364e73d730053a9dad2d",
           "python_symbols": [],
           "python_calls": []
@@ -12962,8 +12974,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 108,
-          "last_line": 110,
+          "first_line": 116,
+          "last_line": 118,
           "region_sha256": "8cfd28ee145da477cbad689a5733768b96bfcf0d0cbb3417cbf1be0b47352bf3",
           "python_symbols": [],
           "python_calls": []
@@ -13011,8 +13023,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 111,
-          "last_line": 113,
+          "first_line": 119,
+          "last_line": 121,
           "region_sha256": "0af8350b5c4e707a0d2aa5e11f356b915f3c530e735adcda9500c89bcc3acf5c",
           "python_symbols": [],
           "python_calls": []
@@ -13059,8 +13071,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 117,
-          "last_line": 118,
+          "first_line": 125,
+          "last_line": 126,
           "region_sha256": "160c70efbcebba7a0f09345c4e4390ca9adf937ef80db2b4172083715d784564",
           "python_symbols": [],
           "python_calls": []
@@ -13106,8 +13118,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 119,
-          "last_line": 119,
+          "first_line": 127,
+          "last_line": 127,
           "region_sha256": "c85a54445f7f35644e0cdda9855d5a1fb25c500a895bd2f66646bed4a92ce22a",
           "python_symbols": [],
           "python_calls": []
@@ -13154,8 +13166,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 120,
-          "last_line": 120,
+          "first_line": 128,
+          "last_line": 128,
           "region_sha256": "d8ec66c7b8e73864bdb7fd602187972d10eefd5b201b1c7bed29e4a107770d52",
           "python_symbols": [],
           "python_calls": []
@@ -13204,8 +13216,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 123,
-          "last_line": 127,
+          "first_line": 131,
+          "last_line": 135,
           "region_sha256": "49cfe8b2fd1af2e7cb88bdb6203b3a76926368daa3cb8b2247a231897ce483f4",
           "python_symbols": [],
           "python_calls": []
@@ -13260,8 +13272,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 150,
-          "last_line": 150,
+          "first_line": 158,
+          "last_line": 158,
           "region_sha256": "995ae5c8c432ed6c7438f82e13d624b44e0de343a5a800bb788437bb1371651d",
           "python_symbols": [],
           "python_calls": []
@@ -13310,8 +13322,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 159,
-          "last_line": 159,
+          "first_line": 167,
+          "last_line": 167,
           "region_sha256": "74c7378da48452b7ab04dd6f236c5dd8ed0d9b280d27543a158c8e3cab656896",
           "python_symbols": [],
           "python_calls": []
@@ -13360,8 +13372,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 165,
-          "last_line": 165,
+          "first_line": 173,
+          "last_line": 173,
           "region_sha256": "c95de5fb932b5efa42126c2a14a48a6a6fa32421ff0bd1e157ed17a5e195e279",
           "python_symbols": [],
           "python_calls": []
@@ -13410,8 +13422,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 170,
-          "last_line": 170,
+          "first_line": 178,
+          "last_line": 178,
           "region_sha256": "63be457e3cb468a49b7be4edb125cbb52a904476041422e0cf747385ccd8d588",
           "python_symbols": [],
           "python_calls": []
@@ -13460,8 +13472,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 194,
-          "last_line": 194,
+          "first_line": 202,
+          "last_line": 202,
           "region_sha256": "ae31535041129efcad4bd388aafe939567b90a3648bee1fb94a867fc675ce73f",
           "python_symbols": [],
           "python_calls": []
@@ -13509,8 +13521,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 195,
-          "last_line": 195,
+          "first_line": 203,
+          "last_line": 203,
           "region_sha256": "e5a01f61f7206011bb8ca2f28e7de2642fee17124aaf94df5168b1bc40b10982",
           "python_symbols": [],
           "python_calls": []
@@ -13558,8 +13570,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 311,
-          "last_line": 311,
+          "first_line": 319,
+          "last_line": 319,
           "region_sha256": "a28d23ff1033e6b688dfa5c5c66fcf302f038d38494135ae15bb51eef0f5f290",
           "python_symbols": [],
           "python_calls": []
@@ -13607,8 +13619,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 351,
-          "last_line": 351,
+          "first_line": 359,
+          "last_line": 359,
           "region_sha256": "b054944aaf37095553b5632c6b56ce1006a06d509177ffa19116aa8cc15ca768",
           "python_symbols": [],
           "python_calls": []
@@ -13656,8 +13668,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 357,
-          "last_line": 357,
+          "first_line": 365,
+          "last_line": 365,
           "region_sha256": "ed47166d89f18d777e1160313c496c7139f58131144309702193a3612ac9fc48",
           "python_symbols": [],
           "python_calls": []
@@ -13705,8 +13717,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 384,
-          "last_line": 384,
+          "first_line": 392,
+          "last_line": 392,
           "region_sha256": "3780ac22e0fe30e08c72ddb8cee114fd52a876b54586ccac1bd749cb80c86d4b",
           "python_symbols": [],
           "python_calls": []
@@ -13754,8 +13766,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 419,
-          "last_line": 419,
+          "first_line": 427,
+          "last_line": 427,
           "region_sha256": "eaa95713f11f0722f2dbfd2f82272cde031d2900175840652521aa6b8f927e75",
           "python_symbols": [],
           "python_calls": []
@@ -13803,8 +13815,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 218,
-          "last_line": 218,
+          "first_line": 226,
+          "last_line": 226,
           "region_sha256": "23551a146838911baf60048978b7b3fb7b438bb1c720cc86e85d44635816a89f",
           "python_symbols": [],
           "python_calls": []
@@ -13856,8 +13868,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 222,
-          "last_line": 222,
+          "first_line": 230,
+          "last_line": 230,
           "region_sha256": "62de642deb82a5b2d766782376145e1295283a320d5810c42ee97c82740cd271",
           "python_symbols": [],
           "python_calls": []
@@ -13909,8 +13921,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 222,
-          "last_line": 222,
+          "first_line": 230,
+          "last_line": 230,
           "region_sha256": "62de642deb82a5b2d766782376145e1295283a320d5810c42ee97c82740cd271",
           "python_symbols": [],
           "python_calls": []
@@ -13960,8 +13972,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 283,
-          "last_line": 283,
+          "first_line": 291,
+          "last_line": 291,
           "region_sha256": "fdc7907223c708d0b092a87da5623079037c33f2a02ad003a388c7faf1f8408b",
           "python_symbols": [],
           "python_calls": []
@@ -14011,8 +14023,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 199,
-          "last_line": 199,
+          "first_line": 207,
+          "last_line": 207,
           "region_sha256": "6d6fd8f128dc563cb8837a3e7398cc85acba9a901d803301326c6bb0f16160e9",
           "python_symbols": [],
           "python_calls": []
@@ -14061,8 +14073,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 199,
-          "last_line": 199,
+          "first_line": 207,
+          "last_line": 207,
           "region_sha256": "6d6fd8f128dc563cb8837a3e7398cc85acba9a901d803301326c6bb0f16160e9",
           "python_symbols": [],
           "python_calls": []
@@ -14111,8 +14123,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 199,
-          "last_line": 199,
+          "first_line": 207,
+          "last_line": 207,
           "region_sha256": "6d6fd8f128dc563cb8837a3e7398cc85acba9a901d803301326c6bb0f16160e9",
           "python_symbols": [],
           "python_calls": []
@@ -14161,8 +14173,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 199,
-          "last_line": 199,
+          "first_line": 207,
+          "last_line": 207,
           "region_sha256": "6d6fd8f128dc563cb8837a3e7398cc85acba9a901d803301326c6bb0f16160e9",
           "python_symbols": [],
           "python_calls": []
@@ -14211,8 +14223,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 199,
-          "last_line": 199,
+          "first_line": 207,
+          "last_line": 207,
           "region_sha256": "6d6fd8f128dc563cb8837a3e7398cc85acba9a901d803301326c6bb0f16160e9",
           "python_symbols": [],
           "python_calls": []
@@ -14261,8 +14273,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 347,
-          "last_line": 347,
+          "first_line": 355,
+          "last_line": 355,
           "region_sha256": "249a657ce88e5cb84651dc678c9331b5585525ac0436a2663496351c4dffb396",
           "python_symbols": [],
           "python_calls": []
@@ -14309,8 +14321,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 352,
-          "last_line": 352,
+          "first_line": 360,
+          "last_line": 360,
           "region_sha256": "41d3e41501251443748215d6b5b2cb554b3b7d5f37688208b50838c31587c81b",
           "python_symbols": [],
           "python_calls": []
@@ -14357,8 +14369,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 365,
-          "last_line": 365,
+          "first_line": 373,
+          "last_line": 373,
           "region_sha256": "12cd0dfac6bd3056622bbcb82300649b8b78fe0ebce68048d45f3f897d99748c",
           "python_symbols": [],
           "python_calls": []
@@ -14405,8 +14417,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 268,
-          "last_line": 268,
+          "first_line": 276,
+          "last_line": 276,
           "region_sha256": "fb6c49d7f7f742616bba79cc18d7f509f61adbf9cb75b4201f57e6b7c96e8580",
           "python_symbols": [],
           "python_calls": []
@@ -14453,8 +14465,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 412,
-          "last_line": 412,
+          "first_line": 420,
+          "last_line": 420,
           "region_sha256": "67b97771e62cf9096425f85ebd57120fe55489944f69319c8f66409cc360137d",
           "python_symbols": [],
           "python_calls": []
@@ -14501,8 +14513,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 430,
-          "last_line": 430,
+          "first_line": 438,
+          "last_line": 438,
           "region_sha256": "754b860d87fd02a258e1d757fd0a5d382e3e3f8d7c5cf5b0e4abb8fd65d71487",
           "python_symbols": [],
           "python_calls": []
@@ -14549,8 +14561,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 431,
-          "last_line": 431,
+          "first_line": 439,
+          "last_line": 439,
           "region_sha256": "142d5c2df5ddd3e471a12939126bc06a0d72a6cc1fa3ec4669f02a1db177b07c",
           "python_symbols": [],
           "python_calls": []
@@ -14597,8 +14609,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 505,
-          "last_line": 505,
+          "first_line": 513,
+          "last_line": 513,
           "region_sha256": "298c16bc437ea25f69b737eaf26272114f43b6337ffccfb24a5676d9bde682c8",
           "python_symbols": [],
           "python_calls": []
@@ -14632,8 +14644,8 @@
       "owners": [
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 494,
-          "last_line": 494,
+          "first_line": 502,
+          "last_line": 502,
           "region_sha256": "394d18e89e043bfdaf1259bba949807cf781496fba055b9a09ed5538723a20a0",
           "python_symbols": [],
           "python_calls": []
@@ -14667,8 +14679,8 @@
       "owners": [
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 494,
-          "last_line": 494,
+          "first_line": 502,
+          "last_line": 502,
           "region_sha256": "394d18e89e043bfdaf1259bba949807cf781496fba055b9a09ed5538723a20a0",
           "python_symbols": [],
           "python_calls": []
@@ -14712,8 +14724,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 264,
-          "last_line": 264,
+          "first_line": 272,
+          "last_line": 272,
           "region_sha256": "ef89212c3a8be4f5eccb5eacfae0fc811a71cde4f61192a31865835a7cb67ab4",
           "python_symbols": [],
           "python_calls": []
@@ -14757,8 +14769,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 264,
-          "last_line": 264,
+          "first_line": 272,
+          "last_line": 272,
           "region_sha256": "ef89212c3a8be4f5eccb5eacfae0fc811a71cde4f61192a31865835a7cb67ab4",
           "python_symbols": [],
           "python_calls": []
@@ -14802,8 +14814,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 264,
-          "last_line": 264,
+          "first_line": 272,
+          "last_line": 272,
           "region_sha256": "ef89212c3a8be4f5eccb5eacfae0fc811a71cde4f61192a31865835a7cb67ab4",
           "python_symbols": [],
           "python_calls": []
@@ -14847,8 +14859,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 264,
-          "last_line": 264,
+          "first_line": 272,
+          "last_line": 272,
           "region_sha256": "ef89212c3a8be4f5eccb5eacfae0fc811a71cde4f61192a31865835a7cb67ab4",
           "python_symbols": [],
           "python_calls": []
@@ -14897,8 +14909,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 296,
-          "last_line": 296,
+          "first_line": 304,
+          "last_line": 304,
           "region_sha256": "4f2becc3de314d39a098828b5e15490ea29a47f740d25157087e7c46d5c28075",
           "python_symbols": [],
           "python_calls": []
@@ -14947,8 +14959,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 296,
-          "last_line": 296,
+          "first_line": 304,
+          "last_line": 304,
           "region_sha256": "4f2becc3de314d39a098828b5e15490ea29a47f740d25157087e7c46d5c28075",
           "python_symbols": [],
           "python_calls": []
@@ -14997,8 +15009,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 296,
-          "last_line": 296,
+          "first_line": 304,
+          "last_line": 304,
           "region_sha256": "4f2becc3de314d39a098828b5e15490ea29a47f740d25157087e7c46d5c28075",
           "python_symbols": [],
           "python_calls": []
@@ -15047,8 +15059,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 296,
-          "last_line": 296,
+          "first_line": 304,
+          "last_line": 304,
           "region_sha256": "4f2becc3de314d39a098828b5e15490ea29a47f740d25157087e7c46d5c28075",
           "python_symbols": [],
           "python_calls": []
@@ -15097,8 +15109,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 309,
-          "last_line": 309,
+          "first_line": 317,
+          "last_line": 317,
           "region_sha256": "64e1b4bb969e8ef74a6f09bb91b717b1881f4bfd4b820fc14940026deade42f2",
           "python_symbols": [],
           "python_calls": []
@@ -15148,8 +15160,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 385,
-          "last_line": 385,
+          "first_line": 393,
+          "last_line": 393,
           "region_sha256": "ace7b17b5b66379cab2829acab531da3924b5c76feb8b262c585d304ec1387ad",
           "python_symbols": [],
           "python_calls": []
@@ -15198,8 +15210,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 368,
-          "last_line": 368,
+          "first_line": 376,
+          "last_line": 376,
           "region_sha256": "5864afac9b13ebbfdc5aec2c3148c50836cfcb15824f008200a659a61062d95e",
           "python_symbols": [],
           "python_calls": []
@@ -15248,8 +15260,8 @@
         },
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 420,
-          "last_line": 420,
+          "first_line": 428,
+          "last_line": 428,
           "region_sha256": "d8e8417695b276bd22d9fdd31286398672c738264d0a80584d463d88400b0de1",
           "python_symbols": [],
           "python_calls": []
@@ -15281,8 +15293,8 @@
       "owners": [
         {
           "path": "core/lib/checker/policy_check.ml",
-          "first_line": 418,
-          "last_line": 418,
+          "first_line": 426,
+          "last_line": 426,
           "region_sha256": "751ef29023eaea3dfb23c75c0f790bb1657bd3166a7e934537b4633292f20085",
           "python_symbols": [],
           "python_calls": []

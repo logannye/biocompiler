@@ -20,6 +20,7 @@ val make_budget : ?parent:Bioc_checker.Work_budget.t -> ?charge:(int -> unit) ->
    domain-error recovery and restore its public Diagnostic.Error at entrypoints. *)
 val protect : (unit -> 'a) -> 'a
 val charge : budget -> int -> unit
+
 (** Extra traversals debit only the supplied outer callback. *)
 val outer_charge : budget -> int -> unit
 val outer_meter : budget -> int -> unit

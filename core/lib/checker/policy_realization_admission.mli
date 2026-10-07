@@ -11,6 +11,7 @@ module F = Bioc_domain.Policy_operating_domain
 module P = Bioc_domain.Pinned_identity
 
 type admitted_inputs
+
 (** Retains the same meter for subsequent [require_model] membership checks. *)
 val admit_metered : charge:(int -> unit) -> request:R.t -> behavior:O.behavior -> admitted_inputs
 val admit : request:R.t -> behavior:O.behavior -> admitted_inputs

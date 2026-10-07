@@ -4,8 +4,158 @@
   "profile": "policy-component-mrna-v0.1",
   "sources": [
     {
+      "path": "core/bin/core/main.ml",
+      "sha256": "f586816392c3b22072c7e2a0d7a0063d621911e0957519f442e0a9727451ecad",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_admission.ml",
+      "sha256": "185cd8857caf6ee43461fde6b9c064745cb9a9d692ca16c848134b9777a53745",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "fail": 5,
+          "require": 52
+        },
+        "profile_literals": {
+          "biocompiler.policy_operational_admission.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_admission.mli",
+      "sha256": "5ff3e8bf9b7a12da3f2afb5f006ba1b32643777ef9b0beb509b55da515ffe8f3",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_check.ml",
+      "sha256": "d8fc6d8a30ede74b89d90aca49d7ec77756761f317205e9bf96a906760ccd054",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 59
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_check.v0.1": 1,
+          "biocompiler.policy_assessment.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_check.mli",
+      "sha256": "7ef1d1adfe8e35b356ca84ac603fdb743aff0f33fa33525369fd285be2516176",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_correspondence.ml",
+      "sha256": "12f7b455aec1e4aacf2e261de065979a550c1d2a84c58ff901166d545e499c35",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 4
+        },
+        "profile_literals": {
+          "biocompiler.policy_correspondence.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_correspondence.mli",
+      "sha256": "04a61c09a03520988a19dda0e7806fe8e69e5c24749158f4a1b2be69984770ec",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_generation_meter.ml",
+      "sha256": "13c4647bc0efcb50f239af693e8fa3281fdbca4115ce4e5a84bcd4e9a4a1b965",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_generation_meter.mli",
+      "sha256": "f1bb20416d692f4d0aa72b92028f75f6ea5ca532ae90e1d7593b424e703bf4ba",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_realization_admission.ml",
+      "sha256": "6b22b165a96a1aa1b8ab8a73d1485f375e2eb08ef2ffb4e3901d6366d9023b49",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 2,
+          "require": 12,
+          "supported": 11
+        },
+        "profile_literals": {
+          "biocompiler.policy_realization_admission.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_realization_admission.mli",
+      "sha256": "2dd528a0d2d89666d9a960c3dfea626916abe766bbc974a8aaf0ee7c3c23f701",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/construction_producer.ml",
+      "sha256": "6f36a03c157b48bc7f0ed2688e30084b1b1a9cadc4ed3b907fc4adffc71ee67d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 20
+        },
+        "profile_literals": {
+          "biocompiler.molecule_coordinate_path.v0.1": 1,
+          "biocompiler.molecule_coordinate_space.v0.1": 1,
+          "biocompiler.molecule_index_span.v0.1": 1,
+          "biocompiler.ocaml.construction_producer.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/compiler/construction_producer.mli",
+      "sha256": "89533d371dc7e698eb0240dc3c2a47d715534547ac285d5d21a4f30bda740719",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/compiler/policy_component_lowering.ml",
-      "sha256": "1411327566b59a1d99a123f9a48c52441c13b9f3ab66f18ec587cf26f7aa315f",
+      "sha256": "9e6dc223872e739f516a8602254028b37f29a5bf29be348959f751aa7811f0b0",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -18,7 +168,75 @@
     },
     {
       "path": "core/lib/compiler/policy_component_lowering.mli",
-      "sha256": "fa5342d327682a6f44cda0d942568d4e3b323de61bbf337c1acad9f80aab3164",
+      "sha256": "aced09ced9c22d4f06520f30d4e077198ba01e04cb832a0360bc79e4b1254a24",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_implementation_lowering.ml",
+      "sha256": "6deb817e9ab4623bbc339fa5e42633f35e75aa56c6e119def509175a9764eccb",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 11,
+          "Diagnostic.require": 5,
+          "supported": 27
+        },
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_implementation_lowering.mli",
+      "sha256": "894af56fc2275960c62597eed090fc1112a67ca96ce0ef3ac7cdc7babb215af2",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_lowering.ml",
+      "sha256": "9cd1d929568d6802166cc60dc64db421dfc753530d9667ab0fb298199add47d6",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_lowering.mli",
+      "sha256": "aaebf77357465d3191e28953b0ff8b6dbc35bc910a3b5ea6101b1e141c8d383f",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/recoding_producer.ml",
+      "sha256": "3c5897fc0680a9ee746bbebc59203e104e9ef9a6a5787b9967652d2e8dbb2dab",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "require": 30
+        },
+        "profile_literals": {
+          "biocompiler.construction_producer.resources.v1": 1,
+          "biocompiler.molecule_coordinate_path.v0.1": 1,
+          "biocompiler.molecule_coordinate_space.v0.1": 1,
+          "biocompiler.molecule_index_span.v0.1": 1,
+          "biocompiler.ocaml.recoding_producer.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/compiler/recoding_producer.mli",
+      "sha256": "523903e1f7eaa529a05564a2716b6f87b6608d234c27db09fbc8242a295fd363",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -277,8 +495,33 @@
       }
     },
     {
+      "path": "core/lib/domain/policy_operating_domain.ml",
+      "sha256": "bbdc0925c24c95852f356a513c1707f330da3b936227a24e0234730a9deb5384",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 5,
+          "Diagnostic.require": 1,
+          "require": 27
+        },
+        "profile_literals": {
+          "biocompiler.policy_operating_domain.v0.1": 1,
+          "biocompiler.policy_truth_domain.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_operating_domain.mli",
+      "sha256": "cbaa01212d62d053ac045151b20b31cc2fa95aa4f5e08db93ea0ab2ee044c095",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/producer_service/policy_component_material_producer.ml",
-      "sha256": "23d721ecbe733d64927e1bfa1b950751194e9c8d9738da0e6eb725c5cd510eec",
+      "sha256": "106200a230a1eb27373362412e5f53acb99e3190d41ff0a64d3d30e94b84164d",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -287,7 +530,46 @@
     },
     {
       "path": "core/lib/producer_service/policy_component_material_producer.mli",
-      "sha256": "242fe988b98e5856465b50d6751866432b75ba7f537d7b97fcab664948d05d3f",
+      "sha256": "8b082327497955b7f3137d55df0cddc3d24ec492ce3cd448ece0e6269555348e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/producer_service/policy_component_selection_producer.ml",
+      "sha256": "a2961ec002049305ba82505a0bc81ad79cdccd1f32d8fdff1685cf5634f5acfb",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/producer_service/policy_component_selection_producer.mli",
+      "sha256": "df30b6a90fb9f94c75f0fe93d48935bbbc66de91e992f4c2d0cb27b187ac83e2",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/producer_service/producer_service.ml",
+      "sha256": "5d6be9fffa94bd9b7a160da4348cf1add3d77e6d5326add8d32ef330c73812c9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {
+          "biocompiler.core.architecture_build.v1": 1,
+          "biocompiler.core.architecture_export.v1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/producer_service/producer_service.mli",
+      "sha256": "b38ad3667b8166bcac2582db5cbba300c94f5acd326651f04dcb055377cdbb6d",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -471,12 +753,12 @@
     },
     {
       "path": "core/lib/service/policy_component_selection_service.ml",
-      "sha256": "dd0bd5db00635e75df91717eca02099ed8a5e217289d9d5ff5d86a829b4b533b",
+      "sha256": "070130aac8acb39308c3fe2de26c582e7bcd3909c549bb201018c506d6108108",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 2,
-          "Diagnostic.require": 4,
+          "Diagnostic.require": 5,
           "require": 4
         },
         "profile_literals": {
@@ -490,7 +772,7 @@
     },
     {
       "path": "core/lib/service/policy_component_selection_service.mli",
-      "sha256": "966a5b36fd260c5e94718328b4d6034618a4378cfe0ad29d826371b9190e99e3",
+      "sha256": "c492eecc86b131de06d005cd045a2044ffc325e4cef0bb874f75678c29a8cc90",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -555,13 +837,13 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_selection.py",
-      "sha256": "e0098c9f9be524571591f59c11a5989f79e89c3341dce5c4e5b71e1f7351ca7d",
+      "sha256": "3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 14,
-          "Raise": 26
+          "FunctionDef": 15,
+          "Raise": 28
         },
         "profile_literals": {
           "biocompiler.core.policy_component_selection.v1": 1,
@@ -629,11 +911,11 @@
     },
     {
       "path": "src/biocompiler/policy/component_selection.py",
-      "sha256": "49a77e61c1c2951d5f746986ed9815f5e34f0487a0e97fc0dc447d7a01f1222a",
+      "sha256": "10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
-          "FunctionDef": 4
+          "FunctionDef": 5
         },
         "profile_literals": {}
       }
@@ -709,6 +991,10 @@
       "sha256": "e2bb96c068cf29975e071ebb005ac08fca37807a08ae48a92e7ab814a8014d01"
     },
     {
+      "path": "core/test/test_policy_component_selection_producer.ml",
+      "sha256": "6d740ed61ec11c4216c0b405ee1568a897164ff140b656050abbfb45517d7981"
+    },
+    {
       "path": "core/test/test_policy_component_selection_request.ml",
       "sha256": "5f6071e948f93b88be647970a5673f2a2cafdf2cb4a3b0bbcaef73a8b52f6d18"
     },
@@ -721,12 +1007,20 @@
       "sha256": "293b6b49315befce209652f7e7d9285b5fe847f15414781341a4a3db04727ab6"
     },
     {
+      "path": "core/test/test_policy_generation_admission.ml",
+      "sha256": "b05d9cbca4cef22d4342ccf35c37c0568ce9add4f7c6e45f27f97d1bf4c78b3e"
+    },
+    {
+      "path": "core/test/test_policy_generation_producers.ml",
+      "sha256": "86438dde4b53d1dfd03eba7ec324ab168ac443100799fb3698dde9c7ae800f5f"
+    },
+    {
       "path": "tests/test_core_policy_component_material.py",
       "sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3"
     },
     {
       "path": "tests/test_core_policy_component_selection.py",
-      "sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427"
+      "sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace"
     },
     {
       "path": "tests/test_policy_component_fixture.py",
@@ -746,11 +1040,11 @@
     },
     {
       "path": "tests/test_policy_component_selection.py",
-      "sha256": "44e4474428edd7f1d1107ab6d0407a33e2dc9f8290d58f55da61801d9369460a"
+      "sha256": "52df2d0cc93f4a162aeb04bfc2e50a77a5e2712c585e18f031bdd5a3ca48cd9d"
     },
     {
       "path": "tests/test_policy_component_selection_witness.py",
-      "sha256": "4e63e5964571aa767c5c62412480875e5bea141dbf2dc6a67fd2eed90aa13d19"
+      "sha256": "e8c988fa57cef5bb8861ec7a73821627725b2d8586cadf5ddfe352097bd741ab"
     },
     {
       "path": "tests/test_policy_material_consumer.py",
@@ -758,7 +1052,7 @@
     },
     {
       "path": "tests/test_policy_material_prebuilt.py",
-      "sha256": "a58ff5f799c91b02de7fd87320c9295925da256bd1927eab921f372ed294ba65"
+      "sha256": "fa1a8b2b49ac29da2810c4574f548e1931bc7fdcfaa7c35c7341c68abfe42f1a"
     },
     {
       "path": "tools/check_policy_component_fixture.py",
@@ -770,7 +1064,7 @@
     },
     {
       "path": "tools/check_policy_component_selection.py",
-      "sha256": "1b841401786848b01613ea724f3c60307be7a787f39e89c696644ef74773d2c9"
+      "sha256": "7b500132be6a120a7db4c46f817aa874b2db7e4a9ec6671ce289df9c4ad7e8e4"
     },
     {
       "path": "tools/check_policy_material_consumer.py",
@@ -778,7 +1072,7 @@
     },
     {
       "path": "tools/check_policy_material_prebuilt.py",
-      "sha256": "2f241e75314c8b70aefc9ede92b484f09edf42b1d93af0c6a63fbc07e7d8a34c"
+      "sha256": "2c0322cf7e14593118303e831e190901bbe693f44a58f07d15f9d78d96f643fb"
     }
   ],
   "rules": [
@@ -1001,7 +1295,7 @@
       "owners": [
         {
           "path": "core/lib/compiler/policy_component_lowering.ml",
-          "anchor": "let arrange ~library ~rule",
+          "anchor": "let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~rule",
           "occurrence": 1
         },
         {
@@ -1620,7 +1914,7 @@
       "positive": [
         {
           "path": "tests/test_core_policy_component_selection.py",
-          "anchor": "def test_all_three_routes_preserve_complete_originals_and_have_no_compile",
+          "anchor": "def test_all_three_verification_routes_preserve_complete_originals",
           "occurrence": 1
         },
         {
@@ -1659,6 +1953,88 @@
       "scope": "Immutable explicit transport negotiates the exact native selection profile, validates full original/candidate/child-report/manifest correspondence and the repeated publication census, and uses fresh native export followed by atomic paired publication. Shared child assessment and member-format validation is factored without creating a fictitious child protocol response. Explicit preparation retains original supplied budgets. A separate hosted-only 21-observation source witness reconstructs both Python-authored A originals, prepares each child independently, and exercises fresh Core/Verify selection and four exact paired archives while preserving the old component campaign.",
       "limits": "Mock peers establish transport rejection behavior only; native common-authority checking, preservation and construction remain OCaml authorities. Public compilation, installed/offline campaigns and complete release/main acceptance remain separate tasks.",
       "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_generation",
+      "owners": [
+        {
+          "path": "core/lib/producer_service/policy_component_selection_producer.ml",
+          "anchor": "let produce ~charge original =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/producer_service/policy_component_material_producer.ml",
+          "anchor": "let construct_candidate ?charge request =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/service/policy_component_selection_service.ml",
+          "anchor": "let prepare_generated",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/checker/policy_generation_meter.ml",
+          "anchor": "module Make",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/compiler/recoding_producer.ml",
+          "anchor": "let make_budget",
+          "occurrence": 1
+        },
+        {
+          "path": "src/biocompiler/core_policy_component_selection.py",
+          "anchor": "def compile(",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_producer.ml",
+          "anchor": "Generation result differs from fresh independent Verify result",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_generation_admission.ml",
+          "anchor": "count-only callback changed the old result bytes",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_generation_producers.ml",
+          "anchor": "let failed_layout fixture =",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_component_selection.py",
+          "anchor": "selection-compile-replay",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_producer.ml",
+          "anchor": "Caught generation exhaustion poisons later checking",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_generation_admission.ml",
+          "anchor": "callback failure was replaced, swallowed or followed by further work",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_generation_producers.ml",
+          "anchor": "Failed layout/model scans were refunded or uncharged",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_core_policy_component_selection.py",
+          "anchor": "def test_compile_missing_or_changed_profile_never_calls_production",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Separately negotiated Core generation traverses all original alternatives in ASCII ID order, preserves local producer caps and debits a count-only callback into the same original invocation owner before fresh complete checking and actual-frame admission. Candidate-only generation retains losers; Verify independently rechecks the same wrapper. Python freezes originals and has no semantic fallback; hosted SDK census has 35 observations including generation, permutation, loser edits and corrupt-loser controls.",
+      "limits": "Source inventory only; no native execution or clinical evidence implied. Counts bound explicit data passes, not machine instructions. Compilation withholds artifact; only fresh export can publish. Admission and producer callback failures are terminal and existing local ceilings remain independent of the outer allowance.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
     }
   ],
   "limitations": [
@@ -1668,7 +2044,8 @@
     "No current-head execution, installed distribution, release, empirical biology or human-use acceptance is granted by this static index.",
     "Two appended domain-codec families add source-only static wellformedness to the ten existing component-route families; they do not establish execution or acceptance. Selection checking, common-authority validation, aggregate execution, winner selection, a public selection route and fresh selection export remain unimplemented.",
     "The preceding codec-batch limitation records its original boundary. This additive source-only batch defines a complete-census outer candidate codec, independent closed common-original checker and fresh checked-selection capability; hosted executable validation and release acceptance remain separate pending gates. Public selection production/service/SDK/CLI routing and fresh selection export remain unimplemented; helpers, multiple RNA outputs, general material variation and biological viability are outside this batch.",
-    "The preceding checker-batch limitation records its original boundary. This additive source-only batch supplies public selection check/replay/export, one original-bound invocation/publication scope, an explicit versioned cumulative node allowance and immutable Python paired-export adapters. Candidate-generation metering and selection compile, installed/offline validation and release/main acceptance remain open. All previous semantic authorities and obligations are retained; source inventory does not establish test execution."
+    "The preceding checker-batch limitation records its original boundary. This additive source-only batch supplies public selection check/replay/export, one original-bound invocation/publication scope, an explicit versioned cumulative node allowance and immutable Python paired-export adapters. Candidate-generation metering and selection compile, installed/offline validation and release/main acceptance remain open. All previous semantic authorities and obligations are retained; source inventory does not establish test execution.",
+    "The preceding compile-absent statements record the original publication batch. This additive generation rule supersedes only Core compile absence: a separately negotiated metered Core producer is now source-implemented, with artifact withheld and fresh complete Verify comparison required. Verify remains producer-free; historical development feedback is unchanged and does not validate this increment."
   ],
   "historical_development_feedback": {
     "revision": "5a45d354ee869f26f0e5d3181c8972a6402baca6",

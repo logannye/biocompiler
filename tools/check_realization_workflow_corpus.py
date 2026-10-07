@@ -21,6 +21,8 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # hashes for historical source files are deliberately unsupported.
 REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py"})
 REVIEWED_ADDITIONS = {
+    'src/biocompiler/core_policy_component_selection.py': '3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2',
+    'src/biocompiler/policy/component_selection.py': '10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80',
     "src/biocompiler/core_distribution.py": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459",
     "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
     "src/biocompiler/core_pipeline_provider_views.py": "ea18d951f8170b1e1da4fbe6636d40e83f54ebda2ebdce187b0e08cf257b9c35",
@@ -45,9 +47,9 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5",
     # Independently reviewed policy transports remain outside original authority.
     'src/biocompiler/policy/component_material.py': '24da1db993f5f56ff516ad3b2d14667731f681ebe9f1c9ae6898d0728bd5eaba',
-    'src/biocompiler/core_policy_component_material.py': '303e9ce373bbe03fa988717449bb1fb15676a5cb8faf844e9cec14a1db947882',
+    'src/biocompiler/core_policy_component_material.py': '9afc9ad3a0ad1d7a4b85d8630667f742496f9e1fdb9248e792e8abd5863c2f8c',
     'src/biocompiler/policy/material.py': '5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79',
-    'src/biocompiler/core_policy_material.py': '45afd4c5457434b009af9293b988ae20da59672211dd7a749ee825dea63212b3',
+    'src/biocompiler/core_policy_material.py': 'df30c5b165ab92ffb88a3713c277791da6d95c8da3589a59c6fc3904c955ecb3',
     'src/biocompiler/policy/implementation.py': '4e1de0535cf852885169328aaae035caff9178b367b84f204c1e68eaae478515',
     'src/biocompiler/core_policy_implementation.py': 'b0a1c56ed960e146153dcb1f89ac28cc0f809a79716a7f7c1e096496b4bcf556',
     # Explicit operational-policy transport and CLI stay excluded from the

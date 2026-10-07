@@ -40,11 +40,11 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (42, 786, 163, 17, 20))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 185,
-            'independent_expansion': 28, 'shared_invariant': 470, 'source_only': 97})
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (42, 790, 163, 17, 21))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 187,
+            'independent_expansion': 28, 'shared_invariant': 472, 'source_only': 97})
         self.assertEqual(len(self.ledger['syntax_links']), 359)
-        self.assertEqual(len(self.ledger['witnesses']), 122)
+        self.assertEqual(len(self.ledger['witnesses']), 129)
         self.assertEqual(result['status'], 'source_inventory_checked')
         self.assertEqual(result['runtime_protocol_scope'], c.RUNTIME_SCOPE)
         self.assertIn('not an exhaustive runtime-attribute census', result['runtime_protocol_scope'])
@@ -59,7 +59,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 786)
+        self.assertEqual(len(found['entries']), 790)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
 
@@ -141,11 +141,36 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         self.assertEqual(c.digest(original), '2367be4f22a4985eb15fce30dc799abfb254a22ae86f7de665e23fdc7ed800a2')
         self.assertEqual((len(c.MODULES), len(c.CLIENTS)), (30, 6))
         additions = {key: row for key, row in self.ledger['coverage'].items() if key not in projected['coverage']}
-        self.assertEqual(len(additions), 46)
+        self.assertEqual(len(additions), 50)
         shared = [row for row in additions.values() if row['status'] == 'shared_invariant']
-        self.assertEqual(len(shared), 10)
+        self.assertEqual(len(shared), 12)
         self.assertTrue(all('synthetic selection transport/publication' in row['scope']
                             and 'no native semantic execution' in row['scope'] for row in shared))
+
+    def test_selection_generation_preserves_prior_metadata_except_explicit_absent_compile_supersession(self):
+        projected = copy.deepcopy(self.ledger)
+        additions = {
+            'biocompiler.core_policy_component_selection.COMPILE_OPERATION',
+            'biocompiler.core_policy_component_selection.PRODUCER_PROFILE',
+            'biocompiler.core_policy_component_selection.PolicyComponentSelectionClient.compile',
+            'biocompiler.policy.component_selection.compile',
+        }
+        for key in additions:
+            del projected['coverage'][key]
+        new_witnesses = {'selection.compile_' + suffix for suffix in
+            ('role', 'routes', 'snapshot', 'losers', 'negotiation', 'failure', 'sdk')}
+        for key in new_witnesses:
+            del projected['witnesses'][key]
+        projected['witnesses']['selection.routes'].update(
+            symbol='PolicyComponentSelectionTransportTests.test_all_three_routes_preserve_complete_originals_and_have_no_compile',
+            distinction='Three synthetic selection routes retain complete supplied originals and replay wrapper; no selection compile API is exposed.')
+        projected['witnesses']['selection.sdk_routes']['distinction'] = (
+            'Public selection check and replay wrappers retain the complete saved synthetic result without a compile API.')
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in projected['witnesses'].items()},
+                    'coverage': projected['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
+        self.assertEqual(c.digest(encoded), '3045dcf7ea8e976ba6d9de2eaec754cba09047cc9978aa6de83597979d3f409d')
 
     def test_component_additions_preserve_all_original_evidence_meanings(self):
         self.ledger = self.component_projection()
@@ -210,7 +235,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
     def test_selection_routes_cannot_reuse_inner_operations_or_drop_report(self):
         path = 'src/biocompiler/core_policy_component_selection.py'
         original = (self.root / path).read_bytes()
-        for operation in ('check', 'replay', 'export'):
+        for operation in ('compile', 'check', 'replay', 'export'):
             self.edit(path, 'return self._call("' + operation + '-policy-component-selection",',
                       'return self._call("' + operation + '-policy-component-material",', repin_file=True)
             with self.subTest(operation=operation), self.assertRaisesRegex(c.ApiCoverageError, 'Native operation route differs'):
@@ -220,7 +245,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
             c.validate(self.root, self.ledger)
 
-    def test_selection_result_and_absent_compile_remain_source_bound(self):
+    def test_selection_result_and_core_compile_remain_source_bound(self):
         path = 'src/biocompiler/core_policy_component_selection.py'
         original = (self.root / path).read_bytes()
         self.edit(path, 'class PolicyComponentSelectionResult(material.PolicyMaterialResult):',
@@ -228,10 +253,10 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'Source/API inventory drift'):
             c.validate(self.root, self.ledger)
         (self.root / path).write_bytes(original)
-        with (self.root / path).open('a') as stream:
-            stream.write('\n    def compile(self, request, limits): return self.check(request, {}, limits)\n')
-        self.ledger['inventory']['files'][path] = c.digest((self.root / path).read_bytes())
-        with self.assertRaisesRegex(c.ApiCoverageError, 'Source/API inventory drift'):
+        self.edit(path,
+                  'return self._call("compile-policy-component-selection", {"request": request, "limits": limits}, cancelled=cancelled)',
+                  'return self.check(request, {}, limits, cancelled=cancelled)', repin_file=True)
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Native route shape differs'):
             c.validate(self.root, self.ledger)
 
     def test_selection_witness_meaning_owner_and_private_classification_are_pinned(self):

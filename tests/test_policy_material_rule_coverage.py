@@ -42,13 +42,13 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 140)
+        self.assertEqual(result["sources"], 146)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 19, "sources": 47, "witness_sources": 35,
+        self.assertEqual(result["component_route"], {"rules": 20, "sources": 72, "witness_sources": 38,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -201,8 +201,8 @@ let check x = Diagnostic.require x "code" "message"
                 coverage.source(root, "../foreign.json")
 
     def test_component_route_cannot_be_promoted_into_old_whole_kernel_rules(self):
-        self.assertEqual(len(coverage.COMPONENT_ROUTE_SOURCES), 44)
-        self.assertEqual(len(coverage.COMPONENT_SHARED_SOURCES), 3)
+        self.assertEqual(len(coverage.COMPONENT_ROUTE_SOURCES), 46)
+        self.assertEqual(len(coverage.COMPONENT_SHARED_SOURCES), 26)
         for path in coverage.COMPONENT_ROUTE_SOURCES:
             row = next(value for value in self.original["sources"] if value["path"] == path)
             self.assertEqual(row["disposition"], "outside_route")
@@ -246,10 +246,43 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_selection_publication(self):
+    def before_selection_generation(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        added_sources = {*coverage.COMPONENT_GENERATION_SHARED_SOURCES,
+            "core/lib/producer_service/policy_component_selection_producer.ml",
+            "core/lib/producer_service/policy_component_selection_producer.mli"}
+        added_witnesses = {"core/test/test_policy_generation_admission.ml",
+            "core/test/test_policy_generation_producers.ml", "core/test/test_policy_component_selection_producer.ml"}
+        self.assertEqual(ledger["rules"][-1]["id"], "component.selection_generation")
+        self.assertIn("supersedes only Core compile absence", ledger["limitations"][-1])
+        ledger["sources"] = [row for row in ledger["sources"] if row["path"] not in added_sources]
+        ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] not in added_witnesses]
+        ledger["rules"].pop(); ledger["limitations"].pop()
+        for rule in ledger["rules"]:
+            for kind in ("owners", "positive", "negative"):
+                for pointer in rule[kind]:
+                    if pointer["anchor"] == "let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~rule":
+                        pointer["anchor"] = "let arrange ~library ~rule"
+                    elif pointer["anchor"] == "def test_all_three_verification_routes_preserve_complete_originals":
+                        pointer["anchor"] = "def test_all_three_routes_preserve_complete_originals_and_have_no_compile"
+        return ledger
+
+    def test_generation_preserves_nineteen_rules_and_historical_provenance(self):
+        projected = self.before_selection_generation()
+        encoded = json.dumps(coverage.component_metadata(projected), sort_keys=True,
+                             separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "b03761f725cf6fb16e8c692cce69f40314481f7865238a38dae9031d94286082")
+        ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        self.assertEqual(ledger["rules"][-1]["evidence_scope"], "source_only_not_executed_by_this_gate")
+        for name in coverage.COMPONENT_GENERATION_SHARED_SOURCES:
+            row = next(row for row in self.original["sources"] if row["path"] == name)
+            self.assertNotEqual(row["disposition"], "outside_route")
+
+    def before_selection_publication(self):
+        ledger = self.before_selection_generation()
         added_sources = {
-            *coverage.COMPONENT_SHARED_SOURCES,
+            "core/lib/service/service.ml", "core/lib/service/service.mli", "src/biocompiler/core_policy_material.py",
             *[f"core/lib/service/{name}.{suffix}" for name in
               ("policy_component_material_format", "policy_component_selection_service") for suffix in ("ml", "mli")],
             "src/biocompiler/core_policy_component_selection.py", "src/biocompiler/policy/component_selection.py"}

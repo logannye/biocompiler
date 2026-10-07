@@ -49,7 +49,7 @@ class PolicySourceContextCoverageTests(unittest.TestCase):
 
     def test_current_bounded_slice_leaves_full_census_and_semantics_open(self):
         result = coverage.check()
-        self.assertEqual((result["rules"], result["contexts"], result["sources"]), (40, 43, 13))
+        self.assertEqual((result["rules"], result["contexts"], result["sources"]), (40, 43, 15))
         self.assertEqual((result["syntax_rows"], result["families"]), (612, 62))
         self.assertEqual(result["status"], "source_slice_current")
         self.assertEqual(result["whole_source_census"], "open")
@@ -57,6 +57,62 @@ class PolicySourceContextCoverageTests(unittest.TestCase):
         self.assertEqual(result["witness_sufficiency"], "not_assessed")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["native_execution"], "not_performed")
+
+    def test_metering_reanchor_preserves_all_previous_reviewed_declarations(self):
+        # Only file dependencies, review metadata and native line locations
+        # changed. Restore those exact reviewed differences, then require the
+        # original digest of all predicates, contexts, provenance and open gaps.
+        # No source hash, current helper or regenerated expected result supplies
+        # the historical expected value.
+        projected = deepcopy(self.original)
+        added = {"core/lib/checker/policy_generation_meter.ml",
+                 "core/lib/checker/policy_generation_meter.mli"}
+        dependencies = [row for row in projected["sources"] if row["path"] in added]
+        self.assertEqual({row["path"] for row in dependencies}, added)
+        self.assertTrue(all(row["disposition"] == "shared_metering_dependency"
+                            and row["ast"] is None for row in dependencies))
+        projected["sources"] = [row for row in projected["sources"] if row["path"] not in added]
+        projected["reviewed_source"] = {
+            "head": "a85b1112ff35ba988a71cc969bfabdfefb354cfe",
+            "tree": "7d22ca4c27eafcd36f018b3f262ef87404a3caf6",
+            "source_note": "Production source unchanged at this review; witness-only follow-ups do not transfer hosted evidence.",
+        }
+        offsets = set()
+        for group in ("rules", "contexts"):
+            for row in projected[group]:
+                for owner in row["owners"]:
+                    if owner["path"] == "core/lib/checker/policy_check.ml":
+                        first, last = owner["first_line"], owner["last_line"]
+                        # The functor/import block shifts the first two regions
+                        # seven lines; the added spend callback shifts later
+                        # regions one more. Every region body is unchanged.
+                        if (first, last) in {(28, 28), (29, 34)}:
+                            offset = 7
+                        else:
+                            self.assertGreaterEqual(first, 69)
+                            offset = 8
+                        offsets.add(offset)
+                        owner["first_line"] -= offset
+                        owner["last_line"] -= offset
+        self.assertEqual(offsets, {7, 8})
+        self.assertEqual(coverage.digest(coverage.canonical(coverage.declarations(projected))),
+                         "669803616f63fae728494cf781fad87d04ee51e039b4b99d3f1c667a4118d37c")
+
+    def test_metering_dependency_cannot_be_omitted_or_self_repinned(self):
+        for suffix in ("ml", "mli"):
+            name = "core/lib/checker/policy_generation_meter." + suffix
+            with self.subTest(suffix=suffix):
+                self.ledger = deepcopy(self.original)
+                self.reject(lambda value: value.update(sources=[row for row in value["sources"]
+                                                               if row["path"] != name]), "closed source paths")
+                self.ledger = deepcopy(self.original)
+                root = self.checkout()
+                path = root / name
+                path.write_bytes(path.read_bytes() + b"\n(* unreviewed dependency change *)\n")
+                row = next(row for row in self.ledger["sources"] if row["path"] == name)
+                row["sha256"] = coverage.digest(path.read_bytes())
+                with self.assertRaisesRegex(coverage.CoverageError, "Unreviewed complete source pin"):
+                    coverage.check(root, self.ledger)
 
     def test_rules_are_closed_including_duplicates_and_reordering(self):
         for mutation in (lambda rows: rows.pop(), lambda rows: rows.append(deepcopy(rows[0])),

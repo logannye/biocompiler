@@ -14,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class RealizationWorkflowSourceScopeTests(unittest.TestCase):
     OPERATIONAL_MODULES = {
+        "src/biocompiler/core_policy_component_selection.py": "biocompiler.core_policy_component_selection",
+        "src/biocompiler/policy/component_selection.py": "biocompiler.policy.component_selection",
         "src/biocompiler/core_policy_operational.py": "biocompiler.core_policy_operational",
         "src/biocompiler/policy/operational.py": "biocompiler.policy.operational",
         "src/biocompiler/core_policy_implementation.py": "biocompiler.core_policy_implementation",
@@ -36,7 +38,7 @@ class RealizationWorkflowSourceScopeTests(unittest.TestCase):
         historical = {row["path"] for row in scope["historical_sources"]}
         additions = {row["path"]: row["sha256"] for row in scope["reviewed_additions"]}
         self.assertEqual(scope["historical_corpus_pin"], PIN)
-        self.assertEqual(len(additions), 58)
+        self.assertEqual(len(additions), 60)
         self.assertEqual(additions["src/biocompiler/core_workflow.py"],
                          "43b57b87a2d89db200463d8aed8b7eea7e262cf1c4ea02c772843598dbda90df")
         self.assertEqual(additions["src/biocompiler/core_artifacts.py"],
@@ -94,7 +96,8 @@ scope = source_scope(source_inventory())
 names = ("biocompiler.core_policy_operational", "biocompiler.policy.operational",
          "biocompiler.core_policy_implementation", "biocompiler.policy.implementation",
          "biocompiler.core_policy_material", "biocompiler.policy.material", "biocompiler.policy.cli",
-         "biocompiler.core_policy_component_material", "biocompiler.policy.component_material")
+         "biocompiler.core_policy_component_material", "biocompiler.policy.component_material",
+         "biocompiler.core_policy_component_selection", "biocompiler.policy.component_selection")
 for name in names:
     assert name in scope["denied_modules"]
     for attempted in (name, name + ".unreviewed"):

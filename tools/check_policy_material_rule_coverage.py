@@ -85,6 +85,7 @@ COMPONENT_MODULES = (
     ("domain", "policy_component_selection_request"),
     ("domain", "policy_component_selection_candidate"),
     ("producer_service", "policy_component_material_producer"),
+    ("producer_service", "policy_component_selection_producer"),
     ("realization_checker", "policy_component_assembly_check"),
     ("realization_checker", "policy_component_context_check"),
     ("realization_checker", "policy_component_material_check"),
@@ -100,22 +101,52 @@ COMPONENT_ROUTE_SOURCES = tuple(sorted(
        "src/biocompiler/core_policy_component_selection.py", "src/biocompiler/policy/component_selection.py"]))
 COMPONENT_SHARED_SOURCES = ("core/lib/service/service.ml", "core/lib/service/service.mli",
                             "src/biocompiler/core_policy_material.py")
+COMPONENT_GENERATION_SHARED_SOURCES = (
+    'core/bin/core/main.ml',
+    'core/lib/checker/policy_admission.ml',
+    'core/lib/checker/policy_admission.mli',
+    'core/lib/checker/policy_check.ml',
+    'core/lib/checker/policy_check.mli',
+    'core/lib/checker/policy_correspondence.ml',
+    'core/lib/checker/policy_correspondence.mli',
+    'core/lib/checker/policy_generation_meter.ml',
+    'core/lib/checker/policy_generation_meter.mli',
+    'core/lib/checker/policy_realization_admission.ml',
+    'core/lib/checker/policy_realization_admission.mli',
+    'core/lib/compiler/construction_producer.ml',
+    'core/lib/compiler/construction_producer.mli',
+    'core/lib/compiler/policy_implementation_lowering.ml',
+    'core/lib/compiler/policy_implementation_lowering.mli',
+    'core/lib/compiler/policy_lowering.ml',
+    'core/lib/compiler/policy_lowering.mli',
+    'core/lib/compiler/recoding_producer.ml',
+    'core/lib/compiler/recoding_producer.mli',
+    'core/lib/domain/policy_operating_domain.ml',
+    'core/lib/domain/policy_operating_domain.mli',
+    'core/lib/producer_service/producer_service.ml',
+    'core/lib/producer_service/producer_service.mli',
+)
+COMPONENT_SHARED_SOURCES += COMPONENT_GENERATION_SHARED_SOURCES
 COMPONENT_SOURCES = tuple(sorted((*COMPONENT_ROUTE_SOURCES, *COMPONENT_SHARED_SOURCES)))
 COMPONENT_REASON = "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
 ROUTE_EXCEPTIONS.update({path: COMPONENT_REASON for path in COMPONENT_ROUTE_SOURCES})
-EXTRA_SOURCES += ("src/biocompiler/core_policy_component_material.py", "src/biocompiler/policy/component_material.py",
+EXTRA_SOURCES += ("core/lib/compiler/recoding_producer.ml", "core/lib/compiler/recoding_producer.mli",
+                  "src/biocompiler/core_policy_component_material.py", "src/biocompiler/policy/component_material.py",
                   "src/biocompiler/core_policy_component_selection.py", "src/biocompiler/policy/component_selection.py")
 COMPONENT_LEDGER = "protocol/policy-component-rule-coverage-v0.1.json"
 COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "component.assembly_rule", "component.ordered_union",
     "component.original_request", "component.context", "component.conjunction", "component.production", "component.export", "component.sdk",
     "component.selection_request_codec", "component.material_candidate_codec",
     "component.selection_candidate_codec", "component.selection_common_authority", "component.checked_selection",
-    "component.selection_publication_resources", "component.selection_scope", "component.selection_export", "component.selection_sdk")
+    "component.selection_publication_resources", "component.selection_scope", "component.selection_export", "component.selection_sdk",
+    "component.selection_generation")
 COMPONENT_WITNESSES = tuple(sorted([
     *[f"core/test/test_policy_component_{name}.ml" for name in ("fragment", "material", "assembly_rule", "assembly_check", "material_request", "context_check", "material_service")],
     "core/test/test_policy_component_selection_request.ml", "core/test/test_policy_component_material_candidate.ml",
     "core/test/test_policy_component_selection_candidate.ml", "core/test/test_policy_component_selection_common.ml",
     "core/test/test_policy_component_selection_check.ml", "core/test/policy_component_support/selection_requests.ml",
+    "core/test/test_policy_generation_admission.ml", "core/test/test_policy_generation_producers.ml",
+    "core/test/test_policy_component_selection_producer.ml",
     "core/test/test_policy_component_selection_scope.ml", "core/test/test_policy_component_selection_service.ml",
     "tests/test_core_policy_component_selection.py", "tests/test_policy_component_selection.py",
     "tools/check_policy_component_selection.py", "tests/test_policy_component_selection_witness.py",
@@ -130,7 +161,7 @@ COMPONENT_WITNESSES = tuple(sorted([
 ]))
 # Fixed reviewed meaning/provenance projection, excluding source-body hashes and
 # lexical counts. Re-pinning changed files cannot reassign witness meaning.
-COMPONENT_METADATA_SHA256 = "b03761f725cf6fb16e8c692cce69f40314481f7865238a38dae9031d94286082"
+COMPONENT_METADATA_SHA256 = "b34be1d3d66ddc94818a0328afb4f16367e43228a1031b4cbb25a0b8ff5ab554"
 
 
 class CoverageError(ValueError):
