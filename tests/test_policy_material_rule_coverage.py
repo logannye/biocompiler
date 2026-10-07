@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import hashlib
+import json
 from pathlib import Path
 import shutil
 import tempfile
@@ -40,13 +42,13 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 124)
+        self.assertEqual(result["sources"], 128)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 10, "sources": 28, "witness_sources": 23,
+        self.assertEqual(result["component_route"], {"rules": 12, "sources": 32, "witness_sources": 25,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -199,7 +201,7 @@ let check x = Diagnostic.require x "code" "message"
                 coverage.source(root, "../foreign.json")
 
     def test_component_route_cannot_be_promoted_into_old_whole_kernel_rules(self):
-        self.assertEqual(len(coverage.COMPONENT_SOURCES), 28)
+        self.assertEqual(len(coverage.COMPONENT_SOURCES), 32)
         for path in coverage.COMPONENT_SOURCES:
             row = next(value for value in self.original["sources"] if value["path"] == path)
             self.assertEqual(row["disposition"], "outside_route")
@@ -242,6 +244,48 @@ let check x = Diagnostic.require x "code" "message"
         ledger["rules"][0]["positive"][0]["anchor"] = "invented source assertion"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
+
+    def test_selection_codec_addition_preserves_all_reviewed_component_meaning(self):
+        ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        self.assertEqual([row["id"] for row in ledger["rules"][-2:]],
+                         ["component.selection_request_codec", "component.material_candidate_codec"])
+        self.assertIn("Selection checking, common-authority validation", ledger["limitations"][-1])
+        self.assertIn("public selection route and fresh selection export remain unimplemented", ledger["limitations"][-1])
+        # Remove only this reviewed additive batch. This independent projection
+        # must retain the exact old ten-rule meaning, pointers and provenance;
+        # rehashing source bodies cannot rewrite those historical obligations.
+        added_sources = {f"core/lib/domain/{name}.{suffix}" for name in (
+            "policy_component_selection_request", "policy_component_material_candidate"
+        ) for suffix in ("ml", "mli")}
+        added_witnesses = {"core/test/test_policy_component_selection_request.ml",
+                           "core/test/test_policy_component_material_candidate.ml"}
+        projected = {key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}}
+        projected["source_paths"] = [row["path"] for row in ledger["sources"] if row["path"] not in added_sources]
+        projected["witness_paths"] = [row["path"] for row in ledger["witness_sources"] if row["path"] not in added_witnesses]
+        projected["rules"] = projected["rules"][:-2]
+        projected["limitations"] = projected["limitations"][:-1]
+        encoded = json.dumps(projected, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "cc880bf2ecf3a5ed8bebfd83cd6fac872a3c432dda0a0c902e53ede18afd6216")
+
+    def test_new_domain_codec_inventory_cannot_omit_sources_or_claim_acceptance(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        for name in ("selection_request", "material_candidate"):
+            owner = "core/lib/domain/policy_component_" + name + ".ml"
+            witness = "core/test/test_policy_component_" + name + ".ml"
+            rule = next(row for row in original["rules"] if row["id"] == "component." + name + "_codec")
+            self.assertIn(owner, [row["path"] for row in rule["owners"]])
+            self.assertTrue(all(row["path"] == witness for key in ("positive", "negative") for row in rule[key]))
+            self.assertEqual(rule["evidence_scope"], "source_only_not_executed_by_this_gate")
+            for key, path in (("sources", owner), ("sources", owner + "i"), ("witness_sources", witness)):
+                ledger = deepcopy(original)
+                ledger[key] = [row for row in ledger[key] if row["path"] != path]
+                with self.subTest(codec=name, omitted=path), self.assertRaisesRegex(coverage.CoverageError, "census"):
+                    coverage.check_component(coverage.ROOT, ledger)
+            ledger = deepcopy(original)
+            next(row for row in ledger["rules"] if row["id"] == rule["id"])["limits"] = "Selection and export accepted."
+            with self.subTest(codec=name), self.assertRaisesRegex(coverage.CoverageError, "meaning/witness/provenance metadata"):
+                coverage.check_component(coverage.ROOT, ledger)
 
 
 if __name__ == "__main__":

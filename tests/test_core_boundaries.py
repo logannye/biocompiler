@@ -68,7 +68,7 @@ class CoreBoundaryTests(unittest.TestCase):
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 156)
+        self.assertEqual(len(receipt["native_tests"]), 158)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
@@ -108,6 +108,34 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(receipt["shared_trusted_base"], ["bioc_wire", "bioc_domain"])
         self.assertIn("core/lib/checker/intent_check.ml", receipt["source_sha256"])
         self.assertEqual(receipt["native_build_and_semantic_independence"], "separate_hosted_validation_required")
+
+    def test_selection_decoders_keep_domain_only_suites_and_original_fixture_arguments(self):
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        expected = {
+            "test_policy_component_selection_request": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "zarith"},
+            "test_policy_component_material_candidate": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"},
+        }
+        root = self.copy_core()
+        dune = root / "core/test/dune"
+        original = dune.read_text()
+        for name, libraries in expected.items():
+            self.assertEqual(set(receipt["native_tests"][name]), libraries)
+            start = original.index("(test\n (name " + name + ")")
+            end = original.index("\n\n", start)
+            stanza = original[start:end]
+            for changed in (stanza.replace("bioc_domain", "bioc_domain bioc_compiler"),
+                            stanza.replace("%{dep:data/policy_material_request_v01.json}", "")):
+                with self.subTest(suite=name, changed=changed):
+                    dune.write_text(original[:start] + changed + original[end:])
+                    with self.assertRaises(boundaries.BoundaryError):
+                        boundaries.check_boundaries(root)
+            dune.write_text(original)
+            source = root / "core/test" / (name + ".ml")
+            source_original = source.read_text()
+            source.write_text(source_original + "\nmodule Forbidden = Bioc_compiler.Policy_lowering\n")
+            with self.subTest(suite=name), self.assertRaisesRegex(boundaries.BoundaryError, "Undeclared local module dependency"):
+                boundaries.check_boundaries(root)
+            source.write_text(source_original)
 
     def test_archive_primitive_has_only_wire_and_public_resource_support(self):
         receipt = boundaries.check_boundaries(boundaries.ROOT)

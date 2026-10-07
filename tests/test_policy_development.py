@@ -101,7 +101,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         result = dev.run(self.root)
         self.assertEqual([row[0] for row in dev.SUITES], [
             "test_policy_component_fragment", "test_policy_component_material", "test_policy_component_assembly_rule", "test_policy_component_assembly_check",
-            "test_policy_component_material_request", "test_policy_component_context_check",
+            "test_policy_component_material_request", "test_policy_component_selection_request",
+            "test_policy_component_material_candidate", "test_policy_component_context_check",
             "test_policy_component_material_service", "test_protocol", "test_producer_protocol",
             "test_policy_implementation_binding",
             "test_policy_preservation_check", "test_policy_material_binding", "test_policy_material_context",
@@ -109,7 +110,14 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(self.calls[:2], [
             ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"],
             ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]])
-        self.assertEqual(len(self.calls), 18)
+        self.assertEqual(len(self.calls), 20)
+        self.assertEqual(len(result["suites"]), 18)
+        for name, fixtures in (
+            ("test_policy_component_selection_request", ["policy_material_request_v01.json", "policy_material_state_v01.json"]),
+            ("test_policy_component_material_candidate", ["policy_material_request_v01.json"]),
+        ):
+            call = next(call for call in self.calls if any(str(arg).endswith(name + ".exe") for arg in call))
+            self.assertEqual([Path(arg).name for arg in call[4:]], fixtures)
         self.assertEqual([Path(p).name for p in next(call for call in self.calls if any(str(arg).endswith("test_policy_implementation_binding.exe") for arg in call))[4:]], [
             "policy_implementation_binding_v01.json", "policy_realization_request_v01.json", "policy_exclusion_source_v01.json"])
         self.assertEqual(result["status"], "passed")
@@ -130,9 +138,11 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(self.calls, [])
 
     def test_missing_target_and_changed_fixture_order_fail_closed(self):
-        (self.root / "core/test/dune").write_text("".join(self.stanzas[1:]))
-        with self.assertRaisesRegex(ValueError, "Missing or changed registered suite"):
-            dev.selected_suites(self.root)
+        for name in ("test_policy_component_fragment", "test_policy_component_selection_request", "test_policy_component_material_candidate"):
+            (self.root / "core/test/dune").write_text("".join(stanza for stanza in self.stanzas
+                if "(name " + name + ")" not in stanza))
+            with self.subTest(suite=name), self.assertRaisesRegex(ValueError, "Missing or changed registered suite"):
+                dev.selected_suites(self.root)
         binding_index = next(i for i, stanza in enumerate(self.stanzas)
                              if "(name test_policy_implementation_binding)" in stanza)
         original_binding = self.stanzas[binding_index]
@@ -189,14 +199,14 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(len(self.calls), 2)
         self.assertEqual(self.report()["status"], "failed")
 
-    def test_failed_suite_retains_all_sixteen_outcomes_and_fails(self):
+    def test_failed_suite_retains_all_eighteen_outcomes_and_fails(self):
         dev.prepare(self.root)
         self.fail = dev.selected_suites(self.root)[1]["argv"]
         with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
             dev.run(self.root)
         result = self.report()
-        self.assertEqual(len(self.calls), 18)
-        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 15)
+        self.assertEqual(len(self.calls), 20)
+        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 17)
         self.assertEqual(result["suites"][1]["status"], "failed")
         self.assertEqual(result["status"], "failed")
 
