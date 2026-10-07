@@ -91,10 +91,13 @@ class ResearcherAlphaWitnessTests(unittest.TestCase):
     def test_catalog_control_requires_the_exact_native_admission_diagnostic(self):
         request = witness.catalog_request(witness.authored_original(self.packet)["request"])
         value = {"status": "error", "request_sha256": witness.canonical_digest(request),
-                 "diagnostics": [{"code": "policy_realization_catalog", "message": witness.CATALOG_MESSAGE}]}
+                 "diagnostics": [{"code": "policy_component_material_request",
+                    "message": "Composition bridge does not retain the complete source catalog entry and definitions."}]}
         witness.check_catalog_failure(value, request)
         for mutate in (lambda row: row.update(status="ok"), lambda row: row.update(request_sha256="0" * 64),
                        lambda row: row["diagnostics"].clear(),
+                       lambda row: row["diagnostics"][0].update(code="policy_realization_catalog",
+                           message="Membership bridge does not pin the complete original catalog entry."),
                        lambda row: row["diagnostics"][0].update(code="policy_component_material_export_not_accepted"),
                        lambda row: row["diagnostics"][0].update(message="Another catalog failure")):
             changed = deepcopy(value); mutate(changed)

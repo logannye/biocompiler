@@ -49,8 +49,10 @@ AUTHORED_OBSERVATIONS = tuple("authored-" + name for name in (
 OBSERVATIONS += AUTHORED_OBSERVATIONS
 PROJECT_IDS = CASE_IDS + ("authored",)
 AUTHOR_EXAMPLE = "examples/author_staged_research_project.py"
-CATALOG_CODE = "policy_realization_catalog"
-CATALOG_MESSAGE = "Membership bridge does not pin the complete original catalog entry."
+# Composition admission checks the complete source entry before realization
+# membership checking. The unchanged supplied bridge must reject this edit here.
+CATALOG_CODE = "policy_component_material_request"
+CATALOG_MESSAGE = "Composition bridge does not retain the complete source catalog entry and definitions."
 # Independently reviewed public authoring locations; declaration meanings remain
 # the complete frozen staged original. These are not read from producer output.
 AUTHORED_SPANS = (("executor", 49), ("encounter/target", 50), ("encounter", 50), ("clock", 51),
