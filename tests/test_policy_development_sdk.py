@@ -294,6 +294,6 @@ class PolicyDevelopmentSelectionSDKTests(unittest.TestCase):
         text = (Path(__file__).resolve().parents[1] / dev.WORKFLOW).read_text()
         commands = [line.strip()[5:] for line in text.splitlines() if line.strip().startswith("run: ")]
         self.assertEqual(commands, ["python -B tools/check_policy_development.py " + action
-                                   for action in ("prepare", "run", "public-sdk", "selection-sdk")])
-        self.assertEqual(text.count("PYTHONPATH: src"), 2)
+                                   for action in ("prepare", "run", "staged-source-sdk", "staged-material-sdk", "public-sdk", "selection-sdk")])
+        self.assertEqual(text.count("PYTHONPATH: src"), 4)
         self.assertIn("path: generated/development-feedback/", text)

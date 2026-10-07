@@ -100,7 +100,7 @@ class PolicyDevelopmentTests(unittest.TestCase):
         dev.prepare(self.root)
         result = dev.run(self.root)
         self.assertEqual([row[0] for row in dev.SUITES], [
-            "test_policy_staged_primitives", "test_policy_staged_regimen_source",
+            "test_policy_staged_generation", "test_policy_staged_binding", "test_policy_staged_component_material", "test_policy_staged_primitives", "test_policy_staged_regimen_source",
             "test_policy_component_fragment", "test_policy_component_material", "test_policy_component_assembly_rule", "test_policy_component_assembly_check",
             "test_policy_component_material_request", "test_policy_component_selection_request",
             "test_policy_component_material_candidate", "test_policy_component_selection_candidate",
@@ -113,8 +113,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(self.calls[:2], [
             ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"],
             ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]])
-        self.assertEqual(len(self.calls), 30)
-        self.assertEqual(len(result["suites"]), 28)
+        self.assertEqual(len(self.calls), 33)
+        self.assertEqual(len(result["suites"]), 31)
         for name, fixtures in (
             ("test_policy_component_selection_request", ["policy_material_request_v01.json", "policy_material_state_v01.json"]),
             ("test_policy_component_material_candidate", ["policy_material_request_v01.json"]),
@@ -217,8 +217,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
             dev.run(self.root)
         result = self.report()
-        self.assertEqual(len(self.calls), 30)
-        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 27)
+        self.assertEqual(len(self.calls), 33)
+        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 30)
         self.assertEqual(result["suites"][1]["status"], "failed")
         self.assertEqual(result["status"], "failed")
 
@@ -248,6 +248,136 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(result["status"], "failed")
         self.assertIn("error", result["actions"][0])
         self.assertTrue(all(row["status"] == "not_run" for row in result["suites"]))
+
+    def prepare_staged_sdk(self):
+        dev.prepare(self.root)
+        dev.run(self.root)
+        self.calls.clear()
+        self.sdk_output = self.root / "generated/development-feedback"
+        self.sdk_witness = self.sdk_output / "staged-source-sdk-witness.json"
+        self.sdk_argv = [dev.sys.executable, "-B", str(self.root / "tools/check_policy_staged_regimen_source.py"),
+            "--fixture", str(self.root / "core/test/data/policy_staged_regimen_source_v01.json"),
+            "--core", str(self.root / dev.SDK_BINARIES["core"]), "--verify", str(self.root / dev.SDK_BINARIES["verify"]),
+            "--output", str(self.sdk_witness)]
+
+    def staged_sdk_receipt(self):
+        return json.loads((self.sdk_output / "staged-source-sdk.json").read_text())
+
+    def test_staged_source_sdk_uses_fixed_original_same_binaries_and_separate_receipt(self):
+        self.prepare_staged_sdk()
+        native = (self.sdk_output / "feedback.json").read_bytes()
+        self.mutate = lambda argv: self.sdk_witness.write_text('{"inert_witness_only":true}\n')
+        result = dev.staged_source_sdk(self.root)
+        self.assertEqual(self.calls, [self.sdk_argv])
+        self.assertEqual(result["schema"], "biocompiler.development-staged-source-sdk-feedback.v0.1")
+        self.assertEqual(result["status"], "passed")
+        self.assertIs(result["acceptance"], False)
+        self.assertEqual(result["identity"], dev.identity(self.root))
+        self.assertEqual(result["sources_before"], result["sources_after"])
+        self.assertEqual(set(result["outputs"]), {"staged-source-sdk-witness.json"})
+        self.assertEqual(result["outputs"][self.sdk_witness.name], dev.pin(self.root, self.sdk_witness.relative_to(self.root).as_posix()))
+        self.assertEqual((self.sdk_output / "feedback.json").read_bytes(), native)
+        self.assertEqual(result["actions"][0]["argv"], self.sdk_argv)
+        self.assertEqual(result["actions"][0]["returncode"], 0)
+
+    def test_staged_source_sdk_identity_and_source_fail_before_launch(self):
+        self.prepare_staged_sdk()
+        for field, value in (("GITHUB_REF", "refs/heads/main"), ("GITHUB_SHA", "3" * 40),
+                             ("RUNNER_ENVIRONMENT", "self-hosted"), ("GITHUB_WORKFLOW_SHA", "4" * 40)):
+            with self.subTest(field=field), mock.patch.dict(os.environ, {field: value}), self.assertRaises(ValueError):
+                dev.staged_source_sdk(self.root)
+            self.assertEqual(self.calls, [])
+            self.assertEqual(self.staged_sdk_receipt()["status"], "failed")
+        path = self.root / "core/test/data/policy_staged_regimen_source_v01.json"
+        path.write_bytes(b"changed original")
+        with self.assertRaises(ValueError):
+            dev.staged_source_sdk(self.root)
+        self.assertEqual(self.calls, [])
+
+    def test_staged_source_sdk_rejects_incomplete_native_run_and_changed_binary(self):
+        self.prepare_staged_sdk()
+        path = self.sdk_output / "feedback.json"
+        raw = path.read_bytes()
+        for key in ("suites", "actions"):
+            changed = json.loads(raw)
+            changed[key].pop()
+            path.write_text(json.dumps(changed))
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                dev.staged_source_sdk(self.root)
+            self.assertEqual(self.calls, [])
+        path.write_bytes(raw)
+        binary = self.root / dev.SDK_BINARIES["verify"]
+        binary.write_bytes(b"different native bytes")
+        with self.assertRaisesRegex(ValueError, "differs from completed native build"):
+            dev.staged_source_sdk(self.root)
+        self.assertEqual(self.calls, [])
+
+    def test_staged_source_sdk_failure_and_missing_witness_never_pass(self):
+        self.prepare_staged_sdk()
+        self.fail = self.sdk_argv
+        with self.assertRaisesRegex(ValueError, "Staged source SDK failed"):
+            dev.staged_source_sdk(self.root)
+        report = self.staged_sdk_receipt()
+        self.assertEqual(report["status"], "failed")
+        self.assertEqual(report["actions"][0]["returncode"], 1)
+        self.assertTrue((self.sdk_output / "staged-source-sdk.log").is_file())
+        self.fail = None
+        (self.sdk_output / "staged-source-sdk.log").unlink()
+        with self.assertRaises(ValueError):
+            dev.staged_source_sdk(self.root)
+        self.assertEqual(self.staged_sdk_receipt()["status"], "failed")
+
+    def test_staged_source_sdk_late_mutation_cannot_transfer_success(self):
+        self.prepare_staged_sdk()
+        paths = [self.root / dev.SDK_BINARIES["core"], self.sdk_output / "feedback.json", self.sdk_output / "build.log"]
+        for path in paths:
+            (self.sdk_output / "staged-source-sdk.log").unlink(missing_ok=True)
+            original = path.read_bytes()
+            def mutate(argv):
+                self.sdk_witness.write_text('{"inert_witness_only":true}\n')
+                path.write_bytes(b"late mutation")
+            self.mutate = mutate
+            with self.subTest(path=path.name), self.assertRaises(ValueError):
+                dev.staged_source_sdk(self.root)
+            self.assertEqual(self.staged_sdk_receipt()["status"], "failed")
+            self.assertIn("source_error", self.staged_sdk_receipt())
+            path.write_bytes(original)
+
+    def test_staged_material_sdk_fixed_paths_identity_and_failures_are_independent(self):
+        self.prepare_staged_sdk()
+        witness = self.sdk_output / "staged-material-sdk-witness.json"
+        report_path = self.sdk_output / "staged-material-sdk.json"
+        log = self.sdk_output / "staged-material-sdk.log"
+        argv = [dev.sys.executable, "-B", str(self.root / "tools/check_policy_staged_component_material.py"),
+            "--fixture", str(self.root / "core/test/data/policy_staged_material_v01.json"),
+            "--core", str(self.root / dev.SDK_BINARIES["core"]), "--verify", str(self.root / dev.SDK_BINARIES["verify"]),
+            "--output", str(witness)]
+        with mock.patch.dict(os.environ, {"GITHUB_SHA": "3" * 40}), self.assertRaises(ValueError):
+            dev.staged_material_sdk(self.root)
+        self.assertEqual(self.calls, [])
+        self.mutate = lambda called: witness.write_text('{"inert_material_only":true}\n')
+        checked = dev.staged_material_sdk(self.root)
+        self.assertEqual(self.calls, [argv])
+        self.assertEqual(checked["schema"], "biocompiler.development-staged-material-sdk-feedback.v0.1")
+        self.assertEqual(checked["status"], "passed")
+        self.assertIs(checked["acceptance"], False)
+        self.assertEqual(set(checked["outputs"]), {"staged-material-sdk-witness.json"})
+        self.assertFalse((self.sdk_output / "staged-source-sdk.json").exists())
+        log.unlink()
+        self.fail = argv
+        with self.assertRaisesRegex(ValueError, "Staged material SDK failed"):
+            dev.staged_material_sdk(self.root)
+        self.assertEqual(json.loads(report_path.read_text())["actions"][0]["returncode"], 1)
+        self.fail = None
+        log.unlink()
+        feedback = self.sdk_output / "feedback.json"
+        def mutate(called):
+            witness.write_text('{"inert_material_only":true}\n')
+            feedback.write_bytes(b"late mutation")
+        self.mutate = mutate
+        with self.assertRaisesRegex(ValueError, "Native feedback changed"):
+            dev.staged_material_sdk(self.root)
+        self.assertEqual(json.loads(report_path.read_text())["status"], "failed")
 
 
 if __name__ == "__main__":

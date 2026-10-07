@@ -39,6 +39,10 @@ jobs:
         env:
           PYTHONPATH: src
         run: python -B tools/check_policy_development.py staged-source-sdk
+      - name: Exercise Python authored staged regimens through fresh paired RNA export
+        env:
+          PYTHONPATH: src
+        run: python -B tools/check_policy_development.py staged-material-sdk
       - name: Exercise Python authored component policies through fresh paired export
         env:
           PYTHONPATH: src

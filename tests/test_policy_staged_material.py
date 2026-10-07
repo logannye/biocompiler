@@ -78,6 +78,30 @@ class StagedMaterialOriginalTests(unittest.TestCase):
         self.assertEqual(packet["expected"]["transitions"], sum([1, 1, 9, 25, 25, 25]))
 
 
+class StagedComponentContextTransportTests(unittest.TestCase):
+    def test_context_profile_is_bound_to_original_authority(self):
+        # Inert transport packets only: no biological or native admission claim.
+        from biocompiler import core_policy_component_material as component
+        from tests import test_core_policy_component_material as packets
+        original = packets.original()
+        actual = packets.candidate(original)
+        profile = "biocompiler.policy_staged_component_mrna.v0.1"
+        original["context"]["profile"] = profile
+        report = packets.report(original, actual, peer.limits())
+        report["context"]["profile"] = profile
+        component._leaves(original, actual, report)
+        for changed_profile in (component.REQUEST_PROFILE, "unsupported"):
+            changed = deepcopy(report)
+            changed["context"]["profile"] = changed_profile
+            with self.subTest(profile=changed_profile), self.assertRaises(CoreProtocolError):
+                component._leaves(original, actual, changed)
+        changed = deepcopy(original)
+        changed["context"]["profile"] = "unsupported"
+        report["context"]["profile"] = "unsupported"
+        with self.assertRaisesRegex(CoreProtocolError, "unsupported profile"):
+            component._leaves(changed, actual, report)
+
+
 class StagedImplementationTransportTests(unittest.TestCase):
     def test_closed_staged_packet_retains_original_immutable_authority(self):
         payload, result = inert_staged_response()

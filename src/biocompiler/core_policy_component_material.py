@@ -206,10 +206,13 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
         material._structure(leaf["structure"], authority=body.get("material_authority"), construction=candidate["construction"], outcome=leaf["outcome"])
         _projections(request, candidate, leaf)
     if context is not None:
+        context_profile = _record(request["context"], "Original component context").get("profile")
+        if context_profile not in (REQUEST_PROFILE, "biocompiler.policy_staged_component_mrna.v0.1"):
+            raise CoreProtocolError("Original component context has an unsupported profile")
         leaf = _object(context, {"schema_version", "profile", "implementation_version", "request_fingerprint", "context_fingerprint", "assembly_fingerprint",
             "outcome", "claim_scope", "record_layout", "minimum_record_layout", "derived_demands", "resource_allocations", "source_obligations", "discharges",
             "diagnostics", "source_receipt_status", "biological_validity", "human_use", "artifact", "export"}, "Component context evidence")
-        _expect(leaf, {"schema_version": "biocompiler.policy_component_context_assessment.v0.1", "profile": REQUEST_PROFILE,
+        _expect(leaf, {"schema_version": "biocompiler.policy_component_context_assessment.v0.1", "profile": context_profile,
             "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.1", "claim_scope": "conditional_component_context_and_complete_record_capacity",
             "source_receipt_status": "unchanged", "biological_validity": "unassessed", "human_use": "unassessed", "artifact": "withheld", "export": "withheld"}, "Context evidence")
         for key, original in (("request_fingerprint", request), ("context_fingerprint", request["context"]), ("assembly_fingerprint", assembly)):

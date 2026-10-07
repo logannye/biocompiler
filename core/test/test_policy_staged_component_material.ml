@@ -1,4 +1,8 @@
 open Bioc_wire
+let () = Printexc.register_printer(function
+  | Diagnostic.Error diagnostic -> Some(Printf.sprintf "Diagnostic.Error(%s, %s, %s)" diagnostic.code
+      (Option.value ~default:"<none>" diagnostic.path) diagnostic.message)
+  | _ -> None)
 module Service = Bioc_service.Service
 module Producer = Bioc_producer_service.Producer_service
 let s value=Json.String value
