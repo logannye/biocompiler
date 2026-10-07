@@ -170,6 +170,30 @@ class ResearcherInstalledTests(unittest.TestCase):
         with patch.object(installed.researcher, "check_observations", return_value=values), self.assertRaises(CoreProtocolError):
             self.validate(receipt)
 
+    def test_independent_mutation_reconstruction_rejects_stale_or_substituted_role_pins(self):
+        from biocompiler.core_client import CoreProtocolError
+        for case in self.packet["expected"]["cases"]:
+            exported = inert_result(case, self.packet["inputs"][case["id"]], exported=True)
+            source, target = self.root / (case["id"] + ".zip"), self.root / (case["id"] + "-changed.zip")
+            write_pair(source, exported)
+            installed.researcher.changed_bundle(source, target, "candidate")
+            # The comparator must reconstruct independently of the producing recipe.
+            with patch.object(installed.researcher, "changed_material_candidate", side_effect=AssertionError("Producer must not authorize comparison")):
+                installed.check_mutant(target, exported, "candidate")
+                for kind in ("stale", "substituted", "unrelated"):
+                    changed = deepcopy(exported)
+                    inventory = changed["artifact"]["manifest"]["candidate"]["construction"]["inventory"]
+                    molecule = inventory["molecules"][0]
+                    molecule["sequence"] = "G" + molecule["sequence"][1:]
+                    if kind != "stale":
+                        inventory["role_instances"][0]["subject_fingerprint"] = ("0" * 64 if kind == "substituted"
+                            else installed.canonical_digest(molecule))
+                    if kind == "unrelated":
+                        changed["artifact"]["manifest"]["limits"]["max_output_bytes"] = 1
+                    write_pair(target, changed)
+                    with self.subTest(kind=kind), self.assertRaises(CoreProtocolError):
+                        installed.check_mutant(target, exported, "candidate")
+
     def test_four_distinct_slots_use_full_results_and_exact_platform_authorities(self):
         paths = []
         for index, slot in enumerate(sorted(installed.component.SLOTS)):

@@ -183,6 +183,31 @@ def checked_result(result, case, original, *, exported=False):
         require(result["artifact"] is None, "Compilation unexpectedly published an artifact")
 
 
+def changed_material_candidate(candidate):
+    """Tamper with one emitted base, retaining well-formed candidate-owned roles.
+
+    These two artificial cases have one molecule and no complex, mapping or
+    amount dependencies. Repinning its roles allows independent material
+    checking to reject content against unchanged original assembly authority.
+    """
+    changed = deepcopy(candidate)
+    construction = changed["construction"]
+    inventory = construction["inventory"]
+    require(len(inventory["molecules"]) == 1 and inventory["complexes"] == []
+            and inventory["form_mappings"] == [] and construction["experimental_amounts"] == [],
+            "Candidate mutation requires the reviewed single-molecule dependency shape")
+    molecule = inventory["molecules"][0]
+    roles = inventory["role_instances"]
+    original_pin = canonical_digest(molecule)
+    require(roles and all(role["subject_id"] == molecule["id"] and role["subject_fingerprint"] == original_pin for role in roles),
+            "Candidate mutation requires current roles for its unique molecule")
+    molecule["sequence"] = ("G" if molecule["sequence"][0] != "G" else "C") + molecule["sequence"][1:]
+    changed_pin = canonical_digest(molecule)
+    for role in roles:
+        role["subject_fingerprint"] = changed_pin
+    return changed
+
+
 def changed_bundle(source, target, kind):
     """Rebuild fixed ZIP metadata while changing only the specified untrusted content."""
     from biocompiler.core_client import decode_json, encode_json
@@ -191,8 +216,7 @@ def changed_bundle(source, target, kind):
             raw = original.read(entry)
             if kind == "candidate" and entry.filename == "manifest.json":
                 value = decode_json(raw)
-                molecule = value["candidate"]["construction"]["inventory"]["molecules"][0]
-                molecule["sequence"] = ("G" if molecule["sequence"][0] != "G" else "C") + molecule["sequence"][1:]
+                value["candidate"] = changed_material_candidate(value["candidate"])
                 raw = encode_json(value)
             elif kind == "fasta" and entry.filename == "program.fasta":
                 lines = raw.split(b"\n")

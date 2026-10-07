@@ -28,7 +28,7 @@ inputs, honest implementation premises, usable source terms and researcher revie
 | RA-02 | Public immutable project and component-input interfaces | Complete caller authority preserved; documented builders/loaders; no fixture tools or manual hashes required in the user flow | Implemented for complete existing component-material/selection requests; broader input builders remain open |
 | RA-03 | Public compile, Verify export and project-authorized reproduction | Source-tree and installed outside-checkout positive/negative/second-case witnesses; independent Verify required | Implemented with 20-observation hosted witnesses; native validation pending |
 | RA-04 | Integrate and distribute an accepted installation bundle | Exact-revision required gates, normal integration, fresh actual-main gate, matching SDK/native artifacts and tested installation instructions | Installed gates and candidate starter assembly implemented; accepted release pending |
-| RA-05 | Research handoff and independent usability review | Exact FASTA/manifest, original project, scope summary, rerun instructions; external researcher dry run recorded separately | Quickstart and review packet prepared; verified handoff and external review pending |
+| RA-05 | Reproducible research handoff | Exact FASTA/manifest, original project, scope summary, tested rerun instructions and review packet | Quickstart and review packet prepared; hosted verified handoff pending; external review deferred to the project owner |
 
 Additional acceptance tasks:
 
@@ -39,13 +39,14 @@ Additional acceptance tasks:
   outer metadata.
 - [x] Preserve bounded parsing, literal JSON kinds, immutable snapshots, distinct
   Core/Verify roles, execution guards and atomic publication.
-- [ ] Update source ownership, public API coverage and historical source-closure
+- [x] Update source ownership, public API coverage and historical source-closure
   registrations without transferring or weakening previous authority.
 - [ ] Run focused pure-Python checks on both supported Python versions, then one
   coherent hosted development batch and an independent inert artifact audit.
 - [ ] Exercise installation and the user example outside the source checkout.
-- [ ] Prepare a researcher review packet and record usability findings. An agent
-  rehearsal is software evidence, not an external researcher review.
+- [x] Prepare the independent researcher review packet.
+- [ ] Record the verified software rehearsal and complete reproducible handoff.
+  An agent rehearsal is software evidence, not an external researcher review.
 
 ## Working order and ownership
 
@@ -63,6 +64,13 @@ integration and packaging using existing gates and bounded hosted builds.
 No local OCaml/Rust compilation, native execution or native packaging. Keep
 local checks pure/static and preserve exact source, run, attempt and artifact
 provenance. Follow [development validation](development-validation.md).
+
+The project owner will recruit the independent researcher reviewer, confirmed
+2026-10-07, and explicitly deferred that work from the development critical path.
+No software implementation, integration or handoff milestone depends on third
+party participation. Continue all independently achievable work; record external
+review separately when it actually occurs. Local or hosted agent rehearsals
+cannot be described as independent researcher feedback.
 
 ## Completion boundaries
 

@@ -24,7 +24,9 @@ def inert_result(case, original, *, exported=False):
                      for region in sorted(case["regions"], key=lambda row: row["id"])],
         "chemistry": {"cap": {"status": "declared", "identity": {"accession": "artificial_cap", "namespace": "software_fixture.chemical"}},
             "modifications": [], "terminal_tail": {"length": {"mode": "exact", "exact": 4}}}}
-    candidate = {"construction": {"inventory": {"molecules": [molecule]}},
+    candidate = {"construction": {"experimental_amounts": [], "inventory": {"molecules": [molecule],
+        "complexes": [], "form_mappings": [], "role_instances": [{"id": "inert-role", "subject_id": molecule["id"],
+            "subject_fingerprint": witness.canonical_digest(molecule)}]}},
         "implementation": {"nodes": [None] * case["graph"]["nodes"], "wires": [None] * case["graph"]["wires"]}}
     report = {"status": "checked_component_material", "empirical": "unassessed", "assembly_status": "pass", "context_status": "pass",
         "all_original_obligations_discharged": True, "artifact": "withheld", "export": "withheld", "obligations": [{"status": "discharged"}],
@@ -151,7 +153,7 @@ class ResearcherAlphaWitnessTests(unittest.TestCase):
             witness.tracked_inputs(ROOT)
 
     def test_bundle_mutations_preserve_other_bytes_and_fixed_metadata(self):
-        from biocompiler.core_client import encode_json
+        from biocompiler.core_client import decode_json, encode_json
         case, original = self.packet["expected"]["cases"][0], self.packet["inputs"]["staged"]
         result = inert_result(case, original, exported=True)
         with tempfile.TemporaryDirectory() as directory:
@@ -168,9 +170,45 @@ class ResearcherAlphaWitnessTests(unittest.TestCase):
                     self.assertEqual(before.namelist(), after.namelist())
                     unchanged = "program.fasta" if kind == "candidate" else "manifest.json"
                     self.assertEqual(before.read(unchanged), after.read(unchanged))
+                    if kind == "candidate":
+                        original_manifest = decode_json(before.read("manifest.json"))
+                        changed_manifest = decode_json(after.read("manifest.json"))
+                        expected = deepcopy(original_manifest)
+                        inventory = expected["candidate"]["construction"]["inventory"]
+                        molecule = inventory["molecules"][0]
+                        molecule["sequence"] = "G" + molecule["sequence"][1:]
+                        inventory["role_instances"][0]["subject_fingerprint"] = witness.canonical_digest(molecule)
+                        self.assertEqual(changed_manifest, expected)
+                        self.assertEqual(original_manifest, result["artifact"]["manifest"])
                     for entry in after.infolist():
                         self.assertEqual(entry.date_time, (1980, 1, 1, 0, 0, 0))
                         self.assertEqual(entry.compress_type, zipfile.ZIP_STORED)
+
+    def test_candidate_tamper_repins_owned_roles_without_repairing_original_authority(self):
+        for case in self.packet["expected"]["cases"]:
+            original = self.packet["inputs"][case["id"]]
+            candidate = inert_result(case, original)["candidate"]
+            roles = candidate["construction"]["inventory"]["role_instances"]
+            roles.append({**roles[0], "id": "second-inert-role"})
+            before = deepcopy(candidate)
+            changed = witness.changed_material_candidate(candidate)
+            self.assertEqual(candidate, before)
+            inventory = changed["construction"]["inventory"]
+            self.assertEqual(inventory["molecules"][0]["sequence"], "G" + case["sequence"][1:])
+            digest = witness.canonical_digest(inventory["molecules"][0])
+            self.assertTrue(all(row["subject_fingerprint"] == digest for row in inventory["role_instances"]))
+            inventory["molecules"][0]["sequence"] = case["sequence"]
+            for role, previous in zip(inventory["role_instances"], roles):
+                role["subject_fingerprint"] = previous["subject_fingerprint"]
+            self.assertEqual(changed, before)
+            for mutate in (lambda c: c["construction"]["inventory"]["complexes"].append({}),
+                           lambda c: c["construction"]["inventory"]["form_mappings"].append({}),
+                           lambda c: c["construction"]["experimental_amounts"].append({}),
+                           lambda c: c["construction"]["inventory"]["role_instances"][0].update(subject_id="foreign"),
+                           lambda c: c["construction"]["inventory"]["role_instances"][0].update(subject_fingerprint="0" * 64)):
+                unsupported = deepcopy(candidate); mutate(unsupported)
+                with self.assertRaisesRegex(AssertionError, "mutation requires"):
+                    witness.changed_material_candidate(unsupported)
 
     def test_incomplete_reference_is_structural_qualification_without_native_claim(self):
         from biocompiler.policy.research_project import ResearchProject, ResearchProjectError

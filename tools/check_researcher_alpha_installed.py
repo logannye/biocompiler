@@ -85,8 +85,20 @@ def check_mutant(path, original, kind):
     artifact = original["artifact"]
     fasta, manifest = artifact["fasta"].encode(), deepcopy(artifact["manifest"])
     if kind == "candidate":
-        molecule = manifest["candidate"]["construction"]["inventory"]["molecules"][0]
+        construction = manifest["candidate"]["construction"]
+        inventory = construction["inventory"]
+        require(len(inventory["molecules"]) == 1 and inventory["complexes"] == []
+                and inventory["form_mappings"] == [] and construction["experimental_amounts"] == [],
+                "Installed candidate mutation has an unreviewed dependency shape")
+        molecule = inventory["molecules"][0]
+        roles = inventory["role_instances"]
+        original_pin = canonical_digest(molecule)
+        require(roles and all(role["subject_id"] == molecule["id"] and role["subject_fingerprint"] == original_pin for role in roles),
+                "Installed candidate mutation lacks current owned role identities")
         molecule["sequence"] = ("G" if molecule["sequence"][0] != "G" else "C") + molecule["sequence"][1:]
+        changed_pin = canonical_digest(molecule)
+        for role in roles:
+            role["subject_fingerprint"] = changed_pin
     else:
         require(kind == "fasta", "Unknown installed researcher mutation")
         lines = fasta.split(b"\n")
