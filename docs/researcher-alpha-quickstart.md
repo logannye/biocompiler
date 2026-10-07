@@ -7,7 +7,7 @@ component-material and component-selection request profiles. It does not infer
 missing parts, implementation mechanisms, provider contracts or biological
 validity from a sequence or project description.
 
-**Release status:** the researcher facade and standalone example are an
+**Release status:** the researcher facade and standalone examples are an
 integration candidate. This guide is not evidence that matching packages are
 publicly available or that installed validation has passed. Distribution needs
 the accepted SDK/native wheel pair for the exact validated revision and platform,
@@ -26,9 +26,20 @@ The alpha handoff must supply:
 - Matching `biocompiler` and `biocompiler-core` wheels from the accepted hosted
   build, with revision, platform and digest records. The native wheel contains
   both Core and Verify.
-- The standalone [`researcher_alpha.py`](../examples/researcher_alpha.py) script.
+- The standalone [`researcher_alpha.py`](../examples/researcher_alpha.py) and
+  [`author_staged_research_project.py`](../examples/author_staged_research_project.py) scripts.
 - The complete [`data/researcher_alpha`](../data/researcher_alpha/) directory,
   including its pinned originals, expected values and qualification record.
+- The installed receipt at `evidence/researcher-alpha.json` and its complete
+  `evidence/researcher-alpha/` directory: 30 observation sidecars, three original
+  projects, three verified bundles and four declared mutation bundles. Receipt
+  paths resolve relative to the `evidence` directory; the negative-control
+  diagnostics are retained alongside the positive results.
+
+The candidate starter contains 58 copied files and a separate manifest. Each
+file is pinned to the already checked comparison and inputs. Its manifest still
+marks overall and actual-main release acceptance as pending; copying the
+evidence does not establish a later release gate.
 
 Do not substitute a package from an unverified name on a public index. After
 receiving the accepted wheels, install their exact files into a clean Python
@@ -48,11 +59,11 @@ No native compiler or editable source install is required for researchers.
 Contributors keep native compilation and execution on hosted CI according to the
 workspace development instructions.
 
-Place the script and a directory named `corpus` containing the supplied input
+Place both scripts and a directory named `corpus` containing the supplied input
 files in a new working directory **outside the repository checkout**. Use the
 installed environment's Python as `python` below, with no `PYTHONPATH` pointing
-at a checkout. The script reads only the files you name and imports the installed
-public SDK. It does not import `tools/` or retrieve test fixtures at runtime.
+at a checkout. The scripts read only the files you name and import the installed
+public SDK. They do not import `tools/` or retrieve test fixtures at runtime.
 
 ## Prepare and inspect a project
 
@@ -80,6 +91,47 @@ Preflight reports `structurally_ready`, `native_status: not_run`,
 transport structure is complete. This is **not native semantic acceptance** or
 authentication of a cited publication. Source locators are recorded without
 being followed or executed.
+
+## Author a staged policy in Python
+
+The second script constructs the source through the public typed DSL: two
+separate effect attempts, explicit initiation requirements, lifecycle feedback,
+and encounter-scoped ordering for the same abstract product. It retains the
+reference project's complete implementation and material contracts unchanged.
+
+```sh
+python author_staged_research_project.py staged.project.json authored.project.json
+python researcher_alpha.py preflight authored.project.json
+python researcher_alpha.py compile authored.project.json authored.payload.zip
+python researcher_alpha.py verify authored.project.json authored.payload.zip
+```
+
+Preparation is pure Python and reports native checking as `not_run`. Edit
+`build_request()` in the authoring script to express a different policy. The
+saved project carries that complete new source and source-map coordinates;
+compilation must assess it afresh against the independently supplied contracts.
+Changed requirements or catalog identities cannot silently rewrite those
+contracts to make the new program acceptable. A completion requirement without
+sufficient feedback or an unauthorized catalog version must not publish a
+payload. The hosted checks exercise these rejection cases; a saved project or
+preflight result alone does not demonstrate that they passed for a release.
+
+The reusable `ComponentMaterialInputs` package separates a typed `BuildRequest`
+from all supplied nonsource authority. It can be extracted through
+`reference.component_inputs`, loaded with `ComponentMaterialInputs.load`, or
+frozen with `ComponentMaterialInputs.from_data`, then passed to
+`ResearchProject.from_build_request`. It preserves definitions, operating
+domain, implementation models and bindings, component library, composition
+rule, material/context bindings, and every budget. It never invents missing
+contracts, repairs their pins, or infers a mechanism from sequence. Loaded
+original inputs remain protected from accidental overwrite. Selection projects
+retain the existing complete-request path; extracting only one alternative's
+component inputs is explicitly rejected.
+
+This authoring example still uses the artificial same-product staged case.
+It does not supply components for arbitrary stage-specific therapeutic products.
+The intended source meaning, the selected profile's support, and the physical
+validity of its supplied contracts remain separate questions.
 
 ## Compile and independently verify
 
@@ -172,9 +224,12 @@ verified = current.verify_bundle("python.payload.zip")
 print(verified.status)
 ```
 
-This API packages an already complete supported request. Public ergonomic
-builders for every internal authority are still a separate development item;
-`from_request` is not unrestricted therapeutic-regimen compilation. For
+The `from_request` path packages an already complete supported request. The
+typed `from_build_request` path accepts a newly authored source and an immutable
+`ComponentMaterialInputs` package; the staged script demonstrates it without
+editing internal request JSON. Builders for every internal authority remain a
+separate development item. Neither route establishes unrestricted therapeutic
+regimen compilation. For
 untrusted input files, use the bounded standalone `prepare` command or a prepared
 project through `ResearchProject.load`, rather than an unbounded application
 file read.
@@ -186,7 +241,10 @@ Repeat preparation, compilation and verification using
 uses a state-reading policy and a different declared leader. Its expected RNA
 length and CDS position differ, so the workflow cannot succeed by returning the
 first example's bytes. Both cases and their coordinate conventions are frozen
-in `corpus/expected.json`.
+in `corpus/expected.json`. The freshly authored staged source uses the staged
+case's independently supplied contracts and expected RNA; its complete source
+and actual source map are checked separately. It is a third user workflow,
+not a third biological reference.
 
 Compare the emitted sequence, annotations and supported claim scope with that
 independent oracle. Use `corpus/negative-controls.json` when reviewing rejection

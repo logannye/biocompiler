@@ -44,9 +44,12 @@ class ResearcherInstalledTests(unittest.TestCase):
         values = {name: {"synthetic_metadata_only": True} for name in installed.researcher.OBSERVATIONS}
         folder = self.root / installed.FOLDER; folder.mkdir()
         projects, publications = {}, []
-        for case in self.packet["expected"]["cases"]:
+        authored_case = {**self.packet["expected"]["cases"][0], "id": "authored",
+                         "originals_sha256": installed.canonical_digest(installed.researcher.authored_original(self.packet))}
+        for case in [*self.packet["expected"]["cases"], authored_case]:
             identity = case["id"]
-            project = installed.expected_project(case, self.packet)
+            project = (installed.researcher.expected_authored_project(self.packet) if identity == "authored"
+                       else installed.expected_project(case, self.packet))
             path = folder / (identity + "-project.json"); path.write_text(json.dumps(project))
             project_digest = installed.canonical_digest(project)
             projects[identity] = {"path": path.name, "sha256": installed.pin(path)["sha256"],
@@ -55,12 +58,13 @@ class ResearcherInstalledTests(unittest.TestCase):
             changed_originals = deepcopy(project)
             changed_originals["request"]["implementation_request"]["document"]["program"]["source_map"][0]["file"] += ".changed"
             values[identity + "-changed-originals"] = {"changed_project_sha256": installed.canonical_digest(changed_originals)}
-            exported = inert_result(case, self.packet["inputs"][identity], exported=True)
+            original = installed.researcher.authored_original(self.packet) if identity == "authored" else self.packet["inputs"][identity]
+            exported = inert_result(case, original, exported=True)
             values[identity + "-export-verify"] = exported
             path = folder / (identity + ".zip"); write_pair(path, exported)
             publication = {**installed.archive_receipt(exported, path), "path": path.name}
             publications.append(publication); values[identity + "-paired-publication"] = publication
-            for kind in ("candidate", "fasta"):
+            for kind in (() if identity == "authored" else ("candidate", "fasta")):
                 changed = folder / (identity + "-changed-" + kind + ".zip")
                 installed.researcher.changed_bundle(path, changed, kind)
                 values[identity + "-changed-" + kind] = {"bundle_sha256": installed.pin(changed)["sha256"]}
@@ -71,7 +75,7 @@ class ResearcherInstalledTests(unittest.TestCase):
         modules = installed.component.installed_source_modules(installed.ROOT)
         package = "/hosted/env/site-packages/biocompiler"
         required = installed.component.REQUIRED_MODULES | {"biocompiler.core_distribution", "biocompiler.core_policy_component_selection",
-            "biocompiler.policy.component_selection", "biocompiler.policy.research_project"}
+            "biocompiler.policy.component_selection", "biocompiler.policy.research_project", "biocompiler.policy.component_inputs"}
         origins = {}
         for name in required:
             relative = name.removeprefix("biocompiler").lstrip(".").replace(".", "/")
@@ -88,6 +92,7 @@ class ResearcherInstalledTests(unittest.TestCase):
             "projects": projects, "publications": publications,
             "files": {str(path.relative_to(self.root)): installed.pin(path) for path in folder.iterdir()},
             "python_semantic_authority": "forbidden", "empirical": "unassessed", "real_researcher_project_qualified": False}
+        self.assertEqual(len(receipt["files"]), 40)
         return receipt, values
 
     def validate(self, receipt):
@@ -97,8 +102,8 @@ class ResearcherInstalledTests(unittest.TestCase):
     def test_hosted_gate_and_complete_input_packet_precede_execution(self):
         with patch.dict(installed.os.environ, {}, clear=True), self.assertRaisesRegex(AssertionError, "hosted-only"):
             installed.run(SimpleNamespace())
-        self.assertEqual(len(installed.input_pins()), 8)
-        self.assertEqual(len(installed.COPY_INPUTS), 7)
+        self.assertEqual(len(installed.input_pins()), 10)
+        self.assertEqual(len(installed.COPY_INPUTS), 8)
         with self.assertRaisesRegex(AssertionError, "exact independent"):
             installed.checked_inputs(installed.ROOT, self.root / "foreign.json")
 
@@ -125,11 +130,13 @@ class ResearcherInstalledTests(unittest.TestCase):
             lambda r: r["binary_sha256"].update({"biocompiler-core": "0" * 64}),
             lambda r: r["installed_modules"].pop("policy/research_project.py"),
             lambda r: r["parent_imports"].pop("biocompiler.policy.research_project"),
+            lambda r: r["parent_imports"].pop("biocompiler.policy.component_inputs"),
             lambda r: r["parent_imports"].update({"biocompiler.core_client": "/foreign/core_client.py"}),
             lambda r: r["parent_imports"].update({"biocompiler.behavior_runtime": "/foreign/behavior_runtime.py"}),
             lambda r: r["observations"].pop(), lambda r: r["observations"].reverse(),
             lambda r: r["observations"][0].update(path="../foreign.json"),
             lambda r: r["projects"]["staged"].update(path="../project.json"),
+            lambda r: r["projects"].pop("authored"),
             lambda r: r["publications"].clear(), lambda r: r["files"].pop(next(iter(r["files"])))]
         with patch.object(installed.researcher, "check_observations", return_value=values):
             for index, mutate in enumerate(mutations):
@@ -153,6 +160,27 @@ class ResearcherInstalledTests(unittest.TestCase):
             receipt["files"][installed.FOLDER + "/staged.zip"] = installed.pin(path)
             with self.assertRaisesRegex(AssertionError, "publication|archive"):
                 self.validate(receipt)
+
+    def test_self_rehashed_authored_source_map_cannot_replace_independent_source_authority(self):
+        receipt, values = self.receipt()
+        path = self.root / installed.FOLDER / "authored-project.json"
+        project = json.loads(path.read_bytes())
+        document = project["request"]["implementation_request"]["document"]
+        document["program"]["source_map"][0]["line"] += 1
+        digest = installed.canonical_digest(document)
+        project["sources"][-1].update(sha256=digest, locator="urn:biocompiler:canonical-policy:" + digest)
+        path.write_text(json.dumps(project))
+        project_digest = installed.canonical_digest(project)
+        receipt["projects"]["authored"].update(sha256=installed.pin(path)["sha256"], project_sha256=project_digest,
+            originals_sha256=installed.canonical_digest({key: project[key] for key in ("request", "limits")}))
+        values["authored-preflight"]["project_sha256"] = project_digest
+        sidecar = self.root / installed.FOLDER / "authored-preflight.json"
+        sidecar.write_text(json.dumps(values["authored-preflight"]))
+        next(row for row in receipt["observations"] if row["name"] == "authored-preflight").update(installed.pin(sidecar))
+        receipt["observations_fingerprint"] = installed.canonical_digest([{"name": key, "result": value} for key, value in values.items()])
+        receipt["files"].update({str(file.relative_to(self.root)): installed.pin(file) for file in (path, sidecar)})
+        with patch.object(installed.researcher, "check_observations", return_value=values), self.assertRaisesRegex(AssertionError, "independent originals"):
+            self.validate(receipt)
 
     def test_mutation_archive_must_be_the_declared_single_change(self):
         receipt, values = self.receipt()
@@ -201,7 +229,7 @@ class ResearcherInstalledTests(unittest.TestCase):
             path.write_text(json.dumps({"system": slot[0], "machine": slot[1], "python_version": slot[2] + ".6", "run_attempt": "2"}))
             paths.append(path)
         authorities = {platform: dict(BINARIES) for platform in (("Linux", "x86_64"), ("Darwin", "arm64"))}
-        with patch.object(installed, "validate_installed", return_value={"all20": "complete identical observations"}) as checked:
+        with patch.object(installed, "validate_installed", return_value={"all30": "complete identical observations"}) as checked:
             result = installed.compare_installed(paths, self.expected, IDENTITY, authorities, expected_sources=SOURCES)
             self.assertEqual(result["status"], "pass"); self.assertEqual(checked.call_count, 4)
             self.assertFalse(result["real_researcher_project_qualified"])

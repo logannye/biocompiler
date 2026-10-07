@@ -17,6 +17,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_FILES = (
     "examples/researcher_alpha.py",
+    "examples/author_staged_research_project.py",
     "docs/researcher-alpha-quickstart.md",
     "docs/researcher-alpha-reference-qualification.md",
     "docs/researcher-alpha-review.md",
@@ -48,6 +49,30 @@ def pin(raw):
     return {"sha256": hashlib.sha256(raw).hexdigest(), "size": len(raw)}
 
 
+def researcher_evidence_files():
+    """Closed file census from the reviewed installed researcher validator.
+
+    Receipt paths do not select files. Retain all native observations, original
+    projects, good pairs and declared mutants needed to inspect that receipt.
+    """
+    try:
+        import check_researcher_alpha_installed as reviewed
+    except ModuleNotFoundError:
+        from tools import check_researcher_alpha_installed as reviewed
+    witness = reviewed.researcher
+    require(reviewed.FOLDER == "researcher-alpha" and witness.PROJECT_IDS == ("staged", "comparison", "authored")
+            and witness.CASE_IDS == ("staged", "comparison") and len(witness.OBSERVATIONS) == 30,
+            "Unreviewed researcher evidence profile")
+    names = tuple("researcher-alpha/" + name + ".json" for name in witness.OBSERVATIONS)
+    names += tuple("researcher-alpha/" + identity + suffix
+                   for identity in witness.PROJECT_IDS for suffix in ("-project.json", ".zip"))
+    names += tuple("researcher-alpha/" + identity + "-changed-" + kind + ".zip"
+                   for identity in witness.CASE_IDS for kind in ("candidate", "fasta"))
+    require(len(names) == len(set(names)) == 40 and all(re.fullmatch(r"researcher-alpha/[a-z][a-z0-9-]*\.(json|zip)", name)
+                                                    for name in names), "Invalid researcher evidence census")
+    return tuple(sorted(names))
+
+
 def plan(args, comparison, natives, *, root=ROOT):
     """Pure bounded copy plan; callers supply results of the complete gate."""
     require(comparison["schema_version"] == "biocompiler.policy_material_prebuilt_campaign.v0.4"
@@ -75,13 +100,14 @@ def plan(args, comparison, natives, *, root=ROOT):
         wheel = native["native"]
         require(candidate["platforms"][target] == {"name": wheel.name, **pin(read(wheel))}, "Native starter wheel changed after checking")
         files["wheels/" + wheel.name] = wheel
-    # The four-slot comparator already checks reproducibility. Retain a complete
-    # paired example from its first supplied slot, with the current child pins.
+    # The four-slot comparator already checks reproducibility. Retain its first
+    # slot's complete evidence, including actual negative-control diagnostics.
     require(len(args.compare) == 4, "Starter requires four supplied installed receipts")
     evidence = args.compare[0] / "evidence"
     child_raw = read(evidence / "researcher-alpha.json")
     child = json.loads(child_raw)
-    require(child["status"] == "pass" and all(child[key] == comparison[key] for key in
+    require(child["schema_version"] == "biocompiler.researcher_alpha_installed_campaign.v0.2"
+            and child["status"] == "pass" and all(child[key] == comparison[key] for key in
             ("revision", "head_revision", "run_id")), "Example receipt changed its tested identity")
     child_slot = [child["system"], child["machine"], ".".join(child["python_version"].split(".")[:2])]
     attempts = [row for row in comparison["researcher_project"]["attempts"] if row["slot"] == child_slot]
@@ -90,17 +116,26 @@ def plan(args, comparison, natives, *, root=ROOT):
             and attempts[0]["receipt"] == {"sha256": measured_child["sha256"], "bytes": measured_child["size"]},
             "Example receipt changed after the independent installed comparison")
     files["evidence/researcher-alpha.json"] = evidence / "researcher-alpha.json"
-    for name in ("staged-project.json", "comparison-project.json", "staged.zip", "comparison.zip"):
-        relative = "researcher-alpha/" + name
+    expected_evidence = researcher_evidence_files()
+    require(type(child["files"]) is dict and set(child["files"]) == set(expected_evidence),
+            "Child receipt changed the complete researcher evidence census")
+    folder = evidence / "researcher-alpha"
+    require(folder.is_dir() and not folder.is_symlink(), "Researcher evidence directory is missing or redirected")
+    require(set(folder.iterdir()) == {evidence / name for name in expected_evidence},
+            "Missing or extra researcher evidence file")
+    for relative in expected_evidence:
         source = evidence / relative
         measured = pin(read(source))
-        require(child["files"][relative] == {"sha256": measured["sha256"], "bytes": measured["size"]},
-                "Verified example changed after checking")
-        files["verified-examples/" + name] = source
-    require(len(files) == len(SOURCE_FILES) + 10, "Starter file census differs")
+        declared = child["files"][relative]
+        require(type(declared) is dict and set(declared) == {"sha256", "bytes"}
+                and type(declared["bytes"]) is int
+                and declared == {"sha256": measured["sha256"], "bytes": measured["size"]},
+                "Verified researcher evidence changed after checking")
+        files["evidence/" + relative] = source
+    require(len(files) == len(SOURCE_FILES) + 6 + len(expected_evidence) == 58, "Starter file census differs")
     metadata = {name: pin(read(path)) for name, path in sorted(files.items())}
     require(sum(row["size"] for row in metadata.values()) <= MAX_TOTAL, "Starter exceeds its total byte bound")
-    manifest = {"schema_version": "biocompiler.researcher_alpha_starter.v0.1",
+    manifest = {"schema_version": "biocompiler.researcher_alpha_starter.v0.2",
         "status": "installed_candidate", "release_acceptance": "pending_overall_and_actual_main_gates",
         "empirical": "unassessed", "real_researcher_project": "unqualified",
         "source_revision": comparison["head_revision"], "tested_revision": comparison["revision"],

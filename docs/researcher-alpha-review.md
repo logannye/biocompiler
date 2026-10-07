@@ -8,7 +8,7 @@ receipts. Record candidate-package testing separately from release acceptance.
 ## Independent usability walkthrough
 
 The reviewer should work from a new directory outside the source checkout with
-the supplied installed wheels and standalone example. Do not provide private
+the supplied installed wheels and both standalone examples. Do not provide private
 fixture generators or undocumented environment setup to complete the exercise.
 
 1. Record the SDK/native wheel names and hashes, source revision, hosted run,
@@ -20,13 +20,22 @@ fixture generators or undocumented environment setup to complete the exercise.
    coordinates with the separate expected values.
 4. Repeat with the comparison project. Confirm that the output changes as
    specified and that the staged output cannot substitute for it.
-5. Review the negative-control receipts. Identify the rejection boundary for
+5. Run the typed authoring script with the retained staged project. Inspect its
+   newly authored source, source map and unchanged supplied component inputs;
+   compile and independently verify its paired export. Explain why preparation
+   alone cannot authorize a source change.
+6. Review the negative-control receipts. Identify the rejection boundary for
    altered candidate material, altered FASTA, stale originals, insufficient
-   machine capacity and completion without required feedback.
-6. Explain the strongest supported claim in the manifest, its finite scope and
+   machine capacity, completion without required feedback and changed catalog
+   authorization. Confirm unsupported typed source changes publish no payload.
+   The handoff retains all 40 files named by `evidence/researcher-alpha.json`
+   under `evidence/researcher-alpha/`, including the actual negative diagnostic
+   sidecars and declared mutant bundles. Resolve the receipt's paths relative
+   to `evidence`; hashes alone do not replace inspection of those files.
+7. Explain the strongest supported claim in the manifest, its finite scope and
    the supplied contracts on which it depends. Identify the unresolved physical
    realization and empirical questions.
-7. Describe a useful research task that this supported profile could serve,
+8. Describe a useful research task that this supported profile could serve,
    the exact inputs the reviewer already has, and the missing inputs or language
    features that prevent using it. Do not replace missing contracts with the
    artificial examples' declarations.

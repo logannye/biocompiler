@@ -25,8 +25,8 @@ inputs, honest implementation premises, usable source terms and researcher revie
 | ID | Work | Exit condition | Status |
 | --- | --- | --- | --- |
 | RA-01 | Qualify reference assets and select a complete project | Frozen input/provenance packet, independently declared expected outputs, explicit supported and unresolved requirements | Engineering corpus complete; reviewed public candidates do not yet qualify a useful real research project |
-| RA-02 | Public immutable project and component-input interfaces | Complete caller authority preserved; documented builders/loaders; no fixture tools or manual hashes required in the user flow | Implemented for complete existing component-material/selection requests; broader input builders remain open |
-| RA-03 | Public compile, Verify export and project-authorized reproduction | Source-tree and installed outside-checkout positive/negative/second-case witnesses; independent Verify required | Implemented with 20-observation hosted witnesses; native validation pending |
+| RA-02 | Public immutable project and component-input interfaces | Complete caller authority preserved; documented builders/loaders; no fixture tools or manual hashes required in the user flow | Complete-request routes retained; immutable component inputs and typed BuildRequest bridge implemented; broader input builders remain open |
+| RA-03 | Public compile, Verify export and project-authorized reproduction | Source-tree and installed outside-checkout positive/negative/second-case witnesses; independent Verify required | Original 20 observations retained; 10 typed-authoring observations added; fresh native validation pending |
 | RA-04 | Integrate and distribute an accepted installation bundle | Exact-revision required gates, normal integration, fresh actual-main gate, matching SDK/native artifacts and tested installation instructions | Installed gates and candidate starter assembly implemented; accepted release pending |
 | RA-05 | Reproducible research handoff | Exact FASTA/manifest, original project, scope summary, tested rerun instructions and review packet | Quickstart and review packet prepared; hosted verified handoff pending; external review deferred to the project owner |
 
@@ -71,6 +71,36 @@ No software implementation, integration or handoff milestone depends on third
 party participation. Continue all independently achievable work; record external
 review separately when it actually occurs. Local or hosted agent rehearsals
 cannot be described as independent researcher feedback.
+
+## Typed authoring continuation
+
+The next source batch is isolated in `work/researcher-authoring`, initially at
+`dc765a16716c6641e41804d57660c7bfd008ab92`. It includes the typed API commit
+`31f46788e` and merges the frozen alpha source `114c93576`; it does not inherit
+that source's hosted acceptance. The original alpha worktree and its independent
+release audit remain separate while their runs complete.
+
+This batch adds `ComponentMaterialInputs`,
+`ResearchProject.from_build_request`, and the public staged authoring example.
+The same supplied contracts are retained while the source is constructed with
+Python builders. Source and installed campaigns retain the original 20
+observations and append 10 authoring observations, including fresh Core and
+Verify, changed-original rejection, unsupported completion, and unauthorized
+catalog rejection with no publication. The evidence census becomes 30 sidecars,
+three original projects, three accepted paired ZIPs and four tampered ZIPs.
+These are required checks, not a claim of their execution at the new revision.
+
+The starter retains the authoring script and the complete 40-file researcher
+evidence directory, including every observation, original project, paired
+export and declared mutant. Receipt-relative paths remain intact under
+`evidence/researcher-alpha/`; there are no redundant example copies. This yields
+58 copied files plus its v0.2 manifest. The complete development campaign remains
+31 native suites and now requires 140 SDK observations. Public API registration
+preserves all 845 earlier classifications and 138 witness meanings; historical
+workflow sources remain immutable. Fresh focused checks, hosted execution,
+four-slot installed comparison, integration and actual-main validation are still
+required for this changed source. External researcher review remains deferred
+to the project owner.
 
 ## Completion boundaries
 

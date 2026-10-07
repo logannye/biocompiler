@@ -26,7 +26,7 @@ except ImportError:
 SCHEMA = "biocompiler.development-feedback.v0.1"
 WORKFLOW = ".github/workflows/policy-development.yml"
 SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "data/researcher_alpha",
-                "examples/researcher_alpha.py", "pyproject.toml")
+                "examples/researcher_alpha.py", "examples/author_staged_research_project.py", "pyproject.toml")
 SUITES = (
     ("test_policy_staged_generation", ("data/policy_staged_realization_request_v01.json",)),
     ("test_policy_staged_binding", ("data/policy_staged_realization_request_v01.json",)),
@@ -605,7 +605,7 @@ def staged_material_sdk(root):
 def researcher_alpha_sdk(root):
     """Run the public project example against the same authenticated native build."""
     output = root / "generated/development-feedback"
-    report = {"schema": "biocompiler.development-researcher-alpha-feedback.v0.1", "acceptance": False,
+    report = {"schema": "biocompiler.development-researcher-alpha-feedback.v0.2", "acceptance": False,
               "scope": "source-tree public project workflow; installed, release and empirical acceptance remain separate",
               "status": "failed", "actions": []}
     prepared, binaries = None, {}

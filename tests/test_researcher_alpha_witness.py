@@ -63,11 +63,59 @@ class ResearcherAlphaWitnessTests(unittest.TestCase):
 
     def test_complete_observation_census_is_additive_and_fail_closed(self):
         witness.check_census(witness.OBSERVATIONS)
-        self.assertEqual(len(witness.OBSERVATIONS), 20)
+        self.assertEqual(len(witness.OBSERVATIONS), 30)
         for names in (witness.OBSERVATIONS[:-1], witness.OBSERVATIONS[::-1],
-                      witness.OBSERVATIONS + (witness.OBSERVATIONS[0],), (witness.OBSERVATIONS[0],) * 20):
+                      witness.OBSERVATIONS + (witness.OBSERVATIONS[0],), (witness.OBSERVATIONS[0],) * 30):
             with self.subTest(names=names), self.assertRaisesRegex(AssertionError, "census"):
                 witness.check_census(names)
+
+    def test_typed_authoring_is_exact_and_negative_edits_never_repin_inputs(self):
+        self.assertFalse(witness.exact_json({"tick": True}, {"tick": 1}))
+        prepared = witness.prepare_authored(self.packet)
+        original = witness.authored_original(self.packet)
+        self.assertEqual(prepared["project"].data, witness.expected_authored_project(self.packet))
+        self.assertEqual(prepared["project"].request, original["request"])
+        self.assertEqual(prepared["completion"].request, witness.completion_request(original["request"]))
+        self.assertEqual(prepared["catalog"].request, witness.catalog_request(original["request"]))
+        self.assertEqual(prepared["completion"].component_inputs.data, prepared["project"].component_inputs.data)
+        self.assertEqual(prepared["catalog"].component_inputs.data, prepared["project"].component_inputs.data)
+        for project in prepared.values():
+            self.assertEqual(project.sources[-1].sha256,
+                             witness.canonical_digest(project.request["implementation_request"]["document"]))
+            self.assertEqual(project.preflight().native_status, "not_run")
+        # Retained-evidence authority cannot be replaced by rerunning the author.
+        with patch.object(witness, "load_example", side_effect=AssertionError("No producing example in the oracle")):
+            self.assertEqual(witness.authored_original(self.packet), original)
+            self.assertEqual(witness.expected_authored_project(self.packet), prepared["project"].data)
+
+    def test_catalog_control_requires_the_exact_native_admission_diagnostic(self):
+        request = witness.catalog_request(witness.authored_original(self.packet)["request"])
+        value = {"status": "error", "request_sha256": witness.canonical_digest(request),
+                 "diagnostics": [{"code": "policy_realization_catalog", "message": witness.CATALOG_MESSAGE}]}
+        witness.check_catalog_failure(value, request)
+        for mutate in (lambda row: row.update(status="ok"), lambda row: row.update(request_sha256="0" * 64),
+                       lambda row: row["diagnostics"].clear(),
+                       lambda row: row["diagnostics"][0].update(code="policy_component_material_export_not_accepted"),
+                       lambda row: row["diagnostics"][0].update(message="Another catalog failure")):
+            changed = deepcopy(value); mutate(changed)
+            with self.subTest(mutate=mutate), self.assertRaises(AssertionError):
+                witness.check_catalog_failure(changed, request)
+
+    def test_authored_default_public_compile_keeps_owned_resolution_and_guard(self):
+        from biocompiler.policy.research_project import ResearchProject
+        prepared = witness.prepare_authored(self.packet)
+        retained = []
+        with tempfile.TemporaryDirectory() as directory, patch.object(ResearchProject, "compile", side_effect=RuntimeError("routing stop")) as compile_project:
+            with self.assertRaisesRegex(RuntimeError, "routing stop"):
+                witness.exercise_authored(self.packet, prepared, None, None, None, None,
+                    lambda name, value: retained.append((name, value)), Path(directory))
+            self.assertEqual(compile_project.call_args.kwargs["core"], None)
+            self.assertEqual(compile_project.call_args.kwargs["verify"], None)
+            self.assertEqual([name for name, _ in retained], ["authored-preflight"])
+        boundary = witness.ResearcherBoundary(ROOT / "src/biocompiler")
+        frame = SimpleNamespace(f_globals={"__name__": "biocompiler.policy.validation"}, f_code=SimpleNamespace(co_name="check"))
+        with self.assertRaisesRegex(AssertionError, "authoring-check"):
+            boundary.trace(frame, "call", None)
 
     def test_actual_feature_shape_and_coordinate_order_match_independent_oracle(self):
         staged = json.loads((ROOT / "core/test/data/policy_staged_material_v01.json").read_text())

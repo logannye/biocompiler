@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 from biocompiler import policy as p
 from biocompiler.policy.research_project import ResearchProject, ResearchProjectError, SourceRecord
-from biocompiler.core_client import CoreClient
+from biocompiler.core_client import CoreClient, encode_json
 from examples import author_staged_research_project as example
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,7 +37,7 @@ class TypedStagedExampleTests(unittest.TestCase):
         original = json.loads(json.dumps(self.packet["request"]["implementation_request"]["document"]))
         self.assertNotEqual(authored["program"]["source_map"], original["program"]["source_map"])
         original["program"]["source_map"] = authored["program"]["source_map"]
-        self.assertEqual(authored, original)
+        self.assertEqual(encode_json(authored), encode_json(original))
         for span in document.program.source_map:
             self.assertEqual(span.file, "author_staged_research_project.py")
             self.assertGreater(span.line, 1)

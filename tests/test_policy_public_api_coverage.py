@@ -40,11 +40,11 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (43, 845, 163, 17, 21))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 203,
-            'independent_expansion': 28, 'shared_invariant': 492, 'source_only': 116})
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (44, 866, 163, 17, 21))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 211,
+            'independent_expansion': 28, 'shared_invariant': 502, 'source_only': 119})
         self.assertEqual(len(self.ledger['syntax_links']), 359)
-        self.assertEqual(len(self.ledger['witnesses']), 138)
+        self.assertEqual(len(self.ledger['witnesses']), 148)
         self.assertEqual(result['status'], 'source_inventory_checked')
         self.assertEqual(result['runtime_protocol_scope'], c.RUNTIME_SCOPE)
         self.assertIn('not an exhaustive runtime-attribute census', result['runtime_protocol_scope'])
@@ -59,7 +59,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 845)
+        self.assertEqual(len(found['entries']), 866)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
 
@@ -115,9 +115,37 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
             c.validate(self.root, self.ledger)
 
+    def before_typed_authoring(self):
+        """Remove the reviewed additive inputs/bridge surface, retaining old meanings."""
+        projected = copy.deepcopy(self.ledger)
+        bridge = {'biocompiler.policy.research_project.' + name for name in (
+            'ResearchProject.from_build_request', 'ResearchProject.component_inputs',
+            'ResearchProject.sources', 'ResearchProject.assumptions', '_publish_json')}
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+            if not key.startswith('biocompiler.policy.component_inputs.') and key not in bridge}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
+            if not key.startswith('component_inputs.')}
+        return projected
+
+    def test_typed_authoring_preserves_every_prior_evidence_meaning(self):
+        projected = self.before_typed_authoring()
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in projected['witnesses'].items()},
+                    'coverage': projected['coverage']}
+        self.assertEqual((len(projected['coverage']), len(projected['witnesses'])), (845, 138))
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode()
+        self.assertEqual(c.digest(encoded),
+                         '1ca37142a2beec20c09db60e709e5aa8273da2f5e2002a104ed21c228d6b7d62')
+
+    def test_typed_authoring_source_scope_cannot_be_upgraded_by_repinning(self):
+        self.ledger['witnesses']['component_inputs.source']['distinction'] = 'Native implementation acceptance.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+
     def before_research_project(self):
         """Remove only the additive researcher-project surface and its witnesses."""
-        projected = copy.deepcopy(self.ledger)
+        projected = self.before_typed_authoring()
         projected['coverage'] = {key: row for key, row in projected['coverage'].items()
                                  if not key.startswith('biocompiler.policy.research_project.')}
         projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
@@ -183,7 +211,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         original = json.dumps({'witnesses': witnesses, 'coverage': projected['coverage']}, ensure_ascii=True,
                               sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         self.assertEqual(c.digest(original), '2367be4f22a4985eb15fce30dc799abfb254a22ae86f7de665e23fdc7ed800a2')
-        self.assertEqual((len(set(c.MODULES) - {'research_project'}), len(c.CLIENTS)), (30, 6))
+        self.assertEqual((len(set(c.MODULES) - {'research_project', 'component_inputs'}), len(c.CLIENTS)), (30, 6))
         additions = {key: row for key, row in self.before_research_project()['coverage'].items()
                      if key not in projected['coverage']}
         self.assertEqual(len(additions), 50)
@@ -234,7 +262,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         original = json.dumps({'witnesses': witnesses, 'coverage': retained}, ensure_ascii=True,
                               sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         self.assertEqual(c.digest(original), 'f16a88c77afaea4f7cbae56e80e38afc8d5a4c894616ca158578b707d393bb4a')
-        self.assertEqual((len(set(c.MODULES) - {'component_selection', 'research_project'}),
+        self.assertEqual((len(set(c.MODULES) - {'component_selection', 'research_project', 'component_inputs'}),
                           len(set(c.CLIENTS) - {'core_policy_component_selection'})), (29, 5))
         component_rows = [row for key, row in self.ledger['coverage'].items()
                           if key.startswith(('biocompiler.core_policy_component_material.',

@@ -31,22 +31,45 @@ except ModuleNotFoundError:
     from tools.check_policy_component_material import ComponentBoundary, NATIVE_PATHS, MAX_RECEIPT, MAX_EVIDENCE
     from tools.check_policy_material import archive_receipt
 
-SCHEMA = "biocompiler.researcher_alpha_sdk_development.v0.1"
+SCHEMA = "biocompiler.researcher_alpha_sdk_development.v0.2"
 EXPECTED = "data/researcher_alpha/expected.json"
 OUTPUT = "generated/development-feedback/researcher-alpha-sdk-witness.json"
 ASSETS = ("staged-input.json", "comparison-input.json", "expected.json", "provenance.json", "qualification.json", "negative-controls.json")
 INPUTS = tuple("data/researcher_alpha/" + name for name in ASSETS) + (
-    "examples/researcher_alpha.py", "src/biocompiler/policy/research_project.py")
+    "examples/researcher_alpha.py", "src/biocompiler/policy/research_project.py",
+    "examples/author_staged_research_project.py", "src/biocompiler/policy/component_inputs.py")
 CASE_IDS = ("staged", "comparison")
 CASE_OBSERVATIONS = ("preflight", "compile-core", "export-verify", "reverify-verify", "paired-publication",
                      "changed-candidate", "changed-fasta", "changed-originals")
 OBSERVATIONS = tuple(case + "-" + name for case in CASE_IDS for name in CASE_OBSERVATIONS) + (
     "staged-insufficient-capacity", "staged-capacity-no-publication", "staged-completion-without-feedback", "incomplete-reference")
+AUTHORED_OBSERVATIONS = tuple("authored-" + name for name in (
+    "preflight", "compile-core", "export-verify", "reverify-verify", "paired-publication", "changed-originals",
+    "completion-without-feedback", "completion-no-publication", "catalog-authorization", "catalog-no-publication"))
+OBSERVATIONS += AUTHORED_OBSERVATIONS
+PROJECT_IDS = CASE_IDS + ("authored",)
+AUTHOR_EXAMPLE = "examples/author_staged_research_project.py"
+CATALOG_CODE = "policy_realization_catalog"
+CATALOG_MESSAGE = "Membership bridge does not pin the complete original catalog entry."
+# Independently reviewed public authoring locations; declaration meanings remain
+# the complete frozen staged original. These are not read from producer output.
+AUTHORED_SPANS = (("executor", 49), ("encounter/target", 50), ("encounter", 50), ("clock", 51),
+    ("condition", 52), ("product", 54), ("stage_one", 58), ("stage_two", 60),
+    ("regimen/stages", 63), ("regimen/start", 63), ("regimen/handoff", 63), ("regimen/completed", 63),
+    ("regimen/first_failed", 63), ("regimen/second_failed", 63), ("regimen/first_timed_out", 63),
+    ("regimen/second_timed_out", 63), ("first_initiation", 67), ("second_initiation", 67))
+
 
 
 def require(condition, message):
     if not condition:
         raise AssertionError(message)
+
+
+def exact_json(left, right):
+    """Compare literal canonical JSON kinds, including bool versus integer."""
+    from biocompiler.core_client import encode_json
+    return encode_json(left) == encode_json(right)
 
 
 def check_census(names):
@@ -130,6 +153,83 @@ def checked_assets(root: Path, expected_path: Path) -> dict:
             and controls["schema_version"] == "biocompiler.researcher_alpha_negative_controls.v0.1"
             and qualification["real_researcher_project_status"] == "open", "Qualification scope changed")
     return {"root": root, "expected": expected, "inputs": inputs, "qualification": qualification, "controls": controls}
+
+
+def expected_project(case, packet):
+    original = packet["inputs"][case["id"]]
+    return {"schema_version": "biocompiler.research_project.v0.1", "project_id": "software.rehearsal." + case["id"],
+        "title": "Artificial software rehearsal: " + case["id"], "route": "component_material",
+        "request": original["request"], "limits": original["limits"], "sources": [{
+            "id": "original-input", "locator": case["input"], "version": "1",
+            "sha256": digest_file(packet["root"] / "data/researcher_alpha" / case["input"]),
+            "role": "caller_supplied_complete_contract",
+            "reuse_terms": "Project-authored software test inputs; repository distribution terms remain separate."}],
+        "assumptions": ["Supplied implementation and material contracts are premises; biological validity is unassessed.",
+                        "Acceptance is limited to the exact supported native profile and supplied bounded domain."]}
+
+
+def authored_original(packet):
+    """Independent original source oracle; never calls the public author/producer."""
+    original = deepcopy(packet["inputs"]["staged"])
+    program = original["request"]["implementation_request"]["document"]["program"]
+    require([row["id"] for row in program["declarations"]] == [identity for identity, _ in AUTHORED_SPANS],
+            "Authored source oracle changed its declaration census")
+    program["source_map"] = [{"$type": "SourceSpan", "declaration_id": identity,
+        "file": "author_staged_research_project.py", "line": line, "column": 0,
+        "pattern": "regimen" if identity.startswith("regimen/") else None} for identity, line in AUTHORED_SPANS]
+    return original
+
+
+def expected_authored_project(packet):
+    reference = expected_project(packet["expected"]["cases"][0], packet)
+    original = authored_original(packet)
+    source_digest = canonical_digest(original["request"]["implementation_request"]["document"])
+    reference_digest = canonical_digest(reference)
+    return {**reference, "project_id": "alpha.staged.authored", "title": "Typed staged engineering reference",
+        **original, "sources": reference["sources"] + [
+            {"id": "authoring-reference", "locator": "urn:biocompiler:project:" + reference_digest, "version": "1",
+             "sha256": reference_digest, "role": "caller_supplied_complete_contract",
+             "reuse_terms": "Original terms remain in the independently retained reference project."},
+            {"id": "authoring-source", "locator": "urn:biocompiler:canonical-policy:" + source_digest, "version": "1",
+             "sha256": source_digest, "role": "authored_policy", "reuse_terms": "Artificial software example; no biological efficacy claim."}],
+        "assumptions": reference["assumptions"] + ["Supplied implementation contracts are premises; biological validity is unassessed.",
+            "Source changes require fresh native checking against the unchanged supplied authority."]}
+
+
+def catalog_request(request):
+    value = deepcopy(request)
+    entries = value["implementation_request"]["document"]["implementations"]["implementations"]
+    require(len(entries) == 1 and entries[0]["version"] == "1", "Missing exact catalog control target")
+    entries[0]["version"] = "2"
+    return value
+
+
+def prepare_authored(packet):
+    """Public typed construction before the existing semantic execution guard."""
+    from dataclasses import replace
+    from biocompiler import policy as p
+    from biocompiler.policy.research_project import ResearchProject
+    author = load_example(packet["root"] / AUTHOR_EXAMPLE)
+    reference = ResearchProject.from_data(expected_project(packet["expected"]["cases"][0], packet))
+    project = author.author_project(reference)
+    require(exact_json(project.data, expected_authored_project(packet)), "Public typed author differs from independent complete original authority")
+    document = author.build_request()
+    def changed_document(changed):
+        digest = canonical_digest(p.to_data(changed))
+        sources = project.sources[:-1] + (replace(project.sources[-1], sha256=digest, locator="urn:biocompiler:canonical-policy:" + digest),)
+        return ResearchProject.from_build_request(project_id=project.data["project_id"], title=project.data["title"],
+            document=changed, inputs=reference.component_inputs, limits=reference.limits, sources=sources, assumptions=project.assumptions)
+    declarations = tuple(replace(row, response=replace(row.response, value="completed"))
+        if isinstance(row, p.Requirement) and row.id == "second_initiation" else row for row in document.program.declarations)
+    completion = changed_document(replace(document, program=replace(document.program, declarations=declarations)))
+    entries = document.implementations.implementations
+    catalog = changed_document(replace(document, implementations=replace(document.implementations,
+        implementations=(replace(entries[0], version="2"),))))
+    require(exact_json(completion.request, completion_request(project.request)) and exact_json(catalog.request, catalog_request(project.request)),
+            "Typed negative source edits changed independent original authority")
+    require(exact_json(completion.component_inputs.data, reference.component_inputs.data) and exact_json(catalog.component_inputs.data, reference.component_inputs.data),
+            "Typed source edits repaired supplied component authority")
+    return {"project": project, "completion": completion, "catalog": catalog}
 
 
 def load_example(path: Path):
@@ -308,10 +408,122 @@ def check_observations(observations, packet):
             and value["status"] == control["expected_status"] and value["missing"] == control["required_missing"]
             and value["scope"] == "structural_qualification_not_native_rejection" and value["artifact"] == "absent"
             and "complete versioned fields" in value["message"], "Incomplete reference became native admission")
+    check_authored_observations(observations, packet)
     return observations
 
 
-def exercise(packet, example, core, verify, retain, artifacts: Path, *, use_installed_defaults=False):
+def check_catalog_failure(value, request):
+    require(type(value) is dict and set(value) == {"status", "diagnostics", "request_sha256"}
+            and value["status"] == "error" and value["request_sha256"] == canonical_digest(request),
+            "Catalog control lost its exact current request or native error boundary")
+    diagnostics = value["diagnostics"]
+    require(type(diagnostics) is list and len(diagnostics) == 1 and diagnostics[0]["code"] == CATALOG_CODE
+            and diagnostics[0]["message"] == CATALOG_MESSAGE, "Catalog control failed at another native admission boundary")
+
+
+def check_authored_observations(observations, packet):
+    from biocompiler.core_client import CORE_VERSION, CoreResponse
+    from biocompiler.core_policy_component_material import _result
+    original, case = authored_original(packet), packet["expected"]["cases"][0]
+    preflight = observations["authored-preflight"]
+    require(preflight == {"project_sha256": canonical_digest(expected_authored_project(packet)), "route": "component_material",
+        "source_count": 3, "status": "structurally_ready", "native_status": "not_run", "biological_status": "unassessed",
+        "provenance_status": "caller_declared"}, "Authored preflight changed independent source or claim scope")
+    for name, role, operation in (("compile-core", "core", "compile"), ("export-verify", "verify", "export"),
+                                   ("reverify-verify", "verify", "export")):
+        result = observations["authored-" + name]
+        payload = deepcopy(original)
+        if operation == "export": payload["candidate"] = observations["authored-compile-core"]["candidate"]
+        _result(CoreResponse("retained-authored", operation + "-policy-component-material", "ok", result, (), role, CORE_VERSION), payload)
+        checked_result(result, case, original, exported=operation == "export")
+    require(observations["authored-export-verify"] == observations["authored-reverify-verify"], "Authored fresh verification differs")
+    require(observations["authored-paired-publication"] == {**archive_receipt(observations["authored-export-verify"]), "path": "authored.zip"},
+            "Authored publication differs from independent native bytes")
+    changed = deepcopy(expected_authored_project(packet))
+    changed["request"]["implementation_request"]["document"]["program"]["source_map"][0]["file"] += ".changed"
+    mutation = observations["authored-changed-originals"]
+    require(set(mutation) == {"status", "boundary", "changed_project_sha256", "message"} and mutation["status"] == "rejected"
+            and mutation["boundary"] == "independent_original_authority" and "authority differs" in mutation["message"]
+            and mutation["changed_project_sha256"] == canonical_digest(changed), "Authored source-map authority mutation differs")
+    completion = completion_request(original["request"])
+    result = observations["authored-completion-without-feedback"]
+    checked = _result(CoreResponse("retained-authored-negative", "compile-policy-component-material", "ok", result, (), "core", CORE_VERSION),
+                      {"request": completion, "limits": original["limits"]})
+    require(checked.status == "not_accepted" and checked.artifact is None
+            and any(row["id"] == "second_initiation" and row["status"] == "fail" for row in checked.report["preservation"]["requirements"]),
+            "Typed completion control failed at another boundary or acquired acceptance")
+    completion_publication = observations["authored-completion-no-publication"]
+    require(completion_publication == {"status": "rejected", "artifact": "absent", "boundary": "native_requirement_failure"},
+            "Typed completion failure published or changed its boundary")
+    check_catalog_failure(observations["authored-catalog-authorization"], catalog_request(original["request"]))
+    require(observations["authored-catalog-no-publication"] == {"status": "rejected", "artifact": "absent", "boundary": "native_catalog_admission"},
+            "Typed catalog failure published or changed its boundary")
+
+
+def exercise_authored(packet, authored, core, verify, public_core, public_verify, retain, artifacts):
+    from biocompiler.core_client import CoreRejected
+    from biocompiler.policy.research_project import ResearchProject, ResearchProjectError, ResearchProjectRejected
+    require(type(authored) is dict and set(authored) == {"project", "completion", "catalog"}, "Missing pre-guard typed authoring")
+    original, case = authored_original(packet), packet["expected"]["cases"][0]
+    project = authored["project"]
+    require(exact_json(project.data, expected_authored_project(packet)), "Authored original changed before guarded execution")
+    project_path, output = artifacts / "authored-project.json", artifacts / "authored.zip"
+    project.dump(project_path)
+    project = ResearchProject.load(project_path)
+    retain("authored-preflight", asdict(project.preflight()))
+    built = project.compile(output=output, core=public_core, verify=public_verify)
+    require(built.compiled.executable == "core" and built.verified.executable == "verify", "Authored path omitted independent Verify")
+    checked_result(built.compiled.result, case, original)
+    checked_result(built.verified.result, case, original, exported=True)
+    retain("authored-compile-core", built.compiled.result)
+    retain("authored-export-verify", built.verified.result)
+    fresh = project.verify_bundle(output, verify=public_verify)
+    checked_result(fresh.result, case, original, exported=True)
+    require(fresh.result == built.verified.result, "Authored fresh Verify differs")
+    retain("authored-reverify-verify", fresh.result)
+    pair = {**archive_receipt(fresh.result, output), "path": output.name}
+    retain("authored-paired-publication", pair)
+    altered = project.data
+    altered["request"]["implementation_request"]["document"]["program"]["source_map"][0]["file"] += ".changed"
+    try:
+        ResearchProject.from_data(altered).verify_bundle(output, verify=public_verify)
+    except ResearchProjectError as error:
+        require("authority differs" in str(error), "Authored stale originals failed at another boundary")
+        retain("authored-changed-originals", {"status": "rejected", "boundary": "independent_original_authority",
+            "changed_project_sha256": canonical_digest(altered), "message": str(error)})
+    else:
+        raise AssertionError("Changed authored source map acquired current original authority")
+    target = artifacts / "authored-completion.zip"
+    require(exact_json(authored["completion"].request, completion_request(original["request"])), "Typed completion control changed")
+    try:
+        authored["completion"].compile(output=target, core=public_core, verify=public_verify)
+    except ResearchProjectRejected as error:
+        require(error.status == "not_accepted" and error.compiled.artifact is None and not target.exists()
+            and any(row["id"] == "second_initiation" and row["status"] == "fail" for row in error.report["preservation"]["requirements"]),
+            "Typed completion control failed at another boundary or published output")
+        retain("authored-completion-without-feedback", error.compiled.result)
+        retain("authored-completion-no-publication", {"status": "rejected", "artifact": "absent", "boundary": "native_requirement_failure"})
+    else:
+        raise AssertionError("Typed completion requirement without feedback acquired acceptance")
+    target = artifacts / "authored-catalog.zip"
+    changed_catalog = catalog_request(original["request"])
+    require(exact_json(authored["catalog"].request, changed_catalog), "Typed catalog control changed")
+    try:
+        authored["catalog"].compile(output=target, core=public_core, verify=public_verify)
+    except CoreRejected as error:
+        value = {"status": error.response.status, "diagnostics": [asdict(row) for row in error.response.diagnostics],
+                 "request_sha256": canonical_digest(changed_catalog)}
+        check_catalog_failure(value, changed_catalog)
+        require(error.response.result is None and not target.exists(), "Catalog admission failure created a candidate or publication")
+        retain("authored-catalog-authorization", value)
+        retain("authored-catalog-no-publication", {"status": "rejected", "artifact": "absent", "boundary": "native_catalog_admission"})
+    else:
+        raise AssertionError("Changed source catalog acquired authorization from unchanged supplied membership")
+    return {"projects": {"authored": {"path": project_path.name, "sha256": digest_file(project_path),
+        "project_sha256": project.digest, "originals_sha256": canonical_digest(original)}}, "publications": [pair]}
+
+
+def exercise(packet, example, core, verify, retain, artifacts: Path, *, use_installed_defaults=False, authored=None):
     from biocompiler.core_client import CoreRejected
     from biocompiler.core_policy_component_material import PolicyComponentMaterialClient
     from biocompiler.policy.research_project import ResearchProject, ResearchProjectError
@@ -418,6 +630,8 @@ def exercise(packet, example, core, verify, retain, artifacts: Path, *, use_inst
             "missing": candidates[0]["missing"], "message": str(error), "artifact": "absent"})
     else:
         raise AssertionError("Incomplete reference metadata acquired complete project authority")
+    extra = exercise_authored(packet, authored, core, verify, public_core, public_verify, retain, artifacts)
+    projects.update(extra["projects"]); publications.extend(extra["publications"])
     return {"projects": projects, "publications": publications}
 
 
@@ -461,6 +675,7 @@ def run(args):
         sys.path.insert(0, str(root / "src"))
         spec = importlib.util.find_spec("biocompiler")
         require(spec is not None and Path(spec.origin).resolve() == root / "src/biocompiler/__init__.py", "Foreign researcher SDK package")
+        authored = prepare_authored(packet)
         boundary = ResearcherBoundary(root / "src/biocompiler")
         sys.meta_path.insert(0, boundary)
         sys.setprofile(boundary.trace)
@@ -468,7 +683,7 @@ def run(args):
         example = load_example(root / "examples/researcher_alpha.py")
         transports = {role: CoreClient(paths[role], role=role, expected_sha256=binaries[role]["sha256"], timeout_seconds=90)
                       for role in NATIVE_PATHS}
-        result.update(exercise(packet, example, transports["core"], transports["verify"], retain, artifacts))
+        result.update(exercise(packet, example, transports["core"], transports["verify"], retain, artifacts, authored=authored))
         check_census(row["name"] for row in result["observations"])
         result["parent_imports"] = boundary.origins()
         result["status"] = "passed"

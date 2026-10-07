@@ -484,7 +484,7 @@ class PolicyDevelopmentTests(unittest.TestCase):
         log.unlink()
         self.mutate = lambda called: witness.write_text('{"inert_only":true}\n')
         checked = dev.researcher_alpha_sdk(self.root)
-        self.assertEqual(checked["schema"], "biocompiler.development-researcher-alpha-feedback.v0.1")
+        self.assertEqual(checked["schema"], "biocompiler.development-researcher-alpha-feedback.v0.2")
         self.assertEqual(checked["status"], "passed")
         self.assertIs(checked["acceptance"], False)
         self.assertEqual(set(checked["outputs"]), {witness.name})
@@ -497,6 +497,16 @@ class PolicyDevelopmentTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             dev.researcher_alpha_sdk(self.root)
         self.assertEqual(json.loads(report_path.read_text())["status"], "failed")
+
+    def test_researcher_typed_example_is_part_of_fresh_source_authority(self):
+        self.prepare_staged_sdk()
+        self.assertIn("examples/author_staged_research_project.py", dev.SOURCE_ROOTS)
+        self.mutate = lambda called: (self.root / "examples/author_staged_research_project.py").write_text("changed")
+        with self.assertRaises(ValueError):
+            dev.researcher_alpha_sdk(self.root)
+        report = json.loads((self.sdk_output / "researcher-alpha-sdk.json").read_text())
+        self.assertEqual(report["status"], "failed")
+        self.assertIs(report["acceptance"], False)
 
     def test_staged_material_sdk_fixed_paths_identity_and_failures_are_independent(self):
         self.prepare_staged_sdk()

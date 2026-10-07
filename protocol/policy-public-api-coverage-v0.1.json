@@ -1837,6 +1837,108 @@
         "shared.namespace_cli.8"
       ]
     },
+    "biocompiler.policy.component_inputs.ComponentInputsError": {
+      "scope": "Authored typed-input declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.component_inputs.ComponentMaterialInputs": {
+      "scope": "Selected immutable input preparation and project bridge controls only; no native semantic execution, installed acceptance, arbitrary-regimen completeness or biological proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "component_inputs.immutable",
+        "component_inputs.shape"
+      ]
+    },
+    "biocompiler.policy.component_inputs.ComponentMaterialInputs.__post_init__": {
+      "scope": "Retained typed-authoring dependency identity/body; no semantic, native or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.component_inputs.ComponentMaterialInputs._input_paths": {
+      "scope": "Retained typed-authoring dependency identity/body; no semantic, native or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.component_inputs.ComponentMaterialInputs._json": {
+      "scope": "Retained typed-authoring dependency identity/body; no semantic, native or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.component_inputs.ComponentMaterialInputs.data": {
+      "scope": "Selected immutable input preparation and project bridge controls only; no native semantic execution, installed acceptance, arbitrary-regimen completeness or biological proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "component_inputs.immutable"
+      ]
+    },
+    "biocompiler.policy.component_inputs.ComponentMaterialInputs.digest": {
+      "scope": "Selected immutable input preparation and project bridge controls only; no native semantic execution, installed acceptance, arbitrary-regimen completeness or biological proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "component_inputs.immutable"
+      ]
+    },
+    "biocompiler.policy.component_inputs.ComponentMaterialInputs.dump": {
+      "scope": "Selected immutable input preparation and project bridge controls only; no native semantic execution, installed acceptance, arbitrary-regimen completeness or biological proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "component_inputs.io"
+      ]
+    },
+    "biocompiler.policy.component_inputs.ComponentMaterialInputs.from_data": {
+      "scope": "Selected immutable input preparation and project bridge controls only; no native semantic execution, installed acceptance, arbitrary-regimen completeness or biological proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "component_inputs.shape",
+        "component_inputs.body"
+      ]
+    },
+    "biocompiler.policy.component_inputs.ComponentMaterialInputs.from_request": {
+      "scope": "Selected immutable input preparation and project bridge controls only; no native semantic execution, installed acceptance, arbitrary-regimen completeness or biological proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "component_inputs.originals"
+      ]
+    },
+    "biocompiler.policy.component_inputs.ComponentMaterialInputs.load": {
+      "scope": "Selected immutable input preparation and project bridge controls only; no native semantic execution, installed acceptance, arbitrary-regimen completeness or biological proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "component_inputs.io",
+        "component_inputs.unsafe"
+      ]
+    },
+    "biocompiler.policy.component_inputs.ComponentMaterialInputs.prepare": {
+      "scope": "Selected immutable input preparation and project bridge controls only; no native semantic execution, installed acceptance, arbitrary-regimen completeness or biological proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "component_inputs.originals",
+        "component_inputs.source",
+        "component_inputs.requirements",
+        "component_inputs.body"
+      ]
+    },
+    "biocompiler.policy.component_inputs.MAX_INPUT_BYTES": {
+      "scope": "Retained typed-authoring dependency identity/body; no semantic, native or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.component_inputs.SCHEMA": {
+      "scope": "Retained typed-authoring dependency identity/body; no semantic, native or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.component_inputs._parts": {
+      "scope": "Retained typed-authoring dependency identity/body; no semantic, native or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.component_inputs._require": {
+      "scope": "Retained typed-authoring dependency identity/body; no semantic, native or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.policy.component_material.check": {
       "scope": "Selected synthetic component transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
       "status": "shared_invariant",
@@ -6706,6 +6808,11 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.policy.research_project.ResearchProject.assumptions": {
+      "scope": "Authored typed-input declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
     "biocompiler.policy.research_project.ResearchProject.compile": {
       "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
       "status": "shared_invariant",
@@ -6713,6 +6820,14 @@
         "research_project.routes",
         "research_project.roles",
         "research_project.diagnostics"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.component_inputs": {
+      "scope": "Selected immutable input preparation and project bridge controls only; no native semantic execution, installed acceptance, arbitrary-regimen completeness or biological proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "component_inputs.bridge",
+        "component_inputs.selection"
       ]
     },
     "biocompiler.policy.research_project.ResearchProject.data": {
@@ -6735,6 +6850,14 @@
       "witnesses": [
         "research_project.io",
         "research_project.atomic"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.from_build_request": {
+      "scope": "Selected immutable input preparation and project bridge controls only; no native semantic execution, installed acceptance, arbitrary-regimen completeness or biological proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "component_inputs.originals",
+        "component_inputs.bridge"
       ]
     },
     "biocompiler.policy.research_project.ResearchProject.from_data": {
@@ -6786,6 +6909,11 @@
       "witnesses": [
         "research_project.routes"
       ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.sources": {
+      "scope": "Authored typed-input declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
     },
     "biocompiler.policy.research_project.ResearchProject.verify_bundle": {
       "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
@@ -6898,6 +7026,11 @@
     },
     "biocompiler.policy.research_project._project": {
       "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project._publish_json": {
+      "scope": "Retained typed-authoring dependency identity/body; no semantic, native or biological acceptance authority.",
       "status": "dependency",
       "witnesses": []
     },
@@ -7391,6 +7524,7 @@
   },
   "inventory": {
     "aliases": {
+      "biocompiler.policy.component_inputs.MAX_INPUT_BYTES": "biocompiler.policy.research_project.MAX_PROJECT_BYTES",
       "biocompiler.policy.inspection.render_html": "biocompiler.policy.inspection.to_html",
       "biocompiler.policy.inspection.summary": "biocompiler.policy.inspection.inspect"
     },
@@ -9954,6 +10088,182 @@
           "symbol": "main"
         },
         "syntax_sha256": "50fb5eb9469b664adce030257a789e48efbcb6a6ba087c8b6357ce48f97cb20d"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.ComponentInputsError",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "ComponentInputsError"
+        },
+        "syntax_sha256": "83219d48d9d0fc2d87831d18272b8d8bbb138fbfa72e7d330c02e81b81fbf257"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.ComponentMaterialInputs",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "ComponentMaterialInputs"
+        },
+        "syntax_sha256": "d2535e2354b7a582ee6df1145e5c0eaef2928a2794f9c5d3eef37a29380cffcf"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.ComponentMaterialInputs.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "ComponentMaterialInputs.__post_init__"
+        },
+        "syntax_sha256": "13413850a76c6f29851452e28bb521859253498a45339575d22ee03efc644926"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.ComponentMaterialInputs._input_paths",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "tuple[Path, ...] = ()",
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "ComponentMaterialInputs._input_paths"
+        },
+        "syntax_sha256": "77fb75c2518e68f9b8c2a59924407ae77f013bd85b0a722559cddbcbc1944057"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.ComponentMaterialInputs._json",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "bytes",
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "ComponentMaterialInputs._json"
+        },
+        "syntax_sha256": "63a3a2ddaadf5a73736870745782248d5e282639c5108317f7b22e8f736eecff"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.ComponentMaterialInputs.data",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "ComponentMaterialInputs.data"
+        },
+        "syntax_sha256": "7416ccb4a756881a3a3e3a2227e64b364e08ce706632a4adc1cbf14f2de97bf9"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.ComponentMaterialInputs.digest",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> str",
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "ComponentMaterialInputs.digest"
+        },
+        "syntax_sha256": "35d727bdf56684d5f4d787f1c50f66969339a64dcce93aa12dca8d8b2d49fba3"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.ComponentMaterialInputs.dump",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, path: Path | str, *, replace: bool=False -> None",
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "ComponentMaterialInputs.dump"
+        },
+        "syntax_sha256": "701aca296c2ab2eed6b55057ae75bb19b84e8c0590151b88eab7be51df661699"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.ComponentMaterialInputs.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> ComponentMaterialInputs",
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "ComponentMaterialInputs.from_data"
+        },
+        "syntax_sha256": "1fc5cd2319a35a37f1bae5a18805e60bb4bdb6f1920159561170c944907274ff"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.ComponentMaterialInputs.from_request",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, request: JsonValue -> ComponentMaterialInputs",
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "ComponentMaterialInputs.from_request"
+        },
+        "syntax_sha256": "07b8d08fe4f85cd1f8d2880c2513a35c2d96ffbf1f0dad67f815d39eb8e4b0c2"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.ComponentMaterialInputs.load",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, path: Path | str -> ComponentMaterialInputs",
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "ComponentMaterialInputs.load"
+        },
+        "syntax_sha256": "a5f474db7e5b2de2f8179e7c61fcadc6c20333609fe4e7738b8b42565cd62960"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.ComponentMaterialInputs.prepare",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, document: BuildRequest -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "ComponentMaterialInputs.prepare"
+        },
+        "syntax_sha256": "220f93d588c928512946ea6ccc6ba81fe80f605fcc5ab726d01b6569fa3fd616"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.MAX_INPUT_BYTES",
+        "kind": "alias",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "MAX_INPUT_BYTES"
+        },
+        "syntax_sha256": "825afda661b39dac8ac51eb42f94d405b08834d095dd3ca616fddce48b935e06"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs.SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "SCHEMA"
+        },
+        "syntax_sha256": "f21150c3b378a751d4dd46db00eccafcdbcd3d742590971ec68837b4b14ae7c6"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs._parts",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "_parts"
+        },
+        "syntax_sha256": "9b0ddba017a5be668cefae44c2a2b7541ee6fff7ee117f9804595c3a9e821960"
+      },
+      {
+        "id": "biocompiler.policy.component_inputs._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: object, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/component_inputs.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "ffd7f9ac2798176915add9c821d0da40ebd8a3c9812ff3109da76141b68f0f57"
       },
       {
         "id": "biocompiler.policy.component_material.check",
@@ -15420,7 +15730,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "ResearchProject"
         },
-        "syntax_sha256": "c6a2c6f959ef137535bb5bd4c24eda557c401c47f7d35bea8cebf6bac1461559"
+        "syntax_sha256": "a46f92cc57bb9b83dfc6d9ddc12ac348b34f80e37c0f6ef42c036ad492b608f0"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.__post_init__",
@@ -15456,6 +15766,17 @@
         "syntax_sha256": "63a3a2ddaadf5a73736870745782248d5e282639c5108317f7b22e8f736eecff"
       },
       {
+        "id": "biocompiler.policy.research_project.ResearchProject.assumptions",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> tuple[str, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.assumptions"
+        },
+        "syntax_sha256": "51506ae13a5a3be16549c1b6ade6f04046f12cfc857dd8d96cf035b9aa1a029c"
+      },
+      {
         "id": "biocompiler.policy.research_project.ResearchProject.compile",
         "kind": "method",
         "scope": "public_api",
@@ -15465,6 +15786,17 @@
           "symbol": "ResearchProject.compile"
         },
         "syntax_sha256": "7e6c0341a79ab68ce86f43b797e2c97f1a84a983cac0f96e6e9338a161b4e583"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.component_inputs",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> ComponentMaterialInputs",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.component_inputs"
+        },
+        "syntax_sha256": "e24d987dc9393c38411a763db5ea00f9640b75ad332ba19a6bedab6bbcd52a94"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.data",
@@ -15497,7 +15829,18 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "ResearchProject.dump"
         },
-        "syntax_sha256": "09c1aff88db630a20c5586abd0d980075d61155d12dfdecf41b6158af34299d8"
+        "syntax_sha256": "416eee8f2ad69bf0d1bbe6082a4474b001b34d1fddaa78fff75c173a7f318a6b"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.from_build_request",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, *, project_id: str, title: str, document: BuildRequest, inputs: ComponentMaterialInputs, limits: JsonValue, sources: Sequence[SourceRecord], assumptions: Sequence[str] -> ResearchProject",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.from_build_request"
+        },
+        "syntax_sha256": "def42ab081a6f33874137c97c0a49a2e91f04305855a552f254a457333676640"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.from_data",
@@ -15575,6 +15918,17 @@
           "symbol": "ResearchProject.route"
         },
         "syntax_sha256": "d9946e97362b97f7b6238677b9a57a618ecc02eb58462e1693a911e144fbc4c8"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.sources",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> tuple[SourceRecord, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.sources"
+        },
+        "syntax_sha256": "df26da8f90f8fb3fb198c4defe43773ce1055b49c987065835eb335ffed3c263"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.verify_bundle",
@@ -15795,6 +16149,17 @@
           "symbol": "_project"
         },
         "syntax_sha256": "7956c0e0afb998432b58f2c26f0fea42f91ace4a475e199024ce9ccf8c419a31"
+      },
+      {
+        "id": "biocompiler.policy.research_project._publish_json",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "raw: bytes, output: Path, input_paths: tuple[Path, ...], *, replace: bool -> None",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "_publish_json"
+        },
+        "syntax_sha256": "6616fa4a7962a5c695d1b7cd58c1801c141975d4ceea838b377fd87f7ef5e4b7"
       },
       {
         "id": "biocompiler.policy.research_project._read_file",
@@ -16892,6 +17257,7 @@
       "src/biocompiler/policy/catalog.py": "96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30",
       "src/biocompiler/policy/chassis.py": "21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1",
       "src/biocompiler/policy/cli.py": "beaff7cf4994019f24fab7361e588a3702b32bb16d357bda42e16000a5060d0f",
+      "src/biocompiler/policy/component_inputs.py": "4ccc28475ca07699d4af8e5266edcb94ec34e92ddacc2f7d57bfd12d4253e3f7",
       "src/biocompiler/policy/component_material.py": "24da1db993f5f56ff516ad3b2d14667731f681ebe9f1c9ae6898d0728bd5eaba",
       "src/biocompiler/policy/component_selection.py": "10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80",
       "src/biocompiler/policy/coordination.py": "ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9",
@@ -16911,7 +17277,7 @@
       "src/biocompiler/policy/patterns.py": "9640080fa505e361b09a2dd9a644938365549b37c8be3a8ce547bc1391044b48",
       "src/biocompiler/policy/programs.py": "ef2823520e47f29f666c8c6bec8f30d43a21195ab5379ae82e0a062563f686fd",
       "src/biocompiler/policy/requirements.py": "80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b",
-      "src/biocompiler/policy/research_project.py": "44e278ee572bd0bb097fd401432c5ec64c1fd5f9208eb8f11efd5fe0f670b61d",
+      "src/biocompiler/policy/research_project.py": "fa89ae920fc5bb76893ab06244cc24f9be9c5f836749b51778122eb348acb07c",
       "src/biocompiler/policy/serialization.py": "d0e2feb4e8dd3fe65a10793d20c06144ad6fec396d99e6107f3485682ee570bf",
       "src/biocompiler/policy/space.py": "c32bc67b86370f471fcabe54fdb61332f746130bc23e22d5a2ce7e08666b97c9",
       "src/biocompiler/policy/state.py": "94ef54313d4475428ca678258dfe59727c8dbbe8d327e26b79ba819dcc20d22d",
@@ -17260,6 +17626,54 @@
       {
         "path": "src/biocompiler/policy/cli.py",
         "syntax_sha256": "d3800245ac3a2ecb913f10df9a64a1146d0bdf833877b4605682a52708a828b3"
+      },
+      {
+        "path": "src/biocompiler/policy/component_inputs.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/component_inputs.py",
+        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/policy/component_inputs.py",
+        "syntax_sha256": "e8157a73584becff04ba142bf301a16a3e95078563bad5119c5eb01211b23c01"
+      },
+      {
+        "path": "src/biocompiler/policy/component_inputs.py",
+        "syntax_sha256": "b57c69ae5c2ef8b591a83cb86e074c28bc51985ccdacbba23baf8bf82e12c205"
+      },
+      {
+        "path": "src/biocompiler/policy/component_inputs.py",
+        "syntax_sha256": "1ed6cd3628c06bd941b1208109f32ebd1223f7ac1a6cce709499855441506331"
+      },
+      {
+        "path": "src/biocompiler/policy/component_inputs.py",
+        "syntax_sha256": "f7ac139c8d303f3133275c9dde8aac7adc3d0f3c3088d16b0564bad7e3a59f9c"
+      },
+      {
+        "path": "src/biocompiler/policy/component_inputs.py",
+        "syntax_sha256": "06ee238bc36851d07ff9403e35d0fa66c182bb4b56724f4d5f5dd10eff1eb490"
+      },
+      {
+        "path": "src/biocompiler/policy/component_inputs.py",
+        "syntax_sha256": "e8fa43fc5aaafcbc46becd57460f82e9e3083e45234d13a7ea7a1a82e4a63413"
+      },
+      {
+        "path": "src/biocompiler/policy/component_inputs.py",
+        "syntax_sha256": "b08499f5c2591f5620f201692593841f0c2d667e17c1076a2fc7c913c62306c5"
+      },
+      {
+        "path": "src/biocompiler/policy/component_inputs.py",
+        "syntax_sha256": "bbe304036cbf548fbfdb84f8a2fcfdb9a2f6341c3344d46cf624128b65dd1605"
+      },
+      {
+        "path": "src/biocompiler/policy/component_inputs.py",
+        "syntax_sha256": "6b5dfc6cd619afc1cc4d940a30d27465fea7064af5b674e3f96ac31b69e1e08f"
+      },
+      {
+        "path": "src/biocompiler/policy/component_inputs.py",
+        "syntax_sha256": "8140e5d6a5ba57af9870a1b0cbfb7d5d06c751b49fa8f40eb46d64d49a526a76"
       },
       {
         "path": "src/biocompiler/policy/component_material.py",
@@ -17679,7 +18093,7 @@
       },
       {
         "path": "src/biocompiler/policy/research_project.py",
-        "syntax_sha256": "c00916fd8873d036c861ab99babe5ecaa5246ec92cebb21f351e0836c6a1fd79"
+        "syntax_sha256": "c67ac76b0c3c0767cd2c0585dbc56611fadd08339ffa59237dbaaf9b127a3313"
       },
       {
         "path": "src/biocompiler/policy/research_project.py",
@@ -17712,6 +18126,22 @@
       {
         "path": "src/biocompiler/policy/research_project.py",
         "syntax_sha256": "e57aafed655f7eee9b18cd7fecf1afd0b142611d3a2b69b317ffd399d9270521"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "6b5dfc6cd619afc1cc4d940a30d27465fea7064af5b674e3f96ac31b69e1e08f"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "3db66aec443223ec01797883a64f4a0a0632a29ace674b264188719059a1dda7"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "3db66aec443223ec01797883a64f4a0a0632a29ace674b264188719059a1dda7"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "3db66aec443223ec01797883a64f4a0a0632a29ace674b264188719059a1dda7"
       },
       {
         "path": "src/biocompiler/policy/serialization.py",
@@ -18636,6 +19066,86 @@
       "role": "rejection",
       "symbol": "PolicyComponentMaterialTransportTests.test_whole_wrapper_budget_ledger_and_replay_mutations_reject",
       "syntax_sha256": "bcf163e57a795418270b89c79b53e74000edafc97a78974c52c8b7b6bc9be982"
+    },
+    "component_inputs.body": {
+      "distinction": "Changed supplied model bodies retain their original declared pins for later native checking; authoring does not repair or authenticate authority.",
+      "file_sha256": "1590e0f6b59d99484506dac28717c51f301bd2e05b39a493962c818e453bf6cd",
+      "path": "tests/test_policy_component_inputs.py",
+      "role": "positive",
+      "symbol": "ComponentInputsTests.test_supplied_body_changes_are_not_automatically_rehashed",
+      "syntax_sha256": "cb558172dbbf7c837f331a5f9ffef008dba550f0fea4fb60f58d4e480ee07ba3"
+    },
+    "component_inputs.bridge": {
+      "distinction": "The typed project bridge retains exact supplied authority and loaded-original output protection, rejecting an alias before mocked native transport.",
+      "file_sha256": "1590e0f6b59d99484506dac28717c51f301bd2e05b39a493962c818e453bf6cd",
+      "path": "tests/test_policy_component_inputs.py",
+      "role": "mixed",
+      "symbol": "ComponentInputsTests.test_project_bridge_carries_loaded_input_protection",
+      "syntax_sha256": "90f16e2b57111bd1d8ab7125f96af315c491a69274218de593135b00cf4584e6"
+    },
+    "component_inputs.immutable": {
+      "distinction": "Immutable supplied input bytes and detached returned views; no native execution or generated dataclass protocol completeness is inferred.",
+      "file_sha256": "1590e0f6b59d99484506dac28717c51f301bd2e05b39a493962c818e453bf6cd",
+      "path": "tests/test_policy_component_inputs.py",
+      "role": "mixed",
+      "symbol": "ComponentInputsTests.test_snapshots_and_returned_views_are_independent_and_frozen",
+      "syntax_sha256": "3353ae5843dae87a61d061db20f6bdd988ac51ae5de6eaa7f73a7f75c5af47d5"
+    },
+    "component_inputs.io": {
+      "distinction": "Canonical component input round trips and original hardlink protection; payload validation is outside this file I/O control.",
+      "file_sha256": "1590e0f6b59d99484506dac28717c51f301bd2e05b39a493962c818e453bf6cd",
+      "path": "tests/test_policy_component_inputs.py",
+      "role": "mixed",
+      "symbol": "ComponentInputsTests.test_load_dump_round_trip_and_original_alias_protection",
+      "syntax_sha256": "147dba5d46e1e7c0a510d4903520808310034671a82239703cc32037f8d1caca"
+    },
+    "component_inputs.originals": {
+      "distinction": "Typed source preparation preserves every supplied implementation/material authority field; preflight remains structural with native work prohibited.",
+      "file_sha256": "1590e0f6b59d99484506dac28717c51f301bd2e05b39a493962c818e453bf6cd",
+      "path": "tests/test_policy_component_inputs.py",
+      "role": "positive",
+      "symbol": "ComponentInputsTests.test_extraction_and_preparation_preserve_all_original_authority",
+      "syntax_sha256": "71cae9b8305c3e0ff1a3b4ffae8f981e3c89d23fcde87d0362474010bb223b0f"
+    },
+    "component_inputs.requirements": {
+      "distinction": "Changed completion requirements remain in the authored source with unchanged external authority; this only proves preparation preserves the obligation.",
+      "file_sha256": "1590e0f6b59d99484506dac28717c51f301bd2e05b39a493962c818e453bf6cd",
+      "path": "tests/test_policy_component_inputs.py",
+      "role": "positive",
+      "symbol": "ComponentInputsTests.test_changed_requirement_is_retained_for_native_assessment",
+      "syntax_sha256": "a9a1325067a985741241f80a8cf718f360912a2a2568c7c46554a396b516d329"
+    },
+    "component_inputs.selection": {
+      "distinction": "A complete selection project cannot silently lose alternatives when extracting component-only authoring inputs.",
+      "file_sha256": "1590e0f6b59d99484506dac28717c51f301bd2e05b39a493962c818e453bf6cd",
+      "path": "tests/test_policy_component_inputs.py",
+      "role": "rejection",
+      "symbol": "ComponentInputsTests.test_selection_project_cannot_be_silently_reduced_to_component_inputs",
+      "syntax_sha256": "cd335f6724b595b233bd0db14bfe719f9211da3b015075a501e32ef25de0c20f"
+    },
+    "component_inputs.shape": {
+      "distinction": "Closed versioned component input fields reject malformed structural records without inferring native semantic or biological validity.",
+      "file_sha256": "1590e0f6b59d99484506dac28717c51f301bd2e05b39a493962c818e453bf6cd",
+      "path": "tests/test_policy_component_inputs.py",
+      "role": "rejection",
+      "symbol": "ComponentInputsTests.test_closed_package_fields_and_explicit_records_are_required",
+      "syntax_sha256": "66ce06ae5077c4d01ef141a760a3fa24b0ee29094718fa7fe5cf65eb7bc71238"
+    },
+    "component_inputs.source": {
+      "distinction": "A changed authored catalog version is retained without rewriting original supplied catalog pins; semantic admission remains native work.",
+      "file_sha256": "1590e0f6b59d99484506dac28717c51f301bd2e05b39a493962c818e453bf6cd",
+      "path": "tests/test_policy_component_inputs.py",
+      "role": "positive",
+      "symbol": "ComponentInputsTests.test_changed_source_never_repins_supplied_authority",
+      "syntax_sha256": "a004ab6a0ab626355a17c49c006b1dc11c9f8b15eb4e849aaf0d69b9d00accc5"
+    },
+    "component_inputs.unsafe": {
+      "distinction": "Bounded duplicate-safe component input loading rejects redirected or special files; no native semantic execution occurs.",
+      "file_sha256": "1590e0f6b59d99484506dac28717c51f301bd2e05b39a493962c818e453bf6cd",
+      "path": "tests/test_policy_component_inputs.py",
+      "role": "rejection",
+      "symbol": "ComponentInputsTests.test_load_is_bounded_duplicate_safe_and_rejects_symlinks_and_fifos",
+      "syntax_sha256": "c307daacec3c43896c3a15cbf26c70cfedaa64dc5f7b16db003b9bf92e2e9fe8"
     },
     "pattern.bounded_response": {
       "distinction": "Independent literal bounded_response expansion, ordered fields/refs/source origins; no execution claim.",

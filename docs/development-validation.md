@@ -55,10 +55,12 @@ build. Each suite retains its original command, fixture, source and executable
 checks, timeout and separate log. The coordinator alone publishes the fixed
 ordered result inventory and waits for every outcome. After native completion,
 two SDK lanes overlap: component then selection, and staged source then staged
-material then the 20-observation researcher-project workflow. Each lane preserves
-its dependencies and existing campaign receipts.
+material then the 30-observation researcher-project workflow. The original 20
+project observations are retained, and 10 observations cover public typed source
+authoring against unchanged supplied contracts and its required rejections.
+Each lane preserves its dependencies and existing campaign receipts.
 There are at most two workers in either phase, and no SDK calls are moved into
-unguarded worker threads inside a campaign. All 31 suites and 130 observations
+unguarded worker threads inside a campaign. All 31 suites and 140 observations
 remain mandatory.
 
 At the baseline command durations, this scheduling can remove roughly six
@@ -97,7 +99,7 @@ Choose early feedback from the affected dependency surface. A staged-regimen
 change should get staged feedback promptly; edits to shared semantics, transport,
 authority, packaging or receipt accounting need broader regression coverage.
 **Automatic profile-specific hosted routing is not implemented.** The current
-`policy-development.yml` still requires all 31 native suites and all 130 SDK
+`policy-development.yml` still requires all 31 native suites and all 140 SDK
 observations. Individual witnesses or future scoped runners must report their
 own scope and cannot satisfy that complete census. Until explicit scoped routing
 exists, use the supported complete workflow for hosted development acceptance.

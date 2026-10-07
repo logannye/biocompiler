@@ -30,7 +30,7 @@ except ModuleNotFoundError:
     from tools.check_policy_material import archive_receipt
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA = "biocompiler.researcher_alpha_installed_campaign.v0.1"
+SCHEMA = "biocompiler.researcher_alpha_installed_campaign.v0.2"
 SCOPE = "installed_public_research_workflow_under_supplied_artificial_contracts"
 EXPECTED = researcher.EXPECTED
 RECEIPT = "researcher-alpha.json"
@@ -54,7 +54,7 @@ def check_origins(origins, package, modules):
     require(type(package) is str and Path(package).is_absolute() and ".." not in Path(package).parts,
             "Missing installed researcher package origin")
     required = component.REQUIRED_MODULES | {"biocompiler.core_distribution", "biocompiler.core_policy_component_selection",
-                "biocompiler.policy.component_selection", "biocompiler.policy.research_project"}
+                "biocompiler.policy.component_selection", "biocompiler.policy.research_project", "biocompiler.policy.component_inputs"}
     require(type(origins) is dict and required <= set(origins), "Missing installed researcher transport origins")
     for name, origin in origins.items():
         require(researcher.ResearcherBoundary.allowed(name), "Forbidden Python semantic module in researcher campaign")
@@ -65,17 +65,8 @@ def check_origins(origins, package, modules):
 
 
 def expected_project(case, packet):
-    """Independent literal authority for the public example's project envelope."""
-    original = packet["inputs"][case["id"]]
-    return {"schema_version": "biocompiler.research_project.v0.1", "project_id": "software.rehearsal." + case["id"],
-        "title": "Artificial software rehearsal: " + case["id"], "route": "component_material",
-        "request": original["request"], "limits": original["limits"], "sources": [{
-            "id": "original-input", "locator": case["input"], "version": "1",
-            "sha256": pin(packet["root"] / "data/researcher_alpha" / case["input"])["sha256"],
-            "role": "caller_supplied_complete_contract",
-            "reuse_terms": "Project-authored software test inputs; repository distribution terms remain separate."}],
-        "assumptions": ["Supplied implementation and material contracts are premises; biological validity is unassessed.",
-                        "Acceptance is limited to the exact supported native profile and supplied bounded domain."]}
+    """Independent literal authority; never calls the public producer."""
+    return researcher.expected_project(case, packet)
 
 
 def check_mutant(path, original, kind):
@@ -148,9 +139,11 @@ def validate_installed(receipt, evidence_root, expected_path, identity, binaries
         observations.append({"name": row["name"], "result": read_json(path, component.MAX_EVIDENCE)})
     require(receipt["observations_fingerprint"] == canonical_digest(observations), "Researcher observations fingerprint differs")
     values = researcher.check_observations({row["name"]: row["result"] for row in observations}, packet)
-    require(type(receipt["projects"]) is dict and set(receipt["projects"]) == set(researcher.CASE_IDS), "Incomplete researcher project census")
-    require(type(receipt["publications"]) is list and len(receipt["publications"]) == len(researcher.CASE_IDS), "Incomplete researcher publication census")
-    for index, case in enumerate(packet["expected"]["cases"]):
+    require(type(receipt["projects"]) is dict and set(receipt["projects"]) == set(researcher.PROJECT_IDS), "Incomplete researcher project census")
+    require(type(receipt["publications"]) is list and len(receipt["publications"]) == len(researcher.PROJECT_IDS), "Incomplete researcher publication census")
+    authored_case = {**packet["expected"]["cases"][0], "id": "authored",
+                     "originals_sha256": canonical_digest(researcher.authored_original(packet))}
+    for index, case in enumerate([*packet["expected"]["cases"], authored_case]):
         identity = case["id"]
         project = receipt["projects"][identity]
         require(type(project) is dict and set(project) == {"path", "sha256", "project_sha256", "originals_sha256"}
@@ -158,7 +151,7 @@ def validate_installed(receipt, evidence_root, expected_path, identity, binaries
         path = evidence_root / FOLDER / project["path"]
         raw_pin = pin(path); expected_files[FOLDER + "/" + project["path"]] = raw_pin
         actual = read_json(path, 8 * 1024 * 1024)
-        require(actual == expected_project(case, packet) and project["sha256"] == raw_pin["sha256"]
+        require(researcher.exact_json(actual, researcher.expected_authored_project(packet) if identity == "authored" else expected_project(case, packet)) and project["sha256"] == raw_pin["sha256"]
                 and canonical_digest(actual) == project["project_sha256"] == values[identity + "-preflight"]["project_sha256"]
                 and project["originals_sha256"] == case["originals_sha256"], "Retained researcher project changed its independent originals")
         changed_originals = deepcopy(actual)
@@ -170,7 +163,7 @@ def validate_installed(receipt, evidence_root, expected_path, identity, binaries
         path = evidence_root / FOLDER / publication["path"]
         archive_receipt(values[identity + "-export-verify"], path)
         expected_files[FOLDER + "/" + publication["path"]] = pin(path)
-        for kind in ("candidate", "fasta"):
+        for kind in (() if identity == "authored" else ("candidate", "fasta")):
             name = FOLDER + "/" + identity + "-changed-" + kind + ".zip"
             path = evidence_root / name
             expected_files[name] = pin(path)
@@ -253,6 +246,7 @@ def run(args):
                 and component.installed_package_modules(ROOT, package) == modules
                 and {role: pin(path, 256 * 1024 * 1024, executable=True) for role, path in paths.items()} == measured
                 and all(pin(copied / name) == originals[name] for name in COPY_INPUTS), "Researcher installed source/input/package/native authority changed")
+    authored = researcher.prepare_authored(packet)
     previous, boundary = sys.getprofile(), researcher.ResearcherBoundary(package)
     try:
         boundary.origins()
@@ -260,7 +254,7 @@ def run(args):
         from biocompiler.core_client import CoreClient
         example = researcher.load_example(copied / EXAMPLE)
         transports = {role: CoreClient(path, role=role, expected_sha256=binaries["biocompiler-" + role], timeout_seconds=90) for role, path in paths.items()}
-        result.update(researcher.exercise(packet, example, transports["core"], transports["verify"], retain, artifacts, use_installed_defaults=True))
+        result.update(researcher.exercise(packet, example, transports["core"], transports["verify"], retain, artifacts, use_installed_defaults=True, authored=authored))
         researcher.check_census(row["name"] for row in result["observations"])
         result["parent_imports"] = boundary.origins(); check_origins(result["parent_imports"], str(package), modules)
         observations = [{"name": row["name"], "result": read_json(output.parent / row["path"], component.MAX_EVIDENCE)} for row in result["observations"]]

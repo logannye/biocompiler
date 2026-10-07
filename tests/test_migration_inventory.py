@@ -31,6 +31,19 @@ class MigrationInventoryTests(unittest.TestCase):
                 'retain_public_project_authoring_and_supplied_inputs_with_fresh_native_verification_before_export')
             self.assertEqual(entry['migration_state'], 'legacy')
 
+    def test_component_inputs_preserve_supplied_authority_without_semantic_admission(self):
+        entries = [entry for entry in self.actual['entries']
+                   if entry['current_implementation']['source'] == 'policy.component_inputs']
+        self.assertTrue(entries)
+        for entry in entries:
+            contract = self.actual['contracts'][entry['contract']]
+            self.assertEqual(contract['target_owner'], 'Python')
+            self.assertEqual(contract['source_authority'],
+                'unchanged_independent_component_authority_and_authored_source_require_fresh_native_assessment')
+            self.assertEqual(contract['disposition'],
+                'retain_immutable_complete_supplied_inputs_and_typed_source_preparation_without_repair_or_semantic_authority')
+            self.assertEqual(entry['migration_state'], 'legacy')
+
     def fixture(self, *, package="__version__ = '0.1.0'\n", cli=None, server=None):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)

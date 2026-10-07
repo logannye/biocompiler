@@ -28,14 +28,14 @@ LEDGER = "protocol/policy-public-api-coverage-v0.1.json"
 SCHEMA = "biocompiler.policy_public_api_coverage.v0.1"
 CLAIM = "Static public-source inventory and reviewed witness links only; neither executed coverage nor semantic/native/material/release acceptance."
 RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Generated or inherited dataclass runtime protocols are represented by reviewed decorator/field/base contracts, not an exhaustive runtime-attribute census; Python record equality is not symbolic policy comparison."
-# Reviewed separately from source-body pins. This literal binds all138 witness
-# meanings/owners and all845 coverage classifications, so refreshing file/AST
+# Reviewed separately from source-body pins. This literal binds all 148 witness
+# meanings/owners and all 866 coverage classifications, so refreshing file/AST
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "1ca37142a2beec20c09db60e709e5aa8273da2f5e2002a104ed21c228d6b7d62"
+REVIEWED_METADATA_SHA256 = "871ee348f8cc52835099c2b212374c00a903ca0dd6276f0e2104eaefd2fc77db"
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model native observations operational patterns programs requirements research_project serialization space state time validation values".split())
+MODULES = tuple("__init__ behavior catalog chassis cli component_inputs component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model native observations operational patterns programs requirements research_project serialization space state time validation values".split())
 CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py")
@@ -394,7 +394,8 @@ def discover(root: Path) -> dict[str, Any]:
     require(len(exports.get("biocompiler.policy", [])) == 112 and len(access) == 163,
             "Reviewed explicit export census differs")
     require(aliases == {"biocompiler.policy.inspection.summary": "biocompiler.policy.inspection.inspect",
-                        "biocompiler.policy.inspection.render_html": "biocompiler.policy.inspection.to_html"}, "Reviewed compatibility/display aliases differ")
+                        "biocompiler.policy.inspection.render_html": "biocompiler.policy.inspection.to_html",
+                        "biocompiler.policy.component_inputs.MAX_INPUT_BYTES": "biocompiler.policy.research_project.MAX_PROJECT_BYTES"}, "Reviewed compatibility/display aliases differ")
     require({r["id"].removeprefix("biocompiler.policy.") for r in rows if r["scope"] == "compatibility_support"} == SUPPORT,
             "Compatibility support census differs")
     require(tuple(r["source"]["symbol"].split(".")[-1] for r in rows if r["id"].startswith("biocompiler.policy.programs.ProgramBuilder.") and r["kind"] == "method" and r["scope"] == "public_api") == BUILDER_METHODS,
