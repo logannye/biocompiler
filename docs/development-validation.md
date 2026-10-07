@@ -5,7 +5,10 @@ validation coverage and independent checks. The release workflow remains
 [Python checks](../.github/workflows/ci.yml). Development feedback has a separate
 [opt-in hosted workflow](../.github/workflows/policy-development.yml), triggered
 only by pushes to `codex/dev-policy/**`. It builds the native core once on Linux
-and runs 26 fixed component, selection, generation-metering, protocol, preservation, material and construction suites.
+and runs 31 fixed staged-regimen, component, selection, generation-metering, protocol, preservation, material and construction suites.
+The staged source witness retains 33 observations across nine literal timelines;
+the staged material witness retains 16 observations through independent checking
+and paired RNA export. Both use this same fresh native build.
 The same build then runs the Python SDK witness for both component policies:
 an independently authored, domain-only source fixture is exported by a private
 test tool, the public DSL reconstructs the originals, and Core/Verify perform
@@ -14,6 +17,21 @@ nor the development receipt grants release acceptance. Core, Verify and the
 private test tool are pinned immediately after the build and rechecked across
 all stages; the private tool is absent from installed package entrypoints.
 A separate selection witness retains 35 exact observations, including metered Core generation, fresh standalone Verify equality and replay, ordering/loser controls, all original verification/export observations except the superseded Core compile-absent check, and the unchanged Verify compile rejection. Compilation itself withholds artifacts. The original component witness retains all 26 observations. These current censuses require fresh source-bound hosted execution and an independent artifact audit.
+
+The command harness keeps its 900-second default. Only the exact fixed
+`selection-sdk` command receives a 1,800-second wall-clock envelope; the workflow
+still has its 45-minute deadline. All 35 selection observations, native semantic
+work limits, publication budgets and rejection controls remain mandatory.
+A timeout retains failed feedback and any incomplete witness; it cannot produce
+complete campaign acceptance.
+
+This adjustment follows observed hosted variability. An earlier complete
+selection witness took about 663 seconds; attempt 1 of run `37656692915` at
+`3b6792490` hit the 900-second outer limit with 26 of 35 observations retained.
+The component SDK workflow step took 108 seconds in run `37571805132` and
+187 seconds in run `37656692915`, measured at the same GitHub step boundary.
+These observations justify a bounded orchestration allowance; they do not
+establish a source-performance result or change any validation outcome.
 
 Its first nine-suite run at `a89f80b07` completed successfully in 2 minutes
 41 seconds, including 43 seconds of dependency installation, 30 seconds of

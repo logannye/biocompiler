@@ -249,6 +249,32 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertIn("error", result["actions"][0])
         self.assertTrue(all(row["status"] == "not_run" for row in result["suites"]))
 
+    def test_wall_clock_extension_requires_the_exact_selection_command(self):
+        dev.prepare(self.root)
+        output = self.root / "generated/development-feedback"
+        selection = [dev.sys.executable, "-B", str(self.root / "tools/check_policy_component_selection.py"),
+            "--fixture", str(output / "selection-originals.json"),
+            "--core", str(self.root / dev.SDK_BINARIES["core"]),
+            "--verify", str(self.root / dev.SDK_BINARIES["verify"]),
+            "--output", str(output / "selection-sdk-witness.json")]
+        cases = [("dependencies", dev.DEPENDENCIES, 900), ("build", dev.BUILD, 900),
+                 ("test_policy_component_selection_check", dev.selected_suites(self.root)[0]["argv"], 900),
+                 ("component-sdk", selection, 900), ("staged-material-sdk", selection, 900),
+                 ("selection-sdk", selection, 1800)]
+        for index in (0, 2, 4, 6, 8, 10):
+            changed = list(selection)
+            changed[index] = "unreviewed-command-or-input"
+            cases.append(("selection-sdk", changed, 900))
+        for name, argv, timeout in cases:
+            (output / (name + ".log")).unlink(missing_ok=True)
+            with self.subTest(name=name, argv=argv), mock.patch.object(dev.subprocess, "run",
+                    return_value=subprocess.CompletedProcess(argv, 0)) as launch:
+                row = dev.command(self.root, output, name, argv)
+            self.assertEqual(launch.call_args.args, (argv,))
+            self.assertEqual(launch.call_args.kwargs["timeout"], timeout)
+            self.assertEqual(row["status"], "passed")
+        self.assertEqual(self.calls, [])
+
     def prepare_staged_sdk(self):
         dev.prepare(self.root)
         dev.run(self.root)

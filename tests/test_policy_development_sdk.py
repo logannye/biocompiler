@@ -1,6 +1,7 @@
 """Mocked hosted SDK orchestration; no native programs or subprocesses execute."""
 import hashlib
 import json
+import subprocess
 from copy import deepcopy
 from pathlib import Path
 import unittest
@@ -290,6 +291,39 @@ class PolicyDevelopmentSelectionSDKTests(unittest.TestCase):
             self.assertEqual(report["actions"][-1]["name"], failed)
             self.assertEqual(len(self.actions), 1 if failed == "selection-originals" else 2)
 
+    def test_selection_timeout_retains_incomplete_witness_without_promotion(self):
+        witness = self.output / "selection-sdk-witness.json"
+        partial = {"status": "incomplete", "acceptance": False,
+                   "observations": [{"inert": index} for index in range(26)]}
+        observed_timeouts = []
+
+        def launch(argv, *, cwd, stdout, stderr, timeout, check):
+            self.assertEqual(cwd, self.root)
+            self.assertEqual(stderr, subprocess.STDOUT)
+            self.assertFalse(check)
+            observed_timeouts.append(timeout)
+            if argv[0] == "opam":
+                Path(argv[-1]).write_text('{"inert_source_only":true}\n')
+                return subprocess.CompletedProcess(argv, 0)
+            witness.write_text(json.dumps(partial))
+            raise subprocess.TimeoutExpired(argv, timeout)
+
+        with mock.patch.object(dev.subprocess, "run", side_effect=launch):
+            with self.assertRaisesRegex(ValueError, "Selection SDK selection-sdk failed"):
+                dev.selection_sdk(self.root)
+        self.assertEqual(observed_timeouts, [900, 1800])
+        report = json.loads((self.output / "selection-public-sdk.json").read_text())
+        self.assertEqual(report["status"], "failed")
+        self.assertIs(report["acceptance"], False)
+        self.assertNotIn("outputs", report)
+        failed = report["actions"][-1]
+        self.assertEqual(failed["name"], "selection-sdk")
+        self.assertEqual(failed["status"], "failed")
+        self.assertNotIn("returncode", failed)
+        self.assertIn("1800", failed["error"])
+        self.assertEqual(failed["log_pin"], {"sha256": hashlib.sha256(b"").hexdigest(), "size": 0})
+        self.assertEqual(json.loads(witness.read_text()), partial)
+
     def test_workflow_retains_both_ordered_sdk_stages(self):
         text = (Path(__file__).resolve().parents[1] / dev.WORKFLOW).read_text()
         commands = [line.strip()[5:] for line in text.splitlines() if line.strip().startswith("run: ")]
@@ -297,3 +331,4 @@ class PolicyDevelopmentSelectionSDKTests(unittest.TestCase):
                                    for action in ("prepare", "run", "staged-source-sdk", "staged-material-sdk", "public-sdk", "selection-sdk")])
         self.assertEqual(text.count("PYTHONPATH: src"), 4)
         self.assertIn("path: generated/development-feedback/", text)
+        self.assertIn("timeout-minutes: 45", text)

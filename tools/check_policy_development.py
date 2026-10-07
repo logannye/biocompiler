@@ -60,6 +60,8 @@ SUITES = (
 )
 DEPENDENCIES = ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"]
 BUILD = ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]
+COMMAND_TIMEOUT_SECONDS = 900
+SELECTION_SDK_TIMEOUT_SECONDS = 1800
 SDK_BINARIES = {
     "originals": "core/_build/default/test/component_fixture_export/main.exe",
     "core": "core/_build/default/bin/core/main.exe",
@@ -207,13 +209,27 @@ def prepare(root):
         save(output / "feedback.json", report)
 
 
+def _selection_sdk_argv(root):
+    output = root / "generated/development-feedback"
+    return [sys.executable, "-B", str(root / "tools/check_policy_component_selection.py"),
+            "--fixture", str(output / "selection-originals.json"),
+            "--core", str(root / SDK_BINARIES["core"]),
+            "--verify", str(root / SDK_BINARIES["verify"]),
+            "--output", str(output / "selection-sdk-witness.json")]
+
+
 def command(root, output, name, argv):
+    # Only this exact fixed orchestration command gets the longer wall-clock
+    # envelope. Its mandatory observations and native work budgets are unchanged.
+    timeout = (SELECTION_SDK_TIMEOUT_SECONDS
+               if name == "selection-sdk" and argv == _selection_sdk_argv(root)
+               else COMMAND_TIMEOUT_SECONDS)
     start = time.monotonic()
     row = {"name": name, "argv": argv, "log": name + ".log", "status": "failed"}
     with (output / row["log"]).open("xb") as log:
         try:
             result = subprocess.run(argv, cwd=root, stdout=log, stderr=subprocess.STDOUT,
-                                    timeout=900, check=False)
+                                    timeout=timeout, check=False)
             row.update(returncode=result.returncode, status="passed" if result.returncode == 0 else "failed")
         except (OSError, subprocess.TimeoutExpired) as error:
             row["error"] = str(error)
@@ -424,9 +440,7 @@ def selection_sdk(root):
         commands = (
             ("selection-originals", ["opam", "exec", "--", str(root / SDK_BINARIES["originals"]),
                 "--selection", *(str(root / path) for path in SELECTION_ORIGINALS), str(fixture)]),
-            ("selection-sdk", [sys.executable, "-B", str(root / "tools/check_policy_component_selection.py"),
-                "--fixture", str(fixture), "--core", str(root / SDK_BINARIES["core"]),
-                "--verify", str(root / SDK_BINARIES["verify"]), "--output", str(witness)]),
+            ("selection-sdk", _selection_sdk_argv(root)),
         )
         for name, argv in commands:
             require(preparation(root) == prepared, "Selection SDK source or identity changed before execution")

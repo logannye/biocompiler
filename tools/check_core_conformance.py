@@ -53,6 +53,10 @@ from biocompiler.core_policy_component_material import (
     PROFILE as COMPONENT_MATERIAL_PROFILE, PRODUCER_PROFILE as COMPONENT_MATERIAL_PRODUCER_PROFILE,
     VALIDATION_SCOPE as COMPONENT_MATERIAL_SCOPE,
 )
+from biocompiler.core_policy_component_selection import (
+    PROFILE as COMPONENT_SELECTION_PROFILE, PRODUCER_PROFILE as COMPONENT_SELECTION_PRODUCER_PROFILE,
+    VALIDATION_SCOPE as COMPONENT_SELECTION_SCOPE, COMPILE_OPERATION as COMPONENT_SELECTION_COMPILE,
+)
 from biocompiler.ir.intent import IntentProgram
 from biocompiler.compiler.request import BuildRequest
 from biocompiler.ir.behavior import BehaviorProgram
@@ -216,10 +220,11 @@ def capability_contract(role):
     operations += list(IMPLEMENTATION_PROFILE["operations"])
     operations += list(MATERIAL_PROFILE["operations"])
     operations += list(COMPONENT_MATERIAL_PROFILE["operations"])
+    operations += list(COMPONENT_SELECTION_PROFILE["operations"])
     operations += ["assess-policy", "replay-policy-assessment"] + list(REALIZATION_OPERATIONS) + list(WORKFLOW_OPERATIONS) + [AUTHORITY_OPERATION]
     workflow = workflow_profile()
-    scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE, OPERATIONAL_SCOPE, IMPLEMENTATION_SCOPE, MATERIAL_SCOPE, COMPONENT_MATERIAL_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"], workflow_authority_profile()["validation_scope"]]
-    profiles = {"policy_component_material": COMPONENT_MATERIAL_PROFILE, "policy_material": MATERIAL_PROFILE, "policy_implementation": IMPLEMENTATION_PROFILE, "policy_operational": OPERATIONAL_PROFILE, "architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
+    scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE, OPERATIONAL_SCOPE, IMPLEMENTATION_SCOPE, MATERIAL_SCOPE, COMPONENT_MATERIAL_SCOPE, COMPONENT_SELECTION_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"], workflow_authority_profile()["validation_scope"]]
+    profiles = {"policy_component_selection": COMPONENT_SELECTION_PROFILE, "policy_component_material": COMPONENT_MATERIAL_PROFILE, "policy_material": MATERIAL_PROFILE, "policy_implementation": IMPLEMENTATION_PROFILE, "policy_operational": OPERATIONAL_PROFILE, "architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
                 "artifact_transport": ARTIFACT_PROFILE, "verification_workflow": workflow,
                 "verification_workflow_presentation": workflow_presentation_profile(),
                 "artifact_transport_authority": AUTHORITY_ARTIFACT_PROFILE,
@@ -227,6 +232,7 @@ def capability_contract(role):
     claim = "Structural intent validation, frozen source-to-Behavior correspondence, supplied architecture contracts and independently executed finite-history model checks. No search completeness, empirical function or human-use admission."
     if role == "core":
         operations += ["compile-architecture", "export-architecture", "compile-policy", "compile-policy-implementation", "compile-policy-material", "compile-policy-component-material"]
+        operations.append(COMPONENT_SELECTION_COMPILE)
         scopes.append(PRODUCER_SCOPE)
         profiles["architecture_producer"] = PRODUCER_PROFILE
         operations += list(SYNTHETIC_PRODUCER_OPERATIONS)
@@ -244,6 +250,7 @@ def capability_contract(role):
         profiles["policy_implementation_producer"] = IMPLEMENTATION_PRODUCER_PROFILE
         profiles["policy_material_producer"] = MATERIAL_PRODUCER_PROFILE
         profiles["policy_component_material_producer"] = COMPONENT_MATERIAL_PRODUCER_PROFILE
+        profiles["policy_component_selection_producer"] = COMPONENT_SELECTION_PRODUCER_PROFILE
         claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
     return operations, scopes, profiles, claim
 
@@ -474,6 +481,27 @@ class Campaign:
     def passed(self, client, group, name, **details):
         self.receipt["checks"].append({"role": client.role, "group": group, "case": name, "status": "pass", **details})
 
+    def component_selection_routes(self, client):
+        """Probe actual dispatch, missing authority and the Verify producer boundary.
+
+        These are transport rejection probes. The independent selection SDK
+        campaign supplies the complete originals and checks generation semantics.
+        Raw requests deliberately bypass SDK capability refusal so Verify itself
+        must reject the Core-only producer operation.
+        """
+        for operation in (*COMPONENT_SELECTION_PROFILE["operations"], COMPONENT_SELECTION_COMPILE):
+            producer_absent = client.role == "verify" and operation == COMPONENT_SELECTION_COMPILE
+            status, code, path = (("unsupported", "unsupported_operation", "/operation") if producer_absent
+                                  else ("error", "missing_field", "/payload"))
+            response = raw_response(client, request_bytes("{}", operation=operation))
+            require(response["request_id"] == "conformance" and response["operation"] == operation,
+                    operation + ": selection route lost request correspondence")
+            require(response["status"] == status and response["result"] is None,
+                    operation + ": selection route accepted missing authority or changed role dispatch")
+            require([(row["code"], row["path"]) for row in response["diagnostics"]] == [(code, path)],
+                    operation + ": selection route returned the wrong rejection signature")
+            self.passed(client, "selection_route_rejection", operation, error_code=code)
+
     def codec(self, client, name, value, expected=None, raw=None, group="python_oracle"):
         expected = canonical(value) if expected is None else expected
         if raw is None:
@@ -556,6 +584,7 @@ def run_campaign(clients, corpus, receipt, programs):
         require(type(capabilities) is dict, "Missing capabilities")
         check_capabilities(capabilities, client.role)
         campaign.passed(client, "capabilities", "complete-advertised-contract")
+        campaign.component_selection_routes(client)
         for vector in corpus["literal_vectors"]:
             campaign.codec(client, vector["id"], None, vector["canonical_json"], vector["input_json"], "independent_literal")
         for start in range(0, len(patterns), settings["batch_size"]):
