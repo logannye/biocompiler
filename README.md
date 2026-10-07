@@ -1,226 +1,169 @@
 # biocompiler
 
-biocompiler translates **therapeutic program design into corresponding RNA payload specifications for human immune cells engineered in vivo**. Exact sequences come from supplied component templates and assembly rules.
+biocompiler is an experimental compiler for translating **high-level Python
+therapeutic policies into exact mRNA payload specifications**. Its product target
+is human immune cells engineered in vivo. A policy describes observations,
+conditions, state, actions and required outcomes; supplied implementation
+contracts and sequence-construction rules describe how to realize its supported
+meaning.
 
-This is its **only product target**. Human-cell studies provide supporting
-reference benchmarks; they do not create a general cell-culture or non-human
-compiler product. Source-experiment context and component origin remain distinct
-from the intended human immune-cell deployment and its evidence requirements.
+The compiler's obligation is to preserve that meaning through operational
+semantics, implementation graphs, component bindings and exact nucleotide
+construction—or explain why compilation cannot proceed. A capability name,
+plausible sequence or successful structural check cannot stand in for that chain.
 
-An engineer should be able to describe which cells to engineer, what those cells should recognize, how they should respond, and which outcomes they must avoid. The compiler should turn those requirements into explicit molecular implementation choices and exact nucleotide sequences, accompanied by molecular features, deployment assumptions, source maps and evidence. Python is the current authoring language; natural-language authoring is part of the longer-term vision.
+The current focus is **internal compiler correctness under explicit supplied
+contracts**. Those contracts are premises, not experimental findings. Biological
+viability and therapeutic efficacy are separate questions and are outside this
+phase's compiler acceptance criteria. Artifacts retain their conditional scope
+and unresolved empirical status.
 
-The central idea is to keep three things connected: **what a cell should do**, **how a proposed implementation is described**, and **what experimental evidence supports**. Typed descriptions and independent checks make those relationships inspectable throughout a design.
+## Current capabilities and status
 
-The current [RNA architecture compiler](docs/payload-architecture-v0.1.md), in
-`0.1.0.dev29`, connects full source behavior to supplied composite implementations,
-RNA partitions, recipient assignments and exact complete molecule sets. Behavior,
-components, RNAs and cell roles have explicit many-to-many correspondence. It
-supports finite state, temporal control, quantitative rate branches, sampled
-activity budgets and coupled roles under declared transport contracts. Reusable
-supplied graphs can be matched automatically, with exact source correspondence
-retained. Bounded independent proofs distinguish memory/state reset, production
-adjustment and effector activity, and check declared RNA availability windows. Independent
-checks establish translation under those contracts; biological function remains
-a separate empirical question. The earlier
-[per-operator payload profile](docs/executable-rna-payload-v0.1.md) remains available.
+The bounded Python-policy → mRNA compiler has source implementations and hosted
+development validation. **Complete release acceptance and production-wide native
+cutover remain pending.** The newest public selection check/replay/export
+increment still awaits hosted acceptance; selection compilation is not available.
+The [semantic mRNA development plan](docs/semantic-mrna-development-plan.md) is
+the maintained source of implementation, validation and release status.
 
-## What works today
-
-For new expressive source programs, use [`biocompiler.policy`](docs/policy-language-v0.1.md).
-It provides typed Python authoring, immutable documents, structural diagnostics,
-notebook inspection and `biocompiler policy` commands across recognition, timing,
-state, effects, spatial scope and coordinated populations. Its new document
-profile has an explicit [OCaml source-assessment bridge](docs/policy-native-front-end-v0.1.md)
-with complete declaration retention and fresh replay. It does not yet compile
-to RNA or extend the executable profiles below. Studio and AI authoring remain deferred.
-
-| Workflow | What it provides |
+| Stage | Implemented boundary |
 | --- | --- |
-| Select a complete RNA architecture | `bc.compile(PayloadArchitectureRequest(...))` matches supplied composite behavior contracts and RNA partitions, checks functional controls, independence, helpers, declared deployment windows and channels, and emits freshly verified RNA plus a complete manifest. |
-| Compile a contract-based RNA program | `bc.compile(PayloadCompilationRequest(...))` preserves source semantics, selects and connects supplied executable contracts, constructs every required RNA member, and independently checks source/component/sequence correspondence. |
-| Author intent and context | Typed Python descriptions of recognition, actions, timing and goals, with frozen human target, behavior, deployment and prohibited-outcome contracts. |
-| Check circuit scope | Human immune-recipient declarations bound to the exact target, separate human study context, and fresh checking against retained request authority; scope checking alone supplies no molecular implementation. |
-| Start in a guided workspace | A local browser GUI explains the example, lets you choose product and architecture constraints, and runs the real compiler with verified downloads. |
-| Analyze implementation requirements | Retain the complete source and human contracts, classify sensing, control, product, timing and deployment obligations, and identify missing refinements or contradictions. |
-| Compile a declared precursor implementation | `bc.compile(ImplementationRequest(...))` selects a supplied signal-prefix/product architecture, checks declared host dependencies and processing relationships, derives a composite CDS and emits exact RNA with base-level correspondence. |
-| Compile an RNA cassette candidate | `bc.compile(CandidateRequest(...))` selects supplied product-coding parts and an architecture, derives the layout, and emits independently checked exact bases. |
-| Explain and reproduce a build | Retained source requirements, alternatives, rejection reasons, part identities, molecular features and checks; JSON records and verified FASTA under independent request authority. |
-| Check abstract behavior | Bounded digital models, temporal execution, component linking, supplied-trace checks and reproducible failure analysis. |
-| Check molecular structure and references | Exact DNA/RNA coding-sequence reproduction, multi-region RNA construction and structural molecule checks, with separate reference/design packages. |
-| Inspect circuit authority and retained artifacts | Strict source metadata imports, nominal requirement/role bindings, stale evidence detection, and read-only construction inspection with lossless JSON save/reopen. |
-| Check supplied molecule-set construction | Explicit bounded transformations from retained roots, independent coordinate/chemistry replay, required-member and payload-region checks, and strict structural JSON export. |
+| Python authoring | `biocompiler.policy` provides typed declarations, builders, composition patterns, immutable documents, unresolved design slots, structural diagnostics and bounded JSON serialization. |
+| Operational semantics and IR | OCaml admits an explicit subset, binds versioned executable definitions, lowers to a dedicated behavior IR and independently checks correspondence with the original source. Bounded execution preserves identity, three-valued evidence, scoped state, deterministic event handling and correlated effect attempts. |
+| Implementation lowering and checking | A bounded truth-policy family lowers to supplied typed primitives and connections. Independent source and candidate runtimes compare observable behavior over the complete declared finite domain; separate requirement checks retain every original obligation. |
+| Material and context binding | Supplied whole-graph contracts and a separate reusable-component composition path connect implementations to sequence templates. Checks retain model identities, interfaces, recipient and timing contracts, resource capacities and payload cardinality. The current component family joins two components into one RNA member. |
+| Exact construction and export | Independent checking reconstructs sequence derivation, coordinates, coding regions, chemistry and material correspondence. Fresh export publishes the exact RNA FASTA and complete manifest together. |
+| Finite material selection | The new source increment checks every supplied alternative under one common policy, then applies a length predicate and deterministic ranking. A failed or omitted alternative cannot become a convenient exclusion. Public hosted acceptance is pending; metered candidate generation remains the next prerequisite for compilation. |
 
-The [molecular implementation compiler](docs/molecular-implementation-v0.1.md) connects intent to declared precursor structure. Its first family handles one conditionally requested secreted product using a finite, caller-supplied library. It retains the source guard as unresolved while checking the declared precursor, mature product, processing boundary, host dependencies and RNA structure. Changing a product or architecture constraint changes the sequence or produces an explained rejection. The compiler derives all nucleotide coordinates and independently verifies the proposed artifacts against the original request.
+The authoring language is intentionally broader than the executable subset.
+Coordination, quantification, complex spatial relationships and inheritance are
+not executable merely because they can be declared. Operational execution also
+does not imply that every supported state machine or expression has a molecular
+lowering. Unsupported required meaning blocks a complete compilation claim.
 
-Its bundled examples use **artificial, nonfunctional fragments and protein strings**. A caller can also supply exact sequence authorities with declared provenance; those records do not establish physical processing, secretion or therapeutic behavior. A structural result retains all unresolved functional obligations. Setting `require_implementation_complete=True` withholds molecular output under the current family. General therapeutic compilation from a `BuildRequest` still raises `CompilationUnavailableError`.
+Start with the [policy language](docs/policy-language-v0.1.md),
+[operational semantics](docs/policy-operational-v0.1.md),
+[implementation contracts](docs/policy-realization-contracts-v0.1.md),
+[bounded preservation](docs/policy-bounded-preservation-v0.1.md) and
+[policy-to-mRNA acceptance contract](docs/policy-material-acceptance.md).
 
-The GUI continues to use the earlier [intent-candidate profile](docs/intent-candidate-v0.1.md). The new precursor workflow is available through Python and the CLI, ready for later GUI integration.
+## Meaning, checking and artifact identity
 
-## What remains to build
+Python runs at **construction time**: loops and functions can assemble a
+declarative program. They are not the program's cellular runtime. Runtime guards,
+uncertainty, state transitions, timeouts and effect feedback must have explicit
+semantics in the supported native profile. Definition prose does not supply an
+executable interpretation.
 
-The [human circuit profile](docs/human-circuit-profile-v0.1.md) implements R0 of
-the [RNA-circuit plan](docs/rna-circuit-reproduction-plan.md). Its Python and CLI
-checks establish declared scope and preserve independent evidence dimensions.
-The [R2 circuit intent API](docs/circuit-intent-v0.1.md) adds nominal observations,
-composable Boolean tables, explicit products/lifecycles/providers and complete
-reference locks alongside the original human request. Independent checking
-retains every source obligation. Neither layer reconstructs a published circuit
-or emits a circuit payload. The [R3 molecular declaration layer](docs/circuit-molecules-v0.1.md)
-represents named molecule sets, exact coordinate frames, overlapping annotations,
-chemistry and uncertainty without promoting them to checked assembly or biology.
-The [R4 construction workflow](docs/circuit-construction-v0.1.md) now constructs
-and independently checks explicit supplied operations and complete nominal sets.
-It preserves the original human request but does not derive a molecular mechanism
-from its truth table. Published-source curation, family correspondence and human
-admission remain open; its examples are artificial software controls.
+Core produces candidates. Standalone **Verify** independently checks supported
+profiles against separately supplied original inputs and does not link the
+producer implementations. It reconstructs correspondence and executes the
+specified checks; it does not accept a producer's success label as evidence.
+Fresh replay repeats those checks under the complete current authority.
 
-The [circuit authority infrastructure](docs/circuit-infrastructure-v0.1.md) adds bounded support for R1/R5/R11/R12/R13. Software implementation, reviewed reference correspondence and human biological applicability are tracked separately. Actual family semantics and the first admissible R6a case remain open.
+Original source, definitions, finite domains, requirements, model libraries,
+component records and construction rules remain bound through the artifacts.
+Exported manifests retain their identities, the checked candidate, assessment
+and exact material members. Source edits, changed contracts and altered bases
+must be checked again, even when the selected sequence happens to stay the same.
+Keep the original inputs alongside the FASTA/manifest pair.
 
-[Portable review bundles](docs/circuit-review-bundles-v0.1.md) retain existing construction, source metadata, nominal binding and evidence records for offline replay against separately supplied authority. Studio's saved-construction view shows source gaps, binding diagnostics and evidence freshness. These software checks do not establish a biological mechanism, reviewed publication fidelity or human applicability.
+## Getting started
 
-The next compiler capabilities extend the supplied-contract path to additional implementation families, mapped resource/operating-domain contracts and broader quantitative models. Finite-state behavior, typed rate expressions, sampled integral budgets and explicitly coupled roles already connect to selected RNA architectures. Quantitative models and observation mappings should evaluate those selected implementations under explicit assumptions. Translation correctness and exact RNA construction can be checked without biological evidence. Establishing therapeutic function and deployment compatibility requires independently supported human biology; those empirical claims remain open and are not established by the software fixtures.
-
-The [roadmap](docs/roadmap.md) tracks that path. biocompiler keeps exact artifact identity, structural consistency, model-conditional behavior and experimental evidence separate. A passing check applies only to its stated scope and dependencies. Physical manufacture, administration and clinical authorization remain external activities; their constraints must inform the eventual compiler.
-
-See the [human target contract](docs/human-target-contract-v0.1.md) and
-[human admission policy](docs/human-admission-v0.1.md) for the current evidence and
-use boundaries.
-
-## Quick start
-
-Requires **Python 3.11 or newer** and has no runtime dependencies. From a source checkout, in a POSIX shell:
+The Python package requires **Python 3.11 or newer** and has no mandatory runtime
+dependencies. From a source checkout:
 
 ```sh
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install -e .
 biocompiler --version
-biocompiler studio
+biocompiler policy --help
 ```
 
-You can also run directly from the repository without installing:
-
-```sh
-PYTHONPATH=src python3 -m biocompiler studio
-```
-
-The [guided workspace](docs/studio-v0.1.md) opens locally in your browser. Start
-with its artificial example, compile a candidate, inspect the selected parts and
-download verified results. You can also import an existing candidate request.
-Keep the terminal running; press Ctrl+C to stop the workspace. Use `--port 0` if
-the default port is occupied, or `--no-open` to print the URL without opening it.
-
-### Describe an intended response in Python
+Authoring and inspection work without a native executable. This small example
+uses a bundled abstract authoring fixture; it does not supply a molecular
+implementation or demonstrate therapeutic behavior:
 
 ```python
-import biocompiler as bc
+import biocompiler.policy as bp
+from biocompiler.policy.examples import build_example
 
-therapy = bc.Therapy("contextual_response")
-cells = therapy.engineer("responders", cell_type="T_cell")
-recognized = cells.contact.marker("A").high()
-context = cells.environment.signal("disease_context").present()
-cells.when(recognized & context).do(cells.eliminate(cells.contact))
-
-program = therapy.freeze()
-print(program.summary())
+program = build_example("context_gated_response")
+report = bp.check(program)
+print(report.status, report.semantic_status)
+bp.dump(program, "example.policy.json")
 ```
-
-This builds an inspectable program description. Names such as `A` and `disease_context` are symbolic requirements; Python does not execute the cellular response. See the [intent API](docs/intent-api-v0.1.md) for the authoring vocabulary.
-
-### Compile a complete supplied RNA architecture
 
 ```sh
-PYTHONPATH=src python3 -m examples.payload_architectures --case all --output generated/architectures
-PYTHONPATH=src python3 -m biocompiler architecture-verify generated/architectures/a/build.json --expected-request generated/architectures/a/request.json
-PYTHONPATH=src python3 -m biocompiler architecture-export generated/architectures/a/build.json --expected-request generated/architectures/a/request.json --output generated/architectures/a/export.json
+biocompiler policy check example.policy.json
+biocompiler policy inspect example.policy.json
 ```
 
-The six artificial examples cover shared activation and independent shutdown,
-state/reset/timeout, clamped rate branches with sampled budgets, coupled roles,
-alternative RNA partitions and their combination. The example writes paired RNA
-FASTA and manifest files. CLI export returns both in one JSON artifact; keep the
-independent request as verification authority. See the
-[architecture profile](docs/payload-architecture-v0.1.md) for supported bounds and
-Python APIs. Production shutdown does not imply effector inactivation, and
-sampled budget checks do not imply a continuous physiological ceiling.
+Without installing, the equivalent CLI starts with
+`PYTHONPATH=src python3 -m biocompiler policy`.
 
-The connected control examples add independently checked memory reset,
-finite-state reset, production adjustment and effector activity. Automatic
-matching also works when source node IDs differ from the supplied model; the
-deployment example rejects a preferred helper whose declared availability
-misses the requested execution window:
+Native operations require an explicitly selected compatible Core or Verify
+executable. Installing the Python package alone does not establish native
+availability or select a backend. For a **complete supplied whole-graph material
+request** and its matching preservation limits, the existing CLI separates
+candidate production from fresh checked export:
 
 ```sh
-PYTHONPATH=src python3 -m examples.architecture_control_designs --case all --output generated/controls
-PYTHONPATH=src python3 -m biocompiler architecture-verify generated/controls/production_adjustment/build.json --expected-request generated/controls/production_adjustment/request.json
-PYTHONPATH=src python3 -m examples.architecture_automation
+biocompiler policy compile-material-native material-request.json \
+  --core /path/to/biocompiler-core --limits preservation-limits.json \
+  --output candidate.json
+
+biocompiler policy export-material-native material-request.json \
+  --verify /path/to/biocompiler-verify --limits preservation-limits.json \
+  --candidate candidate.json --output program.zip
 ```
 
-These checks use exact supplied graph and timing contracts. They establish
-neither unrestricted mechanism discovery nor empirical delivery or expression.
+These filenames represent supplied inputs, not files created by the authoring
+example. See the [material workflow](docs/policy-material-acceptance.md) for their
+complete authority and resource requirements. Component composition uses the
+dedicated Python `policy.component_material` API; selection has its own
+check/replay/export API. Neither is an implicit conversion from an arbitrary
+authored policy.
 
-### Compile a declared molecular implementation
+## Existing workflows and remaining scope
 
-This example retains a complete human source request, selects between two artificial precursor architectures and demonstrates rejected strict, size-limited and missing-provider cases:
+The earlier [RNA architecture compiler](docs/payload-architecture-v0.1.md) and
+[per-operator payload profile](docs/executable-rna-payload-v0.1.md) remain separate
+workflows over the legacy Behavior representations. They support their own
+supplied contracts, RNA partitions, controls and deployment assumptions. Their
+capabilities do not automatically extend the rich-policy language, and the new
+policy IR does not silently reinterpret legacy requests.
 
-```sh
-python examples/molecular_implementation.py --output generated/molecular-implementation
-biocompiler implementation-analyze --request generated/molecular-implementation/source.json --output generated/molecular-implementation/analysis.json
-biocompiler implementation-build --request generated/molecular-implementation/compact.request.json --output generated/molecular-implementation/cli.build.json
-biocompiler implementation-verify generated/molecular-implementation/cli.build.json --expected-request generated/molecular-implementation/compact.request.json
-biocompiler implementation-fasta generated/molecular-implementation/cli.build.json --expected-request generated/molecular-implementation/compact.request.json
-```
+[Reference builds and packages](docs/reference-build-v0.1.md) reproduce retained
+sequence authority and support independent artifact review. The native
+reference-package route has source implementations; completing compatibility and
+hosted acceptance remains part of the migration.
+Supporting DNA/reference utilities do not add another therapeutic product target.
 
-The build retains typed requirements, every bounded alternative, the selected plan and sequence authorities, derived coding/processing coordinates, molecular features and independent checks. FASTA export rechecks the complete build against the separately retained request. The [implementation guide](docs/molecular-implementation-v0.1.md) explains how to supply a library and interpret the result.
+Next work follows the [development plan](docs/semantic-mrna-development-plan.md):
+finish release acceptance, meter selection candidate generation, close remaining
+semantic and public API coverage, and extend complete profiles for additional
+state-machine lowering, helpers and multiple RNA members. **Rich-policy Studio
+and conversational authoring are deferred.** Existing Studio workflows belong to
+their documented legacy profiles.
 
-### Use the earlier product-cassette profile
-
-The integrated example supplies two artificial products and two explicit architectures, preserving its human source request and all unresolved behavior:
-
-```sh
-python examples/intent_candidate.py --output generated/intent-candidate
-biocompiler candidate-build --request generated/intent-candidate/product_a.request.json --output generated/intent-candidate/cli.build.json
-biocompiler candidate-verify generated/intent-candidate/cli.build.json --expected-request generated/intent-candidate/product_a.request.json
-biocompiler candidate-fasta generated/intent-candidate/cli.build.json --expected-request generated/intent-candidate/product_a.request.json
-```
-
-The JSON build record contains the frozen request, alternatives, selected parts, derived layout, molecule and independent checks. FASTA export rechecks the record against the separately retained request and labels its structural scope, partial therapeutic implementation and absent human admission. See the [candidate profile](docs/intent-candidate-v0.1.md) for the supported source subset and Python API.
-
-### Explore the supporting workflows
-
-The [example guide](examples/README.md) provides runnable commands and explains each workflow's evidence boundaries.
-
-| Example | Purpose |
-| --- | --- |
-| [RNA architecture designs](examples/payload_architectures.py) | Compile and export A–F supplied-contract examples with independently authored models, exact RNA partitions, helpers and recipient/channel assignments. |
-| [Distinct functional controls](examples/architecture_control_designs.py) | Compile memory reset, finite-state reset, production adjustment and explicitly modeled activity through independent control proofs and complete RNA export. |
-| [Automatic architecture matching](examples/architecture_automation.py) | Reuse supplied models without source-node anchors and reject an alternative whose helper misses a declared deployment window. |
-| [Synthetic design loop](examples/synthetic_design.py) | Select a bounded digital implementation, reconstruct its component assembly and check supplied histories. See [selection](docs/synthetic-selection-v0.1.md) and [verification](docs/synthetic-verification-v0.1.md). |
-| [Molecular design](examples/molecular_design.py) | Assemble supplied RNA fragments under explicit layout authority and independently check a complete structural specification. See the [design profile](docs/molecular-design-v0.1.md). |
-| [Reference builds](examples/reference_build.py) | Reproduce independently pinned DNA/RNA coding sequences and verify portable `.bcb` packages. See [reference-build commands](docs/reference-build-v0.1.md). |
-| [Human profile cases](examples/human_profile_cases.py) | Inspect required/prohibited observations, deployment assumptions and admission refusal separately. See the [proposed human profile](docs/human-profile-v0.1.md). |
-
-A **coding sequence (CDS)** is the protein-coding portion of a construct. The bundled murine FAP-CAR reference supports exact CDS reproduction as a software regression; it does not establish a complete delivered molecule or an admitted human therapy. The digital and molecular examples test distinct compiler obligations and do not establish biological behavior.
-
-## Repository guide
+## Repository and development
 
 | Path | Contents |
 | --- | --- |
-| [`src/biocompiler/`](src/biocompiler/) | Authoring, intermediate representations, compiler passes, models, independent checkers, registries, DNA/RNA backends, and artifact packaging. |
-| [`examples/`](examples/README.md) | Runnable workflows and explanations of their scope. |
-| [`data/references/`](data/references/) | Small curated coding-sequence references with retained source and review records. |
-| [`tests/`](tests/README.md) | Unit, semantic, mutation, and integration tests. |
-| [`docs/`](docs/) | Architecture, semantic profiles, evidence requirements, and design decisions. |
+| [`src/biocompiler/policy/`](src/biocompiler/policy/) | Declarative authoring, serialization, inspection and native workflow adapters. |
+| [`core/`](core/) | OCaml representations, operational semantics, producers, independent checkers, services and native tests. |
+| [`src/biocompiler/`](src/biocompiler/) | Python SDK, explicit native transports and existing compiler workflows. |
+| [`protocol/`](protocol/) | Versioned wire formats, schemas and checked source/coverage inventories. |
+| [`examples/`](examples/README.md) | Runnable examples with explicit profile and evidence boundaries. |
+| [`tests/`](tests/README.md) | Python, regression, mutation and integration checks. |
+| [`docs/`](docs/) | Semantic contracts, architecture, migration and acceptance plans. |
 
-To run the test suite from the repository root:
-
-```sh
-PYTHONPATH=src python3 -m unittest discover -s tests -v
-```
-
-Hosted CI checks package installation, tests, examples, and the CLI on Python 3.11 and 3.14. These checks validate software behavior within the documented profiles; biological performance requires separate evidence.
-
-For deeper reading, start with the [architecture](docs/architecture.md), [behavior semantics](docs/behavior-semantics-v0.1.md), [molecular contracts](docs/molecular-behavior-v0.1.md), and [payload profiles](docs/payload-profiles-v0.1.md). Contributors should also read [AGENTS.md](AGENTS.md).
-
-This release uses the `biocompiler` package, CLI and artifact namespace. See the
-[rename and artifact migration notes](docs/biocompiler-migration.md) before reusing historical builds.
+Follow [development validation](docs/development-validation.md). Keep editing and
+focused static/Python checks local; run native compilation, executable tests and
+packaging on hosted CI. A source checkpoint or development run does not replace
+the complete release and fresh-main gates. The
+[migration roadmap](docs/language-migration-roadmap.md) tracks native routing and
+distribution separately from the supported semantics.
