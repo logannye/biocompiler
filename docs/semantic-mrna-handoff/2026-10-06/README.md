@@ -16,7 +16,13 @@ not a new acceptance certificate.
   source date and implementation status remain explicit. **Selection compile is
   not implemented or accepted.** Inspect later source before applying the design.
 
-Only this focused design was promoted from generated scratch material. Large
+- [Prepared selection development auditor](audit-selection-development.py): reviewed
+  inert script, copied byte-for-byte; SHA-256
+  `b095bccd26553c81c3f716b27570a660613738fdecaf92c587c7e428c927436a`.
+  Supply explicit source/evidence paths and independently captured exact
+  run/artifact authority. This script does not grant release acceptance.
+
+Only the focused design and prepared auditor were promoted from scratch. Large
 API collections, ZIPs, logs, build products and earlier checkpoints stay at the
 original paths in the index. Their hashes identify existing bytes; their
 presence or a successful historical audit does not accept a different source.

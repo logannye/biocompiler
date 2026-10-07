@@ -1805,7 +1805,13 @@ close a migration cutoff gate. Studio and conversational authoring are deferred.
 - [x] Add abstract examples for gating, secretion, staged responses, scoped
   memory, local restraint, coordination and lineage; preserve original frozen
   migration witnesses separately.
-- [ ] Validate this source increment through the complete hosted release gates.
+- [x] Validate this source increment through the complete hosted release gates.
+  PR87 source `8bd692195ce199a0c8f7cb445efa2ee3ef261e66` passed
+  [PR validation](https://github.com/logannye/biocompiler/actions/runs/37390830418).
+  Actual merge `b6275efebbd5b88bbeb8f0456e8df9fbef6a477e` separately passed
+  [main validation](https://github.com/logannye/biocompiler/actions/runs/37404833487).
+  Both attempt-1 gates and receipt audits passed: 36 jobs, 16 prerequisites,
+  21 producer receipts and 2,651 exact test IDs on each Python version.
 - [ ] Implement the new authoring profile's authoritative OCaml semantics,
   lowering and independent preservation checks in the dedicated lower-layer work.
 
@@ -1825,16 +1831,35 @@ Depends on LM-02; individual operations route to OCaml only after their core par
 
 ### LM-20 — Layer 4: canonical intent and semantic analysis
 
-**Expressive-policy integration in progress:** the
+The PR87/88 records below are dated source-assessment acceptance. Subsequent
+bounded operational execution, lowering and material work are tracked separately
+in the [semantic mRNA plan](semantic-mrna-development-plan.md); these historical
+records do not describe the latest bounded profiles' entire implementation state.
+
+**Expressive-policy source integration validated:** the
 [native policy front end](policy-native-front-end-v0.1.md) adds a closed OCaml
 representation for all 45 policy records, exact numeric/source-contract checks,
 complete requirement/source ledgers and independent fresh assessment replay.
 `policy.native` and `policy assess-native` route explicitly to the selected
-native executable. Hosted validation for this increment remains required;
-these source changes do not close the profile's migration gates.
+native executable. Complete PR and actual-main validation passed for this
+source-assessment increment; executable operational semantics and the broader
+profile migration gates remain open. Fresh replay recomputes the shared source
+checker; it is not a second independently implemented semantic checker.
 
-- [ ] Validate the expressive-policy native decoder, source checker, installed
+- [x] Validate the expressive-policy native decoder, source checker, installed
   SDK/CLI and fresh replay across both native platforms and Python 3.11/3.14.
+  PR88 source `5f9b39d354b43070f15114f2e8813e659ab1c4a4` passed
+  [fresh PR validation](https://github.com/logannye/biocompiler/actions/runs/37404956020).
+  Actual merge `f594991ac2ff2496723ae5f2427ad93e6df7a51d` separately passed
+  [main validation](https://github.com/logannye/biocompiler/actions/runs/37422750740).
+  Both attempt-1 gates and receipt audits passed: 36 jobs, 16 prerequisites,
+  21 producer receipts and 2,678 exact test IDs per Python version, retaining all
+  2,651 PR87 IDs. Each of the four platform/Python variants passed 48 assessments,
+  48 fresh replays, 48 forged-replay rejections, 20 negative controls and six
+  installed CLI checks, with exact source/run/native manifest and binary bindings.
+  Actual merge parents and trees match the tested candidates. These results
+  establish source-contract assessment only: execution and lowering remain
+  unsupported, sequence artifacts withheld and empirical acceptance unestablished.
 - [ ] Define and implement executable operational semantics for expressive
   policy definitions; retain unsupported meaning and progress obligations.
 

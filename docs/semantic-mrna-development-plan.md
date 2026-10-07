@@ -27,7 +27,9 @@ merged normally on 2026-10-06 Pacific as
 `ddf8e8a6031e342ac9fda7b94b03ae35f859bb20`, after its exact 42-job gate and
 independent 53-archive audit. Its separate
 [actual-main run 37561753806](https://github.com/logannye/biocompiler/actions/runs/37561753806)
-is still pending; merge does not establish actual-main acceptance.
+has failed unit shards because its unpinned runner Python patch versions differ
+from their plans. PR85 already contains the plan-bound interpreter correction;
+the later corrected main requires fresh acceptance. Merge alone is not acceptance.
 
 PR85 remains open. [Run 37551706364](https://github.com/logannye/biocompiler/actions/runs/37551706364)
 cannot pass because its installed policy-prebuilt comparison used original wheel
@@ -41,8 +43,10 @@ jobs of the failed attempt are retained, not transferred as new acceptance.
 Public selection at `70f81df1c` passed all 23 native suites and the original
 component SDK campaign in run `37561211151`; its selection SDK stage failed when
 a successful fixture command produced an empty log that the validator rejected.
-The narrow log-authentication correction is being completed separately. Selection
-compile remains unimplemented. Use the [session handoff](semantic-mrna-session-handoff.md)
+The reviewed correction is committed as `8806cf6c4` and included in pushed
+source `fbd2230e8`, tested by [run 37562370369](https://github.com/logannye/biocompiler/actions/runs/37562370369).
+Its 24 guarded pure tests passed per supported Python. Selection compile remains
+unimplemented. Use the [session handoff](semantic-mrna-session-handoff.md)
 for the final pushed branches, live gates and exact resume instructions. Older
 checkpoint sections below preserve historical evidence and do not override this
 closure status.
@@ -54,8 +58,8 @@ members do not delay merging an independently accepted current profile.
 
 | Remaining increment | Concrete exit | Current boundary |
 | --- | --- | --- |
-| Current component release | Complete PR85 gate and artifact audit, normal merge, fresh actual-main gate and audit | Installed-RECORD correction reviewed; fresh full gate required |
-| Public selection checking/export | Native check/replay/export, complete losing-input provenance, exact paired artifacts and independent development audit | All 23 native suites passed; selection SDK log correction and fresh development run required |
+| Current component release | Complete PR85 gate and artifact audit, normal merge, fresh actual-main gate and audit | Corrected source and README/handoff pushed; fresh full gate required |
+| Public selection checking/export | Native check/replay/export, complete losing-input provenance, exact paired artifacts and independent development audit | All 23 native suites passed at prior source; corrected public SDK development run active |
 | Selection compilation | Meter candidate generation, expose compile through the same independent checker, then pass installed/offline and release gates | Next coherent implementation batch; final candidate size is not generation-work accounting |
 | Coverage closure | Complete individual contextual rules, public authoring paths, exclusion diagnostics and semantic/edit-propagation witnesses | Existing ledgers retain explicit gaps; counts are not exhaustive semantic proof |
 | Further complete profiles | Finite-machine lowering, additional resource mappings, helper/dependency checking and multiple RNA members | Separate later increments; each requires complete source-to-material acceptance |
