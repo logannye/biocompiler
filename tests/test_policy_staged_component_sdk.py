@@ -26,8 +26,9 @@ def inert_result(fixture, *, exported=False):
     """
     preservation = {"preservation": "pass", "coverage": {"complete": True, "histories": 25,
         "transitions": 86, "prefixes_started": 87, "matched_prefixes": 87},
-        "requirements": [{"id": name, "status": "pass", "nonvacuous": True, "histories": {"pass": 25}}
-                         for name in witness.REQUIREMENTS],
+        "requirements": [{"id": name, "status": "pass", "nonvacuous": True, "histories": {
+            "pass": passed, "fail": 0, "unknown": 0, "not_exercised": unexercised, "unsupported": 0}}
+                         for name, passed, unexercised in (("first_initiation", 25, 0), ("second_initiation", 21, 4))],
         "binding": {"profile": "biocompiler.policy_staged_source_graph.v0.1", "state_encoding": "exact_ordered_source_labels"}}
     machine = {"obligation": witness.MACHINE_OBLIGATION, "status": "discharged",
         "stage": "bounded_machine_semantics_and_declared_requirements", "evidence": {
@@ -135,6 +136,39 @@ class StagedComponentSDKTests(unittest.TestCase):
             mutate(changed)
             with self.subTest(mutate=mutate), self.assertRaises(AssertionError):
                 witness.checked_export(changed, self.fixture)
+
+    def test_exact_requirement_histories_preserve_conditional_nonvacuity(self):
+        result = inert_result(self.fixture)
+        requirements = result["report"]["preservation"]["requirements"]
+        self.assertEqual([row["histories"] for row in requirements], [
+            {"pass": 25, "fail": 0, "unknown": 0, "not_exercised": 0, "unsupported": 0},
+            {"pass": 21, "fail": 0, "unknown": 0, "not_exercised": 4, "unsupported": 0},
+        ])
+        witness.checked_result(result, self.fixture)
+        mutations = [
+            ("second falsely exercised everywhere", 1, lambda row: row["histories"].update({"pass": 25, "not_exercised": 0})),
+            ("second wholly vacuous", 1, lambda row: row["histories"].update({"pass": 0, "not_exercised": 25})),
+            ("first wrongly unexercised", 0, lambda row: row["histories"].update({"pass": 24, "not_exercised": 1})),
+            ("nonvacuity lost", 1, lambda row: row.update(nonvacuous=False)),
+            ("aggregate status lost", 1, lambda row: row.update(status="unknown")),
+            ("history omitted", 1, lambda row: row["histories"].update(not_exercised=3)),
+            ("zero category omitted", 1, lambda row: row["histories"].pop("unknown")),
+            ("foreign category added", 1, lambda row: row["histories"].update(pending=0)),
+            ("float count", 1, lambda row: row["histories"].update({"pass": 21.0})),
+            ("boolean count", 1, lambda row: row["histories"].update(unknown=False)),
+        ]
+        for index, passed in ((0, 25), (1, 21)):
+            for category in ("fail", "unknown", "unsupported"):
+                mutations.append((f"{index}/{category} hidden by pass aggregate", index,
+                    lambda row, category=category, passed=passed: row["histories"].update({"pass": passed - 1, category: 1})))
+        for name, index, mutate in mutations:
+            changed = deepcopy(result)
+            preservation = changed["report"]["preservation"]
+            mutate(preservation["requirements"][index])
+            # Rehash the surrounding claim so it cannot be the rejection reason.
+            changed["report"]["obligations"][0]["evidence"]["preservation"] = witness.canonical_digest(preservation)
+            with self.subTest(name=name), self.assertRaisesRegex(AssertionError, "finite-domain or nonvacuous"):
+                witness.checked_result(changed, self.fixture)
 
     def test_mutation_recipes_preserve_originals_and_select_actual_owners(self):
         candidate = {"binding": {"transitions": [{"commit": "start"}], "effects": [{"bank": "one"}, {"bank": "two"}]},

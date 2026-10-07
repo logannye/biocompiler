@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_policy_staged_test_support": ("test/policy_staged_support/dune", {"bioc_wire", "bioc_domain"}, "test_support"),
     "bioc_policy_component_test_support": ("test/policy_component_support/dune", {"bioc_wire", "bioc_domain"}, "test_support"),
     "bioc_reference_input": ("lib/reference_input/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
     "bioc_reference_package_service": ("lib/reference_package_service/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "bioc_reference_artifact", "bioc_reference_input", "bioc_reference_export", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"}, "producer"),
@@ -49,6 +50,11 @@ PRIVATE_TEST_TOOLS = {
         {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"}, "test_support"),
 }
 TESTS = {
+    "test_policy_staged_primitives": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "bioc_policy_staged_test_support", "zarith"},
+    "test_policy_staged_regimen_source": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "bioc_semantics"},
+    "test_policy_staged_binding": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_policy_staged_test_support", "zarith"},
+    "test_policy_staged_component_material": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service"},
+    "test_policy_staged_generation": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler"},
     "test_policy_component_selection_producer": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service", "bioc_policy_component_test_support"},
     "test_policy_generation_admission": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
     "test_policy_generation_producers": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_policy_component_test_support", "zarith"},
@@ -569,6 +575,11 @@ def check_boundaries(root: Path):
                         "%{env:BIOCOMPILER_PIPELINE_SESSION_DECLARATION=missing}",
                         "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}"]]]
                 policy_fixtures = {
+                    "test_policy_staged_primitives": ["policy_implementation_v01.json"],
+                    "test_policy_staged_regimen_source": ["policy_staged_regimen_source_v01.json"],
+                    "test_policy_staged_binding": ["policy_staged_realization_request_v01.json"],
+                    "test_policy_staged_component_material": ["policy_staged_material_v01.json"],
+                    "test_policy_staged_generation": ["policy_staged_realization_request_v01.json"],
                     "test_policy_operational": ["policy_operational_v01.json"],
                     "test_policy_execution": ["policy_operational_v01.json"],
                     "test_policy_operational_service": ["policy_operational_v01.json"],

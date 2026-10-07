@@ -50,6 +50,14 @@ NEGATIVE_CODES = {
 SEQUENCE = "CCAUGGCUUAAGGAAAA"
 FASTA = ">rna_0001 alphabet=RNA\n" + SEQUENCE + "\n"
 REQUIREMENTS = ["first_initiation", "second_initiation"]
+# Each encounter has five complete paths: first failure/timeout, or first
+# completion followed by three second-stage outcomes. All 25 paired paths
+# request stage one; 2 * 2 never request stage two and do not exercise its
+# conditional initiation requirement. The other 21 exercise and satisfy it.
+REQUIREMENT_HISTORIES = {
+    "first_initiation": {"pass": 25, "fail": 0, "unknown": 0, "not_exercised": 0, "unsupported": 0},
+    "second_initiation": {"pass": 21, "fail": 0, "unknown": 0, "not_exercised": 4, "unsupported": 0},
+}
 MACHINE_OBLIGATION = "machine_reachability_termination_and_progress"
 
 
@@ -120,7 +128,9 @@ def checked_result(result: dict, fixture: dict) -> None:
     require(preservation["preservation"] == "pass" and preservation["coverage"]["complete"] is True
             and [preservation["coverage"][key] for key in ("histories", "transitions", "prefixes_started", "matched_prefixes")] == [25, 86, 87, 87]
             and [row["id"] for row in preservation["requirements"]] == REQUIREMENTS
-            and all(row["status"] == "pass" and row["nonvacuous"] is True and row["histories"]["pass"] == 25
+            and all(row["status"] == "pass" and row["nonvacuous"] is True
+                    and type(row["histories"]) is dict and row["histories"] == REQUIREMENT_HISTORIES[row["id"]]
+                    and all(type(count) is int for count in row["histories"].values())
                     for row in preservation["requirements"]), "Staged finite-domain or nonvacuous requirement evidence changed")
     binding = preservation["binding"]
     require(binding["profile"] == "biocompiler.policy_staged_source_graph.v0.1"

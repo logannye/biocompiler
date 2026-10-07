@@ -1,7 +1,8 @@
 # Bounded staged-regimen execution contract
 
-Status: implementation checkpoint; native, material and installed acceptance are
-not established by this document. The development plan tracks validation.
+Status: bounded implementation profile. Native, material and installed acceptance
+are revision-specific and require their hosted receipts; this contract document
+does not establish acceptance. The development plan tracks validation.
 
 This profile extends the existing Python policy language through independent
 implementation checking and exact component/material contracts. It is a finite
@@ -22,6 +23,29 @@ unless the author supplies a lifetime. It now emits both failure and timeout
 transitions. `handoff_when` can specify the guard at the first completion event;
 omitting it reuses the initial permission expression. Python control flow runs
 only during document construction. It is not cellular control flow.
+
+Given declared encounter, observation and effect handles, the public helper is:
+
+```python
+from biocompiler import policy as p
+from biocompiler.policy import patterns
+
+patterns.ordered_effects(
+    builder, "regimen", executor=p.ref(executor),
+    scope=p.Scope("encounter", p.ref(encounter)),
+    on=p.rising(condition.expression), permitted=condition.expression,
+    first=first, second=second, handoff_when=p.TRUE,
+    arbitration=p.Arbitration("exclusive", "reject", "reject", "forbidden", "none"),
+)
+```
+
+This explicitly makes handoff independent of later observation changes. The
+[source fixture author](../tools/generate_policy_staged_regimen_fixture.py)
+contains a complete abstract program and nine independently written timeline
+expectations. The [material fixture author](../tools/generate_policy_staged_material_fixture.py)
+adds the same-product binding, original component contracts and deployment
+context used by the complete Python-to-RNA witness. These are synthetic software
+examples; their supplied material contracts are premises.
 
 A transition observes its source state, the current event and its guard at that
 microstep. Only a known-true guard enables it. False or unknown is inactive and
@@ -91,6 +115,14 @@ progress is assessed by independent monitors with global nonvacuity coverage.
 The generic machine obligation is discharged only within bounded machine
 semantics and all explicitly declared hard requirements; the evidence states
 that universal termination is not claimed.
+
+The material witness has 25 complete paired-encounter histories. First-stage
+initiation is exercised in all 25. Second-stage initiation is exercised in 21;
+the other four terminate both first stages without requesting the second stage.
+Those four are recorded as `not_exercised`, while global nonvacuity still requires
+actual successful second-stage initiation elsewhere. An unrequested conditional
+response is distinct from an unmet request. Changing the response requirement
+to completion fails on the permitted histories without completion feedback.
 
 ## Composition and exact RNA
 

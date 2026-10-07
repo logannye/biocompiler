@@ -1363,7 +1363,7 @@
     },
     {
       "path": "tests/test_policy_staged_component_sdk.py",
-      "sha256": "1c8351d81e69c283243ab77c4b3ed859472004a384195ae35c615d38bb49f779"
+      "sha256": "dcc0d6ace917a7a8a506c4c20a05b0e21d09ca6a3be7f0d63c3a331ac944e5df"
     },
     {
       "path": "tests/test_policy_staged_material.py",
@@ -1399,7 +1399,7 @@
     },
     {
       "path": "tools/check_policy_staged_component_material.py",
-      "sha256": "167b41886727d5e88759ab808c83da4ead20926f9713a6fbb8801e450440b2a4"
+      "sha256": "fd862de7946ef75b8f613686c957c815fac68458c870702368373eb9cf670d27"
     },
     {
       "path": "tools/check_policy_staged_material_installed.py",
