@@ -210,6 +210,40 @@ class PolicyDevelopmentSelectionSDKTests(unittest.TestCase):
                 self.assertEqual(self.actions, [])
         path.write_bytes(raw)
 
+    def test_empty_successful_component_logs_keep_exact_pins_and_command_checks(self):
+        receipt = self.output / "public-sdk.json"
+        original = receipt.read_bytes()
+        for index, name in enumerate(("component-originals", "component-sdk")):
+            log = self.output / (name + ".log")
+            original_log = log.read_bytes()
+            log.write_bytes(b"")
+            document = json.loads(original)
+            document["actions"][index]["log_pin"] = {
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "size": 0,
+            }
+            receipt.write_text(json.dumps(document))
+            with self.subTest(log=name):
+                self.assertEqual(self.run_sdk()["status"], "passed")
+                self.assertEqual(log.read_bytes(), b"")
+            self.actions.clear()
+            for field, value in (("log_pin", {"sha256": "0" * 64, "size": 0}),
+                                 ("log_pin", {"sha256": document["actions"][index]["log_pin"]["sha256"], "size": 1}),
+                                 ("status", "failed"), ("returncode", 1)):
+                changed = deepcopy(document)
+                changed["actions"][index][field] = value
+                receipt.write_text(json.dumps(changed))
+                with self.subTest(log=name, field=field, value=value), self.assertRaises(ValueError):
+                    self.run_sdk()
+                self.assertEqual(self.actions, [])
+            receipt.write_text(json.dumps(document))
+            log.write_bytes(b"changed after empty success")
+            with self.assertRaises(ValueError):
+                self.run_sdk()
+            self.assertEqual(self.actions, [])
+            log.write_bytes(original_log)
+            receipt.write_bytes(original)
+
     def test_changed_prerequisite_files_and_selection_sources_never_launch(self):
         files = [self.output / name for name in ("feedback.json", "build.log", "component-originals.log",
                  "component-sdk.log", "component-originals.json", "sdk-witness.json")]

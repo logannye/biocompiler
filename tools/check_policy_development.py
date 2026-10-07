@@ -373,7 +373,7 @@ def validate_public_sdk_feedback(root, report, prepared, native_pin, binaries):
         require(type(row) is dict and row.get("name") == name and row.get("argv") == argv
                 and row.get("status") == "passed" and type(row.get("returncode")) is int
                 and row["returncode"] == 0 and row.get("log") == name + ".log"
-                and row.get("log_pin") == pin(root, "generated/development-feedback/" + name + ".log"),
+                and row.get("log_pin") == pin(root, "generated/development-feedback/" + name + ".log", allow_empty=True),
                 "Changed component SDK command or log: " + name)
     require(fixture.stat().st_size <= 4_000_000 and witness.stat().st_size <= 1024 * 1024,
             "Component SDK output exceeds its bound")
