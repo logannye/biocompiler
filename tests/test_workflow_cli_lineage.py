@@ -90,7 +90,8 @@ class WorkflowCliLineageTests(unittest.TestCase):
             "src/biocompiler/synthetic_producer_backend.py", "src/biocompiler/synthetic_producer_cli.py",
             "src/biocompiler/workflow_backend.py",
             "src/biocompiler/workflow_cli.py",
-            "examples/expressive_policies.py", "src/biocompiler/__init__.py", "src/biocompiler/__main__.py",
+            "examples/expressive_policies.py", "examples/researcher_alpha.py",
+            "src/biocompiler/__init__.py", "src/biocompiler/__main__.py",
             "src/biocompiler/entrypoint.py", "src/biocompiler/core_policy.py",
             "src/biocompiler/core_policy_operational.py", "src/biocompiler/core_policy_implementation.py",
             "src/biocompiler/core_policy_material.py", "src/biocompiler/core_policy_component_material.py",
@@ -99,7 +100,7 @@ class WorkflowCliLineageTests(unittest.TestCase):
                 "__init__", "behavior", "catalog", "chassis", "cli", "coordination", "deployment",
                 "effects", "entities", "examples", "handoff", "inspection", "logic", "model", "native",
                 "observations", "patterns", "programs", "requirements", "serialization", "space",
-                "state", "time", "validation", "values", "operational", "implementation", "material", "component_material", "component_selection")]]))
+                "state", "time", "validation", "values", "operational", "implementation", "material", "component_material", "component_selection", "research_project")]]))
         self.assertEqual(receipt["schema_version"], "biocompiler.workflow_cli_source_lineage.v4")
         self.assertEqual(receipt["packaging_metadata_counterpart"], lineage.packaging.counterpart()[1])
         self.assertEqual(receipt["actual_capture"], before)

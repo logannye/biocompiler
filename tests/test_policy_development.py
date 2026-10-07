@@ -18,7 +18,12 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name).resolve()
         for name in dev.SOURCE_ROOTS[:-1]:
-            (self.root / name).mkdir()
+            target = self.root / name
+            if target.suffix:
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text("# inert example\n")
+            else:
+                target.mkdir(parents=True, exist_ok=True)
         (self.root / "pyproject.toml").write_text("[project]\nname='inert'\n")
         (self.root / "src/empty.py").write_bytes(b"")
         (self.root / "core/test").mkdir()
@@ -464,6 +469,34 @@ class PolicyDevelopmentTests(unittest.TestCase):
             self.assertEqual(self.staged_sdk_receipt()["status"], "failed")
             self.assertIn("source_error", self.staged_sdk_receipt())
             path.write_bytes(original)
+
+    def test_researcher_alpha_sdk_rejects_missing_stale_and_mutated_evidence(self):
+        self.prepare_staged_sdk()
+        witness = self.sdk_output / "researcher-alpha-sdk-witness.json"
+        report_path = self.sdk_output / "researcher-alpha-sdk.json"
+        log = self.sdk_output / "researcher-alpha-sdk.log"
+        with mock.patch.dict(os.environ, {"GITHUB_SHA": "3" * 40}), self.assertRaises(ValueError):
+            dev.researcher_alpha_sdk(self.root)
+        self.assertEqual(self.calls, [])
+        with self.assertRaisesRegex(ValueError, "researcher-alpha-sdk-witness.json"):
+            dev.researcher_alpha_sdk(self.root)
+        self.assertEqual(json.loads(report_path.read_text())["status"], "failed")
+        log.unlink()
+        self.mutate = lambda called: witness.write_text('{"inert_only":true}\n')
+        checked = dev.researcher_alpha_sdk(self.root)
+        self.assertEqual(checked["schema"], "biocompiler.development-researcher-alpha-feedback.v0.1")
+        self.assertEqual(checked["status"], "passed")
+        self.assertIs(checked["acceptance"], False)
+        self.assertEqual(set(checked["outputs"]), {witness.name})
+        self.assertEqual(self.calls[-1], [dev.sys.executable, "-B", str(self.root / "tools/check_researcher_alpha.py"),
+            "--expected", str(self.root / "data/researcher_alpha/expected.json"),
+            "--core", str(self.root / dev.SDK_BINARIES["core"]), "--verify", str(self.root / dev.SDK_BINARIES["verify"]),
+            "--output", str(witness)])
+        log.unlink()
+        self.mutate = lambda called: (self.root / "examples/researcher_alpha.py").write_text("changed")
+        with self.assertRaises(ValueError):
+            dev.researcher_alpha_sdk(self.root)
+        self.assertEqual(json.loads(report_path.read_text())["status"], "failed")
 
     def test_staged_material_sdk_fixed_paths_identity_and_failures_are_independent(self):
         self.prepare_staged_sdk()

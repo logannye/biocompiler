@@ -412,6 +412,8 @@ def ownership(module, category):
         return "Python", ["LM-03", "LM-11"], "retain_example_with_core_routing"
     if module == "biocompiler.core_distribution":
         return "Python", ["LM-11", "LM-12", "LM-25"], "retain_opt_in_owned_prebuilt_resolution_without_semantic_or_default_routing_authority"
+    if module == "biocompiler.policy.research_project":
+        return "Python", ["LM-11", "LM-12", "LM-25", "LM-26"], "retain_public_project_authoring_and_supplied_inputs_with_fresh_native_verification_before_export"
     if module in {"biocompiler.core_policy_component_selection", "biocompiler.policy.component_selection"}:
         return "Python", ["LM-12", "LM-20", "LM-21", "LM-24", "LM-25", "LM-26"], "retain_explicit_transport_to_fresh_native_complete_catalog_selection_and_paired_export"
     if module in {"biocompiler.core_policy_component_material", "biocompiler.policy.component_material"}:
@@ -447,6 +449,8 @@ def authority(module, category):
         return "authored_or_displayed_inputs_are_not_acceptance_authority"
     if module == "biocompiler.core_distribution":
         return "installed_sdk_release_pins_and_owned_wheel_RECORD_with_fresh_explicit_native_role_and_operation_negotiation"
+    if module == "biocompiler.policy.research_project":
+        return "explicit_original_project_and_supplied_component_authority_only_fresh_native_checks_authorize_conditional_paired_export"
     if module in {"biocompiler.core_policy_component_selection", "biocompiler.policy.component_selection"}:
         return "complete_original_alternative_census_with_unchanged_child_obligations_and_fresh_native_selection_and_paired_export"
     if module in {"biocompiler.core_policy_component_material", "biocompiler.policy.component_material"}:

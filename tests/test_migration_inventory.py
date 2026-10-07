@@ -18,6 +18,19 @@ class MigrationInventoryTests(unittest.TestCase):
     def setUpClass(cls):
         cls.actual = inventory.build_inventory(inventory.ROOT)
 
+    def test_research_project_remains_authoring_and_fresh_native_transport(self):
+        entries = [entry for entry in self.actual['entries']
+                   if entry['current_implementation']['source'] == 'policy.research_project']
+        self.assertTrue(entries)
+        for entry in entries:
+            contract = self.actual['contracts'][entry['contract']]
+            self.assertEqual(contract['target_owner'], 'Python')
+            self.assertEqual(contract['source_authority'],
+                'explicit_original_project_and_supplied_component_authority_only_fresh_native_checks_authorize_conditional_paired_export')
+            self.assertEqual(contract['disposition'],
+                'retain_public_project_authoring_and_supplied_inputs_with_fresh_native_verification_before_export')
+            self.assertEqual(entry['migration_state'], 'legacy')
+
     def fixture(self, *, package="__version__ = '0.1.0'\n", cli=None, server=None):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)

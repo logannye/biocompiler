@@ -399,13 +399,15 @@ class PolicyDevelopmentParallelSDKTests(unittest.TestCase):
         self.assertEqual(self.maximum, 2)
         self.assertEqual(self.active, 0)
         self.assertCountEqual(self.started, ["component-originals", "component-sdk", "selection-originals",
-            "selection-sdk", "staged-source-sdk", "staged-material-sdk"])
+            "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk"])
         self.assertLess(self.finished.index("component-sdk"), self.finished.index("selection-originals"))
         self.assertLess(self.started.index("staged-source-sdk"), self.started.index("staged-material-sdk"))
-        self.assertEqual(list(reports), ["public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk"])
+        self.assertLess(self.started.index("staged-material-sdk"), self.started.index("researcher-alpha-sdk"))
+        self.assertEqual(list(reports), ["public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk"])
         self.assertTrue(all(row["status"] == "passed" and row["acceptance"] is False for row in reports.values()))
         names = {"public-sdk": "public-sdk.json", "selection-sdk": "selection-public-sdk.json",
-                 "staged-source-sdk": "staged-source-sdk.json", "staged-material-sdk": "staged-material-sdk.json"}
+                 "staged-source-sdk": "staged-source-sdk.json", "staged-material-sdk": "staged-material-sdk.json",
+                 "researcher-alpha-sdk": "researcher-alpha-sdk.json"}
         for name, report in reports.items():
             self.assertEqual(self.read(names[name]), report)
             self.assertEqual(report["sources_before"], report["sources_after"])
@@ -425,10 +427,12 @@ class PolicyDevelopmentParallelSDKTests(unittest.TestCase):
             self.assertNotIn("selection-originals", self.started)
             self.assertEqual(self.read("staged-source-sdk.json")["status"], "passed")
             self.assertEqual(self.read("staged-material-sdk.json")["status"], "passed")
+            self.assertEqual(self.read("researcher-alpha-sdk.json")["status"], "passed")
         else:
             self.assertEqual(self.read("staged-source-sdk.json")["status"], "failed")
             self.assertFalse((self.output / "staged-material-sdk.json").exists())
             self.assertNotIn("staged-material-sdk", self.started)
+            self.assertNotIn("researcher-alpha-sdk", self.started)
             self.assertEqual(self.read("public-sdk.json")["status"], "passed")
             self.assertEqual(self.read("selection-public-sdk.json")["status"], "passed")
 

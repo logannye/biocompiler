@@ -6605,6 +6605,327 @@
         "shared.ownership_source_maps.7"
       ]
     },
+    "biocompiler.policy.research_project.MAX_BUNDLE_BYTES": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.MAX_PROJECT_BYTES": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ProjectBuild": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.routes"
+      ]
+    },
+    "biocompiler.policy.research_project.ProjectBuild.compiled": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ProjectBuild.output": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ProjectBuild.project_sha256": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ProjectBuild.verified": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ProjectPreflight": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.originals"
+      ]
+    },
+    "biocompiler.policy.research_project.ProjectPreflight.biological_status": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ProjectPreflight.native_status": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ProjectPreflight.project_sha256": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ProjectPreflight.provenance_status": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ProjectPreflight.route": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ProjectPreflight.source_count": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ProjectPreflight.status": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ResearchProject": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.originals"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.__post_init__": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ResearchProject._input_paths": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ResearchProject._json": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ResearchProject.compile": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.routes",
+        "research_project.roles",
+        "research_project.diagnostics"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.data": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.originals"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.digest": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.originals"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.dump": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.io",
+        "research_project.atomic"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.from_data": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.originals",
+        "research_project.io"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.from_request": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.originals"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.limits": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.originals"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.load": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.io"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.preflight": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.originals"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.request": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.originals"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.route": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.routes"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.verify_bundle": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.routes",
+        "research_project.authority",
+        "research_project.tamper"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProjectError": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ResearchProjectRejected": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.diagnostics"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProjectRejected.__init__": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.ResearchProjectRejected.compiled": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.diagnostics"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProjectRejected.report": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.diagnostics"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProjectRejected.status": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.diagnostics"
+      ]
+    },
+    "biocompiler.policy.research_project.Route": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.SCHEMA": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.SourceRecord": {
+      "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "research_project.metadata"
+      ]
+    },
+    "biocompiler.policy.research_project.SourceRecord.__post_init__": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.SourceRecord.id": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.SourceRecord.locator": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.SourceRecord.reuse_terms": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.SourceRecord.role": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.SourceRecord.sha256": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project.SourceRecord.version": {
+      "scope": "Authored researcher-project declaration only; generated dataclass protocols, native semantics, installed execution and biological behavior are not established by this source census.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project._cancel": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project._client": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project._project": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project._read_file": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project._require": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project._route": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project._text": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.research_project._transport": {
+      "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.policy.serialization.DEFAULT_LIMITS": {
       "scope": "Retained compatibility_support identity/body; not independently promoted to runtime API or acceptance.",
       "status": "compatibility_support",
@@ -14926,6 +15247,611 @@
         "syntax_sha256": "b9dd9c9d0f4a01cee7889c1afb967f0c6b3b592043d4d12d6c1f0c80ed13234c"
       },
       {
+        "id": "biocompiler.policy.research_project.MAX_BUNDLE_BYTES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "MAX_BUNDLE_BYTES"
+        },
+        "syntax_sha256": "df06b485dd318b267b6c25eadd9f7841260e4097cec073bf5b4902839bc65b31"
+      },
+      {
+        "id": "biocompiler.policy.research_project.MAX_PROJECT_BYTES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "MAX_PROJECT_BYTES"
+        },
+        "syntax_sha256": "590fbfab34b6fe0ffef7f22dbbf514b2e26a5f09c0fed08ea3c19a22d9980593"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectBuild",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectBuild"
+        },
+        "syntax_sha256": "9ac7886636043a9f99101a440a5bba3a272f46b7ed5d333db37eb7491534c14c"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectBuild.compiled",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "PolicyMaterialResult",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectBuild.compiled"
+        },
+        "syntax_sha256": "0e797391aff00a4c06ca9fc30769c7d71e27c0bbb9f91879c4b0513af6af063d"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectBuild.output",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Path",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectBuild.output"
+        },
+        "syntax_sha256": "bb6c3d00d060f27907275a9baa86f55c469320229eb13632ddbc13208f6c8fd2"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectBuild.project_sha256",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectBuild.project_sha256"
+        },
+        "syntax_sha256": "c2f809641da78d270989837acdd81fb00cc5ca2dd7c4d4c8229b4548154d7641"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectBuild.verified",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "PolicyMaterialResult",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectBuild.verified"
+        },
+        "syntax_sha256": "0be40ab703611d9e3cd538d8d90a11361524dfadfd1e83ebc4104822504e1664"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectPreflight",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectPreflight"
+        },
+        "syntax_sha256": "00fa8e7f7427e5e14971ae14007feb48b5fbc54eda9b41a156f0e3ad45a68429"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectPreflight.biological_status",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['unassessed'] = 'unassessed'",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectPreflight.biological_status"
+        },
+        "syntax_sha256": "b52ecbddc8126894c708db992b268aafc1ccf18b990d62aab66a711b52399ffc"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectPreflight.native_status",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['not_run'] = 'not_run'",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectPreflight.native_status"
+        },
+        "syntax_sha256": "9692c8fe0672cc6aa381b8364839c03ad7408905a011939a2693d9d5d01d013a"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectPreflight.project_sha256",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectPreflight.project_sha256"
+        },
+        "syntax_sha256": "c2f809641da78d270989837acdd81fb00cc5ca2dd7c4d4c8229b4548154d7641"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectPreflight.provenance_status",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['caller_declared'] = 'caller_declared'",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectPreflight.provenance_status"
+        },
+        "syntax_sha256": "8378d161dd072aa847420e85c439d10c6f1781e214db61cc56f1c25f436b827f"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectPreflight.route",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Route",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectPreflight.route"
+        },
+        "syntax_sha256": "8ebbbb6191e2190ae293b1ed657426636345803d5ff6c41b5dd238cddc5df4af"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectPreflight.source_count",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectPreflight.source_count"
+        },
+        "syntax_sha256": "bc6abfd56dc92591a3a20b75ccb2329f8e627f01d44f66f2b6e6c14041dfff0f"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ProjectPreflight.status",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['structurally_ready'] = 'structurally_ready'",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ProjectPreflight.status"
+        },
+        "syntax_sha256": "e0b48622bec581b3852ffe6cab666f6662ac76423008fdc255c5571ceba89482"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject"
+        },
+        "syntax_sha256": "c6a2c6f959ef137535bb5bd4c24eda557c401c47f7d35bea8cebf6bac1461559"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.__post_init__"
+        },
+        "syntax_sha256": "627fa6da4a862b9377adda9d7d9d63fa11421ccb194d3c72b7536101cd071f86"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject._input_paths",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "tuple[Path, ...] = ()",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject._input_paths"
+        },
+        "syntax_sha256": "77fb75c2518e68f9b8c2a59924407ae77f013bd85b0a722559cddbcbc1944057"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject._json",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "bytes",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject._json"
+        },
+        "syntax_sha256": "63a3a2ddaadf5a73736870745782248d5e282639c5108317f7b22e8f736eecff"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.compile",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, *, output: Path | str, core: CoreClient | None=None, verify: CoreClient | None=None, timeout_seconds: float=300.0, replace: bool=False, cancelled: Callable[[], bool] | None=None -> ProjectBuild",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.compile"
+        },
+        "syntax_sha256": "7e6c0341a79ab68ce86f43b797e2c97f1a84a983cac0f96e6e9338a161b4e583"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.data",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.data"
+        },
+        "syntax_sha256": "7416ccb4a756881a3a3e3a2227e64b364e08ce706632a4adc1cbf14f2de97bf9"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.digest",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> str",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.digest"
+        },
+        "syntax_sha256": "35d727bdf56684d5f4d787f1c50f66969339a64dcce93aa12dca8d8b2d49fba3"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.dump",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, path: Path | str, *, replace: bool=False -> None",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.dump"
+        },
+        "syntax_sha256": "09c1aff88db630a20c5586abd0d980075d61155d12dfdecf41b6158af34299d8"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> ResearchProject",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.from_data"
+        },
+        "syntax_sha256": "0ddd0149c5948eea7a07d63691dfe287ff45653f3a878b338361b6709740c045"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.from_request",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, *, project_id: str, title: str, request: JsonValue, limits: JsonValue, sources: Sequence[SourceRecord], assumptions: Sequence[str] -> ResearchProject",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.from_request"
+        },
+        "syntax_sha256": "b315e4c9c83a4bd7bc0592cfead47210a5cd40dca5c74cee4ce64da8ffd81859"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.limits",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.limits"
+        },
+        "syntax_sha256": "0166564a111b22ed6f133ffd3347fa1f853373691921fa01f576e2b07445c446"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.load",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, path: Path | str -> ResearchProject",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.load"
+        },
+        "syntax_sha256": "6abe3ecde3e4692203332b75dbb1cd6b798fece81127cc46e8c1fd731c6d4621"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.preflight",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> ProjectPreflight",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.preflight"
+        },
+        "syntax_sha256": "b8444272c43ace8327841c42ec655d2c24c43d14eaaaac62b73b70382749438b"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.request",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.request"
+        },
+        "syntax_sha256": "4cad8f4b9960867dcf30a7a49cfacc30f770710b5aca99a9ed60257f25c58408"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.route",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> Route",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.route"
+        },
+        "syntax_sha256": "d9946e97362b97f7b6238677b9a57a618ecc02eb58462e1693a911e144fbc4c8"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.verify_bundle",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, bundle: Path | str, *, verify: CoreClient | None=None, timeout_seconds: float=300.0, cancelled: Callable[[], bool] | None=None -> PolicyMaterialResult",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.verify_bundle"
+        },
+        "syntax_sha256": "7f60e9c632b3c28b9526fde30f3c30cd0e883d090111f8bf36efb0ed5569506a"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProjectError",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProjectError"
+        },
+        "syntax_sha256": "80fcc0943a3a311c0576e36a8a736455cc7a25efd0b9572ba62e3b59a4e8935e"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProjectRejected",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProjectRejected"
+        },
+        "syntax_sha256": "25eff4a257813f31d6f2eb6f4e7df66942757eb38951cf6f95e25a907f684d79"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProjectRejected.__init__",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, compiled: PolicyMaterialResult -> None",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProjectRejected.__init__"
+        },
+        "syntax_sha256": "52eac1e6b75ab5cfe448a049c060df1674512e3b35700383d6ef7439098ca14f"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProjectRejected.compiled",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> PolicyMaterialResult",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProjectRejected.compiled"
+        },
+        "syntax_sha256": "cdb0c4e14ef6f213facdfa22e2ef300684fe5766493b0d16a85a78436e024f07"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProjectRejected.report",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProjectRejected.report"
+        },
+        "syntax_sha256": "e9b0183dfd70150244e30b8532cfa3e81ed1cadc5468f6902ddbc3dd24e3e73f"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProjectRejected.status",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> str",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProjectRejected.status"
+        },
+        "syntax_sha256": "57d8edfaa36ed91b7bcda72b4ea1af5129e7493ff171b5547c1db72e5a049b86"
+      },
+      {
+        "id": "biocompiler.policy.research_project.Route",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "Route"
+        },
+        "syntax_sha256": "ebe62926a11ac5eadd6ffc7465253e398ca66a198852bf69c9b628742a08ec17"
+      },
+      {
+        "id": "biocompiler.policy.research_project.SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "SCHEMA"
+        },
+        "syntax_sha256": "dfd9236d80b442299fb0847e19a8a015109bd40b5208309157b458456afb3a1f"
+      },
+      {
+        "id": "biocompiler.policy.research_project.SourceRecord",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "SourceRecord"
+        },
+        "syntax_sha256": "3b2b22f9dda9104c8aa61b5d6df230a52751e940a8f2a77e6175048d3401bb48"
+      },
+      {
+        "id": "biocompiler.policy.research_project.SourceRecord.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "SourceRecord.__post_init__"
+        },
+        "syntax_sha256": "1bc6216e83f40bd6c874645698aaf2066758511f900fdccbaa874f63b74f62ff"
+      },
+      {
+        "id": "biocompiler.policy.research_project.SourceRecord.id",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "SourceRecord.id"
+        },
+        "syntax_sha256": "98027b84112a1c4a6e0e40fb916b7c84d3efbf4d18387b743c2011238a59d9f3"
+      },
+      {
+        "id": "biocompiler.policy.research_project.SourceRecord.locator",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "SourceRecord.locator"
+        },
+        "syntax_sha256": "e5ec151a895c225d176eead255bc03530f2a57b9dc3a3f651ebc68203394d2cb"
+      },
+      {
+        "id": "biocompiler.policy.research_project.SourceRecord.reuse_terms",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "SourceRecord.reuse_terms"
+        },
+        "syntax_sha256": "446ff230f177cc24f4f0230ab5ec9012b0c09d4b15015c6ea72ee785810a7b50"
+      },
+      {
+        "id": "biocompiler.policy.research_project.SourceRecord.role",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "SourceRecord.role"
+        },
+        "syntax_sha256": "ae1f2af483ffe68250fa450edde7e0fe4fc000522922e8d4d5e97d0d2d8ef600"
+      },
+      {
+        "id": "biocompiler.policy.research_project.SourceRecord.sha256",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "SourceRecord.sha256"
+        },
+        "syntax_sha256": "e17b6753d2163dc75e89a30c415387f615690a159ef159992f0def5dcefaa2c9"
+      },
+      {
+        "id": "biocompiler.policy.research_project.SourceRecord.version",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "SourceRecord.version"
+        },
+        "syntax_sha256": "84ff8ba58f6bddea9381a9abe570d379fafa5c8e903a6703b596adb161214d1a"
+      },
+      {
+        "id": "biocompiler.policy.research_project._cancel",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "cancelled: Callable[[], bool] | None -> None",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "_cancel"
+        },
+        "syntax_sha256": "9095b23774926cd43346d96cabf2408ac6b33a680e9f0b2081da8aaf2a29d381"
+      },
+      {
+        "id": "biocompiler.policy.research_project._client",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "route: Route, transport: CoreClient -> component.PolicyComponentMaterialClient | selection.PolicyComponentSelectionClient",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "_client"
+        },
+        "syntax_sha256": "e9cbe4651ca185fb1fa4af612c2fb2cd183bf5f180b0143257bc0e01d2c53ec5"
+      },
+      {
+        "id": "biocompiler.policy.research_project._project",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "_project"
+        },
+        "syntax_sha256": "7956c0e0afb998432b58f2c26f0fea42f91ace4a475e199024ce9ccf8c419a31"
+      },
+      {
+        "id": "biocompiler.policy.research_project._read_file",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "path: Path, maximum: int -> bytes",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "_read_file"
+        },
+        "syntax_sha256": "94745f951c882a6f5cb3ba91bfba79129a4c8cddf814957a460a2137c8bce7ed"
+      },
+      {
+        "id": "biocompiler.policy.research_project._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: object, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "f9373d3d6ac69be373485f75dda9bdf4ef68d49197d73e9d401be1400aa73f65"
+      },
+      {
+        "id": "biocompiler.policy.research_project._route",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "request: JsonValue -> Route",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "_route"
+        },
+        "syntax_sha256": "fb1b1fdd1a852bced1a0bdf149c283b98f0c0ee56ac34d2498fea231b737c163"
+      },
+      {
+        "id": "biocompiler.policy.research_project._text",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: object, label: str, maximum: int=4096 -> str",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "_text"
+        },
+        "syntax_sha256": "c417b0fb4c3074056c85c2db133106fb31ad0f14e76e906a9567447b52054aef"
+      },
+      {
+        "id": "biocompiler.policy.research_project._transport",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: CoreClient | None, role: Literal['core', 'verify'], operation: str, timeout_seconds: float -> CoreClient",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "_transport"
+        },
+        "syntax_sha256": "6521c2ace34a5e64be12038de722dec16c3e8480dcbf99430b003683e04d58f4"
+      },
+      {
         "id": "biocompiler.policy.serialization.DEFAULT_LIMITS",
         "kind": "value",
         "scope": "compatibility_support",
@@ -15985,6 +16911,7 @@
       "src/biocompiler/policy/patterns.py": "9640080fa505e361b09a2dd9a644938365549b37c8be3a8ce547bc1391044b48",
       "src/biocompiler/policy/programs.py": "ef2823520e47f29f666c8c6bec8f30d43a21195ab5379ae82e0a062563f686fd",
       "src/biocompiler/policy/requirements.py": "80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b",
+      "src/biocompiler/policy/research_project.py": "44e278ee572bd0bb097fd401432c5ec64c1fd5f9208eb8f11efd5fe0f670b61d",
       "src/biocompiler/policy/serialization.py": "d0e2feb4e8dd3fe65a10793d20c06144ad6fec396d99e6107f3485682ee570bf",
       "src/biocompiler/policy/space.py": "c32bc67b86370f471fcabe54fdb61332f746130bc23e22d5a2ce7e08666b97c9",
       "src/biocompiler/policy/state.py": "94ef54313d4475428ca678258dfe59727c8dbbe8d327e26b79ba819dcc20d22d",
@@ -16713,6 +17640,78 @@
       {
         "path": "src/biocompiler/policy/requirements.py",
         "syntax_sha256": "9122d70e443bd9dd6b7e4cb4903570c6a37b9d29c63461f01800124fb083e043"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "c617758c2ccccce5f76b1b7c1df2b14bc02853fe84dda5554342b1e04d534e3a"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "e8157a73584becff04ba142bf301a16a3e95078563bad5119c5eb01211b23c01"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "3c4a4a8fa3fd2384b84ccb6a5033b976acadedc27b74109d86f1f739ce566047"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "6eb9e339fad53243b8cb8839115ba0966e073d6b0b2bbf114d7b3a0a2f5b22df"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "b57c69ae5c2ef8b591a83cb86e074c28bc51985ccdacbba23baf8bf82e12c205"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "1de34ad9695e7d4f275ce31577c64e4211c3dc0472b76977492e08238691b4db"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "3286503ebfa863227145114081080713598327ebbda03e703e1f1e6b745533c6"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "511b18464d685b8902fc18255cb5c085361381e96c80d696dc6f6712f1533bed"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "c00916fd8873d036c861ab99babe5ecaa5246ec92cebb21f351e0836c6a1fd79"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "55fb4ec3effdf34f7401e3637fe30b07523f1270e0fbfd6923f17be152666f7e"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "9d4732f60ec1f643b50ccafda828172cb5ad8c7bd666eaf675ec170a5512796b"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "9665f132353f3ab1ffa747883b71cbc3df01e5076dfcb8965aa6103e35b1c49a"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "06ee238bc36851d07ff9403e35d0fa66c182bb4b56724f4d5f5dd10eff1eb490"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "b1a04c59ff04a55eeeccdd28f5fbae22e751e9b569a55069ce24d327fecef2a6"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "b046fdd156a1e027d9d825f6395dda7056bf1c212d4b690ef8c12c85c92c6e4c"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "f8288fe0f13be0239bad5d02511d58992082770eda441413e44a739f2aa74af5"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "e57aafed655f7eee9b18cd7fecf1afd0b142611d3a2b69b317ffd399d9270521"
       },
       {
         "path": "src/biocompiler/policy/serialization.py",
@@ -17725,6 +18724,78 @@
       "role": "mixed",
       "symbol": "PolicyPatternTests.test_repeated_instance_name_rejects_without_rebinding_existing_declarations",
       "syntax_sha256": "1a28f7c33c8dbecef040df9cd4b573274531476481da2590877356298728cdc5"
+    },
+    "research_project.atomic": {
+      "distinction": "Failed canonical project publication preserves prior bytes and removes its own staging file; no payload acceptance claim.",
+      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "path": "tests/test_policy_research_project.py",
+      "role": "rejection",
+      "symbol": "ResearchProjectTests.test_project_dump_failure_preserves_existing_bytes_and_cleans_stage",
+      "syntax_sha256": "09eb8df6eb0e04a421dc4d79c9d0335e0da8d253968b22b644bb89910cdd8971"
+    },
+    "research_project.authority": {
+      "distinction": "Embedded bundle authority cannot replace the independently supplied current project in mocked verification.",
+      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "path": "tests/test_policy_research_project.py",
+      "role": "rejection",
+      "symbol": "ResearchProjectTests.test_bundle_embedded_authority_cannot_replace_the_current_independent_project",
+      "syntax_sha256": "796595c7f05ff74fcb38f016d6fcea27b33dc0dbf3003ed719352876022c7b65"
+    },
+    "research_project.diagnostics": {
+      "distinction": "Native nonacceptance retains the complete detached report through a public exception in mocked transport; diagnostic accessibility is not native acceptance.",
+      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "path": "tests/test_policy_research_project.py",
+      "role": "rejection",
+      "symbol": "ResearchProjectTests.test_native_rejection_retains_full_immutable_diagnostics_without_publication",
+      "syntax_sha256": "6f919e7ce880cf725b855e829b32bfffe9cfe35b4ada25ce0121c5077838b61e"
+    },
+    "research_project.io": {
+      "distinction": "Bounded inert canonical project JSON and loaded-original protection; no semantic admission is inferred.",
+      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "path": "tests/test_policy_research_project.py",
+      "role": "mixed",
+      "symbol": "ResearchProjectTests.test_json_load_dump_are_bounded_inert_canonical_and_preserve_originals",
+      "syntax_sha256": "dba8b209228b599b3aedc21180b89d5cd2c97e9a9f752992839a8b8849028022"
+    },
+    "research_project.metadata": {
+      "distinction": "Explicit source identity/version/reuse fields and unique ids; declared metadata does not authenticate publications or biological claims.",
+      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "path": "tests/test_policy_research_project.py",
+      "role": "rejection",
+      "symbol": "ResearchProjectTests.test_source_metadata_is_explicit_versioned_and_not_an_evidence_claim",
+      "syntax_sha256": "bfc2363a25720005b9134125161abe579ced4d08fd47c539a850bdbc72b49814"
+    },
+    "research_project.originals": {
+      "distinction": "Detached complete project snapshots and transport-only preflight labels; no native semantic execution or empirical assessment.",
+      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "path": "tests/test_policy_research_project.py",
+      "role": "mixed",
+      "symbol": "ResearchProjectTests.test_complete_originals_are_immutable_and_preflight_is_not_native_admission",
+      "syntax_sha256": "baf6000107316d8fe0c9059f71aec4f157d6002bb5b8068e906a301e2a59808e"
+    },
+    "research_project.roles": {
+      "distinction": "Explicit incorrect Core/Verify role objects are rejected before transport; no native binary execution.",
+      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "path": "tests/test_policy_research_project.py",
+      "role": "rejection",
+      "symbol": "ResearchProjectTests.test_wrong_roles_are_rejected_before_any_native_work",
+      "syntax_sha256": "f6ce87b7430099b22f15bc9db308234a8aff1aadd1d35d8526344521684ee8b9"
+    },
+    "research_project.routes": {
+      "distinction": "Both project transport routes preserve supplied request/limits and separate Core/Verify operation identities under mocked transport only.",
+      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "path": "tests/test_policy_research_project.py",
+      "role": "positive",
+      "symbol": "ResearchProjectTests.test_both_routes_generate_with_core_and_freshly_export_and_reverify_with_verify",
+      "syntax_sha256": "5c1dad99710efe47852d5348309d02f4b4424bf23b7265db1e7a9d9d3e484af1"
+    },
+    "research_project.tamper": {
+      "distinction": "Tampered paired bytes, candidate, members and ZIP metadata fail mocked-transport verification; not native/release acceptance.",
+      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "path": "tests/test_policy_research_project.py",
+      "role": "rejection",
+      "symbol": "ResearchProjectTests.test_tampered_pair_candidate_extra_member_and_zip_metadata_are_rejected",
+      "syntax_sha256": "33d606f08b34a21e04fb422bd7dc4db4e45e138643597bef971458eaf0e0da0e"
     },
     "selection.archive": {
       "distinction": "Fresh synthetic export callbacks publish deterministic exact FASTA/manifest ZIP pairs retaining the complete catalog.",

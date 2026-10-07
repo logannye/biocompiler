@@ -19,8 +19,12 @@ CORPUS = ROOT / "tests/conformance/realization-workflow-v1.json"
 CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # Each addition requires a fresh explicit review and hash. Wildcards and amended
 # hashes for historical source files are deliberately unsupported.
-REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py"})
+REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py", "examples/researcher_alpha.py"})
 REVIEWED_ADDITIONS = {
+    # Research-project authoring and the installed example stay excluded from
+    # the immutable original workflow cohort and confer no historical authority.
+    'src/biocompiler/policy/research_project.py': '44e278ee572bd0bb097fd401432c5ec64c1fd5f9208eb8f11efd5fe0f670b61d',
+    'examples/researcher_alpha.py': '63d862d55e22de38ba633f901d37c28c7a6fab3cb77ed8604d7fc07df0aac313',
     'src/biocompiler/core_policy_component_selection.py': '3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2',
     'src/biocompiler/policy/component_selection.py': '10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80',
     "src/biocompiler/core_distribution.py": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459",

@@ -61,6 +61,11 @@ biocompiler implements Python intent authoring, immutable build/realization requ
 
 ## Development cadence and validation
 
+Active user-approved delivery work follows
+[the researcher-alpha roadmap](docs/researcher-alpha-roadmap.md). Keep its real
+research qualification, software rehearsal, hosted validation and release exits
+distinct. Preserve the independent expected outputs and complete original inputs.
+
 Follow [development validation](docs/development-validation.md) for the approved
 CI protocol. Commit useful local checkpoints freely, push coherent batches, and
 merge a cohesive completed feature when its exact revision passes the required

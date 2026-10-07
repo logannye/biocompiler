@@ -1,0 +1,82 @@
+{
+  "native_controls": [
+    {
+      "base": "staged-input.json",
+      "id": "changed_material",
+      "mutation": "Change an emitted nucleotide in an untrusted candidate while preserving the original request.",
+      "required": "Fresh Verify returns not_accepted with failing assembly/content and no artifact. Recomputing candidate hashes cannot authorize the change."
+    },
+    {
+      "base": "staged-input.json",
+      "id": "cross_project_authority",
+      "mutation": "Verify a staged bundle with comparison-input.json as independently supplied current authority.",
+      "required": "No accepted publication under the wrong complete original request."
+    },
+    {
+      "base": "staged-input.json",
+      "id": "stale_source",
+      "mutation": "Change original implementation_request.document.program.source_map[0].file while presenting the previous candidate/bundle.",
+      "required": "Fresh checking rejects stale complete-original correspondence; old embedded originals cannot authorize verification."
+    },
+    {
+      "base": "staged-input.json",
+      "id": "insufficient_machine_capacity",
+      "mutation": "Set the sole provider capacity with unit machine_state_bits to quantity2 and recompute that provider body fingerprint, retaining original machine semantics.",
+      "required": "Fresh checking returns not_accepted, context_status fail, and no artifact. This must fail for insufficient supplied capacity rather than merely stale hashes."
+    },
+    {
+      "base": "staged-input.json",
+      "id": "completion_without_feedback",
+      "mutation": "Change the source Requirement second_initiation response from initiated to completed under the unchanged finite domain.",
+      "required": "Compilation returns not_accepted, second_initiation fail, and no artifact; silence is not guaranteed completion."
+    }
+  ],
+  "publication_controls": [
+    {
+      "id": "changed_fasta",
+      "mutation": "Change a base in program.fasta and retain the original manifest and current project.",
+      "required": "No accepted bundle."
+    },
+    {
+      "id": "changed_manifest",
+      "mutation": "Change a manifest value and retain the original FASTA and current project.",
+      "required": "No accepted bundle, including when outer ZIP metadata is rebuilt."
+    },
+    {
+      "id": "foreign_archive_member",
+      "mutation": "Add an extra or duplicate ZIP member.",
+      "required": "Reject the archive before native verification."
+    },
+    {
+      "id": "wrong_executable_role",
+      "mutation": "Supply a Core producer where an independently selected Verify role is required.",
+      "required": "Reject the role; do not publish."
+    },
+    {
+      "id": "publication_failure",
+      "mutation": "Cause checking or publication to fail with an existing destination present.",
+      "required": "Preserve original destination bytes."
+    }
+  ],
+  "qualification_control": {
+    "execution_scope": "A qualification decision from explicitly missing data; not a submitted native request or a claimed native rejection result.",
+    "expected_status": "not_ready_for_complete_payload_project",
+    "forbidden_completion": "Do not insert default UTRs, cap, modifications, tail, controller contracts or delivery evidence to turn an exact CDS record into a complete qualified project.",
+    "id": "cds_is_not_complete_payload",
+    "input": "qualification.json candidates entry; metadata only, no sequence copied",
+    "required_missing": [
+      "complete_delivered_molecule_boundaries",
+      "five_prime_UTR",
+      "three_prime_UTR",
+      "cap",
+      "nucleotide_modifications",
+      "exact_poly_A_tail",
+      "delivered_molecule_topology",
+      "molecular_behavior_contract",
+      "human_immune_applicability"
+    ],
+    "source_candidate": "existing-murine-fapcar-cds"
+  },
+  "schema_version": "biocompiler.researcher_alpha_negative_controls.v0.1",
+  "status": "declared_expectations_not_execution_evidence"
+}

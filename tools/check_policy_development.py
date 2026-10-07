@@ -25,7 +25,8 @@ except ImportError:
 
 SCHEMA = "biocompiler.development-feedback.v0.1"
 WORKFLOW = ".github/workflows/policy-development.yml"
-SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "pyproject.toml")
+SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "data/researcher_alpha",
+                "examples/researcher_alpha.py", "pyproject.toml")
 SUITES = (
     ("test_policy_staged_generation", ("data/policy_staged_realization_request_v01.json",)),
     ("test_policy_staged_binding", ("data/policy_staged_realization_request_v01.json",)),
@@ -601,6 +602,56 @@ def staged_material_sdk(root):
     return report
 
 
+def researcher_alpha_sdk(root):
+    """Run the public project example against the same authenticated native build."""
+    output = root / "generated/development-feedback"
+    report = {"schema": "biocompiler.development-researcher-alpha-feedback.v0.1", "acceptance": False,
+              "scope": "source-tree public project workflow; installed, release and empirical acceptance remain separate",
+              "status": "failed", "actions": []}
+    prepared, binaries = None, {}
+    try:
+        prepared = bundle.manifest_document((output / "preparation.json").read_bytes())
+        require(prepared == preparation(root), "Research SDK sources or hosted identity changed")
+        native_pin = pin(root, "generated/development-feedback/feedback.json")
+        native = bundle.manifest_document((output / "feedback.json").read_bytes())
+        validate_native_feedback(root, native, prepared)
+        binaries = {path: pin(root, path, executable=True) for path in SDK_BINARIES.values()}
+        require(all(native["binaries"].get(path) == value for path, value in binaries.items()),
+                "Research SDK executable differs from completed native build")
+        report.update(identity=prepared["identity"], sources_before=prepared["sources"],
+                      native_feedback=native_pin, binaries=binaries)
+        witness = output / "researcher-alpha-sdk-witness.json"
+        argv = [sys.executable, "-B", str(root / "tools/check_researcher_alpha.py"),
+                "--expected", str(root / "data/researcher_alpha/expected.json"),
+                "--core", str(root / SDK_BINARIES["core"]), "--verify", str(root / SDK_BINARIES["verify"]),
+                "--output", str(witness)]
+        row = command(root, output, "researcher-alpha-sdk", argv)
+        report["actions"].append(row)
+        require(row["status"] == "passed", "Research SDK campaign failed")
+        require(witness.stat().st_size <= 1024 * 1024, "Research SDK receipt exceeds its bound")
+        report["outputs"] = {witness.name: pin(root, witness.relative_to(root).as_posix())}
+        report["status"] = "passed"
+    except Exception as error:
+        report.update(status="failed", error=str(error))
+        raise
+    finally:
+        try:
+            after = preparation(root)
+            report["sources_after"] = after["sources"]
+            require(prepared == after, "Research SDK source changed during execution")
+            require({path: pin(root, path, executable=True) for path in binaries} == binaries,
+                    "Research SDK executable changed during execution")
+            if "native_feedback" in report:
+                require(pin(root, "generated/development-feedback/feedback.json") == report["native_feedback"],
+                        "Native feedback changed during research SDK execution")
+                validate_native_feedback(root, bundle.manifest_document((output / "feedback.json").read_bytes()), prepared)
+        except Exception as error:
+            report.update(status="failed", source_error=str(error))
+        save(output / "researcher-alpha-sdk.json", report)
+        require(report["status"] == "passed", report.get("source_error", report.get("error", "Incomplete research SDK")))
+    return report
+
+
 def sdk_all(root):
     """Overlap two isolated SDK process lanes without sharing witness state.
 
@@ -610,7 +661,8 @@ def sdk_all(root):
     """
     lanes = (
         (("public-sdk", public_sdk), ("selection-sdk", selection_sdk)),
-        (("staged-source-sdk", staged_source_sdk), ("staged-material-sdk", staged_material_sdk)),
+        (("staged-source-sdk", staged_source_sdk), ("staged-material-sdk", staged_material_sdk),
+         ("researcher-alpha-sdk", researcher_alpha_sdk)),
     )
 
     def execute_lane(lane):
@@ -636,11 +688,11 @@ def sdk_all(root):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "sdk-all"))
+    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk", "sdk-all"))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     try:
-        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk, "staged-material-sdk": staged_material_sdk, "sdk-all": sdk_all}[args.command](root)
+        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk, "staged-material-sdk": staged_material_sdk, "researcher-alpha-sdk": researcher_alpha_sdk, "sdk-all": sdk_all}[args.command](root)
     except (OSError, ValueError) as error:
         print(str(error), file=sys.stderr)
         return 1

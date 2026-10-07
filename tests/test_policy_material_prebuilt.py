@@ -697,6 +697,27 @@ class PrebuiltMaterialTests(unittest.TestCase):
                 failing[0]='staged';args.output_dir=self.root/'staged-failed'
                 with self.assertRaisesRegex(AssertionError,'mandatory staged failure'):campaign.compare(args)
                 self.assertFalse(args.output_dir.exists())
+                researcher=importlib.import_module('check_researcher_alpha_installed')
+                starter=importlib.import_module('researcher_alpha_starter')
+                args.researcher_expected=campaign.ROOT/researcher.EXPECTED
+                def researcher_gate(paths_value, expected_value, identity_value, binaries, **keywords):
+                    self.assertEqual(paths_value,[path/'evidence/researcher-alpha.json' for path in paths])
+                    self.assertEqual(expected_value,args.researcher_expected);self.assertEqual(identity_value,IDENTITY)
+                    self.assertEqual(keywords,{'expected_sources':{}})
+                    self.assertEqual(set(binaries),set(authorities))
+                    return gate('researcher')
+                with patch.object(researcher,'compare_installed',side_effect=researcher_gate),patch.object(starter,'create_starter') as bundle:
+                    failing[0]=None;events.clear();verify.reset_mock();args.output_dir=self.root/'researcher-out'
+                    value=campaign.compare(args)
+                    self.assertEqual(events,['old-material','old-offline','component','component-offline','staged','researcher'])
+                    self.assertEqual(value['schema_version'],campaign.RESEARCHER_SCHEMA);self.assertEqual(value['claim'],campaign.RESEARCHER_CLAIM)
+                    self.assertEqual(value['researcher_originals'],researcher.input_pins());self.assertEqual(verify.call_count,4)
+                    self.assertTrue(all(call.kwargs=={'staged_path':args.staged_fixture,'researcher_path':args.researcher_expected} for call in verify.call_args_list))
+                    self.assertEqual(bundle.call_count,1);self.assertEqual(bundle.call_args.args[:2],(args,value))
+                    for index,name in enumerate(('old-material','old-offline','component','component-offline','staged','researcher')):
+                        failing[0]=name;events.clear();bundle.reset_mock();args.output_dir=self.root/('researcher-failed'+str(index))
+                        with self.assertRaisesRegex(AssertionError,'mandatory '+name+' failure'):campaign.compare(args)
+                        self.assertFalse(args.output_dir.exists());bundle.assert_not_called()
 
     def test_staged_original_is_explicit_and_never_weakens_old_modes(self):
         from argparse import Namespace
@@ -753,6 +774,47 @@ class PrebuiltMaterialTests(unittest.TestCase):
                 campaign.check_commands(self.root,changed,origin,own,fixture,receipt,**options)
         with self.assertRaisesRegex(ValueError,'ledger'):
             campaign.check_commands(self.root,rows,origin,own,fixture,receipt,component_authority=authority)
+        import check_researcher_alpha_installed as researcher
+        expected=campaign.ROOT/researcher.EXPECTED
+        argv=campaign.researcher_argv(python,checkout,origin,own,expected)
+        logs={}
+        for suffix in ('stdout','stderr'):
+            path=self.root/'logs'/('researcher-alpha.'+suffix+'.log');path.write_bytes(b'inert additive log');logs[str(path.relative_to(self.root))]=campaign.pin(path)
+        row={'name':'researcher-alpha','argv':argv,'cwd':str(origin/'cwd'),'executable':{'sha256':'e'*64,'size':123},'returncode':0,
+            'timeout':False,'overflow':False,'environment':'scrubbed_loaders','logs':logs}
+        split=next(i for i,row in enumerate(rows) if row['name']=='uninstall');rows.insert(split,row)
+        options['researcher_path']=expected
+        campaign.check_commands(self.root,rows,origin,own,fixture,receipt,**options)
+        for flag,value in (('--core-sha256','0'*64),('--verify',own['files']['bin/biocompiler-core']['path']),
+                           ('--expected','/foreign/original.json'),('--output',str(origin/'evidence/staged-material.json'))):
+            changed=deepcopy(rows);argv=changed[split]['argv'];argv[argv.index(flag)+1]=value
+            with self.subTest(flag=flag),self.assertRaisesRegex(ValueError,'Researcher campaign'):
+                campaign.check_commands(self.root,changed,origin,own,fixture,receipt,**options)
+        for index in (split,split-1,0):
+            changed=deepcopy(rows);changed.pop(index)
+            with self.assertRaisesRegex(ValueError,'ledger'):
+                campaign.check_commands(self.root,changed,origin,own,fixture,receipt,**options)
+
+    def test_researcher_identity_requires_owned_defaults_and_all_prior_campaigns(self):
+        from argparse import Namespace
+        import check_researcher_alpha_installed as researcher
+        self.assertIsNone(campaign.researcher_expected(Namespace(),None))
+        args=Namespace(researcher_expected=campaign.ROOT/researcher.EXPECTED)
+        with self.assertRaisesRegex(ValueError,'preserved staged'):
+            campaign.researcher_expected(args,None)
+        self.assertEqual(campaign.researcher_expected(args,campaign.ROOT/'core/test/data/policy_staged_material_v01.json'),args.researcher_expected)
+        slot=('Linux','x86_64','3.11');hashes={'biocompiler-core':'c'*64,'biocompiler-verify':'d'*64};sources={'original':'source'}
+        own={'sdk_root':'/hosted/env/site-packages/biocompiler'}
+        receipt={'schema_version':researcher.SCHEMA,'status':'pass',**IDENTITY,'system':slot[0],'machine':slot[1],'python_version':'3.11.15',
+            'package':own['sdk_root'],'binary_sha256':hashes,'inputs':researcher.input_pins(),'source_snapshot_sha256':campaign.core.canonical_digest(sources),
+            'scope':researcher.SCOPE,'empirical':'unassessed','python_semantic_authority':'forbidden',
+            'resolution':'owned_installed_defaults','real_researcher_project_qualified':False}
+        campaign.researcher_identity(receipt,IDENTITY,hashes,slot,own,sources)
+        for key,value in (('run_id','stale'),('run_attempt','2'),('package','/foreign/package'),('scope','universal'),('empirical','pass'),
+                          ('status','failed'),('source_snapshot_sha256','0'*64),('python_version','3.14.6'),
+                          ('resolution','explicit_test_double'),('real_researcher_project_qualified',True)):
+            with self.subTest(key=key),self.assertRaisesRegex(ValueError,'authority or scope'):
+                campaign.researcher_identity({**receipt,key:value},IDENTITY,hashes,slot,own,sources)
 
     def test_staged_receipt_identity_rejects_foreign_runtime_package_or_scope(self):
         import check_policy_staged_material_installed as staged
@@ -776,6 +838,8 @@ class PrebuiltMaterialTests(unittest.TestCase):
         self.assertEqual(installed.count('--staged-fixture "$GITHUB_WORKSPACE/core/test/data/policy_staged_material_v01.json"'),1)
         self.assertEqual(comparison.count('--staged-fixture core/test/data/policy_staged_material_v01.json'),1)
         self.assertIn('--component-provenance',installed);self.assertIn('--component-provenance',comparison)
+        self.assertEqual(installed.count('--researcher-expected "$GITHUB_WORKSPACE/data/researcher_alpha/expected.json"'),1)
+        self.assertEqual(comparison.count('--researcher-expected data/researcher_alpha/expected.json'),1)
 
 
     def component_control_fixture(self, *, installed=False):

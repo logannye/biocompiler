@@ -40,11 +40,11 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (42, 790, 163, 17, 21))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 187,
-            'independent_expansion': 28, 'shared_invariant': 472, 'source_only': 97})
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (43, 845, 163, 17, 21))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 203,
+            'independent_expansion': 28, 'shared_invariant': 492, 'source_only': 116})
         self.assertEqual(len(self.ledger['syntax_links']), 359)
-        self.assertEqual(len(self.ledger['witnesses']), 129)
+        self.assertEqual(len(self.ledger['witnesses']), 138)
         self.assertEqual(result['status'], 'source_inventory_checked')
         self.assertEqual(result['runtime_protocol_scope'], c.RUNTIME_SCOPE)
         self.assertIn('not an exhaustive runtime-attribute census', result['runtime_protocol_scope'])
@@ -59,7 +59,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 790)
+        self.assertEqual(len(found['entries']), 845)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
 
@@ -115,9 +115,34 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
             c.validate(self.root, self.ledger)
 
+    def before_research_project(self):
+        """Remove only the additive researcher-project surface and its witnesses."""
+        projected = copy.deepcopy(self.ledger)
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                 if not key.startswith('biocompiler.policy.research_project.')}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
+                                  if not key.startswith('research_project.')}
+        return projected
+
+    def test_research_project_preserves_every_prior_evidence_meaning(self):
+        projected = self.before_research_project()
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in projected['witnesses'].items()},
+                    'coverage': projected['coverage']}
+        self.assertEqual((len(projected['coverage']), len(projected['witnesses'])), (790, 129))
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode()
+        self.assertEqual(c.digest(encoded),
+                         '6379cd7e0a0e92cd6a39d5bb57cd16497288694b662490c23d8a305a4f11f43c')
+
+    def test_research_project_witness_cannot_upgrade_mocked_transport_to_native_proof(self):
+        self.ledger['witnesses']['research_project.routes']['distinction'] = 'Native and biological acceptance.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+
     def before_staged_regimen(self):
         """Restore only the explicitly superseded five-transition witness."""
-        projected = copy.deepcopy(self.ledger)
+        projected = self.before_research_project()
         witness = projected['witnesses']['pattern.ordered_effects']
         self.assertEqual(witness['symbol'],
             'PolicyPatternTests.test_ordered_effects_literal_machine_and_all_seven_transitions')
@@ -158,8 +183,9 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         original = json.dumps({'witnesses': witnesses, 'coverage': projected['coverage']}, ensure_ascii=True,
                               sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         self.assertEqual(c.digest(original), '2367be4f22a4985eb15fce30dc799abfb254a22ae86f7de665e23fdc7ed800a2')
-        self.assertEqual((len(c.MODULES), len(c.CLIENTS)), (30, 6))
-        additions = {key: row for key, row in self.ledger['coverage'].items() if key not in projected['coverage']}
+        self.assertEqual((len(set(c.MODULES) - {'research_project'}), len(c.CLIENTS)), (30, 6))
+        additions = {key: row for key, row in self.before_research_project()['coverage'].items()
+                     if key not in projected['coverage']}
         self.assertEqual(len(additions), 50)
         shared = [row for row in additions.values() if row['status'] == 'shared_invariant']
         self.assertEqual(len(shared), 12)
@@ -208,7 +234,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         original = json.dumps({'witnesses': witnesses, 'coverage': retained}, ensure_ascii=True,
                               sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         self.assertEqual(c.digest(original), 'f16a88c77afaea4f7cbae56e80e38afc8d5a4c894616ca158578b707d393bb4a')
-        self.assertEqual((len(set(c.MODULES) - {'component_selection'}),
+        self.assertEqual((len(set(c.MODULES) - {'component_selection', 'research_project'}),
                           len(set(c.CLIENTS) - {'core_policy_component_selection'})), (29, 5))
         component_rows = [row for key, row in self.ledger['coverage'].items()
                           if key.startswith(('biocompiler.core_policy_component_material.',
