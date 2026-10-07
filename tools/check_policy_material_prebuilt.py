@@ -46,6 +46,7 @@ COMPONENT_EVIDENCE = ("component-material", "component-consumer", "component-res
 COMPONENT_CLAIM = "supplied_prebuilt_material_and_component_profiles_only"
 MAX_JSON = 64 * 1024 * 1024
 MAX_LOG = 8 * 1024 * 1024
+MAX_INSTALLED_RECORD = 2 * 1024 * 1024
 CASES = ("wrong-version", "wrong-platform", "changed-binary", "changed-record", "changed-release", "mismatched-profile")
 ERRORS = {
     "wrong-version": ("CoreUnavailable", "Prebuilt distribution and SDK release differ"),
@@ -653,12 +654,16 @@ def run(args):
             check_component_probe(value, name, original_inputs, before)
         component_controls = []
         for case in COMPONENT_CASES:
+            record_path = mutation_files(case, ownership)[1]
+            installed_record = bounded_bytes(record_path, MAX_INSTALLED_RECORD).decode("utf-8")
             with installed_mutation(case, ownership) as changes:
                 rejected = invoke_probe(case, case, component_path)
                 check_component_probe(rejected, case, original_inputs, before)
             restored = invoke_probe(case + "-restored", "ownership")
             require(same(restored, before), "Component profile mutation was not fully restored")
-            component_controls.append({"case": case, "changes": changes, "rejection": rejected, "restored": consumer.digest(restored)})
+            component_controls.append({"case": case, "changes": changes, "rejection": rejected,
+                "restored": consumer.digest(restored), "installed_record": {
+                    "before": installed_record, "restored": pin(record_path, MAX_INSTALLED_RECORD)}})
         write_json(evidence / "component-controls.json", component_controls)
         launch("component-consumer", component_argv("component-consumer", python, ROOT, output, ownership, component_fixture, provenance))
     launch("uninstall", [str(driver), "-m", "pip", "--python", str(python), "uninstall", "--yes", "biocompiler-core"])
@@ -708,15 +713,68 @@ def check_component_probe(value, case, inputs, before):
     require(same(value["results"], expected), "Complete component resolver outputs or exact rejection boundaries differ")
 
 
+def component_installed_record(text, record_name, sdk_entries, python_version):
+    """Preserve wheel-owned rows and narrowly classify pip's additional rows.
+
+    Installed RECORD is not a wheel member's original byte string: pip adds
+    installer metadata, its console wrapper and bytecode, and may use CRLF.
+    These extra rows never provide release-source authority. All original
+    wheel-owned rows still require their independently supplied exact bytes.
+    """
+    require(type(text) is str and 0 < len(text.encode("utf-8")) <= MAX_INSTALLED_RECORD,
+            "Missing or oversized installed component RECORD authority")
+    require(type(python_version) is str and re.fullmatch(r"3\.(11|14)\.[0-9]+", python_version),
+            "Unexpected installed RECORD runtime")
+    try:
+        rows = list(csv.reader(io.StringIO(text, newline=""), strict=True))
+    except csv.Error as error:
+        raise ValueError("Malformed installed component RECORD") from error
+    require(0 < len(rows) <= 2 * len(sdk_entries) + 4 and all(len(row) == 3 for row in rows),
+            "Installed component RECORD row census differs")
+    names = [row[0] for row in rows]
+    require(len(set(names)) == len(names) and all(0 < len(name) <= 1024 and
+            not any(ord(char) < 32 or ord(char) == 127 for char in name) for name in names),
+            "Duplicate or malformed installed component RECORD path")
+    expected = {name: [name, "sha256=" + base64.urlsafe_b64encode(hashlib.sha256(raw).digest()).rstrip(b"=").decode(), str(len(raw))]
+                for name, (raw, _) in sdk_entries.items() if name != record_name}
+    require(record_name in sdk_entries and record_name.endswith(".dist-info/RECORD"),
+            "Original component wheel RECORD authority is missing")
+    expected[record_name] = [record_name, "", ""]
+    actual = {row[0]: row for row in rows}
+    require(set(expected) <= set(actual) and all(actual[name] == row for name, row in expected.items()),
+            "Installed component RECORD lost exact original wheel rows")
+    tag = "cpython-" + "".join(python_version.split(".")[:2])
+    bytecode = {str(Path(name).parent / "__pycache__" / (Path(name).stem + "." + tag + ".pyc"))
+                for name in sdk_entries if name.startswith("biocompiler/") and name.endswith(".py")}
+    metadata = record_name.removesuffix("RECORD")
+    additions = {metadata + name for name in ("INSTALLER", "REQUESTED", "direct_url.json")}
+    entry_points = sdk_entries.get(metadata + "entry_points.txt")
+    if entry_points is not None and entry_points[0] == b"[console_scripts]\nbiocompiler = biocompiler.entrypoint:main\n":
+        additions.add("../../../bin/biocompiler")
+    for name in set(actual) - set(expected):
+        row = actual[name]
+        if name in bytecode:
+            require(row[1:] == ["", ""], "Installer bytecode cannot claim wheel-source authority")
+        else:
+            require(name in additions and re.fullmatch(r"sha256=[A-Za-z0-9_-]{43}", row[1])
+                    and re.fullmatch(r"0|[1-9][0-9]{0,6}", row[2]) and int(row[2]) <= MAX_INSTALLED_RECORD,
+                    "Unreviewed installed component RECORD addition")
+            encoded = row[1].removeprefix("sha256=")
+            require(base64.urlsafe_b64encode(base64.urlsafe_b64decode(encoded + "=")).rstrip(b"=").decode() == encoded,
+                    "Noncanonical installed RECORD digest")
+    return rows
+
+
 def check_component_controls(directory, data, inputs, sdk_entries):
     before = data["ownership-before"]; ownership = before["ownership"]
     for name in ("component-resolver", "component-role"):
         check_component_probe(data[name], name, inputs, before)
     controls = data["component-controls"]
     require(type(controls) is list and [x.get("case") for x in controls] == list(COMPONENT_CASES), "Component mutation census differs")
+    installed_original = None
     for row in controls:
         case = row["case"]
-        require(set(row) == {"case", "changes", "rejection", "restored"} and row["restored"] == consumer.digest(before),
+        require(set(row) == {"case", "changes", "rejection", "restored", "installed_record"} and row["restored"] == consumer.digest(before),
                 "Component mutation restoration differs")
         check_component_probe(row["rejection"], case, inputs, before)
         require(same(read_json(directory / "evidence" / (case + ".json")), row["rejection"])
@@ -729,7 +787,15 @@ def check_component_controls(directory, data, inputs, sdk_entries):
         require(module_original.count(marker) == 1, "Original component profile authority changed")
         module_changed = module_original.replace(marker, b'VALIDATION_SCOPE = "foreign-component-profile"')
         record_name = str(paths[1].relative_to(Path(ownership["sdk_root"]).parent))
-        record_rows = list(csv.reader(io.StringIO(sdk_entries[record_name][0].decode())))
+        record = row["installed_record"]
+        require(type(record) is dict and set(record) == {"before", "restored"}, "Incomplete installed component RECORD evidence")
+        record_rows = component_installed_record(record["before"], record_name, sdk_entries, before["runtime"]["python_version"])
+        record_original = record["before"].encode("utf-8")
+        require(installed_original is None or installed_original == record_original,
+                "Component controls did not restore the same installed RECORD")
+        installed_original = record_original
+        require(same(record["restored"], {"sha256": build.sha(record_original), "size": len(record_original)}),
+                "Installed component RECORD restoration differs")
         selected = [entry for entry in record_rows if entry[0] == module_name]
         require(len(selected) == 1, "Original component wheel RECORD census changed")
         selected[0][1:] = ["sha256=" + base64.urlsafe_b64encode(hashlib.sha256(module_changed).digest()).rstrip(b"=").decode(), str(len(module_changed))]
@@ -737,7 +803,7 @@ def check_component_controls(directory, data, inputs, sdk_entries):
         expected_after = {module_name: module_changed, record_name: record_buffer.getvalue().encode()}
         for change, path in zip(row["changes"], paths):
             relative = str(path.relative_to(Path(ownership["sdk_root"]).parent))
-            original = sdk_entries[relative][0]
+            original = record_original if relative == record_name else sdk_entries[relative][0]
             require(set(change) == {"path", "before", "after"} and change["path"] == str(path)
                     and change["before"] == {"sha256": build.sha(original), "size": len(original)}
                     and same(change["after"], {"sha256": build.sha(expected_after[relative]), "size": len(expected_after[relative])})
