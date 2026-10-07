@@ -1355,7 +1355,7 @@
     },
     {
       "path": "tests/test_policy_material_prebuilt.py",
-      "sha256": "b8b24eea013a40f300a2db195c51acbc6cb924f988dfc100a17c30e787f194a8"
+      "sha256": "c522d899ed57d769c74e5110ef5595bb722a647613b9ab3e29bd5d39997e707f"
     },
     {
       "path": "tests/test_policy_patterns.py",
@@ -1395,7 +1395,7 @@
     },
     {
       "path": "tools/check_policy_material_prebuilt.py",
-      "sha256": "d06b1e94c549f9bb5ea04492d04f68e66a924a1122b1dac8e723d6f84f7086da"
+      "sha256": "a18b84da70b47a14d98ecfa200bb00cf2c0d7626bb5101b7607d53b00db01bf1"
     },
     {
       "path": "tools/check_policy_staged_component_material.py",

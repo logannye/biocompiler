@@ -55,9 +55,10 @@ build. Each suite retains its original command, fixture, source and executable
 checks, timeout and separate log. The coordinator alone publishes the fixed
 ordered result inventory and waits for every outcome. After native completion,
 two SDK lanes overlap: component then selection, and staged source then staged
-material. Each lane preserves its dependencies and existing campaign receipts.
+material then the 20-observation researcher-project workflow. Each lane preserves
+its dependencies and existing campaign receipts.
 There are at most two workers in either phase, and no SDK calls are moved into
-unguarded worker threads inside a campaign. All 31 suites and 110 observations
+unguarded worker threads inside a campaign. All 31 suites and 130 observations
 remain mandatory.
 
 At the baseline command durations, this scheduling can remove roughly six
@@ -96,7 +97,7 @@ Choose early feedback from the affected dependency surface. A staged-regimen
 change should get staged feedback promptly; edits to shared semantics, transport,
 authority, packaging or receipt accounting need broader regression coverage.
 **Automatic profile-specific hosted routing is not implemented.** The current
-`policy-development.yml` still requires all 31 native suites and all 110 SDK
+`policy-development.yml` still requires all 31 native suites and all 130 SDK
 observations. Individual witnesses or future scoped runners must report their
 own scope and cannot satisfy that complete census. Until explicit scoped routing
 exists, use the supported complete workflow for hosted development acceptance.
@@ -121,6 +122,13 @@ cohesive feature can merge without waiting for unrelated work in a longer sprint
 Preserve an active PR and its running checks while independent work continues;
 change its tested revision when a correction is needed, not to manufacture
 activity or restart a healthy run.
+
+Before pushing changes to material/component sources or their witnesses, run
+`PYTHONPATH=src python -B tools/check_policy_material_rule_coverage.py` locally.
+Review any changed source and preserve its existing rule meanings before updating
+the affected ledger pins; there is no automatic baseline regeneration. The same
+static gate now runs first in CI preflight, while its native-build check remains
+mandatory. This catches stale pins before expensive hosted setup.
 
 Use focused local Python/static checks during editing and one focused hosted run
 for a coherent native batch. Run the complete cross-platform/installed gate for
