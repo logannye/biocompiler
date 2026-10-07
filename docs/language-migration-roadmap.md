@@ -2,6 +2,8 @@
 
 Created: 2026-10-01, America/Los_Angeles.
 
+**Active session priorities (2026-10-05):** follow the [semantic Python-policy-to-mRNA development plan](semantic-mrna-development-plan.md) and its SM checklist. This phase establishes internal correctness under supplied implementation and material contracts; Studio, conversational authoring and empirical biological viability are deferred. The historical receipts and wider migration obligations below remain separately gated.
+
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
 **Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–51 passed all required PR gates and are merged, covering installed architecture routing, independent candidate/component execution and realization evidence. PR52–56 preserve independent realization/component acceptance and synthetic production; their complete current-revision gates remain pending. The next implementation exposes nine experimental realization operations and five optional Python SDK routes. Whole workflows, distribution, remaining public profiles and default cutover remain open.
@@ -704,6 +706,27 @@ Depends on LM-02.
 - [ ] Port strict import limits and rejection behavior; test duplicate IDs, missing references, invalid scalar types and scope mixing.
 
 **Exit:** all inventoried intent/request schemas roundtrip or reject consistently; canonical identities agree for unchanged semantics; unsupported requirements remain in the ledger.
+
+### Bounded rich-policy operational checkpoint (source implementation)
+
+The isolated `codex/bounded-policy-execution` increment, based on the verified
+pushed PR88 head `88421d068ebc8437d6d0d4fa1a1bfdb32f150883`, adds the
+[bounded operational profile](policy-operational-v0.1.md). It retains the
+existing source-assessment contract and adds exact definition descriptors,
+contextual admission, dedicated typed behavior instructions, producer-independent
+correspondence checking, bounded reference timelines, scoped finite state and
+correlated effect attempts. Native execution and requirement checks remain
+abstract supplied-model results; target feasibility and RNA artifacts are withheld.
+
+- [ ] Accept the new operational decoder/admission/lowering/checker and native
+  literal/mutation suites on both hosted platforms at the exact integrated source.
+- [ ] Accept fresh standalone replay and all installed SDK/CLI campaigns on
+  Linux x86_64/macOS arm64 and Python 3.11/3.14, with complete result comparison.
+- [ ] Complete the existing release gate before promoting this checkpoint beyond
+  source implementation; preserve PR87/88 and package-route acceptance ownership.
+
+These entries do not close LM-20/21/25 in full, any of the four production cutover
+obligations, deployment/realization binding or source-to-RNA correspondence.
 
 ### LM-21 — Layer 5: behavior lowering and reference semantics
 

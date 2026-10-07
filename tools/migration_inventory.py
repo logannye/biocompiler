@@ -364,6 +364,14 @@ def ownership(module, category):
         return "TypeScript", ["LM-10", "LM-30"], "preserve_studio_surface"
     if category == "example":
         return "Python", ["LM-03", "LM-11"], "retain_example_with_core_routing"
+    if module == "biocompiler.core_distribution":
+        return "Python", ["LM-11", "LM-12", "LM-25"], "retain_opt_in_owned_prebuilt_resolution_without_semantic_or_default_routing_authority"
+    if module in {"biocompiler.core_policy_material", "biocompiler.policy.material"}:
+        return "Python", ["LM-12", "LM-20", "LM-21", "LM-24", "LM-25", "LM-26"], "retain_explicit_transport_to_fresh_native_policy_material_and_exact_paired_export"
+    if module in {"biocompiler.core_policy_implementation", "biocompiler.policy.implementation"}:
+        return "Python", ["LM-12", "LM-20", "LM-21", "LM-25"], "retain_explicit_transport_to_independently_checked_ocaml_implementation"
+    if module in {"biocompiler.core_policy_operational", "biocompiler.policy.operational"}:
+        return "Python", ["LM-12", "LM-20", "LM-21", "LM-25"], "retain_explicit_transport_to_checked_ocaml_operational_profile"
     if module in {"biocompiler.core_policy", "biocompiler.policy.native"}:
         return "Python", ["LM-12", "LM-20", "LM-25"], "retain_explicit_transport_to_ocaml_source_assessment"
     if module.startswith("biocompiler.policy") or module == "biocompiler.entrypoint":
@@ -385,6 +393,14 @@ def ownership(module, category):
 def authority(module, category):
     if category in {"example", "studio_asset"}:
         return "authored_or_displayed_inputs_are_not_acceptance_authority"
+    if module == "biocompiler.core_distribution":
+        return "installed_sdk_release_pins_and_owned_wheel_RECORD_with_fresh_explicit_native_role_and_operation_negotiation"
+    if module in {"biocompiler.core_policy_material", "biocompiler.policy.material"}:
+        return "full_original_policy_models_material_context_and_fresh_native_conditional_artifact_check"
+    if module in {"biocompiler.core_policy_implementation", "biocompiler.policy.implementation"}:
+        return "complete_external_request_and_supplied_models_with_fresh_native_full_domain_preservation_and_hard_requirements"
+    if module in {"biocompiler.core_policy_operational", "biocompiler.policy.operational"}:
+        return "external_frozen_source_and_exact_definitions_with_fresh_native_correspondence_and_bounded_execution"
     if module in {"biocompiler.core_policy", "biocompiler.policy.native"}:
         return "frozen_document_and_fresh_native_source_contract_check_not_execution_or_lowering_authority"
     if module.startswith("biocompiler.verification"):
@@ -549,7 +565,17 @@ def build_inventory(root: Path):
         for command in cli_commands(policy_cli, "_parser"):
             name, line = "policy " + command.pop("name"), command.pop("line")
             record = add("cli_command", name, policy_cli, line, value=name, **command)
-            record["source_authority_flags"] = []
+            record["source_authority_flags"] = [flag for argument in command["arguments"] for flag in argument["flags"]
+                                                if flag in {"--definitions", "--candidate", "--timeline", "--report", "--limits", "--expected-sha256"}]
+            if name in {"policy compile-native", "policy check-lowering-native", "policy execute-native", "policy replay-execution-native"}:
+                record["native_profile"] = "biocompiler.policy_operational.v0.1"
+                record["authority_boundary"] = "explicit_native_checked_bounded_execution_without_realization_or_artifacts"
+            if name in {"policy compile-implementation-native", "policy check-implementation-native", "policy replay-implementation-native"}:
+                record["native_profile"] = "biocompiler.policy_bounded_preservation.v0.1"
+                record["authority_boundary"] = "explicit_native_complete_domain_implementation_preservation_without_material_or_export_authority"
+            if name in {"policy compile-material-native", "policy check-material-native", "policy replay-material-native", "policy export-material-native"}:
+                record["native_profile"] = "biocompiler.policy_truth_mrna.v0.1"
+                record["authority_boundary"] = "fresh_native_full_policy_material_context_check_and_atomic_exact_rna_manifest_pair"
     server = sources.modules.get("biocompiler.studio.server")
     if server is None:
         raise InventoryError("Studio HTTP source missing")

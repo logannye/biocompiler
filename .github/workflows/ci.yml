@@ -872,18 +872,53 @@ jobs:
           opam-pin: false
           opam-repositories: |
             default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
+      - name: Fetch exact locked upstream sources and build portable static GMP
+        run: |
+          python tools/prebuilt_sources.py fetch --output "$GITHUB_WORKSPACE/generated/prebuilt-sources"
+          python tools/prebuilt_sources.py static-build --sources "$GITHUB_WORKSPACE/generated/prebuilt-sources" \
+            --output "$GITHUB_WORKSPACE/generated/static-gmp" --platform ${{ matrix.platform }} \
+            --compiler "$(command -v cc)" --make "$(command -v make)" --pkg-config "$(command -v pkg-config)"
+          {
+            echo "PKG_CONFIG_PATH=$GITHUB_WORKSPACE/generated/static-gmp/configuration"
+            echo "PKG_CONFIG_LIBDIR=$GITHUB_WORKSPACE/generated/static-gmp/configuration"
+            echo "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1"
+            echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1"
+            if [ "${{ runner.os }}" = macOS ]; then echo "MACOSX_DEPLOYMENT_TARGET=14.0"; fi
+          } >> "$GITHUB_ENV"
       - name: Resolve pinned native dependencies and retain the platform lock
         run: |
-          opam install core/biocompiler_core.opam --deps-only --with-test --yes
+          opam install core/biocompiler_core.opam --deps-only --with-test --no-depexts --yes
+          opam reinstall zarith.1.14 --yes --no-depexts
           opam lock core/biocompiler_core.opam
           mkdir -p generated/core
           cp biocompiler_core.opam.locked generated/core/dependencies.opam.locked
           opam switch export generated/core/switch.export
           opam list --installed --columns=name,version > generated/core/packages.txt
+      - name: Retain upstream acquisition and portable dependency diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-dependency-diagnostics-${{ matrix.platform }}-attempt-${{ github.run_attempt }}
+          path: |
+            generated/prebuilt-sources/fetch-receipt.json
+            generated/prebuilt-sources/source-receipt.json
+            generated/static-gmp/command-*.log
+            generated/static-gmp/build.json
+          if-no-files-found: ignore
+          overwrite: true
+          retention-days: 7
       - name: Install Python package and check compiler/checker dependency separation
         run: |
           python -m pip install .
           python tools/generate_policy_wire_schema.py --check
+          python tools/generate_policy_operational_fixture.py --check
+          python tools/generate_policy_material_lifecycle_fixture.py --check
+          python tools/generate_policy_material_compound_fixture.py --check
+          python tools/generate_policy_material_domain_fixture.py --check
+          python tools/generate_policy_material_closure_fixture.py --check
+          python tools/generate_policy_material_timing_fixture.py --check
+          python tools/generate_policy_material_state_fixture.py --check
+          python tools/check_policy_material_rule_coverage.py
           python tools/check_core_boundaries.py --output generated/core/boundaries.json
       - name: Strictly type-check the migrated Python transport boundary
         run: |
@@ -895,6 +930,42 @@ jobs:
         id: native_build
         run: |
           opam exec -- dune build --root core @all
+      - name: Check bounded policy implementation and molecular leaves early
+        run: |
+          set -o pipefail
+          {
+            core/_build/default/test/test_producer_protocol.exe
+            core/_build/default/test/test_policy_operational.exe core/test/data/policy_operational_v01.json
+            core/_build/default/test/test_policy_realization_admission.exe core/test/data/policy_realization_request_v01.json core/test/data/policy_realization_source_v01.json
+            core/_build/default/test/test_policy_exclusion_source.exe core/test/data/policy_exclusion_source_v01.json
+            core/_build/default/test/test_policy_implementation_binding.exe core/test/data/policy_implementation_binding_v01.json core/test/data/policy_realization_request_v01.json core/test/data/policy_exclusion_source_v01.json
+            core/_build/default/test/test_policy_trace_correspondence.exe core/test/data/policy_implementation_binding_v01.json
+            core/_build/default/test/test_policy_implementation_lowering.exe core/test/data/policy_implementation_binding_v01.json
+            core/_build/default/test/test_policy_requirement_monitor.exe core/test/data/policy_implementation_binding_v01.json
+            core/_build/default/test/test_policy_preservation_check.exe core/test/data/policy_implementation_binding_v01.json
+            core/_build/default/test/test_policy_implementation_service.exe core/test/data/policy_implementation_request_v01.json
+            core/_build/default/test/test_construction_content.exe core/test/data/construction_content_v01.json
+            core/_build/default/test/test_policy_mrna_structure.exe core/test/data/policy_mrna_structure_v01.json
+            core/_build/default/test/test_policy_material_binding.exe core/test/data/policy_material_binding_v01.json
+            core/_build/default/test/test_policy_material_context.exe core/test/data/policy_material_context_v01.json
+            core/_build/default/test/test_policy_material_check.exe core/test/data/policy_material_request_v01.json
+            core/_build/default/test/test_policy_material_service.exe core/test/data/policy_material_request_v01.json
+            core/_build/default/test/test_policy_material_lifecycle.exe core/test/data/policy_material_lifecycle_v01.json
+            core/_build/default/test/test_policy_material_compound.exe core/test/data/policy_material_compound_v01.json
+            core/_build/default/test/test_policy_material_domain.exe core/test/data/policy_material_domain_v01.json
+            core/_build/default/test/test_policy_material_closure.exe core/test/data/policy_material_closure_v01.json
+            core/_build/default/test/test_policy_material_timing.exe core/test/data/policy_material_timing_v01.json
+            core/_build/default/test/test_policy_material_state.exe core/test/data/policy_material_state_v01.json
+          } 2>&1 | tee generated/core/policy-native-tests.txt
+      - name: Retain focused policy native diagnostics before full campaigns
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: policy-native-tests-${{ matrix.platform }}
+          path: generated/core/policy-native-tests.txt
+          if-no-files-found: ignore
+          overwrite: true
+          retention-days: 7
       - name: Check installed expressive policy assessment and replay on Python 3.11
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -907,6 +978,69 @@ jobs:
             --fixture "$GITHUB_WORKSPACE/core/test/data/policy_documents_v01.json" \
             --console "$(command -v biocompiler)" \
             --output "$GITHUB_WORKSPACE/generated/core/policy-core-3.11.json"
+      - name: Check installed bounded operational policy and standalone replay on Python 3.11
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/policy-operational-3.11"
+          cd "$RUNNER_TEMP/policy-operational-3.11"
+          python "$GITHUB_WORKSPACE/tools/check_policy_operational.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --fixture "$GITHUB_WORKSPACE/core/test/data/policy_operational_v01.json" \
+            --console "$(command -v biocompiler)" \
+            --output "$GITHUB_WORKSPACE/generated/core/policy-operational-3.11.json"
+      - name: Check installed bounded implementation and standalone replay on Python 3.11
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/policy-implementation-3.11"
+          cd "$RUNNER_TEMP/policy-implementation-3.11"
+          python "$GITHUB_WORKSPACE/tools/check_policy_implementation.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --fixture "$GITHUB_WORKSPACE/core/test/data/policy_implementation_request_v01.json" \
+            --console "$(command -v biocompiler)" \
+            --output "$GITHUB_WORKSPACE/generated/core/policy-implementation-3.11.json" 2>&1 | tee "$GITHUB_WORKSPACE/generated/core/policy-implementation-3.11.log"
+      - name: Check installed conditional policy material and fresh paired export on Python 3.11
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/policy-material-3.11"
+          cd "$RUNNER_TEMP/policy-material-3.11"
+          python "$GITHUB_WORKSPACE/tools/check_policy_material.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --fixture "$GITHUB_WORKSPACE/core/test/data/policy_material_request_v01.json" \
+            --console "$(command -v biocompiler)" \
+            --output "$GITHUB_WORKSPACE/generated/core/policy-material-3.11.json" 2>&1 | tee "$GITHUB_WORKSPACE/generated/core/policy-material-3.11.log"
+      - name: Check Verify-only offline material consumer on Python 3.11
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/policy-consumer-3.11"
+          cd "$RUNNER_TEMP/policy-consumer-3.11"
+          python "$GITHUB_WORKSPACE/tools/check_policy_material_consumer.py" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --fixture "$GITHUB_WORKSPACE/core/test/data/policy_material_request_v01.json" \
+            --producer-receipt "$GITHUB_WORKSPACE/generated/core/policy-material-3.11.json" \
+            --network required \
+            --output "$GITHUB_WORKSPACE/generated/core/policy-consumer-3.11.json" 2>&1 | tee "$GITHUB_WORKSPACE/generated/core/policy-consumer-3.11.log"
+      - name: Retain early installed policy diagnostics for Python 3.11
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: policy-installed-3.11-${{ matrix.platform }}
+          path: |
+            generated/core/policy-implementation-3.11.log
+            generated/core/policy-material-3.11.log
+            generated/core/policy-consumer-3.11.log
+          if-no-files-found: ignore
+          overwrite: true
+          retention-days: 7
       - name: Run every native literal and mutation suite
         run: |
           set -o pipefail
@@ -1115,6 +1249,77 @@ jobs:
             --fixture "$GITHUB_WORKSPACE/core/test/data/policy_documents_v01.json" \
             --console "$("$ROUTING_PYTHON" -c 'import sysconfig; print(sysconfig.get_path("scripts") + "/biocompiler")')" \
             --output "$GITHUB_WORKSPACE/generated/core/policy-core-3.14.json"
+      - name: Check installed bounded operational policy and standalone replay on Python 3.14
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' && steps.routing_python314.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          ROUTING_PYTHON: ${{ steps.routing_python314.outputs.python-path }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/policy-operational-3.14"
+          cd "$RUNNER_TEMP/policy-operational-3.14"
+          "$ROUTING_PYTHON" "$GITHUB_WORKSPACE/tools/check_policy_operational.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --fixture "$GITHUB_WORKSPACE/core/test/data/policy_operational_v01.json" \
+            --console "$("$ROUTING_PYTHON" -c 'import sysconfig; print(sysconfig.get_path("scripts") + "/biocompiler")')" \
+            --output "$GITHUB_WORKSPACE/generated/core/policy-operational-3.14.json"
+      - name: Check installed bounded implementation and standalone replay on Python 3.14
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' && steps.routing_python314.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          ROUTING_PYTHON: ${{ steps.routing_python314.outputs.python-path }}
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/policy-implementation-3.14"
+          cd "$RUNNER_TEMP/policy-implementation-3.14"
+          "$ROUTING_PYTHON" "$GITHUB_WORKSPACE/tools/check_policy_implementation.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --fixture "$GITHUB_WORKSPACE/core/test/data/policy_implementation_request_v01.json" \
+            --console "$("$ROUTING_PYTHON" -c 'import sysconfig; print(sysconfig.get_path("scripts") + "/biocompiler")')" \
+            --output "$GITHUB_WORKSPACE/generated/core/policy-implementation-3.14.json" 2>&1 | tee "$GITHUB_WORKSPACE/generated/core/policy-implementation-3.14.log"
+      - name: Check installed conditional policy material and fresh paired export on Python 3.14
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' && steps.routing_python314.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          ROUTING_PYTHON: ${{ steps.routing_python314.outputs.python-path }}
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/policy-material-3.14"
+          cd "$RUNNER_TEMP/policy-material-3.14"
+          "$ROUTING_PYTHON" "$GITHUB_WORKSPACE/tools/check_policy_material.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --fixture "$GITHUB_WORKSPACE/core/test/data/policy_material_request_v01.json" \
+            --console "$("$ROUTING_PYTHON" -c 'import sysconfig; print(sysconfig.get_path("scripts") + "/biocompiler")')" \
+            --output "$GITHUB_WORKSPACE/generated/core/policy-material-3.14.json" 2>&1 | tee "$GITHUB_WORKSPACE/generated/core/policy-material-3.14.log"
+      - name: Check Verify-only offline material consumer on Python 3.14
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' && steps.routing_python314.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          ROUTING_PYTHON: ${{ steps.routing_python314.outputs.python-path }}
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/policy-consumer-3.14"
+          cd "$RUNNER_TEMP/policy-consumer-3.14"
+          "$ROUTING_PYTHON" "$GITHUB_WORKSPACE/tools/check_policy_material_consumer.py" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --fixture "$GITHUB_WORKSPACE/core/test/data/policy_material_request_v01.json" \
+            --producer-receipt "$GITHUB_WORKSPACE/generated/core/policy-material-3.14.json" \
+            --network required \
+            --output "$GITHUB_WORKSPACE/generated/core/policy-consumer-3.14.json" 2>&1 | tee "$GITHUB_WORKSPACE/generated/core/policy-consumer-3.14.log"
+      - name: Retain early installed policy diagnostics for Python 3.14
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: policy-installed-3.14-${{ matrix.platform }}
+          path: |
+            generated/core/policy-implementation-3.14.log
+            generated/core/policy-material-3.14.log
+            generated/core/policy-consumer-3.14.log
+          if-no-files-found: ignore
+          overwrite: true
+          retention-days: 7
       - name: Compare complete construction producer and workflow artifacts
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_construction_producer.exe "$GITHUB_WORKSPACE/tests/conformance/construction-producer-v1.json" | tee generated/core/construction-producer.txt
@@ -1141,6 +1346,35 @@ jobs:
           cp core/_build/default/bin/core/main.exe generated/core/biocompiler-core
           cp core/_build/default/bin/verify/main.exe generated/core/biocompiler-verify
           python -c 'import hashlib,json,os,pathlib,platform; p=pathlib.Path("generated/core"); p.joinpath("binaries.json").write_text(json.dumps({"revision":os.environ["GITHUB_SHA"],"system":platform.system(),"machine":platform.machine(),"sha256":{n:hashlib.sha256(p.joinpath(n).read_bytes()).hexdigest() for n in ("biocompiler-core","biocompiler-verify")}},sort_keys=True,indent=2)+"\n")'
+      - name: Retain final-byte material closure and assemble internal platform wheel
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/collect_prebuilt_materials.py --checkout "$GITHUB_WORKSPACE" \
+            --sources "$GITHUB_WORKSPACE/generated/prebuilt-sources" --static-root "$GITHUB_WORKSPACE/generated/static-gmp" \
+            --native-root "$GITHUB_WORKSPACE/generated/core" --switch "$(opam var prefix)" --opam "$(command -v opam)" \
+            --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \
+            --platform ${{ matrix.platform }} --output "$GITHUB_WORKSPACE/generated/prebuilt-materials"
+          if [ "${{ runner.os }}" = macOS ]; then audit_tool="$(command -v otool)"; else audit_tool="$(command -v readelf)"; fi
+          audit_tool="$(python -c 'import pathlib,sys; print(pathlib.Path(sys.argv[1]).resolve(strict=True))' "$audit_tool")"
+          python tools/build_prebuilt_core.py wheel --source-root "$GITHUB_WORKSPACE" \
+            --native-root "$GITHUB_WORKSPACE/generated/core" --platform ${{ matrix.platform }} \
+            --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \
+            --audit-tool "$audit_tool" --materials-root "$GITHUB_WORKSPACE/generated/prebuilt-materials/files" \
+            --materials "$GITHUB_WORKSPACE/generated/prebuilt-materials/materials.json" \
+            --materials-authority "$GITHUB_WORKSPACE/generated/prebuilt-materials/authority.json" \
+            --materials-sha256 "$(cat generated/prebuilt-materials/manifest.sha256)" \
+            --output "$GITHUB_WORKSPACE/generated/prebuilt-platform"
+          cp generated/prebuilt-materials/authority.json generated/prebuilt-platform/material-authority.json
+          cp generated/prebuilt-materials/manifest.sha256 generated/prebuilt-platform/material-manifest.sha256
+          python tools/check_policy_material_prebuilt.py --stamp-artifacts generated/prebuilt-platform --artifact-kind native
+      - uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: prebuilt-${{ matrix.platform }}
+          path: generated/prebuilt-platform
+          if-no-files-found: error
+          retention-days: 30
       - name: Retain native evidence even on failure
         if: always()
         uses: actions/upload-artifact@v4
@@ -1196,6 +1430,58 @@ jobs:
             --native-artifacts artifacts/core \
             --fixture core/test/data/policy_documents_v01.json \
             --output generated/core-reproducibility/policy-receipt.json
+      - name: Compare complete bounded operational results across all four installed slots
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_policy_operational.py \
+            --compare artifacts/core/linux-x86_64/policy-operational-3.11.json \
+            --compare artifacts/core/linux-x86_64/policy-operational-3.14.json \
+            --compare artifacts/core/macos-arm64/policy-operational-3.11.json \
+            --compare artifacts/core/macos-arm64/policy-operational-3.14.json \
+            --native-artifacts artifacts/core \
+            --fixture core/test/data/policy_operational_v01.json \
+            --output generated/core-reproducibility/policy-operational-receipt.json
+      - name: Compare complete implementation results across all four installed slots
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_policy_implementation.py \
+            --compare artifacts/core/linux-x86_64/policy-implementation-3.11.json \
+            --compare artifacts/core/linux-x86_64/policy-implementation-3.14.json \
+            --compare artifacts/core/macos-arm64/policy-implementation-3.11.json \
+            --compare artifacts/core/macos-arm64/policy-implementation-3.14.json \
+            --native-artifacts artifacts/core \
+            --fixture core/test/data/policy_implementation_request_v01.json \
+            --output generated/core-reproducibility/policy-implementation-receipt.json
+      - name: Compare full conditional material evidence and exact RNA exports across four installed slots
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_policy_material.py \
+            --compare artifacts/core/linux-x86_64/policy-material-3.11.json \
+            --compare artifacts/core/linux-x86_64/policy-material-3.14.json \
+            --compare artifacts/core/macos-arm64/policy-material-3.11.json \
+            --compare artifacts/core/macos-arm64/policy-material-3.14.json \
+            --native-artifacts artifacts/core \
+            --fixture core/test/data/policy_material_request_v01.json \
+            --output generated/core-reproducibility/policy-material-receipt.json
+      - name: Compare complete Verify-only offline consumer evidence across four slots
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_policy_material_consumer.py \
+            --compare artifacts/core/linux-x86_64/policy-consumer-3.11.json \
+            --compare artifacts/core/linux-x86_64/policy-consumer-3.14.json \
+            --compare artifacts/core/macos-arm64/policy-consumer-3.11.json \
+            --compare artifacts/core/macos-arm64/policy-consumer-3.14.json \
+            --producer-receipts artifacts/core/linux-x86_64/policy-material-3.11.json \
+            --producer-receipts artifacts/core/linux-x86_64/policy-material-3.14.json \
+            --producer-receipts artifacts/core/macos-arm64/policy-material-3.11.json \
+            --producer-receipts artifacts/core/macos-arm64/policy-material-3.14.json \
+            --native-artifacts artifacts/core \
+            --fixture core/test/data/policy_material_request_v01.json \
+            --output generated/core-reproducibility/policy-consumer-receipt.json
       - name: Retain complete comparison receipt
         if: always()
         uses: actions/upload-artifact@v4
@@ -1400,6 +1686,196 @@ jobs:
           overwrite: true
           retention-days: 7
 
+  policy-prebuilt-sdk:
+    needs: ocaml-core
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python tools/ci_validation.py start --job policy-prebuilt-sdk --variant cross-platform --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: prebuilt-linux-x86_64
+          path: artifacts/prebuilt/linux-x86_64
+      - uses: actions/download-artifact@v4
+        with:
+          name: prebuilt-macos-arm64
+          path: artifacts/prebuilt/macos-arm64
+      - name: Independently check final native wheels and complete source companions
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python -c 'import json,pathlib; r=pathlib.Path("artifacts/prebuilt"); d={p.name:{"authority":json.loads((p/"material-authority.json").read_text()),"manifest_sha256":(p/"material-manifest.sha256").read_text().strip()} for p in r.iterdir()}; pathlib.Path("artifacts/material-authorities.json").write_text(json.dumps(d,sort_keys=True,separators=(",",":"))+"\n")'
+          python tools/check_prebuilt_core_release.py --platform-root artifacts/prebuilt/linux-x86_64 artifacts/prebuilt/macos-arm64 \
+            --material-authorities artifacts/material-authorities.json --source-root "$GITHUB_WORKSPACE" \
+            --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \
+            --output generated/prebuilt-candidate/native.json
+      - name: Build one pure SDK wheel with exact reviewed platform pins
+        run: |
+          python -m pip install --only-binary=:all: --require-hashes -r tools/prebuilt-build-requirements.txt
+          python tools/prebuilt_release_pipeline.py sdk --checkout "$GITHUB_WORKSPACE" \
+            --manifests "$GITHUB_WORKSPACE/artifacts/prebuilt/linux-x86_64/distribution.json" "$GITHUB_WORKSPACE/artifacts/prebuilt/macos-arm64/distribution.json" \
+            --staging "$RUNNER_TEMP/sdk-build" --output "$GITHUB_WORKSPACE/generated/policy-prebuilt-sdk"
+          cp artifacts/prebuilt/linux-x86_64/*.whl artifacts/prebuilt/macos-arm64/*.whl generated/policy-prebuilt-sdk/
+      - name: Independently verify complete SDK contents and both native release pins
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_prebuilt_core_release.py --platform-root artifacts/prebuilt/linux-x86_64 artifacts/prebuilt/macos-arm64 \
+            --material-authorities artifacts/material-authorities.json --source-root "$GITHUB_WORKSPACE" \
+            --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \
+            --sdk generated/policy-prebuilt-sdk/biocompiler-0.1.0.dev29-py3-none-any.whl \
+            --output generated/policy-prebuilt-sdk/candidate.json
+          python tools/check_policy_material_prebuilt.py --stamp-artifacts generated/policy-prebuilt-sdk --artifact-kind sdk
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: policy-prebuilt-sdk
+          path: generated/policy-prebuilt-sdk
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 30
+      - run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/policy-prebuilt-sdk-cross-platform.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          overwrite: true
+          name: ci-job-policy-prebuilt-sdk-cross-platform
+          path: generated/ci/policy-prebuilt-sdk-cross-platform.json
+          if-no-files-found: error
+          retention-days: 30
+
+  policy-prebuilt-installed:
+    needs: policy-prebuilt-sdk
+    timeout-minutes: 45
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.11"
+            wheel-tag: manylinux_2_39_x86_64
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.14"
+            wheel-tag: manylinux_2_39_x86_64
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.11"
+            wheel-tag: macosx_14_0_arm64
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.14"
+            wheel-tag: macosx_14_0_arm64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record exact installed slot authority
+        run: python tools/ci_validation.py start --job policy-prebuilt-installed --variant ${{ matrix.platform }}-py${{ matrix.python-version }} --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: policy-prebuilt-sdk
+          path: artifacts/policy-prebuilt-sdk
+      - uses: actions/download-artifact@v4
+        with:
+          name: prebuilt-${{ matrix.platform }}
+          path: artifacts/prebuilt-${{ matrix.platform }}
+      - name: Install exact supplied wheels and run complete material and offline campaigns
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_policy_material_prebuilt.py \
+            --sdk "$GITHUB_WORKSPACE/artifacts/policy-prebuilt-sdk/biocompiler-0.1.0.dev29-py3-none-any.whl" \
+            --native "$GITHUB_WORKSPACE/artifacts/prebuilt-${{ matrix.platform }}/biocompiler_core-0.1.0.dev29-py3-none-${{ matrix.wheel-tag }}.whl" \
+            --release-candidate "$GITHUB_WORKSPACE/artifacts/policy-prebuilt-sdk/candidate.json" \
+            --platform-root "$GITHUB_WORKSPACE/artifacts/prebuilt-${{ matrix.platform }}" \
+            --material-authority "$GITHUB_WORKSPACE/artifacts/prebuilt-${{ matrix.platform }}/material-authority.json" \
+            --fixture "$GITHUB_WORKSPACE/core/test/data/policy_material_request_v01.json" \
+            --output-dir "$RUNNER_TEMP/policy-prebuilt/${{ matrix.platform }}-py${{ matrix.python-version }}"
+      - name: Retain bounded installed evidence and failure logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: policy-prebuilt-${{ matrix.platform }}-py${{ matrix.python-version }}
+          path: |
+            ${{ runner.temp }}/policy-prebuilt/${{ matrix.platform }}-py${{ matrix.python-version }}/prebuilt.json
+            ${{ runner.temp }}/policy-prebuilt/${{ matrix.platform }}-py${{ matrix.python-version }}/commands.json
+            ${{ runner.temp }}/policy-prebuilt/${{ matrix.platform }}-py${{ matrix.python-version }}/evidence/
+            ${{ runner.temp }}/policy-prebuilt/${{ matrix.platform }}-py${{ matrix.python-version }}/logs/
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+      - name: Record successful installed-wheel validation
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/policy-prebuilt-installed-${{ matrix.platform }}-py${{ matrix.python-version }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-job-policy-prebuilt-installed-${{ matrix.platform }}-py${{ matrix.python-version }}
+          path: generated/ci/policy-prebuilt-installed-${{ matrix.platform }}-py${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  policy-prebuilt-reproducibility:
+    needs: [policy-prebuilt-sdk, policy-prebuilt-installed]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python tools/ci_validation.py start --job policy-prebuilt-reproducibility --variant cross-platform --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: policy-prebuilt-*
+          path: artifacts/installed
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: prebuilt-*
+          path: artifacts/native
+      - name: Install current Python sources for independent receipt comparison
+        run: python -m pip install .
+      - name: Compare complete owned-wheel material and offline-consumer results across four slots
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_policy_material_prebuilt.py \
+            --compare artifacts/installed/policy-prebuilt-linux-x86_64-py3.11 \
+            --compare artifacts/installed/policy-prebuilt-linux-x86_64-py3.14 \
+            --compare artifacts/installed/policy-prebuilt-macos-arm64-py3.11 \
+            --compare artifacts/installed/policy-prebuilt-macos-arm64-py3.14 \
+            --sdk artifacts/installed/policy-prebuilt-sdk/biocompiler-0.1.0.dev29-py3-none-any.whl \
+            --release-candidate artifacts/installed/policy-prebuilt-sdk/candidate.json \
+            --platform-root artifacts/native/prebuilt-linux-x86_64 \
+            --platform-root artifacts/native/prebuilt-macos-arm64 \
+            --material-authority artifacts/native/prebuilt-linux-x86_64/material-authority.json \
+            --material-authority artifacts/native/prebuilt-macos-arm64/material-authority.json \
+            --fixture core/test/data/policy_material_request_v01.json \
+            --output-dir generated/policy-prebuilt-reproducibility
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: policy-prebuilt-comparison
+          path: generated/policy-prebuilt-reproducibility
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+      - run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/policy-prebuilt-reproducibility-cross-platform.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-job-policy-prebuilt-reproducibility-cross-platform
+          path: generated/ci/policy-prebuilt-reproducibility-cross-platform.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
   validation:
     name: Validation complete
     if: always()
@@ -1420,6 +1896,9 @@ jobs:
       - realization-conformance
       - realization-core-reproducibility
       - studio-typescript
+      - policy-prebuilt-sdk
+      - policy-prebuilt-installed
+      - policy-prebuilt-reproducibility
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

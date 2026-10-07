@@ -17,19 +17,19 @@ Unknown export bindings, dynamic export mutations, unresolved schema/profile dec
 | Inventory category | Entries |
 | --- | ---: |
 | `authority_boundary` | 94 |
-| `cli_command` | 56 |
+| `cli_command` | 67 |
 | `console_script` | 1 |
 | `example` | 37 |
 | `export` | 699 |
 | `ir_operation` | 165 |
-| `module` | 203 |
-| `public_definition` | 844 |
+| `module` | 210 |
+| `public_definition` | 866 |
 | `schema` | 329 |
 | `serializer` | 294 |
 | `studio_asset` | 8 |
 | `studio_endpoint` | 14 |
-| `version_literal` | 510 |
-| `version_profile` | 100 |
+| `version_literal` | 563 |
+| `version_profile` | 113 |
 
 ## CLI command index
 
@@ -73,12 +73,23 @@ Unknown export bindings, dynamic export mutations, unresolved schema/profile dec
 | `payload-build` | `--request` | legacy |
 | `payload-fasta` | `--expected-request` | legacy |
 | `payload-verify` | `--expected-request` | legacy |
-| `policy assess-native` | See argument contract; inspection is not verification | legacy |
+| `policy assess-native` | `--expected-sha256` | legacy |
 | `policy check` | See argument contract; inspection is not verification | legacy |
+| `policy check-implementation-native` | `--expected-sha256`, `--limits`, `--candidate` | legacy |
+| `policy check-lowering-native` | `--expected-sha256`, `--definitions`, `--candidate` | legacy |
+| `policy check-material-native` | `--expected-sha256`, `--limits`, `--candidate` | legacy |
+| `policy compile-implementation-native` | `--expected-sha256`, `--limits` | legacy |
+| `policy compile-material-native` | `--expected-sha256`, `--limits` | legacy |
+| `policy compile-native` | `--expected-sha256`, `--definitions` | legacy |
 | `policy diff` | See argument contract; inspection is not verification | legacy |
+| `policy execute-native` | `--expected-sha256`, `--definitions`, `--candidate`, `--timeline` | legacy |
+| `policy export-material-native` | `--expected-sha256`, `--limits`, `--candidate` | legacy |
 | `policy export-request` | See argument contract; inspection is not verification | legacy |
 | `policy export-schema` | See argument contract; inspection is not verification | legacy |
 | `policy inspect` | See argument contract; inspection is not verification | legacy |
+| `policy replay-execution-native` | `--expected-sha256`, `--definitions`, `--candidate`, `--timeline`, `--report` | legacy |
+| `policy replay-implementation-native` | `--expected-sha256`, `--limits`, `--candidate`, `--report` | legacy |
+| `policy replay-material-native` | `--expected-sha256`, `--limits`, `--candidate`, `--report` | legacy |
 | `reference-build` | `--request` | legacy |
 | `reference-inspect` | See argument contract; inspection is not verification | legacy |
 | `reference-verify` | `--expected-build`, `--expected-request` | legacy |

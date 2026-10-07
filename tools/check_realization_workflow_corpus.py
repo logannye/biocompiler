@@ -21,6 +21,17 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # hashes for historical source files are deliberately unsupported.
 REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py"})
 REVIEWED_ADDITIONS = {
+    # Explicit owned-wheel resolver reused from the preserved continuation;
+    # historical workflow capture cannot import this new opt-in route.
+    'src/biocompiler/core_distribution.py': '10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459',
+    'src/biocompiler/policy/material.py': 'cabfab5d543c84d5732d9d9adcb1edf1482f45e3ebb80fdab1022ef3bea16359',
+    'src/biocompiler/core_policy_material.py': 'b3a28a1f40d475de8848cc6cea45d4c0975042da17b2c90977facca7f2d9100c',
+    'src/biocompiler/policy/implementation.py': '4e1de0535cf852885169328aaae035caff9178b367b84f204c1e68eaae478515',
+    'src/biocompiler/core_policy_implementation.py': 'b0a1c56ed960e146153dcb1f89ac28cc0f809a79716a7f7c1e096496b4bcf556',
+    # Explicit operational-policy transport and CLI stay excluded from the
+    # original workflow cohort; these pins do not broaden historical authority.
+    'src/biocompiler/core_policy_operational.py': '089805c81bf6f84e5cf5e264b6ed89babedc3d692e2a7605429aa388e6d5ed02',
+    'src/biocompiler/policy/operational.py': 'b3db654830b8477c29de9fc13a9fd05cf6337a512cfcd86dde9391146cf4efee',
     'src/biocompiler/policy/native.py': '956e33656d6b5ee332fae215a56d667d7b88019d7853426440aa5502777dc9f0',
     'src/biocompiler/core_policy.py': '9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e',
     'examples/expressive_policies.py': 'face2b9c24b039da9931b4af4e4fc26ad4fcec94b9aa338196c2c7455d789bec',
@@ -29,7 +40,7 @@ REVIEWED_ADDITIONS = {
     'src/biocompiler/policy/behavior.py': '691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf',
     'src/biocompiler/policy/catalog.py': '96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30',
     'src/biocompiler/policy/chassis.py': '21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1',
-    'src/biocompiler/policy/cli.py': '7e6e5f2e74fe4de76117433b2b8065e0b7a1d2386c2efe831cf353596ec8c591',
+    'src/biocompiler/policy/cli.py': '2eab649fbcf2223e26312b4987a842bf251425b1779ce795a3542fa8ab97cc60',
     'src/biocompiler/policy/coordination.py': 'ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9',
     'src/biocompiler/policy/deployment.py': 'cddace3d45f04ecd722a47849325c9ff6a41fc166b0e23253c2377f037eae29f',
     'src/biocompiler/policy/effects.py': '2e228309b98defa71730cac3e2b8883a9e86c9f63f0d5c25b37bf70b27a02578',

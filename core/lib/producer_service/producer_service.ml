@@ -66,9 +66,12 @@ let capabilities executable request =
   | Protocol.Ok, Some original, [] ->
       let changed = Json.object_fields original |> List.map (fun (key, value) -> key,
           match key with
-          | "operations" -> Json.Array (Json.array value @ List.map str operations)
+          | "operations" -> Json.Array (Json.array value @ List.map str (operations @ ["compile-policy"; "compile-policy-implementation"; "compile-policy-material"]))
           | "validation_scopes" -> Json.Array (Json.array value @ [str validation_scope])
-          | "profiles" -> obj (Json.object_fields value @ ["architecture_producer", profile])
+          | "profiles" -> obj (Json.object_fields value @ ["architecture_producer", profile;
+              "policy_operational_producer", Bioc_service.Policy_operational_service.producer_profile;
+              "policy_implementation_producer", Bioc_service.Policy_implementation_service.producer_profile;
+              "policy_material_producer", Bioc_service.Policy_material_service.producer_profile])
           | "claim_scope" -> str "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
           | _ -> value) in
       Protocol.Ok, Some (obj changed), []
@@ -78,5 +81,8 @@ let handle executable (request : Protocol.request) =
   | Protocol.Verify, _ -> Base.handle executable request
   | Protocol.Core, "capabilities" -> capabilities executable request
   | Protocol.Core, "compile-architecture" -> Protocol.Ok, Some (compile request.payload), []
+  | Protocol.Core, "compile-policy" -> Protocol.Ok, Some (Policy_operational_producer.compile request.payload), []
+  | Protocol.Core, "compile-policy-implementation" -> Protocol.Ok, Some (Policy_implementation_producer.compile request.payload), []
+  | Protocol.Core, "compile-policy-material" -> Protocol.Ok, Some (Policy_material_producer.compile request.payload), []
   | Protocol.Core, "export-architecture" -> Protocol.Ok, Some (export request.payload), []
   | Protocol.Core, _ -> Base.handle executable request

@@ -414,3 +414,150 @@ constructor performs Python lowering verification. Historical pure result views
 may be hydrated only with exact round-trip bytes and fingerprints. Full workflows,
 exploration/reduction, pipelines, archive/export authority and default cutover
 remain separate migration gates; these direct operations do not advertise them.
+
+## Bounded rich-policy operational profile
+
+`policy_operational` negotiates the exact v0.1 operational contract documented in
+[policy-operational-v0.1](../docs/policy-operational-v0.1.md). Core and standalone
+Verify expose `check-policy-lowering`, `execute-policy` and
+`replay-policy-execution`; Core alone exposes `compile-policy` under the additional
+`policy_operational_producer` profile. The source-only `policy_frontend` profile
+and its results are unchanged.
+
+| Operation | Exact payload fields |
+| --- | --- |
+| `compile-policy` | `document`, `definitions` |
+| `check-policy-lowering` | `document`, `definitions`, `candidate` |
+| `execute-policy` | `document`, `definitions`, `candidate`, `timeline` |
+| `replay-policy-execution` | `document`, `definitions`, `candidate`, `timeline`, `report` |
+
+The result schema is `biocompiler.core.policy_operational.v1`, with exact fields
+`schema_version`, `implementation`, `resource_profile`, `validation_scope`,
+`request_fingerprint`, `candidate_fingerprint`, `report_fingerprint`, `candidate`
+and `report`. Input identity hashes the complete payload excluding only replay's
+retained `report`. Execution bounds are explicit in the timeline and therefore
+part of this authority. Replay returns only after complete fresh report equality.
+
+A lowering report retains the original native source assessment, independent
+correspondence report and unchanged `artifact=withheld`,
+`target_status=unassessed`, `realization=unassessed`. Execution adds its complete
+trace and requirement ledger. Unsupported admission, malformed source or values,
+changed candidate authority and resource exhaustion do not produce successful
+partial results. This profile has no artifact publication operation or implicit
+Python fallback and does not establish supplied-realization correspondence.
+
+## Bounded policy implementation v0.1
+
+The separate `bounded-policy-implementation-v0.1` validation scope negotiates
+`biocompiler.core.policy_implementation.v1` and
+`biocompiler.ocaml.policy_implementation.v0.1`. Core advertises producer operation
+`compile-policy-implementation`; Core and standalone Verify advertise
+`check-policy-implementation` and `replay-policy-implementation`. Verify does not
+link the producer or support the compile operation.
+
+Compile consumes exactly `{request, limits}`. Check consumes exactly
+`{request, candidate, limits}`. Replay additionally requires `report`, containing
+the **complete saved result wrapper**, not only its inner report. The original
+request is a `biocompiler.policy_realization_request.v0.1` with the complete
+BuildRequest, exact semantic descriptors, original finite operating domain,
+supplied primitive library/catalog bridges and exploration budgets. The separate
+limits use `biocompiler.policy_preservation_resources.v0.1`.
+
+The candidate is `biocompiler.policy_implementation_candidate.v0.1`, containing
+`behavior`, `implementation` and `binding`. Every check freshly admits original
+source, independently checks both IR boundaries, explores the complete supplied
+finite domain, reconstructs candidate execution and independently monitors the
+original hard requirements. The producer proposes this candidate and invokes the
+same checking service. The first family and precise acceptance conditions are in
+[bounded preservation](../docs/policy-bounded-preservation-v0.1.md).
+
+The result retains schema/implementation/resource/scope identities, full request,
+candidate and invocation fingerprints, the complete candidate and complete report
+with its fingerprint. Invocation identity includes the original request, candidate
+and limits. Replay recomputes and compares the **entire wrapper**. A serialized
+`checked_implementation` is inspection evidence; parsing it grants no checked
+native value or export permission. Preservation and hard requirements have
+separate outcomes, and incomplete exploration cannot authorize acceptance.
+
+Publication reserves the worst-case escaped legal request identity and protocol
+framing. The negotiated result limits are 8,323,072 bytes and 249,968 key/value
+nodes; the complete wrapper must fit without trimming. Native work, monitor,
+retained trace and publication limits remain distinct from therapeutic capacity.
+
+The Python `PolicyImplementationClient` and policy CLI commands
+`compile-implementation-native`, `check-implementation-native`, and
+`replay-implementation-native` are inert transport adapters. Each command requires
+`--limits`; check/replay require `--candidate`, and replay requires the saved full
+wrapper through `--report`. Authoring validation is never executed as a fallback.
+CLI exit codes are 0 for checked implementation, 1 for a completed native response
+that withholds acceptance, and 2 for input/transport/native protocol failure.
+All results retain target/material unassessed and artifact/export withheld.
+
+## Conditional policy material v0.1
+
+The new `policy-truth-mrna-v0.1` scope negotiates
+`biocompiler.core.policy_material.v1`,
+`biocompiler.ocaml.policy_material.v0.1`, and
+`biocompiler.policy_material_resources.v0.1`. Core alone advertises
+`compile-policy-material`; Core and standalone Verify expose
+`check-policy-material`, `replay-policy-material`, and `export-policy-material`.
+The verifier dependency boundary still excludes the producer.
+
+Compile takes exactly `{request, limits}`. Check and export take exactly
+`{request, candidate, limits}`. Replay additionally takes the full saved wrapper
+as `report`. No operation accepts a saved report as native acceptance authority.
+The original `biocompiler.policy_material_request.v0.1` retains the full
+implementation request, full supplied material case, exact provider/context
+contracts, an original catalog-entry/material-case binding, and aggregate work
+and publication budgets. The request profile is
+`biocompiler.policy_truth_mrna.v0.1`; `limits` retains the unchanged preservation
+resource schema. Fields, timing, resources and unsupported cases are specified
+in [material acceptance](../docs/policy-material-acceptance.md).
+
+The candidate schema `biocompiler.policy_material_candidate.v0.1` contains
+`behavior`, `implementation`, `binding`, `material_binding`, and `construction`.
+Fresh checking reruns source admission, both IR correspondences, full finite
+preservation and requirement evaluation, exact whole-graph/material binding,
+independent molecular construction, original context contracts and every original
+source obligation. Only the complete conjunction creates private native material
+acceptance. Missing, unknown, unsupported, incomplete or failed obligations cannot
+authorize export. Supplied model-to-sequence and provider contracts are explicit
+premises; empirical validity remains unassessed.
+
+The result wrapper contains schema, implementation, resource and scope fields,
+request/candidate/invocation/report fingerprints, complete candidate and report,
+and `artifact`. Compile/check/replay set `artifact` to null. Replay compares the
+whole freshly reconstructed wrapper. Export independently rechecks the full
+chain and returns an artifact only from its private accepted material value.
+The underlying assessment retains `artifact=withheld` and `export=withheld`;
+export does not relabel historical leaf assessments.
+
+The artifact schema is `biocompiler.policy_mrna_export.v0.1`, with exact fields
+`schema_version`, `fasta`, `fasta_sha256`, `manifest`, `manifest_sha256`. Ordered
+members receive headers `rna_0001`, `rna_0002`, etc., with `alphabet=RNA`,
+80-column sequence lines and final newlines. The canonical manifest has no
+trailing newline and includes complete original request, candidate, limits,
+assessment, their binding fingerprints, the full molecule records and exact
+FASTA hash. Its own hash is carried in the outer artifact. The manifest records
+that original authority must be retained separately; it cannot substitute for
+those original inputs during later checking.
+
+The service reserves complete publication within 8,323,072 bytes and 249,968
+key/value nodes, including worst-case legal request identity/framing. It never
+trims proof evidence. Aggregate work is explicitly measured as logical data
+visits and child semantic work, with charged decoding and startup passes; it is
+not a wall-clock or machine-instruction bound. Decoder and child bounds remain
+independent requirements.
+
+`PolicyMaterialClient` and `policy.material` transport inert immutable snapshots.
+The CLI provides `compile-material-native`, `check-material-native`,
+`replay-material-native`, and `export-material-native`, with required `--limits`.
+Fresh export requires an output `.zip` and publishes `program.fasta` plus
+`manifest.json` as one deterministic stored archive. The Python helper verifies
+the fresh native pair, writes and fsyncs a temporary archive, reads back exact
+member bytes/metadata, and atomically publishes it. Existing destinations require
+explicit `--replace`; original inputs and aliases cannot be overwritten. Failed
+checking, cancellation, changed staged bytes and publication failures preserve
+prior output. Exit codes remain 0 for acceptance, 1 for a completed nonaccepted
+assessment, and 2 for input/transport/native errors. There is no Python semantic
+fallback.

@@ -1,0 +1,30 @@
+{
+  "schema_version": "biocompiler.policy_operating_domain.v0.1",
+  "profile": "biocompiler.policy_truth_domain.v0.1",
+  "clock": "clock",
+  "executor": {"role": "executor", "identity": "cell-1"},
+  "horizon_ticks": 4,
+  "encounters": [
+    {"identity": "e1", "declaration": "encounter", "target": "target-1", "start_tick": 0},
+    {"identity": "e2", "declaration": "encounter", "target": "target-2", "start_tick": 0}
+  ],
+  "fixed_observations": [
+    {"slot": "e1", "observation": "condition", "available_tick": 0, "observed_tick": 0, "status": "valid", "value": false},
+    {"slot": "e2", "observation": "condition", "available_tick": 0, "observed_tick": 0, "status": "valid", "value": false},
+    {"slot": "e1", "observation": "condition", "available_tick": 2, "observed_tick": 2, "status": "valid", "value": false},
+    {"slot": "e2", "observation": "condition", "available_tick": 2, "observed_tick": 2, "status": "valid", "value": false}
+  ],
+  "observation_factors": [
+    {"slots": ["e1", "e2"], "observation": "condition", "ticks": [1],
+     "alphabet": "known_truth_and_evidence_status.v1", "age_ticks": [0], "max_rows_per_slot_tick": 1}
+  ],
+  "lifecycle_factors": [
+    {"slots": ["e1", "e2"], "ticks": [3], "actions": ["keep", "reset", "end"]}
+  ],
+  "feedback_factors": [
+    {"effect": "response", "ticks": [2, 3], "attempt_selector": "all_previously_created",
+     "outcomes": ["completed", "failed"], "routes": ["correlated"], "max_rows_per_attempt_tick": 1}
+  ],
+  "foreign_feedback_factors": [],
+  "logical_limits": {"max_live_encounters": 2, "max_generations_per_slot": 2, "max_source_attempts": 2}
+}

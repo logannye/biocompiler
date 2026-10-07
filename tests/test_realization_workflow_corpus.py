@@ -12,6 +12,111 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 
 
+class RealizationWorkflowSourceScopeTests(unittest.TestCase):
+    OPERATIONAL_MODULES = {
+        "src/biocompiler/core_policy_operational.py": "biocompiler.core_policy_operational",
+        "src/biocompiler/policy/operational.py": "biocompiler.policy.operational",
+        "src/biocompiler/policy/cli.py": "biocompiler.policy.cli",
+    }
+
+    def setUp(self):
+        from tools import check_realization_workflow_corpus as authority
+        from tools.freeze_realization_workflow import source_inventory
+        self.authority = authority
+        self.actual = source_inventory()
+
+    def test_operational_transport_is_exactly_pinned_and_excluded_from_original_authority(self):
+        scope = self.authority.source_scope(self.actual)
+        historical = {row["path"] for row in scope["historical_sources"]}
+        additions = {row["path"]: row["sha256"] for row in scope["reviewed_additions"]}
+        self.assertEqual(scope["historical_corpus_pin"], PIN)
+        for path, module in self.OPERATIONAL_MODULES.items():
+            with self.subTest(path=path):
+                self.assertNotIn(path, historical)
+                self.assertEqual(additions[path], self.authority.digest((ROOT / path).read_bytes()))
+                self.assertIn(module, scope["denied_modules"])
+        document = {"source_files": self.actual, "observations": [{"id": "preserved", "result": False}]}
+        projected = self.authority.historical_projection(document, scope)
+        self.assertEqual(projected["source_files"], scope["historical_sources"])
+        self.assertIs(projected["observations"], document["observations"])
+        self.assertEqual(document["source_files"], self.actual)
+
+    def test_each_operational_source_pin_rejects_changed_inventory_and_changed_bytes(self):
+        read_bytes = Path.read_bytes
+        for path in self.OPERATIONAL_MODULES:
+            with self.subTest(path=path):
+                changed = [{**row, "sha256": "0" * 64} if row["path"] == path else row
+                           for row in self.actual]
+                with self.assertRaisesRegex(AssertionError, "Unreviewed workflow source addition"):
+                    self.authority.source_scope(changed)
+
+                def altered_bytes(actual_path):
+                    raw = read_bytes(actual_path)
+                    return raw + b"\n# unreviewed edit\n" if actual_path == ROOT / path else raw
+
+                with patch.object(Path, "read_bytes", altered_bytes):
+                    with self.assertRaisesRegex(AssertionError, "Reviewed addition bytes changed"):
+                        self.authority.source_scope(self.actual)
+
+    def test_registration_preserves_missing_duplicate_and_unreviewed_source_rejection(self):
+        historical = self.authority.historical_sources()[0]["path"]
+        with self.assertRaisesRegex(AssertionError, "Historical workflow authority source is missing"):
+            self.authority.source_scope([row for row in self.actual if row["path"] != historical])
+        with self.assertRaisesRegex(AssertionError, "Duplicate current workflow source"):
+            self.authority.source_scope([*self.actual, self.actual[0]])
+        for path in ("src/biocompiler/core_policy_operational_extra.py",
+                     "src/biocompiler/policy/operational_extra.py"):
+            with self.subTest(path=path):
+                with self.assertRaisesRegex(AssertionError, "Unreviewed workflow source addition"):
+                    self.authority.source_scope([*self.actual, {"path": path, "sha256": "1" * 64}])
+
+    def test_actual_operational_modules_remain_forbidden_before_during_and_after_capture(self):
+        import os
+        import subprocess
+        import sys
+        script = '''
+import importlib
+import sys
+from tools.check_realization_workflow_corpus import deny_added_modules, source_scope
+from tools.freeze_realization_workflow import source_inventory
+scope = source_scope(source_inventory())
+names = ("biocompiler.core_policy_operational", "biocompiler.policy.operational", "biocompiler.policy.cli")
+for name in names:
+    assert name in scope["denied_modules"]
+    for attempted in (name, name + ".unreviewed"):
+        with deny_added_modules(scope):
+            try:
+                importlib.import_module(attempted)
+            except AssertionError as error:
+                assert "tried to import" in str(error), error
+            else:
+                raise AssertionError("Excluded operational code ran: " + attempted)
+    sys.modules[name] = object()
+    try:
+        try:
+            with deny_added_modules(scope):
+                raise RuntimeError("Preloaded excluded module was admitted")
+        except AssertionError as error:
+            assert "imported before" in str(error), error
+    finally:
+        del sys.modules[name]
+    try:
+        try:
+            with deny_added_modules(scope):
+                sys.modules[name] = object()
+        except AssertionError as error:
+            assert "Original cohort imported" in str(error), error
+        else:
+            raise AssertionError("Inserted operational module escaped capture")
+    finally:
+        del sys.modules[name]
+'''
+        result = subprocess.run([sys.executable, "-c", script], cwd=ROOT,
+            env={**os.environ, "PYTHONPATH": str(ROOT / "src"), "PYTHONDONTWRITEBYTECODE": "1"},
+            text=True, capture_output=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+
+
 class RealizationWorkflowInstrumentationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

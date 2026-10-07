@@ -26,15 +26,20 @@ REPRODUCIBILITY = ("executable-rna-reproducibility", "payload-architecture-repro
 CORE_PLATFORMS = {"linux-x86_64": ("Linux", "x86_64"), "macos-arm64": ("Darwin", "arm64")}
 REALIZATION_VARIANTS = {f"{name}-py{version}": (system, machine, version)
                         for name, (system, machine) in CORE_PLATFORMS.items() for version in PYTHONS}
+RUNTIME_JOBS = frozenset({"realization-conformance", "policy-prebuilt-installed"})
 REQUIRED_NEEDS = frozenset((*PRODUCERS, *REPRODUCIBILITY, "studio-browser",
                             "unit-plan", "unit-tests", "unit-accounting", "ocaml-core", "studio-typescript",
-                            "architecture-core-reproducibility", "realization-conformance", "realization-core-reproducibility"))
+                            "architecture-core-reproducibility", "realization-conformance", "realization-core-reproducibility",
+                            "policy-prebuilt-sdk", "policy-prebuilt-installed", "policy-prebuilt-reproducibility"))
 EXPECTED_RECEIPTS = frozenset((job, version) for job in PRODUCERS for version in PYTHONS) | {
     ("studio-browser", "3.11"), *((job, "cross-python") for job in REPRODUCIBILITY),
     ("studio-typescript", "3.11"), *(("ocaml-core", variant) for variant in CORE_PLATFORMS),
     ("architecture-core-reproducibility", "cross-platform"),
     *(("realization-conformance", variant) for variant in REALIZATION_VARIANTS),
     ("realization-core-reproducibility", "cross-platform"),
+    ("policy-prebuilt-sdk", "cross-platform"),
+    *(("policy-prebuilt-installed", variant) for variant in REALIZATION_VARIANTS),
+    ("policy-prebuilt-reproducibility", "cross-platform"),
 }
 
 
@@ -78,7 +83,7 @@ def start_job(job, variant, expected):
         raise ValueError("Job Python differs from required variant")
     if job == "ocaml-core" and (platform.system(), platform.machine()) != CORE_PLATFORMS[variant]:
         raise ValueError("Core build platform differs from required variant")
-    if job == "realization-conformance":
+    if job in RUNTIME_JOBS:
         system, machine, version = REALIZATION_VARIANTS[variant]
         if (platform.system(), platform.machine(), ".".join(actual_python.split(".")[:2])) != (system, machine, version):
             raise ValueError("Realization conformance runtime differs from required variant")
@@ -155,7 +160,7 @@ def validate(needs, receipts, accounting, expected):
             problems.append("wrong_job_python:" + str(key))
         if key[0] == "ocaml-core" and (receipt.get("system"), receipt.get("machine")) != CORE_PLATFORMS.get(key[1]):
             problems.append("wrong_core_platform:" + str(key))
-        if key[0] == "realization-conformance":
+        if key[0] in RUNTIME_JOBS:
             actual = (receipt.get("system"), receipt.get("machine"),
                       ".".join(str(receipt.get("python_version", "")).split(".")[:2]))
             if actual != REALIZATION_VARIANTS.get(key[1]):

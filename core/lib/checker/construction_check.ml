@@ -77,3 +77,73 @@ let replay ?parent ?maximum ~expected_request ~candidate assessment =
   let fresh = check ?parent ?maximum ~expected_request candidate in
   Diagnostic.require (E.fingerprint saved = E.fingerprint fresh) "construction_assessment_mismatch" "Construction assessment differs from fresh complete replay.";
   fresh
+
+module K = Construction_content
+let content_implementation_version = "biocompiler.ocaml.construction_content_check.v0.1"
+type content_assessment = {
+  authority:string; candidate:string; reconstructed:string; content_outcome:E.outcome;
+  content_diagnostics:string list; checked:K.t option;
+}
+let content_outcome (value:content_assessment) = value.content_outcome
+let content_diagnostics (value:content_assessment) = value.content_diagnostics
+let checked_content (value:content_assessment) = value.checked
+let content_report (value:content_assessment) = Json.Object [
+    "schema_version",Json.String "biocompiler.construction_content_assessment.v0.1";
+    "implementation_version",Json.String content_implementation_version;
+    "claim_scope",Json.String "exact_supplied_template_molecular_content";
+    "authority_fingerprint",Json.String value.authority;
+    "candidate_fingerprint",Json.String value.candidate;
+    "reconstructed_fingerprint",Json.String value.reconstructed;
+    "outcome",Json.String (E.outcome_name value.content_outcome);
+    "context_status",Json.String "unassessed";
+    "payload_completeness",Json.String "unassessed";
+    "diagnostics",Json.Array (List.map (fun text -> Json.String text) value.content_diagnostics)]
+let check_template ?parent ?(maximum=max_work) ~expected_template ~expected_member_order candidate =
+  Construction_reconstruction.protect (fun () ->
+    let budget = make_budget ?parent ~maximum () in
+    Work_budget.charge budget 1;
+    let authority = K.authority_json ~template:expected_template ~member_order:expected_member_order in
+    Construction_reconstruction.reserve_json budget authority;
+    Construction_reconstruction.reserve_json budget (K.to_json candidate);
+    let template = Payload_template.of_json (Payload_template.to_json expected_template)
+    and actual = K.of_json (K.to_json candidate) in
+    let expected,transitions = Construction_reconstruction.reconstruct_template ~budget
+        ~member_order:expected_member_order template in
+    Construction_reconstruction.reserve_json budget (K.to_json actual);
+    Construction_reconstruction.reserve_json budget (K.to_json expected);
+    let diagnostics = Inventory.create () in
+    let add = Inventory.add diagnostics in
+    let actual_fields = Json.object_fields (K.to_json actual)
+    and expected_fields = Json.object_fields (K.to_json expected) in
+    List.iter (fun key -> if not (Json.equal (Json.field key actual_fields) (Json.field key expected_fields))
+        then add ("fail:content:" ^ key))
+      ["authority_fingerprint";"member_order";"values";"inventory";"missing_members";"diagnostics";"experimental_amounts"];
+    List.iter (fun step -> match C.Operation.specification (C.Transform_step.operation step) with
+        | C.Operation.Conditional_translation branches -> List.iter (fun branch -> if C.Translation_branch.port_id branch = None then
+              add ("unsupported:step:" ^ C.Transform_step.id step ^ ":no_product_branch_semantics:" ^ C.Translation_branch.id branch)) branches
+        | _ -> ()) (Payload_template.steps template);
+    List.iter (fun code ->
+        let last = match String.rindex_opt code ':' with None -> code | Some index -> String.sub code (index+1) (String.length code-index-1) in
+        let prefix = if last = "nominal_incomplete" then "unknown" else if String.starts_with ~prefix:"invalid_" last then "fail" else "unsupported" in
+        add (prefix ^ ":" ^ code)) (K.diagnostics expected);
+    let transition_budget = Transition_check.make_budget ~parent:budget () in
+    List.iter (fun (transition:Construction_reconstruction.transition) ->
+        let resolution = Transition_check.resolve ~budget:transition_budget (C.Product_port.chemistry_transition transition.port)
+            (C.Product_port.feature_transition transition.port) ~inputs:transition.inputs ~output_sequence:(A.Value.sequence transition.product)
+            ~output_space:(A.Value.space transition.product) ~derivation:(A.Value.segments transition.product)
+            ~sequence_extent:(A.Value.sequence_extent transition.product) in
+        List.iter (fun item -> add ("fail:step:" ^ C.Transform_step.id transition.step ^ ":" ^ item)) (Transition_check.diagnostics resolution);
+        List.iter (fun item -> add ("unsupported:step:" ^ C.Transform_step.id transition.step ^ ":" ^ item)) (Transition_check.unsupported resolution)) transitions;
+    if K.inventory expected = None && Inventory.elements diagnostics = [] then add "fail:missing_content_inventory";
+    let values = Inventory.elements diagnostics in
+    let statuses = List.map status values in
+    let outcome = if List.mem "fail" statuses then E.Fail else if List.mem "unsupported" statuses then E.Unsupported
+      else if List.mem "unknown" statuses then E.Unknown else E.Pass in
+    {authority=Canonical.fingerprint authority;candidate=K.fingerprint actual;reconstructed=K.fingerprint expected;
+      content_outcome=outcome;content_diagnostics=values;checked=(if outcome=E.Pass then Some actual else None)})
+let replay_template ?parent ?maximum ~expected_template ~expected_member_order ~candidate saved =
+  Molecular_record.check_resources saved;
+  let fresh = check_template ?parent ?maximum ~expected_template ~expected_member_order candidate in
+  Diagnostic.require (Json.equal saved (content_report fresh)) "construction_content_assessment_mismatch"
+    "Saved content assessment differs from fresh exact-content correspondence.";
+  fresh
