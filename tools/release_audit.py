@@ -28,10 +28,12 @@ import release_audit_policy
 import release_audit_units
 import release_audit_component
 import release_audit_researcher
+import release_audit_authoring
 
 PROFILES = {'complete-release-v1': 'release-audit-v1.json',
             'complete-component-release-v1': 'release-audit-component-v1.json',
-            'complete-researcher-alpha-release-v1': 'release-audit-researcher-alpha-v1.json'}
+            'complete-researcher-alpha-release-v1': 'release-audit-researcher-alpha-v1.json',
+            'complete-researcher-authoring-release-v1': 'release-audit-researcher-authoring-v1.json'}
 
 BOOTSTRAP_STEP_NAME = 'Seed the exact hosted macOS ARM64 Python runtime'
 
@@ -189,8 +191,10 @@ def audit_policy_and_prebuilt(store, output, plan, identity, *, native_bundles=N
     import check_prebuilt_core_release as release_check
     import check_prebuilt_matrix as original_matrix
     from release_audit_policy import audit_source, audit_operational, audit_implementation, audit_material, audit_consumer
-    researcher_profile = plan['profile'] == 'complete-researcher-alpha-release-v1'
-    component_profile = plan['profile'] in {'complete-component-release-v1', 'complete-researcher-alpha-release-v1'}
+    researcher_profile = plan['profile'] in release_audit_plan.RESEARCHER_PROFILES
+    component_profile = researcher_profile or plan['profile'] == 'complete-component-release-v1'
+    researcher_auditor = (release_audit_authoring if plan['profile'] == release_audit_plan.AUTHORING_PROFILE
+                          else release_audit_researcher)
     consumer_checker = audit_consumer
     if component_profile:
         def consumer_checker(*args, **kwargs):
@@ -293,7 +297,7 @@ def audit_policy_and_prebuilt(store, output, plan, identity, *, native_bundles=N
         binaries = {prebuilt.build.TARGETS[target][:2]: {'biocompiler-' + role:
             prebuilt.build.sha(native['entries']['biocompiler_core/bin/biocompiler-' + role][0])
             for role in ('core', 'verify')} for target, native in native_data.items()}
-        additions = release_audit_researcher.audit_installed_profiles(
+        additions = researcher_auditor.audit_installed_profiles(
             [directory for _, directory, _ in slots], fixture_root / 'policy_staged_material_v01.json',
             ROOT / 'data/researcher_alpha/expected.json', identity, binaries,
             audited_sources=plan['component_sources'])
@@ -304,7 +308,7 @@ def audit_policy_and_prebuilt(store, output, plan, identity, *, native_bundles=N
         comparison_directory = store.extract('policy-prebuilt-comparison', output / 'payloads/policy-prebuilt-comparison')
         starter_args = SimpleNamespace(sdk=sdk, release_candidate=candidate_path,
             output_dir=comparison_directory, compare=[directory for _, directory, _ in slots])
-        starter = release_audit_researcher.audit_starter(
+        starter = researcher_auditor.audit_starter(
             comparison_directory / 'researcher-starter', starter_args, owned, native_data,
             source_root=ROOT, audited_sources=plan['starter_sources'])
     # Original full release has its own independently generated SDK/candidate.
@@ -410,7 +414,7 @@ def read_pinned(path, expected):
     return value
 
 
-def git_catalog(root, revision, tree=None, *, researcher=False):
+def git_catalog(root, revision, tree=None, *, researcher=False, authoring=False):
     root = Path(root).resolve()
     observed = subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD', 'HEAD^{tree}'], text=True).splitlines()
     require(len(observed) == 2 and observed[0] == revision and (tree is None or observed[1] == tree),
@@ -420,11 +424,16 @@ def git_catalog(root, revision, tree=None, *, researcher=False):
     tracked = [p for p in subprocess.check_output(['git', '-C', str(root), 'ls-files', '-z']).decode().split('\0') if p]
     rows = subprocess.check_output(['git', '-C', str(root), 'ls-tree', '-r', revision, '--',
                                    'core', 'src', 'protocol', 'tools', 'pyproject.toml'], text=True).splitlines()
-    component_roots = release_audit_plan.RESEARCHER_SOURCE_ROOTS if researcher else release_audit_plan.COMPONENT_SOURCE_ROOTS
+    require(not authoring or researcher, 'Typed source catalog requires researcher scope')
+    component_roots = (release_audit_plan.AUTHORING_SOURCE_ROOTS if authoring else
+                       release_audit_plan.RESEARCHER_SOURCE_ROOTS if researcher else
+                       release_audit_plan.COMPONENT_SOURCE_ROOTS)
+    starter_files = (release_audit_plan.AUTHORING_STARTER_SOURCE_FILES if authoring else
+                     release_audit_plan.STARTER_SOURCE_FILES)
     component_rows = subprocess.check_output(['git', '-C', str(root), 'ls-tree', '-r', revision, '--',
                                              *component_roots], text=True).splitlines()
     starter_rows = (subprocess.check_output(['git', '-C', str(root), 'ls-tree', '-r', revision, '--',
-                    *release_audit_plan.STARTER_SOURCE_FILES], text=True).splitlines() if researcher else None)
+                    *starter_files], text=True).splitlines() if researcher else None)
     return {'revision': observed[0], 'tree': observed[1], 'tracked': tracked,
             'source_rows': rows, 'component_source_rows': component_rows, 'starter_source_rows': starter_rows}
 
@@ -493,8 +502,9 @@ def main(argv=None):
     packet, api_pins = read_packet(args.packet, args.packet_sha256)
     identity, tree, base, identity_proof = identity_from_authority(expected, packet, args.command == 'check')
     ROOT = args.source_root.resolve()
-    researcher_profile = args.profile == 'complete-researcher-alpha-release-v1'
-    source = git_catalog(ROOT, identity['head_revision'], tree, researcher=researcher_profile)
+    researcher_profile = args.profile in release_audit_plan.RESEARCHER_PROFILES
+    source = git_catalog(ROOT, identity['head_revision'], tree, researcher=researcher_profile,
+                         authoring=args.profile == release_audit_plan.AUTHORING_PROFILE)
     require(args.output.is_absolute() and not args.output.exists(), 'Output must be a fresh explicit absolute path')
     profile_path = TOOL_ROOT / 'protocol' / PROFILES[args.profile]
     profile = read_json(profile_path)

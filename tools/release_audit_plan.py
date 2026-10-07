@@ -23,6 +23,12 @@ STARTER_SOURCE_FILES = ('examples/researcher_alpha.py',
     'docs/researcher-alpha-review.md', 'docs/researcher-alpha-roadmap.md',
     *("data/researcher_alpha/" + name for name in ('staged-input.json', 'comparison-input.json',
       'expected.json', 'provenance.json', 'qualification.json', 'negative-controls.json')))
+AUTHORING_PROFILE = 'complete-researcher-authoring-release-v1'
+RESEARCHER_PROFILES = frozenset({'complete-researcher-alpha-release-v1', AUTHORING_PROFILE})
+AUTHORING_SOURCE_ROOTS = RESEARCHER_SOURCE_ROOTS + ('examples/author_staged_research_project.py',)
+AUTHORING_STARTER_SOURCE_FILES = STARTER_SOURCE_FILES + ('examples/author_staged_research_project.py',)
+AUTHORING_SCOPE = {'observations_per_slot': 30, 'retained_files_per_slot': 40,
+                   'input_pins': 10, 'starter_copied_files': 58, 'starter_source_files': 12}
 BASE_COUNTS = {
     'architecture_policy_comparisons': 6, 'direct_core_groups': 67, 'download_artifacts': 102,
     'installed_campaigns': 17, 'installed_group_receipts': 20, 'installed_runtime_slots': 4,
@@ -98,10 +104,19 @@ def build_plan(root: Path, *, identity: dict[str, str], tree: str, base: str,
     import ci_validation
     require(profile['schema'] == 'biocompiler.release_audit_profile.v1'
             and profile['id'] in {'complete-release-v1', 'complete-component-release-v1',
-                                  'complete-researcher-alpha-release-v1'},
+                                  *RESEARCHER_PROFILES},
             'Unsupported audit profile')
-    researcher_profile = profile['id'] == 'complete-researcher-alpha-release-v1'
-    component_profile = profile['id'] in {'complete-component-release-v1', 'complete-researcher-alpha-release-v1'}
+    authoring_profile = profile['id'] == AUTHORING_PROFILE
+    researcher_profile = profile['id'] in RESEARCHER_PROFILES
+    component_profile = researcher_profile or profile['id'] == 'complete-component-release-v1'
+    if authoring_profile:
+        require(profile.get('researcher_authoring') == AUTHORING_SCOPE
+                and all(type(value) is int for value in profile['researcher_authoring'].values()),
+                'Typed authoring scope differs')
+    else:
+        require('researcher_authoring' not in profile, 'Typed authoring scope supplied to a historical profile')
+    researcher_roots = AUTHORING_SOURCE_ROOTS if authoring_profile else RESEARCHER_SOURCE_ROOTS
+    starter_files = AUTHORING_STARTER_SOURCE_FILES if authoring_profile else STARTER_SOURCE_FILES
     expected_counts = {**BASE_COUNTS, **({'native_executables': 174, 'native_suites': 171, 'native_fixtures': 26}
         if researcher_profile else {'native_executables': 158, 'native_suites': 156} if component_profile else {})}
     require(type(profile['counts']) is dict and profile['counts'] == expected_counts
@@ -121,12 +136,12 @@ def build_plan(root: Path, *, identity: dict[str, str], tree: str, base: str,
         require(path.is_file() and not path.is_symlink(), 'Missing or redirected source file: ' + name)
         inventory[name] = sha(path)
     component_sources = (derive_component_sources(root, component_source_rows, tracked,
-                         source_roots=RESEARCHER_SOURCE_ROOTS if researcher_profile else COMPONENT_SOURCE_ROOTS)
+                         source_roots=researcher_roots if researcher_profile else COMPONENT_SOURCE_ROOTS)
                          if component_profile else None)
     starter_sources = (derive_component_sources(root, starter_source_rows, tracked,
-                       source_roots=STARTER_SOURCE_FILES, check_census=False) if researcher_profile else None)
+                       source_roots=starter_files, check_census=False) if researcher_profile else None)
     if researcher_profile:
-        require(set(starter_sources) == set(STARTER_SOURCE_FILES), 'Starter source catalog is incomplete')
+        require(set(starter_sources) == set(starter_files), 'Starter source catalog is incomplete')
     archive_files = {}
     for row in source_rows:
         metadata, name = row.split('\t'); mode, kind, _ = metadata.split()
@@ -195,6 +210,8 @@ def build_plan(root: Path, *, identity: dict[str, str], tree: str, base: str,
         plan['component_sources'] = component_sources
     if researcher_profile:
         plan['starter_sources'] = starter_sources
+    if authoring_profile:
+        plan['researcher_authoring'] = dict(AUTHORING_SCOPE)
     for field, count in [('physical_jobs', 'physical_jobs'), ('ordinary_receipts', 'ordinary_receipts'),
                          ('unit_artifacts', 'unit_artifacts'), ('download_artifact_names', 'download_artifacts'),
                          ('required_metadata_names', 'required_metadata')]:
