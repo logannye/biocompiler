@@ -22,16 +22,30 @@ Completion means a complete stack for an explicitly declared supported profile, 
 
 ## 2. Current checkpoint, starting point and ownership
 
-**Current release status:** PR85 is open at `278f452ec`.
-[Run 37551706364](https://github.com/logannye/biocompiler/actions/runs/37551706364)
-cannot pass: its installed policy-prebuilt comparison rejected a component
-mutation's original RECORD-byte authority. The four installed slots passed;
-the comparison failure is under independent diagnosis. Healthy remaining jobs
-continue and their evidence will be retained. The prepared 74-job/59-receipt/
-156-suite/102-archive audit plan does not establish acceptance of a failed run.
-A corrected source requires fresh full validation before PR85 can merge. PR95
-is separately validated and included by ancestry; final merge ordering and
-actual-main validation must be recorded in the session handoff.
+**Session closure status:** [PR95](https://github.com/logannye/biocompiler/pull/95)
+merged normally on 2026-10-06 Pacific as
+`ddf8e8a6031e342ac9fda7b94b03ae35f859bb20`, after its exact 42-job gate and
+independent 53-archive audit. Its separate
+[actual-main run 37561753806](https://github.com/logannye/biocompiler/actions/runs/37561753806)
+is still pending; merge does not establish actual-main acceptance.
+
+PR85 remains open. [Run 37551706364](https://github.com/logannye/biocompiler/actions/runs/37551706364)
+cannot pass because its installed policy-prebuilt comparison used original wheel
+RECORD bytes for pip's rewritten installed RECORD. The correction is committed
+as `59c514d72` in `codex/session-release-corrections`. It preserves every original
+wheel row and authenticates the exact installed mutation/restoration; independent
+source review and 29 guarded tests on each supported Python passed. A fresh full
+release gate and artifact audit are required before merge. Remaining healthy
+jobs of the failed attempt are retained, not transferred as new acceptance.
+
+Public selection at `70f81df1c` passed all 23 native suites and the original
+component SDK campaign in run `37561211151`; its selection SDK stage failed when
+a successful fixture command produced an empty log that the validator rejected.
+The narrow log-authentication correction is being completed separately. Selection
+compile remains unimplemented. Use the [session handoff](semantic-mrna-session-handoff.md)
+for the final pushed branches, live gates and exact resume instructions. Older
+checkpoint sections below preserve historical evidence and do not override this
+closure status.
 
 **Shipping order:** ship the accepted bounded component compiler first; finish
 finite selection as the next increment; then expand semantics and RNA architecture
@@ -40,8 +54,8 @@ members do not delay merging an independently accepted current profile.
 
 | Remaining increment | Concrete exit | Current boundary |
 | --- | --- | --- |
-| Current component release | Complete PR85 gate and artifact audit, normal merge, fresh actual-main gate and audit | Frozen source; hosted release validation active |
-| Public selection checking/export | Native check/replay/export, complete losing-input provenance, exact paired artifacts and independent development audit | Source and Python checks ready; hosted native validation pending |
+| Current component release | Complete PR85 gate and artifact audit, normal merge, fresh actual-main gate and audit | Installed-RECORD correction reviewed; fresh full gate required |
+| Public selection checking/export | Native check/replay/export, complete losing-input provenance, exact paired artifacts and independent development audit | All 23 native suites passed; selection SDK log correction and fresh development run required |
 | Selection compilation | Meter candidate generation, expose compile through the same independent checker, then pass installed/offline and release gates | Next coherent implementation batch; final candidate size is not generation-work accounting |
 | Coverage closure | Complete individual contextual rules, public authoring paths, exclusion diagnostics and semantic/edit-propagation witnesses | Existing ledgers retain explicit gaps; counts are not exhaustive semantic proof |
 | Further complete profiles | Finite-machine lowering, additional resource mappings, helper/dependency checking and multiple RNA members | Separate later increments; each requires complete source-to-material acceptance |
@@ -114,6 +128,13 @@ checked native bounded profile.
 | SM-09 Vertical expansions | SM-09.1 complete: select exact reusable component composition; fragment, local material/library and assembly-rule decoders/tests implemented; independent assembly checker and literal material tests implemented | Hosted source-tree path passed at 5a45d354e: all sixteen native suites and 26 public SDK observations, including exact A/B paired exports; installed and release acceptance remain open | Source registrations, installed/offline four-slot campaign source and additive audit profile are implemented; hosted installed/full acceptance, independent final artifact audit and actual-main acceptance remain open |
 
 ### Completed integration and validation tasks
+
+- [x] Merge separately accepted PR95 normally as `ddf8e8a603`, retaining its exact source audit; actual-main validation is a separate open task.
+- [x] Refresh README with the Python-policy-to-exact-mRNA vision, implemented bounded profiles, native verification model, supplied-contract boundary and deferred scope.
+- [x] Save a portable tracked session handoff, evidence index and reviewed next selection-compile design.
+- [x] Review and commit the installed-RECORD correction as `59c514d72`; 29 guarded tests passed per supported Python.
+- [ ] Pass the corrected full PR85 gate and independent artifact audit, merge normally, and validate actual main.
+- [ ] Pass and independently audit the complete public selection SDK development campaign; retain the 23-suite success separately from the failed combined run.
 
 These checkboxes record the stated completed task only; they do not close the
 broader SM acceptance items below.

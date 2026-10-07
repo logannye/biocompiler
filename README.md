@@ -25,7 +25,9 @@ development validation. **Complete release acceptance and production-wide native
 cutover remain pending.** The newest public selection check/replay/export
 increment still awaits hosted acceptance; selection compilation is not available.
 The [semantic mRNA development plan](docs/semantic-mrna-development-plan.md) is
-the maintained source of implementation, validation and release status.
+the maintained source of implementation, validation and release status. The
+[session handoff](docs/semantic-mrna-session-handoff.md) records the exact restart
+point and outstanding gates.
 
 | Stage | Implemented boundary |
 | --- | --- |
@@ -123,9 +125,9 @@ biocompiler policy export-material-native material-request.json \
 These filenames represent supplied inputs, not files created by the authoring
 example. See the [material workflow](docs/policy-material-acceptance.md) for their
 complete authority and resource requirements. Component composition uses the
-dedicated Python `policy.component_material` API; selection has its own
-check/replay/export API. Neither is an implicit conversion from an arbitrary
-authored policy.
+dedicated Python `policy.component_material` API. Selection check/replay/export
+is being validated on the `codex/policy-material-selection` development branch.
+Neither route implicitly converts an arbitrary authored policy.
 
 ## Existing workflows and remaining scope
 

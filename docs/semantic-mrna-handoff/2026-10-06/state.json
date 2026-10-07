@@ -1,0 +1,193 @@
+{
+  "acceptance": false,
+  "design": {
+    "accepted": false,
+    "copy": "metered-generation-review.md",
+    "implemented": false,
+    "reviewed_against": "af062c5505ffda0b0746115bb974abf5b0e612d1",
+    "source_path": "work/policy-material-selection/generated/selection-compile-design/metered-generation-review.md",
+    "source_sha256": "808cdb308872302c0f079979113b1933c62f9830e6d0c2cc124eae4d5788b3e0"
+  },
+  "evidence_files": [
+    {
+      "path": "work/policy-material-selection/generated/selection-compile-design/metered-generation-review.md",
+      "sha256": "808cdb308872302c0f079979113b1933c62f9830e6d0c2cc124eae4d5788b3e0",
+      "size": 11671
+    },
+    {
+      "path": "work/policy-material-selection/generated/hosted-development/37559445249/failure-diagnosis.json",
+      "sha256": "c33dc160f8789dc38ed3a6269ad3065ece2db26e67c0b653012d2ce194534e82",
+      "size": 1082
+    },
+    {
+      "path": "work/policy-material-selection/generated/hosted-development/37559878104/failure-diagnosis.json",
+      "sha256": "20bfbcd375fbca945477fff653a212dcf5c8651c3fca3e6fa8fdd28f83768919",
+      "size": 5265
+    },
+    {
+      "path": "work/policy-material-selection/generated/hosted-development/37559878104/protocol-fix-python-3.11.15/proof.json",
+      "sha256": "f892cc06661eae869a3f90ff82168905f33f105cc7089d87bf85c7205e5fdb9b",
+      "size": 2277
+    },
+    {
+      "path": "work/policy-material-selection/generated/hosted-development/37559878104/protocol-fix-python-3.14.6/proof.json",
+      "sha256": "51f0e90b73b8bd41808c8f3e92bb0299855cf6534db51d5cfe536f728f7217a0",
+      "size": 2276
+    },
+    {
+      "path": "work/bounded-policy-execution/generated/policy-realization/acceptance-37450940506/final-refresh-20261006T144143Z/final-audit-output/proof.json",
+      "sha256": "d331a734c0b863ba4a4e228c66bc260f54113368925634850baeace907be05cd",
+      "size": 15158
+    },
+    {
+      "path": "work/policy-component-composition/generated/complete-release/37551706364/failures/policy-prebuilt-reproducibility/diagnosis.json",
+      "sha256": "d8990938ac129ec71346c6361837abd7f7ba74c9fb4ab156ca581db36338ba5f",
+      "size": 1611
+    }
+  ],
+  "limitations": [
+    "Refresh live GitHub state on resume; this snapshot is not acceptance.",
+    "No PR receipt transfers to a corrected revision, merge, or actual-main run.",
+    "Generated evidence is retained locally, not embedded in this packet.",
+    "All native compilation, execution and packaging remain hosted."
+  ],
+  "native_execution": false,
+  "pr85": {
+    "actual_main_accepted": false,
+    "correction_commit": "59c514d72",
+    "correction_files": [
+      "tools/check_policy_material_prebuilt.py",
+      "tests/test_policy_material_prebuilt.py"
+    ],
+    "correction_status": "committed_independently_reviewed_29_guarded_tests_per_python_fresh_hosted_gate_required",
+    "head": "278f452eccf695a84144f6e69e49bcb0d30cc8b3",
+    "normal_merge_accepted": false,
+    "required_gate": {
+      "jobs": 74,
+      "native_suites": 156,
+      "ordinary_receipts": 59,
+      "profile": "complete-component-release-v1",
+      "selected_archives": 102
+    },
+    "run": 37551706364,
+    "run_url": "https://github.com/logannye/biocompiler/actions/runs/37551706364",
+    "status": "cannot_pass_prebuilt_comparison_failed_remaining_jobs_may_continue",
+    "tested_commit": "b2a5a860be1745d707f7781d17e158d4a2261aeb",
+    "tree": "dee01a8bbc3d213cdc7aaa5c44aecdabb2146d1a"
+  },
+  "pr95": {
+    "actual_main_run": 37561753806,
+    "actual_main_status": "in_progress_not_accepted",
+    "exact_pr_gate": "passed_42_jobs_and_independent_final_audit",
+    "head": "bb84421cf1f93cd1dc02813d80a2c54a3520a919",
+    "merge_commit": "ddf8e8a6031e342ac9fda7b94b03ae35f859bb20",
+    "merge_status": "merged",
+    "proof_sha256": "d331a734c0b863ba4a4e228c66bc260f54113368925634850baeace907be05cd",
+    "run": 37450940506,
+    "run_url": "https://github.com/logannye/biocompiler/actions/runs/37450940506",
+    "tested_commit": "4fe47eb1aa69782a03723fda2df892985b4e7328",
+    "tree": "889583e44a9de598a32beb4154f42c0471e4be83"
+  },
+  "prepared_date": "2026-10-06",
+  "repository": "https://github.com/logannye/biocompiler",
+  "schema_version": "biocompiler.semantic-mrna-session-handoff.v0.1",
+  "selection": {
+    "compile_implemented": false,
+    "head": "70f81df1ca62819dcda5f63ea6691af07f9c5ea8",
+    "previous_failed_runs": [
+      37559445249,
+      37559878104
+    ],
+    "protocol_correction": "e79be46b4bd1feefba76b213653478a4426bac81",
+    "run": 37561211151,
+    "run_status": "failure_23_native_suites_and_old_sdk_pass_selection_rejected_empty_success_log_correction_pending",
+    "run_url": "https://github.com/logannye/biocompiler/actions/runs/37561211151",
+    "tree": "56cbb9865c0bf66d5db12d54d4068c3ee91164a2"
+  },
+  "stable_auditor": {
+    "branch": "codex/component-release-audit",
+    "head": "1c67b5b3c0346bcb8cf2a8b3539056cf004e15fe",
+    "main_integration": "not_assumed",
+    "pushed": true
+  },
+  "status": "closure_integration_in_progress_known_failures_preserved",
+  "timezone": "America/Los_Angeles",
+  "workspace_root": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler",
+  "worktrees": [
+    {
+      "branch": "codex/ocaml-package-distribution",
+      "head": "a85b1112ff35ba988a71cc969bfabdfefb354cfe",
+      "path": "work/m11-human-evidence"
+    },
+    {
+      "branch": "codex/policy-material-export",
+      "head": "bb84421cf1f93cd1dc02813d80a2c54a3520a919",
+      "path": "work/bounded-policy-execution"
+    },
+    {
+      "branch": "codex/ci-critical-path",
+      "head": "ee61eb3e94d0bf93abb308cad7715080be4ed524",
+      "path": "work/ci-critical-path"
+    },
+    {
+      "branch": "codex/component-release-audit",
+      "head": "1c67b5b3c0346bcb8cf2a8b3539056cf004e15fe",
+      "path": "work/component-release-audit"
+    },
+    {
+      "branch": "codex/expressive-policy-authoring",
+      "head": "8bd692195ce199a0c8f7cb445efa2ee3ef261e66",
+      "path": "work/expressive-policy-release"
+    },
+    {
+      "branch": "codex/original-source-closure-snapshot",
+      "head": "360e2cbbd17c8105a26c1064d47bf049575c4d34",
+      "path": "work/original-source-closure-snapshot"
+    },
+    {
+      "branch": "codex/policy-boundary-witnesses",
+      "head": "0e79df9200c6524b04157d1cb3b4c76e080ca3ca",
+      "path": "work/policy-boundary-witnesses"
+    },
+    {
+      "branch": "codex/policy-component-composition",
+      "head": "278f452eccf695a84144f6e69e49bcb0d30cc8b3",
+      "path": "work/policy-component-composition"
+    },
+    {
+      "branch": "codex/policy-core-integration",
+      "head": "5f9b39d354b43070f15114f2e8813e659ab1c4a4",
+      "path": "work/policy-core-integration"
+    },
+    {
+      "branch": "codex/policy-descriptor-witnesses",
+      "head": "aeb3c95c7f7aa9202e6416154c99d91bb660a369",
+      "path": "work/policy-descriptor-witnesses"
+    },
+    {
+      "branch": "codex/policy-material-selection",
+      "head": "70f81df1ca62819dcda5f63ea6691af07f9c5ea8",
+      "path": "work/policy-material-selection"
+    },
+    {
+      "branch": "codex/reference-package-continuations",
+      "head": "b7a176dd5c75e700b9aa86ac8006b70fcb3eaf57",
+      "path": "work/reference-package-continuations"
+    },
+    {
+      "branch": "codex/release-audit-tools",
+      "head": "6d73d74e73ca8f760d32f28ea9cbbd4c1e9d4925",
+      "path": "work/release-audit-tools"
+    },
+    {
+      "branch": "codex/semantic-mrna-tracker",
+      "head": "6a7d70fea717c27d60ed1e7776cf489e5c559f69",
+      "path": "work/semantic-mrna-tracker"
+    },
+    {
+      "branch": "codex/session-release-corrections",
+      "head": "278f452eccf695a84144f6e69e49bcb0d30cc8b3",
+      "path": "work/session-release-corrections"
+    }
+  ]
+}
