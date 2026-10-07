@@ -27,6 +27,11 @@ import release_audit_plan
 import release_audit_policy
 import release_audit_units
 import release_audit_component
+import release_audit_researcher
+
+PROFILES = {'complete-release-v1': 'release-audit-v1.json',
+            'complete-component-release-v1': 'release-audit-component-v1.json',
+            'complete-researcher-alpha-release-v1': 'release-audit-researcher-alpha-v1.json'}
 
 BOOTSTRAP_STEP_NAME = 'Seed the exact hosted macOS ARM64 Python runtime'
 
@@ -178,13 +183,14 @@ def audit_source_tar(path, *, source_archive_files, tested_revision):
     require(directories == expected_directories, 'Source tar directory census differs')
     return {'files': len(found), 'directories': len(directories), 'tested_revision': tested_revision}
 
-def audit_policy_and_prebuilt(store, output, plan, identity):
+def audit_policy_and_prebuilt(store, output, plan, identity, *, native_bundles=None):
     import check_architecture_routing_reproducibility as architecture
     import check_policy_material_prebuilt as prebuilt
     import check_prebuilt_core_release as release_check
     import check_prebuilt_matrix as original_matrix
     from release_audit_policy import audit_source, audit_operational, audit_implementation, audit_material, audit_consumer
-    component_profile = plan['profile'] == 'complete-component-release-v1'
+    researcher_profile = plan['profile'] == 'complete-researcher-alpha-release-v1'
+    component_profile = plan['profile'] in {'complete-component-release-v1', 'complete-researcher-alpha-release-v1'}
     consumer_checker = audit_consumer
     if component_profile:
         def consumer_checker(*args, **kwargs):
@@ -236,6 +242,14 @@ def audit_policy_and_prebuilt(store, output, plan, identity):
             [(core_root / target / 'component-originals/originals.json',
               core_root / target / 'component-originals/provenance.json') for target in platforms],
             identity, native_data, audited_sources=plan['component_sources'])
+    if researcher_profile:
+        require(native_bundles is not None and set(native_bundles) == set(platforms),
+                'Researcher profile requires both independently audited native bundles')
+        for target in platforms:
+            provenance = read_json(core_root / target / 'component-originals/provenance.json')
+            require(provenance['binaries']['originals'] == native_bundles[target]['files'][
+                'core/_build/default/test/component_fixture_export/main.exe'],
+                'Original-declaration emitter differs from independently retained binary bytes')
     slots = []; producers = []; consumers = []; component_producers = []; component_consumers = []
     for target in platforms:
         for minor in minors:
@@ -244,8 +258,14 @@ def audit_policy_and_prebuilt(store, output, plan, identity):
             slot_arguments = (directory, identity, candidate_path, sdk, sdk_entries, sdk_stamp,
                               native_data, fixture_root / 'policy_material_request_v01.json')
             if component_profile:
-                slot, _ = release_audit_component.audit_prebuilt_slot(
-                    *slot_arguments, authorities, audited_sources=plan['component_sources'])
+                if researcher_profile:
+                    slot, _ = release_audit_researcher.audit_prebuilt_slot(
+                        *slot_arguments, authorities, audited_sources=plan['component_sources'],
+                        staged_path=fixture_root / 'policy_staged_material_v01.json',
+                        researcher_path=ROOT / 'data/researcher_alpha/expected.json')
+                else:
+                    slot, _ = release_audit_component.audit_prebuilt_slot(
+                        *slot_arguments, authorities, audited_sources=plan['component_sources'])
                 component_producers.append(directory / 'evidence/component-material.json')
                 component_consumers.append(directory / 'evidence/component-consumer.json')
             else:
@@ -269,7 +289,24 @@ def audit_policy_and_prebuilt(store, output, plan, identity):
         owned.update(schema_version=prebuilt.COMPONENT_SCHEMA, claim=prebuilt.COMPONENT_CLAIM,
             component_originals=[{'platform': list(key), **row['pins']} for key, row in sorted(authorities.items())],
             component_material=component_material, component_consumer=component_consumer)
+    if researcher_profile:
+        binaries = {prebuilt.build.TARGETS[target][:2]: {'biocompiler-' + role:
+            prebuilt.build.sha(native['entries']['biocompiler_core/bin/biocompiler-' + role][0])
+            for role in ('core', 'verify')} for target, native in native_data.items()}
+        additions = release_audit_researcher.audit_installed_profiles(
+            [directory for _, directory, _ in slots], fixture_root / 'policy_staged_material_v01.json',
+            ROOT / 'data/researcher_alpha/expected.json', identity, binaries,
+            audited_sources=plan['component_sources'])
+        owned.update(schema_version=prebuilt.RESEARCHER_SCHEMA, claim=prebuilt.RESEARCHER_CLAIM, **additions)
     require(same(owned, store.json('policy-prebuilt-comparison', 'prebuilt-comparison.json')), 'Supplied-wheel complete comparison differs')
+    if researcher_profile:
+        from types import SimpleNamespace
+        comparison_directory = store.extract('policy-prebuilt-comparison', output / 'payloads/policy-prebuilt-comparison')
+        starter_args = SimpleNamespace(sdk=sdk, release_candidate=candidate_path,
+            output_dir=comparison_directory, compare=[directory for _, directory, _ in slots])
+        starter = release_audit_researcher.audit_starter(
+            comparison_directory / 'researcher-starter', starter_args, owned, native_data,
+            source_root=ROOT, audited_sources=plan['starter_sources'])
     # Original full release has its own independently generated SDK/candidate.
     original_root = directories['prebuilt-wheelhouse']; original_candidate_path = original_root / 'candidate.json'
     original_candidate = read_json(original_candidate_path); original_sdk = original_root / sdk.name
@@ -297,6 +334,11 @@ def audit_policy_and_prebuilt(store, output, plan, identity):
             'originals': owned['component_originals'],
             'source_records': len(plan['component_sources']),
             'fixture_emitter_scope': 'Recorded hosted source-bound provenance; emitter executable bytes are not retained for independent rehashing.'}
+    if researcher_profile:
+        result['component']['fixture_emitter_scope'] = ('Recorded hosted source-bound provenance; both emitter executable byte pins '
+            'independently rehashed in the complete native bundles, without execution.')
+        result['researcher_alpha'] = {**additions, 'starter': starter,
+            'acceptance_scope': 'supplied artificial contracts only; empirical behavior and real-project qualification unassessed'}
     return result
 
 def check_artifacts(store, output, plan, identity, ci, args, skips, metadata):
@@ -328,12 +370,13 @@ def check_artifacts(store, output, plan, identity, ci, args, skips, metadata):
     ci_identity = {key: identity[key] for key in ['revision', 'run_id', 'run_attempt']}
     rebuilt = ci.validate(aggregate['prerequisites'], ordinary, accounting, ci_identity)
     require(rebuilt['status'] == 'pass' and same(rebuilt, aggregate), 'Full 59-receipt final aggregate differs')
-    native_results = {}
+    native_results = {}; native_bundles = {}
     for target, runtime in plan['platforms'].items():
         directory = store.extract('native-bundle-' + target, output / 'bundles' / target)
         require(store.names('native-bundle-' + target) == {'native.zip'}, 'Outer native bundle census differs')
         with zipfile.ZipFile(directory / 'native.zip') as archive:
             bundle = audit_bundle(archive, identity=ci_identity, runtime=runtime, expected_members=plan['native_members'], fixture_pins=plan['fixture_pins'], dune_sha256=plan['dune_sha256'], expected_executables=plan['counts']['native_executables'], expected_fixtures=plan['counts']['native_fixtures'])
+        native_bundles[target] = bundle
         suite_name = 'core-native-tests-' + target
         suites = audit_suites(lambda name: store.read(suite_name, name), store.names(suite_name), identity=ci_identity, plan=plan['native_plan'], environment_paths=plan['native_environment_paths'], expected_count=plan['counts']['native_suites'])
         group_name = 'native-checks-' + target
@@ -341,7 +384,7 @@ def check_artifacts(store, output, plan, identity, ci, args, skips, metadata):
         core_manifest = store.json('core-' + target, 'binaries.json')
         require(core_manifest == {'revision': identity['revision'], 'system': runtime[0], 'machine': runtime[1], 'sha256': {role: bundle['files']['core/_build/default/bin/' + ('core' if role.endswith('-core') else 'verify') + '/main.exe']['sha256'] for role in ['biocompiler-core', 'biocompiler-verify']}}, 'Native bundle roles differ from published binaries')
         native_results[target] = {'executables': plan['counts']['native_executables'], 'fixtures': plan['counts']['native_fixtures'], 'suites': suites, 'groups': groups}
-    material = audit_policy_and_prebuilt(store, output, plan, identity)
+    material = audit_policy_and_prebuilt(store, output, plan, identity, native_bundles=native_bundles)
     # These receipts are retained verbatim, bound by complete successful physical
     # comparator jobs. They are not mislabeled as local semantic re-execution.
     legacy = {}
@@ -367,7 +410,7 @@ def read_pinned(path, expected):
     return value
 
 
-def git_catalog(root, revision, tree=None):
+def git_catalog(root, revision, tree=None, *, researcher=False):
     root = Path(root).resolve()
     observed = subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD', 'HEAD^{tree}'], text=True).splitlines()
     require(len(observed) == 2 and observed[0] == revision and (tree is None or observed[1] == tree),
@@ -377,10 +420,13 @@ def git_catalog(root, revision, tree=None):
     tracked = [p for p in subprocess.check_output(['git', '-C', str(root), 'ls-files', '-z']).decode().split('\0') if p]
     rows = subprocess.check_output(['git', '-C', str(root), 'ls-tree', '-r', revision, '--',
                                    'core', 'src', 'protocol', 'tools', 'pyproject.toml'], text=True).splitlines()
+    component_roots = release_audit_plan.RESEARCHER_SOURCE_ROOTS if researcher else release_audit_plan.COMPONENT_SOURCE_ROOTS
     component_rows = subprocess.check_output(['git', '-C', str(root), 'ls-tree', '-r', revision, '--',
-                                             'core', 'src', 'protocol', 'tools', '.github', 'pyproject.toml'], text=True).splitlines()
+                                             *component_roots], text=True).splitlines()
+    starter_rows = (subprocess.check_output(['git', '-C', str(root), 'ls-tree', '-r', revision, '--',
+                    *release_audit_plan.STARTER_SOURCE_FILES], text=True).splitlines() if researcher else None)
     return {'revision': observed[0], 'tree': observed[1], 'tracked': tracked,
-            'source_rows': rows, 'component_source_rows': component_rows}
+            'source_rows': rows, 'component_source_rows': component_rows, 'starter_source_rows': starter_rows}
 
 
 def read_packet(path, expected_digest):
@@ -421,7 +467,7 @@ def identity_from_authority(expected, packet, success):
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', choices=('prepare', 'check'))
-    parser.add_argument('--profile', choices=('complete-release-v1', 'complete-component-release-v1'),
+    parser.add_argument('--profile', choices=tuple(PROFILES),
                         default='complete-release-v1')
     for name in ('source-root', 'authority', 'packet', 'output'):
         parser.add_argument('--' + name, type=Path, required=True)
@@ -441,17 +487,16 @@ def main(argv=None):
     require(type(args.tool_revision) is str and len(args.tool_revision) == 40
             and set(args.tool_revision) <= set('0123456789abcdef'), 'Expected tool revision must be a full Git SHA')
     tool = git_catalog(TOOL_ROOT, args.tool_revision)
-    tool_files = sorted(TOOLS.glob('release_audit*.py')) + [TOOL_ROOT / 'protocol' / name for name in
-        ('release-audit-v1.json', 'release-audit-component-v1.json')]
+    tool_files = sorted(TOOLS.glob('release_audit*.py')) + [TOOL_ROOT / 'protocol' / name for name in PROFILES.values()]
     tool_pins = {str(path.relative_to(TOOL_ROOT)): pin(path) for path in tool_files}
     expected = read_pinned(args.authority, args.authority_sha256)
     packet, api_pins = read_packet(args.packet, args.packet_sha256)
     identity, tree, base, identity_proof = identity_from_authority(expected, packet, args.command == 'check')
     ROOT = args.source_root.resolve()
-    source = git_catalog(ROOT, identity['head_revision'], tree)
+    researcher_profile = args.profile == 'complete-researcher-alpha-release-v1'
+    source = git_catalog(ROOT, identity['head_revision'], tree, researcher=researcher_profile)
     require(args.output.is_absolute() and not args.output.exists(), 'Output must be a fresh explicit absolute path')
-    profile_path = TOOL_ROOT / 'protocol' / ('release-audit-component-v1.json'
-        if args.profile == 'complete-component-release-v1' else 'release-audit-v1.json')
+    profile_path = TOOL_ROOT / 'protocol' / PROFILES[args.profile]
     profile = read_json(profile_path)
     require(profile['id'] == args.profile, 'Selected audit profile differs from fixed source authority')
     # All Git reads finish before the inert guard. Original source-root helpers
@@ -460,7 +505,8 @@ def main(argv=None):
     sys.addaudithook(inert)
     rebuilt = build_plan(ROOT, identity=identity, tree=tree, base=base, profile=profile,
                          profile_sha256=sha(profile_path), tracked=source['tracked'], source_rows=source['source_rows'],
-                         component_source_rows=source['component_source_rows'] if args.profile == 'complete-component-release-v1' else None)
+                         component_source_rows=source['component_source_rows'] if args.profile != 'complete-release-v1' else None,
+                         starter_source_rows=source['starter_source_rows'])
     rebuilt['toolchain'] = {'revision': tool['revision'], 'tree': tool['tree'], 'files': tool_pins}
     rebuilt['authority_sha256'] = args.authority_sha256
     if args.command == 'prepare':
@@ -504,6 +550,8 @@ def main(argv=None):
                                 'Exact-head normal merge', 'Fresh complete actual-main validation']
                                if run['event'] == 'pull_request' else ['Owner release acceptance including explicitly hosted legacy semantic comparisons']),
                  'local_native_execution': 'not_performed'}
+        if researcher_profile:
+            proof.update(profile=plan['profile'], counts=plan['counts'])
         output = args.output / 'proof.json'
         output.write_text(json.dumps(proof, indent=2, sort_keys=True) + '\n')
         print(json.dumps({'status': proof['status'], 'proof': str(output), **pin(output)}))

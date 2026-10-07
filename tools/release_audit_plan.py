@@ -16,6 +16,13 @@ from typing import Any
 
 
 COMPONENT_SOURCE_ROOTS = ('core', 'src', 'tools', 'protocol', '.github', 'pyproject.toml')
+RESEARCHER_SOURCE_ROOTS = ('core', 'src', 'tools', 'protocol', '.github',
+                         'data/researcher_alpha', 'examples/researcher_alpha.py', 'pyproject.toml')
+STARTER_SOURCE_FILES = ('examples/researcher_alpha.py',
+    'docs/researcher-alpha-quickstart.md', 'docs/researcher-alpha-reference-qualification.md',
+    'docs/researcher-alpha-review.md', 'docs/researcher-alpha-roadmap.md',
+    *("data/researcher_alpha/" + name for name in ('staged-input.json', 'comparison-input.json',
+      'expected.json', 'provenance.json', 'qualification.json', 'negative-controls.json')))
 BASE_COUNTS = {
     'architecture_policy_comparisons': 6, 'direct_core_groups': 67, 'download_artifacts': 102,
     'installed_campaigns': 17, 'installed_group_receipts': 20, 'installed_runtime_slots': 4,
@@ -34,7 +41,8 @@ def sha(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def derive_component_sources(root: Path, component_source_rows: list[str], tracked: list[str]) -> dict[str, Any]:
+def derive_component_sources(root: Path, component_source_rows: list[str], tracked: list[str],
+                             *, source_roots=COMPONENT_SOURCE_ROOTS, check_census=True) -> dict[str, Any]:
     """Bind exact Git rows to current files, then independently recheck the census."""
     try:
         from .release_audit_component import audit_sources
@@ -46,7 +54,7 @@ def derive_component_sources(root: Path, component_source_rows: list[str], track
     require(type(component_source_rows) is list and component_source_rows,
             'Complete component Git source rows are required')
     expected = {name for name in tracked if any(name == base or
-                (base != 'pyproject.toml' and name.startswith(base + '/')) for base in COMPONENT_SOURCE_ROOTS)}
+                name.startswith(base + '/') for base in source_roots)}
     result = {}
     for row in component_source_rows:
         require(type(row) is str and row.count('\t') == 1 and not any(char in row for char in '\0\n\r'),
@@ -71,15 +79,17 @@ def derive_component_sources(root: Path, component_source_rows: list[str], track
         result[name] = {'sha256': hashlib.sha256(raw).hexdigest(), 'size': len(raw),
                         'git_blob': blob, 'mode': mode}
     require(set(result) == expected, 'Component Git rows omit tracked source files')
-    checked = audit_sources(root, audited_sources=result)
-    require(checked == result, 'Component source reconstruction differs')
+    if check_census:
+        checked = audit_sources(root, audited_sources=result)
+        require(checked == result, 'Component source reconstruction differs')
     return dict(sorted(result.items()))
 
 
 def build_plan(root: Path, *, identity: dict[str, str], tree: str, base: str,
                profile: dict[str, Any], profile_sha256: str,
                tracked: list[str], source_rows: list[str],
-               component_source_rows: list[str] | None = None) -> dict[str, Any]:
+               component_source_rows: list[str] | None = None,
+               starter_source_rows: list[str] | None = None) -> dict[str, Any]:
     """Caller supplies fresh read-only Git catalogs for authenticated clean H."""
     # Source-root original modules are loaded only after CLI inventory/identity
     # capture. Their exact bytes become this independent source plan's authority.
@@ -87,15 +97,18 @@ def build_plan(root: Path, *, identity: dict[str, str], tree: str, base: str,
     import ci_core_groups
     import ci_validation
     require(profile['schema'] == 'biocompiler.release_audit_profile.v1'
-            and profile['id'] in {'complete-release-v1', 'complete-component-release-v1'},
+            and profile['id'] in {'complete-release-v1', 'complete-component-release-v1',
+                                  'complete-researcher-alpha-release-v1'},
             'Unsupported audit profile')
-    component_profile = profile['id'] == 'complete-component-release-v1'
-    expected_counts = {**BASE_COUNTS, **({'native_executables': 158, 'native_suites': 156}
-                                       if component_profile else {})}
+    researcher_profile = profile['id'] == 'complete-researcher-alpha-release-v1'
+    component_profile = profile['id'] in {'complete-component-release-v1', 'complete-researcher-alpha-release-v1'}
+    expected_counts = {**BASE_COUNTS, **({'native_executables': 174, 'native_suites': 171, 'native_fixtures': 26}
+        if researcher_profile else {'native_executables': 158, 'native_suites': 156} if component_profile else {})}
     require(type(profile['counts']) is dict and profile['counts'] == expected_counts
             and all(type(value) is int for value in profile['counts'].values()),
             'Complete profile count scope differs')
     require(component_profile or component_source_rows is None, 'Component catalog supplied to the legacy profile')
+    require(researcher_profile or starter_source_rows is None, 'Starter catalog supplied to a historical profile')
     require(sha(root / profile['workflow_path']) == profile['workflow_sha256'],
             'Workflow differs from reviewed complete-release profile')
     require(len(tracked) == len(set(tracked)), 'Duplicate Git source catalog')
@@ -107,8 +120,13 @@ def build_plan(root: Path, *, identity: dict[str, str], tree: str, base: str,
         path = root / name
         require(path.is_file() and not path.is_symlink(), 'Missing or redirected source file: ' + name)
         inventory[name] = sha(path)
-    component_sources = (derive_component_sources(root, component_source_rows, tracked)
+    component_sources = (derive_component_sources(root, component_source_rows, tracked,
+                         source_roots=RESEARCHER_SOURCE_ROOTS if researcher_profile else COMPONENT_SOURCE_ROOTS)
                          if component_profile else None)
+    starter_sources = (derive_component_sources(root, starter_source_rows, tracked,
+                       source_roots=STARTER_SOURCE_FILES, check_census=False) if researcher_profile else None)
+    if researcher_profile:
+        require(set(starter_sources) == set(STARTER_SOURCE_FILES), 'Starter source catalog is incomplete')
     archive_files = {}
     for row in source_rows:
         metadata, name = row.split('\t'); mode, kind, _ = metadata.split()
@@ -175,6 +193,8 @@ def build_plan(root: Path, *, identity: dict[str, str], tree: str, base: str,
             'legacy_comparison_schemas': schemas, 'limitations': profile['limitations']}
     if component_profile:
         plan['component_sources'] = component_sources
+    if researcher_profile:
+        plan['starter_sources'] = starter_sources
     for field, count in [('physical_jobs', 'physical_jobs'), ('ordinary_receipts', 'ordinary_receipts'),
                          ('unit_artifacts', 'unit_artifacts'), ('download_artifact_names', 'download_artifacts'),
                          ('required_metadata_names', 'required_metadata')]:

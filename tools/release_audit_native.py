@@ -38,7 +38,7 @@ def duration(value):
 def audit_bundle(archive, *, identity, runtime, expected_members, fixture_pins, dune_sha256,
                  expected_executables=151, expected_fixtures=23):
     require(type(expected_executables) is int and type(expected_fixtures) is int
-            and (expected_executables, expected_fixtures) in {(151, 23), (158, 23)},
+            and (expected_executables, expected_fixtures) in {(151, 23), (158, 23), (174, 26)},
             'Unsupported native executable/fixture scope')
     names = archive.namelist()
     require(len(names) == len(set(names)) == expected_executables + expected_fixtures + 1
@@ -69,7 +69,7 @@ def audit_bundle(archive, *, identity, runtime, expected_members, fixture_pins, 
 
 
 def audit_suites(read, names, *, identity, plan, environment_paths, expected_count=149):
-    require(type(expected_count) is int and expected_count in {149, 156}, 'Unsupported native suite scope')
+    require(type(expected_count) is int and expected_count in {149, 156, 171}, 'Unsupported native suite scope')
     document = decode(read('native-suites/receipt.json'))
     require(set(document) == {'revision', 'run_id', 'run_attempt', 'tests', 'expected'} and all(document[k] == v for k, v in identity.items()), 'Native suite receipt identity/fields differ')
     expected = [row['name'] for row in plan]

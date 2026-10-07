@@ -6,12 +6,15 @@ import copy
 import hashlib
 import importlib
 import json
+import os
 from pathlib import Path
 import symtable
 import sys
 import unittest
 ROOT = Path(__file__).resolve().parents[1]
+SOURCE_ROOT = Path(os.environ.get('BIOCOMPILER_AUDIT_SOURCE_ROOT', ROOT)).resolve()
 sys.path.insert(0, str(ROOT / 'tools'))
+sys.path[:0] = [str(SOURCE_ROOT / 'tools'), str(SOURCE_ROOT / 'src')]
 
 
 def run_controls():
@@ -118,7 +121,7 @@ def run_controls():
         rows = []
         for name, module_name, original_name in SPECS:
             module = importlib.import_module(module_name)
-            module_path = ROOT / 'tools' / (module_name + '.py')
+            module_path = SOURCE_ROOT / 'tools' / (module_name + '.py')
             assert Path(module.__file__).resolve() == module_path.resolve()
             original_text = module_path.read_text()
             original = next(n for n in ast.parse(original_text).body
@@ -131,7 +134,7 @@ def run_controls():
                 assert dependency in available, (name, 'missing original dependency', dependency)
                 assert available[dependency] is vars(module)[dependency], (name, 'foreign dependency', dependency)
             assert ast.dump(reverse_adapter(functions[name], original), include_attributes=False) == ast.dump(original, include_attributes=False), name
-            rows.append({'audit': name, 'original': str(module_path.relative_to(ROOT)) + ':' + original_name,
+            rows.append({'audit': name, 'original': str(module_path.relative_to(SOURCE_ROOT)) + ':' + original_name,
                          'original_source_sha256': sha(ast.get_source_segment(original_text, original).encode()),
                          'original_module_sha256': sha(module_path.read_bytes()),
                          'required_original_dependencies': sorted(required),
