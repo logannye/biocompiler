@@ -1,12 +1,14 @@
 # biocompiler
 
-### From therapeutic intent to traceable RNA designs.
+### A compiler for a patient's immune system.
 
-**biocompiler is an experimental compiler for programmable medicine.** It is being built to turn a precise description of what engineered human immune cells should do into the RNA instructions intended to implement that behavior.
+**Our long-term vision is a system that humans or AI agents can use to specify arbitrary therapeutic programs for a given patient's immune system, then deterministically and correctly compile those programs into biological payloads for in vivo administration.**
 
-The input is a therapeutic program, written in Python. The output, for supported compilation profiles, is an exact RNA payload specification together with a record of its components, assumptions, and checks. Its product focus is **human immune cells engineered inside the body**—an approach called *in vivo* engineering.
+The ambition is to make a patient's therapeutic strategy programmable: describe what their immune cells should recognize, remember, and do over time, then translate that strategy into exact RNA instructions intended to implement it inside the body. Researchers, clinicians, and agents could work with the same explicit program, with a traceable path from each requirement to the resulting payload.
 
-Our ambition is to make increasingly sophisticated cellular therapies something researchers can **describe, compose, inspect, and improve systematically**.
+Here, *arbitrary* describes the breadth of programs we aim to let people express and compose. Successful compilation would still require a realizable implementation under the system's models and constraints; a program without one should receive an explanation of what is missing. The goal is a general programming system for human immune-cell therapies.
+
+**Today, biocompiler is experimental research software building toward that future.** Python is the current authoring language. Supported compilation profiles produce exact RNA payload specifications with records of their components, assumptions, and checks. Human immune cells engineered inside the body—*in vivo*—are its product focus.
 
 [What works today](#what-works-today) · [The long-term vision](#the-next-1020-years) · [Explore the project](#explore-the-project)
 
@@ -45,6 +47,8 @@ The distinguishing aim is **a traceable connection between intended behavior, th
 
 For supported profiles, biocompiler retains requirements through translation, checks component relationships, and reconstructs results against the original inputs. Unsupported meaning remains visible. A complete compilation claim requires the relevant obligations to pass within the declared model and checking bounds.
 
+In the mature system, **deterministic** would mean that the same complete specification, patient-context inputs, versioned component library, and compiler version and configuration produce the same payload or the same explained rejection. **Correct** would mean that the translation preserves the program's specified meaning through component composition and exact RNA construction under explicit assumptions. Human and agent authors would be subject to the same checks.
+
 This distinction is essential: **correct translation under a model does not establish that the model holds in a living cell.** Delivery, biological function, safety, and therapeutic benefit require their own evidence. The software is designed to keep those claims separate and their dependencies explicit.
 
 ## What works today
@@ -75,20 +79,25 @@ These are advances by other research teams, not validations of biocompiler. They
 
 ## The next 10–20 years
 
-Our long-term vision is a development environment for programmable human immunity: researchers describe a therapeutic strategy, explore possible implementations, inspect what is known and unknown, and carry a reproducible design into experiments.
+We are building toward **a general-purpose compiler for patient-specific therapeutic programs**. A human or agent would specify a strategy for a particular patient's immune system: the disease context to recognize, the cells to engineer, the sequence of responses, the state to retain, and the conditions for changing or stopping activity. biocompiler would translate the complete program into an exact RNA payload, potentially comprising several coordinated RNA molecules, intended for in vivo administration.
+
+The therapeutic program would become a shared interface between clinical reasoning, AI-assisted design, molecular engineering, and experimental science. A clinician could state a treatment objective, a researcher could refine its cellular behavior, and an agent could explore candidate implementations. Each proposed revision would remain explicit, versioned, and subject to the same compilation and verification requirements, with human oversight of therapeutic decisions.
 
 If the necessary delivery technologies, biological models, and experimental evidence mature, that environment could support:
 
-- **Therapies with richer behavior:** combinations of sensing, memory, staged responses, and explicitly designed stopping conditions.
-- **More individualized designs:** adapting a program to a patient's disease context while retaining traceability and product-specific validation requirements.
+- **Therapies expressed as complete programs:** compose sensing, memory, staged regimens, coordinated cell roles, and stopping conditions into an integrated strategy.
+- **The patient as the unit of design:** adapt recognition, response, timing, and constraints to an individual's disease context while retaining product-specific validation requirements.
+- **A common interface for humans and agents:** let either author propose and revise a therapeutic program, inspect why compilation succeeds or fails, and compare reproducible payload designs.
 - **Reusable biological knowledge:** component libraries that record where a behavior has been demonstrated, what it depends on, and where it fails.
 - **A tighter scientific learning loop:** connect design, automated experiments, measurement, and model revision so that each experiment can improve subsequent designs under human oversight.
 
-The most ambitious outcome is a system in which therapeutic engineering becomes more cumulative: a successful experiment improves both one candidate and the knowledge available to future programs. Natural-language authoring and laboratory integration belong to this future vision; they are not delivered capabilities today.
+The most ambitious outcome is an integrated system for designing, compiling, and experimentally refining programmable medicines. Agents could help propose programs and informative experiments; automated laboratories could test candidates; results could refine the component models used in subsequent compilations. Knowledge gained while developing one therapy could make the next program easier to engineer, wherever that knowledge demonstrably applies.
+
+Over 10–20 years, our aspiration is for the path from a patient-specific therapeutic strategy to a precisely specified biological payload to become a repeatable engineering process. Broad program compilation, natural-language authoring, clinical workflows, and laboratory integration belong to this future vision; they are not delivered capabilities today.
 
 ## The opportunity we see
 
-For an early-stage investor, the thesis is infrastructure that could become useful across many therapeutic programs. Better delivery methods and better molecular components could expand what such infrastructure can support.
+For an early-stage investor, the thesis is a shared compilation and verification layer through which many humans, agents, and therapeutic programs could work. Each patient's strategy may differ, while the language, compiler, component knowledge, and verification infrastructure can be reused. Better delivery methods and better molecular components could expand what that infrastructure can support.
 
 We see three possibilities worth testing over the coming decades:
 
