@@ -184,7 +184,7 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
             for anchor in anchors:
                 if any(type(value) is not str or not value for name, value in anchor.items() if name != "lane"):
                     raise CoreProtocolError("Staged source anchor identity must be nonempty text")
-                if key == "transitions" and (type(anchor["lane"]) is not int or not 0 <= cast(int, anchor["lane"]) <= 6):
+                if key == "transitions" and (type(anchor["lane"]) is not int or not 0 <= anchor["lane"] <= 6):
                     raise CoreProtocolError("Staged transition lane must be a bounded integer")
         if proposed["states"] != [] or proposed["rules"] != []:
             raise CoreProtocolError("Staged source binding cannot invent separate state or rule anchors")

@@ -30,7 +30,7 @@ let repin value=edit["identity";"content_fingerprint"](fun _->s(Canonical.finger
 let ()=
   let channel=open_in_bin Sys.argv.(1)in
   let raw=really_input_string channel(in_channel_length channel)in close_in channel;
-  let fixture=Json.parse_artifact raw in
+  let fixture=Json.parse_artifact ~max_bytes:(8*1024*1024) ~max_nodes:400000 raw in
   let request=get "request" fixture and limits=get "limits" fixture and expected=get "expected" fixture in
   let produced=call Producer.handle Protocol.Core "compile-policy-component-material"(o["request",request;"limits",limits])in
   require(at["report";"status"]produced=s "checked_component_material")
