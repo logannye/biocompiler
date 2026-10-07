@@ -1,6 +1,6 @@
 # biocompiler
 
-### A compiler for a patient's immune system.
+### A compiler for programming the immune system.
 
 **Our long-term vision is a system that humans or AI agents can use to specify arbitrary therapeutic programs for a given patient's immune system, then deterministically and correctly compile those programs into biological payloads for in vivo administration.**
 
