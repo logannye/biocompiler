@@ -15,7 +15,7 @@ from pathlib import Path
 import re
 import stat
 import tempfile
-from typing import Callable, Literal, Sequence, cast
+from typing import TYPE_CHECKING, Callable, Literal, Sequence, cast
 import zipfile
 
 from biocompiler.core_client import CoreCancelled, CoreClient, CoreProtocolError, JsonValue, decode_json, encode_json
@@ -25,6 +25,10 @@ from biocompiler import core_policy_component_selection as selection
 from biocompiler.core_policy_material import PolicyMaterialResult
 from . import component_material, component_selection
 from .material import _destination, _verify_staged
+from .model import BuildRequest
+
+if TYPE_CHECKING:
+    from .component_inputs import ComponentMaterialInputs
 
 SCHEMA = "biocompiler.research_project.v0.1"
 MAX_PROJECT_BYTES = 8 * 1024 * 1024
@@ -158,6 +162,42 @@ def _read_file(path: Path, maximum: int) -> bytes:
     return raw
 
 
+def _publish_json(raw: bytes, output: Path, input_paths: tuple[Path, ...], *, replace: bool) -> None:
+    """Atomically publish bounded canonical data without replacing original inputs."""
+    def destination() -> Path:
+        _require(not output.is_symlink(), "Project output cannot replace a symbolic link")
+        target = output.resolve()
+        _require(target.parent.is_dir(), "Project output parent directory does not exist")
+        _require(not target.exists() or target.is_file(), "Project output must be a regular file")
+        for original in input_paths:
+            _require(target != original.resolve() and not
+                (target.exists() and original.exists() and os.path.samefile(target, original)),
+                "Project output cannot overwrite or alias a loaded original")
+        if target.exists() and not replace:
+            raise FileExistsError("Project output exists; explicit replacement is required")
+        return target
+
+    target = destination()
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile("wb", prefix=".research-project-", dir=target.parent, delete=False) as handle:
+            temporary = Path(handle.name)
+            handle.write(raw)
+            handle.flush()
+            os.fsync(handle.fileno())
+        _require(destination() == target and _read_file(temporary, MAX_PROJECT_BYTES) == raw,
+                 "Project output changed during publication")
+        if replace:
+            os.replace(temporary, target)
+        else:
+            os.link(temporary, target)
+            temporary.unlink()
+        temporary = None
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
 def _cancel(cancelled: Callable[[], bool] | None) -> None:
     if cancelled is not None and cancelled():
         raise CoreCancelled("Research project operation cancelled")
@@ -200,6 +240,32 @@ class ResearchProject:
             "sources": cast(JsonValue, [asdict(source) for source in sources]), "assumptions": list(assumptions)})
 
     @classmethod
+    def from_build_request(cls, *, project_id: str, title: str, document: BuildRequest,
+                           inputs: ComponentMaterialInputs, limits: JsonValue,
+                           sources: Sequence[SourceRecord], assumptions: Sequence[str]) -> ResearchProject:
+        """Pair typed intent with complete unchanged supplied implementation inputs.
+
+        This is inert request construction, not lowering or semantic acceptance.
+        Every changed source still requires fresh Core and Verify assessment.
+        """
+        from .component_inputs import ComponentMaterialInputs
+        _require(type(inputs) is ComponentMaterialInputs, "A complete ComponentMaterialInputs package is required")
+        project = cls.from_request(project_id=project_id, title=title, request=inputs.prepare(document),
+                                   limits=limits, sources=sources, assumptions=assumptions)
+        return cls(project._json, inputs._input_paths)
+
+    @property
+    def component_inputs(self) -> ComponentMaterialInputs:
+        """Extract original component authority, preserving loaded-input protection.
+
+        A selection request is not silently reduced to its selected candidate.
+        """
+        from .component_inputs import ComponentMaterialInputs
+        _require(self.route == "component_material", "Component inputs require an original component-material project")
+        inputs = ComponentMaterialInputs.from_request(self.request)
+        return ComponentMaterialInputs(inputs._json, self._input_paths)
+
+    @classmethod
     def from_data(cls, value: JsonValue) -> ResearchProject:
         """Freeze an inert versioned project; this does not run semantic admission."""
         return cls(encode_json(value, limit=MAX_PROJECT_BYTES))
@@ -224,6 +290,16 @@ class ResearchProject:
         return cast(dict[str, JsonValue], self.data["limits"])
 
     @property
+    def sources(self) -> tuple[SourceRecord, ...]:
+        """Retain the complete caller-declared provenance during typed authoring."""
+        return tuple(SourceRecord(**cast(dict[str, str], value))
+                     for value in cast(list[JsonValue], self.data["sources"]))
+
+    @property
+    def assumptions(self) -> tuple[str, ...]:
+        return tuple(cast(list[str], self.data["assumptions"]))
+
+    @property
     def digest(self) -> str:
         return hashlib.sha256(self._json).hexdigest()
 
@@ -237,40 +313,7 @@ class ResearchProject:
 
     def dump(self, path: Path | str, *, replace: bool = False) -> None:
         """Publish canonical project JSON atomically without overwriting loaded originals."""
-        output = Path(path)
-
-        def destination() -> Path:
-            _require(not output.is_symlink(), "Project output cannot replace a symbolic link")
-            target = output.resolve()
-            _require(target.parent.is_dir(), "Project output parent directory does not exist")
-            _require(not target.exists() or target.is_file(), "Project output must be a regular file")
-            for original in self._input_paths:
-                _require(target != original.resolve() and not
-                    (target.exists() and original.exists() and os.path.samefile(target, original)),
-                    "Project output cannot overwrite or alias a loaded original")
-            if target.exists() and not replace:
-                raise FileExistsError("Project output exists; explicit replacement is required")
-            return target
-
-        target = destination()
-        temporary: Path | None = None
-        try:
-            with tempfile.NamedTemporaryFile("wb", prefix=".research-project-", dir=target.parent, delete=False) as handle:
-                temporary = Path(handle.name)
-                handle.write(self._json)
-                handle.flush()
-                os.fsync(handle.fileno())
-            _require(destination() == target and _read_file(temporary, MAX_PROJECT_BYTES) == self._json,
-                     "Project output changed during publication")
-            if replace:
-                os.replace(temporary, target)
-            else:
-                os.link(temporary, target)
-                temporary.unlink()
-            temporary = None
-        finally:
-            if temporary is not None:
-                temporary.unlink(missing_ok=True)
+        _publish_json(self._json, Path(path), self._input_paths, replace=replace)
 
     def compile(self, *, output: Path | str, core: CoreClient | None = None, verify: CoreClient | None = None,
                 timeout_seconds: float = 300.0, replace: bool = False,
