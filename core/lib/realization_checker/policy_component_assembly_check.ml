@@ -164,8 +164,10 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
       "complete_ordered_two_member_ownership";
     verify (PT.steps template=[] && A.joins rule=[] && PT.complex_members template=[] && PT.amounts template=[])
       "direct_root_members_without_covalent_transforms";
-    verify (List.map CT.Root_source.id (PT.sources template)=source_ids &&
-      List.map CT.Output_member.id (PT.output_members template)=member_ids &&
+    let inventory actual expected=if Option.is_some helper then
+      List.sort compare actual=List.sort compare expected else actual=expected in
+    verify (inventory (List.map CT.Root_source.id (PT.sources template)) source_ids &&
+      inventory (List.map CT.Output_member.id (PT.output_members template)) member_ids &&
       PM.member_order authority=member_ids)
       "exact_original_member_order";
     let projected_chemistry ~space chemistry =
@@ -213,9 +215,10 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
       verify (equal (projected_chemistry ~space:(CT.Output_member.space_id member) (HM.chemistry helper.material))
         (H.to_json expected.chemistry)) "complete_helper_expected_chemistry_projection";
       let requirements=PT.requirements template in
-      verify (List.map CT.Member_requirement.member_id requirements=List.map Option.some member_ids &&
-        List.map CT.Member_requirement.category requirements=
-          [CT.Member_requirement.Payload;CT.Member_requirement.Payload;CT.Member_requirement.Delivered_helper])
+      let expected_requirements=List.map (fun (row:A.member_binding) -> Some row.member_id,CT.Member_requirement.Payload) members @
+        [Some helper.member_id,CT.Member_requirement.Delivered_helper] in
+      verify (List.sort compare (List.map (fun row -> CT.Member_requirement.member_id row,CT.Member_requirement.category row) requirements)=
+        List.sort compare expected_requirements)
         "complete_payload_and_delivered_helper_categories";
       List.iter (fun requirement ->
         let roles=CT.Member_requirement.roles requirement in

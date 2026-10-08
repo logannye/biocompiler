@@ -511,8 +511,11 @@ let check_multi_member_material value =
   let source_ids=List.map (fun (row:member_binding) -> row.source_id) value.member_values @
     (match value.helper_value with None -> [] | Some row -> [row.source_id]) in
   unique "Multi-member output identities are duplicated." member_ids;
-  require (List.map K.Root_source.id sources=source_ids &&
-    List.map K.Output_member.id outputs=member_ids && PM.member_order value.material_value=member_ids &&
+  (* Template inventories are canonical by local ID; delivered order belongs to
+     the independent mRNA authority, not lexical spelling of those IDs. *)
+  let inventory actual expected=if value.grounded_helper then same_inventory actual expected else actual=expected in
+  require (inventory (List.map K.Root_source.id sources) source_ids &&
+    inventory (List.map K.Output_member.id outputs) member_ids && PM.member_order value.material_value=member_ids &&
     List.map (fun (row:PM.member) -> row.id) expected=member_ids && List.length payload_ids=2 &&
     List.length member_ids=(if value.grounded_helper then 3 else 2))
     (if value.grounded_helper then "Grounded-helper authority requires two ordered payload members followed by one helper."
@@ -520,10 +523,12 @@ let check_multi_member_material value =
   require (value.join_values=[] && T.steps template=[] && T.complex_members template=[] && T.amounts template=[])
     "Multi-member direct-root assembly admits no covalent joins, transformations, complexes or amounts.";
   let requirements=T.requirements template in
-  require (List.map K.Member_requirement.member_id requirements=List.map Option.some member_ids &&
-    (if value.grounded_helper then List.map K.Member_requirement.category requirements=
-      [K.Member_requirement.Payload;K.Member_requirement.Payload;K.Member_requirement.Delivered_helper]
-     else List.for_all (fun row -> K.Member_requirement.category row=K.Member_requirement.Payload) requirements))
+  require (if value.grounded_helper then
+    same_inventory (List.map (fun row -> K.Member_requirement.member_id row,K.Member_requirement.category row) requirements)
+      (List.map (fun id -> Some id,K.Member_requirement.Payload) payload_ids @
+        [Some (Option.get value.helper_value).member_id,K.Member_requirement.Delivered_helper])
+    else List.map K.Member_requirement.member_id requirements=List.map Option.some member_ids &&
+      List.for_all (fun row -> K.Member_requirement.category row=K.Member_requirement.Payload) requirements)
     (if value.grounded_helper then "Grounded-helper assembly requires two Payload requirements and one Delivered_helper requirement."
      else "Multi-member assembly must retain exactly two ordered payload requirements without helpers.");
   if value.grounded_helper then List.iter (fun requirement ->

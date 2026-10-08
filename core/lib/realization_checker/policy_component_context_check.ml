@@ -253,9 +253,10 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
         List.length(PM.members structures)=3 && List.length(T.output_members template)=3 &&
         T.steps template=[] && T.complex_members template=[] && T.amounts template=[])
         "exact_three_member_grounded_helper_inventory";
-      fail(List.map CT.Member_requirement.member_id(T.requirements template)=List.map Option.some members &&
-        List.map CT.Member_requirement.category(T.requirements template)=
-          [CT.Member_requirement.Payload;CT.Member_requirement.Payload;CT.Member_requirement.Delivered_helper])
+      let expected_requirements=List.map(fun member->Some member,CT.Member_requirement.Payload)payload_members @
+        [Some selection.member_id,CT.Member_requirement.Delivered_helper] in
+      fail(List.sort compare(List.map(fun row->CT.Member_requirement.member_id row,CT.Member_requirement.category row)(T.requirements template))=
+        List.sort compare expected_requirements)
         "two_payloads_one_delivered_helper";
       let group=X.delivery_group context in
       List.iter2(fun member placement->charge 1;

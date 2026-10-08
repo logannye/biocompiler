@@ -87,3 +87,4 @@ let material_authority fixture alternate original=
     |> edit["payload_structures"](fun raw->arr(Json.array raw@[List.hd(Json.array raw) |> replace "member_id"(str helper_member)])))
     |> edit["member_order"](fun raw->arr(Json.array raw@[str helper_member]))
     |> edit["members"](fun raw->arr(Json.array raw@[member]))
+    |> Bioc_domain.Policy_mrna_structure.of_json |> Bioc_domain.Policy_mrna_structure.to_json

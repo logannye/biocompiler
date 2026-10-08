@@ -186,3 +186,24 @@ Authenticated inert artifact `11565461025` retains the failure; its build log
 has SHA-256 `eb18600f7be8c9d7c6e297e10bb371b4aa16d4324b63e17fcd50a7c11aa6b667`.
 A fresh corrected-source run is required. Development documentation now matches
 the registered 38 native suites and ten SDK campaigns (260 observations).
+
+## Grounded-helper canonical member-order correction
+
+Run `37811917435`, attempt 1, at `ac6150c4eacdc972c8842861d2017ef6b37fd882`
+compiled successfully and passed 37/38 native suites. The new helper suite failed
+before its positive execution because the template decoder canonically sorts
+inventories by identifier, while the new helper branch required delivery order.
+The correction checks exact source/output/requirement identity inventories and
+retains the separate declared payload A, payload B, helper delivery order. All
+member product, root, role and chemistry checks remain bound by identity. The
+independent fixture is normalized through its typed decoder before pinning.
+
+The positive explicitly retains a helper identifier that sorts first while its
+delivery order remains last. Two new rejection controls distinguish wrong
+delivered order and a duplicate output hiding the helper, bringing the native
+negative census to 38. Independent source review, 12 inert campaign controls,
+the dependency boundary, both inventory gates and diff checks pass. All 26
+component and 62 material rule meanings are unchanged. Authenticated inert
+artifact `11566225534` retains the prior failure; a fresh corrected-source run
+is still required. No helper SDK, installed, integration or main acceptance is
+claimed.
