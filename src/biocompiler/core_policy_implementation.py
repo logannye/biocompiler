@@ -25,6 +25,11 @@ PREREQUISITE_REQUEST_SCHEMA = "biocompiler.policy_realization_request.v0.2"
 PREREQUISITE_REQUEST_PROFILE = "biocompiler.policy_prerequisite_realization_inputs.v0.1"
 TWO_OBSERVATION_REQUEST_SCHEMA = "biocompiler.policy_realization_request.v0.3"
 TWO_OBSERVATION_REQUEST_PROFILE = "biocompiler.policy_two_observation_prerequisite_inputs.v0.1"
+MULTI_PRODUCT_REQUEST_SCHEMA = "biocompiler.policy_realization_request.v0.4"
+MULTI_PRODUCT_REQUEST_PROFILE = "biocompiler.policy_multi_product_prerequisite_inputs.v0.1"
+MULTI_PRODUCT_BINDING_SCHEMA = "biocompiler.policy_implementation_binding.v0.4"
+MULTI_PRODUCT_BINDING_PROFILE = "biocompiler.policy_multi_product_staged_source_graph.v0.1"
+MULTI_PRODUCT_BINDING_REPORT_SCHEMA = "biocompiler.policy_implementation_binding_report.v0.4"
 TWO_OBSERVATION_BINDING_SCHEMA = "biocompiler.policy_implementation_binding.v0.3"
 TWO_OBSERVATION_BINDING_PROFILE = "biocompiler.policy_two_observation_source_graph.v0.1"
 TWO_OBSERVATION_BINDING_REPORT_SCHEMA = "biocompiler.policy_implementation_binding_report.v0.3"
@@ -132,6 +137,17 @@ def _two_observation_original(request: JsonValue) -> dict[str, JsonValue]:
     return raw
 
 
+def _multi_product_original(request: JsonValue) -> dict[str, JsonValue]:
+    """Nested authority for the explicit multi-member material route only."""
+    raw = _object(request, _REQUEST_FIELDS, "Original multi-product implementation request")
+    if (raw["schema_version"] != MULTI_PRODUCT_REQUEST_SCHEMA
+            or raw["profile"] != MULTI_PRODUCT_REQUEST_PROFILE):
+        raise CoreProtocolError("Multi-member material requires its closed nested source profile")
+    if _record(raw["document"], "Original BuildRequest").get("$type") != "BuildRequest":
+        raise CoreProtocolError("Multi-product checking requires a complete original BuildRequest")
+    return raw
+
+
 def _pending_dependencies(request: dict[str, JsonValue]) -> list[JsonValue]:
     """Retain the original catalog membership and order; interpret no predicate."""
     document = _record(request["document"], "Original BuildRequest")
@@ -151,12 +167,15 @@ def _pending_dependencies(request: dict[str, JsonValue]) -> list[JsonValue]:
 
 
 def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
-               report: dict[str, JsonValue], *, prerequisites: bool = False, two_observations: bool = False) -> None:
+               report: dict[str, JsonValue], *, prerequisites: bool = False, two_observations: bool = False,
+               multi_product: bool = False) -> None:
+    if multi_product and (not prerequisites or two_observations):
+        raise CoreProtocolError("Multi-product evidence requires its distinct prerequisite route")
     if two_observations and not prerequisites:
         raise CoreProtocolError("Two-observation evidence requires prerequisite closure")
     raw_binding = _record(report["binding"], "Source graph binding")
-    staged = raw_binding.get("schema_version") == "biocompiler.policy_implementation_binding_report.v0.2"
-    binding_profile = (TWO_OBSERVATION_BINDING_PROFILE if two_observations else
+    staged = multi_product or raw_binding.get("schema_version") == "biocompiler.policy_implementation_binding_report.v0.2"
+    binding_profile = (MULTI_PRODUCT_BINDING_PROFILE if multi_product else TWO_OBSERVATION_BINDING_PROFILE if two_observations else
                        "biocompiler.policy_staged_source_graph.v0.1" if staged else "biocompiler.policy_exclusive_source_graph.v0.1")
     observable_profile = "biocompiler.policy_staged_observables.v0.1" if staged else "biocompiler.policy_truth_observables.v0.1"
     binding = _object(raw_binding, _BINDING_FIELDS | ({"state_encoding"} if staged else set()), "Source graph binding")
@@ -164,22 +183,22 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
                         | ({"pending_dependencies"} if prerequisites else set()), "Original input admission")
     _claim(binding)
     _claim(admission)
-    if (binding["schema_version"] != (TWO_OBSERVATION_BINDING_REPORT_SCHEMA if two_observations else
+    if (binding["schema_version"] != (MULTI_PRODUCT_BINDING_REPORT_SCHEMA if multi_product else TWO_OBSERVATION_BINDING_REPORT_SCHEMA if two_observations else
                                      "biocompiler.policy_implementation_binding_report.v0.2" if staged else "biocompiler.policy_implementation_binding_report.v0.1")
             or binding["profile"] != binding_profile or binding["observable_profile"] != observable_profile
             or staged and binding["state_encoding"] != "exact_ordered_source_labels"
             or binding["status"] != "source_graph_bound" or binding["execution"] != "not_performed"
             or admission["schema_version"] != ("biocompiler.policy_realization_admission.v0.2" if prerequisites
                                                 else "biocompiler.policy_realization_admission.v0.1")
-            or admission["profile"] != (TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
+            or admission["profile"] != (MULTI_PRODUCT_REQUEST_PROFILE if multi_product else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
                                         PREREQUISITE_REQUEST_PROFILE if prerequisites else REQUEST_PROFILE)
             or admission["resource_profile"] != "biocompiler.policy_realization_inputs.resources.v0.1"
             or admission["status"] != "admitted_inputs" or admission["exploration"] != "not_performed"
             or any(stage[key] != "unassessed" for stage in (binding, admission) for key in ("preservation", "requirements"))):
         raise CoreProtocolError("Implementation report changed a subordinate admission claim")
     if prerequisites:
-        (_two_observation_original if two_observations else _prerequisite_original)(request)
-        if staged or not _same(admission["pending_dependencies"], _pending_dependencies(request)):
+        (_multi_product_original if multi_product else _two_observation_original if two_observations else _prerequisite_original)(request)
+        if staged and not multi_product or not _same(admission["pending_dependencies"], _pending_dependencies(request)):
             raise CoreProtocolError("Prerequisite admission changed its truth-only scope or original pending inventory")
     document = _record(request["document"], "Original BuildRequest")
     original_program = _record(document["program"], "Original program")
@@ -224,7 +243,7 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
     } | ({"machines", "transitions"} if staged else set()), "Proposed binding")
     if (len(matches) != 1 or binding["catalog_entry_digest"] != matches[0].get("entry_digest")
             or proposed["catalog_entry"] != binding["catalog_entry"]
-            or proposed["schema_version"] != (TWO_OBSERVATION_BINDING_SCHEMA if two_observations else
+            or proposed["schema_version"] != (MULTI_PRODUCT_BINDING_SCHEMA if multi_product else TWO_OBSERVATION_BINDING_SCHEMA if two_observations else
                                               "biocompiler.policy_implementation_binding.v0.2" if staged else "biocompiler.policy_implementation_binding.v0.1")
             or proposed["profile"] != binding["profile"]):
         raise CoreProtocolError("Source binding changed its original catalog entry")
@@ -258,6 +277,8 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
     graph_nodes = _rows(graph["nodes"], "Actual graph nodes")
     if not _same([row.get("node") for row in outputs], [row.get("id") for row in graph_nodes]):
         raise CoreProtocolError("Binding omitted or reordered an actual graph node")
+    if multi_product:
+        _multi_product_anchors(proposed, graph, original_declarations)
     if two_observations:
         _two_observation_anchors(proposed, graph, request["implementation_library"], outputs, original_declarations)
     assessment = operational._source_assessment(response, admission["source_assessment"], document)
@@ -270,6 +291,27 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
     if (not _same(admission["assurance"], assurance) or not _same(admission["budgets"], request["budgets"])
             or not _same(admission["requested_requirements"], assurance["requirements"])):
         raise CoreProtocolError("Input admission changed original assurance or budgets")
+
+
+def _multi_product_anchors(proposed: dict[str, JsonValue], graph: dict[str, JsonValue],
+                           declarations: list[dict[str, JsonValue]]) -> None:
+    """Retain both effect owners and feedback endpoints; prove no product semantics."""
+    anchors = [_object(row, {"source", "bank", "feedback"}, "Multi-product effect anchor")
+               for row in _rows(proposed["effects"], "Multi-product effect anchors")]
+    source_ids = [row.get("id") for row in declarations if row.get("$type") == "Effect"]
+    if (len(anchors) != 2 or len(source_ids) != 2
+            or any(type(value) is not str or not value for value in source_ids)
+            or not _same([row["source"] for row in anchors], source_ids)):
+        raise CoreProtocolError("Multi-product binding lost one of its two original effect owners")
+    for key in ("source", "bank", "feedback"):
+        values = [row[key] for row in anchors]
+        if any(type(value) is not str or not value for value in values) or len(set(cast(list[str], values))) != 2:
+            raise CoreProtocolError("Multi-product binding aliased an effect, attempt bank or feedback input")
+    inputs = [row for row in _rows(graph["inputs"], "Actual graph inputs") if row.get("kind") == "feedback"]
+    expected: list[JsonValue] = [{"id": row["feedback"], "kind": "feedback",
+                                 "consumer": {"node": row["bank"], "port": "feedback"}} for row in anchors]
+    if len(inputs) != 2 or any(sum(_same(row, original) for row in inputs) != 1 for original in expected):
+        raise CoreProtocolError("Multi-product binding changed complete source-bound feedback inputs")
 
 
 def _two_observation_anchors(proposed: dict[str, JsonValue], graph: dict[str, JsonValue],

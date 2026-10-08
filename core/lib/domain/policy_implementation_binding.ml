@@ -5,6 +5,8 @@ let staged_schema_version = "biocompiler.policy_implementation_binding.v0.2"
 let staged_profile = "biocompiler.policy_staged_source_graph.v0.1"
 let two_observation_schema_version = "biocompiler.policy_implementation_binding.v0.3"
 let two_observation_profile = "biocompiler.policy_two_observation_source_graph.v0.1"
+let multi_product_schema_version = "biocompiler.policy_implementation_binding.v0.4"
+let multi_product_profile = "biocompiler.policy_multi_product_staged_source_graph.v0.1"
 type observation = { source:string; bank:string; input:string }
 type state = { source:string; register:string }
 type effect_binding = { source:string; bank:string; feedback:string }
@@ -13,7 +15,7 @@ type machine = { source:string; bank:string }
 type transition = rule
 type t = { raw:Json.t; entry:string; observation_values:observation list;
   state_values:state list; effect_values:effect_binding list; rule_values:rule list;
-  machine_values:machine list; transition_values:transition list; staged:bool; two_observation:bool }
+  machine_values:machine list; transition_values:transition list; staged:bool; two_observation:bool; multi_product:bool }
 let get key value = Json.field key(Json.object_fields value)
 let text key value = Json.string(get key value)
 let require condition message = Diagnostic.require condition "policy_implementation_binding" message
@@ -29,8 +31,10 @@ let unique label values = require(List.length values=List.length(List.sort_uniq 
 let of_json raw =
   ignore(Policy_document.document_digest raw);
   let fields=Json.object_fields raw in
-  let staged=List.assoc_opt "schema_version" fields=Some(Json.String staged_schema_version) &&
-    List.assoc_opt "profile" fields=Some(Json.String staged_profile) in
+  let multi_product=List.assoc_opt "schema_version" fields=Some(Json.String multi_product_schema_version) &&
+    List.assoc_opt "profile" fields=Some(Json.String multi_product_profile) in
+  let staged=multi_product || (List.assoc_opt "schema_version" fields=Some(Json.String staged_schema_version) &&
+    List.assoc_opt "profile" fields=Some(Json.String staged_profile)) in
   let two_observation=List.assoc_opt "schema_version" fields=Some(Json.String two_observation_schema_version) &&
     List.assoc_opt "profile" fields=Some(Json.String two_observation_profile) in
   exact(["schema_version";"profile";"catalog_entry";"observations";"states";"effects";"rules"] @
@@ -76,7 +80,7 @@ let of_json raw =
     unique "effect bank" (List.map(fun(v:effect_binding)->v.bank)effect_values);
     unique "effect feedback" (List.map(fun(v:effect_binding)->v.feedback)effect_values));
   {raw;entry=name "catalog_entry" raw;observation_values;state_values;effect_values;rule_values;
-   machine_values;transition_values;staged;two_observation}
+   machine_values;transition_values;staged;two_observation;multi_product}
 let to_json value=value.raw
 let fingerprint value=Canonical.fingerprint value.raw
 let catalog_entry value=value.entry
@@ -88,3 +92,5 @@ let machines value=value.machine_values
 let transitions value=value.transition_values
 let is_staged value=value.staged
 let is_two_observation value=value.two_observation
+
+let is_multi_product value=value.multi_product

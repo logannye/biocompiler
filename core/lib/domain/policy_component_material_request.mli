@@ -15,6 +15,8 @@ val prerequisite_schema_version : string
 val prerequisite_profile : string
 val two_observation_schema_version : string
 val two_observation_profile : string
+val multi_member_schema_version : string
+val multi_member_profile : string
 val resource_profile : string
 type component_binding = private { slot:A.slot; component:Pinned_identity.t }
 type catalog_binding = private {
@@ -41,6 +43,7 @@ val of_json : ?charge:(int -> unit) -> Json.t -> t
 val is_instanced : t -> bool
 val requires_prerequisite_closure : t -> bool
 val is_two_observation : t -> bool
+val is_multi_member : t -> bool
 val request_profile : t -> string
 val to_json : t -> Json.t
 val fingerprint : t -> string

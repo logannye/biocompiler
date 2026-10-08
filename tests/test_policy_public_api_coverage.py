@@ -40,8 +40,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (43, 845, 163, 17, 21))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 203,
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (43, 896, 163, 17, 21))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 254,
             'independent_expansion': 28, 'shared_invariant': 492, 'source_only': 116})
         self.assertEqual(len(self.ledger['syntax_links']), 359)
         self.assertEqual(len(self.ledger['witnesses']), 138)
@@ -59,9 +59,27 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 845)
+        self.assertEqual(len(found['entries']), 896)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
+
+    def test_composition_dependencies_preserve_all_previous_api_classifications_and_witness_meanings(self):
+        self.assertEqual(len(c.COMPOSITION_DEPENDENCIES), 51)
+        entries = {row['id']: row for row in self.ledger['inventory']['entries']}
+        for identity in c.COMPOSITION_DEPENDENCIES:
+            self.assertEqual(entries[identity]['scope'], 'dependency')
+            self.assertEqual(self.ledger['coverage'][identity]['status'], 'dependency')
+            self.assertEqual(self.ledger['coverage'][identity]['witnesses'], [])
+        metadata = {
+            'witnesses': {key: {name: value[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                          for key, value in self.ledger['witnesses'].items()},
+            'coverage': {key: value for key, value in self.ledger['coverage'].items()
+                         if key not in c.COMPOSITION_DEPENDENCIES},
+        }
+        self.assertEqual(len(metadata['coverage']), 845)
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), '1ca37142a2beec20c09db60e709e5aa8273da2f5e2002a104ed21c228d6b7d62')
 
     def test_file_census_rejects_new_module_even_with_repinned_ledger(self):
         path = c.PACKAGE + '/unreviewed.py'
@@ -115,9 +133,16 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
             c.validate(self.root, self.ledger)
 
+    def before_composition_profiles(self):
+        projected = copy.deepcopy(self.ledger)
+        self.assertTrue(set(c.COMPOSITION_DEPENDENCIES) <= set(projected['coverage']))
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                 if key not in c.COMPOSITION_DEPENDENCIES}
+        return projected
+
     def before_research_project(self):
         """Remove only the additive researcher-project surface and its witnesses."""
-        projected = copy.deepcopy(self.ledger)
+        projected = self.before_composition_profiles()
         projected['coverage'] = {key: row for key, row in projected['coverage'].items()
                                  if not key.startswith('biocompiler.policy.research_project.')}
         projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()

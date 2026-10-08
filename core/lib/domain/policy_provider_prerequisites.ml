@@ -8,6 +8,7 @@ module M = Molecular_record
 module P = Pinned_identity
 module Names = Map.Make (String)
 let schema_version = "biocompiler.policy_provider_dependency_graph.v0.1"
+let transport_schema_version = "biocompiler.policy_provider_dependency_graph.v0.2"
 let max_dependencies = 128
 let max_roots = 1024
 let max_nodes = 1024
@@ -90,15 +91,16 @@ let pending_dependencies ?(charge=fun _ -> ()) original =
   rows
 type origin = Original_path of string | Catalog of pending_dependency
 type root = {origin:origin; definition:C.provider_ref}
-type relation = Interface_environment | Chassis_capability | Chassis_interface | Chassis_environment
+type relation = Interface_environment | Chassis_capability | Chassis_interface | Chassis_environment | Transport_environment
 type edge = {source:C.provider_ref; target:C.provider_ref; relation:relation; index:int}
 type issue_kind = Missing | Cycle | Extra | Unsupported
 type issue = {kind:issue_kind; code:string; references:C.provider_ref list}
 type node = {definition:C.provider_ref; provider:P.t option}
-type t = {dependency_values:pending_dependency list; root_values:root list; node_values:node list;
+type t = {multi_product:bool;dependency_values:pending_dependency list; root_values:root list; node_values:node list;
   edge_values:edge list; issue_values:issue list}
 let relation_name = function Interface_environment -> "interface_environment" | Chassis_capability -> "chassis_capability"
   | Chassis_interface -> "chassis_interface" | Chassis_environment -> "chassis_environment"
+  | Transport_environment -> "transport_environment"
 let kind_name = function Missing -> "missing" | Cycle -> "cycle" | Extra -> "extra" | Unsupported -> "unsupported"
 let root_json (value:root) =
   let origin=match value.origin with
@@ -106,7 +108,7 @@ let root_json (value:root) =
     | Catalog dependency -> obj ["kind",str "catalog_dependency";"entry_id",str dependency.entry_id;
         "entry_digest",str dependency.entry_digest;"dependency_index",Json.int dependency.dependency_index] in
   obj ["origin",origin;"definition",C.provider_ref_to_json value.definition]
-let to_json value = obj ["schema_version",str schema_version;
+let to_json value = obj ["schema_version",str(if value.multi_product then transport_schema_version else schema_version);
   "pending_dependencies",arr pending_dependency_to_json value.dependency_values;
   "roots",arr root_json value.root_values;
   "nodes",arr (fun (node:node) -> obj ["definition",C.provider_ref_to_json node.definition;
@@ -118,6 +120,9 @@ let to_json value = obj ["schema_version",str schema_version;
 let derive ?(charge=fun _ -> ()) ~original ~context () =
   require (R.requires_prerequisite_closure original && X.requires_prerequisite_closure context)
     "Provider dependency derivation requires matching prerequisite profiles.";
+  let multi_product=R.is_multi_product original in
+  require(multi_product=X.is_multi_member context)
+    "Transport prerequisite derivation requires the same explicit multi-member source and context family.";
   let dependency_values=pending_dependencies ~charge original in
   let definitions=definition_index charge original in
   let document=D.to_json (R.document original) in
@@ -183,6 +188,9 @@ let derive ?(charge=fun _ -> ()) ~original ~context () =
            visit (reference::trail) target in
          (match provider.body with
           | V.Interface body -> edge Interface_environment 0 body.environment
+          | V.Transport body ->
+            require multi_product "Transport prerequisites require the explicit multi-product source family.";
+            edge Transport_environment 0 body.environment
           | V.Chassis body ->
             (* operational_model identifies this provider. It is checked against
                the original chassis by the context checker, not traversed as a
@@ -196,7 +204,7 @@ let derive ?(charge=fun _ -> ()) ~original ~context () =
   List.iter (fun (provider:V.provider) ->
     let key=reference_key charge provider.definition in
     if not (Names.mem key !states) then issue Extra "prerequisite_provider_extra" [provider.definition]) supplied;
-  let value={dependency_values;root_values;node_values=List.rev !nodes_rev;
+  let value={multi_product;dependency_values;root_values;node_values=List.rev !nodes_rev;
     edge_values=List.rev !edges_rev;issue_values=List.rev !issues_rev} in
   let raw=to_json value in charge_json charge raw; M.check_resources raw;value
 let dependencies value = value.dependency_values

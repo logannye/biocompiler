@@ -12,6 +12,8 @@ val profile : string
 val staged_profile : string
 val instance_schema_version : string
 val instance_profile : string
+val multi_member_schema_version : string
+val multi_member_profile : string
 val max_instances : int
 val transport_profile : string
 
@@ -33,11 +35,16 @@ type wire_ref = Local_wire of {slot:slot; index:int} | Cross_link of link_kind
 type input_ref = private { slot:slot; external_slot:string; input_id:string }
 type group_ref = private { slot:slot; group_id:string }
 type root_binding = private { slot:slot; source_id:string }
+type member_binding = private { slot:slot; source_id:string; member_id:string }
+type transport = private {
+  definition:Policy_material_contract.provider_ref; provider:Pinned_identity.t;
+  producer_member:string; consumer_member:string;
+}
 type join = private {
   join_id:string; step_id:string; port_id:string; left:slot; right:slot; offset:int;
 }
 type link_carrier = private {
-  kind:link_kind; producer_site:int; consumer_site:int; join_id:string; join_path:string list;
+  kind:link_kind; producer_site:int; consumer_site:int; join_id:string; join_path:string list; transport:transport option;
 }
 type t
 
@@ -75,3 +82,12 @@ val material_authority : t -> Policy_mrna_structure.t
 val is_staged : t -> bool
 val is_instanced : t -> bool
 val link_name : link_kind -> string
+
+(** Separately versioned direct-root, two-member material ownership and explicit
+    noncovalent transport references. These references do not establish the
+    provider contract, recipient or availability; the context checker does. *)
+val is_multi_member : t -> bool
+val member_bindings : t -> member_binding list
+val member_for_slot : t -> slot -> member_binding
+val carrier_transport : link_carrier -> transport option
+val transport_to_json : transport -> Json.t

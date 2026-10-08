@@ -1,0 +1,3 @@
+(executable
+ (name main)
+ (libraries bioc_wire bioc_domain bioc_policy_multi_member_test_support))

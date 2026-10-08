@@ -32,6 +32,11 @@ TWO_OBSERVATION_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.
 TWO_OBSERVATION_REQUEST_PROFILE = "biocompiler.policy_instance_two_observation_prerequisite_mrna.v0.1"
 TWO_OBSERVATION_IMPLEMENTATION = "biocompiler.ocaml.policy_instance_two_observation_prerequisite_material.v0.1"
 TWO_OBSERVATION_VALIDATION_SCOPE = "policy-instance-two-observation-prerequisite-mrna-v0.1"
+MULTI_MEMBER_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.5"
+MULTI_MEMBER_REQUEST_PROFILE = "biocompiler.policy_multi_member_prerequisite_mrna.v0.1"
+MULTI_MEMBER_ASSEMBLY_PROFILE = "biocompiler.policy_multi_member_component_assembly.v0.1"
+MULTI_MEMBER_IMPLEMENTATION = "biocompiler.ocaml.policy_multi_member_prerequisite_material.v0.1"
+MULTI_MEMBER_VALIDATION_SCOPE = "policy-multi-member-prerequisite-mrna-v0.1"
 REPORT_SCHEMA = "biocompiler.policy_component_material_assessment.v0.1"
 EXPORT_SCHEMA = "biocompiler.policy_component_mrna_export.v0.1"
 MANIFEST_SCHEMA = "biocompiler.policy_component_mrna_manifest.v0.1"
@@ -72,6 +77,13 @@ TWO_OBSERVATION_PROFILE: dict[str, JsonValue] = {
 TWO_OBSERVATION_PRODUCER_PROFILE: dict[str, JsonValue] = {
     **PRODUCER_PROFILE, "implementation": TWO_OBSERVATION_IMPLEMENTATION, "validation_scope": TWO_OBSERVATION_VALIDATION_SCOPE,
 }
+MULTI_MEMBER_PROFILE: dict[str, JsonValue] = {
+    **PROFILE, "request_schema": MULTI_MEMBER_REQUEST_SCHEMA, "implementation": MULTI_MEMBER_IMPLEMENTATION,
+    "validation_scope": MULTI_MEMBER_VALIDATION_SCOPE,
+}
+MULTI_MEMBER_PRODUCER_PROFILE: dict[str, JsonValue] = {
+    **PRODUCER_PROFILE, "implementation": MULTI_MEMBER_IMPLEMENTATION, "validation_scope": MULTI_MEMBER_VALIDATION_SCOPE,
+}
 _REQUEST_FIELDS = {"schema_version", "profile", "implementation_request", "component_library", "composition_rule",
                    "catalog_binding", "input_bindings", "resource_bindings", "context", "budgets"}
 _CANDIDATE_FIELDS = {"schema_version", "behavior", "implementation", "binding", "assembly_proposal", "construction"}
@@ -84,9 +96,11 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
     if (request["schema_version"], request["profile"]) not in ((REQUEST_SCHEMA, REQUEST_PROFILE),
             (INSTANCE_REQUEST_SCHEMA, INSTANCE_REQUEST_PROFILE),
             (PREREQUISITE_REQUEST_SCHEMA, PREREQUISITE_REQUEST_PROFILE),
-            (TWO_OBSERVATION_REQUEST_SCHEMA, TWO_OBSERVATION_REQUEST_PROFILE)):
+            (TWO_OBSERVATION_REQUEST_SCHEMA, TWO_OBSERVATION_REQUEST_PROFILE),
+            (MULTI_MEMBER_REQUEST_SCHEMA, MULTI_MEMBER_REQUEST_PROFILE)):
         raise CoreProtocolError("Component material request changed its closed original profile")
-    decoder = (implementation._two_observation_original if _two_observations(request) else
+    decoder = (implementation._multi_product_original if _multi_member(request) else
+               implementation._two_observation_original if _two_observations(request) else
                implementation._prerequisite_original if _prerequisites(request) else implementation._original)
     decoder(request["implementation_request"])
     for key in ("component_library", "composition_rule", "catalog_binding", "context", "budgets"):
@@ -97,18 +111,25 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
 
 
 def _instanced(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] in (INSTANCE_REQUEST_PROFILE, PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE)
+    return request["profile"] in (INSTANCE_REQUEST_PROFILE, PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE, MULTI_MEMBER_REQUEST_PROFILE)
 
 
 def _prerequisites(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] in (PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE)
+    return request["profile"] in (PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE, MULTI_MEMBER_REQUEST_PROFILE)
 
 
 def _two_observations(request: dict[str, JsonValue]) -> bool:
     return request["profile"] == TWO_OBSERVATION_REQUEST_PROFILE
 
 
+def _multi_member(request: dict[str, JsonValue]) -> bool:
+    return request["profile"] == MULTI_MEMBER_REQUEST_PROFILE
+
+
 def _profile_settings(request: dict[str, JsonValue]) -> tuple[str, dict[str, JsonValue], dict[str, JsonValue], str, str]:
+    if _multi_member(request):
+        return ("policy_multi_member_material", MULTI_MEMBER_PROFILE, MULTI_MEMBER_PRODUCER_PROFILE,
+                MULTI_MEMBER_VALIDATION_SCOPE, MULTI_MEMBER_IMPLEMENTATION)
     if _two_observations(request):
         return ("policy_two_observation_material", TWO_OBSERVATION_PROFILE, TWO_OBSERVATION_PRODUCER_PROFILE,
                 TWO_OBSERVATION_VALIDATION_SCOPE, TWO_OBSERVATION_IMPLEMENTATION)
@@ -136,6 +157,7 @@ def _unique(rows: list[dict[str, JsonValue]], key: str, value: JsonValue, label:
 def _projections(request: dict[str, JsonValue], candidate: dict[str, JsonValue], leaf: dict[str, JsonValue]) -> None:
     """Bind retained inventories to originals and candidate; do not reconstruct RNA."""
     instanced = _instanced(request)
+    multi_member = _multi_member(request)
     rule = _record(_record(request["composition_rule"], "Original rule").get("body"), "Original rule body")
     library = _rows(_record(request["component_library"], "Original library").get("components"), "Original components")
     components: dict[str, dict[str, JsonValue]] = {}
@@ -144,6 +166,8 @@ def _projections(request: dict[str, JsonValue], candidate: dict[str, JsonValue],
         if type(slot) is not str or slot in components:
             raise CoreProtocolError("Original component selection has ambiguous slots")
         components[slot] = _record(_unique(library, "identity", row.get("component"), "Selected component").get("body"), "Component body")
+    if multi_member and len(components) != 2:
+        raise CoreProtocolError("Multi-member evidence requires exactly two original instances")
     if (not instanced and list(components) != ["decision", "driver"]
             or instanced and (not 2 <= len(components) <= 8 or any(slot in ("decision", "driver") for slot in components))):
         raise CoreProtocolError("Component evidence changed its original bounded instance inventory" if instanced
@@ -151,24 +175,26 @@ def _projections(request: dict[str, JsonValue], candidate: dict[str, JsonValue],
     roots = _rows(rule.get("root_bindings"), "Original root bindings")
     authority = _record(rule.get("material_authority"), "Original material authority")
     member_order = authority.get("member_order")
-    if type(member_order) is not list or len(member_order) != 1:
+    if type(member_order) is not list or len(member_order) != (2 if multi_member else 1):
         raise CoreProtocolError("Component evidence lacks its single original member")
     passed = leaf["outcome"] == "pass"
     construction = _record(candidate["construction"], "Construction")
     inventory = _record(construction.get("inventory"), "Checked inventory") if passed else {}
     molecules = _rows(inventory.get("molecules"), "Checked molecules") if passed else []
-    features = _rows(_unique(molecules, "id", member_order[0], "Checked member").get("features"), "Checked features") if passed else []
+    member_bindings = _rows(rule.get("member_bindings"), "Original member bindings") if multi_member else []
 
     def site(value: JsonValue, slot: str, original: dict[str, JsonValue]) -> None:
         row = _object(value, {"slot", "root", "source", "feature", "local_path", "member", "path"}
                       | ({"final_feature"} if instanced else set()), "Retained carrier site")
+        member = _unique(member_bindings, "slot", slot, "Original member binding").get("member") if multi_member else member_order[0]
         _expect(row, {"slot": slot, "root": original.get("root"), "source": _unique(roots, "slot", slot, "Root binding").get("source"),
-                      "feature": original.get("feature"), "local_path": original.get("path"), "member": member_order[0]}, "Carrier projection")
+                      "feature": original.get("feature"), "local_path": original.get("path"), "member": member}, "Carrier projection")
         _record(row["path"], "Projected carrier path")
-        final_feature = encode_json([slot, original.get("feature")]).decode("utf-8") if instanced else original.get("feature")
+        final_feature = encode_json([slot, original.get("feature")]).decode("utf-8") if instanced and not multi_member else original.get("feature")
         if instanced:
             _expect(row, {"final_feature": final_feature}, "Instance-qualified feature identity")
         if passed:
+            features = _rows(_unique(molecules, "id", member, "Checked member").get("features"), "Checked features")
             feature = _unique(features, "id", final_feature, "Projected final feature")
             if not _same(row["path"], feature.get("path")):
                 raise CoreProtocolError("Carrier projection differs from the exact checked member feature")
@@ -194,8 +220,11 @@ def _projections(request: dict[str, JsonValue], candidate: dict[str, JsonValue],
     joins = _rows(rule.get("joins"), "Original joins") if instanced else []
     for raw, original in zip(returned, links):
         row = _object(raw, {"link", "producer_endpoint", "consumer_endpoint", "producer", "consumer"}
-                      | ({"joins", "offsets"} if instanced else {"join", "offset"}), "Retained cross-link")
-        if instanced:
+                      | ({"transport"} if multi_member else {"joins", "offsets"} if instanced else {"join", "offset"}), "Retained cross-link")
+        if multi_member:
+            transport = _object(original.get("transport"), {"definition", "provider", "producer_member", "consumer_member"}, "Original inter-member transport")
+            _expect(row, {"link": original.get("link"), "transport": transport}, "Cross-link transport/order")
+        elif instanced:
             path = original.get("joins")
             if type(path) is not list or not path:
                 raise CoreProtocolError("Instance cross-link lacks its original join path")
@@ -265,10 +294,66 @@ def _context_inventory(request: dict[str, JsonValue], report: dict[str, JsonValu
             raise CoreProtocolError("Context changed an original allocation reservation or its order")
 
 
+def _member_transport_inventory(request: dict[str, JsonValue], candidate: dict[str, JsonValue],
+                                leaf: dict[str, JsonValue]) -> None:
+    """Retain checked material/transport identities without accepting the premise."""
+    rule = _record(_record(request["composition_rule"], "Original rule").get("body"), "Original rule body")
+    context = _record(request["context"], "Original multi-member context")
+    passed = leaf["outcome"] == "pass"
+    bindings = _rows(rule.get("member_bindings"), "Original member bindings")
+    placements = _rows(context.get("placements"), "Original member placements")
+    retained = _rows(leaf["member_allocations"], "Checked member allocations")
+    if len(bindings) != 2 or len(placements) != 2 or len(retained) > 2 or passed and len(retained) != 2:
+        raise CoreProtocolError("Context changed the bounded two-member allocation census")
+    molecules = _rows(_record(_record(candidate["construction"], "Construction").get("inventory"), "Checked inventory").get("molecules"), "Checked molecules")
+    document = _record(_record(request["implementation_request"], "Original implementation request").get("document"), "Original source")
+    delivery_ref = _record(_record(document.get("deployment"), "Original deployment").get("delivery"), "Original delivery").get("contract")
+    providers = _rows(context.get("providers"), "Original transport providers")
+    delivery_matches = [provider for provider in providers if _same(_record(provider.get("body"), "Provider body").get("definition"), delivery_ref)]
+    delivery: JsonValue = None
+    if retained:
+        if len(delivery_matches) != 1:
+            raise CoreProtocolError("Member allocation lacks its original shared delivery provider")
+        delivery_provider = delivery_matches[0]
+        delivery = {"definition": delivery_ref, "provider": delivery_provider.get("identity"), "body": delivery_provider.get("body")}
+    for supplied, placement, raw in zip(bindings, placements, retained):
+        row = _object(raw, {"slot", "source", "member", "placement", "molecule_fingerprint", "delivery"}, "Member allocation")
+        _expect(row, {key: supplied.get(key) for key in ("slot", "source", "member")}, "Member allocation identity/order")
+        _expect(row, {"placement": placement, "delivery": delivery}, "Original member placement and shared delivery")
+        if placement.get("member_id") != supplied.get("member"):
+            raise CoreProtocolError("Checked placement changed its original member owner")
+        _pin(row["molecule_fingerprint"], _unique(molecules, "id", supplied.get("member"), "Checked member"), "Complete allocated molecule")
+    links = _rows(rule.get("links"), "Original links")
+    carriers = _rows(rule.get("link_carriers"), "Original link carriers")
+    transports = _rows(leaf["transport_allocations"], "Checked inter-member transports")
+    if len(transports) > len(carriers) or passed and len(transports) != len(carriers):
+        raise CoreProtocolError("Context changed the complete transport allocation census")
+    providers = _rows(context.get("providers"), "Original transport providers")
+    for supplied, raw in zip(carriers, transports):
+        row = _object(raw, {"link", "producer_member", "consumer_member", "provider", "definition", "signal_type", "scope",
+                            "transport_profile", "phase_profile", "available"}, "Transport allocation")
+        transport = _object(supplied.get("transport"), {"definition", "provider", "producer_member", "consumer_member"}, "Original transport")
+        link = _unique(links, "id", supplied.get("link"), "Original link")
+        provider = _unique(providers, "identity", transport["provider"], "Original transport provider")
+        body = _record(provider.get("body"), "Original transport body")
+        _expect(body, {"kind": "transport", "definition": transport["definition"]}, "Transport body identity")
+        _expect(row, {"link": supplied.get("link"), **transport,
+                      "signal_type": link.get("signal_type"), "scope": link.get("scope"),
+                      "transport_profile": "biocompiler.policy_complete_signal_identity_transport.v0.1",
+                      "phase_profile": "biocompiler.policy_staged_primitive_execution.v0.1",
+                      "available": body.get("availability")}, "Original transport allocation")
+        for side in ("producer", "consumer"):
+            endpoint = _record(link.get(side), "Original link endpoint")
+            member = _unique(bindings, "slot", endpoint.get("slot"), "Transport member owner")
+            if row[side + "_member"] != member.get("member"):
+                raise CoreProtocolError("Transport changed the original endpoint member owner")
+
+
 def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, JsonValue]) -> None:
     """Bind native closure evidence to original inventories; prove no predicates."""
     from biocompiler.core_policy import _semantic
 
+    multi_member = _multi_member(request)
     raw, contextual = report["prerequisites"], report["context"]
     if contextual is None:
         if raw is not None or report["prerequisite_status"] != "unassessed":
@@ -280,14 +365,14 @@ def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, Json
     closure = _object(raw, {"schema_version", "profile", "status", "complete", "original_request_fingerprint",
         "assembly_fingerprint", "source_catalog", "pending_dependencies", "instances", "local_requirements", "providers",
         "graph", "operating_domain_fingerprint", "clock", "recipient", "input_allocations", "resource_allocations",
-        "diagnostics", "empirical"}, "Complete prerequisite closure")
+        "diagnostics", "empirical"} | ({"member_allocations", "transport_allocations"} if multi_member else set()), "Complete prerequisite closure")
     status = context_report["outcome"]
-    _expect(closure, {"schema_version": "biocompiler.policy_provider_prerequisite_closure.v0.1",
+    _expect(closure, {"schema_version": "biocompiler.policy_provider_prerequisite_closure.v0.2" if multi_member else "biocompiler.policy_provider_prerequisite_closure.v0.1",
         "profile": request["profile"], "status": status, "complete": status == "pass",
         "diagnostics": context_report["diagnostics"], "empirical": "unassessed"}, "Prerequisite scope")
     if report["prerequisite_status"] != status:
         raise CoreProtocolError("Prerequisite status contradicts the complete checked context")
-    original = (implementation._two_observation_original if _two_observations(request) else
+    original = (implementation._multi_product_original if multi_member else implementation._two_observation_original if _two_observations(request) else
                 implementation._prerequisite_original)(request["implementation_request"])
     document = _record(original["document"], "Original prerequisite source")
     context = _record(request["context"], "Original prerequisite context")
@@ -296,6 +381,11 @@ def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, Json
     _expect(closure, {"source_catalog": document.get("implementations"), "pending_dependencies": pending,
         "instances": rule.get("components"), "clock": context.get("clock"), "recipient": context.get("recipient"),
         "resource_allocations": context_report["resource_allocations"]}, "Prerequisite original inventories")
+    if multi_member:
+        for key in ("member_allocations", "transport_allocations"):
+            if not _same(closure[key], context_report.get(key)):
+                raise CoreProtocolError("Closure changed the checked member or transport allocations")
+            _rows(closure[key], "Checked " + key)
     _pin(closure["original_request_fingerprint"], request, "Prerequisite request")
     _pin(closure["assembly_fingerprint"], report["assembly"], "Prerequisite assembly")
     _pin(closure["operating_domain_fingerprint"], original["operating_domain"], "Prerequisite domain")
@@ -330,7 +420,7 @@ def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, Json
         if not _same(value, expected):
             raise CoreProtocolError("Closure changed an original input allocation")
     graph = _object(closure["graph"], {"schema_version", "pending_dependencies", "roots", "nodes", "edges", "issues"}, "Original provider dependency graph")
-    _expect(graph, {"schema_version": "biocompiler.policy_provider_dependency_graph.v0.1", "pending_dependencies": pending}, "Provider graph authority")
+    _expect(graph, {"schema_version": "biocompiler.policy_provider_dependency_graph.v0.2" if multi_member else "biocompiler.policy_provider_dependency_graph.v0.1", "pending_dependencies": pending}, "Provider graph authority")
     program = _record(document.get("program"), "Original prerequisite program")
     definitions = _rows(_record(program.get("semantics"), "Original semantics").get("definitions"), "Original definitions")
 
@@ -395,6 +485,8 @@ def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, Json
         outgoing: list[tuple[str, list[JsonValue]]] = []
         if body.get("kind") == "interface":
             outgoing = [("interface_environment", [body.get("environment")])]
+        elif body.get("kind") == "transport" and multi_member:
+            outgoing = [("transport_environment", [body.get("environment")])]
         elif body.get("kind") == "chassis":
             chassis = _record(body.get("chassis"), "Original chassis")
             for key, relation in (("capabilities", "chassis_capability"), ("interfaces", "chassis_interface"), ("environment", "chassis_environment")):
@@ -433,6 +525,7 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
     body = _record(rule.get("body"), "Original rule body")
     instanced = _instanced(request)
     prerequisites = _prerequisites(request)
+    multi_member = _multi_member(request)
     assembly, context = report["assembly"], report["context"]
     if assembly is not None:
         leaf = _object(assembly, {"schema_version", "checker_version", "profile", "original_fingerprint", "components_fingerprint",
@@ -440,8 +533,8 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
             "claim_scope", "premise", "structure", "carrier_projections", "link_projections", "preservation_evidence_fingerprint",
             "catalog_authorization", "context", "resource_capacity", "input_compatibility", "source_obligation_discharge", "empirical", "artifact", "export"}, "Assembly evidence")
         _expect(leaf, {"schema_version": "biocompiler.policy_component_assembly_assessment.v0.1",
-            "checker_version": "biocompiler.ocaml.policy_component_assembly_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_assembly_check.v0.1",
-            "profile": INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1",
+            "checker_version": "biocompiler.ocaml.policy_component_assembly_check.v0.3" if multi_member else "biocompiler.ocaml.policy_component_assembly_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_assembly_check.v0.1",
+            "profile": MULTI_MEMBER_ASSEMBLY_PROFILE if multi_member else INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1",
             "claim_scope": "exact_supplied_component_graph_and_material_correspondence", "premise": "supplied_conditional_model_to_sequence_composition_rule",
             **{key: "unassessed" for key in ("catalog_authorization", "context", "resource_capacity", "input_compatibility", "source_obligation_discharge", "empirical")},
             "artifact": "withheld", "export": "withheld"}, "Assembly evidence")
@@ -461,15 +554,19 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
         leaf = _object(context, {"schema_version", "profile", "implementation_version", "request_fingerprint", "context_fingerprint", "assembly_fingerprint",
             "outcome", "claim_scope", "record_layout", "minimum_record_layout", "derived_demands", "resource_allocations", "source_obligations", "discharges",
             "diagnostics", "source_receipt_status", "biological_validity", "human_use", "artifact", "export"}
-            | ({"prerequisite_closure"} if prerequisites else set()), "Component context evidence")
-        _expect(leaf, {"schema_version": "biocompiler.policy_component_context_assessment.v0.1", "profile": context_profile,
-            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.4" if _two_observations(request) else
+            | ({"prerequisite_closure"} if prerequisites else set())
+            | ({"member_allocations", "transport_allocations"} if multi_member else set()), "Component context evidence")
+        _expect(leaf, {"schema_version": "biocompiler.policy_component_context_assessment.v0.2" if multi_member else "biocompiler.policy_component_context_assessment.v0.1", "profile": context_profile,
+            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.5" if multi_member else
+            "biocompiler.ocaml.policy_component_context_check.v0.4" if _two_observations(request) else
             "biocompiler.ocaml.policy_component_context_check.v0.3" if prerequisites else
             "biocompiler.ocaml.policy_component_context_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_context_check.v0.1", "claim_scope": "conditional_component_context_and_complete_record_capacity",
             "source_receipt_status": "unchanged", "biological_validity": "unassessed", "human_use": "unassessed", "artifact": "withheld", "export": "withheld"}, "Context evidence")
         for key, original in (("request_fingerprint", request), ("context_fingerprint", request["context"]), ("assembly_fingerprint", assembly)):
             _pin(leaf[key], original, key)
         _context_inventory(request, report, leaf)
+        if multi_member:
+            _member_transport_inventory(request, candidate, leaf)
     catalog = report["catalog"]
     if catalog is not None:
         leaf = _object(catalog, {"status", "original_binding", "selected_catalog_entry", "component_library_fingerprint", "rule_fingerprint", "premise"}, "Component catalog bridge")
@@ -493,25 +590,27 @@ class PolicyComponentMaterialResult(material.PolicyMaterialResult):
     """Immutable component evidence; only a fresh export returns paired native bytes."""
 
 
-def _candidate(value: JsonValue, *, instanced: bool = False) -> dict[str, JsonValue]:
+def _candidate(value: JsonValue, *, instanced: bool = False, multi_member: bool = False) -> dict[str, JsonValue]:
     candidate = _object(value, _CANDIDATE_FIELDS, "Complete component candidate")
     if candidate["schema_version"] != CANDIDATE_SCHEMA:
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
     proposal = _object(candidate["assembly_proposal"], {"schema_version", "profile", "rule", "nodes"}, "Assembly proposal")
-    _expect(proposal, {"schema_version": "biocompiler.policy_component_assembly_proposal.v0.2" if instanced else "biocompiler.policy_component_assembly_proposal.v0.1",
-                      "profile": INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1"}, "Assembly proposal")
+    _expect(proposal, {"schema_version": "biocompiler.policy_component_assembly_proposal.v0.3" if multi_member else "biocompiler.policy_component_assembly_proposal.v0.2" if instanced else "biocompiler.policy_component_assembly_proposal.v0.1",
+                      "profile": MULTI_MEMBER_ASSEMBLY_PROFILE if multi_member else INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1"}, "Assembly proposal")
     return candidate
 
 
 def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = False,
-            two_observations: bool = False) -> dict[str, JsonValue]:
+            two_observations: bool = False, multi_member: bool = False) -> dict[str, JsonValue]:
+    if multi_member and (not (instanced and prerequisites) or two_observations):
+        raise CoreProtocolError("Multi-member assessment requires its distinct named-instance prerequisite route")
     if two_observations and not (instanced and prerequisites):
         raise CoreProtocolError("Two-observation assessment requires the named-instance prerequisite route")
     report = _object(value, _REPORT_FIELDS | ({"prerequisites", "prerequisite_status"} if prerequisites else set()), "Complete component assessment")
-    _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
-        "profile": TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
+    _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.3" if multi_member else "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
+        "profile": MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
         PREREQUISITE_REQUEST_PROFILE if prerequisites else INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
-        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
+        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.5" if multi_member else "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
         "biocompiler.ocaml.policy_component_material_check.v0.3" if prerequisites else
         "biocompiler.ocaml.policy_component_material_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
         "claim_scope": CLAIM_SCOPE, "premise": PREMISE, "empirical": "unassessed", "artifact": "withheld", "export": "withheld"}, "Component report")
@@ -534,13 +633,13 @@ def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate
         raise CoreProtocolError("Component work accounting changed its unit or original bound")
     prerequisites = _prerequisites(request)
     material._preservation(response, request, candidate, report, limits, prerequisites=prerequisites,
-                           two_observations=_two_observations(request))
+                           two_observations=_two_observations(request), multi_product=_multi_member(request))
     _leaves(request, candidate, report)
     if prerequisites:
         _prerequisite_evidence(request, report)
     material._obligations(report, material_key="assembly", accepted_status=ACCEPTED_STATUS,
                           conjunction_stage="conditional_component_context_conjunction",
-                          prerequisite_key="prerequisites" if prerequisites else None)
+                          prerequisite_key="prerequisites" if prerequisites else None, multi_product=_multi_member(request))
 
 
 def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComponentMaterialResult:
@@ -554,9 +653,9 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
     candidate = _object(result["candidate"], _CANDIDATE_FIELDS, "Complete component candidate")
     if candidate["schema_version"] != CANDIDATE_SCHEMA or "candidate" in payload and not _same(candidate, payload["candidate"]):
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
-    _candidate(candidate, instanced=instanced)
+    _candidate(candidate, instanced=instanced, multi_member=_multi_member(request))
     report = _report(result["report"], instanced=instanced, prerequisites=prerequisites,
-                     two_observations=_two_observations(request))
+                     two_observations=_two_observations(request), multi_member=_multi_member(request))
     invocation: JsonValue = {"request": request, "candidate": candidate, "limits": payload["limits"]}
     request_hash = _pin(result["request_fingerprint"], request, "Complete original component request")
     candidate_hash = _pin(result["candidate_fingerprint"], candidate, "Complete component candidate")

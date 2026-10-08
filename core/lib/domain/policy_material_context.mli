@@ -6,6 +6,9 @@ module C = Policy_material_contract
 val schema_version : string
 val profile : string
 val provider_schema : string
+val transport_provider_schema : string
+val transport_profile : string
+val transport_phase_profile : string
 val record_profile : string
 val delivery_group_schema : string
 
@@ -33,6 +36,7 @@ type channel = {
 type body = Chassis of Json.t | Environment of Policy_operating_domain.t
   | Interface of { environment:C.provider_ref; channels:channel list }
   | Delivery of { arrival:interval; expression:interval; activation:interval }
+  | Transport of { environment:C.provider_ref; original_clock:Json.t }
 type provider = private {
   identity:Pinned_identity.t; definition:C.provider_ref; recipient:recipient;
   available:availability; capacities:capacity list; body:body;
@@ -70,6 +74,10 @@ val clock_of_json : Json.t -> clock
 val clock_to_json : clock -> Json.t
 val recipient_of_json : Json.t -> recipient
 val provider_of_json : Json.t -> provider
+
+(** Opt-in provider syntax: legacy v0.1 bodies or the fixed v0.2 transport
+    premise. No source authorization, endpoint or availability acceptance. *)
+val provider_with_transport_of_json : Json.t -> provider
 val delivery_group_of_json : Json.t -> delivery_group
 val delivery_group_to_json : delivery_group -> Json.t
 val record_shapes : Json.t

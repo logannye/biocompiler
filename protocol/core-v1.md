@@ -642,3 +642,22 @@ retains its ordered source/bank anchor, exact input/provider channel and freshne
 contract. Full original preservation and private prerequisite closure remain
 required before material acceptance or export. Prior profile combinations remain
 closed. See the [bounded contract and witness](../docs/policy-two-observation-composition-v0.1.md).
+
+
+## Two-product multi-member prerequisites
+
+The additive `policy_multi_member_material` capability uses original request
+v0.5 and profile `biocompiler.policy_multi_member_prerequisite_mrna.v0.1`, with
+`policy_multi_member_material_producer` on Core. The service implementation is
+`biocompiler.ocaml.policy_multi_member_prerequisite_material.v0.1` and validation
+scope is `policy-multi-member-prerequisite-mrna-v0.1`. Existing component-material
+compile/check/replay/export operations retain their separate original authority.
+
+This family pairs realization v0.4, staged source binding v0.4, assembly
+rule/proposal v0.3 and component context v0.2. It admits exactly two distinct fixed
+products and two complete RNA members, with original-bound transport providers,
+two placements, shared delivery authority and prerequisite graph/closure v0.2.
+Fresh context assessment v0.2 and material assessment v0.3 retain both member and
+transport allocations. No earlier schema/profile silently admits these inputs.
+Zero helpers are supported in this increment. See the
+[complete bounded contract](../docs/policy-multi-member-composition-v0.1.md).

@@ -96,6 +96,22 @@ class PolicyDevelopmentSDKTests(unittest.TestCase):
         self.assertFalse((output / "instance-sdk.json").exists())
         self.assertFalse((output / "public-sdk.json").exists())
 
+    def test_multi_member_campaign_uses_three_original_sources_and_isolated_receipts(self):
+        with mock.patch.object(dev, "command", side_effect=self.command):
+            result = dev.multi_member_sdk(self.root)
+        output = self.root / "generated/development-feedback"
+        self.assertEqual(result["schema"], "biocompiler.development-multi-member-sdk-feedback.v0.1")
+        self.assertEqual(self.actions[0], ("multi-member-originals", ["opam", "exec", "--",
+            str(self.root / dev.SDK_BINARIES["multi_member_originals"]),
+            *(str(self.root / path) for path in dev.MULTI_MEMBER_ORIGINALS), str(output / "multi-member-originals.json")]))
+        self.assertEqual(len(dev.MULTI_MEMBER_ORIGINALS), 3)
+        self.assertEqual(self.actions[1][0], "multi-member-sdk")
+        self.assertIn(str(self.root / "tools/check_policy_multi_member_material.py"), self.actions[1][1])
+        self.assertEqual(set(result["outputs"]), {"multi-member-originals.json", "multi-member-sdk-witness.json"})
+        self.assertIs(result["acceptance"], False)
+        self.assertFalse((output / "instance-sdk.json").exists())
+        self.assertFalse((output / "public-sdk.json").exists())
+
     def test_source_or_built_binary_change_rejects_before_launch(self):
         for relative in ("src/empty.py", dev.SDK_BINARIES["core"], dev.SDK_BINARIES["verify"], dev.SDK_BINARIES["originals"]):
             with self.subTest(relative=relative):
@@ -377,9 +393,21 @@ class PolicyDevelopmentSelectionSDKTests(unittest.TestCase):
 
     def test_workflow_retains_both_ordered_sdk_stages(self):
         text = (Path(__file__).resolve().parents[1] / dev.WORKFLOW).read_text()
-        commands = [line.strip()[5:] for line in text.splitlines() if line.strip().startswith("run: ")]
-        self.assertEqual(commands, ["python -B tools/check_policy_development.py " + action
-                                   for action in ("prepare", "run", "sdk-all")])
+        commands = []
+        for line in text.splitlines():
+            if line.strip().startswith("run: ") and line.strip() != "run: |":
+                commands.append(line.strip()[5:])
+            elif line.startswith("          python "):
+                commands.append(line.strip())
+        self.assertEqual(commands, [
+            "python -B tools/check_policy_development.py prepare",
+            "python -B tools/check_policy_material_rule_coverage.py",
+            "python -B tools/check_policy_public_api_coverage.py",
+            "python -B tools/migration_inventory.py --check",
+            "python -B tools/check_policy_development.py run",
+            "python -B tools/check_policy_development.py sdk-all",
+        ])
+        self.assertLess(text.index("tools/migration_inventory.py --check"), text.index("uses: ocaml/setup-ocaml@"))
         self.assertEqual(text.count("PYTHONPATH: src"), 1)
         self.assertIn("path: generated/development-feedback/", text)
         self.assertIn("timeout-minutes: 45", text)
@@ -449,17 +477,17 @@ class PolicyDevelopmentParallelSDKTests(unittest.TestCase):
         self.assertEqual(self.maximum, 2)
         self.assertEqual(self.active, 0)
         self.assertCountEqual(self.started, ["component-originals", "component-sdk", "selection-originals",
-            "selection-sdk", "instance-originals", "instance-sdk", "prerequisite-originals", "prerequisite-sdk", "two-observation-originals", "two-observation-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk"])
+            "selection-sdk", "instance-originals", "instance-sdk", "prerequisite-originals", "prerequisite-sdk", "two-observation-originals", "two-observation-sdk", "multi-member-originals", "multi-member-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk"])
         self.assertLess(self.finished.index("component-sdk"), self.finished.index("selection-originals"))
         self.assertLess(self.started.index("instance-sdk"), self.started.index("prerequisite-sdk"))
         self.assertLess(self.started.index("prerequisite-sdk"), self.started.index("two-observation-sdk"))
         self.assertLess(self.started.index("two-observation-sdk"), self.started.index("staged-source-sdk"))
         self.assertLess(self.started.index("staged-source-sdk"), self.started.index("staged-material-sdk"))
         self.assertLess(self.started.index("staged-material-sdk"), self.started.index("researcher-alpha-sdk"))
-        self.assertEqual(list(reports), ["public-sdk", "selection-sdk", "instance-sdk", "prerequisite-sdk", "two-observation-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk"])
+        self.assertEqual(list(reports), ["public-sdk", "selection-sdk", "instance-sdk", "prerequisite-sdk", "two-observation-sdk", "multi-member-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk"])
         self.assertTrue(all(row["status"] == "passed" and row["acceptance"] is False for row in reports.values()))
         names = {"public-sdk": "public-sdk.json", "selection-sdk": "selection-public-sdk.json",
-                 "instance-sdk": "instance-sdk.json", "prerequisite-sdk": "prerequisite-sdk.json", "two-observation-sdk": "two-observation-sdk.json", "staged-source-sdk": "staged-source-sdk.json", "staged-material-sdk": "staged-material-sdk.json",
+                 "instance-sdk": "instance-sdk.json", "prerequisite-sdk": "prerequisite-sdk.json", "two-observation-sdk": "two-observation-sdk.json", "multi-member-sdk": "multi-member-sdk.json", "staged-source-sdk": "staged-source-sdk.json", "staged-material-sdk": "staged-material-sdk.json",
                  "researcher-alpha-sdk": "researcher-alpha-sdk.json"}
         for name, report in reports.items():
             self.assertEqual(self.read(names[name]), report)

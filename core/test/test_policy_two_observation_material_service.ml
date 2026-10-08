@@ -267,7 +267,7 @@ let candidate_negatives request limits compiled =
   let same_coherence=request |> edit ["implementation_request";"document";"program";"declarations"]
     (fun rows->arr(List.map(fun row->if get "id" row=str "condition_b"then replace "coherence"(str "frame_a")row
       else row)(Json.array rows))) in
-  rejected "policy_implementation_lowering_unsupported" "Separate observations require distinct original coherence groups"
+  rejected "policy_operational_unsupported" "Separate observations require distinct original coherence groups"
     (fun()->compile same_coherence limits);
   let legacy=request |> replace "schema_version"(str "biocompiler.policy_component_material_request.v0.3")
     |> replace "profile"(str "biocompiler.policy_instance_prerequisite_mrna.v0.1")

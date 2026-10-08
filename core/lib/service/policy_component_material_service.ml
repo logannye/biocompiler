@@ -22,6 +22,8 @@ let prerequisite_implementation="biocompiler.ocaml.policy_instance_prerequisite_
 let prerequisite_validation_scope="policy-instance-prerequisite-mrna-v0.1"
 let two_observation_implementation="biocompiler.ocaml.policy_instance_two_observation_prerequisite_material.v0.1"
 let two_observation_validation_scope="policy-instance-two-observation-prerequisite-mrna-v0.1"
+let multi_member_implementation="biocompiler.ocaml.policy_multi_member_prerequisite_material.v0.1"
+let multi_member_validation_scope="policy-multi-member-prerequisite-mrna-v0.1"
 let schema_version="biocompiler.core.policy_component_material.v1"
 let resource_profile=R.resource_profile
 let candidate_schema="biocompiler.policy_component_material_candidate.v0.1"
@@ -56,6 +58,13 @@ let two_observation_profile=obj (List.map (fun (key,value) -> key,match key with
   | _ -> value) (Json.object_fields profile))
 let two_observation_producer_profile=obj["operations",arr[str "compile-policy-component-material"];
   "implementation",str two_observation_implementation;"validation_scope",str two_observation_validation_scope]
+let multi_member_profile=obj (List.map (fun (key,value) -> key,match key with
+  | "request_schema" -> str R.multi_member_schema_version
+  | "implementation" -> str multi_member_implementation
+  | "validation_scope" -> str multi_member_validation_scope
+  | _ -> value) (Json.object_fields profile))
+let multi_member_producer_profile=obj["operations",arr[str "compile-policy-component-material"];
+  "implementation",str multi_member_implementation;"validation_scope",str multi_member_validation_scope]
 let validate_publication raw=
   let framed=obj["result",raw]in
   let output=W.create_output ~profile:validation_scope ~error_code:"policy_component_material_service_publication_limit"
@@ -110,11 +119,13 @@ let check ~export ~request:raw_request ~candidate:raw_candidate ~limits:raw_limi
     |None->Diagnostic.fail "policy_component_material_export_not_accepted"
       "Fresh original-source, implementation, material, context or obligation checking withheld accepted export."in
   let result=obj["schema_version",str schema_version;
-    "implementation",str (if R.is_two_observation request then two_observation_implementation
+    "implementation",str (if R.is_multi_member request then multi_member_implementation
+      else if R.is_two_observation request then two_observation_implementation
       else if R.requires_prerequisite_closure request then prerequisite_implementation
       else if R.is_instanced request then instance_implementation else implementation);
     "resource_profile",str resource_profile;
-    "validation_scope",str (if R.is_two_observation request then two_observation_validation_scope
+    "validation_scope",str (if R.is_multi_member request then multi_member_validation_scope
+      else if R.is_two_observation request then two_observation_validation_scope
       else if R.requires_prerequisite_closure request then prerequisite_validation_scope
       else if R.is_instanced request then instance_validation_scope else validation_scope);
     "request_fingerprint",str(R.fingerprint request);"candidate_fingerprint",str(Canonical.fingerprint raw_candidate);

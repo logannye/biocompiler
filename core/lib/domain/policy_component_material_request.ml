@@ -21,6 +21,8 @@ let prerequisite_schema_version = "biocompiler.policy_component_material_request
 let prerequisite_profile = "biocompiler.policy_instance_prerequisite_mrna.v0.1"
 let two_observation_schema_version = "biocompiler.policy_component_material_request.v0.4"
 let two_observation_profile = "biocompiler.policy_instance_two_observation_prerequisite_mrna.v0.1"
+let multi_member_schema_version = "biocompiler.policy_component_material_request.v0.5"
+let multi_member_profile = "biocompiler.policy_multi_member_prerequisite_mrna.v0.1"
 let resource_profile = "biocompiler.policy_component_material_resources.v0.1"
 let str value = Json.String value
 let obj values = Json.Object values
@@ -85,12 +87,14 @@ let of_json ?(charge=fun _ -> ()) raw =
   let raw_bytes = measure raw in M.check_resources raw;
   exact ["schema_version";"profile";"implementation_request";"component_library";"composition_rule";
     "catalog_binding";"input_bindings";"resource_bindings";"context";"budgets"] raw;
+  let multi_member = get "schema_version" raw=str multi_member_schema_version && get "profile" raw=str multi_member_profile in
   let two_observation = get "schema_version" raw=str two_observation_schema_version && get "profile" raw=str two_observation_profile in
-  let prerequisite_closure = two_observation || (get "schema_version" raw=str prerequisite_schema_version && get "profile" raw=str prerequisite_profile) in
+  let prerequisite_closure = multi_member || two_observation || (get "schema_version" raw=str prerequisite_schema_version && get "profile" raw=str prerequisite_profile) in
   let instanced = prerequisite_closure || (get "schema_version" raw=str instance_schema_version && get "profile" raw=str instance_profile) in
   require (instanced || (get "schema_version" raw=str schema_version && get "profile" raw=str profile))
     "Unsupported original component material request profile.";
-  let original = decode (if two_observation then R.of_two_observation_json
+  let original = decode (if multi_member then R.of_multi_product_json
+    else if two_observation then R.of_two_observation_json
     else if prerequisite_closure then R.of_prerequisite_json else R.of_json) (get "implementation_request" raw) in
   let library = decode (L.of_json ~library:(R.implementation_library original)) (get "component_library" raw) in
   let rule_value = decode (A.of_json ~components:library) (get "composition_rule" raw) in
@@ -102,8 +106,12 @@ let of_json ?(charge=fun _ -> ()) raw =
     "Original request, realization and context prerequisite profiles must agree.";
   require (X.is_two_observation context_value=two_observation && R.is_two_observation original=two_observation)
     "Original request, realization and context observation families must agree.";
-  require (not prerequisite_closure || not (A.is_staged rule_value))
-    "Prerequisite closure is limited to the existing truth instance profile.";
+  require (A.is_multi_member rule_value=multi_member && X.is_multi_member context_value=multi_member &&
+    R.is_multi_product original=multi_member)
+    "Original request, realization, assembly and context multi-member profiles must agree.";
+  require (if multi_member then A.is_staged rule_value else not prerequisite_closure || not (A.is_staged rule_value))
+    (if multi_member then "Multi-member prerequisite closure requires the explicit multi-product staged family."
+     else "Prerequisite closure is limited to the existing truth instance profile.");
   let bridge = get "catalog_binding" raw in
   exact ["entry_id";"entry_version";"entry_digest";"operation";"realization";"components";"rule"] bridge;
   let catalog = {entry_id=text 256 (get "entry_id" bridge);entry_version=text 256 (get "entry_version" bridge);
@@ -172,6 +180,9 @@ let of_json ?(charge=fun _ -> ()) raw =
     | PX.Chassis body ->
       List.iter (fun key -> List.iter (fun raw -> resolve (C.provider_ref_of_json raw)) (Json.array (get key body))) ["capabilities";"interfaces";"environment"];
       resolve (C.provider_ref_of_json (get "operational_model" body))
+    | PX.Transport body ->
+      require multi_member "Transport providers require the explicit multi-member request family.";
+      resolve body.environment
     | PX.Environment _ | PX.Delivery _ -> ()) providers;
   let inputs = List.map (fun row -> exact ["input";"source";"provider";"channel"] row;
     {input_id=text 128 (get "input" row);source=text 256 (get "source" row);provider=C.provider_ref_of_json (get "provider" row);
@@ -230,6 +241,8 @@ let budgets value = value.budget_values
 let is_instanced value = A.is_instanced value.rule_value
 let requires_prerequisite_closure value = R.requires_prerequisite_closure value.original
 let is_two_observation value = R.is_two_observation value.original
-let request_profile value = if is_two_observation value then two_observation_profile
+let is_multi_member value = R.is_multi_product value.original
+let request_profile value = if is_multi_member value then multi_member_profile
+  else if is_two_observation value then two_observation_profile
   else if requires_prerequisite_closure value then prerequisite_profile
   else if is_instanced value then instance_profile else profile

@@ -144,7 +144,11 @@ COMPONENT_STAGED_SOURCES = tuple(sorted([
     ) for suffix in ("ml", "mli")],
     "src/biocompiler/core_policy_implementation.py", "src/biocompiler/policy/patterns.py",
 ]))
-COMPONENT_SOURCES = tuple(sorted((*COMPONENT_ROUTE_SOURCES, *COMPONENT_SHARED_SOURCES, *COMPONENT_STAGED_SOURCES)))
+COMPONENT_MULTI_MEMBER_SOURCES = (
+    "core/lib/domain/policy_material_context.ml", "core/lib/domain/policy_material_context.mli",
+)
+COMPONENT_SOURCES = tuple(sorted((*COMPONENT_ROUTE_SOURCES, *COMPONENT_SHARED_SOURCES,
+                                  *COMPONENT_STAGED_SOURCES, *COMPONENT_MULTI_MEMBER_SOURCES)))
 COMPONENT_REASON = "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
 ROUTE_EXCEPTIONS.update({path: COMPONENT_REASON for path in COMPONENT_ROUTE_SOURCES})
 ROUTE_EXCEPTIONS.update({f"core/lib/compiler/policy_staged_lowering.{suffix}":
@@ -161,7 +165,8 @@ COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "compone
     "component.selection_request_codec", "component.material_candidate_codec",
     "component.selection_candidate_codec", "component.selection_common_authority", "component.checked_selection",
     "component.selection_publication_resources", "component.selection_scope", "component.selection_export", "component.selection_sdk",
-    "component.selection_generation", "component.staged_regimen", "component.instance_composition", "component.prerequisite_closure", "component.two_observation_composition")
+    "component.selection_generation", "component.staged_regimen", "component.instance_composition", "component.prerequisite_closure", "component.two_observation_composition",
+    "component.multi_member_composition")
 COMPONENT_INSTANCE_WITNESSES = tuple(sorted([
     "core/test/test_policy_instance_assembly_rule.ml",
     "core/test/test_policy_instance_material_service.ml",
@@ -209,6 +214,21 @@ COMPONENT_TWO_OBSERVATION_WITNESSES = tuple(sorted([
     'tools/check_policy_two_observation_material_installed.py',
     'tools/check_policy_two_observation_prebuilt.py',
 ]))
+COMPONENT_MULTI_MEMBER_WITNESSES = tuple(sorted([
+    "core/test/policy_multi_member_support/literals.ml",
+    "core/test/policy_multi_member_support/requests.ml",
+    "core/test/test_policy_multi_member_material_service.ml",
+    "core/test/multi_member_fixture_export/main.ml",
+    "tests/test_policy_multi_member_campaign.py",
+    "tests/test_policy_multi_member_fixture.py",
+    "tests/test_policy_multi_member_material.py",
+    "tests/test_policy_multi_member_material_installed.py",
+    "tests/test_policy_multi_member_prebuilt.py",
+    "tools/check_policy_multi_member_fixture.py",
+    "tools/check_policy_multi_member_material.py",
+    "tools/check_policy_multi_member_material_installed.py",
+    "tools/check_policy_multi_member_prebuilt.py",
+]))
 COMPONENT_STAGED_WITNESSES = tuple(sorted([
     *[f"core/test/test_policy_staged_{name}.ml" for name in
       ("regimen_source", "primitives", "binding", "generation", "component_material")],
@@ -225,6 +245,7 @@ COMPONENT_WITNESSES = tuple(sorted([
     *COMPONENT_INSTANCE_WITNESSES,
     *COMPONENT_PREREQUISITE_WITNESSES,
     *COMPONENT_TWO_OBSERVATION_WITNESSES,
+    *COMPONENT_MULTI_MEMBER_WITNESSES,
     *COMPONENT_STAGED_WITNESSES,
     *[f"core/test/test_policy_component_{name}.ml" for name in ("fragment", "material", "assembly_rule", "assembly_check", "material_request", "context_check", "material_service")],
     "core/test/test_policy_component_selection_request.ml", "core/test/test_policy_component_material_candidate.ml",
@@ -246,7 +267,7 @@ COMPONENT_WITNESSES = tuple(sorted([
 ]))
 # Fixed reviewed meaning/provenance projection, excluding source-body hashes and
 # lexical counts. Re-pinning changed files cannot reassign witness meaning.
-COMPONENT_METADATA_SHA256 = "bc75eed03cb41e26ca2e27d2614bdf7ac420d83d4a2ee4d923b373adc9ccaf3f"
+COMPONENT_METADATA_SHA256 = "b830c0247fba700bf30892e0bb08d8a2bc5614d30f7b14ec9c994be45dc4a526"
 
 
 class CoverageError(ValueError):

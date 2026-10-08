@@ -8,6 +8,8 @@ module P = Pinned_identity
 module M = Molecular_record
 module AC = Architecture_contract
 let schema_version = "biocompiler.policy_component_context.v0.1"
+let multi_member_schema_version = "biocompiler.policy_component_context.v0.2"
+let multi_member_profile = "biocompiler.policy_multi_member_prerequisite_mrna.v0.1"
 let profile = "biocompiler.policy_component_mrna.v0.1"
 let instance_profile = "biocompiler.policy_instance_component_mrna.v0.1"
 let instance_staged_profile = "biocompiler.policy_instance_staged_component_mrna.v0.1"
@@ -107,31 +109,55 @@ let record_layout_of_json raw =
   require (Json.equal raw (record_layout_to_json value)) "Composition layout must preserve its complete supplied spelling.";
   value
 let record_layout_fingerprint value = Canonical.fingerprint (record_layout_to_json value)
-type t = {instanced:bool;prerequisite_closure:bool;two_observation:bool;clock_value:X.clock;recipient_value:X.recipient;layout_value:record_layout;
-  placement_value:AC.Placement.t;delivery_value:X.delivery_group;provider_values:X.provider list}
-let to_json value = obj ["schema_version",str schema_version;"profile",str (if value.two_observation then two_observation_profile else if value.prerequisite_closure then prerequisite_profile else if value.instanced then (if value.layout_value.staged then instance_staged_profile else instance_profile)
-    else if value.layout_value.staged then staged_profile else profile);
-  "clock",X.clock_to_json value.clock_value;"recipient",X.recipient_to_json value.recipient_value;
-  "record_layout",record_layout_to_json value.layout_value;"placement",AC.Placement.to_json value.placement_value;
-  "delivery_group",X.delivery_group_to_json value.delivery_value;"helpers",Json.Array [];
-  "providers",arr X.provider_to_json value.provider_values]
+type t = {instanced:bool;prerequisite_closure:bool;two_observation:bool;multi_member:bool;
+  clock_value:X.clock;recipient_value:X.recipient;layout_value:record_layout;
+  placement_values:AC.Placement.t list;delivery_value:X.delivery_group;provider_values:X.provider list}
+let context_profile value = if value.multi_member then multi_member_profile
+  else if value.two_observation then two_observation_profile else if value.prerequisite_closure then prerequisite_profile
+  else if value.instanced then (if value.layout_value.staged then instance_staged_profile else instance_profile)
+  else if value.layout_value.staged then staged_profile else profile
+let to_json value =
+  let placement_field = if value.multi_member then "placements",arr AC.Placement.to_json value.placement_values
+    else match value.placement_values with
+      | [placement] -> "placement",AC.Placement.to_json placement
+      | _ -> assert false in
+  obj ["schema_version",str (if value.multi_member then multi_member_schema_version else schema_version);
+    "profile",str (context_profile value);
+    "clock",X.clock_to_json value.clock_value;"recipient",X.recipient_to_json value.recipient_value;
+    "record_layout",record_layout_to_json value.layout_value;placement_field;
+    "delivery_group",X.delivery_group_to_json value.delivery_value;"helpers",Json.Array [];
+    "providers",arr X.provider_to_json value.provider_values]
 let of_json raw =
   M.check_resources raw;
-  exact ["schema_version";"profile";"clock";"recipient";"record_layout";"placement";"delivery_group";"helpers";"providers"] raw;
-  require (get "schema_version" raw=str schema_version && List.mem (get "profile" raw) [str profile;str staged_profile;str instance_profile;str instance_staged_profile;str prerequisite_profile;str two_observation_profile])
+  let multi_member=get "schema_version" raw=str multi_member_schema_version && get "profile" raw=str multi_member_profile in
+  exact ["schema_version";"profile";"clock";"recipient";"record_layout";
+    (if multi_member then "placements" else "placement");"delivery_group";"helpers";"providers"] raw;
+  require (multi_member || (get "schema_version" raw=str schema_version &&
+    List.mem (get "profile" raw) [str profile;str staged_profile;str instance_profile;str instance_staged_profile;str prerequisite_profile;str two_observation_profile]))
     "Unsupported original composition context profile.";
   require (get "helpers" raw=Json.Array []) "Composition context does not support executable or delivered helpers.";
   let two_observation=get "profile" raw=str two_observation_profile in
-  let instanced=two_observation || List.mem (get "profile" raw) [str instance_profile;str instance_staged_profile;str prerequisite_profile] in
-  let prerequisite_closure=two_observation || get "profile" raw=str prerequisite_profile in
-  let value = {instanced;prerequisite_closure;two_observation;clock_value=X.clock_of_json (get "clock" raw);recipient_value=X.recipient_of_json (get "recipient" raw);
-    layout_value=record_layout_of_json (get "record_layout" raw);placement_value=AC.Placement.of_json (get "placement" raw);
+  let instanced=multi_member || two_observation || List.mem (get "profile" raw) [str instance_profile;str instance_staged_profile;str prerequisite_profile] in
+  let prerequisite_closure=multi_member || two_observation || get "profile" raw=str prerequisite_profile in
+  let placement_values=if multi_member then
+    let values=List.map AC.Placement.of_json (M.array ~maximum:2 (get "placements" raw)) in
+    require (List.length values=2) "Multi-member context requires exactly two original placements."; values
+    else [AC.Placement.of_json (get "placement" raw)] in
+  let value = {instanced;prerequisite_closure;two_observation;multi_member;
+    clock_value=X.clock_of_json (get "clock" raw);recipient_value=X.recipient_of_json (get "recipient" raw);
+    layout_value=record_layout_of_json (get "record_layout" raw);placement_values;
     delivery_value=X.delivery_group_of_json (get "delivery_group" raw);
-    provider_values=List.map X.provider_of_json (M.array ~maximum:128 (get "providers" raw))} in
-  require (not prerequisite_closure || not value.layout_value.staged)
+    provider_values=List.map (if multi_member then X.provider_with_transport_of_json else X.provider_of_json)
+      (M.array ~maximum:128 (get "providers" raw))} in
+  if multi_member then require value.layout_value.staged "Multi-member context requires the complete staged record profile."
+  else require (not prerequisite_closure || not value.layout_value.staged)
     "Prerequisite closure requires the unchanged truth record profile.";
   let unique label values = require (List.length values=List.length (List.sort_uniq String.compare values))
     ("Duplicate composition " ^ label ^ " identity.") in
+  if multi_member then begin
+    unique "placement" (List.map AC.Placement.id value.placement_values);
+    unique "placement member" (List.map AC.Placement.member_id value.placement_values)
+  end;
   unique "provider definition" (List.map (fun (provider:X.provider) -> Canonical.encode (Policy_material_contract.provider_ref_to_json provider.definition)) value.provider_values);
   unique "provider" (List.map (fun (provider:X.provider) -> P.kind_name provider.identity ^ ":" ^ P.id provider.identity ^ ":" ^ P.version provider.identity) value.provider_values);
   unique "capacity pool" (List.concat_map (fun (provider:X.provider) -> List.map (fun (capacity:X.capacity) -> capacity.pool_id) provider.capacities) value.provider_values);
@@ -144,12 +170,14 @@ let fingerprint value = Canonical.fingerprint (to_json value)
 let clock value = value.clock_value
 let recipient value = value.recipient_value
 let record_layout value = value.layout_value
-let placement value = value.placement_value
+let placement value =
+  require (not value.multi_member) "Multi-member contexts require the complete placement inventory.";
+  match value.placement_values with [placement] -> placement | _ -> assert false
+let placements value = value.placement_values
 let delivery_group value = value.delivery_value
 let providers value = value.provider_values
 
 let is_instanced value = value.instanced
 let requires_prerequisite_closure value = value.prerequisite_closure
 let is_two_observation value = value.two_observation
-let context_profile value = if value.two_observation then two_observation_profile else if value.prerequisite_closure then prerequisite_profile else if value.instanced then (if value.layout_value.staged then instance_staged_profile else instance_profile)
-  else if value.layout_value.staged then staged_profile else profile
+let is_multi_member value = value.multi_member

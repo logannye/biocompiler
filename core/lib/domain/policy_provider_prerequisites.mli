@@ -7,6 +7,7 @@ module X = Policy_component_context
 module C = Policy_material_contract
 module P = Pinned_identity
 val schema_version : string
+val transport_schema_version : string
 val max_dependencies : int
 val max_roots : int
 val max_nodes : int
@@ -21,7 +22,7 @@ val pending_dependency_to_json : pending_dependency -> Json.t
 val pending_dependencies : ?charge:(int -> unit) -> R.t -> pending_dependency list
 type origin = Original_path of string | Catalog of pending_dependency
 type root = private {origin:origin; definition:C.provider_ref}
-type relation = Interface_environment | Chassis_capability | Chassis_interface | Chassis_environment
+type relation = Interface_environment | Chassis_capability | Chassis_interface | Chassis_environment | Transport_environment
 type edge = private {source:C.provider_ref; target:C.provider_ref; relation:relation; index:int}
 type issue_kind = Missing | Cycle | Extra | Unsupported
 type issue = private {kind:issue_kind; code:string; references:C.provider_ref list}

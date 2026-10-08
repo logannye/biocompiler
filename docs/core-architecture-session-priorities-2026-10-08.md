@@ -20,11 +20,10 @@ a separate bounded increment while those gates run, in
 `codex/dev-policy/prerequisite-closure`; its [contract](policy-prerequisite-closure-v0.1.md)
 and implementation are present. Its corrected development revision `a34ebd6bc`
 has passed its hosted build, 35 native suites and seven SDK campaigns in run
-`37798264346`; independent artifact audit remains pending. Priority 3 is now implemented in the separate
+`37798264346`; independent artifact audit also passed. Priority 3 is now implemented in the separate
 `codex/dev-policy/two-observation-composition` checkout with an
-[explicit bounded contract](policy-two-observation-composition-v0.1.md); its hosted
-validation is pending. Priorities 2–5 must not inherit priority 1's acceptance.
-Priorities 4–5 remain unimplemented follow-on work. The latest user instruction
+[explicit bounded contract](policy-two-observation-composition-v0.1.md); corrected development run `37803803945` has passed its native step and is executing the SDK campaigns after correcting one test diagnostic expectation. Priorities 2–5 must not inherit priority 1's acceptance.
+Priority 4 has a [bounded two-member contract](policy-multi-member-composition-v0.1.md) and implementation in progress; its helper subincrement and priority 5 remain outstanding. The latest user instruction
 authorizes continuing these bounded increments sequentially while preserving
 separate exact-revision validation gates.
 
@@ -228,12 +227,14 @@ an unbounded composition theorem.
 
 ## Execution boundaries for this session
 
-Make priority 1 the core implementation objective. If it exceeds one coherent
-batch, checkpoint the precise implemented and validated scope; do not label
-schemas or a standalone linker as a completed therapeutic compilation profile.
-Proceed to priority 2 only after completing that slice or explicitly selecting
-a separate fully bounded increment. Priorities 3–5 are ordered follow-on work,
-not a promise to complete all five in this session.
+The latest implementation instruction authorizes continuing through every listed
+item systematically. Keep separate bounded increments and exact-revision gates;
+checkpoint the precise implemented and validated scope without ending work merely
+because one batch is finished. A schema or standalone linker is not a completed
+therapeutic compilation profile. Independent implementation can continue in its
+own checkout while earlier hosted integration gates run. The original planning
+recommendation to focus on priority 1 has been superseded by this execution
+instruction; it is not permission to skip the helper or modular-assurance work.
 
 Existing typed-authoring and feedback work is already present on development
 branches (`a64662fe7`, `23abe3e14`), with further encoding work at `439fae8a4` and

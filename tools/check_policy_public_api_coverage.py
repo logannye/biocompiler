@@ -29,11 +29,64 @@ SCHEMA = "biocompiler.policy_public_api_coverage.v0.1"
 CLAIM = "Static public-source inventory and reviewed witness links only; neither executed coverage nor semantic/native/material/release acceptance."
 RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Generated or inherited dataclass runtime protocols are represented by reviewed decorator/field/base contracts, not an exhaustive runtime-attribute census; Python record equality is not symbolic policy comparison."
 # Reviewed separately from source-body pins. This literal binds all138 witness
-# meanings/owners and all845 coverage classifications, so refreshing file/AST
+# meanings/owners and all896 coverage classifications, so refreshing file/AST
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "1ca37142a2beec20c09db60e709e5aa8273da2f5e2002a104ed21c228d6b7d62"
+REVIEWED_METADATA_SHA256 = "5cc11771578db41f60eca0aca124269cdf66cb4db3034f093151c91ebfd44b09"
+COMPOSITION_DEPENDENCIES = (
+    'biocompiler.core_policy_component_material.INSTANCE_ASSEMBLY_PROFILE',
+    'biocompiler.core_policy_component_material.INSTANCE_IMPLEMENTATION',
+    'biocompiler.core_policy_component_material.INSTANCE_PRODUCER_PROFILE',
+    'biocompiler.core_policy_component_material.INSTANCE_PROFILE',
+    'biocompiler.core_policy_component_material.INSTANCE_REQUEST_PROFILE',
+    'biocompiler.core_policy_component_material.INSTANCE_REQUEST_SCHEMA',
+    'biocompiler.core_policy_component_material.INSTANCE_VALIDATION_SCOPE',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_ASSEMBLY_PROFILE',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_IMPLEMENTATION',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_PRODUCER_PROFILE',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_PROFILE',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_REQUEST_PROFILE',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_REQUEST_SCHEMA',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_VALIDATION_SCOPE',
+    'biocompiler.core_policy_component_material.PREREQUISITE_IMPLEMENTATION',
+    'biocompiler.core_policy_component_material.PREREQUISITE_PRODUCER_PROFILE',
+    'biocompiler.core_policy_component_material.PREREQUISITE_PROFILE',
+    'biocompiler.core_policy_component_material.PREREQUISITE_REQUEST_PROFILE',
+    'biocompiler.core_policy_component_material.PREREQUISITE_REQUEST_SCHEMA',
+    'biocompiler.core_policy_component_material.PREREQUISITE_VALIDATION_SCOPE',
+    'biocompiler.core_policy_component_material.TWO_OBSERVATION_IMPLEMENTATION',
+    'biocompiler.core_policy_component_material.TWO_OBSERVATION_PRODUCER_PROFILE',
+    'biocompiler.core_policy_component_material.TWO_OBSERVATION_PROFILE',
+    'biocompiler.core_policy_component_material.TWO_OBSERVATION_REQUEST_PROFILE',
+    'biocompiler.core_policy_component_material.TWO_OBSERVATION_REQUEST_SCHEMA',
+    'biocompiler.core_policy_component_material.TWO_OBSERVATION_VALIDATION_SCOPE',
+    'biocompiler.core_policy_component_material._instanced',
+    'biocompiler.core_policy_component_material._member_transport_inventory',
+    'biocompiler.core_policy_component_material._multi_member',
+    'biocompiler.core_policy_component_material._prerequisite_evidence',
+    'biocompiler.core_policy_component_material._prerequisites',
+    'biocompiler.core_policy_component_material._profile_settings',
+    'biocompiler.core_policy_component_material._two_observations',
+    'biocompiler.core_policy_implementation.MULTI_PRODUCT_BINDING_PROFILE',
+    'biocompiler.core_policy_implementation.MULTI_PRODUCT_BINDING_REPORT_SCHEMA',
+    'biocompiler.core_policy_implementation.MULTI_PRODUCT_BINDING_SCHEMA',
+    'biocompiler.core_policy_implementation.MULTI_PRODUCT_REQUEST_PROFILE',
+    'biocompiler.core_policy_implementation.MULTI_PRODUCT_REQUEST_SCHEMA',
+    'biocompiler.core_policy_implementation.PREREQUISITE_REQUEST_PROFILE',
+    'biocompiler.core_policy_implementation.PREREQUISITE_REQUEST_SCHEMA',
+    'biocompiler.core_policy_implementation.TWO_OBSERVATION_BINDING_PROFILE',
+    'biocompiler.core_policy_implementation.TWO_OBSERVATION_BINDING_REPORT_SCHEMA',
+    'biocompiler.core_policy_implementation.TWO_OBSERVATION_BINDING_SCHEMA',
+    'biocompiler.core_policy_implementation.TWO_OBSERVATION_REQUEST_PROFILE',
+    'biocompiler.core_policy_implementation.TWO_OBSERVATION_REQUEST_SCHEMA',
+    'biocompiler.core_policy_implementation._multi_product_anchors',
+    'biocompiler.core_policy_implementation._multi_product_original',
+    'biocompiler.core_policy_implementation._pending_dependencies',
+    'biocompiler.core_policy_implementation._prerequisite_original',
+    'biocompiler.core_policy_implementation._two_observation_anchors',
+    'biocompiler.core_policy_implementation._two_observation_original',
+)
 PACKAGE = "src/biocompiler/policy"
 MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model native observations operational patterns programs requirements research_project serialization space state time validation values".split())
 CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection")

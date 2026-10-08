@@ -9,6 +9,8 @@ val prerequisite_schema_version : string
 val prerequisite_profile : string
 val two_observation_schema_version : string
 val two_observation_profile : string
+val multi_product_schema_version : string
+val multi_product_profile : string
 val resource_profile : string
 
 type budgets = private {
@@ -34,8 +36,10 @@ val of_json : Json.t -> t
     The legacy [of_json] deliberately rejects this new input profile. *)
 val of_prerequisite_json : Json.t -> t
 val of_two_observation_json : Json.t -> t
+val of_multi_product_json : Json.t -> t
 val requires_prerequisite_closure : t -> bool
 val is_two_observation : t -> bool
+val is_multi_product : t -> bool
 val request_profile : t -> string
 val to_json : t -> Json.t
 

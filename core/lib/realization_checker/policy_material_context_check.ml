@@ -240,7 +240,8 @@ let check ?parent ?(maximum=max_work) ~context ~binding ()=
          fail(Q.leq phases.arrival.latest.seconds phases.expression.earliest.seconds &&
            Q.leq phases.expression.latest.seconds phases.activation.earliest.seconds && Q.leq phases.activation.latest.seconds start)
            "causal_arrival_expression_activation";
-         supported(provider.capacities=[])"delivery_resource_supply_unimplemented");
+         supported(provider.capacities=[])"delivery_resource_supply_unimplemented"
+       |C.Transport _->supported false "transport_requires_multi_member_context");
       List.iter(fun(capacity:C.capacity)->available capacity.capacity_id capacity.available)provider.capacities)providers;
     List.iter(fun key->match(resolve(MC.provider_ref_of_json(get key delivery))).body with C.Delivery _->()|_->fail false("delivery_body:"^key))
       ["arrival";"expression";"activation";"contract"];

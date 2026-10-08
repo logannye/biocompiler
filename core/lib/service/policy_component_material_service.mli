@@ -14,8 +14,12 @@ val prerequisite_profile : Json.t
 val prerequisite_producer_profile : Json.t
 val two_observation_implementation : string
 val two_observation_validation_scope : string
+val multi_member_implementation : string
+val multi_member_validation_scope : string
 val two_observation_profile : Json.t
 val two_observation_producer_profile : Json.t
+val multi_member_profile : Json.t
+val multi_member_producer_profile : Json.t
 val schema_version : string
 val resource_profile : string
 val candidate_schema : string

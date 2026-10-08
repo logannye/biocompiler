@@ -32,13 +32,15 @@ let lower_metered ~charge ~admitted ~library =
     "Staged lowering needs exact truth/event/product types."in
   charge 1;
   let request=A.request admitted and behavior=A.behavior admitted in
+  let multi_product=R.is_multi_product request in
   let library_pin=Canonical.fingerprint(I.library_to_json library) in
   let original_library_pin=Canonical.fingerprint(I.library_to_json(R.implementation_library request)) in
   supported(library_pin=original_library_pin)"Original supplied library changed.";
   let bridge=one "catalog bridge"(R.catalog_bindings request)
   and executor=one "executor" behavior.roles and encounter=one "encounter" behavior.encounters
   and subject=one "subject" behavior.subjects and clock=one "clock" behavior.clocks
-  and observation=one "observation" behavior.observations and product=one "fixed product" behavior.parameters
+  and observation=one "observation" behavior.observations
+  and product=(if multi_product then None else Some(one "fixed product" behavior.parameters))
   and machine=one "machine" behavior.machines in
   supported(behavior.rules=[] && behavior.stores=[] && List.length behavior.effects=2 &&
     List.length behavior.transitions=7 && List.length machine.states=5 && List.length machine.terminal=2)
@@ -64,10 +66,19 @@ let lower_metered ~charge ~admitted ~library =
   supported(machine.executor=executor.role_id && machine.scope=O.Encounter encounter.encounter_id && machine.lifetime="encounter" &&
     machine.arbitration.mode="exclusive" && machine.arbitration.tie="reject" &&
     machine.arbitration.write_conflict="reject" && machine.arbitration.order=[])"Unsupported machine scope or arbitration.";
-  let product_raw=source product.parameter_id in
-  supported(text "selection" product_raw="fixed")"Staged product must be fixed.";
-  absent["lower";"upper"]product_raw;type_is "text"(get "value_type" product_raw);
-  let product_symbol=match product.value with O.Text value->value|_->Diagnostic.fail "policy_staged_lowering_unsupported" "Product is not text."in
+  let validate_product (parameter:Bioc_domain.Policy_operational.parameter) =
+    let product_raw=source parameter.parameter_id in
+    supported(text "selection" product_raw="fixed")"Staged product must be fixed.";
+    absent["lower";"upper"]product_raw;type_is "text"(get "value_type" product_raw);
+    match parameter.value with O.Text value->value|_->Diagnostic.fail "policy_staged_lowering_unsupported" "Product is not text."in
+  let product_symbols=match product with
+    |Some parameter->[parameter.parameter_id,validate_product parameter]
+    |None->
+      supported(List.length behavior.parameters=2)"Multi-product staged lowering requires exactly two fixed original products.";
+      let pairs=List.map(fun(parameter:Bioc_domain.Policy_operational.parameter)->parameter.parameter_id,validate_product parameter)behavior.parameters in
+      supported(List.length(List.sort_uniq String.compare(List.map snd pairs))=2)
+        "Multi-product staged lowering requires two distinct original product symbols.";pairs in
+  let product_id,product_symbol=match product_symbols with first::_->first|[]->assert false in
   let ticks duration=let exact=Q.div duration clock.resolution in
     supported(Q.sign exact>0 && Z.equal(Q.den exact)Z.one && Z.compare(Q.num exact)(Z.of_int 10000)<=0)
       "Duration is not a bounded positive exact tick count.";Z.to_int(Q.num exact)in
@@ -87,6 +98,12 @@ let lower_metered ~charge ~admitted ~library =
     let initiators=List.filter(fun(value:O.transition)->List.mem operation.effect_id value.effects)behavior.transitions in
     supported(List.length initiators=1 && (List.hd initiators).effects=[operation.effect_id])"Every stage must have its own single-operation initiator.";
     ignore(attempt_primitive operation))behavior.effects;
+  (if multi_product then (
+    let used=List.map(fun(operation:O.effect_spec)->
+      let argument=one "product argument"(rows "parameters"(source operation.effect_id))in
+      O.ref_id(get "ref"(get "value" argument)))behavior.effects in
+    supported(List.sort String.compare used=List.sort String.compare(List.map fst product_symbols))
+      "Each original staged effect must use its own distinct original fixed product exactly once."));
   List.iter(fun(value:O.transition)->supported(value.machine=machine.machine_id && value.assignments=[] &&
     List.length value.effects<=1 && List.mem value.on.op["rising";"effect_event"])
     "Unsupported transition action or event.")behavior.transitions;
@@ -158,8 +175,13 @@ let lower_metered ~charge ~admitted ~library =
           let value=match expression.value with Some(O.Truth value)->truth value|_->Diagnostic.fail "policy_staged_lowering_unsupported" "Expected truth literal."in
           new_output(I.Truth_constant value)"out"[]
         |"parameter"->type_is "text"(get "value_type" raw);absent["scope";"value"]raw;
-          supported(args=[] && Json.equal(get "ref" raw)(reference "Parameter" product.parameter_id))"Fixed product identity changed.";
-          new_output(I.Product_constant product_symbol)"out"[]
+          if multi_product then (
+            let selected=List.find_opt(fun(id,_)->Json.equal(get "ref" raw)(reference "Parameter" id))product_symbols in
+            supported(args=[] && Option.is_some selected)"Fixed multi-product identity changed.";
+            let _,symbol=Option.get selected in new_output(I.Product_constant symbol)"out"[])
+          else (
+            supported(args=[] && Json.equal(get "ref" raw)(reference "Parameter" product_id))"Fixed product identity changed.";
+            new_output(I.Product_constant product_symbol)"out"[])
         |"not"->type_is "truth"(get "value_type" raw);pure();supported(List.length args=1)"Negation arity.";new_output I.Truth_not "out"["in"]
         |"all"|"any"->type_is "truth"(get "value_type" raw);pure();supported(args<>[] && List.length args<=64)"Truth arity.";
           new_output(if expression.op="all"then I.Truth_all(List.length args)else I.Truth_any(List.length args))"out"
@@ -179,7 +201,7 @@ let lower_metered ~charge ~admitted ~library =
             connect(out(List.assoc identity attempts)"events")(out id "events");let value=out id "selected"in Hashtbl.add memo key value;value)
         |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Expression lacks a staged primitive interpretation."in
       occurrence location role(if List.mem expression.op["literal";"parameter"]then "constant"else "executable")[result];result in
-    let anchors=ref [] and product_outputs=ref [] in
+    let anchors=ref [] and product_outputs=ref [] and product_targets=ref [] in
     let commits=List.mapi(fun index(transition:O.transition)->
       let raw=source transition.transition_id and location=path transition.transition_id and prefix="transition/"^string_of_int index in
       let on=emit "predicate"(location^"/on")(get "on" raw)and guard=emit "predicate"(location^"/when")(get "when" raw)in
@@ -191,6 +213,11 @@ let lower_metered ~charge ~admitted ~library =
       connect(out commit "machine_write")(out machine_bank("write"^string_of_int index));
       List.iter(fun effect_id->let effect_raw=source effect_id in let argument=one "stage argument"(rows "parameters" effect_raw)in
         let output=emit "effect_parameter"(path effect_id^"/parameters/0/value")(get "value" argument)in
+        (if multi_product then (
+          let id=O.ref_id(get "ref"(get "value" argument))in
+          let previous=Option.value(List.assoc_opt id !product_targets)~default:[] in
+          let targets=if List.exists(Json.equal output)previous then previous else previous@[output]in
+          product_targets:=(id,targets)::List.remove_assoc id !product_targets));
         if not(List.exists(Json.equal output)!product_outputs)then product_outputs:= !product_outputs@[output];
         connect output(out commit "product0");connect(out commit "request0")(out(List.assoc effect_id attempts)"request");
         connect guard(out(List.assoc effect_id attempts)"authorization"))transition.effects;
@@ -206,7 +233,12 @@ let lower_metered ~charge ~admitted ~library =
       |D.Role|D.Subject|D.Encounter->occurrence location "declaration" "retained_metadata"[]
       |D.Clock->occurrence location "clock" "retained_metadata"[]
       |D.Observation->occurrence location "declaration" "executable"(outputs evidence)
-      |D.Parameter->occurrence location "effect_parameter" "constant" !product_outputs
+      |D.Parameter->
+        if multi_product then (
+          let targets=Option.value(List.assoc_opt value.id !product_targets)~default:[]in
+          supported(List.length targets=1)"Each source product requires exactly its own interpreted product output.";
+          occurrence location "effect_parameter" "constant" targets)
+        else occurrence location "effect_parameter" "constant" !product_outputs
       |D.Effect->let ports=outputs(List.assoc value.id attempts)in occurrence location "lifecycle" "executable" ports;
         occurrence(location^"/lifecycle")"lifecycle" "executable" ports
       |D.Machine->occurrence location "declaration" "executable"(outputs machine_bank);
@@ -225,7 +257,8 @@ let lower_metered ~charge ~admitted ~library =
       "wires",a !wires;"inputs",a inputs;"atomic_groups",a[o["id",s "exclusive/0";"arbiter",s arbiter;"commits",a(List.map s commits)]];
       "semantic_exports",a(List.concat_map(fun(id,_)->outputs id)!nodes);
       "occurrences",a(List.sort(fun left right->String.compare(text "source_path" left)(text "source_path" right))!occurrences)]in
-    let binding=o["schema_version",s B.staged_schema_version;"profile",s B.staged_profile;"catalog_entry",s bridge.entry_id;
+    let binding=o["schema_version",s(if multi_product then B.multi_product_schema_version else B.staged_schema_version);
+      "profile",s(if multi_product then B.multi_product_profile else B.staged_profile);"catalog_entry",s bridge.entry_id;
       "observations",a[o["source",s observation.observation_id;"bank",s evidence;"input",s "evidence/0"]];"states",a[];"rules",a[];
       "effects",a(List.mapi(fun index(source,bank)->o["source",s source;"bank",s bank;"feedback",s("feedback/"^string_of_int index)])attempts);
       "machines",a[o["source",s machine.machine_id;"bank",s machine_bank]];"transitions",a !anchors]in

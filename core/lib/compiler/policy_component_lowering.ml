@@ -72,11 +72,12 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
      channels constrain this search; matching primitive shapes alone cannot
      decide which original observation feeds which supplied component input. *)
   let required_inputs=match source_inputs with
-    |None->supported(not(U.is_two_observation lowered.binding))
-        "Two-observation arrangement requires the original source-to-input inventory.";None
+    |None->supported(not(U.is_two_observation lowered.binding || U.is_multi_product lowered.binding))
+        (if U.is_multi_product lowered.binding then "Multi-product arrangement requires the original source-to-input inventory."
+         else "Two-observation arrangement requires the original source-to-input inventory.");None
     |Some requested->
-      supported(U.is_two_observation lowered.binding)
-        "Original source-to-input arrangement is available only in the explicit two-observation family.";
+      supported(U.is_two_observation lowered.binding || U.is_multi_product lowered.binding)
+        "Original source-to-input arrangement requires an explicit observation-composition or multi-product family.";
       let originals=List.map(fun(value:U.observation)->value.source,value.input)(U.observations lowered.binding) @
         List.map(fun(value:U.effect_binding)->value.source,value.feedback)(U.effects lowered.binding) in
       let names pairs=List.sort String.compare(List.map fst pairs) in
@@ -171,8 +172,10 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
   let binding = binding
     |> set "observations" (arr (List.map (rename_input "input") (Json.array (get "observations" binding))))
     |> set "effects" (arr (List.map (rename_input "feedback") (Json.array (get "effects" binding)))) in
-  let assembly_raw = obj ["schema_version",str (if A.is_instanced rule then Q.instance_schema_version else Q.schema_version);
-    "profile",str (if A.is_instanced rule then A.instance_profile else Q.profile);
+  let assembly_raw = obj ["schema_version",str (if A.is_multi_member rule then Q.multi_member_schema_version
+      else if A.is_instanced rule then Q.instance_schema_version else Q.schema_version);
+    "profile",str (if A.is_multi_member rule then Q.multi_member_profile
+      else if A.is_instanced rule then A.instance_profile else Q.profile);
     "rule",Pin.to_json (A.identity rule);"nodes",arr (List.map (fun value ->
       obj ["slot",str (slot value.reference.slot);"node",str value.reference.node_id;
         "actual",str (actual_id value.key)]) local)] in

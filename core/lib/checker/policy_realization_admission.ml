@@ -144,6 +144,12 @@ let admit ~request ~(behavior:O.behavior) =
         "Two-observation inputs require independent truth evidence on one executor, encounter subject and clock, without frame joining or machine semantics."
     | _ -> require false "policy_realization_two_observation"
         "The two-observation family requires exactly two original observations.");
+  (if R.is_multi_product request then
+    require (List.length behavior.parameters=2 && List.length behavior.effects=2 &&
+      List.length behavior.observations=1 && List.length behavior.machines=1 &&
+      List.length behavior.transitions=7 && behavior.rules=[] && behavior.stores=[])
+      "policy_realization_multi_product"
+      "Multi-product inputs require two original fixed products and two effects in the bounded staged machine family.");
   (* Only externally checked source behavior reaches environment compatibility.
      Neither decoder nor caller-supplied candidate claims can replace this step. *)
   let domain_value=F.validate_for ~charge:Charge.charge ~behavior (R.operating_domain request) in

@@ -179,6 +179,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
   let charge value=W.charge budget value in charge 1;
   let request=R.of_json ~charge (R.to_json request) in
   let context=R.context request and rule=R.composition_rule request in
+  let multi_member=R.is_multi_member request in
   let source=PC.binding (A.implementation assembly) in
   let admitted=IB.admitted_inputs source in
   let original=Admission.request admitted and behavior=Admission.behavior admitted and domain=F.specification (Admission.operating_domain admitted) in
@@ -187,6 +188,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
   let prerequisites=if R.requires_prerequisite_closure request then
       Some(H.derive ~charge ~original:(R.implementation_request request) ~context ()) else None in
   let derived=ref [] and resource_rows=ref [] and input_rows=ref [] and discharged=ref [] and minimum_layout=ref Json.Null in
+  let member_rows=ref [] and pending_member_rows=ref [] and transport_rows=ref [] in
   let equal left right = M.check_resources left;M.check_resources right;
     let left=Canonical.encode left and right=Canonical.encode right in charge (String.length left+String.length right);left=right in
   let attempt () =
@@ -225,10 +227,48 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     let payload=get "payload" deployment in
     supported(text "format" payload="RNA")"rna_required";
     List.iter(fun(key,count)->supported(get key payload=Json.int count)("exact_source_count_required:"^key))
-      ["design_count",1;"member_count",1;"helper_count",0;"orf_count",1;"product_count",1];
+      ["design_count",1;"member_count",(if multi_member then 2 else 1);"helper_count",0;
+       "orf_count",(if multi_member then 2 else 1);"product_count",(if multi_member then 2 else 1)];
     List.iter(fun key->supported(get key payload=Json.Null)("unimplemented_source_payload_field:"^key))
       ["copy_number";"dose";"payload_persistence";"effector_persistence"];
     let structures=Rule.material_authority rule in
+    (if multi_member then (
+      let template=PM.template structures and member_bindings=Rule.member_bindings rule in
+      let inventory=Option.get(K.inventory(MS.content(A.structure assembly))) in
+      let molecules=K.Inventory.molecules inventory and placements=X.placements context in
+      let members=List.map(fun(value:Rule.member_binding)->value.member_id)member_bindings in
+      charge(List.length member_bindings+List.length molecules+List.length placements);
+      fail(List.length member_bindings=2 && PM.member_order structures=members &&
+        List.map N.id molecules=members && List.map AC.Placement.member_id placements=members &&
+        List.length(PM.members structures)=2 && List.length(T.output_members template)=2 &&
+        T.steps template=[] && T.complex_members template=[] && T.amounts template=[])
+        "exact_two_member_material_inventory";
+      supported(get "helpers"(X.to_json context)=arr [])"delivered_helpers_unimplemented";
+      fail(List.map CT.Member_requirement.member_id(T.requirements template)=List.map Option.some members &&
+        List.for_all(fun value->CT.Member_requirement.category value=CT.Member_requirement.Payload)(T.requirements template))
+        "two_payloads_no_external_helpers";
+      let group=X.delivery_group context in
+      List.iter2(fun (binding:Rule.member_binding) (placement,molecule)->
+        charge 1;
+        fail(AC.Placement.template_id placement=T.id template && AC.Placement.member_id placement=binding.member_id &&
+          Id.Role.to_string(AC.Placement.recipient_role placement)=recipient.role &&
+          AC.Placement.compartment placement=recipient.compartment && AC.Placement.delivery_group placement=group.group_id)
+          "placement_identity_or_compartment";
+        fail(List.length(LC.products(Rule.component rule binding.slot))=1)"one_encoded_product_per_member";
+        let encoded=Canonical.encode(N.to_json molecule)in charge(2*String.length encoded);
+        pending_member_rows:= !pending_member_rows@[obj["slot",str(Rule.slot_name binding.slot);"source",str binding.source_id;
+          "member",str binding.member_id;"placement",AC.Placement.to_json placement;
+          "molecule_fingerprint",str(Canonical.sha256 encoded)]])member_bindings(List.combine placements molecules);
+      fail(group.recipient_roles=[recipient.role] && group.same_recipient)"same_concrete_executor_delivery";
+      supported(group.mode=C.Co_delivered)"independent_delivery_group_unimplemented";
+      supported(group.assumptions=[] && group.exact_count=Some 2 &&
+        (match group.max_count with None->true|Some value->value>=2))"delivery_count_or_assumptions";
+      Option.iter(fun maximum->
+        let total=List.fold_left(fun count molecule->charge 1;count+String.length(N.sequence molecule))0 molecules in
+        fail(total<=maximum)"delivery_sequence_length")group.max_total_bases;
+      fail(List.for_all(fun(role:N.Role.t)->N.Role.purpose role=N.Role.Requested_payload &&
+        N.Role.compartment role=recipient.compartment)(K.Inventory.role_instances inventory))"material_role_compartment"
+    ) else (
     let member=match PM.member_order structures with [member]->member|_->Diagnostic.fail "policy_component_context_unsupported" "one_rna_required"in
     let template=PM.template structures in
     fail(List.length(T.output_members template)=1 && T.complex_members template=[] && T.amounts template=[])"exact_material_inventory";
@@ -249,7 +289,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       (match group.max_count with None->true|Some value->value>=1))"delivery_count_or_assumptions";
     Option.iter(fun maximum->fail(String.length(N.sequence molecule)<=maximum)"delivery_sequence_length")group.max_total_bases;
     fail(List.for_all(fun(role:N.Role.t)->N.Role.purpose role=N.Role.Requested_payload && N.Role.compartment role=recipient.compartment)
-      (K.Inventory.role_instances(Option.get(K.inventory(MS.content(A.structure assembly))))))"material_role_compartment";
+      (K.Inventory.role_instances(Option.get(K.inventory(MS.content(A.structure assembly))))))"material_role_compartment"));
     let bindings=items "bindings" deployment in
     supported(List.length bindings=1)"one_executor_chassis_required";
     let chassis_binding=List.hd bindings in
@@ -298,6 +338,12 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
          fail(List.mem category["interface";"capability"])"interface_definition_category";
          (match(resolve value.environment).body with C.Environment _->()|_->fail false "interface_environment_body");
          supported(provider.capacities=[])"interface_resource_supply_unimplemented"
+       |C.Transport value->
+         supported multi_member "inter_member_transport_requires_multi_member_profile";
+         fail(category="interface")"transport_definition_category";
+         fail(equal value.original_clock original_clock)"transport_original_clock";
+         (match(resolve value.environment).body with C.Environment _->()|_->fail false "transport_environment_body");
+         supported(provider.capacities=[])"transport_resource_supply_unimplemented"
        |C.Delivery phases->
          fail(category="delivery")"delivery_definition_category";
          fail(Q.leq phases.arrival.latest.seconds phases.expression.earliest.seconds &&
@@ -315,10 +361,60 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     let declared_delivery=(resolve(MC.provider_ref_of_json(get "contract" delivery))).body in
     List.iter(fun key->fail(same_phases declared_delivery(resolve(MC.provider_ref_of_json(get key delivery))).body)
       "complete_original_delivery_phase_relation")["arrival";"expression";"activation"];
+    (if multi_member then (
+      (* The original delivery contract covers the complete payload together.
+         Record that same checked inclusive window against each exact member;
+         this profile does not invent separate or staggered member windows. *)
+      let provider=resolve(MC.provider_ref_of_json(get "contract" delivery))in
+      let body=C.provider_body_to_json provider in
+      let delivery=obj["definition",MC.provider_ref_to_json provider.definition;"provider",Pin.to_json provider.identity;
+        "body",body]in
+      member_rows:=List.map(fun row->charge 1;obj(Json.object_fields row@["delivery",delivery])) !pending_member_rows
+    ));
     List.iter(fun raw->match(resolve(MC.provider_ref_of_json raw)).body with C.Environment _->()|_->fail false "environment_body")
       (items "environment" chassis@items "environment" deployment);
     List.iter(fun raw->match(resolve(MC.provider_ref_of_json raw)).body with C.Interface _->()|_->fail false "capability_interface_body")
       (items "requires" role@items "capabilities" chassis@items "interfaces" chassis);
+    (if multi_member then (
+      let closure=Option.get prerequisites in
+      let dependencies=H.dependencies closure and bridge=R.catalog_binding request in
+      let links=Rule.links rule and carriers=Rule.link_carriers rule in
+      let raw_links=items "links"(get "body"(Rule.to_json rule))in
+      let link_projections=items "link_projections"(A.evidence assembly)in
+      charge(List.length links+List.length carriers+List.length link_projections);
+      fail(List.map(fun(value:Rule.link_carrier)->value.kind)carriers=List.map(fun(value:Rule.link)->value.kind)links &&
+        List.map(text "link")link_projections=List.map(fun(value:Rule.link)->Rule.link_name value.kind)links)
+        "complete_inter_member_transport_inventory";
+      let used=ref []in
+      List.iter2(fun (link:Rule.link) (carrier,projection)->
+        charge 1;
+        let transport=match Rule.carrier_transport carrier with Some value->value
+          |None->Diagnostic.fail "policy_component_context_fail" "inter_member_transport_absent"in
+        let producer=Rule.member_for_slot rule link.producer.slot and consumer=Rule.member_for_slot rule link.consumer.slot in
+        fail(transport.producer_member=producer.member_id && transport.consumer_member=consumer.member_id &&
+          producer.member_id<>consumer.member_id)"inter_member_transport_endpoint_ownership";
+        fail(equal(get "transport" projection)(Rule.transport_to_json transport))"checked_transport_projection";
+        charge(List.length dependencies);
+        fail(List.exists(fun(value:H.pending_dependency)->value.entry_id=bridge.entry_id &&
+          value.entry_digest=bridge.entry_digest && ref_equal value.definition transport.definition)dependencies)
+          "transport_selected_catalog_dependency";
+        let provider=resolve transport.definition in
+        fail(equal(Pin.to_json provider.identity)(Pin.to_json transport.provider))"transport_complete_provider_pin";
+        (match provider.body with C.Transport _->()|_->fail false "transport_provider_kind");
+        used:=provider.definition:: !used;
+        charge(List.length raw_links);
+        let raw_link=List.find(fun raw->text "id" raw=Rule.link_name link.kind)raw_links in
+        transport_rows:= !transport_rows@[obj["link",str(Rule.link_name link.kind);
+          "producer_member",str producer.member_id;"consumer_member",str consumer.member_id;
+          "provider",Pin.to_json provider.identity;"definition",MC.provider_ref_to_json provider.definition;
+          "signal_type",get "signal_type" raw_link;"scope",get "scope" raw_link;
+          "transport_profile",str C.transport_profile;"phase_profile",str C.transport_phase_profile;
+          "available",C.availability_to_json provider.available]])links(List.combine carriers link_projections);
+      let declared=List.filter_map(fun(provider:C.provider)->match provider.body with
+        |C.Transport _->Some provider.definition|_->None)providers in
+      charge(List.length declared+List.length !used);
+      fail(List.sort compare declared=List.sort_uniq compare !used)"unused_original_transport_provider"
+    ));
     let used_channels=ref []in
     List.iter(fun(witness:R.input_binding)->
       let provider=resolve witness.provider in
@@ -399,7 +495,8 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       obj["definition",MC.provider_ref_to_json value.definition;"identity",Pin.to_json value.identity;
         "body_fingerprint",str(fingerprint(C.provider_body_to_json value))])providers in
     let requested=R.implementation_request request in
-    obj["schema_version",str "biocompiler.policy_provider_prerequisite_closure.v0.1";
+    obj(["schema_version",str (if multi_member then "biocompiler.policy_provider_prerequisite_closure.v0.2"
+      else "biocompiler.policy_provider_prerequisite_closure.v0.1");
       "profile",str context_profile;"status",str(E.outcome_name outcome_value);"complete",Json.Bool(outcome_value=E.Pass);
       "original_request_fingerprint",str(R.fingerprint request);"assembly_fingerprint",str(fingerprint(A.evidence assembly));
       "source_catalog",get "implementations"(D.to_json(S.document requested));
@@ -408,9 +505,12 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       "graph",H.to_json closure;"operating_domain_fingerprint",str(F.digest(S.operating_domain requested));
       "clock",get "clock"(X.to_json context);"recipient",C.recipient_to_json recipient;
       "input_allocations",arr !input_rows;"resource_allocations",arr !resource_rows;
-      "diagnostics",arr(List.map str diagnostics);"empirical",str "unassessed"]) prerequisites in
-  let report_value=obj (["schema_version",str "biocompiler.policy_component_context_assessment.v0.1";
-    "profile",str context_profile;"implementation_version",str (if R.is_two_observation request then
+      "diagnostics",arr(List.map str diagnostics);"empirical",str "unassessed"] @
+      (if multi_member then ["member_allocations",arr !member_rows;"transport_allocations",arr !transport_rows] else []))) prerequisites in
+  let report_value=obj (["schema_version",str (if multi_member then "biocompiler.policy_component_context_assessment.v0.2"
+    else "biocompiler.policy_component_context_assessment.v0.1");
+    "profile",str context_profile;"implementation_version",str (if multi_member then
+      "biocompiler.ocaml.policy_component_context_check.v0.5" else if R.is_two_observation request then
       "biocompiler.ocaml.policy_component_context_check.v0.4" else if Option.is_some prerequisites then
       "biocompiler.ocaml.policy_component_context_check.v0.3" else if R.is_instanced request then
       "biocompiler.ocaml.policy_component_context_check.v0.2" else implementation_version);
@@ -424,7 +524,8 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     "discharges",arr (List.map (fun (value:discharge) -> obj ["id",str value.obligation;"evidence",value.evidence]) !discharged);
     "diagnostics",arr (List.map str diagnostics);"source_receipt_status",str "unchanged";
     "biological_validity",str "unassessed";"human_use",str "unassessed";"artifact",str "withheld";"export",str "withheld"] @
-    (match closure_evidence with None->[]|Some value->["prerequisite_closure",value])) in
+    (match closure_evidence with None->[]|Some value->["prerequisite_closure",value]) @
+    (if multi_member then ["member_allocations",arr !member_rows;"transport_allocations",arr !transport_rows] else [])) in
   let output=W.create_output ~profile:context_profile ~error_code:"policy_component_context_resource_limit" ~max_bytes:M.max_json_bytes ~max_nodes:M.max_items () in
   W.reserve_json output report_value;charge (2*String.length (Canonical.encode report_value));
   Diagnostic.require (not (W.exhausted budget)) "policy_component_context_resource_limit" "Context work was exhausted.";

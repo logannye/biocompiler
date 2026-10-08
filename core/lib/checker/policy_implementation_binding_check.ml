@@ -375,6 +375,7 @@ let check_legacy ~admitted ~implementation ~proposed =
    rule_values;machine_values=[];transition_values=[];expression_values;report_value}
 let check_staged ~admitted ~implementation ~proposed =
   let request=A.request admitted and behavior=A.behavior admitted in
+  let multi_product=R.is_multi_product request in
   let document=R.document request and domain=F.specification(A.operating_domain admitted)in
   let implementation=I.of_json ~library:(R.implementation_library request)(I.to_json implementation)in
   require(I.implementation_profile implementation=I.staged_profile &&
@@ -388,7 +389,7 @@ let check_staged ~admitted ~implementation ~proposed =
   let role=singleton "executor role" behavior.roles and encounter=singleton "encounter declaration" behavior.encounters
   and subject=singleton "encounter subject" behavior.subjects and clock=singleton "clock" behavior.clocks
   and observation_source=singleton "truth observation" behavior.observations
-  and parameter=singleton "fixed product parameter" behavior.parameters
+  and parameter=(if multi_product then None else Some(singleton "fixed product parameter" behavior.parameters))
   and source_machine=singleton "encounter machine" behavior.machines in
   require(behavior.rules=[] && behavior.stores=[] && List.length behavior.effects=2 &&
     List.length behavior.transitions=7 && List.length source_machine.states=5 && List.length source_machine.terminal=2)
@@ -487,11 +488,28 @@ let check_staged ~admitted ~implementation ~proposed =
     value.writers=List.length behavior.transitions && value.retained_capacity>=1|_->false)
     "Machine bank must retain exact ordered state labels, initial/terminal states, writers and attempt capacity.";
   record I.Declaration(path source_machine.machine_id)[ep machine_anchor.bank "snapshot"];
-  let parameter_raw=raw parameter.parameter_id in
-  require(text "selection" parameter_raw="fixed")"Staged product must be fixed.";
-  nulls ["lower";"upper"]parameter_raw;source_type "text"(get "value_type" parameter_raw);
-  let product=match parameter.value with O.Text value->value|_->Diagnostic.fail "policy_implementation_source_binding" "Staged product is not fixed text."in
-  let parameter_targets=ref [] and edges=ref [] in
+  let fixed_product (parameter:O.parameter) =
+    let parameter_raw=raw parameter.parameter_id in
+    require(text "selection" parameter_raw="fixed")"Staged product must be fixed.";
+    nulls ["lower";"upper"]parameter_raw;source_type "text"(get "value_type" parameter_raw);
+    match parameter.value with O.Text value->value|_->Diagnostic.fail "policy_implementation_source_binding" "Staged product is not fixed text."in
+  let products=match parameter with
+    |Some parameter->[parameter.parameter_id,fixed_product parameter]
+    |None->
+      require(List.length behavior.parameters=2)"Multi-product staged bindings need exactly two fixed source parameters.";
+      let values=List.map(fun(parameter:O.parameter)->parameter.parameter_id,fixed_product parameter)behavior.parameters in
+      require(List.length(List.sort_uniq String.compare(List.map snd values))=2)
+        "The two original products must have distinct symbols.";
+      let uses=List.map(fun(effect:O.effect_spec)->
+        let argument=singleton "staged product argument"(items "parameters"(raw effect.effect_id))in
+        let value=get "value" argument in
+        require(text "name" argument="product" && text "op" value="parameter")
+          "Every stage must name one fixed original product.";
+        O.ref_id(get "ref" value))behavior.effects in
+      require(List.sort String.compare uses=List.sort String.compare(List.map fst values))
+        "Each original stage must consume its own fixed product exactly once.";values in
+  let parameter_id,product=match products with first::_->first|[]->assert false in
+  let parameter_targets=ref [] and product_targets=ref [] and edges=ref [] in
   let ref_matches source key kind identity=let value=get key source in
     value<>Json.Null && text "kind" value=kind && O.ref_id value=identity in
   let rec expression role source_path source (endpoint:I.endpoint)=
@@ -509,10 +527,20 @@ let check_staged ~admitted ~implementation ~proposed =
         let value=match decoded.value with Some(O.Truth value)->truth value|_->Diagnostic.fail "policy_implementation_source_binding" "Staged literal must be truth."in
         output "out";require(actual=I.Truth_constant value)"Staged truth literal differs."
     |"parameter"->source_type "text"(get "value_type" source);
-        require(args=[] && ref_matches source "ref" "Parameter" parameter.parameter_id && get "scope" source=Json.Null && get "value" source=Json.Null)
-          "Staged effect product does not use the same fixed original parameter.";
-        output "out";require(actual=I.Product_constant product)"Staged product constant differs.";
-        if not(List.mem endpoint !parameter_targets)then parameter_targets:= !parameter_targets@[endpoint]
+        if multi_product then (
+          let matched=List.find_opt(fun(id,_)->ref_matches source "ref" "Parameter" id)products in
+          require(args=[] && Option.is_some matched && get "scope" source=Json.Null && get "value" source=Json.Null)
+            "Staged effect product differs from its original fixed parameter.";
+          let id,symbol=Option.get matched in
+          output "out";require(actual=I.Product_constant symbol)"Staged product constant differs.";
+          let previous=Option.value(List.assoc_opt id !product_targets)~default:[]in
+          let targets=if List.mem endpoint previous then previous else previous@[endpoint]in
+          product_targets:=(id,targets)::List.remove_assoc id !product_targets)
+        else (
+          require(args=[] && ref_matches source "ref" "Parameter" parameter_id && get "scope" source=Json.Null && get "value" source=Json.Null)
+            "Staged effect product does not use the same fixed original parameter.";
+          output "out";require(actual=I.Product_constant product)"Staged product constant differs.";
+          if not(List.mem endpoint !parameter_targets)then parameter_targets:= !parameter_targets@[endpoint])
     |"not"|"all"|"any"->source_type "truth"(get "value_type" source);plain();output "out";
         require(match operator,actual with "not",I.Truth_not->List.length args=1
           |"all",I.Truth_all n|"any",I.Truth_any n->List.length args=n|_->false)"Staged truth operation or arity differs.";
@@ -592,8 +620,13 @@ let check_staged ~admitted ~implementation ~proposed =
   let group=singleton "staged atomic group"(I.atomic_groups implementation)in
   require(group.arbiter=arbiter && group.commits=List.map(fun(t:B.transition)->t.commit)anchors)
     "Staged atomic group changes source transition membership/order.";
-  require(!parameter_targets<>[])"Staged product parameter has no actual use.";
-  record ~disposition:I.Constant I.Effect_parameter(path parameter.parameter_id)!parameter_targets;
+  (if multi_product then List.iter(fun(id,_)->
+    let targets=Option.value(List.assoc_opt id !product_targets)~default:[]in
+    require(List.length targets=1)"Every fixed original product must retain its own one graph output.";
+    record ~disposition:I.Constant I.Effect_parameter(path id)targets)products
+  else (
+    require(!parameter_targets<>[])"Staged product parameter has no actual use.";
+    record ~disposition:I.Constant I.Effect_parameter(path parameter_id)!parameter_targets));
   let rec requirement_expressions source_path value=match value with
     |Json.Object fields->
         if List.assoc_opt "$type" fields=Some(str "Expr")then(
@@ -623,7 +656,8 @@ let check_staged ~admitted ~implementation ~proposed =
     ({source=t.transition_id;machine=t.machine;gate=anchor.gate;arbiter=anchor.arbiter;lane=anchor.lane;commit=anchor.commit;
       trigger=incoming(ep anchor.gate "on");source_trigger=t.on}:transition))behavior.transitions in
   let expression_values=List.sort(fun(a:expression)(b:expression)->String.compare a.source_path b.source_path)!expressions in
-  let report_value=obj["schema_version",str "biocompiler.policy_implementation_binding_report.v0.2";"profile",str B.staged_profile;
+  let report_value=obj["schema_version",str(if multi_product then "biocompiler.policy_implementation_binding_report.v0.4" else "biocompiler.policy_implementation_binding_report.v0.2");
+    "profile",str(if multi_product then B.multi_product_profile else B.staged_profile);
     "observable_profile",str I.staged_observable_profile;"status",str "source_graph_bound";
     "request_fingerprint",str(R.fingerprint request);"catalog_bindings_digest",str(R.catalog_bindings_digest request);
     "catalog_entry",str bridge.entry_id;"catalog_entry_digest",str bridge.entry_digest;
@@ -641,6 +675,8 @@ let check_staged ~admitted ~implementation ~proposed =
    state_values=[];effect_values;rule_values=[];machine_values;transition_values;expression_values;report_value}
 
 let check ~admitted ~implementation ~proposed =
+  require(R.is_multi_product(A.request admitted)=B.is_multi_product proposed)
+    "Original realization and proposed binding must use the same explicit multi-product staged family.";
   require(R.is_two_observation(A.request admitted)=B.is_two_observation proposed)
     "Original realization and proposed binding must use the same explicit two-observation family.";
   if B.is_staged proposed then check_staged ~admitted ~implementation ~proposed

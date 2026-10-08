@@ -24,6 +24,7 @@ module Pin = Bioc_domain.Pinned_identity
 module W = Bioc_checker.Work_budget
 let implementation_version = "biocompiler.ocaml.policy_component_assembly_check.v0.1"
 let instance_implementation_version = "biocompiler.ocaml.policy_component_assembly_check.v0.2"
+let multi_member_implementation_version = "biocompiler.ocaml.policy_component_assembly_check.v0.3"
 let max_work = 100000000
 let str value = Json.String value
 let obj values = Json.Object values
@@ -57,7 +58,8 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   Diagnostic.require (maximum>=0 && maximum<=max_work) "policy_component_assembly_resource_limit"
     "Assembly checker work exceeds its fixed ceiling.";
   let instanced = A.is_instanced rule in
-  let profile = if instanced then A.instance_profile else A.profile in
+  let multi_member = A.is_multi_member rule in
+  let profile = if multi_member then A.multi_member_profile else if instanced then A.instance_profile else A.profile in
   let budget = match parent with
     | None -> W.create ~profile ~error_code:"policy_component_assembly_resource_limit" ~maximum ()
     | Some parent -> W.nested ~parent ~profile ~error_code:"policy_component_assembly_resource_limit" ~maximum () in
@@ -73,7 +75,8 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   let original_raw = R.to_json original and library_raw = L.to_json components
   and rule_raw = A.to_json rule and proposal_raw = Q.to_json proposed in
   List.iter (fun raw -> ignore (encoded raw)) [original_raw;library_raw;rule_raw;proposal_raw];
-  let original = (if R.is_two_observation original then R.of_two_observation_json
+  let original = (if R.is_multi_product original then R.of_multi_product_json
+    else if R.is_two_observation original then R.of_two_observation_json
     else if R.requires_prerequisite_closure original then R.of_prerequisite_json
     else R.of_json) original_raw in
   let checked_binding = P.binding implementation in
@@ -86,6 +89,9 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   let rule = A.of_json ~components rule_raw and proposed = Q.of_json proposal_raw in
   if instanced || Q.is_instanced proposed then
     verify (instanced=Q.is_instanced proposed) "instance_proposal_profile";
+  if multi_member || Q.is_multi_member proposed || R.is_multi_product original then (
+    verify (multi_member=Q.is_multi_member proposed) "multi_member_proposal_profile";
+    verify (multi_member=R.is_multi_product original) "multi_member_original_source_profile");
   verify (equal (Pin.to_json (Q.rule proposed)) (Pin.to_json (A.identity rule))) "original_assembly_rule_pin";
   verify (A.model_library_digest rule = (I.authority actual).library_digest) "original_model_library";
   verify (A.component_library_digest rule = L.fingerprint components) "original_component_library";
@@ -137,6 +143,119 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   let authority = A.material_authority rule in
   let structure_result = S.check ~parent:budget ~authority ~candidate () in
   let template = PM.template authority in
+  let carrier_projections = ref [] and link_projections = ref [] in
+  if multi_member then (
+    let slots=A.slots rule and members=A.member_bindings rule in
+    let root slot=CT.Root_source.molecule (C.root (A.component rule slot)) in
+    let binding slot=List.find (fun (row:A.member_binding) -> row.slot=slot) members in
+    let output (row:A.member_binding)=List.find (fun value -> CT.Output_member.id value=row.member_id) (PT.output_members template) in
+    verify (List.length slots=2 && List.map (fun (row:A.member_binding) -> row.slot) members=slots &&
+      List.map (fun (row:A.member_binding) -> row.source_id) members=List.map (fun (row:A.root_binding) -> row.source_id) (A.root_bindings rule))
+      "complete_ordered_two_member_ownership";
+    verify (PT.steps template=[] && A.joins rule=[] && PT.complex_members template=[] && PT.amounts template=[])
+      "direct_root_members_without_covalent_transforms";
+    verify (List.map CT.Root_source.id (PT.sources template)=List.map (fun (row:A.member_binding) -> row.source_id) members &&
+      List.map CT.Output_member.id (PT.output_members template)=List.map (fun (row:A.member_binding) -> row.member_id) members &&
+      PM.member_order authority=List.map (fun (row:A.member_binding) -> row.member_id) members)
+      "exact_original_member_order";
+    let projected_chemistry ~space chemistry =
+      let tail=H.terminal_tail chemistry in
+      let tail_json=match H.Tail.path tail with None -> H.Tail.to_json tail
+        | Some path -> replace "path" (project_path ~offset:0 ~space path) (H.Tail.to_json tail) in
+      replace "terminal_tail" tail_json (H.to_json chemistry) in
+    let expected_product_json (value:PM.product)=obj ["identity",Pin.to_json value.identity;"sequence",str value.sequence;
+      "translation_policy",Bioc_domain.Molecular_recoding.Translation_policy.to_json value.translation_policy;
+      "provenance",M.Provenance.to_json value.provenance] in
+    List.iter (fun (row:A.member_binding) ->
+      let member=output row in
+      let source=List.find (fun value -> CT.Root_source.id value=row.source_id) (PT.sources template) in
+      verify (equal (CT.Root_source.to_json source)
+        (replace "id" (str row.source_id) (CT.Root_source.to_json (C.root (A.component rule row.slot)))))
+        "complete_original_member_root_authority";
+      verify (CT.Value_ref.kind (CT.Output_member.value member)=CT.Value_ref.Root &&
+        CT.Value_ref.id (CT.Output_member.value member)=row.source_id)
+        "member_owns_exact_original_root";
+      let expected=List.find (fun (value:PM.member) -> value.id=row.member_id) (PM.members authority) in
+      match C.products (A.component rule row.slot) with
+      | [product] ->
+        verify (product.cds_feature=expected.regions.cds &&
+          equal (expected_product_json product.expected) (expected_product_json expected.product))
+          "complete_member_product_and_cds_ownership";
+        let node=rename row.slot product.node_id in
+        charge (List.length (B.expressions checked_binding));
+        verify (List.exists (fun (expression:B.expression) -> expression.endpoint.node_id=node &&
+          expression.endpoint.port_id="out") (B.expressions checked_binding))
+          "member_product_has_checked_source_expression"
+      | _ -> verify false "exactly_one_original_product_per_member") members;
+    (match S.checked_structure structure_result with
+     | None -> ()
+     | Some checked ->
+       match K.inventory (S.content checked) with
+       | None -> verify false "fresh_material_inventory_absent"
+       | Some inventory ->
+         let molecules=K.Inventory.molecules inventory in
+         verify (List.map N.id molecules=List.map (fun (row:A.member_binding) -> row.member_id) members)
+           "complete_final_member_inventory";
+         List.iter (fun (row:A.member_binding) ->
+           let original_root=root row.slot and member=output row in
+           let space=CT.Output_member.space_id member in
+           match find (fun molecule -> N.id molecule=row.member_id) molecules with
+           | None -> verify false "original_material_member_absent"
+           | Some molecule ->
+             verify (String.length (N.sequence original_root)=String.length (N.sequence molecule)) "complete_member_root_length";
+             charge (String.length (N.sequence original_root)+String.length (N.sequence molecule));
+             verify (N.sequence original_root=N.sequence molecule) "complete_member_root_bases";
+             verify (List.length (N.features original_root)=4 && List.length (N.features molecule)=4)
+               "exact_four_original_features_per_member";
+             List.iter (fun feature -> match project_feature ~offset:0 ~space feature with
+               | None -> verify false "original_feature_path_absent"
+               | Some expected -> match find (fun actual -> N.Feature.id actual=N.Feature.id feature) (N.features molecule) with
+                 | None -> verify false "projected_feature_absent"
+                 | Some actual -> verify (equal expected (N.Feature.to_json actual)) "complete_final_feature_projection") (N.features original_root);
+             verify (equal (projected_chemistry ~space (N.chemistry original_root)) (H.to_json (N.chemistry molecule)))
+               "complete_final_member_chemistry_projection") members;
+         let project_site slot (site:C.site) =
+           charge 1;
+           let row=binding slot in
+           let member=output row in
+           let molecule=List.find (fun molecule -> N.id molecule=row.member_id) molecules in
+           let expected_path=project_path ~offset:0 ~space:(CT.Output_member.space_id member) site.path in
+           let feature=find (fun feature -> N.Feature.id feature=site.feature_id) (N.features molecule) in
+           verify (match feature with Some value -> (match N.Feature.path value with
+             | Some path -> equal expected_path (G.Path.to_json path) | None -> false) | None -> false)
+             "carrier_exact_final_feature_path";
+           let local=N.sequence (root slot) and actual=N.sequence molecule in
+           List.iter (fun span -> let start=G.Span.start span and length=G.Span.length span in
+             charge length;
+             verify (start>=0 && length>0 && start+length<=String.length local && start+length<=String.length actual &&
+               String.sub local start length=String.sub actual start length) "carrier_exact_final_bases") (G.Path.spans site.path);
+           obj ["slot",str (slot_name slot);"root",str site.root_id;"source",str row.source_id;
+             "feature",str site.feature_id;"local_path",G.Path.to_json site.path;"member",str row.member_id;
+             "path",expected_path;"final_feature",str site.feature_id] in
+         List.iter (fun slot -> List.iter (fun (carrier:C.carrier) ->
+           let sites=List.map (project_site slot) carrier.sites in
+           carrier_projections:=obj ["slot",str (slot_name slot);"target",C.target_to_json carrier.target;"sites",arr sites]:: !carrier_projections)
+           (C.carriers (A.component rule slot))) slots;
+         List.iter (fun (carrier:A.link_carrier) ->
+           let link=List.find (fun (row:A.link) -> row.kind=carrier.kind) (A.links rule) in
+           let site (boundary:A.boundary_ref) index =
+             let row=List.find (fun (row:C.carrier) -> row.target=C.Boundary_port boundary.boundary_id)
+               (C.carriers (A.component rule boundary.slot)) in List.nth row.sites index in
+           match A.carrier_transport carrier with
+           | None -> verify false "original_inter_member_transport_absent"
+           | Some transport ->
+             verify (transport.producer_member=(binding link.producer.slot).member_id &&
+               transport.consumer_member=(binding link.consumer.slot).member_id &&
+               transport.producer_member<>transport.consumer_member && A.carrier_joins carrier=[] && carrier.join_id="")
+               "cross_link_exact_original_transport_ownership";
+             let endpoint_json (value:I.endpoint)=obj ["node",str value.node_id;"port",str value.port_id] in
+             link_projections:=obj ["link",str (link_name carrier.kind);"transport",A.transport_to_json transport;
+               "producer_endpoint",endpoint_json (boundary_endpoint link.producer);
+               "consumer_endpoint",endpoint_json (boundary_endpoint link.consumer);
+               "producer",project_site link.producer.slot (site link.producer carrier.producer_site);
+               "consumer",project_site link.consumer.slot (site link.consumer carrier.consumer_site)]:: !link_projections)
+           (A.link_carriers rule))
+  ) else (
   let step = List.hd (PT.steps template) in
   let port = List.hd (CT.Transform_step.ports step) in
   let port_space = CT.Product_port.space_id port in
@@ -223,7 +342,6 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
        verify (equal (facet_json ~shift:(offset slot) ~space:port_space (N.chemistry (root slot)) facet)
          (facet_json ~shift:0 ~space:port_space chemistry facet))
          ("exact_chemistry_projection:" ^ slot_name slot ^ "/" ^ facet)) facets) slots);
-  let carrier_projections = ref [] and link_projections = ref [] in
   (match S.checked_structure structure_result with
    | None -> ()
    | Some checked ->
@@ -311,11 +429,11 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
                "offset",Json.int join.offset;"producer_endpoint",encode_endpoint (boundary_endpoint link.producer);
                "consumer_endpoint",encode_endpoint (boundary_endpoint link.consumer);
                "producer",project_site link.producer.slot producer_site;
-               "consumer",project_site link.consumer.slot consumer_site] :: !link_projections)) (A.link_carriers rule));
+               "consumer",project_site link.consumer.slot consumer_site] :: !link_projections)) (A.link_carriers rule)));
   let findings = List.rev !findings in
   let outcome_value = if findings<>[] then E.Fail else S.outcome structure_result in
   let report_value = obj ["schema_version",str "biocompiler.policy_component_assembly_assessment.v0.1";
-    "checker_version",str (if instanced then instance_implementation_version else implementation_version);"profile",str profile;
+    "checker_version",str (if multi_member then multi_member_implementation_version else if instanced then instance_implementation_version else implementation_version);"profile",str profile;
     "original_fingerprint",str (R.fingerprint original);"components_fingerprint",str (L.fingerprint components);
     "rule_fingerprint",str (A.fingerprint rule);"implementation_fingerprint",str (I.fingerprint actual);
     "proposed_fingerprint",str (Q.fingerprint proposed);"candidate_fingerprint",str (K.fingerprint candidate);
