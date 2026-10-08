@@ -231,7 +231,7 @@
     },
     {
       "path": "core/lib/checker/policy_implementation_binding_check.ml",
-      "sha256": "8c35f7321898f5bffb3ddeab106aaa552db7eab828f03c843a6fb22a273f99c2",
+      "sha256": "44198ef32ff5190d0b63d16b6d83d5674ee4490eaab77582ac68a43a222ede3f",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1359,7 +1359,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_assembly_check.mli",
-      "sha256": "a5bd0f30364926be3b4b153f89941d59a0b3e4bff560a4965b71bcb9e8539c38",
+      "sha256": "617ddd1b9958ba96abfcef4b5ade7ab3f4c4033d10b2df8d154c89eb0db50467",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},

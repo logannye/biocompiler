@@ -500,8 +500,8 @@ let check_staged ~admitted ~implementation ~proposed =
       let values=List.map(fun(parameter:O.parameter)->parameter.parameter_id,fixed_product parameter)behavior.parameters in
       require(List.length(List.sort_uniq String.compare(List.map snd values))=2)
         "The two original products must have distinct symbols.";
-      let uses=List.map(fun(effect:O.effect_spec)->
-        let argument=singleton "staged product argument"(items "parameters"(raw effect.effect_id))in
+      let uses=List.map(fun(effect_spec:O.effect_spec)->
+        let argument=singleton "staged product argument"(items "parameters"(raw effect_spec.effect_id))in
         let value=get "value" argument in
         require(text "name" argument="product" && text "op" value="parameter")
           "Every stage must name one fixed original product.";

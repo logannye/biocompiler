@@ -17,8 +17,10 @@ val implementation_version : string
 (** Version used only for the separately versioned named-instance profile.
     Legacy two-slot reports retain [implementation_version]. *)
 val instance_implementation_version : string
+
 (** Version used only for the direct-root, two-member profile. *)
 val multi_member_implementation_version : string
+
 val max_work : int
 type result
 type checked_assembly
