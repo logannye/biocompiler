@@ -9,6 +9,7 @@ It neither reads files nor imports repository code nor makes network requests.
 from __future__ import annotations
 
 import re
+from datetime import datetime, timezone
 from typing import Any
 
 
@@ -241,3 +242,107 @@ def check_pr_identity(*, expected: dict[str, Any], run: dict[str, Any],
             "source_revision": head, "tested_revision": tested, "ordered_merge_parents": [base, head],
             "tree": expected["tree"], "run_id": expected["run_id"], "run_attempt": expected["run_attempt"],
             "requires_success": require_success}
+
+
+def captured_utc(value: Any, label: str) -> datetime:
+    """Parse an independently authenticated capture time, not a trusted clock."""
+    require(type(value) is str and re.fullmatch(
+        r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|\+00:00)", value) is not None,
+        label + " must be an explicit UTC timestamp")
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as error:
+        raise IdentityError(label + " is not a valid timestamp") from error
+    require(parsed.tzinfo == timezone.utc, label + " must use UTC")
+    return parsed
+
+
+def check_anchored_main_identity(*, expected: dict[str, Any], run: dict[str, Any],
+                                 commit: dict[str, Any], main_anchor: dict[str, Any],
+                                 main_ref: dict[str, Any], pr: dict[str, Any],
+                                 suite: dict[str, Any], ancestry: dict[str, Any],
+                                 api_pins: dict[str, Any],
+                                 require_success: bool = True) -> dict[str, Any]:
+    """Check versioned M after main advances, without relabeling a saved ref.
+
+    The caller authenticates capture times and exact raw API digests. read_packet
+    recomputes these pins for the audit; acquisition must do the same. Ancestry
+    uses bounded authenticated GitHub comparison metadata, not local Git replay.
+    Neither the later main tip nor its tree receives release/test acceptance.
+    """
+    expected = record(expected, "expected")
+    eq(expected.get("schema"), "biocompiler.anchored_main_identity.v1", "anchored identity schema")
+    additions = {"main_anchor_sha256", "main_anchor_captured_at", "observed_main_revision",
+                 "observed_main_ref_sha256", "observed_main_captured_at", "ancestry_sha256"}
+    require(additions <= set(expected), "Missing anchored identity authority")
+    original = {key: value for key, value in expected.items() if key not in additions}
+    original["schema"] = "biocompiler.actual_main_identity.v1"
+    # Original normal-merge/push checks remain byte-unchanged. Their ref argument
+    # is explicitly the authenticated historical anchor in this distinct mode.
+    proof = check_main_identity(expected=original, run=run, commit=commit,
+                                main_ref=main_anchor, pr=pr, suite=suite,
+                                require_success=require_success)
+    pins = record(api_pins, "API pins")
+    require(set(pins) == {"run", "commit", "main_anchor", "main_ref", "pr", "suite", "ancestry"},
+            "Anchored identity requires all exact raw API pins")
+    for name, field in (("main_anchor", "main_anchor_sha256"),
+                        ("main_ref", "observed_main_ref_sha256"), ("ancestry", "ancestry_sha256")):
+        digest = expected[field]
+        require(type(digest) is str and re.fullmatch(r"[0-9a-f]{64}", digest) is not None,
+                field + " must be a full lowercase SHA-256")
+        eq(at(pins, name, "sha256"), digest, name + " authenticated raw digest")
+    anchor_time = captured_utc(expected["main_anchor_captured_at"], "anchor capture")
+    observed_time = captured_utc(expected["observed_main_captured_at"], "current ref capture")
+    require(captured_utc(at(pr, "merged_at"), "PR merge time") <= anchor_time <= observed_time,
+            "Anchor must follow the normal merge and precede the current observation")
+    require(captured_utc(at(run, "updated_at"), "run update time") <= observed_time,
+            "Current observation predates the supplied run state")
+    merge, tip = expected["merge_revision"], expected["observed_main_revision"]
+    sha(tip, "observed main revision")
+    require(tip != merge, "Anchored mode requires a distinct later main tip")
+    eq(at(main_ref, "ref"), "refs/heads/main", "observed main ref")
+    eq(at(main_ref, "object", "type"), "commit", "observed main object type")
+    eq(at(main_ref, "object", "sha"), tip, "observed main revision")
+    api_root = "https://api.github.com/repos/" + expected["repository"]
+    eq(at(main_ref, "url"), api_root + "/git/refs/heads/main", "observed main API repository")
+    eq(at(ancestry, "url"), api_root + "/compare/" + merge + "..." + tip, "ancestry API comparison")
+    eq(at(ancestry, "base_commit", "sha"), merge, "ancestry base")
+    eq(at(ancestry, "merge_base_commit", "sha"), merge, "ancestry merge base")
+    eq(at(ancestry, "status"), "ahead", "ancestry direction")
+    eq(at(ancestry, "behind_by"), 0, "ancestry behind count")
+    count = at(ancestry, "total_commits")
+    require(type(count) is int and 1 <= count <= 100, "Ancestry must contain one to 100 complete commits")
+    eq(at(ancestry, "ahead_by"), count, "ancestry ahead count")
+    commits = at(ancestry, "commits")
+    require(type(commits) is list and len(commits) == count, "Truncated ancestry commit census")
+    parents_by_sha: dict[str, list[str]] = {}
+    for row in commits:
+        revision = at(row, "sha")
+        sha(revision, "ancestry commit")
+        require(revision != merge and revision not in parents_by_sha, "Repeated ancestry commit")
+        parents = at(row, "parents")
+        require(type(parents) is list and 1 <= len(parents) <= 8, "Ancestry parent count exceeds scope")
+        parent_ids = [at(parent, "sha") for parent in parents]
+        for parent in parent_ids:
+            sha(parent, "ancestry parent")
+        require(revision not in parent_ids and len(set(parent_ids)) == len(parent_ids),
+                "Malformed ancestry parent identity")
+        parents_by_sha[revision] = parent_ids
+    eq(at(commits[-1], "sha"), tip, "ancestry terminal revision")
+    # Confirm the bounded supplied parent graph connects Q to M, in addition to
+    # the comparison endpoint's authenticated merge-base claim.
+    pending, visited = [tip], set()
+    while pending:
+        revision = pending.pop()
+        if revision not in visited:
+            visited.add(revision)
+            pending.extend(parents_by_sha.get(revision, []))
+    require(merge in visited, "Ancestry metadata has no parent path from observed tip to release merge")
+    return {**proof, "schema": "biocompiler.anchored_main_identity_result.v1",
+            "scope": "anchored_merge_and_push_identity_with_observed_descendant_tip_not_tip_release_acceptance",
+            "main_anchor": {"revision": merge, "captured_at": expected["main_anchor_captured_at"],
+                            "sha256": expected["main_anchor_sha256"]},
+            "observed_main": {"revision": tip, "captured_at": expected["observed_main_captured_at"],
+                              "sha256": expected["observed_main_ref_sha256"], "release_acceptance": False},
+            "ancestry": {"sha256": expected["ancestry_sha256"], "base": merge, "head": tip,
+                         "commits": count, "authority": "authenticated_bounded_github_comparison_metadata"}}

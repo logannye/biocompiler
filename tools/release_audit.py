@@ -446,19 +446,24 @@ def read_packet(path, expected_digest):
     return data, pins
 
 
-def identity_from_authority(expected, packet, success):
-    from release_audit_identity import check_main_identity, check_pr_identity
+def identity_from_authority(expected, packet, success, api_pins=None):
+    from release_audit_identity import check_anchored_main_identity, check_main_identity, check_pr_identity
     if expected.get('schema') == 'biocompiler.pull_request_identity.v1':
         required = {'run', 'commit', 'head_commit', 'main_ref', 'merge_ref', 'pr', 'suite'}
         checker = check_pr_identity
         base = expected['base_revision']
+    elif expected.get('schema') == 'biocompiler.anchored_main_identity.v1':
+        required = {'run', 'commit', 'main_anchor', 'main_ref', 'pr', 'suite', 'ancestry'}
+        checker = check_anchored_main_identity
+        base = expected['premerge_main']
     else:
         require(expected.get('schema') == 'biocompiler.actual_main_identity.v1', 'Unsupported identity authority')
         required = {'run', 'commit', 'main_ref', 'pr', 'suite'}
         checker = check_main_identity
         base = expected['premerge_main']
     require(set(packet) == required, 'API packet has omitted or unreviewed identity inputs')
-    proof = checker(expected=expected, require_success=success, **packet)
+    options = {'api_pins': api_pins} if checker is check_anchored_main_identity else {}
+    proof = checker(expected=expected, require_success=success, **packet, **options)
     identity = {'head_revision': proof['source_revision'], 'revision': proof['tested_revision'],
                 'run_id': str(proof['run_id']), 'run_attempt': str(proof['run_attempt'])}
     return identity, proof['tree'], base, proof
@@ -491,7 +496,7 @@ def main(argv=None):
     tool_pins = {str(path.relative_to(TOOL_ROOT)): pin(path) for path in tool_files}
     expected = read_pinned(args.authority, args.authority_sha256)
     packet, api_pins = read_packet(args.packet, args.packet_sha256)
-    identity, tree, base, identity_proof = identity_from_authority(expected, packet, args.command == 'check')
+    identity, tree, base, identity_proof = identity_from_authority(expected, packet, args.command == 'check', api_pins)
     ROOT = args.source_root.resolve()
     researcher_profile = args.profile == 'complete-researcher-alpha-release-v1'
     source = git_catalog(ROOT, identity['head_revision'], tree, researcher=researcher_profile)
