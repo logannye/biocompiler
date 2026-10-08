@@ -5,10 +5,10 @@ validation coverage and independent checks. The release workflow remains
 [Python checks](../.github/workflows/ci.yml). Development feedback has a separate
 [opt-in hosted workflow](../.github/workflows/policy-development.yml), triggered
 only by pushes to `codex/dev-policy/**`. It builds the native core once on Linux
-and runs 37 fixed multi-member, two-observation, prerequisite, instance-composition, staged-regimen, component, selection, generation-metering, protocol, preservation, material and construction suites.
+and runs 38 fixed grounded-helper, multi-member, two-observation, prerequisite, instance-composition, staged-regimen, component, selection, generation-metering, protocol, preservation, material and construction suites.
 The new instance-composition SDK retains 26 lifecycle observations against two
 independently supplied three-instance originals; its earlier development checkpoint passed in run `37788462656`, while complete
-integration remains pending. The prerequisite, two-observation and multi-member companions each
+integration remains pending. The prerequisite, two-observation, multi-member and grounded-helper companions each
 add 26 separately retained observations against their own complete original
 authority. Their current source registration is not execution evidence.
 The staged source witness retains 33 observations across nine literal timelines;
@@ -59,11 +59,11 @@ Focused development uses two native-suite workers after the single successful
 build. Each suite retains its original command, fixture, source and executable
 checks, timeout and separate log. The coordinator alone publishes the fixed
 ordered result inventory and waits for every outcome. After native completion,
-two SDK lanes overlap: component then selection, and instance composition, prerequisite closure, two-observation composition, multi-member composition,
+two SDK lanes overlap: component then selection, and instance composition, prerequisite closure, two-observation composition, multi-member composition, grounded-helper composition,
 staged source, staged material then the 20-observation researcher-project workflow. Each lane preserves
 its dependencies and existing campaign receipts.
 There are at most two workers in either phase, and no SDK calls are moved into
-unguarded worker threads inside a campaign. All 37 suites and 234 observations
+unguarded worker threads inside a campaign. All 38 suites and 260 observations
 remain mandatory.
 
 At the baseline command durations, this scheduling can remove roughly six
@@ -102,7 +102,7 @@ Choose early feedback from the affected dependency surface. A staged-regimen
 change should get staged feedback promptly; edits to shared semantics, transport,
 authority, packaging or receipt accounting need broader regression coverage.
 **Automatic profile-specific hosted routing is not implemented.** The current
-`policy-development.yml` still requires all 37 native suites and all 234 SDK
+`policy-development.yml` still requires all 38 native suites and all 260 SDK
 observations. Individual witnesses or future scoped runners must report their
 own scope and cannot satisfy that complete census. Until explicit scoped routing
 exists, use the supported complete workflow for hosted development acceptance.
