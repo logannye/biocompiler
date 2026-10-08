@@ -1,255 +1,185 @@
 # Core architecture implementation checkpoint
 
-Checkpoint: 2026-10-08. Continue the approved
+Checkpoint prepared 2026-10-08, before combined integration. The statuses below
+describe that preparation point; later acceptance must be read from the exact
+integration and actual-main receipts. Continue the approved
 [ordered implementation plan](core-architecture-session-priorities-2026-10-08.md).
-The user authorized working through its items, keeping native builds hosted and
-local feedback focused. Do not restart completed architecture work or transfer
-acceptance between revisions. The workspace root contains separately owned
-checkouts; unrelated researcher-authoring/encoding work remains separate.
+The user authorized completing its bounded increments systematically. Keep native
+builds hosted, local feedback focused and acceptance bound to exact revisions.
+The workspace root is a container; unrelated researcher-authoring and encoding
+checkouts remain owned by their existing work.
 
-## Current source and validation boundaries
+## Validation snapshot
 
-| Increment | Checkout under `work/` | State at this checkpoint |
+| Increment | Source and hosted development evidence | Remaining gate |
 | --- | --- | --- |
-| Named component instances | `core-instance-composition` | PR99 at `a38174303f0806a84c4800df0040041c96190e5e`; integration run `37799164508` remains active; Python 3.14 unit shard 0 failed stale public API inventory (14 failures, one error). Correction is being reviewed separately; healthy jobs continue. |
-| Provider prerequisite closure | `core-prerequisite-closure` | Development revision `a34ebd6bc557b52e9e253e8fe7e4fbce8ae1f9a4`; run `37798264346` and independent inert artifact audit passed (35 native suites, 182 SDK observations). |
-| Two independent observations | `core-two-observation-composition` | First development run `37801697083` at `22e1f0ed1` compiled and passed 35 of 36 native suites. One new negative control expected the wrong rejection stage; corrected source `6feb332688ec838031e4cab9de2f2ee498c7f4b5` has passed the native step and is executing eight SDK campaigns in run `37803803945`; independent audit remains pending. |
-| Multiple products/members/helpers | `core-multi-member-composition` | Two-product/two-member domain, lowering, checker, SDK and independent fixtures/campaigns are present; independent source review and local static controls passed; preparing the first hosted development run. No native validation or acceptance. Helpers follow this subincrement. |
-| Modular assurance | `core-modular-assurance` | Implementing a bounded candidate-transition congruence rule and an enabled/disabled hosted comparison. Every original domain history, source execution, correspondence and requirement monitor remains fresh; no global-domain pruning is claimed. |
+| Named component instances | `c0366fc92`: run `37788462656` and independent audit passed; 33 native suites and 156 SDK observations. | PR99 integration run `37799164508` at `a38174303` has API-inventory failures and healthy jobs still running. Correction is locally committed as `c137d31a1` and included in the combined candidate. |
+| Provider prerequisite closure | `a34ebd6bc557b52e9e253e8fe7e4fbce8ae1f9a4`: run `37798264346` and audit passed; 35 native suites and 182 SDK observations. | Complete combined integration and actual-main validation. |
+| Two independent observations | `6feb332688ec838031e4cab9de2f2ee498c7f4b5`: run `37803803945` and audit passed; 36 native suites and 208 SDK observations. | Complete combined integration and actual-main validation. |
+| Two products and two RNA members | `a459a234f34fe0128fb994d22aca2de9fecff599`: run `37809478943` and audit passed; 37 native suites and 234 SDK observations. | Complete combined integration and actual-main validation. |
+| Grounded helper RNA | `b712322d62a849e1a7216bcc8f516bbd8de992d2`: run `37813464181` and independent audit passed; 38 native suites and ten SDK campaigns/260 observations. | Complete combined integration and actual-main validation. |
+| Candidate-transition congruence | `bc61505f9f4f554008d305ec9b70e63cada386c9`: run `37814607452` and independent audit passed; 40 native suites, 42 command receipts and 260 SDK observations. | Complete combined integration and actual-main validation. Sharing remains disabled following the measured slowdown. |
 
-The earlier instance development revision `c0366fc92` passed run `37788462656`:
-33 native suites and all 156 observations across six SDK campaigns. Independent
-inert audit checked complete original authority, exact logs and both new-profile
-paired archives. This is development evidence for that revision only.
+All completed development results above are Linux x86-64 evidence for their exact
+source and run, not acceptance of a subsequent branch. Current main remains
+`e253ed5b3370af9a7d8b9ba96af2e7f8f025798a`; the researcher alpha is already published.
 
-Instance run `37792192989` at `4b5d0b535` passed both full 173-suite native jobs but
-failed the direct-core capability census on both platforms. The current PR fixes
-the missing instance scope/profile census and adds preflight mutation controls.
-New synthetic merge `fc21eccab03c74897c3d36133fd336652d5f7a21` has parents main
-`e253ed5b3370af9a7d8b9ba96af2e7f8f025798a` and source `a38174303…`, with matching
-source/merge tree `00bf061709bbb28825e3456863ded74b07451e79`.
-Retained evidence is under each checkout's `generated/hosted-feedback/<run>/`.
-Complete installed/cross-platform gates, independent audit, normal merge and
-fresh actual-main validation remain required.
+## Combined integration candidate
 
-The first prerequisite run `37796094341` failed an OCaml documentation warning
-before native testing. Its corrected run is separate; preserve the original
-failure evidence. The correction also updates independent capability censuses.
+`work/core-composition-integration`, branch `codex/core-composition-integration`,
+combines the related compiler increments for one full integration update to
+[PR99](https://github.com/logannye/biocompiler/pull/99). Local merge `93d3ec4f9`
+has parents P5 `bc61505f9` and P1 correction `c137d31a1`. P3/P4/helper corrections
+were explicitly carried into the later development source; historical passes do
+not transfer through those copies. Fresh checking must cover the combined tree.
 
-## Two-observation batch
+The merge retains the generalized seven-profile capability census, all native
+and installed registrations, and the complete 905-entry public API inventory.
+The eight instance dependencies retain private, witness-free classification;
+the combined ledger uses the same dependency-only wording as the other profiles.
+All 845 pre-composition classifications, 138 witness meanings and 359 syntax links
+remain preserved. The historical 896-entry pre-helper projection is unchanged.
+New controls reject promoting a private instance dependency to runtime evidence
+and reject omission of the early public-API preflight gate.
 
-The [new contract](policy-two-observation-composition-v0.1.md) defines exact
-request/context/binding profile pairing, two ordered source/bank identities,
-original input/provider mapping, independent freshness and uncertainty, and the
-unchanged whole-program/private-closure/material acceptance chain. Its domain-only
-fixture retains all nine source inputs. A/B declarations independently specify
-36 histories, 42 transitions, 43 prefixes, 24 obligations and the exact artificial
-17-base RNA. The 36-cell uncertainty table, timing and initial binding mutations passed in
-run `37801697083`. The same-coherence negative control was correctly rejected by
-`policy_operational_unsupported` before lowering; its expected diagnostic is
-corrected without changing production semantics. The corrected run has now completed its native step and is exercising the SDK campaigns; complete retained evidence still needs independent audit. The original failure
-log and digest-verified inert archive are retained.
+The combined merge passed 75 focused Python/static controls, both rule/API
+inventory gates and the 3,888-entry migration inventory. This does not execute
+native code. Its source differs from P5 only in the two regression-test files;
+subsequent checkpoint documentation is an additional source revision.
 
-Local feedback includes both CI-pinned strict typing gates (34 core and 31 policy
-modules); 58 new SDK/transport/evidence mock tests and 14 capability controls;
-84 existing SDK regressions; 54 development/bundle orchestration tests; 45 CI/plan
-tests; four historical source-scope tests; and 35 rule-inventory tests. The full
-33-test dependency-boundary run found one stale suite-count expectation, corrected
-and passed in a focused rerun. Other boundary cases passed in that run.
+Preserve healthy jobs in the old P1 integration run. After their completion, submit the coherent combined PR revision. All focused
+development runs and their independent audits are now complete.
+Require the complete 74-job cross-platform/installed census, exact independent
+artifact and merge-parent/tree checks, normal merge, and fresh actual-main
+validation. Do not mark the session complete at a development-only checkpoint.
 
-The rule inventory adds the 24th component family with 95 production sources
-and 99 witnesses. Projection preserves the exact previous 23-family metadata
-hash `8da4c54d70fa5ceec3c5f50fef539e80681bd7f8dabb1e0e5a21d786ec35f4b1` and all
-original 62 rule meanings. Migration inventory has 3,847 entries. Historical
-workflow sources remain unchanged; six excluded SDK source hashes were reviewed
-and updated. These are static/source checks, not semantic acceptance.
+## Implemented scope
 
-Required hosted development is 36 native suites and eight complete SDK campaigns
-(208 observations), using one build and two bounded worker lanes. Required full
-native inventory is 176 suites, 182 executable bundle members and 26 distinct
-original fixtures. Sparse local checkouts omit much of the historical corpus;
-the full filesystem fixture-wiring check must run against the complete hosted
-checkout. Do not silently treat sparse missing fixtures as passing.
+- **Instances:** two to eight named instances, qualified local identities, explicit
+  links and checked ordered root assembly into one complete RNA. The independent
+  positive witness composes three fragments; it does not demonstrate every
+  admitted size or partition. Existing source
+  semantics and original whole-program domain remain authoritative.
+- **Prerequisites:** typed, pinned, acyclic provider dependencies resolve against
+  original context; missing, circular or unsupported justification cannot close
+  the acceptance chain. Both original witnesses retain nine histories,
+  47 transitions and 48 prefixes with 24 obligations.
+- **Two observations:** independent identity, freshness and uncertainty survive
+  source admission, lowering, binding, context and exact material export. The
+  literal witnesses retain 36 histories, 42 transitions, 43 prefixes and
+  24 obligations, including the full 36-cell uncertainty table.
+- **Multiple members:** two distinct source products bind to two complete RNA
+  members. Explicit transport premises cover every inter-member link. Original
+  A/B witnesses retain 25 histories, 86 transitions, 87 prefixes and 23 obligations.
+- **Grounded helper:** a third complete RNA/product supplies a declared helper
+  capacity under checked bootstrap, availability, shared-capacity and delivery
+  premises. Canonical template inventories are separate from declared delivery
+  order. This profile adds no hidden executable helper behavior. The original
+  therapeutic graph/domain remains fixed; 24 obligations include helper closure.
+- **Modular assurance:** private candidate-transition witnesses compare complete
+  immutable state, input and guards within one fresh checking invocation. All
+  original histories, source execution, correspondence and requirement monitors
+  remain fresh. It neither prunes the domain nor establishes an arbitrary
+  assume-guarantee theorem. Ordinary checking remains unshared: the measured bookkeeping cost exceeded the saved execution.
 
-## Next work
+Contracts: [instances](policy-instance-composition-v0.1.md),
+[prerequisites](policy-prerequisite-closure-v0.1.md),
+[two observations](policy-two-observation-composition-v0.1.md),
+[multiple members](policy-multi-member-composition-v0.1.md),
+[helper](policy-grounded-helper-composition-v0.1.md), and
+[candidate congruence](policy-candidate-transition-congruence-v0.1.md).
+Supplied biological behavior remains a premise; these checks grant no empirical
+therapeutic claim or human-use admission.
 
-Finish and audit each active hosted gate, preserving exact source and run identity.
-Fix concrete failures in coherent batches. Continue the separately versioned
-two-product/two-member design, then one explicitly grounded static helper, with
-per-member construction, recipient/availability, shared capacity and transport
-contracts. Co-delivery alone is not a cross-member transport proof. Dynamic helper
-behavior requires an explicit preservation relation. Measure whole-program
-checking before selecting a narrow modular assurance rule; saved PASS records
-cannot replace fresh proof checking.
+## Exact development evidence
 
-## Multi-member work in progress
+Retained authenticated inert evidence is under each owning checkout's
+`generated/hosted-feedback/<run>/`. Native artifacts are not executed locally.
 
-The [bounded contract](policy-multi-member-composition-v0.1.md) specifies exactly
-two distinct fixed source products, the existing staged machine, two complete RNA
-roots and zero helpers. Each inter-member link requires a provider selected by an
-original catalog dependency and an exact complete-signal transport premise. Two
-placements retain one checked shared delivery window. Independent review corrected a producer proposal schema-routing mismatch and tightened SDK effect-anchor order. Transport recipient/window controls now coherently repin their original authority and assert the intended context diagnostics. This review is not a soundness proof.
+| Increment/run | Source files audited | Audit SHA-256 |
+| --- | ---: | --- |
+| Prerequisites / `37798264346` | 1,223 | `bf157a6c3a7e1f4b15af3c7bce7fa6ece273857ca56f481f754fc3d1b0634938` |
+| Two observations / `37803803945` | 1,233 | `fa18db1b150cbe158f38fb38d8568ad5c250e6533bf8d83d3842973042b2ea89` |
+| Multiple members / `37809478943` | 1,243 | `05d45efd26fb758deb5be2d6411e9951af605c6946ae85bf0262872251075493` |
+| Grounded helper / `37813464181` | 1,255 | `fd6a3bbfe33df632f6703e81a135daa01d079f5c9a562d3bb368cac7ae96b758` |
+| Candidate congruence / `37814607452` | 1,257 | `c6bdf1ec0847b61874aa824a0983f8a79912bafcb7f7ddd5cef8f0e371415262` |
 
-The new source fixture has three original inputs and A/B product-edit witnesses.
-Core/Verify must independently check the full 25-history staged domain and both
-complete molecules. Local mocked orchestration checks passed after updating the
-37-suite inventory; native execution was mocked throughout. Capability mutation
-checks passed with the new profile and unchanged historical contract projections.
-The fixed hosted registrations will require 37 native suites and nine SDK
-campaigns; full native inventory is expected to be 177 suites, 184 executable
-bundle members and 26 distinct original fixtures. These counts still require
-source-bound native and full integration verification.
+P4 artifact `11565722888` is 7,527,004 bytes, SHA-256
+`ca3ff6e3eb3fc736991ecff4e3ced455576d7c2e6053fc4ce38267460c8074cf`.
+It retains both complete paired RNA archives and all 26 new-profile observations.
+Helper artifact `11566444605` is 8,365,628 bytes, SHA-256
+`c6029d67e00b5997513f4ad06cd889b8ca193448c662eb67b611088db157746b`.
+Its independent audit authenticates all 19 paired archives across ten campaigns,
+38 helper negative controls and both complete three-RNA alternatives. The helper
+job took 24m17s, including a 4m39s native phase and an 18m33s SDK phase. The helper
+campaign itself took 173.867s; this is not isolated preservation CPU time.
+P5 artifact `11568402159` is 8,371,703 bytes, SHA-256
+`ab34e2df831e50be050f36c6876046893004b20eed8201519d5ab29dad9abea1`.
+Its audit authenticates all 40 native suites/42 command receipts, all 260 SDK
+observations, 19 positive archives and four precisely altered researcher negative
+bundles. All six measurement samples preserve canonical report/acceptance/usage
+parity. The workflow took 34m10s, with native and SDK phases of 373s and 1,606s.
+These complete development records still do not establish integration acceptance.
 
-Local P4 feedback includes 25 new SDK controls, 96 previous SDK regressions and both strict typing scopes; 47 campaign/fixture/installed/prebuilt inert controls; 46 boundary/bundle tests; 76 development/SDK/fixture tests plus two capability controls; 49 source-scope/CI-plan controls; and 38 rule-inventory tests. None ran native executables. The rule inventory now has 25 families, 97 production sources and 112 witnesses; its projection preserves all previous 24 meanings and all 62 original material rules. The API inventory adds only 51 private dependencies/protocol constants, preserving all 845 previous classifications and 138 witness meanings. Migration inventory has 3,872 entries. Both inventory gates are now early preflight checks, including the opt-in hosted development lane.
+## Corrections and failure evidence
 
-The 39 public API inventory controls pass, including all historical projections. The final 82-test orchestration/rule batch passed 81 controls and exposed one stale workflow-text expectation after moving source gates ahead of native setup; the corrected focused control passed. The early gates now explicitly precede OCaml setup. This is local inert feedback only.
+- P1 run `37792192989` passed both full 173-suite native jobs but failed the
+  independent direct-core capability census. The following revision corrected
+  the missing scope/profile census and added early mutation checks.
+- P1 run `37799164508` tests source `a38174303` through synthetic merge
+  `fc21eccab03c74897c3d36133fd336652d5f7a21`, parents main `e253ed5b3` and that source,
+  with equal source/merge tree `00bf061709bbb28825e3456863ded74b07451e79`.
+  Both Python unit shard-0 failures have the same stale API inventory cause.
+  Accounting correctly rejects the failed shard; the 3.14 accounting job also
+  retained a distinct `ECONNRESET` artifact-download failure. Local `c137d31a1`
+  corrects the source inventory and prevents recurrence through early preflight.
+- P2 first run `37796094341` stopped at an OCaml documentation warning before
+  execution. Corrected run `37798264346` is separately audited.
+- P3 first run `37801697083` passed 35/36 native suites. A same-coherence negative
+  control correctly failed at operational admission; its expected rejection
+  stage was corrected without changing production semantics.
+- P4 run `37807263696` at `705f6adb3` exposed an OCaml reserved identifier and
+  documentation warning before execution. Run `37807975704` at `6cfd7768` then
+  passed 35/37 native suites with zero SDK campaigns; it exposed a missing
+  producer-profile census and a too-small renaming witness work budget. The
+  original resource-exhaustion case remains a negative control, followed by
+  a separate fresh check with sufficient explicit budget. The latter failed artifact
+  `11563489280` has SHA-256
+  `07f0568f5de9148b983d5fa50fbea14ef917ae8aba4dcdaad3f98256e46daa02`.
+- Helper run `37811166797` at `cb7bc7037` stopped at a missing fixture namespace
+  import; artifact
+  `11565461025` retains the build failure, whose log SHA-256 is
+  `eb18600f7be8c9d7c6e297e10bb371b4aa16d4324b63e17fcd50a7c11aa6b667`.
+  Run `37811917435` at `ac6150c4e` then passed 37/38 native suites, with zero SDK
+  campaigns, and exposed an invalid ordering assumption. Typed template inventories canonically sort by ID, while delivery
+  has its own exact order. Correction `b712322d6` checks ID-bound inventories and
+  preserves exact delivery order, adding two negative controls (38 total).
+  Its preceding failed artifact `11566225534` has SHA-256
+  `0cd2f9a95225ef7e382f6f5373b97d366000c368a58023fb8772210dd072fb76`.
 
-## Grounded-helper implementation checkpoint
+## Current validation census and assurance limits
 
-The separately versioned helper increment is being built in
-`codex/dev-policy/grounded-helper-composition`, based on P4 source `705f6adb3`.
-Both subsequent P4 native corrections are carried forward explicitly; the
-helper checkout is not an accepted descendant of a passing P4 run. Source
-implementation, independent three-member fixtures and SDK/installed orchestration
-are in progress. See the [helper contract](policy-grounded-helper-composition-v0.1.md).
+Development requires 40 native suites, 42 command receipts and ten complete SDK
+campaigns with 260 observations. Complete native integration requires 180 suites,
+188 executable bundle members and 26 original fixtures (214 total members).
+Sparse local checkouts omit historical corpus files; their complete wiring gates
+must run in the full hosted checkout, not be silently skipped.
 
-P3 development run `37803803945` at `6feb332688ec838031e4cab9de2f2ee498c7f4b5`
-passed 36 native suites and eight SDK campaigns (208 observations); its independent
-inert audit passed, SHA-256
-`fa18db1b150cbe158f38fb38d8568ad5c250e6533bf8d83d3842973042b2ea89`.
-The P2 audit for `37798264346` remains separate at source `a34ebd6bc`.
-Neither replaces installed, cross-platform or actual-main validation.
+The component rule inventory has 27 families, 105 production sources and
+127 witnesses; all 26 previous component meanings and all 62 original material
+rule meanings remain unchanged. Reviewed metadata SHA-256:
+`e9a16f88aaf74c370fda146574f5e5d90e93a7fe37c540e79be69e2ccd5ea45a`.
+The public API inventory has 905 entries, including 263 private dependencies;
+source inventory is not executed coverage or semantic acceptance.
 
-P4 corrected source `a459a234f34fe0128fb994d22aca2de9fecff599` is under fresh
-hosted development run `37809478943`. Prior run `37807975704` compiled and passed
-35/37 suites, with no SDK campaign execution. Its authenticated artifact
-`11563489280` has SHA-256
-`07f0568f5de9148b983d5fa50fbea14ef917ae8aba4dcdaad3f98256e46daa02`;
-only inert diagnostics were inspected locally. The correction adds the missing
-producer census entry and keeps the original renaming work exhaustion as a
-negative control before a separate larger-budget check.
-
-P1 PR99 integration run `37799164508` at `a38174303` still has useful healthy
-checks running. Its API inventory correction is prepared in the P1 checkout;
-unit-accounting failures follow the two API-inventory unit failures. Preserve
-the active run, batch all concrete corrections, and require a fresh full gate.
-
-Local helper feedback: 60 earlier profile SDK controls and both CI-pinned strict
-typing scopes (34 core files and 31 policy files) pass. The new helper SDK has
-24 inert tests. Native helper compilation/execution, final inventories and
-installed/integration/main acceptance are not yet established.
-
-The helper batch now has independent A/B three-member originals and 36 native
-negative controls registered, with explicit candidate work budget 2,000,000.
-Both alternatives retain the same two therapeutic products and complete source
-graph/domain; only the supplied helper product changes from MA to MG. This is a
-software fixture under supplied contracts. Source authoring and native test
-registration do not establish executed acceptance.
-
-The 125-test local wiring/boundary/transport batch passed 123 controls; two
-stale expected pass-counts were corrected and their focused rerun passed. The
-new campaign/installed/prebuilt batch passed 40 inert controls, and the source-
-scope/CI-plan batch passed 28. The supported hosted development census is now
-38 native suites and ten SDK campaigns (260 observations). Full native
-integration has 178 suites, 186 executable bundle members, 26 original fixture
-files and 212 total bundle members. No native command ran locally.
-
-The final helper campaign review added complete third-manifest-row/hash checks;
-the complete campaign/fixture/installed/prebuilt rerun passed 50 inert controls
-(12 + 7 + 13 + 18) in 1.448 seconds. An independent source review of the native
-helper witnesses and original oracle found no concrete mismatch; hosted
-compilation and native behavior still require fresh execution.
-
-Final helper source gates pass: 83 inventory controls, 26 component rule families
-with 103 production sources and 125 witnesses, 62 unchanged material rule
-meanings, and 905 API classifications. Independent comparison retained all
-previous 25 component meanings, all previous 896 API classifications, all 138
-witness meanings and all 359 syntax links. Nine new private dependencies and
-protocol constants carry no independent executed-coverage claim. Migration
-inventory is current at 3,888 entries. The final SDK regression rerun passed
-84 controls; the two strict typing scopes remain passing.
-
-Independent review of the helper SDK, original provenance, installed ownership
-and CI wiring found no correctness blocker. The five-original-input description
-and early capability test registration were corrected during that review.
-This coherent source checkpoint is ready for its first hosted development run;
-no helper native, installed, integration or actual-main acceptance is claimed.
-
-## Grounded-helper first hosted correction
-
-Source `cb7bc7037abf42f9a6b997ec7f119d93b61bfdc6` was submitted to development
-run `37811166797`, attempt 1. Compilation stopped before any native suite or SDK
-campaign executed: the new helper literal module needed its own `open Bioc_wire`
-namespace import. The independently reviewed correction adds that import and
-refreshes only its witness source hash; all rule meanings remain unchanged.
-Authenticated inert artifact `11565461025` retains the failure; its build log
-has SHA-256 `eb18600f7be8c9d7c6e297e10bb371b4aa16d4324b63e17fcd50a7c11aa6b667`.
-A fresh corrected-source run is required. Development documentation now matches
-the registered 38 native suites and ten SDK campaigns (260 observations).
-
-## Candidate-transition congruence work in progress
-
-The P5 checkout starts from helper source `cb7bc7037` with its reviewed namespace
-correction carried forward as `8074da442`. The helper correction itself is under
-run `37811917435` at `ac6150c4eacdc972c8842861d2017ef6b37fd882`; neither its
-acceptance nor P5 acceptance is established. The [narrow assurance contract](policy-candidate-transition-congruence-v0.1.md)
-records measured historical logical work separately from CPU timing and states
-the exact candidate congruence premises. The implementation will compare
-complete private runtime state, input and resource guards within one fresh
-verification invocation. Source, trace correspondence, requirements, all original
-obligations and logical resource charges remain unchanged.
-
-The native diagnostic checker API now separates CPU phases from canonical
-evidence. Private transition witnesses and independent convergence/budget
-controls are being implemented. Ordinary production calls retain the unshared
-algorithm pending measured validation. This is a bounded transition reuse rule,
-not independent component acceptance or a theorem that arbitrary compositions
-need no whole-program checking. Full integration and actual-main gates remain
-open for all increments.
-
-The helper canonical-inventory correction was independently reviewed and
-submitted as `b712322d62a849e1a7216bcc8f516bbd8de992d2` in run `37813464181`.
-Its five source/witness changes and exact ledger pins are explicitly carried
-into P5; no acceptance is inherited. The helper now distinguishes canonical
-template inventories from declared delivery order, with 38 native negative
-controls.
-
-Local P5 source feedback currently passes 44 rule-inventory controls, the
-unchanged 905-entry public API inventory and 3,888-entry migration inventory.
-The additive 27th rule preserves all 26 earlier component and 62 material rule
-meanings. Both new native suites are registered: development now requires
-40 suites and the unchanged ten SDK campaigns (260 observations); full native
-integration requires 180 suites and a bundle of 188 executables plus 26 original
-fixtures. Hosted P5 execution is not yet established.
-
-P4 development is now complete: run `37809478943`, attempt 1, at
-`a459a234f34fe0128fb994d22aca2de9fecff599` passed all 37 native suites and nine SDK
-campaigns (234 observations). Independent inert audit passed with SHA-256
-`05d45efd26fb758deb5be2d6411e9951af605c6946ae85bf0262872251075493`, authenticating
-1,243 source files and artifact `11565722888` (7,527,004 bytes; SHA-256
-`ca3ff6e3eb3fc736991ecff4e3ced455576d7c2e6053fc4ce38267460c8074cf`). Its
-23-obligation, 25-history/86-transition/87-prefix original domain and both exact
-RNA archives remain Linux development evidence only.
-
-P5 independent proof review clarified that `proof_work` measures declared
-auxiliary accounting units, not every CPU/byte visit: canonical key sorting is
-finite under the independent data bounds but not separately charged by that
-counter. Measured candidate CPU includes it. The fixed budget and ordinary
-semantic/resource behavior are unchanged.
-
-The helper corrected run `37813464181` has passed all 38 native suites and is
-executing ten SDK campaigns. Its final independent audit remains pending.
-
-P5 source is ready for its first hosted development run. Independent review
-found no blocking soundness or obvious OCaml API/type issue in the private
-transition rule, full-state key, finite preflight/fallback, fresh source/monitor
-path, staged controls or finite-domain benchmark. This is source review, not a
-machine-checked proof or executed native validation. The final local combined
-run passed 117 Python/static tests in 104.407 seconds; every native subprocess
-in those orchestration tests was mocked. The source boundary and both inventory
-gates pass. There are 19 basic plus six staged runtime negative controls and
-nine full-checker negative controls registered for hosted execution. Canonical
-reports and logical charges are compared across fresh enabled/disabled calls.
-The final 27-rule metadata SHA-256 is
-`e9a16f88aaf74c370fda146574f5e5d90e93a7fe37c540e79be69e2ccd5ea45a`;
-all 26 prior component and 62 material rule meanings remain unchanged.
+P5 local feedback passed 117 Python/static controls plus independent source
+reviews; native subprocesses in orchestration tests were mocked. Hosted tests
+executed 19 basic plus six staged runtime negative controls and nine
+full-checker negative controls. Six fresh enabled/disabled measurements compared
+canonical reports, acceptance, failure prefixes and logical charges. Candidate
+CPU includes proof bookkeeping. `proof_work` counts declared auxiliary accounting
+units, not every CPU operation or byte visit; retained canonical bytes are not
+OCaml heap measurements. The first hosted comparison reused ten of 42 transitions but increased total
+CPU by 4.43% and 6.14% in its two convergence pairs. Ordinary checking remains
+unshared. See the [measured contract](policy-candidate-transition-congruence-v0.1.md)
+for full scope, phase costs and source-bound evidence; no general speedup is claimed.

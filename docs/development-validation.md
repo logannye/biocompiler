@@ -174,7 +174,7 @@ remain distinct revision boundaries.
 | `studio-browser` | Installed Python 3.11 package, Node 22 and the pinned Playwright/Chromium setup run guided workspace, construction inspection and review suites. |
 | `studio-typescript` | Pinned strict TypeScript checks, unchanged generated release assets, runtime response decoding and current migration inventory. |
 | `ocaml-build` | Build once per native platform, check library boundaries, generated policy schema/operational/material fixtures, rule coverage and both strict transport/policy type gates. Emit the independent component A/B original packet once with source/build provenance; retain the private emitter only as a test tool outside wheel contents. Retain locked inputs and exact compiled suite/role/fixture bytes, assemble candidate platform wheels and stamp their policy source authority. No test result is inferred from building a wheel. |
-| `ocaml-native-tests` | Restore the current run/platform-bound bundle, run the 22 focused policy/producer/construction checks with separately retained diagnostics, then all 177 Dune-declared suites with their original arguments and two bounded workers. The bundle binds 184 executable entries and 26 original JSON fixtures; 59 suites have explicit ordered fixture dependencies (56 operational plus three non-operational suites). The component suites retain the original A/B model fixtures. Assembly-rule and assembly-check tests share independently authored literals through a domain-only test library outside both production executable closures; expected material is declared without the construction producer. These leaf checks do not establish full composition acceptance. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
+| `ocaml-native-tests` | Restore the current run/platform-bound bundle, run the 22 focused policy/producer/construction checks with separately retained diagnostics, then all 180 Dune-declared suites with their original arguments and two bounded workers. The bundle binds 188 executable entries and 26 original JSON fixtures; 62 suites have explicit ordered fixture dependencies (59 operational plus three non-operational suites). The component suites retain the original A/B model fixtures. Assembly-rule and assembly-check tests share independently authored literals through a domain-only test library outside both production executable closures; expected material is declared without the construction producer. These leaf checks do not establish full composition acceptance. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
 | `ocaml-core` | Two workers execute all 67 original direct corpus, protocol, resource-bound and Python/OCaml conformance command groups against the same restored binaries. Commands within each group keep their original order and output paths; complete current-run group/log accounting is required before success. |
 | `architecture-sdk` | Four platform/Python jobs run concurrently. Each checks installed policy source assessment, operational execution, implementation preservation, material compilation/fresh export and Verify-only offline consumption against original fixtures and exact restored Core/Verify binaries. The selected interpreter's real console runs outside the checkout; policy reports and logs remain distinct. It then uses two isolated Python workers for all 16 architecture scenarios. Case B retains all its rejection/publication controls. The coordinator applies the unchanged independent 175-check/219-artifact architecture census before reporting success. |
 | `executable-rna-reproducibility` | Depends only on `installed-executable`; compares complete relative-file SHA-256 inventories from both Python versions. |
@@ -431,9 +431,10 @@ The deterministic longest-processing-time assignment keeps each complete
 they cannot exclude tests or substitute for execution. Every discovered class
 is assigned exactly once across the five shards for its Python version.
 
-Pure source discovery of the current union on Python 3.14.6 finds 4,039 tests
-in 428 classes. This is an inventory result, not test execution or hosted
-acceptance. Both hosted Python versions must independently rediscover and
+The 2026-10-06 source-discovery snapshot recorded in `3298b240cb` found 4,039
+tests in 428 classes on Python 3.14.6. This historical inventory is neither the
+current test census nor execution/hosted acceptance. Both hosted Python versions
+must independently rediscover and
 account for the complete current suite. Existing capture scheduling, callback,
 reference, source lineage and reconstruction controls remain alongside the
 added policy controls. Placement weights retain the historical fixture-inclusive
@@ -646,3 +647,14 @@ release identities. Source-only or mock-peer results cannot satisfy hosted
 gates. All previous native corpora, direct command groups, installed campaigns
 and release obligations remain required. Static union checks do not close
 hosted, merge or actual-main acceptance.
+
+The named-instance, prerequisite, two-observation, multi-member and grounded-helper
+profiles extend those same four installed runtime slots. Each retains its own
+26-observation campaign, complete original fixture/provenance packet, fresh
+Core/Verify checks and both paired molecular archives. Their independent
+comparators require all four runtime results, exact installed package/native
+ownership, original authority and complete output equality. These five additive
+profiles preserve the original material, component, staged and researcher gates;
+none substitutes development receipts for installed execution. The candidate
+congruence increment adds native equivalence/measurement suites without changing
+the public SDK or wire assurance profile.

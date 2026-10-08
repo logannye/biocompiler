@@ -282,6 +282,11 @@ checks complete state/input/resource equality inside one fresh verification
 invocation. It retains all original source histories and requirements and keeps
 measurements outside canonical evidence. This is a narrow foundation for proof
 reuse; arbitrary component assume-guarantee verification remains a later rule.
+The first fixed hosted comparisons preserved exact results and skipped candidate
+transitions, but their bookkeeping increased total CPU time. Ordinary verification
+therefore remains unshared. Those measurements place source execution and explicit
+encoding ahead of candidate steps in these cases; future scaling decisions must
+measure representative domains and preserve the same assurance obligations.
 
 Do not make this direction a prerequisite for completing the current feature
 batch. Preserve ownership of active worktrees and frozen validation candidates.

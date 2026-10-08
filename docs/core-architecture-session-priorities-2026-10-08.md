@@ -9,23 +9,24 @@ This refines the [product vision](product-vision-and-integration-roadmap.md) and
 continues the SM tasks in the [semantic development plan](semantic-mrna-development-plan.md).
 It records proposed work, not implemented capabilities or new acceptance.
 
-Implementation checkpoint: the user authorized execution after this plan.
-Priority 1 now has a [versioned contract](policy-instance-composition-v0.1.md),
-domain/producer/checker/service changes and independent witnesses. The development
-revision `c0366fc92` passed its hosted native build and all 33 focused native suites;
-all six SDK campaigns also passed in run `37788462656` (156 retained observations).
-Integration is on `codex/core-instance-composition`; complete installed/cross-platform
-and actual-main validation remain pending. Priority 2 was explicitly selected as
-a separate bounded increment while those gates run, in
-`codex/dev-policy/prerequisite-closure`; its [contract](policy-prerequisite-closure-v0.1.md)
-and implementation are present. Its corrected development revision `a34ebd6bc`
-has passed its hosted build, 35 native suites and seven SDK campaigns in run
-`37798264346`; independent artifact audit also passed. Priority 3 is now implemented in the separate
-`codex/dev-policy/two-observation-composition` checkout with an
-[explicit bounded contract](policy-two-observation-composition-v0.1.md); corrected development run `37803803945` at `6feb332688ec838031e4cab9de2f2ee498c7f4b5` passed all 36 native suites and eight SDK campaigns (208 observations), followed by independent inert audit. Priorities 2–5 must not inherit priority 1's acceptance.
-Priority 4 has an implemented [bounded two-member contract](policy-multi-member-composition-v0.1.md), with corrected development run `37809478943` at `a459a234f` pending. Its [grounded-helper subincrement](policy-grounded-helper-composition-v0.1.md) now has core, SDK, independent fixtures and validation wiring in a separate checkout; first hosted native validation is pending. Priority 5 is implementing a [bounded candidate-transition congruence rule](policy-candidate-transition-congruence-v0.1.md), with fresh source/domain/requirement checking retained and hosted enabled/disabled measurements pending. This does not prune the global domain or establish arbitrary component proof reuse. The latest user instruction
-authorizes continuing these bounded increments sequentially while preserving
-separate exact-revision validation gates.
+Implementation checkpoint: the user authorized completing all five bounded
+increments. Named instances, typed prerequisites, two observations and two RNA
+members have each passed their exact focused hosted development runs and
+independent audits. The grounded-helper extension and its independent audit have also passed:
+38 native suites and ten SDK campaigns with 260 observations. Candidate-transition congruence and its independent audit have also passed:
+40 native suites and 260 SDK observations, including exact enabled/disabled
+result comparisons and separate CPU measurements. The [current checkpoint](core-architecture-session-checkpoint-2026-10-08.md)
+records exact source/run identities, scope, corrections and remaining gates.
+
+A combined integration candidate now includes the five increments and the
+instance API-inventory correction. Complete installed/cross-platform validation,
+independent artifact review and fresh actual-main validation remain required.
+The [narrow congruence contract](policy-candidate-transition-congruence-v0.1.md)
+retains every original domain history, source check and requirement monitor;
+it does not establish arbitrary component proof reuse or global-domain pruning.
+Ordinary checking remains unshared because the measured bookkeeping cost exceeded
+the saved candidate execution in the fixed comparison cases. No development
+pass transfers acceptance to a subsequent branch.
 
 ## Assessment and recommendation
 
