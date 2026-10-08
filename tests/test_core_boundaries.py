@@ -84,6 +84,8 @@ class CoreBoundaryTests(unittest.TestCase):
         receipt = boundaries.check_boundaries(boundaries.ROOT)
         name = "bioc_policy_instance_test_support"
         self.assertEqual(receipt["roles"][name], "test_support")
+        self.assertEqual(set(receipt["libraries_and_executables"][name]),
+                         {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "zarith"})
         self.assertEqual(set(receipt["transitive_dependencies"][name]),
                          {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "digestif", "zarith"})
         for owner in ("executable:biocompiler-core", "executable:biocompiler-verify", "bioc_checker", "bioc_realization_checker"):

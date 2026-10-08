@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
-    "bioc_policy_instance_test_support": ("test/policy_instance_support/dune", {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"}, "test_support"),
+    "bioc_policy_instance_test_support": ("test/policy_instance_support/dune", {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "zarith"}, "test_support"),
     "bioc_policy_staged_test_support": ("test/policy_staged_support/dune", {"bioc_wire", "bioc_domain"}, "test_support"),
     "bioc_policy_component_test_support": ("test/policy_component_support/dune", {"bioc_wire", "bioc_domain"}, "test_support"),
     "bioc_reference_input": ("lib/reference_input/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
