@@ -23,7 +23,7 @@ REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py", "examples/rese
 REVIEWED_ADDITIONS = {
     # Research-project authoring and the installed example stay excluded from
     # the immutable original workflow cohort and confer no historical authority.
-    'src/biocompiler/policy/research_project.py': '44e278ee572bd0bb097fd401432c5ec64c1fd5f9208eb8f11efd5fe0f670b61d',
+    'src/biocompiler/policy/research_project.py': '46c00188849ff2688c3b5b822489c4a0248c87684e1cfaac74af44debb9c0896',
     'examples/researcher_alpha.py': '63d862d55e22de38ba633f901d37c28c7a6fab3cb77ed8604d7fc07df0aac313',
     'src/biocompiler/core_policy_component_selection.py': '3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2',
     'src/biocompiler/policy/component_selection.py': '10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80',
@@ -49,9 +49,9 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/workflow_backend.py": "81958a4fc1147b2ea10eae7c7bac15a68338b1cb21b738805ae04538c7bdc1db",
     "src/biocompiler/core_workflow_authority.py": "ded29c7cd4c16241812bd7f677b0c962d185a724fef1cd7294c7e899c7c32d66",
     "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5",
-    # Independently reviewed policy transports remain outside original authority.
-    'src/biocompiler/policy/component_material.py': '24da1db993f5f56ff516ad3b2d14667731f681ebe9f1c9ae6898d0728bd5eaba',
-    'src/biocompiler/core_policy_component_material.py': 'e5645b27e70f39a4979fee53638007044c44d37bec4f1a8af7e866f95a38f9e0',
+    # Reviewed named-instance transports stay excluded from original authority.
+    'src/biocompiler/policy/component_material.py': 'd35297c9fa06cc8fdcf5db27f80070a2fe9a5580b17e913619e1f7c75bc37690',
+    'src/biocompiler/core_policy_component_material.py': 'ce3fa2862b83d2745021395460a1a50636a109e5b540a052b9d897cc81739073',
     'src/biocompiler/policy/material.py': '5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79',
     'src/biocompiler/core_policy_material.py': 'bc8d44be6b6aa7a6d56d4352c85d6a2f8c9201ab626e6ebe1bcc265487b46704',
     'src/biocompiler/policy/implementation.py': '4e1de0535cf852885169328aaae035caff9178b367b84f204c1e68eaae478515',
