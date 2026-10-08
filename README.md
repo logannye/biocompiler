@@ -127,7 +127,7 @@ The workspace demonstrates the earlier structural candidate workflow using artif
 
 | Explore | Start here |
 | --- | --- |
-| Design and direction | [Architecture](docs/architecture.md) · [Roadmap](docs/roadmap.md) |
+| Design and direction | [Product vision and integration roadmap](docs/product-vision-and-integration-roadmap.md) · [Architecture](docs/architecture.md) · [Roadmap](docs/roadmap.md) |
 | Therapeutic programs | [Python policy language](docs/policy-language-v0.1.md) · [Executable RNA architecture](docs/payload-architecture-v0.1.md) |
 | Correctness and evidence | [Verification independence](docs/verification-independence-v0.1.md) · [Human-use admission boundaries](docs/human-admission-v0.1.md) |
 | Contributing | [Source](src/biocompiler/) · [Tests](tests/README.md) · [Engineering guidelines](AGENTS.md) |

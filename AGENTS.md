@@ -61,6 +61,12 @@ biocompiler implements Python intent authoring, immutable build/realization requ
 
 ## Development cadence and validation
 
+Follow the [product vision and integration roadmap](docs/product-vision-and-integration-roadmap.md)
+for the 2026-10-08 direction: standalone researcher usefulness first, with the
+same compiler and independent verifier serving future agents and closed-loop lab
+adapters. Keep lab integration outside the critical path of independently complete
+standalone releases and preserve the existing human immune-cell RNA product scope.
+
 Active user-approved delivery work follows
 [the researcher-alpha roadmap](docs/researcher-alpha-roadmap.md). Keep its real
 research qualification, software rehearsal, hosted validation and release exits

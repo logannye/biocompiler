@@ -1,5 +1,11 @@
 # Development roadmap
 
+The [product vision and integration roadmap](product-vision-and-integration-roadmap.md)
+sets the 2026-10-08 direction: useful standalone researcher workflows first,
+with one compiler and verification core that can later serve agents in closed-loop
+labs. Its milestones supplement the implementation plans below; laboratory
+integration is not a prerequisite for an independently complete standalone release.
+
 ## Active implementation roadmap — language migration
 
 The 2026-10-01 [language migration roadmap](language-migration-roadmap.md) is the
