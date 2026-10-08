@@ -2,9 +2,16 @@
 
 The [2026-10-08 core priorities](core-architecture-session-priorities-2026-10-08.md)
 order composition, executable prerequisites, source-family expansion,
-multi-member/helper closure and measured modular verification. Priority 1's
-[bounded instance profile](policy-instance-composition-v0.1.md) is implemented
-in the current working branch; native and integration validation are pending.
+multi-member/helper closure and measured modular verification. Named instances,
+provider prerequisites, two-observation composition and two-product/member
+composition are implemented on separate development branches, with focused
+validation at different stages. The
+grounded-helper path is under hosted correction/validation; the first bounded
+[candidate-transition congruence rule](policy-candidate-transition-congruence-v0.1.md)
+and its diagnostic measurements are being checked. See the
+[exact-revision checkpoint](core-architecture-session-checkpoint-2026-10-08.md)
+for completed evidence and open integration/actual-main gates. Source completion
+does not transfer acceptance between these branches.
 
 The [product vision and integration roadmap](product-vision-and-integration-roadmap.md)
 sets the 2026-10-08 direction: useful standalone researcher workflows first,

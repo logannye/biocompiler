@@ -83,6 +83,11 @@ let positive fixture alternate=
   phase(if alternate then "B: independently changed helper material"else "A: complete original two-payload and helper request");
   let request,union=request_literal fixture alternate and limits=invocation_limits fixture in
   let decoded=R.of_json request in
+  let authority=at["composition_rule";"body";"material_authority"]request in
+  require(get "member_order" authority=arr(List.map str["payload_a";"payload_b";"helper_rna"]) &&
+    List.map(get "id")(items "output_members"(get "template" authority))=List.map str["helper_rna";"payload_a";"payload_b"] &&
+    List.map(get "member_id")(items "requirements"(get "template" authority))=List.map str["helper_rna";"payload_a";"payload_b"])
+    "Canonical template naming must not change declared therapeutic and helper delivery order";
   require(Json.equal request(R.to_json decoded) && Json.equal union(Bioc_domain.Policy_component_context.ordered_union_json(R.composition_rule decoded)))
     "Original request or independently authored ordered union changed during decoding";
   let produced=compile request limits in
@@ -131,9 +136,16 @@ let negatives request candidate limits produced=
   let original=R.of_json request in
   let bad_rule label transform=rejected_decode label(fun()->A.of_json ~components:(R.component_library original)
     (get "composition_rule" request |> transform |> repin))in
-  bad_rule "helper masquerades as Payload"(put["body";"material_authority";"template";"requirements";"2";"category"](str "payload"));
-  bad_rule "payload masquerades as Delivered_helper"(put["body";"material_authority";"template";"requirements";"0";"category"](str "delivered_helper"));
-  bad_rule "helper role purpose masquerades as payload"(put["body";"material_authority";"template";"requirements";"2";"roles";"0";"purpose"](str "requested_payload"));
+  let requirement member transform=edit["body";"material_authority";"template";"requirements"](fun raw->
+    arr(List.map(fun row->if get "member_id" row=str member then transform row else row)(Json.array raw)))in
+  bad_rule "helper masquerades as Payload"(requirement helper_member(replace "category"(str "payload")));
+  bad_rule "payload masquerades as Delivered_helper"(requirement "payload_a"(replace "category"(str "delivered_helper")));
+  bad_rule "helper role purpose masquerades as payload"(requirement helper_member(put["roles";"0";"purpose"](str "requested_payload")));
+  bad_rule "declared member order cannot follow lexical template order"(fun raw->raw
+    |> put["body";"material_authority";"member_order"](arr(List.map str["helper_rna";"payload_a";"payload_b"]))
+    |> edit["body";"material_authority";"members"](fun values->arr[at["2"]values;at["0"]values;at["1"]values]));
+  bad_rule "duplicate output cannot hide omitted helper"(edit["body";"material_authority";"template";"output_members"](fun raw->
+    arr[at["1"]raw;at["1"]raw;at["2"]raw]));
   bad_rule "helper source aliases payload"(put["body";"helper";"source"](str "source_a"));
   bad_rule "helper acquires behavioral slot"(edit["body";"components"](fun raw->arr(Json.array raw@[at["0"]raw |> replace "slot"(str "helper_slot")])));
   bad_rule "P4 profile cannot admit helper"(fun raw->raw |> replace "schema_version"(str "biocompiler.policy_component_assembly_rule.v0.3")
@@ -217,5 +229,5 @@ let ()=
     at["construction";"inventory";"molecules";"2";"sequence"]candidate<>at["construction";"inventory";"molecules";"2";"sequence"]candidate_b)
     "Helper-only original edit changed therapeutic source, graph or payloads, or did not change helper RNA";
   reject "stale candidate after helper material edit"(fun()->call Service.handle Protocol.Verify "export-policy-component-material"(invocation request_b candidate limits));
-  require(!rejected_count=36)"Incomplete grounded-helper negative control census";
+  require(!rejected_count=38)"Incomplete grounded-helper negative control census";
   Printf.printf "grounded_helper_material: independent three-RNA originals, unchanged25-history therapeutic domain; %d negative controls\n" !rejected_count

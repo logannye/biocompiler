@@ -55,6 +55,8 @@ DEPENDENCY_FIXTURES = {
     'test_policy_implementation_lowering': ['data/policy_implementation_binding_v01.json'],
     'test_policy_requirement_monitor': ['data/policy_implementation_binding_v01.json'],
     'test_policy_preservation_check': ['data/policy_implementation_binding_v01.json'],
+    "test_policy_candidate_congruence_check": ["data/policy_implementation_binding_v01.json"],
+    "test_policy_candidate_transition_congruence": ["data/policy_primitives_v01.json"],
     'test_construction_content': ['data/construction_content_v01.json'],
     'test_policy_mrna_structure': ['data/policy_mrna_structure_v01.json'],
     'test_policy_implementation_service': ['data/policy_implementation_request_v01.json'],

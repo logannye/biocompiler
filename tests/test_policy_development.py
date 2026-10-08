@@ -116,13 +116,13 @@ class PolicyDevelopmentTests(unittest.TestCase):
             "test_policy_component_selection_scope", "test_policy_component_selection_producer", "test_policy_generation_admission", "test_policy_generation_producers", "test_policy_component_selection_service", "test_policy_component_context_check",
             "test_policy_component_material_service", "test_protocol", "test_producer_protocol",
             "test_policy_implementation_binding",
-            "test_policy_preservation_check", "test_policy_material_binding", "test_policy_material_context",
+            "test_policy_preservation_check", "test_policy_candidate_congruence_check", "test_policy_candidate_transition_congruence", "test_policy_material_binding", "test_policy_material_context",
             "test_policy_material_check", "test_policy_mrna_structure", "test_construction_content"])
         self.assertEqual(self.calls[:2], [
             ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"],
             ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]])
-        self.assertEqual(len(self.calls), 40)
-        self.assertEqual(len(result["suites"]), 38)
+        self.assertEqual(len(self.calls), 42)
+        self.assertEqual(len(result["suites"]), 40)
         for name, fixtures in (
             ("test_policy_component_selection_request", ["policy_material_request_v01.json", "policy_material_state_v01.json"]),
             ("test_policy_component_material_candidate", ["policy_material_request_v01.json"]),
@@ -225,8 +225,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
             dev.run(self.root)
         result = self.report()
-        self.assertEqual(len(self.calls), 40)
-        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 37)
+        self.assertEqual(len(self.calls), 42)
+        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 39)
         self.assertEqual(result["suites"][1]["status"], "failed")
         self.assertEqual(result["status"], "failed")
 
@@ -280,7 +280,7 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(set(writers), {coordinator})
         self.assertEqual([row["name"] for row in result["suites"]], [row["name"] for row in suites])
         self.assertCountEqual(completed, [row["name"] for row in suites])
-        self.assertEqual(len({row["log"] for row in result["suites"]}), 38)
+        self.assertEqual(len({row["log"] for row in result["suites"]}), 40)
         dev.validate_native_feedback(self.root, result, dev.preparation(self.root))
 
     def test_parallel_suite_timeout_retains_every_other_outcome(self):
@@ -297,9 +297,9 @@ class PolicyDevelopmentTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
                 dev.run(self.root)
         report = self.report()
-        self.assertEqual(len(self.calls), 40)
+        self.assertEqual(len(self.calls), 42)
         self.assertEqual([row["name"] for row in report["suites"]], [name for name, _ in dev.SUITES])
-        self.assertEqual([row["status"] for row in report["suites"]].count("passed"), 37)
+        self.assertEqual([row["status"] for row in report["suites"]].count("passed"), 39)
         self.assertEqual(report["suites"][1]["status"], "failed")
         self.assertNotIn("returncode", report["suites"][1])
         self.assertIn("900", report["suites"][1]["error"])

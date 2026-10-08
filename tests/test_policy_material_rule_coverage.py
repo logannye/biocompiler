@@ -48,7 +48,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 26, "sources": 103, "witness_sources": 125,
+        self.assertEqual(result["component_route"], {"rules": 27, "sources": 105, "witness_sources": 127,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -246,8 +246,38 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_grounded_helper_composition(self):
+    def before_candidate_congruence(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        rule = ledger["rules"].pop()
+        self.assertEqual(rule["id"], "component.candidate_transition_congruence")
+        self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in rule[kind]},
+                         set(coverage.COMPONENT_CONGRUENCE_WITNESSES))
+        ledger["sources"] = [row for row in ledger["sources"]
+                             if row["path"] not in coverage.COMPONENT_CONGRUENCE_SOURCES]
+        ledger["witness_sources"] = [row for row in ledger["witness_sources"]
+                                     if row["path"] not in coverage.COMPONENT_CONGRUENCE_WITNESSES]
+        ledger["limitations"].pop()
+        return ledger
+
+    def test_candidate_congruence_preserves_all_twenty_six_previous_rules(self):
+        projected = self.before_candidate_congruence()
+        self.assertEqual((len(projected["rules"]), len(projected["sources"]), len(projected["witness_sources"])),
+                         (26, 103, 125))
+        encoded = json.dumps(coverage.component_metadata(projected), sort_keys=True,
+                             separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "a0b9553cfa4c201af67188c37bf1fcd21840821ce5f99b0144ca42f801f648b6")
+
+    def test_candidate_congruence_cannot_drop_its_independent_witnesses(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        for path in coverage.COMPONENT_CONGRUENCE_WITNESSES:
+            ledger = deepcopy(original)
+            ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] != path]
+            with self.subTest(omitted=path), self.assertRaisesRegex(coverage.CoverageError, "census"):
+                coverage.check_component(coverage.ROOT, ledger)
+
+    def before_grounded_helper_composition(self):
+        ledger = self.before_candidate_congruence()
         rule = ledger["rules"][-1]
         self.assertEqual(rule["id"], "component.grounded_helper_composition")
         self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in rule[kind]},
@@ -272,9 +302,10 @@ let check x = Diagnostic.require x "code" "message"
 
     def test_grounded_helper_exact_conditional_scope_and_complete_witness_census(self):
         original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
-        rule = original["rules"][-1]
+        rule = next(row for row in original["rules"] if row["id"] == "component.grounded_helper_composition")
         self.assertEqual(len(coverage.COMPONENT_GROUNDED_HELPER_WITNESSES), 13)
-        self.assertEqual((len(original["sources"]), len(original["witness_sources"])), (103, 125))
+        projected = self.before_candidate_congruence()
+        self.assertEqual((len(projected["sources"]), len(projected["witness_sources"])), (103, 125))
         for phrase in ("every original obligation (24 in the independent witness)", "every qualified Attempt_bank owner",
                        "source-independent expression-completion interval", "five original source inputs"):
             self.assertIn(phrase, rule["scope"])
@@ -302,11 +333,13 @@ let check x = Diagnostic.require x "code" "message"
 
     def test_grounded_helper_sources_cannot_be_promoted_to_empirical_or_execution_proof(self):
         original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        rule = next(row for row in original["rules"] if row["id"] == "component.grounded_helper_composition")
         for key, value in (("evidence_scope", "native_validation_complete"),
                            ("limits", "Helper RNA establishes biological capacity and guaranteed expression."),
-                           ("negative", deepcopy(original["rules"][-1]["positive"]))):
+                           ("negative", deepcopy(rule["positive"]))):
             ledger = deepcopy(original)
-            ledger["rules"][-1][key] = value
+            changed = next(row for row in ledger["rules"] if row["id"] == "component.grounded_helper_composition")
+            changed[key] = value
             with self.subTest(changed=key), self.assertRaises(coverage.CoverageError):
                 coverage.check_component(coverage.ROOT, ledger)
 

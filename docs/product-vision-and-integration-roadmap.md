@@ -277,6 +277,11 @@ Refresh the actual branch, release, handoff and outstanding work before each
 coherent batch. Audit existing implementations before creating replacements.
 Compositional construction can initially retain whole-program bounded checking;
 modular proof reuse requires its own justified assurance rules.
+The first bounded [candidate-transition congruence increment](policy-candidate-transition-congruence-v0.1.md)
+checks complete state/input/resource equality inside one fresh verification
+invocation. It retains all original source histories and requirements and keeps
+measurements outside canonical evidence. This is a narrow foundation for proof
+reuse; arbitrary component assume-guarantee verification remains a later rule.
 
 Do not make this direction a prerequisite for completing the current feature
 batch. Preserve ownership of active worktrees and frozen validation candidates.

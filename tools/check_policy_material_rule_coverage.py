@@ -151,9 +151,11 @@ COMPONENT_MULTI_MEMBER_SOURCES = (
 COMPONENT_GROUNDED_HELPER_SOURCES = tuple(
     f"core/lib/domain/{name}.{suffix}" for name in
     ("architecture_contract", "policy_mrna_structure") for suffix in ("ml", "mli"))
+COMPONENT_CONGRUENCE_SOURCES = tuple(
+    f"core/lib/realization_checker/policy_preservation_check.{suffix}" for suffix in ("ml", "mli"))
 COMPONENT_SOURCES = tuple(sorted((*COMPONENT_ROUTE_SOURCES, *COMPONENT_SHARED_SOURCES,
                                   *COMPONENT_STAGED_SOURCES, *COMPONENT_MULTI_MEMBER_SOURCES,
-                                  *COMPONENT_GROUNDED_HELPER_SOURCES)))
+                                  *COMPONENT_GROUNDED_HELPER_SOURCES, *COMPONENT_CONGRUENCE_SOURCES)))
 COMPONENT_REASON = "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
 ROUTE_EXCEPTIONS.update({path: COMPONENT_REASON for path in COMPONENT_ROUTE_SOURCES})
 ROUTE_EXCEPTIONS.update({f"core/lib/compiler/policy_staged_lowering.{suffix}":
@@ -172,7 +174,8 @@ COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "compone
     "component.selection_candidate_codec", "component.selection_common_authority", "component.checked_selection",
     "component.selection_publication_resources", "component.selection_scope", "component.selection_export", "component.selection_sdk",
     "component.selection_generation", "component.staged_regimen", "component.instance_composition", "component.prerequisite_closure", "component.two_observation_composition",
-    "component.multi_member_composition", "component.grounded_helper_composition")
+    "component.multi_member_composition", "component.grounded_helper_composition",
+    "component.candidate_transition_congruence")
 COMPONENT_INSTANCE_WITNESSES = tuple(sorted([
     "core/test/test_policy_instance_assembly_rule.ml",
     "core/test/test_policy_instance_material_service.ml",
@@ -262,7 +265,12 @@ COMPONENT_STAGED_WITNESSES = tuple(sorted([
     "tools/generate_policy_staged_regimen_fixture.py", "tools/generate_policy_staged_material_fixture.py",
     "tools/check_policy_staged_regimen_source.py", "tools/check_policy_staged_component_material.py",
 ]))
+COMPONENT_CONGRUENCE_WITNESSES = (
+    "core/test/test_policy_candidate_congruence_check.ml",
+    "core/test/test_policy_candidate_transition_congruence.ml",
+)
 COMPONENT_WITNESSES = tuple(sorted([
+    *COMPONENT_CONGRUENCE_WITNESSES,
     *COMPONENT_INSTANCE_WITNESSES,
     *COMPONENT_PREREQUISITE_WITNESSES,
     *COMPONENT_TWO_OBSERVATION_WITNESSES,
@@ -289,7 +297,7 @@ COMPONENT_WITNESSES = tuple(sorted([
 ]))
 # Fixed reviewed meaning/provenance projection, excluding source-body hashes and
 # lexical counts. Re-pinning changed files cannot reassign witness meaning.
-COMPONENT_METADATA_SHA256 = "a0b9553cfa4c201af67188c37bf1fcd21840821ce5f99b0144ca42f801f648b6"
+COMPONENT_METADATA_SHA256 = "e9a16f88aaf74c370fda146574f5e5d90e93a7fe37c540e79be69e2ccd5ea45a"
 
 
 class CoverageError(ValueError):

@@ -136,6 +136,8 @@ TESTS = {
     "test_policy_implementation_lowering": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
     "test_policy_requirement_monitor": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "zarith"},
     "test_policy_preservation_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "zarith"},
+    "test_policy_candidate_congruence_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_candidate_runtime", "bioc_realization_checker", "zarith", "unix"},
+    "test_policy_candidate_transition_congruence": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "bioc_policy_staged_test_support"},
     "test_construction_content": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
     "test_policy_mrna_structure": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker"},
     "test_policy_implementation_service": {"bioc_wire", "bioc_service", "bioc_producer_service"},
@@ -444,6 +446,8 @@ def source_boundary(path, allowed_libraries, *, owner=None):
         if token == "Unix":
             members = (ARTIFACT_UNIX if owner == "bioc_service" and path.name == "artifact_io.ml"
                        else ARTIFACT_TEST_UNIX if owner == "test:test_artifact_io"
+                       else frozenset({"gettimeofday"}) if owner == "test:test_policy_candidate_congruence_check"
+                       and path.name == "test_policy_candidate_congruence_check.ml"
                        else SELECTION_SERVICE_TEST_UNIX if owner == "test:test_policy_component_selection_service"
                        and path.name == "test_policy_component_selection_service.ml" else frozenset())
             if (tokens[index:index + 2] != ["Unix", "."] or index + 2 >= len(tokens)
@@ -451,6 +455,10 @@ def source_boundary(path, allowed_libraries, *, owner=None):
                 raise BoundaryError(f"Unreviewed native/process/dynamic-code escape Unix in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
+            if owner == "test:test_policy_candidate_congruence_check" and path.name == "test_policy_candidate_congruence_check.ml":
+                # Diagnostic timing is test-only; production gets no clock,
+                # environment or process capability from this exception.
+                reviewed.add("time")
             if owner == "test:test_policy_component_selection_service" and path.name == "test_policy_component_selection_service.ml":
                 reviewed.update(SELECTION_SERVICE_TEST_SYS)
             if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus", "test:test_synthetic_acceptance_corpus", "test:test_synthetic_producers_corpus", "test:test_realization_workflow_corpus", "test:test_reference_contracts_corpus"}:
@@ -623,6 +631,8 @@ def check_boundaries(root: Path):
                     "test_policy_implementation_lowering": ["policy_implementation_binding_v01.json"],
                     "test_policy_requirement_monitor": ["policy_implementation_binding_v01.json"],
                     "test_policy_preservation_check": ["policy_implementation_binding_v01.json"],
+                    "test_policy_candidate_congruence_check": ["policy_implementation_binding_v01.json"],
+                    "test_policy_candidate_transition_congruence": ["policy_primitives_v01.json"],
                     "test_construction_content": ["construction_content_v01.json"],
                     "test_policy_mrna_structure": ["policy_mrna_structure_v01.json"],
                     "test_policy_implementation_service": ["policy_implementation_request_v01.json"],

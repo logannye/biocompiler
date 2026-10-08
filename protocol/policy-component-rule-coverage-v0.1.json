@@ -14,7 +14,7 @@
     },
     {
       "path": "core/lib/candidate_runtime/policy_primitives.ml",
-      "sha256": "8350d914aa8ab87d47d568e5968cf37cd4932992145d25c4224a91cf88c7f9cd",
+      "sha256": "26561d860ba9d376b5cbd473afa361495b7c582d4ec901d566f421c6904f61bb",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -30,7 +30,7 @@
     },
     {
       "path": "core/lib/candidate_runtime/policy_primitives.mli",
-      "sha256": "b1a9bd2c909d625766ca730fbc6f06eb512e06285126df6ae431a2c4b8b9e154",
+      "sha256": "74aeef11f93320ce9295e0d9aece4a0d6f5ff9aa7b6674b3d139645505935a62",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -382,7 +382,7 @@
     },
     {
       "path": "core/lib/domain/policy_component_assembly_rule.ml",
-      "sha256": "6871101d606e5e3038bd243f138b75ef61d37f0f17a0cf7372edc92ea1b72b21",
+      "sha256": "375a7eae775e8fa02eee64ad43f1baf3cef979ab4f82ea12d7378267914f59da",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -951,7 +951,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_assembly_check.ml",
-      "sha256": "e435685295d0342ee0dc8a0c5c806f7342679af8ad9be789f168a3b7f7bcd128",
+      "sha256": "4c15692752efbba2a2cfbc86985bc59d051f650816148f0ab78834bee89bd381",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -979,7 +979,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_context_check.ml",
-      "sha256": "a363edb4b5660a295b506100c5bbad071c1bf0820de6c03b2e05e809bb310301",
+      "sha256": "dffafc72cd2205598421315d932df888ad8f934d5ab0e9f458c04dcfcd19139c",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1092,6 +1092,32 @@
     {
       "path": "core/lib/realization_checker/policy_component_selection_common.mli",
       "sha256": "7e63797efe103400ec5e7221bb2fffa06d4a76d3773dab2463603db903a45e82",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_preservation_check.ml",
+      "sha256": "3f3f647b102a4e720cd202735c073723c880f6fb227646e1f69da9df14609790",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "require": 7
+        },
+        "profile_literals": {
+          "biocompiler.policy_bounded_preservation.v0.1": 1,
+          "biocompiler.policy_preservation_report.v0.1": 1,
+          "biocompiler.policy_preservation_resources.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_preservation_check.mli",
+      "sha256": "2c4bfc65dff6c5cd779738df47ee9c695ba1c0fdd7080338f8891be5a8db4207",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1550,7 +1576,7 @@
     },
     {
       "path": "core/test/policy_grounded_helper_support/literals.ml",
-      "sha256": "cafc3211b547d1556a67bfdd40e46e903f4090128c4ed61e4a45f4bf95d40344"
+      "sha256": "8f30a6308590ea1a2cf349e419e9a17e02a9481a88a1150a7d243fbb99afe10d"
     },
     {
       "path": "core/test/policy_grounded_helper_support/requests.ml",
@@ -1595,6 +1621,14 @@
     {
       "path": "core/test/prerequisite_fixture_export/main.ml",
       "sha256": "092be390dfae84578528a9bdc9364326b121b92c14132ce2149872c2d3ccbc78"
+    },
+    {
+      "path": "core/test/test_policy_candidate_congruence_check.ml",
+      "sha256": "e192622d432fe175b7c0a45147bb7fa08fac2cb139417942851ccb886b4545d9"
+    },
+    {
+      "path": "core/test/test_policy_candidate_transition_congruence.ml",
+      "sha256": "b36098ab56921dfba70209f09e4f2a6cde29fe25b85f8e8dd808bb1574e321a6"
     },
     {
       "path": "core/test/test_policy_component_assembly_check.ml",
@@ -1666,7 +1700,7 @@
     },
     {
       "path": "core/test/test_policy_grounded_helper_material_service.ml",
-      "sha256": "075a4f1128bed2eba0dac3ae2e9f0eae8f1977b1af260d7a5dd3b5ac9b0b4a9e"
+      "sha256": "bf1b2867f9e24af892f2c12665bdeef724b9009a550f75dee5eb3d8bbec8bcf9"
     },
     {
       "path": "core/test/test_policy_instance_assembly_rule.ml",
@@ -4169,6 +4203,88 @@
       "scope": "A separately versioned original assembly adds exactly one complete helper RNA and its product to two complete therapeutic RNA members, while retaining the original staged source, two behavioral instances, products, graph and finite operating domain. The helper material pins its complete original root, four regions, encoded product, chemistry and original catalog capability dependency. Independent assembly projection, the delivered-helper role, all three member placements and exact shared delivery evidence bind the helper to its final molecule. An explicit source-independent expression-completion interval precedes helper availability at the original supplied deployment-clock mapping of source tick zero; guaranteed helper and capacity windows cover the complete execution interval. Typed retained-record capacity is summed over every qualified Attempt_bank owner, while declared sharing capacity separately counts distinct named consumers. Complete provider closure includes helper environment and independent delivery edges and retains all transport dependencies. The private conjunction carries exact helper allocation evidence and every original obligation (24 in the independent witness). Independent A/B originals change only the helper RNA; five original source inputs, all 26 lifecycle observations, paired artifacts and four-slot installed comparison retain the complete 25-history, 86-transition, 87-prefix domain.",
       "limits": "Source inventory only: this gate executes no native suite or SDK campaign and supplies no semantic proof. The bounded profile has two therapeutic products and exactly one grounded helper product, three complete direct-root RNAs, empty helper material/bootstrap prerequisites, no hidden executable helper node and no new behavioral primitive. Helper capacity and completion are supplied conditional premises: exact RNA/product identity grounds their subject but does not prove biological expression, capacity, signaling, efficacy or in vivo function. No arbitrary helper graph, circular bootstrap, ungrounded resource provider, asynchronous transport, staggered delivery or unrestricted helper dynamics is established. Complete finite preservation, resource accounting, context closure and fresh export remain required. Earlier 25 rule meanings and historical feedback are unchanged; source pins do not establish native, installed, release or actual-main acceptance.",
       "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.candidate_transition_congruence",
+      "owners": [
+        {
+          "path": "core/lib/candidate_runtime/policy_primitives.ml",
+          "anchor": "let transition_state_json",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/candidate_runtime/policy_primitives.ml",
+          "anchor": "let proof_key",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/candidate_runtime/policy_primitives.ml",
+          "anchor": "let step_with_transition_session",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_preservation_check.ml",
+          "anchor": "let check_engine",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_preservation_check.ml",
+          "anchor": "let check_measured",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_candidate_transition_congruence.ml",
+          "anchor": "Exact candidate convergence did not avoid two real transition evaluations",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_candidate_congruence_check.ml",
+          "anchor": "Literal convergence witness avoided no candidate execution",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_candidate_transition_congruence.ml",
+          "anchor": "Staged congruence omitted machine state, lineage or historical attempt records",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_candidate_transition_congruence.ml",
+          "anchor": "Changed optional resource guards reused an unrelated witness",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_candidate_transition_congruence.ml",
+          "anchor": "Missing and invalid input evidence were identified before overwrite",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_candidate_transition_congruence.ml",
+          "anchor": "A full bounded witness table changed ordinary candidate execution",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_candidate_congruence_check.ml",
+          "anchor": "sharing changed full canonical evidence, charges, original histories or first failure",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_candidate_congruence_check.ml",
+          "anchor": "sharing changed the exact thrown diagnostic",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_candidate_transition_congruence.ml",
+          "anchor": "Exhausted proof bookkeeping prevented a fresh successful transition",
+          "occurrence": 1
+        }
+      ],
+      "scope": "A bounded native diagnostic checker can reuse a candidate transition only from an actual successful execution owned by the same fresh preservation invocation. Complete canonical predecessor state, ordered input and optional delta guards are compared byte-for-byte under physical ownership of the complete immutable plan. Every future-read identity, old attempt, occurrence set, machine, cumulative resource counter and unknown evidence reason is retained. Source/domain enumeration, trace correspondence and independent requirement monitoring remain fresh on every original prefix. Shared successors retain exact logical charges; failed steps are never stored. The private proof table has fixed finite entry, canonical-data and auxiliary-work bounds with fresh-execution fallback. Independent six-history convergence and nine-history baseline compare full canonical evidence, private acceptance, budget and publication failures with sharing disabled; CPU/wall measurements remain outside semantic evidence. Ordinary production entry points keep unshared execution pending measured validation.",
+      "limits": "Source inventory only: this gate executes no native suite and grants no soundness theorem, speedup, material, biological, installed or release acceptance. The rule reduces candidate evaluations where complete states converge; it does not prune the original global domain, rename causal identities, reuse PASS reports or establish arbitrary component assume-guarantee reasoning. Fixed bounds are 32 entries, 8 MiB of canonical retained-data footprint (not heap memory) and 64 * 1024 * 1024 auxiliary accounting units (structural/string allowances plus encoded/equality byte charges, not all canonical-sort visits or CPU operations). Diagnostic clock values never determine acceptance. The original source/material/context/export conjunction and all empirical premise boundaries remain unchanged.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
     }
   ],
   "limitations": [
@@ -4185,7 +4301,8 @@
     "The additive prerequisite-closure rule admits only a separately versioned truth-family named-instance request with nonempty bounded catalog dependencies. Missing provider bodies remain unresolved; only complete private checked closure supports context discharge. Previous profiles, original rule meanings and historical evidence remain unchanged. Source pins and test references do not establish executed validation, biological function or actual-main acceptance.",
     "The additive two-observation composition rule has its own realization, binding and outer material profiles. It extends only the bounded truth-family source to two distinct coherence groups, preserving exact original channels, freshness and ordered uncertainty through named-instance material and prerequisite closure. It does not add frame joining or general observation fusion. The previous 23 component families, all 62 original whole-kernel rule meanings and historical feedback remain unchanged. Source witnesses and pinned inventories do not establish native or installed execution, empirical function or release/main acceptance.",
     "The additive multi-member composition rule extends a separately versioned staged family to two distinct products and two complete RNA members. Member ownership, local feature identity, explicit original-catalog transport premises and complete delivery/resource/prerequisite evidence are checked before private closure. It adds no helper or new behavioral primitive. The previous 24 component families, all 62 original whole-kernel meanings and historical feedback retain their exact scope. Source inventories do not establish native or installed execution, empirical function or release/main acceptance.",
-    "The additive grounded-helper rule extends the existing two-product/two-member staged family with one exact delivered helper RNA, independently supplied completion before source time origin, complete helper environment/delivery closure and typed shared resource accounting. It adds no executable helper behavior and does not infer helper capacity or empirical function from sequence identity. The preceding 25 component families, all 62 original whole-kernel meanings and historical feedback retain their exact scope. Source inventories do not establish native or installed execution, empirical function or release/main acceptance."
+    "The additive grounded-helper rule extends the existing two-product/two-member staged family with one exact delivered helper RNA, independently supplied completion before source time origin, complete helper environment/delivery closure and typed shared resource accounting. It adds no executable helper behavior and does not infer helper capacity or empirical function from sequence identity. The preceding 25 component families, all 62 original whole-kernel meanings and historical feedback retain their exact scope. Source inventories do not establish native or installed execution, empirical function or release/main acceptance.",
+    "Candidate transition congruence is an invocation-owned bounded diagnostic assurance rule only; all original domain histories and independent requirement checks remain fresh. Timing and canonical equality do not establish a speedup or a general modular composition theorem."
   ],
   "historical_development_feedback": {
     "revision": "5a45d354ee869f26f0e5d3181c8972a6402baca6",

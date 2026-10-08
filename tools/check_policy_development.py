@@ -61,6 +61,8 @@ SUITES = (
     ("test_producer_protocol", ()),
     ("test_policy_implementation_binding", ("data/policy_implementation_binding_v01.json", "data/policy_realization_request_v01.json", "data/policy_exclusion_source_v01.json")),
     ("test_policy_preservation_check", ("data/policy_implementation_binding_v01.json",)),
+    ("test_policy_candidate_congruence_check", ("data/policy_implementation_binding_v01.json",)),
+    ("test_policy_candidate_transition_congruence", ("data/policy_primitives_v01.json",)),
     ("test_policy_material_binding", ("data/policy_material_binding_v01.json",)),
     ("test_policy_material_context", ("data/policy_material_context_v01.json",)),
     ("test_policy_material_check", ("data/policy_material_request_v01.json",)),

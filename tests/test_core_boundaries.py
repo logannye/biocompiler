@@ -26,6 +26,55 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertIn(before, content)
         path.write_text(content.replace(before, after))
 
+    def test_congruence_benchmark_clocks_are_exact_and_test_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "test_policy_candidate_congruence_check.ml"
+            owner = "test:test_policy_candidate_congruence_check"
+            allowed = {"unix"}
+            path.write_text("let sample () = Sys.time (), Unix.gettimeofday ()\n")
+            boundaries.source_boundary(path, allowed, owner=owner)
+            for source in ("let x = Sys.getenv \"CLOCK\"", "module Clock = Sys", "module Clock = Unix",
+                           "let x = Unix.time ()", "let x = Unix.system \"true\""):
+                path.write_text(source + "\n")
+                with self.subTest(source=source), self.assertRaisesRegex(boundaries.BoundaryError, "Unreviewed"):
+                    boundaries.source_boundary(path, allowed, owner=owner)
+            for filename, source, other in (
+                    ("policy_preservation_check.ml", "let x = Sys.time ()", "bioc_realization_checker"),
+                    ("policy_primitives.ml", "let x = Unix.gettimeofday ()", "bioc_candidate_runtime"),
+                    ("test_policy_primitives.ml", "let x = Sys.time ()", "test:test_policy_primitives"),
+                    ("misnamed.ml", "let x = Sys.time ()", owner)):
+                foreign = Path(directory) / filename
+                foreign.write_text(source + "\n")
+                with self.subTest(owner=other, filename=filename), self.assertRaisesRegex(boundaries.BoundaryError, "Unreviewed"):
+                    boundaries.source_boundary(foreign, allowed, owner=other)
+
+    def test_congruence_suites_keep_exact_fixtures_and_dependencies(self):
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        expected = {
+            "test_policy_candidate_congruence_check": (
+                "policy_implementation_binding_v01.json",
+                {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_candidate_runtime",
+                 "bioc_realization_checker", "zarith", "unix"}),
+            "test_policy_candidate_transition_congruence": (
+                "policy_primitives_v01.json",
+                {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "bioc_policy_staged_test_support"}),
+        }
+        root = self.copy_core()
+        path = root / "core/test/dune"
+        original = path.read_text()
+        for name, (fixture, dependencies) in expected.items():
+            self.assertEqual(set(receipt["native_tests"][name]), dependencies)
+            start = original.index("(test\n (name " + name + ")")
+            end = original.find("\n(test", start + 1)
+            end = len(original) if end < 0 else end
+            stanza = original[start:end]
+            for changed in (stanza.replace("%{dep:data/" + fixture + "}", "foreign.json"),
+                            stanza.replace("(libraries bioc_wire", "(libraries bioc_producer_service bioc_wire")):
+                path.write_text(original[:start] + changed + original[end:])
+                with self.subTest(name=name, changed=changed), self.assertRaises(boundaries.BoundaryError):
+                    boundaries.check_boundaries(root)
+            path.write_text(original)
+
     def test_two_observation_originals_cannot_acquire_semantic_or_producer_authority(self):
         receipt = boundaries.check_boundaries(boundaries.ROOT)
         support = "bioc_policy_two_observation_test_support"
@@ -267,7 +316,7 @@ class CoreBoundaryTests(unittest.TestCase):
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 178)
+        self.assertEqual(len(receipt["native_tests"]), 180)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")

@@ -15,7 +15,7 @@ checkouts; unrelated researcher-authoring/encoding work remains separate.
 | Provider prerequisite closure | `core-prerequisite-closure` | Development revision `a34ebd6bc557b52e9e253e8fe7e4fbce8ae1f9a4`; run `37798264346` and independent inert artifact audit passed (35 native suites, 182 SDK observations). |
 | Two independent observations | `core-two-observation-composition` | First development run `37801697083` at `22e1f0ed1` compiled and passed 35 of 36 native suites. One new negative control expected the wrong rejection stage; corrected source `6feb332688ec838031e4cab9de2f2ee498c7f4b5` has passed the native step and is executing eight SDK campaigns in run `37803803945`; independent audit remains pending. |
 | Multiple products/members/helpers | `core-multi-member-composition` | Two-product/two-member domain, lowering, checker, SDK and independent fixtures/campaigns are present; independent source review and local static controls passed; preparing the first hosted development run. No native validation or acceptance. Helpers follow this subincrement. |
-| Modular assurance | Not yet created | Measurement and checked proof-rule design remain outstanding. |
+| Modular assurance | `core-modular-assurance` | Implementing a bounded candidate-transition congruence rule and an enabled/disabled hosted comparison. Every original domain history, source execution, correspondence and requirement monitor remains fresh; no global-domain pruning is claimed. |
 
 The earlier instance development revision `c0366fc92` passed run `37788462656`:
 33 native suites and all 156 observations across six SDK campaigns. Independent
@@ -186,3 +186,70 @@ Authenticated inert artifact `11565461025` retains the failure; its build log
 has SHA-256 `eb18600f7be8c9d7c6e297e10bb371b4aa16d4324b63e17fcd50a7c11aa6b667`.
 A fresh corrected-source run is required. Development documentation now matches
 the registered 38 native suites and ten SDK campaigns (260 observations).
+
+## Candidate-transition congruence work in progress
+
+The P5 checkout starts from helper source `cb7bc7037` with its reviewed namespace
+correction carried forward as `8074da442`. The helper correction itself is under
+run `37811917435` at `ac6150c4eacdc972c8842861d2017ef6b37fd882`; neither its
+acceptance nor P5 acceptance is established. The [narrow assurance contract](policy-candidate-transition-congruence-v0.1.md)
+records measured historical logical work separately from CPU timing and states
+the exact candidate congruence premises. The implementation will compare
+complete private runtime state, input and resource guards within one fresh
+verification invocation. Source, trace correspondence, requirements, all original
+obligations and logical resource charges remain unchanged.
+
+The native diagnostic checker API now separates CPU phases from canonical
+evidence. Private transition witnesses and independent convergence/budget
+controls are being implemented. Ordinary production calls retain the unshared
+algorithm pending measured validation. This is a bounded transition reuse rule,
+not independent component acceptance or a theorem that arbitrary compositions
+need no whole-program checking. Full integration and actual-main gates remain
+open for all increments.
+
+The helper canonical-inventory correction was independently reviewed and
+submitted as `b712322d62a849e1a7216bcc8f516bbd8de992d2` in run `37813464181`.
+Its five source/witness changes and exact ledger pins are explicitly carried
+into P5; no acceptance is inherited. The helper now distinguishes canonical
+template inventories from declared delivery order, with 38 native negative
+controls.
+
+Local P5 source feedback currently passes 44 rule-inventory controls, the
+unchanged 905-entry public API inventory and 3,888-entry migration inventory.
+The additive 27th rule preserves all 26 earlier component and 62 material rule
+meanings. Both new native suites are registered: development now requires
+40 suites and the unchanged ten SDK campaigns (260 observations); full native
+integration requires 180 suites and a bundle of 188 executables plus 26 original
+fixtures. Hosted P5 execution is not yet established.
+
+P4 development is now complete: run `37809478943`, attempt 1, at
+`a459a234f34fe0128fb994d22aca2de9fecff599` passed all 37 native suites and nine SDK
+campaigns (234 observations). Independent inert audit passed with SHA-256
+`05d45efd26fb758deb5be2d6411e9951af605c6946ae85bf0262872251075493`, authenticating
+1,243 source files and artifact `11565722888` (7,527,004 bytes; SHA-256
+`ca3ff6e3eb3fc736991ecff4e3ced455576d7c2e6053fc4ce38267460c8074cf`). Its
+23-obligation, 25-history/86-transition/87-prefix original domain and both exact
+RNA archives remain Linux development evidence only.
+
+P5 independent proof review clarified that `proof_work` measures declared
+auxiliary accounting units, not every CPU/byte visit: canonical key sorting is
+finite under the independent data bounds but not separately charged by that
+counter. Measured candidate CPU includes it. The fixed budget and ordinary
+semantic/resource behavior are unchanged.
+
+The helper corrected run `37813464181` has passed all 38 native suites and is
+executing ten SDK campaigns. Its final independent audit remains pending.
+
+P5 source is ready for its first hosted development run. Independent review
+found no blocking soundness or obvious OCaml API/type issue in the private
+transition rule, full-state key, finite preflight/fallback, fresh source/monitor
+path, staged controls or finite-domain benchmark. This is source review, not a
+machine-checked proof or executed native validation. The final local combined
+run passed 117 Python/static tests in 104.407 seconds; every native subprocess
+in those orchestration tests was mocked. The source boundary and both inventory
+gates pass. There are 19 basic plus six staged runtime negative controls and
+nine full-checker negative controls registered for hosted execution. Canonical
+reports and logical charges are compared across fresh enabled/disabled calls.
+The final 27-rule metadata SHA-256 is
+`e9a16f88aaf74c370fda146574f5e5d90e93a7fe37c540e79be69e2ccd5ea45a`;
+all 26 prior component and 62 material rule meanings remain unchanged.

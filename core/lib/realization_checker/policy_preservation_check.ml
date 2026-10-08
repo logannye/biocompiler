@@ -51,6 +51,12 @@ let limits_to_json value=value.raw
 type checked_implementation={checked:B.checked_binding;evidence_value:Json.t}
 type result={report_value:Json.t;accepted_value:checked_implementation option}
 type startup_pass=Input|Identity
+type measurement = {
+  total_cpu_seconds:float; source_step_cpu_seconds:float;
+  candidate_step_cpu_seconds:float; correspondence_cpu_seconds:float;
+  monitor_step_cpu_seconds:float; projection_encoding_cpu_seconds:float;
+  candidate_transitions:P.transition_usage option;
+}
 let report value=value.report_value
 let accepted value=value.accepted_value
 let binding value=value.checked
@@ -78,7 +84,13 @@ let normalized_monitor correspondence row =
     else if key="attempt" && value<>Json.Null then source_identity correspondence "attempts"(Json.string value)
     else value)(Json.object_fields obligation)))(items "obligations" row)in
   obj(List.map(fun(key,value)->key,if key="obligations"then arr obligations else value)(Json.object_fields row))
-let check_with_startup_charge ~startup_charge ~request ~behavior ~implementation ~proposed ~limits =
+let check_engine ~startup_charge ~clock ~measure ~share_candidate_transitions ~request ~behavior ~implementation ~proposed ~limits =
+  let started=if measure then clock()else 0. in
+  let source_cpu=ref 0. and candidate_cpu=ref 0. and correspondence_cpu=ref 0.
+  and monitor_cpu=ref 0. and encoding_cpu=ref 0. in
+  let timed counter operation=if not measure then operation()else
+    let before=clock()in
+    Fun.protect ~finally:(fun()->counter:= !counter+.clock()-.before)operation in
   (* These constructors check original external roots again on every call. *)
   startup_charge Input(obj["request",R.to_json request;"behavior",O.behavior_to_json behavior]);
   (* Operational admission and independent correspondence each perform their
@@ -104,6 +116,10 @@ let check_with_startup_charge ~startup_charge ~request ~behavior ~implementation
     ~environment:{P.executor=environment.executor;horizon_ticks=environment.horizon_ticks;
       slots=List.map(fun(slot:B.slot)->{P.slot_id=slot.identity;target=slot.target;start_tick=slot.start_tick})environment.slots}
     ~limits:limits.candidate in
+  (* Proof witnesses belong only to this fresh invocation. Domain/source,
+     correspondence and requirement execution never consume cached verdicts. *)
+  let transition_session=if share_candidate_transitions then
+    Some(P.create_transition_session candidate)else None in
   let work=ref 0 and source_work=ref Z.zero and candidate_work=ref Z.zero and monitor_work=ref Z.zero in
   let prefixes=ref 1 and transitions=ref 0 and matched=ref 1 and histories=ref 0 and peak_retained=ref 0 in
   let path=ref [] and latest_source=ref None and latest_candidate=ref None in
@@ -122,7 +138,7 @@ let check_with_startup_charge ~startup_charge ~request ~behavior ~implementation
   let reserve amount=if amount<0 || amount>remaining()then
     stop "incomplete" "policy_preservation_work_limit" "Complete traversal lacks the next required execution reservation." in
   let charge amount=reserve amount;work:= !work+amount in
-  let charge_json value=let bytes=Canonical.encode_bounded ~max_bytes:(8*1024*1024)value in
+  let charge_json value=let bytes=timed encoding_cpu(fun()->Canonical.encode_bounded ~max_bytes:(8*1024*1024)value)in
     charge(String.length bytes);bytes in
   let memory amount=let total=amount+ !retained_witnesses in if total>budgets.max_trace_items then
     stop "incomplete" "policy_preservation_trace_limit" "Live depth-first traversal exceeds the original retained-trace bound."
@@ -200,7 +216,7 @@ let check_with_startup_charge ~startup_charge ~request ~behavior ~implementation
             reserve(Z.to_int reservation);
             let source_ceiling=positive 100000(get "max_trace_items"(S.execution_bounds_to_json limits.source))in
             memory(live+source_ceiling);
-            let advanced=match S.step source batch with
+            let advanced=match timed source_cpu(fun()->S.step source batch)with
               |S.Stopped failure->
                   let charged=failure.receipt.delta.charged_work in charge(Z.to_int charged);
                   source_work:=Z.add !source_work charged;latest_source:=failure.receipt.execution;
@@ -219,7 +235,10 @@ let check_with_startup_charge ~startup_charge ~request ~behavior ~implementation
             let step_retained=min(min limits.step_retained(budgets.max_trace_items-live-source_retained- !retained_witnesses))
               (limits.candidate.max_events-before.retained)in
             if step_work<=0 || step_retained<=0 then stop "incomplete" "policy_preservation_work_limit" "No resource allowance remains for the independent candidate step.";
-            let next_candidate,frame=match P.step ~max_step_work:step_work ~max_step_retained:step_retained candidate translated with
+            let next_candidate,frame=match timed candidate_cpu(fun()->match transition_session with
+              |None->P.step ~max_step_work:step_work ~max_step_retained:step_retained candidate translated
+              |Some session->P.step_with_transition_session session
+                  ~max_step_work:step_work ~max_step_retained:step_retained candidate translated)with
               |value->value
               |exception Diagnostic.Error diagnostic->charge step_work;candidate_work:=Z.add !candidate_work(Z.of_int step_work);
                   raise(Stop{category=(if work_diagnostic diagnostic.code then "incomplete"else "candidate_error");diagnostic})in
@@ -231,13 +250,13 @@ let check_with_startup_charge ~startup_charge ~request ~behavior ~implementation
                history identity as well; do not charge that second visit away. *)
             charge(String.length frame_bytes);
             ignore(charge_json(obj["source_frame",advanced.frame;"source_attempts",arr(items "attempts" source_report)]));
-            let next_correspondence=match T.advance correspondence ~batch ~source_frame:advanced.frame
-                ~source_attempts:(items "attempts" source_report) ~source_creations:advanced.creations ~candidate:frame with
+            let next_correspondence=match timed correspondence_cpu(fun()->T.advance correspondence ~batch ~source_frame:advanced.frame
+                ~source_attempts:(items "attempts" source_report) ~source_creations:advanced.creations ~candidate:frame)with
               |value->value
               |exception Diagnostic.Error diagnostic->raise(Stop{category="counterexample";diagnostic})in
             let before_monitor=M.usage monitor in
             let reservation=limits.monitor.max_work-before_monitor.work in reserve reservation;
-            let next_monitor=match M.step monitor frame with
+            let next_monitor=match timed monitor_cpu(fun()->M.step monitor frame)with
               |value->value
               |exception Diagnostic.Error diagnostic->charge reservation;monitor_work:=Z.add !monitor_work(Z.of_int reservation);
                   raise(Stop{category=(if work_diagnostic diagnostic.code then "incomplete"else "monitor_error");diagnostic})in
@@ -327,7 +346,20 @@ let check_with_startup_charge ~startup_charge ~request ~behavior ~implementation
   let final_output=W.create_output ~profile ~error_code:"policy_preservation_report_limit"
     ~max_bytes:limits.report_bytes ~max_nodes:limits.report_nodes ()in
   W.reserve_json final_output report_value;
-  {report_value;accepted_value=(if requirements_pass then Some{checked;evidence_value=report_value}else None)}
+  let result={report_value;accepted_value=(if requirements_pass then Some{checked;evidence_value=report_value}else None)}in
+  result,{total_cpu_seconds=(if measure then clock()-.started else 0.);
+    source_step_cpu_seconds= !source_cpu;candidate_step_cpu_seconds= !candidate_cpu;
+    correspondence_cpu_seconds= !correspondence_cpu;monitor_step_cpu_seconds= !monitor_cpu;
+    projection_encoding_cpu_seconds= !encoding_cpu;
+    candidate_transitions=Option.map P.transition_usage transition_session}
+
+let check_with_startup_charge ~startup_charge ~request ~behavior ~implementation ~proposed ~limits =
+  fst(check_engine ~startup_charge ~clock:(fun()->0.) ~measure:false ~share_candidate_transitions:false
+    ~request ~behavior ~implementation ~proposed ~limits)
+
+let check_measured ~clock ~share_candidate_transitions ~request ~behavior ~implementation ~proposed ~limits =
+  check_engine ~startup_charge:(fun _ _->()) ~clock ~measure:true ~share_candidate_transitions
+    ~request ~behavior ~implementation ~proposed ~limits
 
 let check ~request ~behavior ~implementation ~proposed ~limits=
   check_with_startup_charge ~startup_charge:(fun _ _->()) ~request ~behavior ~implementation ~proposed ~limits

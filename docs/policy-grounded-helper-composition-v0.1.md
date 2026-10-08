@@ -41,7 +41,8 @@ The new assembly body has one `helper` record with `source`, `member` and the
 complete pinned `material` record. Its existing two payload member bindings
 remain unchanged. All three roots are supplied directly, with zero transforms,
 complexes or amounts. The template retains exactly two Payload requirements and
-one Delivered_helper requirement, complete source/member order, three full RNA
+one Delivered_helper requirement, exact source/member identity inventories and
+separate declared delivery order, three full RNA
 molecules and three products/ORFs. The helper RNA has Helper role purpose;
 payload RNA roles remain Requested_payload. The new source payload explicitly
 counts one helper, three total members/ORFs/products and one design.
