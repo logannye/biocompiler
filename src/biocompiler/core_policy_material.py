@@ -61,15 +61,19 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
 
 
 def _preservation(response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
-                  report: dict[str, JsonValue], limits: JsonValue, *, prerequisites: bool = False) -> None:
-    original = (implementation._prerequisite_original if prerequisites else implementation._original)(request["implementation_request"])
+                  report: dict[str, JsonValue], limits: JsonValue, *, prerequisites: bool = False,
+                  two_observations: bool = False) -> None:
+    decoder = (implementation._two_observation_original if two_observations else
+               implementation._prerequisite_original if prerequisites else implementation._original)
+    original = decoder(request["implementation_request"])
     evidence = _object(report["preservation"], implementation._REPORT_FIELDS, "Complete preservation evidence")
     if (evidence["schema_version"] != "biocompiler.policy_preservation_report.v0.1"
             or evidence["profile"] != implementation.PRESERVATION_PROFILE or not _same(evidence["limits"], limits)):
         raise CoreProtocolError("Material checking changed original preservation profile or limits")
     _pin(evidence["request_fingerprint"], original, "Original implementation request")
     implementation._claim(evidence)
-    implementation._authority(response, original, candidate, evidence, prerequisites=prerequisites)
+    implementation._authority(response, original, candidate, evidence, prerequisites=prerequisites,
+                              two_observations=two_observations)
     implementation._evidence(original, evidence)
 
 

@@ -21,7 +21,10 @@ let construct_candidate ?charge request =
   let library = S.implementation_library original in
   let lowered = Bioc_compiler.Policy_implementation_lowering.lower_metered ~charge ~admitted ~library in
   let rule = R.composition_rule request in
-  let arranged = Bioc_compiler.Policy_component_lowering.arrange ~charge ~library ~rule lowered in
+  let source_inputs = if R.is_two_observation request then Some (List.map (fun (value:R.input_binding) ->
+      charge (1+String.length value.source+String.length value.input_id); value.source,value.input_id)
+      (R.input_bindings request)) else None in
+  let arranged = Bioc_compiler.Policy_component_lowering.arrange ~charge ?source_inputs ~library ~rule lowered in
   let authority = A.material_authority rule in
   let content = Bioc_compiler.Construction_producer.construct_template ~charge
     ~member_order:(PM.member_order authority) (PM.template authority) in

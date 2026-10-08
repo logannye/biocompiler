@@ -53,12 +53,16 @@ let lower_legacy_metered ~charge ~admitted ~library =
     model_order left right in
 
   let request=A.request admitted and behavior=A.behavior admitted in
+  let two_observation=R.is_two_observation request in
+  if two_observation then supported(List.length behavior.observations=2)
+    "The two-observation producer requires exactly two original truth observations.";
   Diagnostic.require(I.library_digest library=I.library_digest(R.implementation_library request))
     "policy_implementation_lowering_authority" "Supplied library differs from independently admitted original authority.";
   let bridge=one "original catalog membership bridge"(R.catalog_bindings request)
   and executor=one "executor role" behavior.roles and encounter=one "encounter declaration" behavior.encounters
   and subject=one "encounter subject" behavior.subjects and clock=one "clock" behavior.clocks
-  and observed=one "truth observation" behavior.observations and operation=one "effect" behavior.effects
+  and observed=(if two_observation then List.hd behavior.observations else one "truth observation" behavior.observations)
+  and operation=one "effect" behavior.effects
   and product=one "fixed product parameter" behavior.parameters in
   let document=R.document request and domain=F.specification(A.operating_domain admitted)in
   Meter.serialization (D.to_json document);
@@ -79,10 +83,17 @@ let lower_legacy_metered ~charge ~admitted ~library =
   supported(text "simultaneous"(source clock.clock_id)="atomic_batch" &&
     List.mem(text "basis"(source clock.clock_id))["logical";"availability"])
     "Source requires different simultaneous-event or clock phases.";
-  supported(observed.value_type=O.Truth_type && observed.observer=executor.role_id && observed.subject=subject.subject_id &&
-    observed.clock=clock.clock_id && observed.coverage="event" && observed.coherence="frame")
-    "Source observation requires a different evidence profile.";
-  type_is "truth"(get "value_type"(source observed.observation_id));
+  let check_observation (value:O.observation)=
+    supported(value.value_type=O.Truth_type && value.observer=executor.role_id && value.subject=subject.subject_id &&
+      value.clock=clock.clock_id && value.coverage="event" && (two_observation || value.coherence="frame"))
+      "Source observation requires a different evidence profile.";
+    type_is "truth"(get "value_type"(source value.observation_id)) in
+  if two_observation then (
+    List.iter check_observation behavior.observations;
+    supported(List.length(List.sort_uniq String.compare
+      (List.map(fun(value:O.observation)->value.coherence)behavior.observations))=2)
+      "The two observations require distinct original coherence groups.")
+  else check_observation observed;
   supported(Json.equal bridge.operation(get "contract"(source operation.effect_id)))
     "The original catalog bridge does not name this source effect operation.";
   supported(operation.executor=executor.role_id && operation.subject=subject.subject_id && operation.lifecycle.on_loss="continue")
@@ -156,6 +167,17 @@ let lower_legacy_metered ~charge ~admitted ~library =
         "Produced correspondence ledger exceeds the closed occurrence bound.";
       occurrences:=o["source_path",s source_path;"role",s role;"disposition",s disposition;"targets",a targets]::!occurrences in
     let observation_node=allocate "observation/0"(I.Evidence_bank{freshness_ticks=ticks observed.freshness})in
+    let observation_nodes=if two_observation then
+      let second=List.nth behavior.observations 1 in
+      [observed.observation_id,observation_node;
+       second.observation_id,allocate "observation/1"(I.Evidence_bank{freshness_ticks=ticks second.freshness})]
+      else [observed.observation_id,observation_node] in
+    let observation_output identity =
+      if two_observation then match List.assoc_opt identity observation_nodes with
+        | Some node -> out node "value"
+        | None -> Diagnostic.fail "policy_implementation_lowering_unsupported"
+            "Observation expression has no original evidence-bank binding."
+      else out observation_node "value" in
     let state_nodes=List.mapi(fun index(store:O.state_store)->
       let initial=match store.initial with O.Truth value->truth value|_->Diagnostic.fail "policy_implementation_lowering_unsupported" "Non-truth store initial value."in
       let count=List.length(List.filter(fun(_,_,id)->id=store.state_id)writers)in
@@ -182,10 +204,11 @@ let lower_legacy_metered ~charge ~admitted ~library =
             let result=out node port in charge (1+String.length key); Hashtbl.add memo key result;result in
       let result=match expression.op with
         |"observe"->type_is "truth"(get "value_type" raw);
+            let identity=if two_observation then O.ref_id(get "ref" raw)else observed.observation_id in
             supported(args=[] && get "value" raw=Json.Null &&
-              Json.equal(get "ref" raw)(reference "Observation" observed.observation_id) &&
+              Json.equal(get "ref" raw)(reference "Observation" identity) &&
               Json.equal(get "scope" raw)(reference "Subject" subject.subject_id))"Observation expression changes source evidence identity.";
-            out observation_node "value"
+            observation_output identity
         |"state"->type_is "truth"(get "value_type" raw);
             let identity=O.ref_id(get "ref" raw)in
             supported(args=[] && get "value" raw=Json.Null && List.mem_assoc identity state_nodes &&
@@ -256,7 +279,8 @@ let lower_legacy_metered ~charge ~admitted ~library =
     List.iter(fun(declaration:D.declaration)->let location=declaration.path in match declaration.kind with
       |D.Role|D.Subject|D.Encounter->occurrence location "declaration" "retained_metadata"[]
       |D.Clock->occurrence location "clock" "retained_metadata"[]
-      |D.Observation->occurrence location "declaration" "executable"(exports observation_node)
+      |D.Observation->occurrence location "declaration" "executable"
+          (exports(if two_observation then List.assoc declaration.id observation_nodes else observation_node))
       |D.State_store->occurrence location "declaration" "executable"[out(List.assoc declaration.id state_nodes)"value"]
       |D.Parameter->occurrence location "effect_parameter" "constant" !parameter_outputs
       |D.Effect->occurrence location "lifecycle" "executable"(exports attempt_node);
@@ -271,14 +295,20 @@ let lower_legacy_metered ~charge ~admitted ~library =
       "authority",authority;"slot_layout",o["id",s layout_id;"encounter",s encounter.encounter_id;"slots",Json.int slots];
       "nodes",a(List.map(fun(id,(model:I.model))->o["id",s id;"model",P.to_json model.identity;
         "configuration_digest",s model.configuration_digest])!selected);
-      "wires",a !wires;"inputs",a[
-        o["id",s "evidence/0";"kind",s "evidence";"consumer",out observation_node "samples"];
-        o["id",s "feedback/0";"kind",s "feedback";"consumer",out attempt_node "feedback"]];
+      "wires",a !wires;"inputs",a(if two_observation then
+        List.mapi(fun index(_,node)->o["id",s("evidence/"^string_of_int index);"kind",s "evidence";
+          "consumer",out node "samples"])observation_nodes @
+          [o["id",s "feedback/0";"kind",s "feedback";"consumer",out attempt_node "feedback"]]
+        else [o["id",s "evidence/0";"kind",s "evidence";"consumer",out observation_node "samples"];
+          o["id",s "feedback/0";"kind",s "feedback";"consumer",out attempt_node "feedback"]]);
       "atomic_groups",a[o["id",s "exclusive/0";"arbiter",s arbiter;"commits",a(List.map s commits)]];
       "semantic_exports",a(List.concat_map(fun(id,_)->exports id)!selected);
       "occurrences",a(List.sort(fun left right->String.compare(text "source_path" left)(text "source_path" right))!occurrences)]in
-    let binding=o["schema_version",s B.schema_version;"profile",s B.profile;"catalog_entry",s bridge.entry_id;
-      "observations",a[o["source",s observed.observation_id;"bank",s observation_node;"input",s "evidence/0"]];
+    let binding=o["schema_version",s(if two_observation then B.two_observation_schema_version else B.schema_version);
+      "profile",s(if two_observation then B.two_observation_profile else B.profile);"catalog_entry",s bridge.entry_id;
+      "observations",a(if two_observation then List.mapi(fun index(source,node)->
+        o["source",s source;"bank",s node;"input",s("evidence/"^string_of_int index)])observation_nodes
+        else [o["source",s observed.observation_id;"bank",s observation_node;"input",s "evidence/0"]]);
       "states",a(List.map(fun(source,register)->o["source",s source;"register",s register])state_nodes);
       "effects",a[o["source",s operation.effect_id;"bank",s attempt_node;"feedback",s "feedback/0"]];
       "rules",a !proposal_rules]in

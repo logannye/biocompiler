@@ -3,6 +3,8 @@ let schema_version = "biocompiler.policy_implementation_binding.v0.1"
 let profile = "biocompiler.policy_exclusive_source_graph.v0.1"
 let staged_schema_version = "biocompiler.policy_implementation_binding.v0.2"
 let staged_profile = "biocompiler.policy_staged_source_graph.v0.1"
+let two_observation_schema_version = "biocompiler.policy_implementation_binding.v0.3"
+let two_observation_profile = "biocompiler.policy_two_observation_source_graph.v0.1"
 type observation = { source:string; bank:string; input:string }
 type state = { source:string; register:string }
 type effect_binding = { source:string; bank:string; feedback:string }
@@ -11,7 +13,7 @@ type machine = { source:string; bank:string }
 type transition = rule
 type t = { raw:Json.t; entry:string; observation_values:observation list;
   state_values:state list; effect_values:effect_binding list; rule_values:rule list;
-  machine_values:machine list; transition_values:transition list; staged:bool }
+  machine_values:machine list; transition_values:transition list; staged:bool; two_observation:bool }
 let get key value = Json.field key(Json.object_fields value)
 let text key value = Json.string(get key value)
 let require condition message = Diagnostic.require condition "policy_implementation_binding" message
@@ -29,11 +31,13 @@ let of_json raw =
   let fields=Json.object_fields raw in
   let staged=List.assoc_opt "schema_version" fields=Some(Json.String staged_schema_version) &&
     List.assoc_opt "profile" fields=Some(Json.String staged_profile) in
+  let two_observation=List.assoc_opt "schema_version" fields=Some(Json.String two_observation_schema_version) &&
+    List.assoc_opt "profile" fields=Some(Json.String two_observation_profile) in
   exact(["schema_version";"profile";"catalog_entry";"observations";"states";"effects";"rules"] @
     (if staged then ["machines";"transitions"] else []))raw;
-  require(staged || (text "schema_version" raw=schema_version && text "profile" raw=profile))
+  require(staged || two_observation || (text "schema_version" raw=schema_version && text "profile" raw=profile))
     "Unsupported source/graph binding schema/profile.";
-  let observation_values=decode 1 ["source";"bank";"input"](fun v->
+  let observation_values=decode (if two_observation then 2 else 1) ["source";"bank";"input"](fun v->
     ({source=name "source" v;bank=name "bank" v;input=name "input" v}:observation))(get "observations" raw)
   and state_values=decode 2 ["source";"register"](fun v->
     ({source=name "source" v;register=name "register" v}:state))(get "states" raw)
@@ -52,6 +56,10 @@ let of_json raw =
       ({source=name "source" v;gate=name "gate" v;arbiter=name "arbiter" v;lane=Z.to_int lane;
         commit=name "commit" v}:transition))(get "transitions" raw) else [] in
   unique "observation" (List.map(fun(v:observation)->v.source)observation_values);
+  if two_observation then (
+    require (List.length observation_values=2) "Two-observation binding requires both original observations.";
+    unique "observation bank" (List.map(fun(v:observation)->v.bank)observation_values);
+    unique "observation input" (List.map(fun(v:observation)->v.input)observation_values));
   unique "state" (List.map(fun(v:state)->v.source)state_values);
   unique "effect" (List.map(fun(v:effect_binding)->v.source)effect_values);
   unique "rule" (List.map(fun(v:rule)->v.source)rule_values);
@@ -68,7 +76,7 @@ let of_json raw =
     unique "effect bank" (List.map(fun(v:effect_binding)->v.bank)effect_values);
     unique "effect feedback" (List.map(fun(v:effect_binding)->v.feedback)effect_values));
   {raw;entry=name "catalog_entry" raw;observation_values;state_values;effect_values;rule_values;
-   machine_values;transition_values;staged}
+   machine_values;transition_values;staged;two_observation}
 let to_json value=value.raw
 let fingerprint value=Canonical.fingerprint value.raw
 let catalog_entry value=value.entry
@@ -79,3 +87,4 @@ let rules value=value.rule_values
 let machines value=value.machine_values
 let transitions value=value.transition_values
 let is_staged value=value.staged
+let is_two_observation value=value.two_observation

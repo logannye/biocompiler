@@ -4,6 +4,9 @@
     This first family has one executor/encounter/truth observation/product
     effect, one or two exclusive evidence-rising rules, encounter truth stores,
     no machines/predicate resets, and exactly one effect-initiating rule.
+    The separately versioned two-observation family independently binds two
+    distinct coherence groups in original declaration order to distinct banks
+    and inputs, preserving each source observation and freshness bound.
     The separate staged profile binds one encounter machine, five exact ordered
     source state labels, seven transitions and two distinct same-product effects.
     Alternate state encodings and unbounded/generic machines are not admitted.

@@ -26,6 +26,47 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertIn(before, content)
         path.write_text(content.replace(before, after))
 
+    def test_two_observation_originals_cannot_acquire_semantic_or_producer_authority(self):
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        support = "bioc_policy_two_observation_test_support"
+        tool = "test_tool:two_observation_originals"
+        self.assertEqual(receipt["roles"][support], "test_support")
+        self.assertEqual(receipt["roles"][tool], "test_support")
+        self.assertEqual(set(receipt["transitive_dependencies"][tool]), {
+            "bioc_wire", "bioc_domain", "bioc_policy_component_test_support",
+            "bioc_policy_instance_test_support", "bioc_policy_prerequisite_test_support",
+            support, "digestif", "zarith"})
+        for owner in ("executable:biocompiler-core", "executable:biocompiler-verify",
+                      "bioc_checker", "bioc_realization_checker"):
+            self.assertNotIn(support, receipt["transitive_dependencies"][owner])
+        root = self.copy_core()
+        for relative in ("test/policy_two_observation_support/dune", "test/two_observation_fixture_export/dune"):
+            path = root / "core" / relative
+            original = path.read_text()
+            for library in ("bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker"):
+                path.write_text(original.replace("bioc_domain", "bioc_domain " + library))
+                with self.subTest(path=relative, library=library), self.assertRaises(boundaries.BoundaryError):
+                    boundaries.check_boundaries(root)
+            path.write_text(original)
+        path = root / "core/test/two_observation_fixture_export/dune"
+        path.write_text(path.read_text().replace("(name main)", "(name main) (public_name two-observation-fixture)"))
+        with self.assertRaises(boundaries.BoundaryError):
+            boundaries.check_boundaries(root)
+
+    def test_two_observation_suite_keeps_both_original_arguments(self):
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        name = "test_policy_two_observation_material_service"
+        self.assertIn("bioc_candidate_runtime", receipt["native_tests"][name])
+        root = self.copy_core()
+        path = root / "core/test/dune"
+        original = path.read_text()
+        start = original.index("(test\n (name " + name + ")")
+        stanza = original[start:]
+        for fixture in ("policy_material_request_v01.json", "policy_material_state_v01.json"):
+            path.write_text(original[:start] + stanza.replace("%{dep:data/" + fixture + "}", ""))
+            with self.subTest(fixture=fixture), self.assertRaises(boundaries.BoundaryError):
+                boundaries.check_boundaries(root)
+
     def test_original_component_fixture_tool_is_private_and_domain_only(self):
         receipt = boundaries.check_boundaries(boundaries.ROOT)
         key = "test_tool:component_originals"
@@ -146,7 +187,7 @@ class CoreBoundaryTests(unittest.TestCase):
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 175)
+        self.assertEqual(len(receipt["native_tests"]), 176)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")

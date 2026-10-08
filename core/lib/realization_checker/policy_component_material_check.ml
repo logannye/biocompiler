@@ -197,7 +197,8 @@ let check ~request ~behavior ~implementation ~proposed ~assembly_proposal ~candi
   let status=if complete then "checked_component_material" else "not_accepted" in
   let report_base=["schema_version",str (if prerequisite_profile then "biocompiler.policy_component_material_assessment.v0.2"
     else "biocompiler.policy_component_material_assessment.v0.1");
-    "profile",str (R.request_profile request);"implementation",str (if prerequisite_profile then "biocompiler.ocaml.policy_component_material_check.v0.3"
+    "profile",str (R.request_profile request);"implementation",str (if R.is_two_observation request then "biocompiler.ocaml.policy_component_material_check.v0.4"
+      else if prerequisite_profile then "biocompiler.ocaml.policy_component_material_check.v0.3"
       else if R.is_instanced request then "biocompiler.ocaml.policy_component_material_check.v0.2" else implementation_version);"resource_profile",str R.resource_profile;
     "request_fingerprint",str request_pin;"candidate_fingerprint",str candidate_pin;"invocation_fingerprint",str invocation_pin;
     "status",str status;"claim_scope",str "bounded_conditional_policy_via_reusable_components_to_exact_mrna";

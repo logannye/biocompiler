@@ -48,7 +48,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 23, "sources": 95, "witness_sources": 86,
+        self.assertEqual(result["component_route"], {"rules": 24, "sources": 95, "witness_sources": 99,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -246,8 +246,62 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_prerequisite_closure(self):
+    def before_two_observation_composition(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        rule = ledger["rules"][-1]
+        self.assertEqual(rule["id"], "component.two_observation_composition")
+        self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in rule[kind]},
+                         set(coverage.COMPONENT_TWO_OBSERVATION_WITNESSES))
+        ledger["witness_sources"] = [row for row in ledger["witness_sources"]
+                                     if row["path"] not in coverage.COMPONENT_TWO_OBSERVATION_WITNESSES]
+        ledger["rules"].pop(); ledger["limitations"].pop()
+        # Only these two established arrangement owners changed their signature.
+        # No blanket anchor normalization may hide changes to other meanings.
+        new_anchor = "let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inputs ~library ~rule"
+        prior_anchor = "let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~rule"
+        for identity in ("component.production", "component.instance_composition"):
+            owners = next(row for row in ledger["rules"] if row["id"] == identity)["owners"]
+            matches = [pointer for pointer in owners if pointer["path"] == "core/lib/compiler/policy_component_lowering.ml"]
+            self.assertEqual(len(matches), 1)
+            self.assertEqual(matches[0]["anchor"], new_anchor)
+            matches[0]["anchor"] = prior_anchor
+        return ledger
+
+    def test_two_observation_composition_preserves_all_twenty_three_previous_rules_and_provenance(self):
+        encoded = json.dumps(coverage.component_metadata(self.before_two_observation_composition()), sort_keys=True,
+                             separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "8da4c54d70fa5ceec3c5f50fef539e80681bd7f8dabb1e0e5a21d786ec35f4b1")
+
+    def test_two_observation_rule_keeps_complete_independent_witness_inventory_and_limits(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        rule = original["rules"][-1]
+        self.assertEqual(len(coverage.COMPONENT_TWO_OBSERVATION_WITNESSES), 13)
+        self.assertEqual(len(original["sources"]), 95)
+        self.assertIn("exactly two event observations", rule["scope"])
+        self.assertIn("all 36 independent final observation choices", rule["scope"])
+        self.assertIn("no simultaneous frame join", rule["limits"])
+        self.assertIn("one RNA", rule["limits"])
+        self.assertIn("Source inventory only", rule["limits"])
+        self.assertEqual(rule["evidence_scope"], "source_only_not_executed_by_this_gate")
+        for path in coverage.COMPONENT_TWO_OBSERVATION_WITNESSES:
+            ledger = deepcopy(original)
+            ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] != path]
+            with self.subTest(omitted=path), self.assertRaisesRegex(coverage.CoverageError, "census"):
+                coverage.check_component(coverage.ROOT, ledger)
+
+    def test_two_observation_scope_and_witnesses_cannot_be_promoted_or_reassigned(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        for key, value in (("evidence_scope", "native_validation_complete"),
+                           ("limits", "General observation fusion and empirical therapeutic acceptance."),
+                           ("negative", deepcopy(original["rules"][-1]["positive"]))):
+            ledger = deepcopy(original)
+            ledger["rules"][-1][key] = value
+            with self.subTest(changed=key), self.assertRaises(coverage.CoverageError):
+                coverage.check_component(coverage.ROOT, ledger)
+
+    def before_prerequisite_closure(self):
+        ledger = self.before_two_observation_composition()
         self.assertEqual(ledger["rules"][-1]["id"], "component.prerequisite_closure")
         added_sources = {
             "core/lib/domain/policy_provider_prerequisites.ml", "core/lib/domain/policy_provider_prerequisites.mli",

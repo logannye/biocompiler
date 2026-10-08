@@ -622,3 +622,23 @@ bodies, graph, domain, clock, recipient and checked allocations. Only native
 private checked values authorize discharge; imported reports do not. Old profile
 field sets remain unchanged. See the [closed contract](../docs/policy-prerequisite-closure-v0.1.md)
 for supported relations, negative outcomes, limits and pending validation.
+
+## Two-observation instance prerequisites
+
+The separately negotiated `policy_two_observation_material` profile uses outer
+material request v0.4 and
+`biocompiler.policy_instance_two_observation_prerequisite_mrna.v0.1`. Core alone
+advertises `policy_two_observation_material_producer`. Its service implementation
+is `biocompiler.ocaml.policy_instance_two_observation_prerequisite_material.v0.1`
+and validation scope is `policy-instance-two-observation-prerequisite-mrna-v0.1`.
+Nested realization v0.3 uses
+`biocompiler.policy_two_observation_prerequisite_inputs.v0.1`; its explicit decoder
+is reachable only through the matching outer route. Source binding/report v0.3
+uses `biocompiler.policy_two_observation_source_graph.v0.1`.
+
+Material/context assessment schema versions remain v0.2/v0.1 respectively, with
+checker implementation v0.4 for this family. Each of the two original observations
+retains its ordered source/bank anchor, exact input/provider channel and freshness
+contract. Full original preservation and private prerequisite closure remain
+required before material acceptance or export. Prior profile combinations remain
+closed. See the [bounded contract and witness](../docs/policy-two-observation-composition-v0.1.md).

@@ -30,6 +30,7 @@ SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "data/researcher_
 SUITES = (
     ("test_policy_provider_prerequisites", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_prerequisite_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
+    ("test_policy_two_observation_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_instance_assembly_rule", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_instance_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_staged_generation", ("data/policy_staged_realization_request_v01.json",)),
@@ -73,6 +74,7 @@ SDK_BINARIES = {
     "originals": "core/_build/default/test/component_fixture_export/main.exe",
     "instance_originals": "core/_build/default/test/instance_fixture_export/main.exe",
     "prerequisite_originals": "core/_build/default/test/prerequisite_fixture_export/main.exe",
+    "two_observation_originals": "core/_build/default/test/two_observation_fixture_export/main.exe",
     "core": "core/_build/default/bin/core/main.exe",
     "verify": "core/_build/default/bin/verify/main.exe",
 }
@@ -87,6 +89,9 @@ INSTANCE_ORIGINALS = (
 )
 PREREQUISITE_ORIGINALS = INSTANCE_ORIGINALS + (
     "core/test/policy_prerequisite_support/literals.ml", "core/test/policy_prerequisite_support/requests.ml",
+)
+TWO_OBSERVATION_ORIGINALS = PREREQUISITE_ORIGINALS + (
+    "core/test/policy_two_observation_support/literals.ml", "core/test/policy_two_observation_support/requests.ml",
 )
 SELECTION_ORIGINALS = (
     "core/test/data/policy_material_request_v01.json",
@@ -342,22 +347,22 @@ def validate_native_feedback(root, native, prepared):
                 "Changed native command log: " + name)
 
 
-def public_sdk(root, *, instance=False, prerequisites=False):
+def public_sdk(root, *, instance=False, prerequisites=False, two_observations=False):
     """Use the same hosted build for original declarations and the public SDK.
 
     The domain-only helper exports independent source fixtures. Core and Verify
     subsequently check candidates; no fixture report grants acceptance.
     """
     output = root / "generated/development-feedback"
-    require(not (instance and prerequisites), "Select one SDK profile")
-    original_paths = PREREQUISITE_ORIGINALS if prerequisites else INSTANCE_ORIGINALS if instance else SDK_ORIGINALS
-    exporter = SDK_BINARIES["prerequisite_originals" if prerequisites else "instance_originals" if instance else "originals"]
-    packet_name = "prerequisite-originals" if prerequisites else "instance-originals" if instance else "component-originals"
-    campaign_name = "prerequisite-sdk" if prerequisites else "instance-sdk" if instance else "component-sdk"
-    report_name = "prerequisite-sdk.json" if prerequisites else "instance-sdk.json" if instance else "public-sdk.json"
-    witness_name = "prerequisite-sdk-witness.json" if prerequisites else "instance-sdk-witness.json" if instance else "sdk-witness.json"
-    script = "tools/check_policy_prerequisite_material.py" if prerequisites else "tools/check_policy_instance_material.py" if instance else "tools/check_policy_component_material.py"
-    report = {"schema": "biocompiler.development-prerequisite-sdk-feedback.v0.1" if prerequisites else "biocompiler.development-instance-sdk-feedback.v0.1" if instance else "biocompiler.development-sdk-feedback.v0.1", "acceptance": False,
+    require(sum((instance, prerequisites, two_observations)) <= 1, "Select one SDK profile")
+    original_paths = TWO_OBSERVATION_ORIGINALS if two_observations else PREREQUISITE_ORIGINALS if prerequisites else INSTANCE_ORIGINALS if instance else SDK_ORIGINALS
+    exporter = SDK_BINARIES["two_observation_originals" if two_observations else "prerequisite_originals" if prerequisites else "instance_originals" if instance else "originals"]
+    packet_name = "two-observation-originals" if two_observations else "prerequisite-originals" if prerequisites else "instance-originals" if instance else "component-originals"
+    campaign_name = "two-observation-sdk" if two_observations else "prerequisite-sdk" if prerequisites else "instance-sdk" if instance else "component-sdk"
+    report_name = "two-observation-sdk.json" if two_observations else "prerequisite-sdk.json" if prerequisites else "instance-sdk.json" if instance else "public-sdk.json"
+    witness_name = "two-observation-sdk-witness.json" if two_observations else "prerequisite-sdk-witness.json" if prerequisites else "instance-sdk-witness.json" if instance else "sdk-witness.json"
+    script = "tools/check_policy_two_observation_material.py" if two_observations else "tools/check_policy_prerequisite_material.py" if prerequisites else "tools/check_policy_instance_material.py" if instance else "tools/check_policy_component_material.py"
+    report = {"schema": "biocompiler.development-two-observation-sdk-feedback.v0.1" if two_observations else "biocompiler.development-prerequisite-sdk-feedback.v0.1" if prerequisites else "biocompiler.development-instance-sdk-feedback.v0.1" if instance else "biocompiler.development-sdk-feedback.v0.1", "acceptance": False,
               "scope": "hosted source-tree SDK feedback; installed and release acceptance remain separate",
               "status": "failed", "actions": []}
     prepared = None
@@ -674,6 +679,10 @@ def researcher_alpha_sdk(root):
     return report
 
 
+def two_observation_sdk(root):
+    return public_sdk(root, two_observations=True)
+
+
 def prerequisite_sdk(root):
     return public_sdk(root, prerequisites=True)
 
@@ -691,7 +700,7 @@ def sdk_all(root):
     """
     lanes = (
         (("public-sdk", public_sdk), ("selection-sdk", selection_sdk)),
-        (("instance-sdk", instance_sdk), ("prerequisite-sdk", prerequisite_sdk), ("staged-source-sdk", staged_source_sdk), ("staged-material-sdk", staged_material_sdk),
+        (("instance-sdk", instance_sdk), ("prerequisite-sdk", prerequisite_sdk), ("two-observation-sdk", two_observation_sdk), ("staged-source-sdk", staged_source_sdk), ("staged-material-sdk", staged_material_sdk),
          ("researcher-alpha-sdk", researcher_alpha_sdk)),
     )
 
@@ -718,11 +727,11 @@ def sdk_all(root):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk", "instance-sdk", "prerequisite-sdk", "sdk-all"))
+    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk", "instance-sdk", "prerequisite-sdk", "two-observation-sdk", "sdk-all"))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     try:
-        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk, "staged-material-sdk": staged_material_sdk, "researcher-alpha-sdk": researcher_alpha_sdk, "instance-sdk": instance_sdk, "prerequisite-sdk": prerequisite_sdk, "sdk-all": sdk_all}[args.command](root)
+        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk, "staged-material-sdk": staged_material_sdk, "researcher-alpha-sdk": researcher_alpha_sdk, "instance-sdk": instance_sdk, "prerequisite-sdk": prerequisite_sdk, "two-observation-sdk": two_observation_sdk, "sdk-all": sdk_all}[args.command](root)
     except (OSError, ValueError) as error:
         print(str(error), file=sys.stderr)
         return 1

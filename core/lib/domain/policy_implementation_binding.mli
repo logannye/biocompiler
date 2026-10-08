@@ -6,6 +6,8 @@ val schema_version : string
 val profile : string
 val staged_schema_version : string
 val staged_profile : string
+val two_observation_schema_version : string
+val two_observation_profile : string
 type observation = { source : string; bank : string; input : string }
 type state = { source : string; register : string }
 type effect_binding = { source : string; bank : string; feedback : string }
@@ -24,3 +26,4 @@ val rules : t -> rule list
 val machines : t -> machine list
 val transitions : t -> transition list
 val is_staged : t -> bool
+val is_two_observation : t -> bool

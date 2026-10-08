@@ -18,8 +18,15 @@ Integration is on `codex/core-instance-composition`; complete installed/cross-pl
 and actual-main validation remain pending. Priority 2 was explicitly selected as
 a separate bounded increment while those gates run, in
 `codex/dev-policy/prerequisite-closure`; its [contract](policy-prerequisite-closure-v0.1.md)
-and implementation are in progress. Priorities 2–5 must not inherit priority 1's
-acceptance. Priorities 3–5 remain unimplemented follow-on work.
+and implementation are present. Its corrected development revision `a34ebd6bc`
+has passed its hosted build, 35 native suites and seven SDK campaigns in run
+`37798264346`; independent artifact audit remains pending. Priority 3 is now implemented in the separate
+`codex/dev-policy/two-observation-composition` checkout with an
+[explicit bounded contract](policy-two-observation-composition-v0.1.md); its hosted
+validation is pending. Priorities 2–5 must not inherit priority 1's acceptance.
+Priorities 4–5 remain unimplemented follow-on work. The latest user instruction
+authorizes continuing these bounded increments sequentially while preserving
+separate exact-revision validation gates.
 
 ## Assessment and recommendation
 

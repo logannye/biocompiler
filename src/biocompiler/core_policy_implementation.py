@@ -23,6 +23,11 @@ REQUEST_SCHEMA = "biocompiler.policy_realization_request.v0.1"
 REQUEST_PROFILE = "biocompiler.policy_realization_inputs.v0.1"
 PREREQUISITE_REQUEST_SCHEMA = "biocompiler.policy_realization_request.v0.2"
 PREREQUISITE_REQUEST_PROFILE = "biocompiler.policy_prerequisite_realization_inputs.v0.1"
+TWO_OBSERVATION_REQUEST_SCHEMA = "biocompiler.policy_realization_request.v0.3"
+TWO_OBSERVATION_REQUEST_PROFILE = "biocompiler.policy_two_observation_prerequisite_inputs.v0.1"
+TWO_OBSERVATION_BINDING_SCHEMA = "biocompiler.policy_implementation_binding.v0.3"
+TWO_OBSERVATION_BINDING_PROFILE = "biocompiler.policy_two_observation_source_graph.v0.1"
+TWO_OBSERVATION_BINDING_REPORT_SCHEMA = "biocompiler.policy_implementation_binding_report.v0.3"
 PRESERVATION_PROFILE = "biocompiler.policy_bounded_preservation.v0.1"
 # Frozen negotiated publication profile; the protocol-budget regression test
 # checks these literal values against the wire envelope reserves.
@@ -116,6 +121,17 @@ def _prerequisite_original(request: JsonValue) -> dict[str, JsonValue]:
     return raw
 
 
+def _two_observation_original(request: JsonValue) -> dict[str, JsonValue]:
+    """Nested authority for the explicit two-observation material route only."""
+    raw = _object(request, _REQUEST_FIELDS, "Original two-observation implementation request")
+    if (raw["schema_version"] != TWO_OBSERVATION_REQUEST_SCHEMA
+            or raw["profile"] != TWO_OBSERVATION_REQUEST_PROFILE):
+        raise CoreProtocolError("Two-observation material requires its closed nested source profile")
+    if _record(raw["document"], "Original BuildRequest").get("$type") != "BuildRequest":
+        raise CoreProtocolError("Two-observation checking requires a complete original BuildRequest")
+    return raw
+
+
 def _pending_dependencies(request: dict[str, JsonValue]) -> list[JsonValue]:
     """Retain the original catalog membership and order; interpret no predicate."""
     document = _record(request["document"], "Original BuildRequest")
@@ -135,29 +151,34 @@ def _pending_dependencies(request: dict[str, JsonValue]) -> list[JsonValue]:
 
 
 def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
-               report: dict[str, JsonValue], *, prerequisites: bool = False) -> None:
+               report: dict[str, JsonValue], *, prerequisites: bool = False, two_observations: bool = False) -> None:
+    if two_observations and not prerequisites:
+        raise CoreProtocolError("Two-observation evidence requires prerequisite closure")
     raw_binding = _record(report["binding"], "Source graph binding")
     staged = raw_binding.get("schema_version") == "biocompiler.policy_implementation_binding_report.v0.2"
-    binding_profile = "biocompiler.policy_staged_source_graph.v0.1" if staged else "biocompiler.policy_exclusive_source_graph.v0.1"
+    binding_profile = (TWO_OBSERVATION_BINDING_PROFILE if two_observations else
+                       "biocompiler.policy_staged_source_graph.v0.1" if staged else "biocompiler.policy_exclusive_source_graph.v0.1")
     observable_profile = "biocompiler.policy_staged_observables.v0.1" if staged else "biocompiler.policy_truth_observables.v0.1"
     binding = _object(raw_binding, _BINDING_FIELDS | ({"state_encoding"} if staged else set()), "Source graph binding")
     admission = _object(binding["source_admission"], _ADMISSION_FIELDS
                         | ({"pending_dependencies"} if prerequisites else set()), "Original input admission")
     _claim(binding)
     _claim(admission)
-    if (binding["schema_version"] != ("biocompiler.policy_implementation_binding_report.v0.2" if staged else "biocompiler.policy_implementation_binding_report.v0.1")
+    if (binding["schema_version"] != (TWO_OBSERVATION_BINDING_REPORT_SCHEMA if two_observations else
+                                     "biocompiler.policy_implementation_binding_report.v0.2" if staged else "biocompiler.policy_implementation_binding_report.v0.1")
             or binding["profile"] != binding_profile or binding["observable_profile"] != observable_profile
             or staged and binding["state_encoding"] != "exact_ordered_source_labels"
             or binding["status"] != "source_graph_bound" or binding["execution"] != "not_performed"
             or admission["schema_version"] != ("biocompiler.policy_realization_admission.v0.2" if prerequisites
                                                 else "biocompiler.policy_realization_admission.v0.1")
-            or admission["profile"] != (PREREQUISITE_REQUEST_PROFILE if prerequisites else REQUEST_PROFILE)
+            or admission["profile"] != (TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
+                                        PREREQUISITE_REQUEST_PROFILE if prerequisites else REQUEST_PROFILE)
             or admission["resource_profile"] != "biocompiler.policy_realization_inputs.resources.v0.1"
             or admission["status"] != "admitted_inputs" or admission["exploration"] != "not_performed"
             or any(stage[key] != "unassessed" for stage in (binding, admission) for key in ("preservation", "requirements"))):
         raise CoreProtocolError("Implementation report changed a subordinate admission claim")
     if prerequisites:
-        _prerequisite_original(request)
+        (_two_observation_original if two_observations else _prerequisite_original)(request)
         if staged or not _same(admission["pending_dependencies"], _pending_dependencies(request)):
             raise CoreProtocolError("Prerequisite admission changed its truth-only scope or original pending inventory")
     document = _record(request["document"], "Original BuildRequest")
@@ -203,7 +224,8 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
     } | ({"machines", "transitions"} if staged else set()), "Proposed binding")
     if (len(matches) != 1 or binding["catalog_entry_digest"] != matches[0].get("entry_digest")
             or proposed["catalog_entry"] != binding["catalog_entry"]
-            or proposed["schema_version"] != ("biocompiler.policy_implementation_binding.v0.2" if staged else "biocompiler.policy_implementation_binding.v0.1")
+            or proposed["schema_version"] != (TWO_OBSERVATION_BINDING_SCHEMA if two_observations else
+                                              "biocompiler.policy_implementation_binding.v0.2" if staged else "biocompiler.policy_implementation_binding.v0.1")
             or proposed["profile"] != binding["profile"]):
         raise CoreProtocolError("Source binding changed its original catalog entry")
     if staged:
@@ -236,6 +258,8 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
     graph_nodes = _rows(graph["nodes"], "Actual graph nodes")
     if not _same([row.get("node") for row in outputs], [row.get("id") for row in graph_nodes]):
         raise CoreProtocolError("Binding omitted or reordered an actual graph node")
+    if two_observations:
+        _two_observation_anchors(proposed, graph, request["implementation_library"], outputs, original_declarations)
     assessment = operational._source_assessment(response, admission["source_assessment"], document)
     if assessment.status != "valid" or admission["document_digest"] != assessment.document_digest:
         raise CoreProtocolError("Implementation success lacks original valid source assessment")
@@ -246,6 +270,39 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
     if (not _same(admission["assurance"], assurance) or not _same(admission["budgets"], request["budgets"])
             or not _same(admission["requested_requirements"], assurance["requirements"])):
         raise CoreProtocolError("Input admission changed original assurance or budgets")
+
+
+def _two_observation_anchors(proposed: dict[str, JsonValue], graph: dict[str, JsonValue],
+                             library: JsonValue, outputs: list[dict[str, JsonValue]],
+                             declarations: list[dict[str, JsonValue]]) -> None:
+    """Retain ordered source/bank/input identities; interpret no observation semantics."""
+    anchors = [_object(row, {"source", "bank", "input"}, "Two-observation source anchor")
+               for row in _rows(proposed["observations"], "Two-observation anchors")]
+    source_ids = [row.get("id") for row in declarations if row.get("$type") == "Observation"]
+    if (len(anchors) != 2 or len(source_ids) != 2
+            or any(type(value) is not str or not value for value in source_ids)
+            or not _same([row["source"] for row in anchors], source_ids)):
+        raise CoreProtocolError("Two-observation binding changed the complete ordered source census")
+    for field in ("source", "bank", "input"):
+        values = [row[field] for row in anchors]
+        if any(type(value) is not str or not value for value in values) or len(set(cast(list[str], values))) != 2:
+            raise CoreProtocolError("Two-observation binding aliased or lost a source, bank or input")
+    models = _rows(_record(library, "Original primitive library").get("models"), "Original primitive models")
+    banks: list[JsonValue] = []
+    for node in _rows(graph["nodes"], "Actual graph nodes"):
+        selected = [row for row in models if _same(row.get("identity"), node.get("model"))]
+        if len(selected) != 1:
+            raise CoreProtocolError("Two-observation graph lost an original primitive identity")
+        if _record(selected[0].get("body"), "Original primitive body").get("primitive") == "evidence_bank":
+            banks.append(node.get("id"))
+    if (not _same(banks, [row["bank"] for row in anchors])
+            or not _same([row.get("node") for row in outputs if row.get("operation") == "evidence_bank"], banks)):
+        raise CoreProtocolError("Two-observation evidence banks changed source declaration order")
+    inputs = [row for row in _rows(graph["inputs"], "Actual graph inputs") if row.get("kind") == "evidence"]
+    expected: list[JsonValue] = [{"id": row["input"], "kind": "evidence",
+                            "consumer": {"node": row["bank"], "port": "samples"}} for row in anchors]
+    if len(inputs) != 2 or any(sum(_same(row, original) for row in inputs) != 1 for original in expected):
+        raise CoreProtocolError("Two-observation graph changed complete source-bound evidence inputs")
 
 
 def _evidence(request: dict[str, JsonValue], report: dict[str, JsonValue]) -> None:

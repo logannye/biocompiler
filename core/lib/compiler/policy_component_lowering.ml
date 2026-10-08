@@ -19,7 +19,7 @@ let input_json (value:I.external_input) = obj ["id",str value.input_id;
   "consumer",endpoint_json value.consumer]
 type local = { reference:A.node_ref; key:string; model:I.model }
 type proposal = { implementation:I.t; binding:U.t; assembly:Q.t }
-let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~rule (lowered:Policy_implementation_lowering.proposal) =
+let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inputs ~library ~rule (lowered:Policy_implementation_lowering.proposal) =
   let module Meter = Bioc_checker.Policy_generation_meter.Make (struct let charge = charge end) in
   let module List = Meter.List in
   let module String = Meter.String in
@@ -68,6 +68,25 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~r
       (F.external_slots (fragment row.slot)) in
     ({input_id=row.input_id;input_kind=input.input_kind;consumer=local_endpoint row.slot input.consumer}:I.external_input))
       (A.input_order rule) in
+  (* The new family can contain graph-symmetric evidence banks. Original source
+     channels constrain this search; matching primitive shapes alone cannot
+     decide which original observation feeds which supplied component input. *)
+  let required_inputs=match source_inputs with
+    |None->supported(not(U.is_two_observation lowered.binding))
+        "Two-observation arrangement requires the original source-to-input inventory.";None
+    |Some requested->
+      supported(U.is_two_observation lowered.binding)
+        "Original source-to-input arrangement is available only in the explicit two-observation family.";
+      let originals=List.map(fun(value:U.observation)->value.source,value.input)(U.observations lowered.binding) @
+        List.map(fun(value:U.effect_binding)->value.source,value.feedback)(U.effects lowered.binding) in
+      let names pairs=List.sort String.compare(List.map fst pairs) in
+      let targets pairs=List.sort String.compare(List.map snd pairs) in
+      supported(List.length requested=List.length originals && names requested=names originals &&
+        List.length(List.sort_uniq String.compare(List.map fst requested))=List.length requested &&
+        targets requested=List.sort String.compare(List.map(fun(value:I.external_input)->value.input_id)wanted_inputs) &&
+        List.length(List.sort_uniq String.compare(List.map snd requested))=List.length requested)
+        "Original source-to-input inventory must bind every observation and effect exactly once to the supplied complete input inventory.";
+      Some(List.map(fun(source,input)->input,List.assoc source requested)originals) in
   let wanted_groups = List.map (fun (row:A.group_ref) ->
     let group = List.find (fun (value:I.atomic_group) -> value.group_id=row.group_id)
       (F.atomic_groups (fragment row.slot)) in
@@ -109,7 +128,8 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~r
     if not (same_multiset inspect_endpoint (List.map endpoint (I.semantic_exports implementation)) wanted_exports) then None else
     let inputs = List.filter_map (fun (value:I.external_input) ->
       let consumer = endpoint value.consumer in charge (List.length wanted_inputs);
-      match List.filter (fun (target:I.external_input) -> target.input_kind=value.input_kind && target.consumer=consumer) wanted_inputs with
+      match List.filter (fun (target:I.external_input) -> target.input_kind=value.input_kind && target.consumer=consumer &&
+        (match required_inputs with None->true|Some bindings->List.assoc_opt value.input_id bindings=Some target.input_id)) wanted_inputs with
       | [target] -> Some (value.input_id,target.input_id) | _ -> None) (I.inputs implementation) in
     if List.length inputs<>List.length (I.inputs implementation) ||
       not (same_multiset inspect_text (List.map snd inputs) (List.map (fun (value:I.external_input) -> value.input_id) wanted_inputs)) then None else

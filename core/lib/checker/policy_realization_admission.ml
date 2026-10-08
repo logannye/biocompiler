@@ -132,6 +132,18 @@ let admit ~request ~(behavior:O.behavior) =
   let document=R.document request and descriptors=R.definitions request in
   let source=Policy_admission.admit_metered ~charge:Charge.charge ~document ~descriptors in
   let correspondence=Policy_correspondence.check ~charge:Charge.charge ~expected_document:document ~descriptors behavior in
+  (if R.is_two_observation request then
+    match behavior.observations with
+    | [left;right] ->
+      require (behavior.machines=[] && behavior.transitions=[] &&
+        left.value_type=O.Truth_type && right.value_type=O.Truth_type &&
+        String.equal left.observer right.observer && String.equal left.subject right.subject &&
+        String.equal left.clock right.clock && String.equal left.coverage "event" &&
+        String.equal right.coverage "event" && not (String.equal left.coherence right.coherence))
+        "policy_realization_two_observation"
+        "Two-observation inputs require independent truth evidence on one executor, encounter subject and clock, without frame joining or machine semantics."
+    | _ -> require false "policy_realization_two_observation"
+        "The two-observation family requires exactly two original observations.");
   (* Only externally checked source behavior reaches environment compatibility.
      Neither decoder nor caller-supplied candidate claims can replace this step. *)
   let domain_value=F.validate_for ~charge:Charge.charge ~behavior (R.operating_domain request) in

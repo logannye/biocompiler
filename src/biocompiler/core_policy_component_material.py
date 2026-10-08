@@ -28,6 +28,10 @@ PREREQUISITE_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.
 PREREQUISITE_REQUEST_PROFILE = "biocompiler.policy_instance_prerequisite_mrna.v0.1"
 PREREQUISITE_IMPLEMENTATION = "biocompiler.ocaml.policy_instance_prerequisite_material.v0.1"
 PREREQUISITE_VALIDATION_SCOPE = "policy-instance-prerequisite-mrna-v0.1"
+TWO_OBSERVATION_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.4"
+TWO_OBSERVATION_REQUEST_PROFILE = "biocompiler.policy_instance_two_observation_prerequisite_mrna.v0.1"
+TWO_OBSERVATION_IMPLEMENTATION = "biocompiler.ocaml.policy_instance_two_observation_prerequisite_material.v0.1"
+TWO_OBSERVATION_VALIDATION_SCOPE = "policy-instance-two-observation-prerequisite-mrna-v0.1"
 REPORT_SCHEMA = "biocompiler.policy_component_material_assessment.v0.1"
 EXPORT_SCHEMA = "biocompiler.policy_component_mrna_export.v0.1"
 MANIFEST_SCHEMA = "biocompiler.policy_component_mrna_manifest.v0.1"
@@ -61,6 +65,13 @@ PREREQUISITE_PROFILE: dict[str, JsonValue] = {
 PREREQUISITE_PRODUCER_PROFILE: dict[str, JsonValue] = {
     **PRODUCER_PROFILE, "implementation": PREREQUISITE_IMPLEMENTATION, "validation_scope": PREREQUISITE_VALIDATION_SCOPE,
 }
+TWO_OBSERVATION_PROFILE: dict[str, JsonValue] = {
+    **PROFILE, "request_schema": TWO_OBSERVATION_REQUEST_SCHEMA, "implementation": TWO_OBSERVATION_IMPLEMENTATION,
+    "validation_scope": TWO_OBSERVATION_VALIDATION_SCOPE,
+}
+TWO_OBSERVATION_PRODUCER_PROFILE: dict[str, JsonValue] = {
+    **PRODUCER_PROFILE, "implementation": TWO_OBSERVATION_IMPLEMENTATION, "validation_scope": TWO_OBSERVATION_VALIDATION_SCOPE,
+}
 _REQUEST_FIELDS = {"schema_version", "profile", "implementation_request", "component_library", "composition_rule",
                    "catalog_binding", "input_bindings", "resource_bindings", "context", "budgets"}
 _CANDIDATE_FIELDS = {"schema_version", "behavior", "implementation", "binding", "assembly_proposal", "construction"}
@@ -72,9 +83,12 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
     request = _object(value, _REQUEST_FIELDS, "Original component material request")
     if (request["schema_version"], request["profile"]) not in ((REQUEST_SCHEMA, REQUEST_PROFILE),
             (INSTANCE_REQUEST_SCHEMA, INSTANCE_REQUEST_PROFILE),
-            (PREREQUISITE_REQUEST_SCHEMA, PREREQUISITE_REQUEST_PROFILE)):
+            (PREREQUISITE_REQUEST_SCHEMA, PREREQUISITE_REQUEST_PROFILE),
+            (TWO_OBSERVATION_REQUEST_SCHEMA, TWO_OBSERVATION_REQUEST_PROFILE)):
         raise CoreProtocolError("Component material request changed its closed original profile")
-    (implementation._prerequisite_original if _prerequisites(request) else implementation._original)(request["implementation_request"])
+    decoder = (implementation._two_observation_original if _two_observations(request) else
+               implementation._prerequisite_original if _prerequisites(request) else implementation._original)
+    decoder(request["implementation_request"])
     for key in ("component_library", "composition_rule", "catalog_binding", "context", "budgets"):
         _record(request[key], "Original " + key)
     for key in ("input_bindings", "resource_bindings"):
@@ -83,14 +97,21 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
 
 
 def _instanced(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] in (INSTANCE_REQUEST_PROFILE, PREREQUISITE_REQUEST_PROFILE)
+    return request["profile"] in (INSTANCE_REQUEST_PROFILE, PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE)
 
 
 def _prerequisites(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] == PREREQUISITE_REQUEST_PROFILE
+    return request["profile"] in (PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE)
+
+
+def _two_observations(request: dict[str, JsonValue]) -> bool:
+    return request["profile"] == TWO_OBSERVATION_REQUEST_PROFILE
 
 
 def _profile_settings(request: dict[str, JsonValue]) -> tuple[str, dict[str, JsonValue], dict[str, JsonValue], str, str]:
+    if _two_observations(request):
+        return ("policy_two_observation_material", TWO_OBSERVATION_PROFILE, TWO_OBSERVATION_PRODUCER_PROFILE,
+                TWO_OBSERVATION_VALIDATION_SCOPE, TWO_OBSERVATION_IMPLEMENTATION)
     if _prerequisites(request):
         return ("policy_prerequisite_material", PREREQUISITE_PROFILE, PREREQUISITE_PRODUCER_PROFILE,
                 PREREQUISITE_VALIDATION_SCOPE, PREREQUISITE_IMPLEMENTATION)
@@ -262,11 +283,12 @@ def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, Json
         "diagnostics", "empirical"}, "Complete prerequisite closure")
     status = context_report["outcome"]
     _expect(closure, {"schema_version": "biocompiler.policy_provider_prerequisite_closure.v0.1",
-        "profile": PREREQUISITE_REQUEST_PROFILE, "status": status, "complete": status == "pass",
+        "profile": request["profile"], "status": status, "complete": status == "pass",
         "diagnostics": context_report["diagnostics"], "empirical": "unassessed"}, "Prerequisite scope")
     if report["prerequisite_status"] != status:
         raise CoreProtocolError("Prerequisite status contradicts the complete checked context")
-    original = implementation._prerequisite_original(request["implementation_request"])
+    original = (implementation._two_observation_original if _two_observations(request) else
+                implementation._prerequisite_original)(request["implementation_request"])
     document = _record(original["document"], "Original prerequisite source")
     context = _record(request["context"], "Original prerequisite context")
     rule = _record(_record(request["composition_rule"], "Original rule").get("body"), "Original rule body")
@@ -431,7 +453,7 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
         _projections(request, candidate, leaf)
     if context is not None:
         context_profile = _record(request["context"], "Original component context").get("profile")
-        allowed_contexts = ((PREREQUISITE_REQUEST_PROFILE,) if prerequisites else
+        allowed_contexts = ((request["profile"],) if prerequisites else
                             (INSTANCE_REQUEST_PROFILE, "biocompiler.policy_instance_staged_component_mrna.v0.1") if instanced
                             else (REQUEST_PROFILE, "biocompiler.policy_staged_component_mrna.v0.1"))
         if context_profile not in allowed_contexts:
@@ -441,7 +463,8 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
             "diagnostics", "source_receipt_status", "biological_validity", "human_use", "artifact", "export"}
             | ({"prerequisite_closure"} if prerequisites else set()), "Component context evidence")
         _expect(leaf, {"schema_version": "biocompiler.policy_component_context_assessment.v0.1", "profile": context_profile,
-            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.3" if prerequisites else
+            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.4" if _two_observations(request) else
+            "biocompiler.ocaml.policy_component_context_check.v0.3" if prerequisites else
             "biocompiler.ocaml.policy_component_context_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_context_check.v0.1", "claim_scope": "conditional_component_context_and_complete_record_capacity",
             "source_receipt_status": "unchanged", "biological_validity": "unassessed", "human_use": "unassessed", "artifact": "withheld", "export": "withheld"}, "Context evidence")
         for key, original in (("request_fingerprint", request), ("context_fingerprint", request["context"]), ("assembly_fingerprint", assembly)):
@@ -480,11 +503,16 @@ def _candidate(value: JsonValue, *, instanced: bool = False) -> dict[str, JsonVa
     return candidate
 
 
-def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = False) -> dict[str, JsonValue]:
+def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = False,
+            two_observations: bool = False) -> dict[str, JsonValue]:
+    if two_observations and not (instanced and prerequisites):
+        raise CoreProtocolError("Two-observation assessment requires the named-instance prerequisite route")
     report = _object(value, _REPORT_FIELDS | ({"prerequisites", "prerequisite_status"} if prerequisites else set()), "Complete component assessment")
     _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
-        "profile": PREREQUISITE_REQUEST_PROFILE if prerequisites else INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
-        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.3" if prerequisites else
+        "profile": TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
+        PREREQUISITE_REQUEST_PROFILE if prerequisites else INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
+        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
+        "biocompiler.ocaml.policy_component_material_check.v0.3" if prerequisites else
         "biocompiler.ocaml.policy_component_material_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
         "claim_scope": CLAIM_SCOPE, "premise": PREMISE, "empirical": "unassessed", "artifact": "withheld", "export": "withheld"}, "Component report")
     return report
@@ -505,7 +533,8 @@ def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate
             or charged > _count(budgets.get("max_work"), "Original maximum work")):
         raise CoreProtocolError("Component work accounting changed its unit or original bound")
     prerequisites = _prerequisites(request)
-    material._preservation(response, request, candidate, report, limits, prerequisites=prerequisites)
+    material._preservation(response, request, candidate, report, limits, prerequisites=prerequisites,
+                           two_observations=_two_observations(request))
     _leaves(request, candidate, report)
     if prerequisites:
         _prerequisite_evidence(request, report)
@@ -526,7 +555,8 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
     if candidate["schema_version"] != CANDIDATE_SCHEMA or "candidate" in payload and not _same(candidate, payload["candidate"]):
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
     _candidate(candidate, instanced=instanced)
-    report = _report(result["report"], instanced=instanced, prerequisites=prerequisites)
+    report = _report(result["report"], instanced=instanced, prerequisites=prerequisites,
+                     two_observations=_two_observations(request))
     invocation: JsonValue = {"request": request, "candidate": candidate, "limits": payload["limits"]}
     request_hash = _pin(result["request_fingerprint"], request, "Complete original component request")
     candidate_hash = _pin(result["candidate_fingerprint"], candidate, "Complete component candidate")
@@ -535,8 +565,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
     _assessment(response, request, candidate, report, payload["limits"])
     material._artifact(result["artifact"], operation=response.operation, request=request, candidate=candidate, report=report, limits=payload["limits"],
         export_operation="export-policy-component-material", accepted_status=ACCEPTED_STATUS, export_schema=EXPORT_SCHEMA,
-        manifest_schema=MANIFEST_SCHEMA, request_profile=PREREQUISITE_REQUEST_PROFILE if prerequisites else
-        INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE, claim_scope=CLAIM_SCOPE, premise=PREMISE)
+        manifest_schema=MANIFEST_SCHEMA, request_profile=cast(str, request["profile"]), claim_scope=CLAIM_SCOPE, premise=PREMISE)
     if response.operation == "replay-policy-component-material" and not _same(result, payload["report"]):
         raise CoreProtocolError("Fresh replay differs from the complete retained component wrapper")
     budgets = _record(request["budgets"], "Original component budgets")

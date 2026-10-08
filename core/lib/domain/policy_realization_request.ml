@@ -9,14 +9,21 @@ let schema_version = "biocompiler.policy_realization_request.v0.1"
 let profile = "biocompiler.policy_realization_inputs.v0.1"
 let prerequisite_schema_version = "biocompiler.policy_realization_request.v0.2"
 let prerequisite_profile = "biocompiler.policy_prerequisite_realization_inputs.v0.1"
+let two_observation_schema_version = "biocompiler.policy_realization_request.v0.3"
+let two_observation_profile = "biocompiler.policy_two_observation_prerequisite_inputs.v0.1"
 let resource_profile = "biocompiler.policy_realization_inputs.resources.v0.1"
+type family = Legacy | Prerequisites | Two_observation
+let family_schema = function Legacy -> schema_version | Prerequisites -> prerequisite_schema_version
+  | Two_observation -> two_observation_schema_version
+let family_profile = function Legacy -> profile | Prerequisites -> prerequisite_profile
+  | Two_observation -> two_observation_profile
 type budgets = { max_prefixes:int; max_transitions:int; max_work:int; max_trace_items:int }
 type catalog_binding = {
   entry_id:string; entry_version:string; entry_digest:string;
   operation:Json.t; realization:Json.t; models:P.t list;
 }
 type t = {
-  raw:Json.t; identity:string; prerequisite_closure:bool; document_value:D.t; definitions_value:O.descriptor_bundle;
+  raw:Json.t; identity:string; family:family; document_value:D.t; definitions_value:O.descriptor_bundle;
   domain_value:F.t; library_value:I.library; binding_values:catalog_binding list;
   bindings_identity:string; budget_values:budgets;
 }
@@ -48,15 +55,14 @@ let integer maximum value =
   require (Z.sign value>0 && Z.compare value (Z.of_int maximum)<=0)
     "Realization exploration budget must be a positive bounded integer.";
   Z.to_int value
-let decode ~prerequisite_closure raw =
+let decode ~family raw =
   (* The existing strict measurement bounds shared/cyclic list occurrences,
      duplicate keys, depth, scalar sizes and floats before any typed traversal.
      Its metadata-excluding digest is discarded; authority uses the full hash. *)
   ignore(D.document_digest raw);
   exact ["schema_version";"profile";"document";"definitions";"operating_domain";
     "implementation_library";"catalog_bindings";"budgets"] raw;
-  require (text "schema_version" raw=(if prerequisite_closure then prerequisite_schema_version else schema_version) &&
-    text "profile" raw=(if prerequisite_closure then prerequisite_profile else profile))
+  require (text "schema_version" raw=family_schema family && text "profile" raw=family_profile family)
     "Unsupported realization input schema/profile.";
   let document_value=D.of_json ~path:"/document" (get "document" raw) in
   require ~path:"/document" (D.kind document_value=D.Request)
@@ -83,12 +89,14 @@ let decode ~prerequisite_closure raw =
     max_transitions=integer 10_000_000(get "max_transitions" budget);
     max_work=integer 100_000_000(get "max_work" budget);
     max_trace_items=integer 1_000_000(get "max_trace_items" budget)} in
-  {raw;identity=Canonical.fingerprint raw;prerequisite_closure;document_value;definitions_value;domain_value;library_value;
+  {raw;identity=Canonical.fingerprint raw;family;document_value;definitions_value;domain_value;library_value;
    binding_values;bindings_identity=Canonical.fingerprint(get "catalog_bindings" raw);budget_values}
-let of_json raw = decode ~prerequisite_closure:false raw
-let of_prerequisite_json raw = decode ~prerequisite_closure:true raw
-let requires_prerequisite_closure value = value.prerequisite_closure
-let request_profile value = if value.prerequisite_closure then prerequisite_profile else profile
+let of_json raw = decode ~family:Legacy raw
+let of_prerequisite_json raw = decode ~family:Prerequisites raw
+let of_two_observation_json raw = decode ~family:Two_observation raw
+let requires_prerequisite_closure value = value.family<>Legacy
+let is_two_observation value = value.family=Two_observation
+let request_profile value = family_profile value.family
 let to_json value = value.raw
 let fingerprint value = value.identity
 let document value = value.document_value

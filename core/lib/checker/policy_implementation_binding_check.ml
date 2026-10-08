@@ -49,6 +49,7 @@ let expression_identity expression = Canonical.encode expression
 
 let check_legacy ~admitted ~implementation ~proposed =
   let request=A.request admitted and behavior=A.behavior admitted in
+  let two_observation=R.is_two_observation request in
   let document=R.document request and domain=F.specification(A.operating_domain admitted)in
   (* Re-decode the actual graph against original external authority. Neither
      graph-carried pins nor a prior producer receipt can select its models. *)
@@ -65,7 +66,6 @@ let check_legacy ~admitted ~implementation ~proposed =
   and encounter=singleton "encounter declaration" behavior.encounters
   and subject=singleton "encounter subject" behavior.subjects
   and clock=singleton "logical clock" behavior.clocks
-  and observation_source=singleton "truth observation" behavior.observations
   and effect_source=singleton "product-bearing effect" behavior.effects
   and parameter=singleton "fixed product parameter" behavior.parameters in
   require(behavior.machines=[] && behavior.transitions=[] &&
@@ -126,19 +126,44 @@ let check_legacy ~admitted ~implementation ~proposed =
   let ticks duration=let ticks=Q.div duration clock.resolution in
     require(Z.equal(Q.den ticks)Z.one && Q.sign ticks>0 && Z.compare(Q.num ticks)(Z.of_int 10000)<=0)
       "Source duration is not a positive bounded number of exact clock ticks.";Z.to_int(Q.num ticks)in
-  let observation_anchor=singleton "observation anchor"(B.observations proposed)
+  let observation_sources=if two_observation then (
+    require(List.length behavior.observations=2)
+      "Two-observation source binding requires exactly two original observations.";
+    behavior.observations)else [singleton "truth observation" behavior.observations] in
+  let observation_anchors=B.observations proposed
   and effect_anchor=singleton "effect anchor"(B.effects proposed)in
-  require(observation_anchor.source=observation_source.observation_id && effect_anchor.source=effect_source.effect_id)
-    "Source observation/effect inventory differs from proposed anchors.";
-  require(observation_source.value_type=O.Truth_type && observation_source.observer=role.role_id &&
-    observation_source.subject=subject.subject_id && observation_source.clock=clock.clock_id &&
-    observation_source.coverage="event" && observation_source.coherence="frame")
-    "Only encounter-local event evidence with frame coherence is supported by this graph profile.";
-  source_type "truth"(get "value_type"(raw observation_source.observation_id));
-  require(primitive observation_anchor.bank=I.Evidence_bank{freshness_ticks=ticks observation_source.freshness})
-    "Evidence-bank freshness or operation differs from original observation.";
-  external_input observation_anchor.input I.Evidence_input(ep observation_anchor.bank "samples");
-  record I.Declaration(path observation_source.observation_id)(outputs(node observation_anchor.bank));
+  require(List.map(fun(value:B.observation)->value.source)observation_anchors=
+    List.map(fun(value:O.observation)->value.observation_id)observation_sources &&
+    effect_anchor.source=effect_source.effect_id)
+    (if two_observation then "Source observation/effect inventory differs from proposed anchors or original declaration order."
+     else "Source observation/effect inventory differs from proposed anchors.");
+  if two_observation then (
+    let banks=List.map(fun(value:B.observation)->value.bank)observation_anchors
+    and inputs=List.map(fun(value:B.observation)->value.input)observation_anchors in
+    require(List.length(List.sort_uniq String.compare banks)=2 &&
+      List.length(List.sort_uniq String.compare inputs)=2)
+      "Distinct original observations require distinct evidence banks and external inputs.";
+    require(List.filter_map(fun(value:I.node)->match value.model.primitive with
+      |I.Evidence_bank _->Some value.node_id|_->None)nodes=banks)
+      "Actual evidence-bank node order differs from original observation declaration order.";
+    require(List.length(List.sort_uniq String.compare
+      (List.map(fun(value:O.observation)->value.coherence)observation_sources))=2)
+      "Two-observation source binding requires distinct original coherence groups.");
+  List.iter2(fun(observation_source:O.observation)(observation_anchor:B.observation)->
+    require(observation_source.value_type=O.Truth_type && observation_source.observer=role.role_id &&
+      observation_source.subject=subject.subject_id && observation_source.clock=clock.clock_id &&
+      observation_source.coverage="event" && (two_observation || observation_source.coherence="frame"))
+      (if two_observation then "Source observation changes its encounter-local event evidence profile."
+       else "Only encounter-local event evidence with frame coherence is supported by this graph profile.");
+    source_type "truth"(get "value_type"(raw observation_source.observation_id));
+    require(primitive observation_anchor.bank=I.Evidence_bank{freshness_ticks=ticks observation_source.freshness})
+      "Evidence-bank freshness or operation differs from original observation.";
+    external_input observation_anchor.input I.Evidence_input(ep observation_anchor.bank "samples");
+    record I.Declaration(path observation_source.observation_id)(outputs(node observation_anchor.bank)))
+    observation_sources observation_anchors;
+  let observation_anchor identity=match List.find_opt(fun(value:B.observation)->value.source=identity)observation_anchors with
+    |Some value->value
+    |None->Diagnostic.fail "policy_implementation_source_binding" "Expression references an unmapped original observation." in
   require(List.map(fun(s:B.state)->s.source)(B.states proposed)=List.map(fun(s:O.state_store)->s.state_id)behavior.stores)
     "State anchors must cover every original state exactly once in declaration order.";
   require(List.map(fun(r:B.rule)->r.source)(B.rules proposed)=List.map(fun(r:O.rule)->r.rule_id)behavior.rules)
@@ -177,9 +202,11 @@ let check_legacy ~admitted ~implementation ~proposed =
     let output port=require(endpoint.port_id=port)"Expression is bound to the wrong primitive output."in
     (match operator with
     |"observe"->source_type ~path:source_path "truth"(get "value_type" source);
+        let identity=O.ref_id(get "ref" source)in
+        let anchor=observation_anchor identity in
         require(args=[] && get "value" source=Json.Null &&
-          ref_matches source "ref" "Observation" observation_source.observation_id &&
-          ref_matches source "scope" "Subject" subject.subject_id && endpoint=ep observation_anchor.bank "value")
+          ref_matches source "ref" "Observation" identity &&
+          ref_matches source "scope" "Subject" subject.subject_id && endpoint=ep anchor.bank "value")
           "Observed expression loses its exact source observation/subject bank."
     |"state"->source_type ~path:source_path "truth"(get "value_type" source);
         let identity=O.ref_id(get "ref" source)in
@@ -317,8 +344,8 @@ let check_legacy ~admitted ~implementation ~proposed =
   let environment_value={executor=domain.executor_identity;
     slots=List.map(fun(s:F.encounter)->({identity=s.identity;target=s.target;start_tick=s.start_tick}:slot))domain.encounters;
     horizon_ticks=domain.horizon_ticks}in
-  let observation_values=[{source=observation_source.observation_id;bank=observation_anchor.bank;input=observation_anchor.input;
-    observer=role.role_id;subject=subject.subject_id}]
+  let observation_values=List.map(fun(value:B.observation)->
+    ({source=value.source;bank=value.bank;input=value.input;observer=role.role_id;subject=subject.subject_id}:observation))observation_anchors
   and state_values=List.map(fun(s:B.state)->({source=s.source;register=s.register}:state))(B.states proposed)
   and rule_values=List.map(fun(r:B.rule)->
     let source=List.find(fun(s:O.rule)->s.rule_id=r.source)behavior.rules in
@@ -329,7 +356,9 @@ let check_legacy ~admitted ~implementation ~proposed =
     product_parameter=text "name" argument;machine=None}]in
   let expression_values=List.sort(fun(a:expression)(b:expression)->String.compare a.source_path b.source_path)!expressions in
   let report_value=obj[
-    "schema_version",str "biocompiler.policy_implementation_binding_report.v0.1";"profile",str profile;
+    "schema_version",str(if two_observation then "biocompiler.policy_implementation_binding_report.v0.3"
+      else "biocompiler.policy_implementation_binding_report.v0.1");
+    "profile",str(if two_observation then B.two_observation_profile else profile);
     "observable_profile",str I.observable_profile;"status",str "source_graph_bound";
     "request_fingerprint",str(R.fingerprint request);"catalog_bindings_digest",str(R.catalog_bindings_digest request);
     "catalog_entry",str bridge.entry_id;"catalog_entry_digest",str bridge.entry_digest;
@@ -612,6 +641,8 @@ let check_staged ~admitted ~implementation ~proposed =
    state_values=[];effect_values;rule_values=[];machine_values;transition_values;expression_values;report_value}
 
 let check ~admitted ~implementation ~proposed =
+  require(R.is_two_observation(A.request admitted)=B.is_two_observation proposed)
+    "Original realization and proposed binding must use the same explicit two-observation family.";
   if B.is_staged proposed then check_staged ~admitted ~implementation ~proposed
   else check_legacy ~admitted ~implementation ~proposed
 

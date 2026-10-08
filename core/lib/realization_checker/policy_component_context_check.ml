@@ -410,7 +410,8 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       "input_allocations",arr !input_rows;"resource_allocations",arr !resource_rows;
       "diagnostics",arr(List.map str diagnostics);"empirical",str "unassessed"]) prerequisites in
   let report_value=obj (["schema_version",str "biocompiler.policy_component_context_assessment.v0.1";
-    "profile",str context_profile;"implementation_version",str (if Option.is_some prerequisites then
+    "profile",str context_profile;"implementation_version",str (if R.is_two_observation request then
+      "biocompiler.ocaml.policy_component_context_check.v0.4" else if Option.is_some prerequisites then
       "biocompiler.ocaml.policy_component_context_check.v0.3" else if R.is_instanced request then
       "biocompiler.ocaml.policy_component_context_check.v0.2" else implementation_version);
     "request_fingerprint",str (R.fingerprint request);"context_fingerprint",str (X.fingerprint context);
