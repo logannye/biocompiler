@@ -14,26 +14,26 @@ Here, *arbitrary* describes the breadth of programs we aim to let people express
 
 ## Medicine that responds to context
 
-Imagine an immune-cell therapy designed to recognize a combination of disease signals, respond only when the required conditions are present, remember an earlier encounter, and change its response as a treatment progresses. Its specification would also describe when activity must stop and what outcomes must be avoided.
+Imagine an immune-cell therapy programmed to dynamically respond to the patient's body: recognize a combination of disease signals, respond only when the required conditions are present, remember an earlier encounter, and change its response as a treatment progresses. Its specification would also describe when activity must stop and what outcomes must be avoided.
 
-That is the kind of therapeutic program we want researchers to be able to express. This example illustrates the direction of the project; it is not a treatment produced or validated by biocompiler.
+That is the kind of therapeutic program we want researchers to be able to express and patients to be able to receive. This example illustrates the direction of the project.
 
-Turning such intent into RNA involves many linked decisions. Which molecular components could implement it? Can they work together under the stated assumptions? Does stopping production also stop an existing product's activity? Does the final sequence still correspond to the original design?
+Turning such detailed therapeutic intent into a corresponding RNA medicine involves many linked decisions. Which molecular components could implement it? Can they work together under the stated assumptions? Does stopping production also stop an existing product's activity? Does the final sequence still correspond to the original design?
 
 **biocompiler brings those questions into one inspectable engineering workflow.**
 
 ## What it is useful for
 
-- **Making therapeutic ideas precise.** Specify recognition, timing, memory, actions, and constraints so that collaborators can inspect the same design.
+- **Making therapeutic ideas precise.** Programmatically specify recognition, timing, memory, actions, and constraints so that collaborators can inspect the same design.
 - **Finding design problems earlier.** Expose missing implementations, incompatible component contracts, and unsupported requirements before treating a design as complete.
-- **Comparing implementation choices.** Evaluate supplied alternatives against explicit requirements and retain why a candidate was selected or rejected.
+- **Comparing implementation choices.** Evaluate supplied alternatives against explicit requirements and track why a candidate was selected or rejected.
 - **Producing reproducible RNA designs.** Emit exact nucleotide sequences with the information needed to trace them back to their source requirements and check them again.
 
-The immediate audience is researchers and engineers developing programmable immune-cell therapies. The intended benefit is a more disciplined path from an idea to a candidate ready for experimental investigation.
+The immediate users for biocompiler include researchers and engineers developing programmable immune-cell therapies. The intended benefit is a more disciplined path from an idea to a candidate ready for experimental investigation compared to the bespoke processes of today.
 
 ## Why a compiler matters
 
-A software compiler translates a program into instructions while preserving its meaning. biocompiler applies that engineering principle to therapeutic design:
+A software compiler translates a program into machine code instructions while preserving its meaning, lowering the information through a succession of intermediate representations until it is correctly encoded in 0's and 1's. Biocompiler does this same thing, but applied to therapeutic design - it just encodes the programmatic logic into biomolecules instead of silicon:
 
 ```text
 Therapeutic intent + supplied component models and sequence templates
@@ -43,13 +43,13 @@ Therapeutic intent + supplied component models and sequence templates
                   Exact RNA design + independent checks
 ```
 
-The distinguishing aim is **a traceable connection between intended behavior, the proposed implementation, and every emitted RNA molecule**. Generative models could supply new candidate components; a compiler provides a framework for checking how supported components are assembled into a specified system.
+The distinguishing aim is **a traceable connection between intended behavior, the proposed implementation, and every emitted molecular payload**. Generative models could supply new candidate components; a compiler provides a framework for checking how supported components are assembled into a specified system.
 
 For supported profiles, biocompiler retains requirements through translation, checks component relationships, and reconstructs results against the original inputs. Unsupported meaning remains visible. A complete compilation claim requires the relevant obligations to pass within the declared model and checking bounds.
 
-In the mature system, **deterministic** would mean that the same complete specification, patient-context inputs, versioned component library, and compiler version and configuration produce the same payload or the same explained rejection. **Correct** would mean that the translation preserves the program's specified meaning through component composition and exact RNA construction under explicit assumptions. Human and agent authors would be subject to the same checks.
+In the mature system, **deterministic** would mean that the same complete specification, patient-context inputs, versioned component library, and compiler version and configuration produce the same payload or the same explained rejection. **Correct** would mean that the translation preserves the program's specified meaning through component composition and exact RNA construction under explicit assumptions. Human and agent authors would benefit from the same checks.
 
-This distinction is essential: **correct translation under a model does not establish that the model holds in a living cell.** Delivery, biological function, safety, and therapeutic benefit require their own evidence. The software is designed to keep those claims separate and their dependencies explicit.
+Delivery, biological function, safety, and therapeutic benefit require their own evidence. The software is designed to keep those claims separate and their dependencies explicit.
 
 ## What works today
 
@@ -63,11 +63,11 @@ The repository contains working research software for:
 | Independent verification and export | Recheck source-to-implementation correspondence and sequence construction; export RNA sequences with a detailed manifest. |
 | Inspection and reproducibility | Preserve inputs, alternatives, diagnostics, and build records; explore an artificial example in a local browser workspace. |
 
-Authoring is broader than executable compilation. The newer expressive policy pipeline has its own staged implementation and acceptance work; a feature appearing in the Python vocabulary does not mean every combination can already compile to RNA. See the [architecture profile](docs/payload-architecture-v0.1.md), [policy language](docs/policy-language-v0.1.md), and [semantic mRNA development plan](docs/semantic-mrna-development-plan.md) for precise boundaries and status.
+Importantly, a feature appearing in the Python vocabulary does not mean every combination can already compile to RNA. See the [architecture profile](docs/payload-architecture-v0.1.md), [policy language](docs/policy-language-v0.1.md), and [semantic mRNA development plan](docs/semantic-mrna-development-plan.md) for precise boundaries and status.
 
 Bundled design examples use artificial, nonfunctional molecular fixtures. They exercise the software, not a validated therapy. biocompiler is experimental research software and does not currently establish readiness for human use.
 
-## Why this is worth building now
+## Why this is worth building
 
 Three developments make the direction concrete:
 
@@ -75,11 +75,11 @@ Three developments make the direction concrete:
 2. **Engineering cells inside the body is an active research frontier.** A [2025 study in *Science*](https://pubmed.ncbi.nlm.nih.gov/40536974/) reported targeted mRNA delivery to T cells, with tumor control in humanized mice and B-cell depletion in monkeys. Those are preclinical results, distinct from proof of human therapeutic benefit.
 3. **AI is expanding the set of molecular designs researchers can explore.** [RFdiffusion](https://www.nature.com/articles/s41586-023-06415-8) demonstrated generative protein design with experimental characterization of designed structures and functions.
 
-These are advances by other research teams, not validations of biocompiler. They motivate our thesis: **as the ability to generate biological components improves, specifying and checking the systems assembled from them could become increasingly valuable.**
+These advances motivate our thesis: **as the ability for humans and agents to generate biological components improves, programmatically specifying and checking the systems assembled from them could become increasingly valuable.**
 
 ## The next 10–20 years
 
-We are building toward **a general-purpose compiler for patient-specific therapeutic programs**. A human or agent would specify a strategy for a particular patient's immune system: the disease context to recognize, the cells to engineer, the sequence of responses, the state to retain, and the conditions for changing or stopping activity. biocompiler would translate the complete program into an exact RNA payload, potentially comprising several coordinated RNA molecules, intended for in vivo administration.
+We are starting with immune cell engineering, but the long-term vision we are building towards is **a general-purpose compiler for patient-specific therapeutic programs**. A human or agent would specify a strategy for a particular patient's immune system: the disease context to recognize, the cells to engineer, the sequence of responses, the state to retain, and the conditions for changing or stopping activity. biocompiler would translate the complete program into an exact RNA payload, potentially comprising several coordinated RNA molecules, intended for in vivo administration.
 
 The therapeutic program would become a shared interface between clinical reasoning, AI-assisted design, molecular engineering, and experimental science. A clinician could state a treatment objective, a researcher could refine its cellular behavior, and an agent could explore candidate implementations. Each proposed revision would remain explicit, versioned, and subject to the same compilation and verification requirements, with human oversight of therapeutic decisions.
 
@@ -97,15 +97,13 @@ Over 10–20 years, our aspiration is for the path from a patient-specific thera
 
 ## The opportunity we see
 
-For an early-stage investor, the thesis is a shared compilation and verification layer through which many humans, agents, and therapeutic programs could work. Each patient's strategy may differ, while the language, compiler, component knowledge, and verification infrastructure can be reused. Better delivery methods and better molecular components could expand what that infrastructure can support.
+The thesis is a shared compilation and verification layer through which many humans, agents, and therapeutic programs could work. Each patient's strategy may differ, while the language, compiler, component knowledge, and verification infrastructure can be reused. Better delivery methods and better molecular components could expand what that infrastructure can support.
 
 We see three possibilities worth testing over the coming decades:
 
 - As designs grow more complex, the cost of integrating and checking components may become as consequential as generating them.
 - Experimentally grounded component libraries and records connecting predictions to outcomes could become durable assets.
 - Reusing a trustworthy design-and-verification workflow across programs could reduce duplicated engineering and make scientific iteration more productive.
-
-That is the asymmetric opportunity we are pursuing. Its value must be earned through broader end-to-end capabilities, independent experimental collaborations, and measurable improvements in researchers' workflows. These are hypotheses and milestones, not claims of established adoption or clinical performance.
 
 ## Researcher alpha workflow
 
