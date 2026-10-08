@@ -101,8 +101,11 @@ successful execution is still pending.
   `zarith` dependency. It supplies no completed native acceptance.
 - `2b998bd76`: corrected the fixture dependency and exact static link inventory.
   [Hosted run 37786545218](https://github.com/logannye/biocompiler/actions/runs/37786545218)
-  is pending at this documentation checkpoint. Installed integration source work
-  follows this commit and must be tested on its own final revision.
+  compiled successfully and passed 31 of 33 native suites. The remaining failures
+  were the producer-profile inventory assertion and the new service witness's
+  canonical original-rule check during instance renaming. This is incomplete
+  validation; no SDK campaigns ran. Installed integration source work follows
+  this commit and must be tested on its own final revision.
 
 ## Deliberate limits and subsequent work
 

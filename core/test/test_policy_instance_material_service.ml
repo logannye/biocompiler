@@ -5,6 +5,7 @@ module S = Bioc_service.Policy_component_material_service
 module Service = Bioc_service.Service
 module Producer = Bioc_producer_service.Producer_service
 
+let phase label=Printf.eprintf "instance material service: %s\n%!" label
 let call handler role operation payload =
   let request:Protocol.request={request_id="instance-material-literal";operation;payload} in
   match handler role request with
@@ -99,7 +100,13 @@ let instance_rename_control fixture request limits compiled =
     | Json.Array values->arr(List.map renamed values)
     | Json.Object fields->obj(List.map(fun(key,value)->key,renamed value)fields)
     | value->value in
-  let changed_rule=renamed(get "composition_rule" request) |> repin in
+  (* Renaming changes the lexical order of qualified feature identities.
+     Re-author the original material through its typed domain constructor so
+     unordered region inventories retain their canonical representation. This
+     uses only the independently declared authority, never producer output. *)
+  let changed_rule=renamed(get "composition_rule" request)
+    |> edit ["body";"material_authority"] (fun material->PM.to_json(PM.of_json material))
+    |> repin in
   let layout=at ["context";"record_layout"]request
     |> replace "rule"(get "identity" changed_rule)
     |> replace "union_digest"(str(Canonical.fingerprint(renamed original_union))) in
@@ -113,8 +120,10 @@ let instance_rename_control fixture request limits compiled =
     |> replace "components"(at ["body";"components"]changed_rule) in
   let changed=request |> replace "composition_rule" changed_rule |> replace "context" context
     |> replace "catalog_binding" catalog |> edit ["resource_bindings"] renamed in
+  phase "rename: reject stale mapping";
   ignore(not_accepted "old instance mapping under freshly renamed authority"
     (S.check ~export:false ~request:changed ~candidate:(get "candidate" compiled) ~limits));
+  phase "rename: compile and export fresh mapping";
   let fresh=compile changed limits in
   ignore(checked fresh);
   let exported=call Service.handle Protocol.Verify "export-policy-component-material"
@@ -122,12 +131,13 @@ let instance_rename_control fixture request limits compiled =
   require(at ["artifact";"fasta"]exported=str ">rna_0001 alphabet=RNA\nCCAUGGCUUAAGGAAAA\n")
     "Consistent instance renaming changed the independently specified RNA";
   require(Json.equal(at ["artifact";"manifest";"members";"0";"molecule"]exported)
-    (renamed(N.to_json(expected_molecule()))))
+    (N.to_json(N.of_json(renamed(N.to_json(expected_molecule()))))))
     "Fresh instance renaming failed to preserve exact material apart from qualified annotations";
   require(get "request_fingerprint" fresh<>get "request_fingerprint" compiled)
     "Instance rename erased changed authority identity"
 
 let negative_controls request limits compiled =
+  phase "negative: state ownership alias";
   let candidate=get "candidate" compiled in
   let check candidate=S.check ~export:false ~request ~candidate ~limits in
   let proposed=at ["assembly_proposal";"nodes"]candidate |> Json.array in
@@ -136,6 +146,7 @@ let negative_controls request limits compiled =
     if get "slot" row=str "exclude_edge" then replace "actual" leading row else row)(Json.array rows))) in
   let alias_report=not_accepted "repeated state ownership alias"(check aliased) in
   require(get "assembly_status" alias_report=str "fail") "Aliased repeated state did not fail assembly ownership";
+  phase "negative: altered bases and chemistry";
   let bad_sequence=candidate |> put ["construction";"inventory";"molecules";"0";"sequence"] (str "CCAUGGCCUAAGGAAAA") in
   let bad_sequence=bad_sequence |> put ["construction";"inventory";"role_instances";"0";"subject_fingerprint"]
     (str(Canonical.fingerprint(at ["construction";"inventory";"molecules";"0"]bad_sequence))) in
@@ -145,25 +156,38 @@ let negative_controls request limits compiled =
   let changed_chemistry=changed_chemistry |> put ["construction";"inventory";"role_instances";"0";"subject_fingerprint"]
     (str(Canonical.fingerprint(at ["construction";"inventory";"molecules";"0"]changed_chemistry))) in
   ignore(not_accepted "same sequence does not authorize different chemistry"(check changed_chemistry));
-  let shared=request |> edit ["resource_bindings"] (fun rows->arr(List.map(fun row->
-    if get "owner" row=owner_node "exclude_edge" "edge" then
-      replace "capacity"(str "local.select_edge.edge_history_cells.per_encounter_slot")row else row)(Json.array rows))) in
+  phase "negative: shared memory overdraw";
+  (* The shared authority declares one pool for the two distinct owners. Drop
+     the superseded private pool, since complete context checking also rejects
+     unused original capacities. The funded control below changes only this
+     shared pool's quantity, from one cell to two. *)
+  let shared=request
+    |> edit ["resource_bindings"] (fun rows->arr(List.map(fun row->
+      if get "owner" row=owner_node "exclude_edge" "edge" then
+        replace "capacity"(str "local.select_edge.edge_history_cells.per_encounter_slot")row else row)(Json.array rows)))
+    |> edit ["context";"providers"] (fun rows->arr(List.map(fun provider->
+      provider |> edit ["body";"capacities"] (fun capacities->arr(List.filter(fun capacity->
+        get "id" capacity<>str "local.exclude_edge.edge_history_cells.per_encounter_slot")
+        (Json.array capacities))) |> repin)(Json.array rows))) in
   let overcommit=not_accepted "two edge instances overdraw one memory pool"
     (S.check ~export:false ~request:shared ~candidate ~limits) in
   require(get "assembly_status" overcommit=str "pass" && get "context_status" overcommit=str "fail" &&
     List.mem(str "shared_capacity_sum_exceeded")(at ["context";"diagnostics"]overcommit |> Json.array))
     "Instance resource ownership did not reach aggregate capacity checking";
+  phase "negative: funded shared memory control";
   let funded=shared |> edit ["context";"providers"] (fun rows->arr(List.map(fun provider->
     provider |> edit ["body";"capacities"] (fun capacities->arr(List.map(fun capacity->
       if get "id" capacity=str "local.select_edge.edge_history_cells.per_encounter_slot" then
         replace "quantity"(Json.int 2)capacity else capacity)(Json.array capacities))) |> repin)(Json.array rows))) in
   ignore(checked(S.check ~export:false ~request:funded ~candidate ~limits));
+  phase "negative: exhausted preservation";
   let incomplete_limits=put ["monitor";"max_work"] (Json.int 1)limits in
   let incomplete=not_accepted "exhausted exploration"(S.check ~export:false ~request ~candidate ~limits:incomplete_limits) in
   require(at ["preservation";"status"]incomplete=str "incomplete" && get "assembly_status" incomplete=str "unassessed")
     "Exhausted preservation reached an accepted assembly";
   rejected "policy_component_material_export_not_accepted" "Incomplete instance cannot export"(fun()->
     S.check ~export:true ~request ~candidate ~limits:incomplete_limits);
+  phase "negative: imported report and relocated source";
   let payload=invocation request candidate limits in
   rejected "policy_component_material_replay" "Imported PASS cannot replace fresh checking"(fun()->
     call Service.handle Protocol.Verify "replay-policy-component-material"
@@ -181,9 +205,13 @@ let () =
   try
     require(Array.length Sys.argv=3) "Supply the two complete original A/B inputs";
     let a=read Sys.argv.(1) and b=read Sys.argv.(2) in
+    phase "A: original positive";
     let request,limits,compiled=positive a false in
+    phase "B: original positive";
     ignore(positive b true);
+    phase "rename: author canonical renamed originals";
     instance_rename_control a request limits compiled;
+    phase "negative: begin controls";
     negative_controls request limits compiled;
     Printf.printf "instance material service: %d independent controls passed\n" !checks
   with Diagnostic.Error value->

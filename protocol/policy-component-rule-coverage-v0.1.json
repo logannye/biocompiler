@@ -1337,7 +1337,7 @@
     },
     {
       "path": "core/test/test_policy_instance_material_service.ml",
-      "sha256": "5e0eb738f31e1e7cd17762524621712cd39e72144eaeec94f59c5080cf96a556"
+      "sha256": "6040c13e70deb908d40df8b74b60d1245aa5529b4c43db92206f11a4bf08a5b8"
     },
     {
       "path": "core/test/test_policy_staged_binding.ml",
