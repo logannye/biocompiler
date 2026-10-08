@@ -261,11 +261,18 @@ def concrete_job(job, variant):
     return job
 
 
+def full_job_families():
+    families = {job: set() for job in REQUIRED_NEEDS}
+    for job, variant in EXPECTED_RECEIPTS:
+        families[job].add(concrete_job(job, variant))
+    for job in ("unit-plan", "unit-accounting"):
+        families[job] = {f"{job} ({version})" for version in PYTHONS}
+    families["unit-tests"] = {f"unit-tests ({version}, {shard})" for version in PYTHONS for shard in range(5)}
+    return families
+
+
 def full_job_names():
-    names = {concrete_job(job, variant) for job, variant in EXPECTED_RECEIPTS}
-    names |= {f"{job} ({version})" for job in ("unit-plan", "unit-accounting") for version in PYTHONS}
-    names |= {f"unit-tests ({version}, {shard})" for version in PYTHONS for shard in range(5)}
-    return names | {"Validation complete"}
+    return set().union(*full_job_families().values()) | {"Validation complete"}
 
 
 def validate_routed(root, needs, receipts, accounting, expected, plan, docs, run, pages, *, env=None, event=None):
@@ -287,7 +294,8 @@ def validate_routed(root, needs, receipts, accounting, expected, plan, docs, run
     require(scope in ("full", "docs_only"), "Unknown validation scope")
     census = ci_job_census.validate_census(
         {"run": run, "pages": pages}, expected={**authority, **expected, "workflow_path": authority["workflow"]},
-        scope=scope, full_job_names=full_job_names(), skipped_job_keys=REQUIRED_NEEDS)
+        scope=scope, full_job_names=full_job_names(), skipped_job_keys=REQUIRED_NEEDS,
+        full_job_families=full_job_families())
     selected = census["selected"]
     def outcome(job, result):
         require(isinstance(needs[job], dict) and needs[job].get("result") == result,

@@ -12,6 +12,7 @@ class JobCensusTests(unittest.TestCase):
                     "revision": "b" * 40}
         full = {census.FINAL, "build (Linux)", "build (Darwin)", "unit-tests (3.11, 0)"}
         skipped = {"build", "unit-tests"}
+        families = {"build": {"build (Linux)", "build (Darwin)"}, "unit-tests": {"unit-tests (3.11, 0)"}}
         wanted = full | census.ROUTING if scope == "full" else skipped | census.ROUTING | {census.FINAL}
         rows = []
         for index, name in enumerate(sorted(wanted)):
@@ -23,7 +24,8 @@ class JobCensusTests(unittest.TestCase):
         run = {"id": 123, "run_attempt": 2, "head_sha": "a" * 40, "repository": {"full_name": "owner/repo"},
                "event": "pull_request", "path": ".github/workflows/ci.yml", "status": "in_progress", "conclusion": None}
         return {"run": run, "pages": [{"total_count": len(rows), "jobs": rows}]}, {
-            "expected": expected, "scope": scope, "full_job_names": full, "skipped_job_keys": skipped}
+            "expected": expected, "scope": scope, "full_job_names": full,
+            "skipped_job_keys": skipped, "full_job_families": families}
 
     def rows(self, payload):
         return payload["pages"][0]["jobs"]
@@ -69,6 +71,78 @@ class JobCensusTests(unittest.TestCase):
         result = census.validate_census(payload, **args)
         self.assertEqual(result["selected"]["build (Linux)"]["run_attempt"], 2)
         self.assertEqual(result["superseded"], [old])
+
+    def test_old_collapsed_skip_is_retained_after_every_expanded_slot_retries(self):
+        payload, args = self.fixture()
+        old = {**self.row(payload), "id": 999, "name": "build", "run_attempt": 1, "conclusion": "skipped"}
+        self.add(payload, old)
+        original = deepcopy(payload)
+        result = census.validate_census(payload, **args)
+        self.assertEqual(set(result["selected"]), args["full_job_names"] | census.ROUTING)
+        self.assertEqual(result["superseded"], [old])
+        self.assertEqual(result["job_count"], result["selected_count"] + 1)
+        self.assertEqual(payload, original)
+        result["superseded"][0]["conclusion"] = "changed"
+        self.assertEqual(payload, original)
+
+    def test_collapsed_skip_requires_strictly_later_attempt_for_every_family_slot(self):
+        for selected_attempt, collapsed_attempt in ((1, 1), (2, 2), (2, 3)):
+            payload, args = self.fixture()
+            self.row(payload, "build (Darwin)")["run_attempt"] = selected_attempt
+            self.add(payload, {**self.row(payload), "id": 999, "name": "build",
+                               "run_attempt": collapsed_attempt, "conclusion": "skipped"})
+            with self.subTest(selected=selected_attempt, collapsed=collapsed_attempt), self.assertRaises(ValueError):
+                census.validate_census(payload, **args)
+
+    def test_collapsed_history_must_be_skipped_authenticated_and_unambiguous(self):
+        changes = ({"conclusion": "success"}, {"conclusion": "failure"}, {"conclusion": "cancelled"},
+                   {"status": "in_progress", "conclusion": None}, {"status": "queued"},
+                   {"run_id": 124}, {"head_sha": "c" * 40}, {"name": "build-other"})
+        for change in changes:
+            payload, args = self.fixture()
+            old = {**self.row(payload), "id": 999, "name": "build", "run_attempt": 1,
+                   "conclusion": "skipped", **change}
+            self.add(payload, old)
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                census.validate_census(payload, **args)
+        for duplicate_id in (False, True):
+            payload, args = self.fixture()
+            old = {**self.row(payload), "id": 999, "name": "build", "run_attempt": 1, "conclusion": "skipped"}
+            self.add(payload, old)
+            self.add(payload, {**old, "id": old["id"] if duplicate_id else 1000})
+            with self.subTest(duplicate_id=duplicate_id), self.assertRaisesRegex(ValueError, "Duplicate actual"):
+                census.validate_census(payload, **args)
+
+    def test_old_collapsed_skip_cannot_replace_missing_or_failed_expanded_work(self):
+        for outcome in ("missing", "failure", "skipped", "cancelled"):
+            payload, args = self.fixture()
+            self.add(payload, {**self.row(payload), "id": 999, "name": "build",
+                               "run_attempt": 1, "conclusion": "skipped"})
+            if outcome == "missing":
+                self.rows(payload).remove(self.row(payload)); payload["pages"][0]["total_count"] -= 1
+            else:
+                self.row(payload)["conclusion"] = outcome
+            with self.subTest(outcome=outcome), self.assertRaises(ValueError):
+                census.validate_census(payload, **args)
+
+    def test_family_mapping_must_partition_exact_registered_jobs_without_prefix_inference(self):
+        mappings = ({}, {"build": {"build (Linux)", "build (Darwin)"}},
+                    {"build": {"build (Linux)"}, "unit-tests": {"unit-tests (3.11, 0)"}},
+                    {"build": {"build (Linux)", "build (Darwin)"}, "unit-tests": {"build (Linux)", "unit-tests (3.11, 0)"}},
+                    {"build": {"build (Linux)", "build (Darwin)", "unknown"}, "unit-tests": {"unit-tests (3.11, 0)"}},
+                    {"build": {"build (Linux)", "build (Darwin)"}, "unit-tests": ["unit-tests (3.11, 0)"]})
+        for mapping in mappings:
+            for scope in ("full", "docs_only"):
+                payload, args = self.fixture(scope)
+                with self.subTest(mapping=mapping, scope=scope), self.assertRaises(ValueError):
+                    census.validate_census(payload, **{**args, "full_job_families": mapping})
+
+    def test_docs_route_does_not_accept_historical_expanded_execution(self):
+        payload, args = self.fixture("docs_only")
+        self.add(payload, {**self.row(payload, "build"), "id": 999, "name": "build (Linux)",
+                           "run_attempt": 1, "conclusion": "success"})
+        with self.assertRaisesRegex(ValueError, "Unknown or malformed actual job"):
+            census.validate_census(payload, **args)
 
     def test_newer_failure_cancel_or_incomplete_cannot_hide_behind_old_success(self):
         for status, conclusion in (("completed", "failure"), ("completed", "cancelled"),

@@ -1,8 +1,11 @@
 # Core architecture implementation checkpoint
 
-Checkpoint prepared 2026-10-08, before combined integration. The statuses below
-describe that preparation point; later acceptance must be read from the exact
-integration and actual-main receipts. Continue the approved
+Closeout preparation, 2026-10-08. Resume with [PR99](https://github.com/logannye/biocompiler/pull/99)
+at `158d07fc52675c3ab2709efbc859f4d38528bebe` and its
+[full integration run 37830070576](https://github.com/logannye/biocompiler/actions/runs/37830070576).
+That full gate, independent artifact audit, normal merge and fresh actual-main
+validation remain open at this checkpoint. Historical development results below
+are evidence only for their recorded sources. Continue the approved
 [ordered implementation plan](core-architecture-session-priorities-2026-10-08.md).
 The user authorized completing its bounded increments systematically. Keep native
 builds hosted, local feedback focused and acceptance bound to exact revisions.
@@ -13,7 +16,7 @@ checkouts remain owned by their existing work.
 
 | Increment | Source and hosted development evidence | Remaining gate |
 | --- | --- | --- |
-| Named component instances | `c0366fc92`: run `37788462656` and independent audit passed; 33 native suites and 156 SDK observations. | PR99 integration run `37799164508` at `a38174303` has API-inventory failures and healthy jobs still running. Correction is locally committed as `c137d31a1` and included in the combined candidate. |
+| Named component instances | `c0366fc92`: run `37788462656` and independent audit passed; 33 native suites and 156 SDK observations. | Historical PR99 run `37799164508` at `a38174303` failed the API inventory. Correction `c137d31a1` is included in the current combined candidate; complete its integration and actual-main gates. |
 | Provider prerequisite closure | `a34ebd6bc557b52e9e253e8fe7e4fbce8ae1f9a4`: run `37798264346` and audit passed; 35 native suites and 182 SDK observations. | Complete combined integration and actual-main validation. |
 | Two independent observations | `6feb332688ec838031e4cab9de2f2ee498c7f4b5`: run `37803803945` and audit passed; 36 native suites and 208 SDK observations. | Complete combined integration and actual-main validation. |
 | Two products and two RNA members | `a459a234f34fe0128fb994d22aca2de9fecff599`: run `37809478943` and audit passed; 37 native suites and 234 SDK observations. | Complete combined integration and actual-main validation. |
@@ -21,8 +24,10 @@ checkouts remain owned by their existing work.
 | Candidate-transition congruence | `bc61505f9f4f554008d305ec9b70e63cada386c9`: run `37814607452` and independent audit passed; 40 native suites, 42 command receipts and 260 SDK observations. | Complete combined integration and actual-main validation. Sharing remains disabled following the measured slowdown. |
 
 All completed development results above are Linux x86-64 evidence for their exact
-source and run, not acceptance of a subsequent branch. Current main remains
-`e253ed5b3370af9a7d8b9ba96af2e7f8f025798a`; the researcher alpha is already published.
+source and run, not acceptance of a subsequent branch. The recorded main base is
+`e253ed5b3370af9a7d8b9ba96af2e7f8f025798a`; refresh live main before integration.
+[Researcher alpha 1](https://github.com/logannye/biocompiler/releases/tag/researcher-alpha-1)
+is published at the separately accepted `b81d4ee4dcc97c77f549b98a2994ddd7877839c9`.
 
 ## Combined integration candidate
 
@@ -47,11 +52,34 @@ inventory gates and the 3,888-entry migration inventory. This does not execute
 native code. Its source differs from P5 only in the two regression-test files;
 subsequent checkpoint documentation is an additional source revision.
 
-Preserve healthy jobs in the old P1 integration run. After their completion, submit the coherent combined PR revision. All focused
-development runs and their independent audits are now complete.
-Require the complete 74-job cross-platform/installed census, exact independent
-artifact and merge-parent/tree checks, normal merge, and fresh actual-main
-validation. Do not mark the session complete at a development-only checkpoint.
+All focused development runs and independent audits are complete. The combined
+candidate is submitted at `158d07fc5`. At 19:53 UTC, its existing run had
+25 successful jobs, 20 active, 17 queued and one failed Python 3.14 unit shard.
+Three stale source-context registry hashes caused that failure. The hosted run
+was left untouched; its final outcome must be refreshed on resumption.
+Correction `d0888e2cd` is saved separately on `codex/ci-change-scope`;
+its coverage gate and 31 focused Python controls pass. It is not in PR99.
+Its complete 74-job cross-platform/installed census, independent artifact and
+merge-parent/tree checks, normal merge and fresh actual-main validation remain
+mandatory. Do not mark the session complete at a development-only checkpoint.
+
+The separate `codex/ci-change-scope` branch adds checked README-only qualification
+and distinct documentation receipts. Its committed baseline is `27055f1f9`;
+local controls and the opt-in routing diagnostic passed at that exact baseline.
+Later retry-census corrections passed 115 local pure tests per Python version;
+full integration/actual-main validation remains open. It changes
+workflow authority and therefore requires a full gate when resumed. It is not
+part of the frozen PR99 source. The user has deferred any further CI validation
+cycle for this closeout. Prepared changes are backed up on the separate branch
+without an open PR or matching push trigger. Do not update PR99, merge or launch
+validation during this closeout. Follow the [resumption instructions](session-closeout-2026-10-08.md).
+
+Broader CI improvements remain planned: separate cheap readiness from mandatory
+preflight regressions; select complete SDK development campaigns through a checked
+dependency registry while retaining all 40 native suites initially; then measure
+and optimize repeated replay/comparison work. Until those changes are implemented,
+use the existing complete runner. Preserve fresh acceptance, exact accounting and
+all failure evidence; no saved PASS can qualify a later revision.
 
 ## Implemented scope
 
@@ -123,6 +151,11 @@ These complete development records still do not establish integration acceptance
 
 ## Corrections and failure evidence
 
+- Combined run `37826785993` at `bb79dcd65` exposed a stale complete native
+  fixture census during preflight. Correction `158d07fc5` updates the census;
+  run `37830070576` is the current integration attempt. Its later source-context
+  pin failure is recorded above. The earlier failed
+  revision provides no acceptance of this correction.
 - P1 run `37792192989` passed both full 173-suite native jobs but failed the
   independent direct-core capability census. The following revision corrected
   the missing scope/profile census and added early mutation checks.

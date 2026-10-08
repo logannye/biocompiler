@@ -29,12 +29,14 @@ def names(value, label):
     return set(value)
 
 
-def validate_census(payload, *, expected, scope, full_job_names, skipped_job_keys):
+def validate_census(payload, *, expected, scope, full_job_names, skipped_job_keys, full_job_families):
     """Return selected actual jobs; reject missing, mixed or unsuccessful work.
 
     ``source_revision`` is REST's head SHA, deliberately distinct from the tested
     synthetic merge revision. Retry selection uses greatest actual attempt for
     each name, including failed/cancelled attempts; it never selects by success.
+    A previous pre-matrix skipped family is retained as superseded only when all
+    its exact registered expanded slots have a strictly later actual attempt.
     The current final job must still be running, so post-run acceptance remains
     the responsibility of the independent completed-run audit.
     """
@@ -53,11 +55,23 @@ def validate_census(payload, *, expected, scope, full_job_names, skipped_job_key
     skipped = names(skipped_job_keys, "skipped job keys")
     require(FINAL in full and not (full & ROUTING) and not (skipped & (ROUTING | {FINAL})),
             "Routing and original job registries overlap")
+    require(type(full_job_families) is dict and set(full_job_families) == skipped,
+            "Incomplete expected job families")
+    families, expanded = {}, set()
+    for key, members in full_job_families.items():
+        members = names(members, "job family members")
+        require(not (expanded & members), "Expected job families overlap")
+        families[key] = members
+        expanded.update(members)
+    require(expanded == full - {FINAL} and
+            all(key not in expanded or key in members for key, members in families.items()),
+            "Expected job families do not partition original jobs")
     if scope == "full":
         success, skip = (full - {FINAL}) | {"change-scope"}, {"docs-validation"}
     else:
         success, skip = set(ROUTING), skipped
     wanted = success | skip | {FINAL}
+    collapsed = (set(families) - full) if scope == "full" else set()
     require(type(payload) is dict and set(payload) == {"run", "pages"}, "Incomplete run/pages evidence")
     run, pages = payload["run"], payload["pages"]
     require(type(run) is dict and type(run.get("repository")) is dict, "Malformed run metadata")
@@ -81,10 +95,10 @@ def validate_census(payload, *, expected, scope, full_job_names, skipped_job_key
         rows.extend(page["jobs"])
         require(len(rows) <= total, "Job pagination exceeds declared total")
     require(len(rows) == total, "Incomplete job pagination")
-    ids, attempts, selected = set(), set(), {}
+    ids, attempts, selected, historical_collapsed = set(), set(), {}, []
     for row in rows:
         require(type(row) is dict and type(row.get("id")) is int and row["id"] > 0 and
-                type(row.get("name")) is str and row["name"] in wanted,
+                type(row.get("name")) is str and row["name"] in wanted | collapsed,
                 "Unknown or malformed actual job")
         require(type(row.get("run_id")) is int and row["run_id"] == run_id and
                 type(row.get("run_attempt")) is int and 1 <= row["run_attempt"] <= current and
@@ -92,10 +106,18 @@ def validate_census(payload, *, expected, scope, full_job_names, skipped_job_key
         key = (row["name"], row["run_attempt"])
         require(row["id"] not in ids and key not in attempts, "Duplicate actual job ID or name/attempt")
         ids.add(row["id"]); attempts.add(key)
+        if row["name"] in collapsed:
+            historical_collapsed.append(row)
+            continue
         previous = selected.get(row["name"])
         if previous is None or row["run_attempt"] > previous["run_attempt"]:
             selected[row["name"]] = row
     require(set(selected) == wanted, "Incomplete actual job name census")
+    for row in historical_collapsed:
+        require(row.get("status") == "completed" and row.get("conclusion") == "skipped" and
+                row["run_attempt"] < current and
+                all(row["run_attempt"] < selected[name]["run_attempt"] for name in families[row["name"]]),
+                "Collapsed job is not an earlier superseded skipped family: " + row["name"])
     for name, row in selected.items():
         if name == FINAL:
             require(row["run_attempt"] == current and row.get("status") == "in_progress" and

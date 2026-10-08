@@ -1,5 +1,30 @@
 # Development cadence and validation
 
+## Deferred closeout checkpoint — 2026-10-08
+
+The user deferred further work requiring a CI validation cycle. PR99's last
+recorded source is `158d07fc5`. At 19:53 UTC, run `37830070576` had one
+failed unit shard caused by stale source-context pins, with other work ongoing.
+Refresh status and all failures before resumption; no historical development pass substitutes for
+its complete integration audit or fresh actual-main validation.
+
+Checked README-only routing is implemented separately on `codex/ci-change-scope`
+(original baseline `27055f1f9`, followed by saved retry-census corrections).
+The retry corrections passed 115 local pure tests on each supported Python version.
+Diagnostic run `37830438134` passed at the older `27055f1f9` revision; it does not
+validate later corrections. Production full-gate and
+actual-main qualification remain open. Do not launch those cycles during this
+closeout. The workflow-authority change must use the full route when resumed.
+
+Still planned, not implemented: split cheap readiness from mandatory preflight
+regressions; select complete SDK development campaigns with a checked dependency
+registry while retaining all 40 native suites initially; and measure/optimize
+repeated replay and installed comparisons. Until the scoped runner exists, retain
+all ten SDK campaigns. Preserve exact accounting, bounded concurrency and fresh
+checks; never substitute saved PASS or stale provenance. Use focused local pure
+checks, one coherent hosted development batch, then complete frozen integration
+and fresh actual-main validation when authorized to resume.
+
 This protocol reduces feedback time while preserving the compiler's existing
 validation coverage and independent checks. The release workflow remains
 [Compiler checks](../.github/workflows/ci.yml). Development feedback has a separate
@@ -114,7 +139,10 @@ executions, plus the routing jobs. Both routes retain REST run metadata and all
 paginated job attempts. The greatest actual attempt for each job is authoritative;
 a later failure cannot be hidden by an older success. Preserved successful jobs
 may retain their original attempt on bounded failed-job recovery, and each of the 59 CI job
-receipts must match that actual attempt. Unit accounting retains its existing
+receipts must match that actual attempt. An older skipped job recorded before
+matrix expansion remains historical evidence only after every exact registered
+slot succeeds at a strictly later attempt; it never substitutes for execution.
+Unit accounting retains its existing
 revision, exact test inventory and successful-job requirements; it does not
 record a separate producing-attempt field. The running final gate can
 check its own current running identity; the separate post-run acceptance audit

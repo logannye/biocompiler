@@ -1,5 +1,26 @@
 # Session handoff and current resumption point
 
+## Current resumption point — 2026-10-08
+
+Start with [the session closeout](session-closeout-2026-10-08.md) and
+[the core composition checkpoint](core-architecture-session-checkpoint-2026-10-08.md).
+The user ended this session's validation work: no new CI cycle, PR update or
+merge. Prepared work is saved on `codex/ci-change-scope`, a backup branch with
+no push-triggered workflow and no open PR. It is not merged or release-qualified.
+
+PR99 remains at `158d07fc52675c3ab2709efbc859f4d38528bebe`.
+At 19:53 UTC, existing run `37830070576` had 25 successful jobs, 20 active,
+17 queued and one failed Python 3.14 unit shard. The failure is diagnosed as
+three stale source-context registry hashes. The failure log and correction `d0888e2cd`
+(coverage gate and 31 focused tests passed) are preserved; refresh exact identities and all failures before resuming.
+Existing hosted jobs were left untouched and local polling was stopped.
+
+Keep native compilation, execution and packaging hosted. Preserve other worktree
+owners, current acceptance evidence and unique failures. The following sections
+are historical checkpoints; their old pending tasks and PR status are not current
+instructions. See [development validation](development-validation.md) for the
+required cadence and explicitly unimplemented workflow follow-ups.
+
 ## Current code-only automation increment
 
 Branch `codex/automatic-architecture-refinement`, package `0.1.0.dev29`, extends

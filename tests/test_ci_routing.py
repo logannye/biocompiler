@@ -113,6 +113,20 @@ class RoutedGateTests(unittest.TestCase):
         args[8][0]['total_count'] += 1
         self.assert_rejected(args)
 
+    def test_old_collapsed_skip_cannot_replace_any_required_expanded_job(self):
+        args = self.fixture()
+        old = {'id': 1001, 'name': 'ocaml-build', 'run_id': 123, 'run_attempt': 1,
+               'head_sha': 'b' * 40, 'status': 'completed', 'conclusion': 'skipped'}
+        args[8][0]['jobs'].append(old)
+        args[8][0]['total_count'] += 1
+        self.assertEqual(self.evaluate(args)['status'], 'pass')
+        slot = next(row for row in args[8][0]['jobs'] if row['name'].startswith('ocaml-build ('))
+        slot['conclusion'] = 'failure'
+        self.assert_rejected(args)
+        slot['conclusion'] = 'success'
+        old['run_attempt'] = 2
+        self.assert_rejected(args)
+
     def test_route_failure_and_unexpected_docs_receipt_fail_full(self):
         for job in ci.ROUTING_NEEDS:
             args = self.fixture()
