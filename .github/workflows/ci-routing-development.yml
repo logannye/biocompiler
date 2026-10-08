@@ -1,0 +1,97 @@
+name: CI routing development diagnostic
+
+on:
+  push:
+    branches: ["codex/dev-ci-routing/**"]
+
+permissions:
+  contents: read
+  actions: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  routing-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11.15"
+      - name: Pure routing controls only; no native or release qualification
+        run: python -B -m unittest tests.test_ci_change_scope tests.test_ci_job_census tests.test_ci_routing -v
+
+  skipped-matrix:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runtime: ["3.11", "3.14"]
+        shard: [0, 1]
+    steps:
+      - run: exit 1
+
+  skipped-downstream:
+    needs: skipped-matrix
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 1
+
+  diagnostic:
+    name: CI routing diagnostic
+    if: always()
+    needs: [routing-checks, skipped-matrix, skipped-downstream]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11.15"
+      - name: Retain and inspect this run's actual skipped job names
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p generated/routing-diagnostic
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > generated/routing-diagnostic/run.json
+          gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs?filter=all&per_page=100" > generated/routing-diagnostic/pages.json
+          python -I -B - <<'PY'
+          import json, os, pathlib, sys
+          root = pathlib.Path('generated/routing-diagnostic')
+          run = json.loads((root/'run.json').read_text())
+          pages = json.loads((root/'pages.json').read_text())
+          identity = dict(run_id=os.environ['GITHUB_RUN_ID'], run_attempt=os.environ['GITHUB_RUN_ATTEMPT'], source_revision=os.environ['GITHUB_SHA'])
+          result = dict(schema_version='biocompiler.ci_routing_diagnostic.v0.1', scope='skipped_matrix_naming_only', acceptance=False, package_release_qualified=False, status='fail', **identity)
+          try:
+              assert run['id'] == int(identity['run_id']) and run['run_attempt'] == int(identity['run_attempt'])
+              assert run['head_sha'] == identity['source_revision'] and run['repository']['full_name'] == os.environ['GITHUB_REPOSITORY']
+              assert run['event'] == 'push' and run['head_branch'] == os.environ['GITHUB_REF_NAME'] and run['head_branch'].startswith('codex/dev-ci-routing/')
+              assert run['path'] == '.github/workflows/ci-routing-development.yml' and run['status'] == 'in_progress' and run['conclusion'] is None
+              assert 0 < len(pages) <= 100 and all(0 < len(page['jobs']) <= 100 and page['total_count'] == pages[0]['total_count'] for page in pages)
+              rows = [row for page in pages for row in page['jobs']]
+              assert len(rows) == pages[0]['total_count'] <= 10000
+              assert len({row['id'] for row in rows}) == len(rows) == len({(row['name'], row['run_attempt']) for row in rows})
+              selected = {}
+              for row in rows:
+                  assert row['run_id'] == int(identity['run_id']) and row['head_sha'] == identity['source_revision'] and 1 <= row['run_attempt'] <= int(identity['run_attempt'])
+                  if row['name'] not in selected or row['run_attempt'] > selected[row['name']]['run_attempt']: selected[row['name']] = row
+              assert set(selected) == {'routing-checks', 'skipped-matrix', 'skipped-downstream', 'CI routing diagnostic'}
+              for name in ('routing-checks', 'skipped-matrix', 'skipped-downstream'):
+                  assert selected[name]['status'] == 'completed' and selected[name]['conclusion'] == ('success' if name == 'routing-checks' else 'skipped')
+              final = selected['CI routing diagnostic']
+              assert final['run_attempt'] == int(identity['run_attempt']) and final['status'] == 'in_progress' and final['conclusion'] is None
+              result.update(status='pass', selected=selected)
+          except (AssertionError, KeyError, TypeError, ValueError) as error:
+              result['error'] = type(error).__name__ + ': ' + str(error)
+          (root/'receipt.json').write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
+          sys.exit(0 if result['status'] == 'pass' else 1)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-routing-diagnostic
+          path: generated/routing-diagnostic/
+          if-no-files-found: error
+          retention-days: 7

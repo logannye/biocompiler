@@ -21,8 +21,11 @@ import time
 
 try:
     from .prebuilt_release_pipeline import CAMPAIGN_GROUPS
+    from . import ci_change_scope, ci_job_census
 except ImportError:
     from prebuilt_release_pipeline import CAMPAIGN_GROUPS
+    import ci_change_scope
+    import ci_job_census
 
 
 PYTHONS = ("3.11", "3.14")
@@ -58,6 +61,10 @@ EXPECTED_RECEIPTS = frozenset((job, version) for job in PRODUCERS for version in
     *(("policy-prebuilt-installed", variant) for variant in REALIZATION_VARIANTS),
     ("policy-prebuilt-reproducibility", "cross-platform"),
 }
+
+
+ROUTING_NEEDS = frozenset(("change-scope", "docs-validation"))
+WORKFLOW_NEEDS = REQUIRED_NEEDS | ROUTING_NEEDS
 
 
 def read_json(path):
@@ -146,7 +153,7 @@ def workflow_jobs(path):
             if match is None:
                 raise ValueError("Use explicit standalone workflow job keys")
             keys.append(match[1])
-    if len(keys) != len(set(keys)) or set(keys) != REQUIRED_NEEDS | {"validation"}:
+    if len(keys) != len(set(keys)) or set(keys) != WORKFLOW_NEEDS | {"validation"}:
         raise ValueError("Workflow job registry and required validation jobs disagree")
     return set(keys)
 
@@ -236,6 +243,85 @@ def valid_attempt(recorded, current):
             and 1 <= int(recorded) <= int(current))
 
 
+def concrete_job(job, variant):
+    """Bind a receipt slot to GitHub's explicit matrix display name."""
+    runners = {"linux-x86_64": "ubuntu-24.04", "macos-arm64": "macos-14"}
+    if job in PLATFORM_JOBS:
+        return f"{job} ({runners[variant]}, {variant})"
+    if job in RUNTIME_JOBS:
+        platform_name, runtime = variant.split("-py", 1)
+        version, *group = runtime.split("-")
+        values = [runners[platform_name], platform_name, version, *group]
+        if job == "policy-prebuilt-installed":
+            values.append({"linux-x86_64": "manylinux_2_39_x86_64",
+                           "macos-arm64": "macosx_14_0_arm64"}[platform_name])
+        return job + " (" + ", ".join(values) + ")"
+    if job in (*PRODUCERS, "ci-preflight"):
+        return f"{job} ({variant})"
+    return job
+
+
+def full_job_names():
+    names = {concrete_job(job, variant) for job, variant in EXPECTED_RECEIPTS}
+    names |= {f"{job} ({version})" for job in ("unit-plan", "unit-accounting") for version in PYTHONS}
+    names |= {f"unit-tests ({version}, {shard})" for version in PYTHONS for shard in range(5)}
+    return names | {"Validation complete"}
+
+
+def validate_routed(root, needs, receipts, accounting, expected, plan, docs, run, pages, *, env=None, event=None):
+    """Select an explicit gate without weakening the existing full validator.
+
+    Source policy and changed Git objects are rechecked independently. Actual job
+    outcomes authenticate producing attempts, including preserved successful jobs
+    on a failed-job retry. Documentation success never emits the full schema.
+    """
+    require = ci_change_scope.require
+    require(isinstance(needs, dict) and set(needs) == WORKFLOW_NEEDS,
+            "Missing or unexpected routed prerequisite jobs")
+    checked = ci_change_scope.validate_plan(root, plan, env=env, event=event)
+    authority = checked["identity"]
+    require(all(authority[key] == expected[key] for key in ("revision", "run_id"))
+            and valid_attempt(authority["run_attempt"], expected["run_attempt"]),
+            "Scope and final gate identities disagree")
+    scope = checked["scope"]
+    require(scope in ("full", "docs_only"), "Unknown validation scope")
+    census = ci_job_census.validate_census(
+        {"run": run, "pages": pages}, expected={**authority, **expected, "workflow_path": authority["workflow"]},
+        scope=scope, full_job_names=full_job_names(), skipped_job_keys=REQUIRED_NEEDS)
+    selected = census["selected"]
+    def outcome(job, result):
+        require(isinstance(needs[job], dict) and needs[job].get("result") == result,
+                "Unexpected routed prerequisite outcome: " + job)
+    def producer(job, record):
+        require(str(selected[job]["run_attempt"]) == record["run_attempt"],
+                "Receipt differs from actual producing attempt: " + job)
+    outcome("change-scope", "success")
+    require(needs["change-scope"].get("outputs", {}).get("scope") == scope,
+            "Scope job output disagrees with checked plan")
+    producer("change-scope", authority)
+    if scope == "full":
+        outcome("docs-validation", "skipped")
+        require(docs is None, "Unexpected documentation receipt on full route")
+        result = validate({job: needs[job] for job in REQUIRED_NEEDS}, receipts, accounting, expected)
+        # The legacy validator diagnoses malformed slots before indexing them.
+        if result["status"] == "pass":
+            for receipt in receipts:
+                producer(concrete_job(receipt["job"], receipt["variant"]), receipt)
+        result.update(scope="full", routing={"plan": checked, "job_census": census})
+        return result
+    outcome("docs-validation", "success")
+    for job in REQUIRED_NEEDS:
+        outcome(job, "skipped")
+    require(not receipts and not accounting, "Native/test evidence present on documentation route")
+    checked_docs = ci_change_scope.validate_docs(root, checked, docs, env=env, event=event)
+    producer("docs-validation", checked_docs["identity"])
+    return {"schema_version": "biocompiler.ci_documentation_validation.v0.1", **expected,
+            "status": "pass", "scope": "docs_only", "acceptance": False, "problems": [],
+            "native_validation": "not_run", "installed_validation": "not_run",
+            "package_release_qualified": False, "prerequisites": needs,
+            "routing": {"plan": checked, "job_census": census}, "documentation": checked_docs}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -250,6 +336,10 @@ def main(argv=None):
     gate.add_argument("--receipts", required=True, type=Path)
     gate.add_argument("--accounting", required=True, type=Path)
     gate.add_argument("--workflow", default=".github/workflows/ci.yml")
+    gate.add_argument("--scope-plan", required=True, type=Path)
+    gate.add_argument("--docs-receipt", required=True, type=Path)
+    gate.add_argument("--run-metadata", required=True, type=Path)
+    gate.add_argument("--job-pages", required=True, type=Path)
     gate.add_argument("--output", required=True)
     args = parser.parse_args(argv)
     try:
@@ -263,7 +353,10 @@ def main(argv=None):
             needs = json.loads(os.environ.get("CI_NEEDS", "null"))
             receipts = [read_json(path) for path in sorted(args.receipts.rglob("*.json"))]
             accounting = [read_json(path) for path in sorted(args.accounting.rglob("*.json"))]
-            result = validate(needs, receipts, accounting, expected)
+            result = validate_routed(Path(args.workflow).resolve().parents[2], needs, receipts, accounting,
+                expected, read_json(args.scope_plan),
+                read_json(args.docs_receipt) if args.docs_receipt.exists() else None,
+                read_json(args.run_metadata), read_json(args.job_pages))
         write_json(args.output, result)
         print(json.dumps(result if args.command == "gate" else {"status": "recorded", **expected}, sort_keys=True))
         return 1 if result.get("status") == "fail" else 0

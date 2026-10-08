@@ -281,9 +281,9 @@ class ValidationGateTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "ci.yml"
             base = "name: Test\njobs:\n" + "".join("  " + key + ":\n    runs-on: ubuntu-latest\n"
-                for key in sorted(ci.REQUIRED_NEEDS | {"validation"}))
+                for key in sorted(ci.WORKFLOW_NEEDS | {"validation"}))
             path.write_text(base)
-            self.assertEqual(ci.workflow_jobs(path), ci.REQUIRED_NEEDS | {"validation"})
+            self.assertEqual(ci.workflow_jobs(path), ci.WORKFLOW_NEEDS | {"validation"})
             for extra in ("  forgotten_job:\n    runs-on: ubuntu-latest\n", "  inline: {}\n", "  validation:\n"):
                 path.write_text(base + extra)
                 with self.assertRaises(ValueError):
@@ -415,7 +415,7 @@ class ValidationGateTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[1]
         text = (root / ".github/workflows/ci.yml").read_text()
         native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-sdk:\n", 1)[0]
-        self.assertEqual(ci.workflow_jobs(root / ".github/workflows/ci.yml"), ci.REQUIRED_NEEDS | {"validation"})
+        self.assertEqual(ci.workflow_jobs(root / ".github/workflows/ci.yml"), ci.WORKFLOW_NEEDS | {"validation"})
         # Preserve every original slot and require the separated execution jobs.
         self.assertEqual(len(ci.REQUIRED_NEEDS) + 1, 27)
         self.assertEqual(len(ci.EXPECTED_RECEIPTS), 59)
@@ -520,7 +520,7 @@ class ValidationGateTests(unittest.TestCase):
 
     def test_checked_in_workflow_registers_cross_platform_architecture_gate(self):
         workflow = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "ci.yml"
-        self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
+        self.assertEqual(ci.workflow_jobs(workflow), ci.WORKFLOW_NEEDS | {"validation"})
         text = workflow.read_text(encoding="utf-8")
         comparison = text.split("\n  architecture-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:", 1)[0]
         self.assertIn("    needs: [ocaml-build, architecture-sdk]\n", comparison)
@@ -538,7 +538,7 @@ class ValidationGateTests(unittest.TestCase):
     def test_reference_campaign_requires_native_execution_and_same_runtime_reconstruction(self):
         workflow = Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml"
         text = workflow.read_text()
-        self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
+        self.assertEqual(ci.workflow_jobs(workflow), ci.WORKFLOW_NEEDS | {"validation"})
         installed = text.split("\n  installed-campaigns:\n", 1)[1].split("\n  realization-conformance:\n", 1)[0]
         self.assertEqual(self.installed_commands(installed)['check_pipeline_reference_install.py'][0],'pipeline-reference')
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:\n", 1)[0]
@@ -561,7 +561,7 @@ class ValidationGateTests(unittest.TestCase):
 
     def test_realization_campaigns_are_required_on_every_runtime_and_compared_whole(self):
         workflow = Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml"
-        self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
+        self.assertEqual(ci.workflow_jobs(workflow), ci.WORKFLOW_NEEDS | {"validation"})
         text = workflow.read_text()
         matrix = text.split("\n  installed-campaigns:\n", 1)[1].split("\n  realization-conformance:\n", 1)[0]
         self.assertIn("    needs: [ocaml-build, prebuilt-core-assembly]\n", matrix)

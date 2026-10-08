@@ -31,7 +31,7 @@ class SchedulingTests(unittest.TestCase):
         jobs = {match.group(1): match.group(2) for match in re.finditer(
             r'^  ([a-z][a-z0-9-]*):\n(.*?)(?=^  [a-z][a-z0-9-]*:\n|\Z)',
             text.split('\njobs:\n', 1)[1], re.M | re.S)}
-        self.assertEqual(set(jobs), ci.REQUIRED_NEEDS | {'validation'})
+        self.assertEqual(set(jobs), ci.WORKFLOW_NEEDS | {'validation'})
         matrix_jobs = {'ci-preflight', 'unit-plan', 'installed-executable', 'installed-architecture',
                        'circuit-integration', 'integration-examples', 'architecture-sdk',
                        'installed-campaigns', 'realization-conformance', 'policy-prebuilt-installed'}
@@ -57,8 +57,8 @@ class SchedulingTests(unittest.TestCase):
             self.assertEqual(actual, expected, name)
             # A narrower job/step environment cannot replace the reviewed mapping.
             self.assertNotRegex(job, r'BIOCOMPILER_SUPPORTED_PYTHON:')
-        self.assertEqual(total, 28)
-        self.assertEqual(text.count('uses: actions/setup-python@'), 28)
+        self.assertEqual(total, 30)
+        self.assertEqual(text.count('uses: actions/setup-python@'), 30)
         preflight = jobs['ci-preflight']
         self.assertIn('tests.test_archive_authority', preflight)
         self.assertIn('python -B tools/migration_inventory.py --check', preflight)
@@ -112,7 +112,7 @@ class SchedulingTests(unittest.TestCase):
                 self.assertNotIn('python-version: ${{ matrix.python-version }}', job)
                 self.assertIn('python-version: ["3.11", "3.14"]', job)
         self.assertIn('shard: [0, 1, 2, 3, 4]', jobs['unit-tests'])
-        self.assertIn('needs: [unit-plan, unit-tests]', jobs['unit-accounting'])
+        self.assertIn('needs: [change-scope, unit-plan, unit-tests]', jobs['unit-accounting'])
         for index in range(5):
             self.assertIn('--result generated/unit-results/shard-' + str(index) + '.json',
                           jobs['unit-accounting'])
@@ -298,7 +298,7 @@ class SchedulingTests(unittest.TestCase):
     def test_workflow_removes_long_campaigns_from_build_critical_path(self):
         text=(ROOT/'.github/workflows/ci.yml').read_text()
         jobs={m.group(1):m.group(2) for m in re.finditer(r'^  ([a-z][a-z0-9-]*):\n(.*?)(?=^  [a-z][a-z0-9-]*:\n|\Z)',text.split('\njobs:\n',1)[1],re.M|re.S)}
-        self.assertEqual(set(jobs),ci.REQUIRED_NEEDS|{'validation'})
+        self.assertEqual(set(jobs),ci.WORKFLOW_NEEDS|{'validation'})
         build=jobs['ocaml-build']
         self.assertIn('needs: ci-preflight',build)
         self.assertEqual(text.count('opam exec -- dune build --root core @all'),1)
@@ -323,7 +323,7 @@ class SchedulingTests(unittest.TestCase):
         for name in pipeline.CAMPAIGN_GROUPS:
             self.assertIn('path: artifacts/groups/'+name,jobs['realization-conformance'])
         release_needs=jobs['prebuilt-core-validation'].split('needs: [',1)[1].split(']',1)[0].split(', ')
-        self.assertEqual(set(release_needs),matrix.REQUIRED_RELEASE_NEEDS)
+        self.assertEqual(set(release_needs),matrix.REQUIRED_RELEASE_NEEDS | {'change-scope'})
         self.assertTrue({'ocaml-core','ocaml-native-tests','architecture-sdk','architecture-core-reproducibility'} <= set(release_needs))
 
 

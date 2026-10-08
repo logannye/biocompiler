@@ -470,7 +470,7 @@ class HostedCiPlanTests(unittest.TestCase):
         self.assertEqual(old.EXPECTED_RECEIPTS-new.EXPECTED_RECEIPTS,set())
         self.assertEqual(len(new.EXPECTED_RECEIPTS-old.EXPECTED_RECEIPTS),38)
         self.assertEqual(new.REALIZATION_VARIANTS,old.REALIZATION_VARIANTS)
-        self.assertEqual(new.workflow_jobs(ROOT/'.github/workflows/ci.yml'),new.REQUIRED_NEEDS|{'validation'})
+        self.assertEqual(new.workflow_jobs(ROOT/'.github/workflows/ci.yml'),new.WORKFLOW_NEEDS|{'validation'})
 
     def test_every_native_test_command_survives_and_static_preparation_precedes_dependencies(self):
         from tools.ci_core_groups import load_plan

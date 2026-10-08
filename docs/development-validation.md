@@ -2,7 +2,7 @@
 
 This protocol reduces feedback time while preserving the compiler's existing
 validation coverage and independent checks. The release workflow remains
-[Python checks](../.github/workflows/ci.yml). Development feedback has a separate
+[Compiler checks](../.github/workflows/ci.yml). Development feedback has a separate
 [opt-in hosted workflow](../.github/workflows/policy-development.yml), triggered
 only by pushes to `codex/dev-policy/**`. It builds the native core once on Linux
 and runs 40 fixed candidate-congruence, grounded-helper, multi-member, two-observation, prerequisite, instance-composition, staged-regimen, component, selection, generation-metering, protocol, preservation, material and construction suites.
@@ -84,6 +84,47 @@ suite outcomes. Missing targets or changed inputs fail the job. This workflow
 does not package releases or cancel a release workflow. Native work remains
 hosted. Batch tracker updates at useful implementation and validation boundaries
 while independent development continues during full release validation.
+
+## README-only qualification
+
+The CI change classifier admits only a nonempty, regular-file modification of
+`README.md` under the same unchanged routing policy. It checks the complete
+Git diff for both PR source and tested merge, or the complete `before`/`after`
+main push. Missing history, unknown change shapes, code/configuration changes,
+renames, additions, deletions and manual dispatches require full validation.
+Changes to the classifier, workflow or final gate cannot use their own newly
+narrowed policy to bypass the full route. Every existing full validation command
+and matrix remains required for the full route.
+
+`change-scope` produces a source/event/run-bound plan. `docs-validation` checks
+bounded UTF-8 README bytes, final newline, control characters and Markdown
+whitespace without executing code snippets or following network links. The
+stable `Validation complete` job independently rederives the plan/document
+checks and verifies the complete actual job census. The documentation route
+requires all original jobs to be deliberately skipped and contains no native
+job receipts or unit accounting. Its distinct
+`biocompiler.ci_documentation_validation.v0.1` receipt explicitly reports
+`acceptance: false`, native/installed checks `not_run`, and
+`package_release_qualified: false`. It cannot qualify new wheels or a release;
+README changes can change package metadata even when executable source is equal.
+
+The full route preserves `biocompiler.ci_validation.v0.1`, all 59 producer
+receipts, both complete five-shard Python accounts and the original 74 job
+executions, plus the routing jobs. Both routes retain REST run metadata and all
+paginated job attempts. The greatest actual attempt for each job is authoritative;
+a later failure cannot be hidden by an older success. Preserved successful jobs
+may retain their original attempt on bounded failed-job recovery, and each of the 59 CI job
+receipts must match that actual attempt. Unit accounting retains its existing
+revision, exact test inventory and successful-job requirements; it does not
+record a separate producing-attempt field. The running final gate can
+check its own current running identity; the separate post-run acceptance audit
+still requires its completed success.
+
+The first deployment of this workflow changes its own routing policy and
+therefore takes the full route. Hosted README-route behavior must be checked
+before claiming a measured latency improvement. Local routing tests establish
+source/control behavior only. Broader documentation paths remain full scope
+until their dependencies and qualification rules are explicitly reviewed.
 
 ## Work in coherent batches
 
