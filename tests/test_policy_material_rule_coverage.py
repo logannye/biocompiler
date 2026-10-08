@@ -48,7 +48,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 22, "sources": 90, "witness_sources": 65,
+        self.assertEqual(result["component_route"], {"rules": 22, "sources": 90, "witness_sources": 71,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -248,17 +248,10 @@ let check x = Diagnostic.require x "code" "message"
 
     def before_instance_composition(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
-        added_witnesses = {
-            "core/test/test_policy_instance_assembly_rule.ml",
-            "core/test/test_policy_instance_material_service.ml",
-            "core/test/policy_instance_support/literals.ml",
-            "core/test/policy_instance_support/requests.ml",
-            "core/test/instance_fixture_export/main.ml",
-            "tests/test_policy_instance_material.py",
-            "tools/check_policy_instance_material.py",
-        }
+        rule = ledger["rules"][-1]
+        added_witnesses = {pointer["path"] for kind in ("positive", "negative") for pointer in rule[kind]}
         self.assertEqual(set(coverage.COMPONENT_INSTANCE_WITNESSES), added_witnesses)
-        self.assertEqual(ledger["rules"][-1]["id"], "component.instance_composition")
+        self.assertEqual(rule["id"], "component.instance_composition")
         self.assertIn("2..8 named instances", ledger["limitations"][-1])
         ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] not in added_witnesses]
         ledger["rules"].pop(); ledger["limitations"].pop()

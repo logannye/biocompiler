@@ -165,6 +165,12 @@ COMPONENT_INSTANCE_WITNESSES = tuple(sorted([
     "core/test/instance_fixture_export/main.ml",
     "tests/test_policy_instance_material.py",
     "tools/check_policy_instance_material.py",
+    "tools/check_policy_instance_fixture.py",
+    "tests/test_policy_instance_fixture.py",
+    "tools/check_policy_instance_material_installed.py",
+    "tests/test_policy_instance_material_installed.py",
+    "tools/check_policy_instance_prebuilt.py",
+    "tests/test_policy_instance_prebuilt.py",
 ]))
 COMPONENT_STAGED_WITNESSES = tuple(sorted([
     *[f"core/test/test_policy_staged_{name}.ml" for name in
@@ -201,7 +207,7 @@ COMPONENT_WITNESSES = tuple(sorted([
 ]))
 # Fixed reviewed meaning/provenance projection, excluding source-body hashes and
 # lexical counts. Re-pinning changed files cannot reassign witness meaning.
-COMPONENT_METADATA_SHA256 = "66f317405442f70148ec76a5413a14c47da46bfa925124a830a176f4c6aeca4b"
+COMPONENT_METADATA_SHA256 = "c68a3c9c68442623f5f4b10d0ca71347a33b1e3b4d47e55430ba2ebcb8a6d530"
 
 
 class CoverageError(ValueError):

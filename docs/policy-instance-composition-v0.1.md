@@ -80,6 +80,30 @@ producer or acceptance checker, and exports source declarations with
 `acceptance: false`. Development feedback is separate from cross-platform,
 installed-package and actual-main release validation.
 
+The additive installed campaign reuses the exact supplied wheels and the existing
+post-reinstall environment on Linux x86_64 and macOS ARM64, each on Python 3.11
+and 3.14. A separately versioned fixture-provenance packet binds the private
+exporter and five original source files. Each installed run retains 26 complete
+protocol observations, two paired RNA/manifest ZIPs, complete package origins,
+external native pins and its own command/log ledger. The comparison rechecks
+original authority and every observation and ZIP across all four runtimes.
+It preserves the earlier material/component/staged/researcher campaign receipts
+and their mandatory release checks. No existing release receipt inherits the new
+instance scope. These installed routes are source-written at this checkpoint;
+successful execution is still pending.
+
+## Validation checkpoints
+
+- `a25f1428c`: focused Python transport and runner checks, strict core/policy
+  typing, dependency boundaries and source inventories passed locally.
+  [Hosted run 37785940459](https://github.com/logannye/biocompiler/actions/runs/37785940459)
+  failed compilation because the new fixture-support library omitted its direct
+  `zarith` dependency. It supplies no completed native acceptance.
+- `2b998bd76`: corrected the fixture dependency and exact static link inventory.
+  [Hosted run 37786545218](https://github.com/logannye/biocompiler/actions/runs/37786545218)
+  is pending at this documentation checkpoint. Installed integration source work
+  follows this commit and must be tested on its own final revision.
+
 ## Deliberate limits and subsequent work
 
 - One RNA, one product, exactly four material features, and no delivered helpers.
@@ -87,8 +111,9 @@ installed-package and actual-main release validation.
   is materially realizable under this envelope.
 - Complete-root ordered concatenation only; no slicing, rearrangement, new
   transforms or molecular-mechanism discovery.
-- Repeated stateful graph-fragment ownership is demonstrated. Repeating the same
-  complete material definition twice in an accepted RNA is not demonstrated.
+- The witness exercises repeated stateful graph-fragment ownership. Its native
+  execution remains pending. Repeating the same complete material definition
+  twice in an accepted RNA is outside the demonstrated scope.
 - The positive witness uses adjacent-root links. Longer crossed paths have
   structural and mutation controls, not a separate end-to-end positive witness.
 - The versioned domain supports existing truth or staged primitive profiles;

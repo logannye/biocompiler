@@ -384,8 +384,10 @@ def fixture_authority_pins(fixture_path, provenance_path):
                for name in ("stdout.log", "stderr.log")}}
 
 
-def check_observations(observations, fixture):
+def check_observations(observations, fixture, *, validate_result=None):
     """Check complete retained protocol values against independent originals."""
+    if validate_result is None:
+        validate_result = checked_result
     from biocompiler.core_client import CoreResponse, CORE_VERSION
     from biocompiler.core_policy_component_material import _result
     _require(type(observations) is list and all(type(row) is dict and set(row) == {"case", "name", "result"} for row in observations)
@@ -407,7 +409,7 @@ def check_observations(observations, fixture):
             result = values[name]
             _result(CoreResponse("retained-component", operation + "-policy-component-material", "ok", result, (), role, CORE_VERSION), payload)
             if name != "changed-material":
-                checked_result(result, case)
+                validate_result(result, case)
         _require(compiled == values["check-verify"] == values["replay-verify"] and compiled["artifact"] is None,
                  "Complete fresh component compile/check/replay results differ")
         exported = values["export-verify"]

@@ -7,6 +7,7 @@ not receive or execute the private emitter.
 from __future__ import annotations
 
 import argparse
+from dataclasses import dataclass
 import hashlib
 import json
 import os
@@ -26,11 +27,25 @@ SCHEMA = "biocompiler.policy_component_fixture_provenance.v0.1"
 FIXTURE_SCHEMA = "biocompiler.policy_component_original_fixture.v0.1"
 OUTPUT = "generated/core/component-originals"
 INPUTS = development.SDK_ORIGINALS
-BINARIES = development.SDK_BINARIES
+BINARIES = {role: development.SDK_BINARIES[role] for role in ("originals", "core", "verify")}
 PLATFORMS = {("Linux", "x86_64"), ("Darwin", "arm64")}
 MAX_FIXTURE = 4_000_000
 MAX_PROVENANCE = 8 * 1024 * 1024
 MAX_LOG = 1024 * 1024
+
+
+@dataclass(frozen=True)
+class FixtureProfile:
+    """Fixed emission authority; supplied provenance never chooses a profile."""
+
+    schema: str
+    fixture_schema: str
+    output: str
+    inputs: tuple[str, ...]
+    binaries: tuple[tuple[str, str], ...]
+
+
+LEGACY_PROFILE = FixtureProfile(SCHEMA, FIXTURE_SCHEMA, OUTPUT, tuple(INPUTS), tuple(BINARIES.items()))
 
 
 def require(value, message):
@@ -55,12 +70,13 @@ def read(path, maximum):
     return value
 
 
-def binary_pins(root):
-    return {role: development.pin(root, path, executable=True) for role, path in BINARIES.items()}
+def binary_pins(root, *, profile=LEGACY_PROFILE):
+    return {role: development.pin(root, path, executable=True) for role, path in profile.binaries}
 
 
-def logical_command():
-    return ["opam", "exec", "--", BINARIES["originals"], *INPUTS, OUTPUT + "/originals.json"]
+def logical_command(*, profile=LEGACY_PROFILE):
+    return ["opam", "exec", "--", dict(profile.binaries)["originals"], *profile.inputs,
+            profile.output + "/originals.json"]
 
 
 def hosted_identity(root):
@@ -93,12 +109,12 @@ def check_identity(producer, consumer):
             "Component fixture lacks same source/run and nonfuture attempt")
 
 
-def check_packet(root, path):
+def check_packet(root, path, *, profile=LEGACY_PROFILE):
     packet = read(path, MAX_FIXTURE)
     require(type(packet) is dict and set(packet) == {"schema_version", "status", "acceptance", "source_sha256", "cases"}
-            and packet["schema_version"] == FIXTURE_SCHEMA and packet["status"] == "source_declarations_only"
+            and packet["schema_version"] == profile.fixture_schema and packet["status"] == "source_declarations_only"
             and packet["acceptance"] is False
-            and packet["source_sha256"] == {name: pin(root / name, MAX_FIXTURE)["sha256"] for name in INPUTS},
+            and packet["source_sha256"] == {name: pin(root / name, MAX_FIXTURE)["sha256"] for name in profile.inputs},
             "Component originals differ from independently supplied source declarations")
     cases = packet["cases"]
     require(type(cases) is list and len(cases) == 2 and all(type(case) is dict for case in cases)
@@ -109,7 +125,8 @@ def check_packet(root, path):
     return packet
 
 
-def validate(root, fixture_path, provenance_path, *, identity, native_sha256, expected_platform=None):
+def validate(root, fixture_path, provenance_path, *, identity, native_sha256, expected_platform=None,
+             profile=LEGACY_PROFILE):
     """Check externally bound emitted data without invoking any native program."""
     root, fixture_path, provenance_path = Path(root), Path(fixture_path), Path(provenance_path)
     require(fixture_path.name == "originals.json" and provenance_path.name == "provenance.json"
@@ -119,7 +136,7 @@ def validate(root, fixture_path, provenance_path, *, identity, native_sha256, ex
                ("stdout.log", MAX_LOG), ("stderr.log", MAX_LOG))}
     value = read(provenance_path, MAX_PROVENANCE)
     require(type(value) is dict and set(value) == {"schema_version", "status", "acceptance", "identity", "platform",
-            "sources", "binaries", "fixture", "command"} and value["schema_version"] == SCHEMA
+            "sources", "binaries", "fixture", "command"} and value["schema_version"] == profile.schema
             and value["status"] == "source_declarations_only" and value["acceptance"] is False,
             "Component fixture provenance is incomplete or changes authority scope")
     check_identity(value["identity"], identity)
@@ -131,7 +148,7 @@ def validate(root, fixture_path, provenance_path, *, identity, native_sha256, ex
     require(core.canonical_digest(value["sources"]) == core.canonical_digest(development.source_snapshot(root)),
             "Component fixture build sources changed")
     binaries = value["binaries"]
-    require(type(binaries) is dict and set(binaries) == set(BINARIES)
+    require(type(binaries) is dict and set(binaries) == {role for role, _ in profile.binaries}
             and type(native_sha256) is dict and set(native_sha256) == {"core", "verify"},
             "Component fixture binary inventory differs")
     for role, record in binaries.items():
@@ -142,40 +159,40 @@ def validate(root, fixture_path, provenance_path, *, identity, native_sha256, ex
         if role != "originals":
             require(record["sha256"] == native_sha256[role], "Component fixture differs from externally pinned native role")
     expected_command = {
-        "argv": logical_command(), "cwd": "checkout", "returncode": 0,
+        "argv": logical_command(profile=profile), "cwd": "checkout", "returncode": 0,
         "logs": {name: before[name] for name in ("stdout.log", "stderr.log")}}
     require(core.canonical_digest(value["fixture"]) == core.canonical_digest(before["originals.json"])
             and core.canonical_digest(value["command"]) == core.canonical_digest(expected_command),
         "Component fixture command, complete logs or output changed")
-    check_packet(root, fixture_path)
+    check_packet(root, fixture_path, profile=profile)
     require(before == {name: pin(fixture_path.parent / name, MAX_FIXTURE if name == "originals.json" else
             MAX_PROVENANCE if name == "provenance.json" else MAX_LOG, empty=name.endswith(".log")) for name in before},
             "Component fixture evidence changed during validation")
     return value
 
 
-def emit(root):
+def emit(root, *, profile=LEGACY_PROFILE):
     root = Path(root)
     identity = hosted_identity(root)  # Reject local execution before any native launch.
-    sources, binaries = development.source_snapshot(root), binary_pins(root)
-    output = root / OUTPUT
+    sources, binaries = development.source_snapshot(root), binary_pins(root, profile=profile)
+    output = root / profile.output
     output.mkdir(parents=True, exist_ok=False)
-    report = {"schema_version": SCHEMA, "status": "incomplete", "acceptance": False,
+    report = {"schema_version": profile.schema, "status": "incomplete", "acceptance": False,
               "identity": identity, "platform": {"system": platform.system(), "machine": platform.machine()},
               "sources": sources, "binaries": binaries, "fixture": None, "command": None}
-    argv = ["opam", "exec", "--", str(root / BINARIES["originals"]),
-            *(str(root / path) for path in INPUTS), str(output / "originals.json")]
+    argv = ["opam", "exec", "--", str(root / dict(profile.binaries)["originals"]),
+            *(str(root / path) for path in profile.inputs), str(output / "originals.json")]
     try:
         completed = subprocess.run(argv, cwd=root, capture_output=True, timeout=90, check=False)
         for name, raw in (("stdout.log", completed.stdout), ("stderr.log", completed.stderr)):
             require(len(raw) <= MAX_LOG, "Component fixture command log exceeded its bound")
             (output / name).write_bytes(raw)
-        report["command"] = {"argv": logical_command(), "cwd": "checkout", "returncode": completed.returncode,
+        report["command"] = {"argv": logical_command(profile=profile), "cwd": "checkout", "returncode": completed.returncode,
             "logs": {name: pin(output / name, MAX_LOG, empty=True) for name in ("stdout.log", "stderr.log")}}
         require(completed.returncode == 0, "Component fixture declaration emission failed")
-        check_packet(root, output / "originals.json")
+        check_packet(root, output / "originals.json", profile=profile)
         report["fixture"] = pin(output / "originals.json", MAX_FIXTURE)
-        require(sources == development.source_snapshot(root) and binaries == binary_pins(root)
+        require(sources == development.source_snapshot(root) and binaries == binary_pins(root, profile=profile)
                 and identity == hosted_identity(root), "Component fixture authority changed during emission")
         report["status"] = "source_declarations_only"
     finally:
@@ -184,7 +201,7 @@ def emit(root):
         (output / "provenance.json").write_bytes(raw)
     validate(root, output / "originals.json", output / "provenance.json", identity=identity,
              native_sha256={role: binaries[role]["sha256"] for role in ("core", "verify")},
-             expected_platform=(platform.system(), platform.machine()))
+             expected_platform=(platform.system(), platform.machine()), profile=profile)
     return report
 
 

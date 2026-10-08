@@ -1392,8 +1392,20 @@
       "sha256": "e8c988fa57cef5bb8861ec7a73821627725b2d8586cadf5ddfe352097bd741ab"
     },
     {
+      "path": "tests/test_policy_instance_fixture.py",
+      "sha256": "d2fbdc184caeada7f5dfd02a980fbc877e4a046edb8b4462ac971108602e34ef"
+    },
+    {
       "path": "tests/test_policy_instance_material.py",
       "sha256": "c02b5d338bcf2939331a14603983b4499ae31085b654c9558d1d7536be8df100"
+    },
+    {
+      "path": "tests/test_policy_instance_material_installed.py",
+      "sha256": "a3c70dc9a47bfc0bc42a3aa4da780879c020ac67d27cc22f64c72f9d7647ad7f"
+    },
+    {
+      "path": "tests/test_policy_instance_prebuilt.py",
+      "sha256": "572a484f337847b067f4b884b359b8bc042826ee63583b4315587c6e6b225994"
     },
     {
       "path": "tests/test_policy_material_consumer.py",
@@ -1425,19 +1437,31 @@
     },
     {
       "path": "tools/check_policy_component_fixture.py",
-      "sha256": "5fe14940575d5dd973db5d9ddf5cbc2df9c32b08c9c12330028560f8a618ab7a"
+      "sha256": "3b9b2af9f7199323a276f3c5a125af64dd64fe3d5f31ad23b5137c5b37ec16f2"
     },
     {
       "path": "tools/check_policy_component_material.py",
-      "sha256": "6125a5713b42c878662e27243081d771d76d1d489da5578ffca6139ab8ec5817"
+      "sha256": "179158ca43b88e8eb896817d4ee6f5e5ff055c2d00e3fce50d57aa7681a4aa3a"
     },
     {
       "path": "tools/check_policy_component_selection.py",
       "sha256": "7b500132be6a120a7db4c46f817aa874b2db7e4a9ec6671ce289df9c4ad7e8e4"
     },
     {
+      "path": "tools/check_policy_instance_fixture.py",
+      "sha256": "8927066cd78e334522fa94b5f50edd916717f4db75ecfc245df1ca7a36f1ac3e"
+    },
+    {
       "path": "tools/check_policy_instance_material.py",
       "sha256": "ea4ce31c142b364660ef170403db78edb392232465426908e81ccbcab70d7fee"
+    },
+    {
+      "path": "tools/check_policy_instance_material_installed.py",
+      "sha256": "d44e0685cda400784204dff4ae7180f7ac4f9e86a576f09b803dae7bf75c3ec5"
+    },
+    {
+      "path": "tools/check_policy_instance_prebuilt.py",
+      "sha256": "e2f4fac0771d9582bca3341b6bf5fcd4002283fcf0a77d3d004130702012fb4c"
     },
     {
       "path": "tools/check_policy_material_consumer.py",
@@ -2735,6 +2759,51 @@
           "path": "tests/test_policy_instance_material.py",
           "anchor": "def test_three_instances_retain_collision_free_feature_names_and_complete_join_path",
           "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_instance_fixture.py",
+          "anchor": "def validate(",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_instance_fixture.py",
+          "anchor": "def test_mocked_hosted_emission_preserves_exact_instance_command_and_separate_output",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_instance_material_installed.py",
+          "anchor": "def validate_installed(",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_instance_material_installed.py",
+          "anchor": "def compare_installed(",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_instance_material_installed.py",
+          "anchor": "def test_complete_26_observations_and_two_zip_pairs_keep_original_authority",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_instance_material_installed.py",
+          "anchor": "def test_four_slots_compare_complete_results_and_preserve_native_and_fixture_authority",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_instance_prebuilt.py",
+          "anchor": "def owned_slot(",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_instance_prebuilt.py",
+          "anchor": "def compare(",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_instance_prebuilt.py",
+          "anchor": "def test_four_slot_comparison_retains_original_attempts_and_calls_observation_gate",
+          "occurrence": 1
         }
       ],
       "negative": [
@@ -2782,9 +2851,44 @@
           "path": "tests/test_policy_instance_material.py",
           "anchor": "def test_cross_link_requires_all_original_joins_in_order_and_exact_offsets",
           "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_instance_fixture.py",
+          "anchor": "def test_legacy_provenance_or_emitter_cannot_substitute_for_instance_authority",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_instance_fixture.py",
+          "anchor": "def test_rehashed_packet_cannot_drop_fifth_source_or_cross_profiles",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_instance_material_installed.py",
+          "anchor": "def test_protocol_literal_oracle_and_provenance_are_each_mandatory",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_instance_material_installed.py",
+          "anchor": "def test_comparison_compares_complete_negative_diagnostics_as_well_as_accepted_results",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_instance_prebuilt.py",
+          "anchor": "def test_exact_command_recipe_rejects_rehashed_paths_flags_status_and_interpreter",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_instance_prebuilt.py",
+          "anchor": "def test_late_retained_evidence_and_wheel_changes_prevent_comparison_publication",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_instance_prebuilt.py",
+          "anchor": "def test_failed_or_foreign_child_never_publishes_passing_companion",
+          "occurrence": 1
         }
       ],
-      "scope": "Separately versioned composition admits 2..8 named instances of supplied complete component definitions with exact typed cross-links, complete local-node ownership, ordered node/wire/input/group/export unions and explicit contiguous material join paths. Every selected whole root participates in one ordered concatenation; independently reconstructed feature coordinates and injective instance-qualified feature identities preserve original material authority. Source-indexed three-instance A/B witnesses reuse the same primitive graph fragment in two distinct complete material definitions while retaining distinct state owners, every original requirement and the unchanged complete finite domain. Exact request, model, catalog, provider, resource and delivery authorities remain conjunctive; Core generation is followed by producer-free checking, replay and fresh paired export. Python transports immutable originals and verifies retained evidence identities without semantic fallback.",
+      "scope": "Separately versioned composition admits 2..8 named instances of supplied complete component definitions with exact typed cross-links, complete local-node ownership, ordered node/wire/input/group/export unions and explicit contiguous material join paths. Every selected whole root participates in one ordered concatenation; independently reconstructed feature coordinates and injective instance-qualified feature identities preserve original material authority. Source-indexed three-instance A/B witnesses reuse the same primitive graph fragment in two distinct complete material definitions while retaining distinct state owners, every original requirement and the unchanged complete finite domain. Exact request, model, catalog, provider, resource and delivery authorities remain conjunctive; Core generation is followed by producer-free checking, replay and fresh paired export. Python transports immutable originals and verifies retained evidence identities without semantic fallback. Separate source-indexed fixture and installed-campaign controls bind all five original input files, the private declaration exporter, same-source/run provenance, exact installed wheel authority and package origins. Independent protocol, literal and provenance validation retains all 26 observations, both paired archives and complete negative diagnostics across the four supported platform/Python slots. The additive companion retains existing campaign receipts and checks original commands, logs, ownership records and wheel bytes again before comparison publication; earlier release gates remain mandatory.",
       "limits": "Source inventory only: this gate does not execute the native suites or SDK campaign. The material envelope remains one RNA and one product, exactly four final canonical features, whole roots only, no helpers and the existing truth or staged primitive/source profiles. The witness has three material roots and repeats graph semantics across distinct complete material records; general repeated complete material definitions, arbitrary independent stateful modules, additional observations, general FSMs and multiple products or RNA members are not established. Exact graph and material checking remains conditional on supplied contracts; empirical human-cell behavior, installed distribution and release/main acceptance remain separate. The old decision/driver and selection profiles retain their original scope. Atomic-group local IDs must remain globally unique; repeating a fragment with duplicate atomic-group IDs is not established.",
       "evidence_scope": "source_only_not_executed_by_this_gate"
     }
@@ -2799,7 +2903,7 @@
     "The preceding checker-batch limitation records its original boundary. This additive source-only batch supplies public selection check/replay/export, one original-bound invocation/publication scope, an explicit versioned cumulative node allowance and immutable Python paired-export adapters. Candidate-generation metering and selection compile, installed/offline validation and release/main acceptance remain open. All previous semantic authorities and obligations are retained; source inventory does not establish test execution.",
     "The preceding compile-absent statements record the original publication batch. This additive generation rule supersedes only Core compile absence: a separately negotiated metered Core producer is now source-implemented, with artifact withheld and fresh complete Verify comparison required. Verify remains producer-free; historical development feedback is unchanged and does not validate this increment.",
     "The preceding rules retain their original profile scope and historical evidence. This additive staged rule admits only the reviewed bounded two-stage same-product encounter machine under supplied models; universal termination is not claimed. Static source pins and witness linkage do not establish native, installed, empirical or release/main acceptance.",
-    "The preceding rules retain their original meaning, profile scope and historical evidence. This additive instance-composition rule supports bounded 2..8 named instances while retaining the one-RNA/one-product four-feature material envelope and existing source semantics. Its three-instance witness repeats the same graph fragment across distinct complete material definitions; arbitrary independent modules and repeated complete material definitions are not established. Source inventory supplies no native, installed, empirical or release/main acceptance."
+    "The preceding rules retain their original meaning, profile scope and historical evidence. This additive instance-composition rule supports bounded 2..8 named instances while retaining the one-RNA/one-product four-feature material envelope and existing source semantics. Its three-instance witness repeats the same graph fragment across distinct complete material definitions; arbitrary independent modules and repeated complete material definitions are not established. Source inventory supplies no native, installed, empirical or release/main acceptance. Separately versioned fixture provenance and an additive installed companion preserve the legacy three-role emitter and earlier release campaigns; their source registration does not establish installed execution."
   ],
   "historical_development_feedback": {
     "revision": "5a45d354ee869f26f0e5d3181c8972a6402baca6",
