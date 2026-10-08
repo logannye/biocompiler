@@ -29,11 +29,11 @@ SCHEMA = "biocompiler.policy_public_api_coverage.v0.1"
 CLAIM = "Static public-source inventory and reviewed witness links only; neither executed coverage nor semantic/native/material/release acceptance."
 RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Generated or inherited dataclass runtime protocols are represented by reviewed decorator/field/base contracts, not an exhaustive runtime-attribute census; Python record equality is not symbolic policy comparison."
 # Reviewed separately from source-body pins. This literal binds all138 witness
-# meanings/owners and all845 coverage classifications, so refreshing file/AST
+# meanings/owners and all853 coverage classifications, so refreshing file/AST
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "1ca37142a2beec20c09db60e709e5aa8273da2f5e2002a104ed21c228d6b7d62"
+REVIEWED_METADATA_SHA256 = "4fed72aa7c14dd36438a2a8ad4c0e490779bae3198754db1a0fe58130d266c41"
 PACKAGE = "src/biocompiler/policy"
 MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model native observations operational patterns programs requirements research_project serialization space state time validation values".split())
 CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection")

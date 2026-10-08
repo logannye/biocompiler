@@ -13,6 +13,13 @@ from unittest.mock import patch
 from tools import check_policy_public_api_coverage as c
 
 
+INSTANCE_DEPENDENCIES = frozenset('biocompiler.core_policy_component_material.' + name for name in (
+    'INSTANCE_ASSEMBLY_PROFILE', 'INSTANCE_IMPLEMENTATION', 'INSTANCE_PRODUCER_PROFILE',
+    'INSTANCE_PROFILE', 'INSTANCE_REQUEST_PROFILE', 'INSTANCE_REQUEST_SCHEMA',
+    'INSTANCE_VALIDATION_SCOPE', '_instanced',
+))
+
+
 class PolicyPublicApiCoverageTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -40,8 +47,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (43, 845, 163, 17, 21))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 203,
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (43, 853, 163, 17, 21))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 211,
             'independent_expansion': 28, 'shared_invariant': 492, 'source_only': 116})
         self.assertEqual(len(self.ledger['syntax_links']), 359)
         self.assertEqual(len(self.ledger['witnesses']), 138)
@@ -59,7 +66,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 845)
+        self.assertEqual(len(found['entries']), 853)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
 
@@ -115,9 +122,39 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
             c.validate(self.root, self.ledger)
 
+    def before_instance_composition(self):
+        """Remove only eight reviewed dependencies; retain every prior witness."""
+        projected = copy.deepcopy(self.ledger)
+        self.assertTrue(INSTANCE_DEPENDENCIES <= projected['coverage'].keys())
+        for key in INSTANCE_DEPENDENCIES:
+            del projected['coverage'][key]
+        return projected
+
+    def test_instance_additions_preserve_all_prior_evidence_meanings(self):
+        projected = self.before_instance_composition()
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in projected['witnesses'].items()},
+                    'coverage': projected['coverage']}
+        self.assertEqual((len(projected['coverage']), len(projected['witnesses'])), (845, 138))
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode()
+        self.assertEqual(c.digest(encoded),
+                         '1ca37142a2beec20c09db60e709e5aa8273da2f5e2002a104ed21c228d6b7d62')
+        additions = {key: self.ledger['coverage'][key] for key in INSTANCE_DEPENDENCIES}
+        self.assertEqual(len(additions), 8)
+        self.assertTrue(all(row['status'] == 'dependency' and row['witnesses'] == []
+                            and 'no new native semantic execution or acceptance claim' in row['scope']
+                            for row in additions.values()))
+
+    def test_instance_dependency_cannot_gain_runtime_evidence(self):
+        row = self.ledger['coverage']['biocompiler.core_policy_component_material._instanced']
+        row.update(status='shared_invariant', witnesses=['component.routes'], scope='Native acceptance.')
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Private dependency classification changed'):
+            c.validate(self.root, self.ledger)
+
     def before_research_project(self):
         """Remove only the additive researcher-project surface and its witnesses."""
-        projected = copy.deepcopy(self.ledger)
+        projected = self.before_instance_composition()
         projected['coverage'] = {key: row for key, row in projected['coverage'].items()
                                  if not key.startswith('biocompiler.policy.research_project.')}
         projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
