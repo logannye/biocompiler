@@ -1,0 +1,416 @@
+{
+  "changes": [
+    {
+      "current_lines": [
+        "    preparation: str | None\n"
+      ],
+      "current_start": 52,
+      "original_lines": [],
+      "original_start": 52
+    },
+    {
+      "current_lines": [
+        "    preparation: str | None\n",
+        "    proposal: Callable[..., Any]\n"
+      ],
+      "current_start": 60,
+      "original_lines": [],
+      "original_start": 59
+    },
+    {
+      "current_lines": [
+        "    preparation: str | None\n"
+      ],
+      "current_start": 69,
+      "original_lines": [],
+      "original_start": 66
+    },
+    {
+      "current_lines": [
+        "\n",
+        "\n",
+        "@dataclass(eq=False)\n",
+        "class _MolecularAttempt:\n",
+        "    preparation: ComponentPreparation\n",
+        "    host: ReferenceHost\n",
+        "    emit: Callable[..., Any]\n",
+        "    proposal: Callable[..., Any]\n",
+        "    entered: bool = True\n"
+      ],
+      "current_start": 81,
+      "original_lines": [],
+      "original_start": 77
+    },
+    {
+      "current_lines": [
+        "        'reference-upstream-candidate', 'reference-molecular-provider', 'reference-molecular-proposal')\n"
+      ],
+      "current_start": 118,
+      "original_lines": [
+        "        'reference-upstream-candidate')\n"
+      ],
+      "original_start": 105
+    },
+    {
+      "current_lines": [],
+      "current_start": 211,
+      "original_lines": [
+        "        self._reference_molecular_host = host\n"
+      ],
+      "original_start": 198
+    },
+    {
+      "current_lines": [
+        "        self._reference_finals: list[_FinalSource | None] = []\n",
+        "        self._reference_attempts: dict[str, _MolecularAttempt] = {}\n",
+        "        self._reference_scopes: list[_MolecularAttempt] = []\n",
+        "        self._reference_provider_attempts: dict[str, str] = {}\n"
+      ],
+      "current_start": 214,
+      "original_lines": [
+        "        self._reference_final: _FinalSource | None = None\n"
+      ],
+      "original_start": 202
+    },
+    {
+      "current_lines": [],
+      "current_start": 224,
+      "original_lines": [
+        "        self._reference_emit_callable = host.emit\n"
+      ],
+      "original_start": 209
+    },
+    {
+      "current_lines": [],
+      "current_start": 225,
+      "original_lines": [
+        "        self._reference_molecular_proposal_callable = host.proposal\n"
+      ],
+      "original_start": 211
+    },
+    {
+      "current_lines": [
+        "    def _remember_molecular_attempt(self, raw: JsonValue, host: ReferenceHost) -> ComponentPreparation:\n",
+        "        def hydrate(value: JsonValue) -> ComponentPreparation:\n",
+        "            self._reference_retention(1024)\n",
+        "            self._reference_origin_bytes += 1024\n",
+        "            preparation = self._component_preparation(value)\n",
+        "            attempt = _MolecularAttempt(preparation, host, host.emit, host.proposal)\n",
+        "            self._reference_attempts[preparation.identity] = attempt\n",
+        "            self._reference_scopes.append(attempt)\n",
+        "            return preparation\n",
+        "        return cast(ComponentPreparation, self._view(hydrate, raw, 'reference Molecular attempt'))\n",
+        "\n",
+        "    def _molecular_attempt(self, identity: Any, *, active: bool = False) -> _MolecularAttempt:\n",
+        "        token = _identity(identity)\n",
+        "        attempt = self._reference_attempts.get(token)\n",
+        "        _require(attempt is not None and self._preparations.get(token) is attempt.preparation,\n",
+        "                 'Unknown Molecular attempt origin')\n",
+        "        assert attempt is not None\n",
+        "        if active:\n",
+        "            _require(attempt.entered and bool(self._reference_scopes) and self._reference_scopes[-1] is attempt,\n",
+        "                     'Molecular attempt is not the active continuation scope')\n",
+        "        return attempt\n",
+        "\n",
+        "    def leave_reference_molecular_attempt(self, preparation: ComponentPreparation) -> None:\n",
+        "        token = self._preparation_id(preparation)\n",
+        "        attempt = self._molecular_attempt(token, active=True)\n",
+        "        self._unit('leave-reference-molecular-attempt', {'preparation_id': token})\n",
+        "        self._reference_scopes.pop()\n",
+        "        attempt.entered = False\n",
+        "\n",
+        "    def _leave_molecular_preserving_failure(self, preparation: ComponentPreparation) -> None:\n",
+        "        # Called only while propagating an existing exception. A closed channel\n",
+        "        # cannot clean up remotely, and a cleanup error must never replace the\n",
+        "        # exact original callback/manager exception. Never reconnect or retry.\n",
+        "        if self.session.closed or self.session.invalidated:\n",
+        "            return\n",
+        "        try:\n",
+        "            self.leave_reference_molecular_attempt(preparation)\n",
+        "        except BaseException:\n",
+        "            try:\n",
+        "                self.session._invalidate()\n",
+        "            except BaseException:\n",
+        "                # Invalidation latches closed before disposing the child. Even\n",
+        "                # a disposal error must preserve the already active exception.\n",
+        "                pass\n",
+        "\n"
+      ],
+      "current_start": 342,
+      "original_lines": [],
+      "original_start": 329
+    },
+    {
+      "current_lines": [
+        "        return self._remember_molecular_attempt(self._call('prepare-reference-molecular', {}), self._reference_host)\n"
+      ],
+      "current_start": 388,
+      "original_lines": [
+        "        return cast(ComponentPreparation, self._view(self._component_preparation,\n",
+        "            self._call('prepare-reference-molecular', {}), 'reference Molecular preparation'))\n"
+      ],
+      "original_start": 330
+    },
+    {
+      "current_lines": [
+        "        return self._remember_molecular_attempt(raw, host)\n"
+      ],
+      "current_start": 429,
+      "original_lines": [
+        "        self._reference_molecular_host = host\n",
+        "        self._reference_emit_callable = host.emit\n",
+        "        self._reference_molecular_proposal_callable = host.proposal\n",
+        "        return cast(ComponentPreparation, self._view(self._component_preparation, raw,\n",
+        "                                                     'public reference Molecular preparation'))\n"
+      ],
+      "original_start": 372
+    },
+    {
+      "current_lines": [
+        "        self._molecular_attempt(self._preparation_id(preparation), active=True)\n",
+        "        try:\n",
+        "            for key, identity in preparation.dependencies:\n",
+        "                self.set_dependency(key, identity)\n",
+        "            self.register_completion_profile(self.reference_molecular_profile(preparation))\n",
+        "            registration = self.reference_molecular_registration(preparation)\n",
+        "            self.register(registration.contract, registration.producer, registration.validators)\n",
+        "            record = self.run(registration.contract.id, 'construct', 'molecular')\n",
+        "            result = self.result('molecular', scope='exact_cds')\n",
+        "            built = self.finish_reference_molecular(preparation, record, result, upstream=upstream)\n",
+        "        except BaseException:\n",
+        "            self._leave_molecular_preserving_failure(preparation)\n",
+        "            raise\n",
+        "        self.leave_reference_molecular_attempt(preparation)\n",
+        "        return built\n"
+      ],
+      "current_start": 439,
+      "original_lines": [
+        "        for key, identity in preparation.dependencies:\n",
+        "            self.set_dependency(key, identity)\n",
+        "        self.register_completion_profile(self.reference_molecular_profile(preparation))\n",
+        "        registration = self.reference_molecular_registration(preparation)\n",
+        "        self.register(registration.contract, registration.producer, registration.validators)\n",
+        "        record = self.run(registration.contract.id, 'construct', 'molecular')\n",
+        "        result = self.result('molecular', scope='exact_cds')\n",
+        "        return self.finish_reference_molecular(preparation, record, result, upstream=upstream)\n"
+      ],
+      "original_start": 386
+    },
+    {
+      "current_lines": [],
+      "current_start": 472,
+      "original_lines": [
+        "        _require(self._reference_final is None, 'Reference finish cannot replace an active source invocation')\n"
+      ],
+      "original_start": 412
+    },
+    {
+      "current_lines": [
+        "        self._reference_finals.append(source)\n"
+      ],
+      "current_start": 473,
+      "original_lines": [
+        "        self._reference_final = source\n"
+      ],
+      "original_start": 414
+    },
+    {
+      "current_lines": [
+        "            self._reference_finals.pop()\n"
+      ],
+      "current_start": 491,
+      "original_lines": [
+        "            self._reference_final = None\n"
+      ],
+      "original_start": 432
+    },
+    {
+      "current_lines": [
+        "            _require(kind == 'molecular' or previous is None or previous is built, 'Reference completed Construct Build was replaced')\n"
+      ],
+      "current_start": 508,
+      "original_lines": [
+        "            _require(previous is None or previous is built, 'Reference completed Build was replaced')\n"
+      ],
+      "original_start": 449
+    },
+    {
+      "current_lines": [
+        "        if action == 'reference-molecular-provider':\n",
+        "            args = _object(arguments, {'preparation_id', 'provider_id', 'role'}, 'Molecular provider origin')\n",
+        "            attempt = self._molecular_attempt(args['preparation_id'])\n",
+        "            token = attempt.preparation.identity\n",
+        "            identity = _identity(args['provider_id'])\n",
+        "            _require(args['role'] in ('construct_to_molecular.producer', 'construct_to_molecular.sequence',\n",
+        "                                     'construct_to_molecular.composition'), 'Unexpected Molecular provider origin role')\n",
+        "            previous_attempt = self._reference_provider_attempts.get(identity)\n",
+        "            _require(previous_attempt is None or previous_attempt == token, 'Molecular provider was rebound to another attempt')\n",
+        "            completion = self._invoke('native-provider', {'provider_id': identity, 'role': args['role']})\n",
+        "            if previous_attempt is None:\n",
+        "                self._reference_retention(256)\n",
+        "                self._reference_origin_bytes += 256\n",
+        "                self._reference_provider_attempts[identity] = token\n",
+        "            return completion\n"
+      ],
+      "current_start": 520,
+      "original_lines": [],
+      "original_start": 461
+    },
+    {
+      "current_lines": [
+        "            final_source = self._reference_finals[-1] if self._reference_finals else None\n"
+      ],
+      "current_start": 551,
+      "original_lines": [
+        "            final_source = self._reference_final\n"
+      ],
+      "original_start": 477
+    },
+    {
+      "current_lines": [
+        "            fields = {'input', 'argument', 'tree'} if action == 'reference-generate' else {'input', 'argument', 'tree', 'preparation_id', 'provider_id'}\n",
+        "            args = _object(arguments, fields, 'Reference producer input')\n"
+      ],
+      "current_start": 587,
+      "original_lines": [
+        "            args = _object(arguments, {'input', 'argument', 'tree'}, 'Reference producer input')\n"
+      ],
+      "original_start": 513
+    },
+    {
+      "current_lines": [
+        "            preparation = None\n",
+        "            proposal_function = self._reference_proposal_callable\n",
+        "            host = self._reference_host\n",
+        "            if action == 'reference-emit':\n",
+        "                attempt = self._molecular_attempt(args['preparation_id'])\n",
+        "                preparation = attempt.preparation.identity\n",
+        "                provider_id = _identity(args['provider_id'])\n",
+        "                _require(self._reference_provider_attempts.get(provider_id) == preparation\n",
+        "                    and self._native_provider_roles.get(provider_id) == 'construct_to_molecular.producer',\n",
+        "                    'Molecular invocation changed its provider attempt origin')\n",
+        "                host, proposal_function = attempt.host, attempt.proposal\n"
+      ],
+      "current_start": 595,
+      "original_lines": [
+        "            host = self._reference_host if action == 'reference-generate' else self._reference_molecular_host\n"
+      ],
+      "original_start": 520
+    },
+    {
+      "current_lines": [
+        "                function, role, expected_default = attempt.emit, 'construct_to_molecular.producer', NativeDefault.EMIT\n"
+      ],
+      "current_start": 616,
+      "original_lines": [
+        "                function, role, expected_default = self._reference_emit_callable, 'construct_to_molecular.producer', NativeDefault.EMIT\n"
+      ],
+      "original_start": 531
+    },
+    {
+      "current_lines": [
+        "            self._reference_origins[id(parsed)] = _InvocationOrigin(role, sequence, origins, preparation)\n"
+      ],
+      "current_start": 619,
+      "original_lines": [
+        "            self._reference_origins[id(parsed)] = _InvocationOrigin(role, sequence, origins)\n"
+      ],
+      "original_start": 534
+    },
+    {
+      "current_lines": [
+        "            self._reference_outputs[id(output)] = _HostOutput(output, role, sequence, preparation, proposal_function)\n"
+      ],
+      "current_start": 627,
+      "original_lines": [
+        "            self._reference_outputs[id(output)] = _HostOutput(output, role, sequence)\n"
+      ],
+      "original_start": 542
+    },
+    {
+      "current_lines": [
+        "        if action in ('reference-proposal', 'reference-molecular-proposal'):\n",
+        "            fields = {'output', 'source_links'} if action == 'reference-proposal' else {'output', 'source_links', 'preparation_id'}\n",
+        "            args = _object(arguments, fields, 'Reference paired proposal')\n"
+      ],
+      "current_start": 629,
+      "original_lines": [
+        "        if action == 'reference-proposal':\n",
+        "            args = _object(arguments, {'output', 'source_links'}, 'Reference paired proposal')\n"
+      ],
+      "original_start": 544
+    },
+    {
+      "current_lines": [
+        "            _require((source.preparation is None and action == 'reference-proposal') or\n",
+        "                (source.preparation is not None and action == 'reference-molecular-proposal'\n",
+        "                 and args['preparation_id'] == source.preparation), 'Paired proposal changed its captured attempt')\n"
+      ],
+      "current_start": 637,
+      "original_lines": [],
+      "original_start": 551
+    },
+    {
+      "current_lines": [
+        "            proposal_function = source.proposal\n"
+      ],
+      "current_start": 643,
+      "original_lines": [
+        "            proposal_function = (self._reference_proposal_callable if source.role == 'components_to_construct.producer'\n",
+        "                        else self._reference_molecular_proposal_callable)\n"
+      ],
+      "original_start": 554
+    },
+    {
+      "current_lines": [
+        "            self._reference_proposals[id(proposal)] = _HostProposal(proposal, source.role, source.sequence, source.preparation)\n"
+      ],
+      "current_start": 648,
+      "original_lines": [
+        "            self._reference_proposals[id(proposal)] = _HostProposal(proposal, source.role, source.sequence)\n"
+      ],
+      "original_start": 560
+    },
+    {
+      "current_lines": [
+        "            request = cast(dict[str, Any], decode_document(response.request_document))\n",
+        "            provider = request['arguments']['provider_id']\n",
+        "            expected_attempt = self._reference_provider_attempts.get(provider)\n"
+      ],
+      "current_start": 669,
+      "original_lines": [],
+      "original_start": 581
+    },
+    {
+      "current_lines": [
+        "                         and host.sequence == response.sequence and host.preparation == expected_attempt, 'Reference host proposal belongs to another provider command')\n"
+      ],
+      "current_start": 678,
+      "original_lines": [
+        "                         and host.sequence == response.sequence, 'Reference host proposal belongs to another provider command')\n"
+      ],
+      "original_start": 587
+    },
+    {
+      "current_lines": [
+        "                         and entry.sequence == response.sequence and entry.preparation == expected_attempt, 'Reference parsed input belongs to another provider command')\n"
+      ],
+      "current_start": 687,
+      "original_lines": [
+        "                         and entry.sequence == response.sequence, 'Reference parsed input belongs to another provider command')\n"
+      ],
+      "original_start": 596
+    }
+  ],
+  "current_bytes": 43749,
+  "current_sha256": "188830c06e5865d65d4997558d602e9c28668e1d7f163693c515f306661c22f2",
+  "original_bytes": 38471,
+  "original_sha256": "239fa3486751cfdc97e5f2e599a414562f3fba952b641169b4f04db0aab83772",
+  "path": "src/biocompiler/core_reference_manager.py",
+  "predecessor": {
+    "path": "tests/conformance/reference-public-routing-source-counterpart-v1.json",
+    "sha256": "949bd00942bbaa8c6107c490692e38007e41309b0d8f22b0bccd4d8f8514f074"
+  },
+  "schema": "biocompiler.reference_attempt_facade_counterpart.v1",
+  "scope": "exact reviewed transport attempt capability extension; restored source is historical authority, never current bridge acceptance"
+}

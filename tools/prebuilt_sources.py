@@ -9,6 +9,7 @@ import errno
 import http.client
 import hashlib
 import json
+import math
 import os
 from pathlib import Path,PurePosixPath
 import platform
@@ -52,6 +53,7 @@ ATTEMPTS_PER_URL = 2
 SOCKET_TIMEOUT = 12
 STREAM_DEADLINE = 30
 FETCH_SCHEMA = 'biocompiler.prebuilt_source_fetch.v1'
+SOURCE_MTIME_MAX = 2**32 - 1
 
 
 class FetchError(RuntimeError):
@@ -216,6 +218,8 @@ def archive_index(path):
                 and name not in seen,'Source archive path is unsafe or repeated')
             seen.add(name);require(len(seen)<=100000,'Source archive count exceeds bound')
             require(member.isfile() or member.isdir() or member.issym() or member.islnk(),'Source archive contains a special file')
+            require(type(member.mtime) in (int,float) and 0<=member.mtime<=SOURCE_MTIME_MAX
+                and math.isfinite(member.mtime),'Source archive timestamp is outside bound')
             if member.isfile():
                 size+=member.size;require(0<=member.size<=64*1024*1024 and size<=512*1024*1024,'Source archive expansion exceeds bound')
             if member.issym() or member.islnk():
@@ -258,6 +262,9 @@ def extract_source(path,output):
         # Reject any pathname nested below an archive link before extraction.
         links={PurePosixPath(m.name) for m in members if m.issym() or m.islnk()}
         require(all(not any(parent in links for parent in PurePosixPath(m.name).parents) for m in members),'Source member traverses an archive link')
+        regulars={PurePosixPath(m.name) for m in members if m.isfile()}
+        require(all(PurePosixPath(m.linkname) in regulars for m in members if m.islnk()),
+            'Source hardlink target is not an indexed regular member')
         for member in members:
             target=output/member.name
             if member.isdir():target.mkdir(parents=True,exist_ok=True)
@@ -265,6 +272,9 @@ def extract_source(path,output):
                 target.parent.mkdir(parents=True,exist_ok=True)
                 with archive.extractfile(member) as source,target.open('xb') as dest:shutil.copyfileobj(source,dest,1024*1024)
                 target.chmod(0o755 if member.mode&0o111 else 0o644)
+                # Release archives contain generated files whose dependency age
+                # must survive extraction rather than follow archive write order.
+                os.utime(target,(member.mtime,member.mtime),follow_symlinks=False)
         for member in members:
             target=output/member.name
             if member.issym():target.parent.mkdir(parents=True,exist_ok=True);target.symlink_to(member.linkname)
@@ -272,6 +282,7 @@ def extract_source(path,output):
                 source=output/member.linkname
                 require(source.is_file() and not source.is_symlink(),'Source hardlink target is not a regular member')
                 target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(source,target)
+                os.utime(target,(member.mtime,member.mtime),follow_symlinks=False)
     finally:archive.close()
     roots=list(output.iterdir());require(len(roots)==1 and roots[0].is_dir() and not roots[0].is_symlink(),'Source archive has no unique package root')
     return roots[0]

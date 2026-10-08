@@ -1,0 +1,15 @@
+{
+  "actual_helpers": [
+    "check_realization_binaries.executable_path",
+    "pipeline_reference_runtime.installed_sources"
+  ],
+  "error": "Loaded reference module lacks current source authority: biocompiler.core_distribution",
+  "kind": "inert_temporary_package_source_control_not_an_installation",
+  "native_execution": false,
+  "omission": "Pre-fix product_sources omits the distribution path, separately demonstrated by pre-fix-controls.log",
+  "python_version": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "runtime_source_sha256": "928cf47c58572f8fb85c7669b47eb6a40201be4d4a4eb8bb4ac4899340f133de",
+  "stand_in": "Temporary inert core_distribution module returns only a Path and SimpleNamespace; no wheel or native binary exists",
+  "status": "reproduced",
+  "subprocess_forbidden": true
+}

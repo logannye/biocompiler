@@ -1,0 +1,487 @@
+{
+  "case_count_per_runtime": 8,
+  "cases": [
+    {
+      "actual_ordered_encoding": "{\"kind\":\"scalar\",\"value\":1,\"unit\":\"min\",\"canonical_value\":60,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1},\"arguments\":[]}}",
+      "expected_semantic_encoding": "{\"canonical_value\":60,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"unit\":\"min\",\"value\":1}",
+      "input_json": "{\"kind\":\"scalar\",\"value\":1,\"unit\":\"min\",\"canonical_value\":60.0,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1,\"unused\":0}}}",
+      "name": "registered integer product",
+      "recursive_order": [
+        {
+          "expected_keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "kind": "scalar",
+          "path": [],
+          "status": "pass"
+        }
+      ],
+      "repeated_output_exact_ordered_encoding_matches_actual": true,
+      "reversed_and_repeated_recursive_orders_match_actual": true,
+      "reversed_input_json": "{\"type\":{\"dimensions\":{\"unused\":0,\"time\":1},\"name\":\"Duration\",\"kind\":\"scalar\"},\"canonical_value\":60.0,\"unit\":\"min\",\"value\":1,\"kind\":\"scalar\"}",
+      "reversed_output_exact_ordered_encoding_matches_actual": true,
+      "semantic_encoding_matches_expected": true,
+      "status": "pass"
+    },
+    {
+      "actual_ordered_encoding": "{\"kind\":\"scalar\",\"value\":1000,\"unit\":\"ms\",\"canonical_value\":1.0,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1},\"arguments\":[]}}",
+      "expected_semantic_encoding": "{\"canonical_value\":1.0,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"unit\":\"ms\",\"value\":1000}",
+      "input_json": "{\"kind\":\"scalar\",\"value\":1000,\"unit\":\"ms\",\"canonical_value\":1,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1}}}",
+      "name": "registered floating product",
+      "recursive_order": [
+        {
+          "expected_keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "kind": "scalar",
+          "path": [],
+          "status": "pass"
+        }
+      ],
+      "repeated_output_exact_ordered_encoding_matches_actual": true,
+      "reversed_and_repeated_recursive_orders_match_actual": true,
+      "reversed_input_json": "{\"type\":{\"dimensions\":{\"time\":1},\"name\":\"Duration\",\"kind\":\"scalar\"},\"canonical_value\":1,\"unit\":\"ms\",\"value\":1000,\"kind\":\"scalar\"}",
+      "reversed_output_exact_ordered_encoding_matches_actual": true,
+      "semantic_encoding_matches_expected": true,
+      "status": "pass"
+    },
+    {
+      "actual_ordered_encoding": "{\"kind\":\"scalar\",\"value\":-0.0,\"unit\":\"s\",\"canonical_value\":-0.0,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1},\"arguments\":[]}}",
+      "expected_semantic_encoding": "{\"canonical_value\":-0.0,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"unit\":\"s\",\"value\":-0.0}",
+      "input_json": "{\"kind\":\"scalar\",\"value\":-0.0,\"unit\":\"s\",\"canonical_value\":0,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1}}}",
+      "name": "registered negative zero",
+      "recursive_order": [
+        {
+          "expected_keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "kind": "scalar",
+          "path": [],
+          "status": "pass"
+        }
+      ],
+      "repeated_output_exact_ordered_encoding_matches_actual": true,
+      "reversed_and_repeated_recursive_orders_match_actual": true,
+      "reversed_input_json": "{\"type\":{\"dimensions\":{\"time\":1},\"name\":\"Duration\",\"kind\":\"scalar\"},\"canonical_value\":0,\"unit\":\"s\",\"value\":-0.0,\"kind\":\"scalar\"}",
+      "reversed_output_exact_ordered_encoding_matches_actual": true,
+      "semantic_encoding_matches_expected": true,
+      "status": "pass"
+    },
+    {
+      "actual_ordered_encoding": "{\"kind\":\"scalar\",\"value\":0.0,\"unit\":\"s\",\"canonical_value\":0.0,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1},\"arguments\":[]}}",
+      "expected_semantic_encoding": "{\"canonical_value\":0.0,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"unit\":\"s\",\"value\":0.0}",
+      "input_json": "{\"kind\":\"scalar\",\"value\":0.0,\"unit\":\"s\",\"canonical_value\":-0.0,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1}}}",
+      "name": "registered positive zero",
+      "recursive_order": [
+        {
+          "expected_keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "kind": "scalar",
+          "path": [],
+          "status": "pass"
+        }
+      ],
+      "repeated_output_exact_ordered_encoding_matches_actual": true,
+      "reversed_and_repeated_recursive_orders_match_actual": true,
+      "reversed_input_json": "{\"type\":{\"dimensions\":{\"time\":1},\"name\":\"Duration\",\"kind\":\"scalar\"},\"canonical_value\":-0.0,\"unit\":\"s\",\"value\":0.0,\"kind\":\"scalar\"}",
+      "reversed_output_exact_ordered_encoding_matches_actual": true,
+      "semantic_encoding_matches_expected": true,
+      "status": "pass"
+    },
+    {
+      "actual_ordered_encoding": "{\"kind\":\"scalar\",\"value\":9007199254740993,\"unit\":\"s\",\"canonical_value\":9007199254740993,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1},\"arguments\":[]}}",
+      "expected_semantic_encoding": "{\"canonical_value\":9007199254740993,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"unit\":\"s\",\"value\":9007199254740993}",
+      "input_json": "{\"kind\":\"scalar\",\"value\":9007199254740993,\"unit\":\"s\",\"canonical_value\":9007199254740993,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1}}}",
+      "name": "large integer remains exact",
+      "recursive_order": [
+        {
+          "expected_keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "kind": "scalar",
+          "path": [],
+          "status": "pass"
+        }
+      ],
+      "repeated_output_exact_ordered_encoding_matches_actual": true,
+      "reversed_and_repeated_recursive_orders_match_actual": true,
+      "reversed_input_json": "{\"type\":{\"dimensions\":{\"time\":1},\"name\":\"Duration\",\"kind\":\"scalar\"},\"canonical_value\":9007199254740993,\"unit\":\"s\",\"value\":9007199254740993,\"kind\":\"scalar\"}",
+      "reversed_output_exact_ordered_encoding_matches_actual": true,
+      "semantic_encoding_matches_expected": true,
+      "status": "pass"
+    },
+    {
+      "actual_ordered_encoding": "{\"kind\":\"scalar\",\"value\":2,\"unit\":\"arbitrary-unit\",\"canonical_value\":-0.0,\"type\":{\"kind\":\"scalar\",\"name\":\"CustomDuration\",\"dimensions\":{\"time\":1},\"arguments\":[]}}",
+      "expected_semantic_encoding": "{\"canonical_value\":-0.0,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"CustomDuration\"},\"unit\":\"arbitrary-unit\",\"value\":2}",
+      "input_json": "{\"kind\":\"scalar\",\"value\":2,\"unit\":\"arbitrary-unit\",\"canonical_value\":-0.0,\"type\":{\"kind\":\"scalar\",\"name\":\"CustomDuration\",\"dimensions\":{\"time\":1,\"zero\":0}}}",
+      "name": "custom conversion retained",
+      "recursive_order": [
+        {
+          "expected_keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "kind": "scalar",
+          "path": [],
+          "status": "pass"
+        }
+      ],
+      "repeated_output_exact_ordered_encoding_matches_actual": true,
+      "reversed_and_repeated_recursive_orders_match_actual": true,
+      "reversed_input_json": "{\"type\":{\"dimensions\":{\"zero\":0,\"time\":1},\"name\":\"CustomDuration\",\"kind\":\"scalar\"},\"canonical_value\":-0.0,\"unit\":\"arbitrary-unit\",\"value\":2,\"kind\":\"scalar\"}",
+      "reversed_output_exact_ordered_encoding_matches_actual": true,
+      "semantic_encoding_matches_expected": true,
+      "status": "pass"
+    },
+    {
+      "actual_ordered_encoding": "{\"kind\":\"interval\",\"lower\":{\"kind\":\"scalar\",\"value\":0,\"unit\":\"ms\",\"canonical_value\":0.0,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1},\"arguments\":[]}},\"upper\":{\"kind\":\"scalar\",\"value\":1,\"unit\":\"min\",\"canonical_value\":60,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1},\"arguments\":[]}},\"type\":{\"kind\":\"interval\",\"name\":\"CustomInterval\",\"dimensions\":{},\"arguments\":[{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1},\"arguments\":[]}]}}",
+      "expected_semantic_encoding": "{\"kind\":\"interval\",\"lower\":{\"canonical_value\":0.0,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"unit\":\"ms\",\"value\":0},\"type\":{\"arguments\":[{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"}],\"dimensions\":{},\"kind\":\"interval\",\"name\":\"CustomInterval\"},\"upper\":{\"canonical_value\":60,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"unit\":\"min\",\"value\":1}}",
+      "input_json": "{\"kind\":\"interval\",\"type\":{\"kind\":\"interval\",\"name\":\"CustomInterval\",\"arguments\":[{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1}}]},\"lower\":{\"kind\":\"scalar\",\"value\":0,\"unit\":\"ms\",\"canonical_value\":0,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1}}},\"upper\":{\"kind\":\"scalar\",\"value\":1,\"unit\":\"min\",\"canonical_value\":60.0,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1}}}}",
+      "name": "interval recursively normalized",
+      "recursive_order": [
+        {
+          "expected_keys": [
+            "kind",
+            "lower",
+            "upper",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "lower",
+            "upper",
+            "type"
+          ],
+          "kind": "interval",
+          "path": [],
+          "status": "pass"
+        },
+        {
+          "expected_keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "kind": "scalar",
+          "path": [
+            "lower"
+          ],
+          "status": "pass"
+        },
+        {
+          "expected_keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "kind": "scalar",
+          "path": [
+            "upper"
+          ],
+          "status": "pass"
+        }
+      ],
+      "repeated_output_exact_ordered_encoding_matches_actual": true,
+      "reversed_and_repeated_recursive_orders_match_actual": true,
+      "reversed_input_json": "{\"upper\":{\"type\":{\"dimensions\":{\"time\":1},\"name\":\"Duration\",\"kind\":\"scalar\"},\"canonical_value\":60.0,\"unit\":\"min\",\"value\":1,\"kind\":\"scalar\"},\"lower\":{\"type\":{\"dimensions\":{\"time\":1},\"name\":\"Duration\",\"kind\":\"scalar\"},\"canonical_value\":0,\"unit\":\"ms\",\"value\":0,\"kind\":\"scalar\"},\"type\":{\"arguments\":[{\"dimensions\":{\"time\":1},\"name\":\"Duration\",\"kind\":\"scalar\"}],\"name\":\"CustomInterval\",\"kind\":\"interval\"},\"kind\":\"interval\"}",
+      "reversed_output_exact_ordered_encoding_matches_actual": true,
+      "semantic_encoding_matches_expected": true,
+      "status": "pass"
+    },
+    {
+      "actual_ordered_encoding": "{\"kind\":\"curve\",\"type\":{\"kind\":\"curve\",\"name\":\"CustomCurve\",\"dimensions\":{},\"arguments\":[{\"kind\":\"scalar\",\"name\":\"Level\",\"dimensions\":{},\"arguments\":[]},{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1},\"arguments\":[]}]},\"points\":[[{\"kind\":\"scalar\",\"value\":0,\"unit\":\"1\",\"canonical_value\":0,\"type\":{\"kind\":\"scalar\",\"name\":\"Level\",\"dimensions\":{},\"arguments\":[]}},{\"kind\":\"scalar\",\"value\":1000,\"unit\":\"ms\",\"canonical_value\":1.0,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1},\"arguments\":[]}}],[{\"kind\":\"scalar\",\"value\":1,\"unit\":\"1\",\"canonical_value\":1,\"type\":{\"kind\":\"scalar\",\"name\":\"Level\",\"dimensions\":{},\"arguments\":[]}},{\"kind\":\"scalar\",\"value\":2,\"unit\":\"s\",\"canonical_value\":2,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1},\"arguments\":[]}}]],\"interpolation\":\"step\",\"extrapolation\":\"error\"}",
+      "expected_semantic_encoding": "{\"extrapolation\":\"error\",\"interpolation\":\"step\",\"kind\":\"curve\",\"points\":[[{\"canonical_value\":0,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"scalar\",\"name\":\"Level\"},\"unit\":\"1\",\"value\":0},{\"canonical_value\":1.0,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"unit\":\"ms\",\"value\":1000}],[{\"canonical_value\":1,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"scalar\",\"name\":\"Level\"},\"unit\":\"1\",\"value\":1},{\"canonical_value\":2,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"unit\":\"s\",\"value\":2}]],\"type\":{\"arguments\":[{\"arguments\":[],\"dimensions\":{},\"kind\":\"scalar\",\"name\":\"Level\"},{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"}],\"dimensions\":{},\"kind\":\"curve\",\"name\":\"CustomCurve\"}}",
+      "input_json": "{\"kind\":\"curve\",\"type\":{\"kind\":\"curve\",\"name\":\"CustomCurve\",\"arguments\":[{\"kind\":\"scalar\",\"name\":\"Level\"},{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1}}]},\"points\":[[{\"kind\":\"scalar\",\"value\":0,\"unit\":\"1\",\"canonical_value\":0.0,\"type\":{\"kind\":\"scalar\",\"name\":\"Level\"}},{\"kind\":\"scalar\",\"value\":1000,\"unit\":\"ms\",\"canonical_value\":1,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1}}}],[{\"kind\":\"scalar\",\"value\":1,\"unit\":\"1\",\"canonical_value\":1.0,\"type\":{\"kind\":\"scalar\",\"name\":\"Level\"}},{\"kind\":\"scalar\",\"value\":2,\"unit\":\"s\",\"canonical_value\":2.0,\"type\":{\"kind\":\"scalar\",\"name\":\"Duration\",\"dimensions\":{\"time\":1}}}]],\"interpolation\":\"step\",\"extrapolation\":\"error\"}",
+      "name": "curve recursively normalized",
+      "recursive_order": [
+        {
+          "expected_keys": [
+            "kind",
+            "type",
+            "points",
+            "interpolation",
+            "extrapolation"
+          ],
+          "keys": [
+            "kind",
+            "type",
+            "points",
+            "interpolation",
+            "extrapolation"
+          ],
+          "kind": "curve",
+          "path": [],
+          "status": "pass"
+        },
+        {
+          "expected_keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "kind": "scalar",
+          "path": [
+            "points",
+            0,
+            0
+          ],
+          "status": "pass"
+        },
+        {
+          "expected_keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "kind": "scalar",
+          "path": [
+            "points",
+            0,
+            1
+          ],
+          "status": "pass"
+        },
+        {
+          "expected_keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "kind": "scalar",
+          "path": [
+            "points",
+            1,
+            0
+          ],
+          "status": "pass"
+        },
+        {
+          "expected_keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ],
+          "kind": "scalar",
+          "path": [
+            "points",
+            1,
+            1
+          ],
+          "status": "pass"
+        }
+      ],
+      "repeated_output_exact_ordered_encoding_matches_actual": true,
+      "reversed_and_repeated_recursive_orders_match_actual": true,
+      "reversed_input_json": "{\"extrapolation\":\"error\",\"interpolation\":\"step\",\"points\":[[{\"type\":{\"name\":\"Level\",\"kind\":\"scalar\"},\"canonical_value\":0.0,\"unit\":\"1\",\"value\":0,\"kind\":\"scalar\"},{\"type\":{\"dimensions\":{\"time\":1},\"name\":\"Duration\",\"kind\":\"scalar\"},\"canonical_value\":1,\"unit\":\"ms\",\"value\":1000,\"kind\":\"scalar\"}],[{\"type\":{\"name\":\"Level\",\"kind\":\"scalar\"},\"canonical_value\":1.0,\"unit\":\"1\",\"value\":1,\"kind\":\"scalar\"},{\"type\":{\"dimensions\":{\"time\":1},\"name\":\"Duration\",\"kind\":\"scalar\"},\"canonical_value\":2.0,\"unit\":\"s\",\"value\":2,\"kind\":\"scalar\"}]],\"type\":{\"arguments\":[{\"name\":\"Level\",\"kind\":\"scalar\"},{\"dimensions\":{\"time\":1},\"name\":\"Duration\",\"kind\":\"scalar\"}],\"name\":\"CustomCurve\",\"kind\":\"curve\"},\"kind\":\"curve\"}",
+      "reversed_output_exact_ordered_encoding_matches_actual": true,
+      "semantic_encoding_matches_expected": true,
+      "status": "pass"
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "-c",
+        "<exact probe_source below>"
+      ],
+      "environment": {
+        "PYTHONPATH": "src:."
+      }
+    },
+    {
+      "argv": [
+        "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3",
+        "-B",
+        "-c",
+        "<exact probe_source below>"
+      ],
+      "environment": {
+        "PYTHONPATH": "src:."
+      }
+    }
+  ],
+  "comparison": "Sorted-key compact JSON text preserves integer versus float forms and signed zero. Ordered compact JSON and recursive key lists separately prove public insertion order, repeated normalization, and recursive reversed input independence.",
+  "expected_orders": {
+    "curve": [
+      "kind",
+      "type",
+      "points",
+      "interpolation",
+      "extrapolation"
+    ],
+    "interval": [
+      "kind",
+      "lower",
+      "upper",
+      "type"
+    ],
+    "scalar": [
+      "kind",
+      "value",
+      "unit",
+      "canonical_value",
+      "type"
+    ]
+  },
+  "probe_sha256": "80cf0a36f44673b2758df06d63d06ca7fb233226240e5fa1bcbe42ea126c8195",
+  "probe_source": "\nimport hashlib,json,re,sys\nfrom pathlib import Path\nfrom biocompiler.semantics.types import TypeSpec,decode_binding\ntext=Path('core/test/test_domain.ml').read_text()\ncases=re.findall(r'check \"([^\"]+)\"\\s+\\{\\|(.*?)\\|\\}\\s+\\{\\|(.*?)\\|\\}',text,re.S)\norders={'scalar':['kind','value','unit','canonical_value','type'],'interval':['kind','lower','upper','type'],'curve':['kind','type','points','interpolation','extrapolation']}\ndef exact(v,sort=False):return json.dumps(v,ensure_ascii=False,sort_keys=sort,separators=(',',':'),allow_nan=False)\ndef walk(v,path=()):\n expected=orders[v['kind']];actual=list(v);assert actual==expected,(path,actual)\n rows=[{'path':list(path),'kind':v['kind'],'keys':actual,'expected_keys':expected,'status':'pass'}]\n if v['kind']=='interval':\n  rows.extend(walk(v['lower'],path+('lower',)));rows.extend(walk(v['upper'],path+('upper',)))\n elif v['kind']=='curve':\n  for i,pair in enumerate(v['points']):\n   for j,child in enumerate(pair):rows.extend(walk(child,path+('points',i,j)))\n return rows\ndef reverse(v):\n if isinstance(v,dict):return {k:reverse(x) for k,x in reversed(list(v.items()))}\n if isinstance(v,list):return [reverse(x) for x in v]\n return v\nrows=[]\nfor name,raw,wanted in cases:\n value=json.loads(raw);expected=json.loads(wanted);dtype=TypeSpec.from_dict(value['type'])\n actual=decode_binding(value,dtype).to_dict();reordered=decode_binding(reverse(value),dtype).to_dict()\n repeated=decode_binding(actual,TypeSpec.from_dict(actual['type'])).to_dict()\n assert exact(actual,True)==exact(expected,True),name\n assert exact(actual)==exact(reordered)==exact(repeated),name\n rows.append({'name':name,'status':'pass','input_json':raw,'expected_json':wanted,'expected_semantic_encoding':exact(expected,True),'actual_semantic_encoding':exact(actual,True),'actual_ordered_encoding':exact(actual),'reversed_input_json':exact(reverse(value)),'reversed_output_encoding':exact(reordered),'repeated_output_encoding':exact(repeated),'recursive_order':walk(actual),'reversed_recursive_order':walk(reordered),'repeated_recursive_order':walk(repeated)})\nassert len(rows)==8,len(rows)\nprint(json.dumps({'python_version':sys.version.split()[0],'python_executable':sys.executable,'case_count':len(rows),'status':'pass','cases':rows},sort_keys=True))\n",
+  "runtimes": [
+    {
+      "case_count": 8,
+      "python_executable": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "python_version": "3.14.6",
+      "shared_complete_observation_sha256": "c564ccda75c317eb8b440e406497a9dec1a1e2ec69b58f8d13c7f8f83f31f35a",
+      "status": "pass"
+    },
+    {
+      "case_count": 8,
+      "python_executable": "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3",
+      "python_version": "3.11.15",
+      "shared_complete_observation_sha256": "c564ccda75c317eb8b440e406497a9dec1a1e2ec69b58f8d13c7f8f83f31f35a",
+      "status": "pass"
+    }
+  ],
+  "schema": "biocompiler.original_python_literal_order_review.v1",
+  "scope": "Original Python literal serializers checked against the eight existing native domain test fixtures; no native compilation/execution or installed-campaign acceptance.",
+  "source_bytes_unchanged_during_probe": true,
+  "source_files": [
+    {
+      "path": "src/biocompiler/semantics/types.py",
+      "sha256": "da0708de4bd5fbcd1a2f00546a1619f37c8e6a9748a94758362af242655f3bc1",
+      "size_bytes": 17613
+    },
+    {
+      "path": "core/lib/domain/type_spec.ml",
+      "sha256": "6791aafa688d6438244cdbd791f3cbc605ff041404947df5ce56511a4ca33cb6",
+      "size_bytes": 10900
+    },
+    {
+      "path": "core/test/test_domain.ml",
+      "sha256": "f362b315b4af0a0fc5062d6c7aea045e4c09e7be20b1fca2ff8546743ebaa743",
+      "size_bytes": 9267
+    }
+  ],
+  "status": "pass"
+}

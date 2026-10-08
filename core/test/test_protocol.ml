@@ -15,7 +15,10 @@ let () =
   require (Json.string (Json.field "schema_version" fields) = "biocompiler.core_capabilities.v1") "Capability schema missing";
   require (Json.array (Json.field "operations" fields) |> List.map Json.string =
     (["capabilities";"canonicalize";"validate-intent";"verify-lowering";"verify-architecture";"replay-architecture"] @
-     Bioc_service.Policy_service.operations @ Bioc_service.Policy_operational_service.operations @ Bioc_service.Policy_implementation_service.operations @ Bioc_service.Policy_material_service.operations @ Bioc_service.Realization_service.operations @ Bioc_service.Verification_workflow_service.operations))
+     Bioc_service.Policy_service.operations @ Bioc_service.Policy_operational_service.operations @ Bioc_service.Policy_implementation_service.operations @ Bioc_service.Policy_material_service.operations @ Bioc_service.Policy_component_material_service.operations @
+     ["check-policy-component-selection";"replay-policy-component-selection";"export-policy-component-selection"] @
+     Bioc_service.Realization_service.operations @ Bioc_service.Verification_workflow_service.operations @
+     Bioc_service.Verification_workflow_authority.operations))
     "Advertised operation census differs";
   let architecture = Json.field "architecture" (Json.object_fields (Json.field "profiles" fields)) in
   require (Json.equal architecture Bioc_service.Architecture_service.profile) "Architecture profile differs";
@@ -29,13 +32,26 @@ let () =
       let actual = Json.field name (Json.object_fields (Json.field "profiles" fields)) in
       require (Json.equal actual expected) ("Realization profile differs: " ^ name))
     (Bioc_service.Realization_service.profiles @ Bioc_service.Verification_workflow_service.profiles @
-     ["policy_material",Bioc_service.Policy_material_service.profile; "policy_implementation",Bioc_service.Policy_implementation_service.profile; "policy_operational",Bioc_service.Policy_operational_service.profile; "artifact_transport",Bioc_service.Artifact_io.profile; "policy_frontend",Bioc_service.Policy_service.profile]);
+     Bioc_service.Verification_workflow_authority.profiles @
+     ["artifact_transport",Bioc_service.Artifact_io.profile;
+      "artifact_transport_authority",Bioc_service.Artifact_io.authority_profile;
+      "policy_material",Bioc_service.Policy_material_service.profile;
+      "policy_component_material",Bioc_service.Policy_component_material_service.profile;
+      "policy_component_selection",Bioc_service.Policy_component_selection_service.profile;
+      "policy_implementation",Bioc_service.Policy_implementation_service.profile;
+      "policy_operational",Bioc_service.Policy_operational_service.profile;
+      "policy_frontend",Bioc_service.Policy_service.profile]);
   let response = Protocol.response ~executable:Protocol.Verify ~request:(Some decoded) ~status ~result diagnostics in
   let identity = Json.field "core" (Json.object_fields response) |> Json.object_fields in
   require (Json.string (Json.field "executable" identity) = "verify") "Verifier identity missing";
   let unsupported = Protocol.decode_request (request "compile" (Json.Object [])) in
   let status, result, diagnostics = Bioc_service.Service.handle Protocol.Core unsupported in
   require (status = Protocol.Unsupported && result = None && diagnostics <> []) "Unsupported compile pretended to succeed";
+  List.iter (fun executable ->
+      let missing_producer = Protocol.decode_request (request "compile-policy-component-selection" (Json.Object [])) in
+      let status, result, diagnostics = Bioc_service.Service.handle executable missing_producer in
+      require (status = Protocol.Unsupported && result = None && diagnostics <> [])
+        "Selection checking advertised or executed an unavailable producer") [Protocol.Core;Protocol.Verify];
   let malformed = Json.Object ["protocol", Json.String Protocol.version] in
   (match Protocol.decode_request malformed with
    | _ -> failwith "Incomplete request accepted"

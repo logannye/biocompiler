@@ -216,6 +216,91 @@ def validate_checks(receipt, kind, golden, values):
     return [seen[key] for key in sorted(seen)]
 
 
+def scheduler_sources():
+    root = Path(__file__).resolve().parents[1]
+    names = ('tools/check_realization_protocol.py', 'tools/check_realization_routing.py',
+             'tools/realization_protocol_parallel.py', 'tools/check_realization_reproducibility.py')
+    return {name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in names}
+
+
+def validate_worker_evidence(directory, receipt, kind, golden):
+    """Independently reconstruct retained complete-role worker evidence.
+
+Legacy serial receipts remain valid without the additive worker field. Parallel
+metadata is never accepted without the raw workers and their complete artifacts.
+The original Golden and validate_checks semantic bodies remain unchanged.
+"""
+    require(kind in ('protocol', 'routing'), 'Unknown parallel campaign kind')
+    if 'role_workers' not in receipt:
+        worker_root = directory/(kind+'-workers')
+        require(not worker_root.exists() and not worker_root.is_symlink(), 'Raw worker evidence lost its required aggregate binding')
+        return
+    metadata = receipt['role_workers']; sources = scheduler_sources()
+    require(type(metadata) is dict and set(metadata) == {'schema_version','workers','campaign','source_pins','roles'}
+            and metadata['schema_version'] == 'biocompiler.realization_role_workers.v1'
+            and type(metadata['workers']) is int and metadata['workers'] == 2
+            and metadata['campaign'] == kind and metadata['source_pins'] == sources
+            and receipt.get('campaign_sources') == sources and set(metadata['roles']) == {'core','verify'},
+            'Incomplete or stale parallel worker/source census')
+    authority = ('revision','source_revision','run_id','corpus_pin','baseline_pin','platform',
+                 'system','machine','python_version','executables','package_path','scope','campaign_sources')
+    expected = list(golden.expected(kind)); checks, values, declared, calls = [], {}, {}, set()
+    worker_root = directory/(kind+'-workers')
+    require(worker_root.is_dir() and not worker_root.is_symlink()
+            and {p.name for p in worker_root.iterdir()} == {'core','verify'}, 'Unsafe or incomplete worker directory')
+    for role in ('core','verify'):
+        root = worker_root/role; records = metadata['roles'][role]
+        require(root.is_dir() and not root.is_symlink() and set(records) == {'receipt','log'}
+                and {p.name for p in root.iterdir()} == {'receipt.json','receipt-reports','worker.log'},
+                'Unsafe or unowned worker evidence')
+        paths = {}
+        for label, filename in (('receipt','receipt.json'),('log','worker.log')):
+            entry = records[label]; relative = f'{kind}-workers/{role}/{filename}'; path = root/filename
+            require(type(entry) is dict and set(entry) == {'path','sha256','bytes'} and entry['path'] == relative
+                    and type(entry['bytes']) is int and 0 <= entry['bytes'] <= 32*1024*1024 and pin(entry['sha256'])
+                    and path.is_file() and not path.is_symlink() and path.stat().st_size == entry['bytes'],
+                    'Unsafe, missing or changed worker evidence descriptor')
+            require(hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], 'Worker receipt/log bytes differ')
+            paths[label] = path
+        worker, _ = read(paths['receipt'])
+        require(worker.get('schema_version') == f'biocompiler.realization_{kind}_role.v1'
+                and worker.get('role') == role and worker.get('status') == 'success'
+                and all(worker.get(key) == receipt.get(key) for key in authority), 'Failed or mixed raw worker authority')
+        rows = worker.get('checks'); ordered = [key for key in expected if key[0] == role]
+        require(type(rows) is list and worker.get('completed_checks') == len(ordered)
+                and [(row.get('role'),row.get('id'),row.get('operation')) for row in rows] == ordered,
+                'Incomplete or reordered raw role sequence')
+        require(worker.get('artifact_directory') == 'receipt-reports', 'Unsafe raw role report directory')
+        reports = artifacts(root/'receipt-reports', worker.get('artifacts'))
+        require({row.get('artifact') for row in rows} == set(reports), 'Missing or unreferenced raw role reports')
+        for identity,value in reports.items():
+            entry = worker['artifacts'][identity]
+            require(identity not in values or (declared[identity] == entry and canonical(values[identity]) == canonical(value)),
+                    'Conflicting raw worker artifact bytes')
+            values[identity] = value; declared[identity] = entry
+        if kind == 'routing':
+            guard = worker.get('guard', {})
+            require(set(guard) == {'status','input_hydration','snapshot_request_rehydration','allowed_executed_functions'}
+                    and guard.get('status') == 'passed' and guard.get('input_hydration') == 'outside_guard_before_native_call'
+                    and guard.get('snapshot_request_rehydration') == 'forbidden_during_native_call'
+                    and type(guard.get('allowed_executed_functions')) is list
+                    and all(type(item) is str for item in guard['allowed_executed_functions'])
+                    and REQUIRED_ROUTES <= set(guard['allowed_executed_functions'])
+                    and 'biocompiler.compiler.request.RealizationRequest.__post_init__' not in guard['allowed_executed_functions'],
+                    'Missing complete raw routing guard')
+            calls.update(guard['allowed_executed_functions'])
+        checks.extend(rows)
+    validate_checks({**receipt,'checks':checks,'completed_checks':len(checks)},kind,golden,values)
+    require(checks == receipt.get('checks') and len(checks) == receipt.get('completed_checks')
+            and declared == receipt.get('artifacts'), 'Aggregate differs from complete raw role reconstruction')
+    aggregate = artifacts(directory/(kind+'-reports'), receipt.get('artifacts'))
+    require(canonical(aggregate) == canonical(values), 'Aggregate full artifact bytes differ from raw workers')
+    if kind == 'routing':
+        guard = {'status':'passed','allowed_executed_functions':sorted(calls),
+                 'input_hydration':'outside_guard_before_native_call','snapshot_request_rehydration':'forbidden_during_native_call'}
+        require(guard == receipt.get('guard'), 'Aggregate routing guard differs from complete raw roles')
+
+
 def compare(root, native_root, *, revision, source_revision, run_id):
     require(type(revision) is str and re.fullmatch(r"[0-9a-f]{40}",revision) and
             type(source_revision) is str and re.fullmatch(r"[0-9a-f]{40}",source_revision) and
@@ -265,6 +350,7 @@ def compare(root, native_root, *, revision, source_revision, run_id):
                 require(receipt.get("artifact_directory") == kind + "-reports", "Unsafe sibling artifact path")
                 values = artifacts(directory / (kind + "-reports"), receipt.get("artifacts"))
                 checks = validate_checks(receipt,kind,golden,values)
+                validate_worker_evidence(directory,receipt,kind,golden)
                 canonical_result = canonical({"checks":checks,"artifacts":values})
                 if kind in references:
                     require(canonical_result == references[kind], "Complete four-way realization bytes or occurrence results differ")

@@ -5,6 +5,7 @@ import importlib.util
 import json
 import math
 from pathlib import Path
+import re
 import struct
 import tempfile
 from types import SimpleNamespace
@@ -18,11 +19,74 @@ campaign = importlib.util.module_from_spec(_SPEC)
 _SPEC.loader.exec_module(campaign)
 
 
+_SELECTION_OPERATIONS = ["check-policy-component-selection", "replay-policy-component-selection",
+                         "export-policy-component-selection", "compile-policy-component-selection"]
+
+
+def without_selection(capabilities):
+    """Project only the additive selection contract out of a complete census."""
+    result = deepcopy(capabilities)
+    result["operations"] = [name for name in result["operations"] if name not in _SELECTION_OPERATIONS]
+    result["validation_scopes"] = [scope for scope in result["validation_scopes"]
+                                   if scope != "policy-component-selection-mrna-v0.1"]
+    for key in ("policy_component_selection", "policy_component_selection_producer"):
+        result["profiles"].pop(key, None)
+    return result
+
+
 class CoreConformanceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.corpus = campaign.load_corpus()
         cls.programs = campaign.source_programs()
+
+    def test_producer_scope_order_matches_native_declaration_not_json_key_order(self):
+        source = (campaign.ROOT / "core/lib/producer_service/synthetic_producer_service.ml").read_text()
+        declaration = json.loads(re.search(r"\{profiles\|(.*?)\|profiles\}", source, re.S).group(1))
+        self.assertEqual(set(declaration), set(campaign.SYNTHETIC_PRODUCER_PROFILES))
+        for family, profile in declaration.items():
+            for field, value in profile.items():
+                self.assertEqual(campaign.SYNTHETIC_PRODUCER_PROFILES[family][field], value)
+        self.assertIn("let families = [Generation;Selection;Components]", source)
+        expected = [
+            "deterministic-synthetic-proposal-only-v1",
+            "two-strategy-synthetic-selection-finite-history-v1",
+            "fresh-synthetic-component-adaptation-only-v1",
+        ]
+        self.assertEqual(campaign.synthetic_producer_scopes(), expected)
+        json_key_order = [profile["validation_scope"] for profile in declaration.values()]
+        self.assertNotEqual(json_key_order, expected)
+        # Changes to JSON object insertion order cannot change the wire array.
+        with patch.object(campaign, "SYNTHETIC_PRODUCER_PROFILES", dict(reversed(list(declaration.items())))):
+            self.assertEqual(campaign.synthetic_producer_scopes(), expected)
+
+    def test_capability_fields_preserve_exact_scope_order_and_field_diagnostics(self):
+        scopes = campaign.synthetic_producer_scopes()
+        profiles = deepcopy(campaign.SYNTHETIC_PRODUCER_PROFILES)
+        actual = {
+            "canonicalization": "python-json-v1",
+            "intent_schemas": ["biocompiler.intent.v0.1"],
+            "validation_scopes": list(scopes),
+            "limits": deepcopy(campaign.LIMITS),
+            "schema_version": "biocompiler.core_capabilities.v1",
+            "profiles": deepcopy(profiles),
+        }
+        campaign.check_capability_fields(actual, scopes, profiles)
+        changed_profiles = deepcopy(profiles)
+        changed_profiles["synthetic_generation"]["claim_scope"] = "empirical function"
+        changes = (
+            ("canonicalization", "other-json"),
+            ("intent_schemas", []),
+            ("validation_scopes", scopes[1:] + scopes[:1]),
+            ("validation_scopes", scopes[:-1]),
+            ("limits", {}),
+            ("schema_version", "biocompiler.core_capabilities.v2"),
+            ("profiles", changed_profiles),
+        )
+        for field, value in changes:
+            with self.subTest(field=field, value=value), self.assertRaisesRegex(
+                    AssertionError, "Capability contract differs: " + field):
+                campaign.check_capability_fields({**actual, field: value}, scopes, profiles)
 
     def test_literal_expectations_retain_independent_bytes_and_digests(self):
         by_id = {value["id"]: value for value in self.corpus["literal_vectors"]}
@@ -203,6 +267,189 @@ class CoreConformanceTests(unittest.TestCase):
             with self.assertRaises(AssertionError):
                 runner.lowering_rejection(client, "changed-operator", {}, {}, "lowering_operation")
         self.assertEqual(runner.receipt["checks"], [])
+
+
+class ComponentCapabilityConformanceTests(unittest.TestCase):
+    """Exact additive transport contract; no native invocation or policy evaluation."""
+
+    @staticmethod
+    def capabilities(role):
+        operations, scopes, profiles, claim = campaign.capability_contract(role)
+        return {"operations": operations, "validation_scopes": scopes, "profiles": profiles,
+                "claim_scope": claim, "canonicalization": "python-json-v1",
+                "intent_schemas": ["biocompiler.intent.v0.1"], "limits": deepcopy(campaign.LIMITS),
+                "schema_version": "biocompiler.core_capabilities.v1"}
+
+    def test_component_operations_are_additive_to_exact_legacy_contract(self):
+        import hashlib
+        # Canonical complete legacy contracts reviewed from the unmodified
+        # capability-construction block at 5a45; ordered scopes/operations kept.
+        legacy = {"verify": "68aa0fd8f135229fa8d680ffa34e20279269fa1c79462a2c72573308144c8bd5",
+                  "core": "ffab38b0ce113569e5926e038eed09b110f785c812d1fd16a31cab1e345d2d3e"}
+        component = ["check-policy-component-material", "replay-policy-component-material", "export-policy-component-material"]
+        self.assertEqual(campaign.COMPONENT_MATERIAL_PROFILE["operations"], component)
+        for role in ("verify", "core"):
+            actual = self.capabilities(role)
+            campaign.check_capabilities(actual, role)
+            actual = without_selection(actual)
+            self.assertEqual([name for name in actual["operations"] if "policy-component-material" in name],
+                             component + (["compile-policy-component-material"] if role == "core" else []))
+            reduced = {"operations": [name for name in actual["operations"] if name not in component + ["compile-policy-component-material"]],
+                       "scopes": [value for value in actual["validation_scopes"] if value != "policy-component-mrna-v0.1"],
+                       "profiles": {key: value for key, value in actual["profiles"].items()
+                                    if key not in {"policy_component_material", "policy_component_material_producer"}},
+                       "claim": actual["claim_scope"]}
+            self.assertEqual(hashlib.sha256(campaign.canonical(reduced).encode()).hexdigest(), legacy[role])
+            self.assertEqual(actual["validation_scopes"].count("policy-component-mrna-v0.1"), 1)
+            self.assertEqual("policy_component_material_producer" in actual["profiles"], role == "core")
+
+    def test_missing_duplicate_extra_or_wrong_role_operation_rejects(self):
+        for role in ("verify", "core"):
+            original = self.capabilities(role)
+            mutations = [lambda row: row["operations"].remove("check-policy-component-material"),
+                         lambda row: row["operations"].append("export-policy-component-material"),
+                         lambda row: row["operations"].append("unreviewed-component-route")]
+            mutations.append((lambda row: row["operations"].append("compile-policy-component-material")) if role == "verify"
+                             else (lambda row: row["operations"].remove("compile-policy-component-material")))
+            for mutation in mutations:
+                changed = deepcopy(original)
+                mutation(changed)
+                with self.subTest(role=role), self.assertRaisesRegex(AssertionError, "Missing or untested advertised operation"):
+                    campaign.check_capabilities(changed, role)
+
+    def test_profile_scope_and_verify_producer_mutants_reject(self):
+        for role in ("verify", "core"):
+            for mutation, reason in (
+                (lambda row: row["profiles"].pop("policy_component_material"), "profiles"),
+                (lambda row: row["profiles"]["policy_component_material"].update(artifact="accepted"), "profiles"),
+                (lambda row: row["validation_scopes"].remove("policy-component-mrna-v0.1"), "validation_scopes"),
+                (lambda row: row["validation_scopes"].reverse(), "validation_scopes"),
+            ):
+                changed = deepcopy(self.capabilities(role)); mutation(changed)
+                with self.subTest(role=role, reason=reason), self.assertRaisesRegex(AssertionError, "Capability contract differs: " + reason):
+                    campaign.check_capabilities(changed, role)
+        changed = self.capabilities("verify")
+        changed["profiles"]["policy_component_material_producer"] = deepcopy(campaign.COMPONENT_MATERIAL_PRODUCER_PROFILE)
+        with self.assertRaisesRegex(AssertionError, "profiles"):
+            campaign.check_capabilities(changed, "verify")
+        changed = self.capabilities("core")
+        changed["profiles"].pop("policy_component_material_producer")
+        with self.assertRaisesRegex(AssertionError, "profiles"):
+            campaign.check_capabilities(changed, "core")
+        with self.assertRaisesRegex(AssertionError, "Unknown native executable role"):
+            campaign.capability_contract("foreign")
+
+
+class SelectionCapabilityConformanceTests(unittest.TestCase):
+    capabilities = staticmethod(ComponentCapabilityConformanceTests.capabilities)
+
+    def test_selection_is_additive_to_complete_prior_contract(self):
+        # Exact ordered complete contracts immediately before this additive
+        # correction at 3b679; no prior operation, profile or claim is repinned.
+        previous = {"core": "e8caf4569a5e5d5358896c2883115e5d7a7a99e90e5df32add6eb5c28b2a6931",
+                    "verify": "48dc126316ae17f2ee26dedf1c3d07eeb7b27fa79af6e0173f47eb4a087db5bb"}
+        self.assertEqual(campaign.COMPONENT_SELECTION_PROFILE["operations"], _SELECTION_OPERATIONS[:3])
+        self.assertEqual(campaign.COMPONENT_SELECTION_PRODUCER_PROFILE,
+                         {**campaign.COMPONENT_SELECTION_PROFILE, "operations": _SELECTION_OPERATIONS[3:],
+                          "artifact": "withheld", "generation_work": "shared_original_scope"})
+        for role in ("core", "verify"):
+            actual = self.capabilities(role)
+            campaign.check_capabilities(actual, role)
+            self.assertEqual([name for name in actual["operations"] if name in _SELECTION_OPERATIONS],
+                             _SELECTION_OPERATIONS if role == "core" else _SELECTION_OPERATIONS[:3])
+            self.assertEqual(actual["validation_scopes"].count("policy-component-selection-mrna-v0.1"), 1)
+            self.assertEqual("policy_component_selection_producer" in actual["profiles"], role == "core")
+            reduced = without_selection(actual)
+            old = {"operations": reduced["operations"], "scopes": reduced["validation_scopes"],
+                   "profiles": reduced["profiles"], "claim": reduced["claim_scope"]}
+            self.assertEqual(campaign.digest(campaign.canonical(old)), previous[role])
+
+    def test_selection_capability_omissions_duplicates_promotions_and_wrong_role_reject(self):
+        for role in ("core", "verify"):
+            changes = [
+                lambda row: row["operations"].remove("check-policy-component-selection"),
+                lambda row: row["operations"].append("export-policy-component-selection"),
+                lambda row: row["profiles"].pop("policy_component_selection"),
+                lambda row: row["profiles"]["policy_component_selection"].update(empirical="assessed"),
+                lambda row: row["validation_scopes"].remove("policy-component-selection-mrna-v0.1"),
+            ]
+            changes += ([lambda row: row["operations"].remove("compile-policy-component-selection"),
+                         lambda row: row["profiles"].pop("policy_component_selection_producer"),
+                         lambda row: row["profiles"]["policy_component_selection_producer"].update(artifact="accepted")]
+                        if role == "core" else
+                        [lambda row: row["operations"].append("compile-policy-component-selection"),
+                         lambda row: row["profiles"].update(policy_component_selection_producer=
+                                                          deepcopy(campaign.COMPONENT_SELECTION_PRODUCER_PROFILE))])
+            for index, change in enumerate(changes):
+                value = deepcopy(self.capabilities(role))
+                change(value)
+                with self.subTest(role=role, change=index), self.assertRaises(AssertionError):
+                    campaign.check_capabilities(value, role)
+
+    @staticmethod
+    def response(role, operation):
+        unsupported = role == "verify" and operation == "compile-policy-component-selection"
+        return {"protocol": campaign.PROTOCOL, "request_id": "conformance", "operation": operation,
+                "core": {"implementation": "ocaml", "version": campaign.CORE_VERSION,
+                         "protocol": campaign.PROTOCOL, "executable": role},
+                "status": "unsupported" if unsupported else "error", "result": None,
+                "diagnostics": [{"code": "unsupported_operation" if unsupported else "missing_field",
+                                 "message": "Rejected", "path": "/operation" if unsupported else "/payload"}]}
+
+    def test_all_selection_routes_use_raw_native_dispatch_with_exact_rejections(self):
+        receipt = {"checks": []}
+        runner = campaign.Campaign(receipt)
+        calls = []
+        def exchange(executable, request, timeout, cancelled):
+            value = json.loads(request)
+            self.assertEqual(value["payload"], {})
+            self.assertEqual(value["protocol"], campaign.PROTOCOL)
+            self.assertEqual(value["request_id"], "conformance")
+            self.assertIsNone(cancelled)
+            calls.append((executable, value["operation"]))
+            response = self.response(executable, value["operation"])
+            return campaign.canonical(response).encode(), 3 if response["status"] == "unsupported" else 2
+        with patch.object(campaign, "_exchange", side_effect=exchange):
+            for role in ("core", "verify"):
+                # No SDK call method is provided: the producer rejection must
+                # come from the native protocol, not local role negotiation.
+                runner.component_selection_routes(SimpleNamespace(role=role, executable=role, timeout_seconds=60))
+        self.assertEqual(calls, [(role, operation) for role in ("core", "verify") for operation in _SELECTION_OPERATIONS])
+        self.assertEqual(receipt["checks"], [
+            {"role": role, "group": "selection_route_rejection", "case": operation, "status": "pass",
+             "error_code": "unsupported_operation" if role == "verify" and operation == _SELECTION_OPERATIONS[-1]
+             else "missing_field"}
+            for role, operation in calls])
+
+    def test_wrong_selection_native_status_result_diagnostic_identity_or_exit_never_passes(self):
+        changes = [lambda row: row.update(status="ok"), lambda row: row.update(result={"accepted": True}),
+                   lambda row: row.update(request_id="other"), lambda row: row.update(operation="other"),
+                   lambda row: row["diagnostics"][0].update(code="internal_error"),
+                   lambda row: row["diagnostics"][0].update(path="/other"),
+                   lambda row: row["diagnostics"].append(deepcopy(row["diagnostics"][0])),
+                   lambda row: row["core"].update(executable="other"),
+                   lambda row: row.update(status="unsupported"),
+                   lambda row: None]
+        for role in ("core", "verify"):
+            for failed_operation in _SELECTION_OPERATIONS:
+                for index, change in enumerate(changes):
+                    receipt = {"checks": []}
+                    def exchange(executable, request, timeout, cancelled):
+                        operation = json.loads(request)["operation"]
+                        response = self.response(role, operation)
+                        exit_code = 3 if response["status"] == "unsupported" else 2
+                        if operation == failed_operation:
+                            change(response)
+                            if index == 8 and response["status"] == "unsupported" and exit_code == 3:
+                                response["status"] = "error"
+                            if index == 9:
+                                exit_code = 0
+                        return campaign.canonical(response).encode(), exit_code
+                    with self.subTest(role=role, operation=failed_operation, change=index), \
+                            patch.object(campaign, "_exchange", side_effect=exchange), self.assertRaises(AssertionError):
+                        campaign.Campaign(receipt).component_selection_routes(
+                            SimpleNamespace(role=role, executable=role, timeout_seconds=60))
+                    self.assertEqual(len(receipt["checks"]), _SELECTION_OPERATIONS.index(failed_operation))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,167 @@
+# Live native manager and typed Python views
+
+Status: the live manager, ordered views and complete deferred-callback receipt
+validation are implemented as source. Hosted acceptance and public
+default cutover are incomplete. The exact application is declared in
+[pipeline-callback-manager-v1.json](../protocol/pipeline-callback-manager-v1.json).
+It runs only in Core through `--pipeline-callback-session-v1`, over the existing
+bounded callback channel. The standalone verifier has no producer or manager
+linkage.
+
+## State and authority
+
+The application retains one actual OCaml pass manager. Registration, dependency
+freshness, candidate checks, obligation discharge and scoped completion execute
+there. Initialization may create an empty manager or retain the manager produced
+by the native synthetic/component pipeline. Inspection is historical observation;
+there is no operation that imports records as accepted state.
+
+The explicit Python `CorePassManager` adapter preserves the familiar typed views
+and registered extension callbacks. It does not invoke the original Python
+manager's semantic methods. Every `get` and `result` first asks the live native
+manager to recheck its authority; an existing Python view cannot bypass a stale
+dependency or failed check. Losing the process invalidates the session. Mutations
+are never retried or reconstructed from inspection output.
+
+Host exceptions retain their original objects through the callback broker.
+Expected native errors use a closed exception descriptor. Its canonical
+`attributes` and fresh `attributes_tree` must describe exactly the same values;
+the tree retains mapping insertion order. The adapter makes new recursively
+frozen error snapshots on each rejection, without borrowing context containers.
+The core reserves the ordered representation before constructing it, and a
+resource failure during error publication closes the session. Malformed frames,
+resource exhaustion, unexpected internal errors and uncertain writes terminate
+authority. Logical errors preserve mutations that already occurred, including a
+record stored before a final freshness check fails.
+
+## Identity is separate from canonical content
+
+Canonical JSON establishes content identity but cannot express Python object
+sharing or insertion order. The application therefore supplies separate view
+bindings. A native binding names one process-local value and carries an ordered
+tree; a host binding refers to an actual retained authored object. Neither grants
+acceptance.
+
+Record tokens identify physical native records, including rejected records.
+Producer and validation contexts remain distinct, while validators in one run
+share their validation context. Input, target, configuration, dependency snapshot,
+requirements and source-link bindings preserve the sharing observed by the
+original callbacks. Individual obligation objects and their containing tuples
+have separate bindings because the original API sometimes retains a tuple and
+sometimes constructs a fresh tuple with the same elements.
+
+A read-only native observation hook records context and record origins at their
+actual creation points. It does not supply checker decisions. Its work and
+retention consume the same session budget. Built-in validators can consume host
+source links only through explicit native opt-in: synthetic validators ignore
+links, while component checking performs the original length and set comparison.
+
+## Validation and remaining scope
+
+The additive identity oracle runs five original-manager cases, retaining all 34
+observations and ten complete records. Its mutations demonstrate that equivalent
+copies and sorted mappings can fail compatibility despite identical canonical
+content. The installed campaign must execute these cases through the actual
+native process on Linux x86_64 and macOS arm64, each with Python 3.11 and 3.14.
+It must retain full framed traffic, verify the source/run/executable identities,
+reject the manager mode in Verify, and compare all four complete results.
+
+This focused campaign supplements the original lifecycle, fixed-pipeline,
+deferred-access and validator-comparison corpora. It cannot replace them. Full
+fixed-registration interception, all callback-dependent continuations, public
+workflow routing, distribution and default cutover remain separate required
+gates. Arbitrary authoring subclasses and scalar operators are not established
+by the typed canonical boundary; they require complete coverage or an intentional
+versioned language restriction before cutover. Full compatibility also requires
+typed fixed-producer return objects and hosted verification of the fresh ordered
+no-candidate snapshots; decoding a closed exception descriptor alone does not
+establish those properties.
+
+All native compilation and execution remain hosted. Passing local Python
+fixtures, static checks or typing does not establish native acceptance. Conditional
+software translation remains distinct from empirical biological function and
+human-use admission.
+
+The PR71 source checkpoint registers 102 native suites in total and discovers
+2,922 Python tests in 284 classes for the complete hosted unit plan. Discovery is not
+execution. Strict typing covers 20 transport/view modules. Original workflow
+capture tests and the complete CLI lineage checks remain in place, including
+all literal source-addition assertions and unchanged frozen observations.
+
+The next compatibility increment adds the complete 34-case original validator
+comparison campaign to the existing five identity cases. The new `inspect-ordered`
+operation carries the complete historical snapshot, exact manager-map and nested
+validator order, actual combined registration history, and a complete inventory
+of reachable native tokens bound to retained callable objects. The adapter checks
+a stable bijection using object identity, without invoking user equality or hashes.
+The sidecar covers these declared manager-map orders; it does not generalize the
+ordering of arbitrary nested JSON values.
+
+Combined registration history is recorded at successful native mutations. Only
+callback-enabled managers retain this extra history; earlier service modes keep
+their existing resource accounting. Inspection cannot import accepted state.
+The installed campaign executes unchanged original case bodies, including rich
+comparison reflection, bound methods, exceptions, mutation and reentry. All 78
+manager events and 28 rich-comparison events remain required, including 18 raised
+events. Source implementation is still subject to hosted compilation and complete
+four-runtime replay; deferred access, fixed registration, remaining native workflow
+families, distribution and default-engine gates remain open.
+
+The 47-case deferred-access campaign preserves all 157 events, 290
+access observations and 45 raised events. The original capture observes seven
+private manager fields and complete traceback frames. A native implementation
+must supply an explicit checked correspondence for these implementation views,
+retain both complete raw observations, and preserve actual user exception objects,
+causes, contexts and traceback-tail node identity. A blanket removal of traceback
+frames or replacement of native state with expected fixtures is not compatibility
+proof. Reused exceptions can retain earlier implementation frames in their tails;
+those need source-pinned correspondence, not claimed byte equality.
+
+Six deferred input cases construct a second manager directly through the original
+case module. Installed replay must intercept that local constructor without
+changing the frozen case bodies, then account for and close every actual native
+process. Native input fingerprinting already has a framed default-value/getter
+witness; verify its document/hash/order linkage without pretending that an OCaml
+call produced the original Python profiler frame. Fresh recursive ordered
+configuration/dependency snapshots are implemented for no-candidate exceptions;
+hosted replay must establish their compatibility with the original manager.
+
+Installed Python capture exposed a separate fixture assumption: code loaded from
+an installed package has different traceback file labels from the source
+checkout. Python 3.11 also retains a comprehension frame absent in Python 3.14
+and reports two different source locations. These observations require explicit
+runtime correspondence checked against the original source and current runtime.
+The frozen capture and all actual raw tracebacks remain evidence; no general
+traceback normalization is permitted.
+
+Offline comparison also needs independent authority for a foreign Python
+version. Retain the original source bytes, selected code and instruction-position
+tables, and verify them against reviewed per-version pins before reconstructing
+the correspondence. Source and run receipts establish which hosted producer ran;
+hashes and a supplied PASS alone cannot establish execution. Local cross-version
+controls supplement, but cannot replace, the four installed hosted runs.
+
+Trace correspondence must validate complete frame segments, their order and
+cardinality, and their own native commands and broker invocations. A list of
+permitted function names is insufficient: deleting or repeating permitted frames
+must fail even when an artifact's hashes are recomputed. Fingerprint evidence
+must connect the actual payload document, freezing operation, ordered JSON,
+computed hash and default attribute lookup through their retained references.
+
+The earlier PR72 comparison source checkpoint passed 26 adapter tests, 18 campaign tests,
+50 boundary/CI/inventory checks and eight source-lineage checks. Strict typing
+passes for 20 modules. The current inventory contains 3,196 entries; complete
+unit discovery finds 2,934 tests in 284 classes. These are local Python/static
+results and a discovery count, not hosted acceptance or full unit execution.
+The 102-suite native inventory is unchanged. Original frozen corpora are intact.
+
+The current deferred source checkpoint passes 31 adapter tests. The combined
+campaign, strict-trace and runtime-receipt batch passes 46 tests on each of
+Python 3.11.15 and 3.14.6. Thirteen inventory checks pass; the ledger remains 3,196 entries and
+fresh full discovery finds 2,967 tests in 287 classes. Strict typing still covers
+20 transport/view modules. The installed gate requires all 86 original cases,
+including 53 deferred manager processes and 414 deferred state inspections.
+Source and local controls are recorded in the
+[deferred checkpoint](../protocol/migration-deferred-manager-checkpoint.json);
+native compilation, four-runtime replay and exact-revision hosted acceptance
+remain pending.

@@ -1,13 +1,23 @@
 open Bioc_wire
 module D = Bioc_domain.Policy_document
 module O = Bioc_domain.Policy_operational
-module Names = Map.Make(String)
-module Seen = Set.Make(String)
 type t = { document_value : D.t; descriptors_value : O.descriptor_bundle; assessment_value : Json.t; report_value : Json.t }
 let document (value:t) = value.document_value
 let descriptors (value:t) = value.descriptors_value
 let source_assessment (value:t) = value.assessment_value
 let report (value:t) = value.report_value
+module Make (Charge : sig val charge : int -> unit end) = struct
+module Meter = Policy_generation_meter.Make(Charge)
+module List = Meter.List
+module String = Meter.String
+module Json = Meter.Json
+module Canonical = Meter.Canonical
+module D = Meter.Document
+module O = Meter.Operational
+module Names = Meter.Names
+module Seen = Meter.Seen
+let ( ^ ) = Meter.append_string
+let ( @ ) = List.append
 let get = O.get
 let text = O.text
 let list = O.list
@@ -24,7 +34,7 @@ let admit ~document ~descriptors =
      operational artifact uses one canonical document root, whether admission
      started through the direct API, a request envelope or a native service. *)
   let document=D.of_json ~path:"/document" (D.to_json document) in
-  let assessment=Policy_check.check document in
+  let assessment=Policy_check.check ~charge:Charge.charge document in
   Diagnostic.require ~path:"/document" (text "status" assessment = "valid") "policy_operational_source_invalid"
     "Operational admission requires a fresh valid native source assessment.";
   let declarations=D.declarations document in
@@ -101,6 +111,7 @@ let admit ~document ~descriptors =
   require "/document" (List.length roles = 1) "Bounded operational profile requires one executor role.";
   let role=(List.hd roles).id in
   let rec referenced_encounters reference =
+    Charge.charge 1;
     let target=lookup reference in
     match text "$type" target with
     | "Encounter" -> Seen.singleton (ref_id target)
@@ -111,7 +122,9 @@ let admit ~document ~descriptors =
         if text "kind" scope = "encounter" then Seen.singleton (ref_id (get "subject" scope)) else Seen.empty
     | _ -> Seen.empty
   in
-  let rec encounter_bindings value = match value with
+  let rec encounter_bindings value =
+    Charge.charge 1;
+    match value with
     | Json.Array values -> List.fold_left (fun acc v -> Seen.union acc (encounter_bindings v)) Seen.empty values
     | Json.Object fields ->
         if List.assoc_opt "$type" fields = Some (str "Ref") then referenced_encounters value
@@ -139,6 +152,7 @@ let admit ~document ~descriptors =
       (list "assignments" value)
   in
   let rec expression path value =
+    Charge.charge 1;
     let op=text "op" value in
     require path (List.mem op expr_ops) "Expression operation is outside bounded operational semantics.";
     require path (List.mem (text "kind" (get "value_type" value)) ("event"::supported_types)) "Unsupported operational expression value type.";
@@ -281,4 +295,11 @@ let admit ~document ~descriptors =
   let report_value=Json.Object ["schema_version",str "biocompiler.policy_operational_admission.v0.1";"status",str "admitted";
     "profile",str O.profile;"document_artifact_digest",str (D.artifact_digest document);"descriptors_digest",str (O.descriptors_digest descriptors);
     "source_assessment",assessment;"target_status",str "unassessed";"artifact",str "withheld"] in
+  Meter.preflight report_value;
   {document_value=document;descriptors_value=descriptors;assessment_value=assessment;report_value}
+
+end
+let admit_metered ~charge ~document ~descriptors =
+  let module Admission = Make(struct let charge = charge end) in
+  Admission.admit ~document ~descriptors
+let admit ~document ~descriptors = admit_metered ~charge:Policy_generation_meter.no_charge ~document ~descriptors

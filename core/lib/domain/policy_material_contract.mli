@@ -20,6 +20,7 @@ val provider_ref_to_json : provider_ref -> Json.t
 type resource_unit = Truth_cells | Evidence_records | Edge_history_cells
   | Generation_counters | Active_attempt_records | Retained_correlation_records
   | Timer_cells | Control_event_records | Input_rows_per_tick
+  | Machine_state_bits | Machine_correlation_records
 type resource_scope = Per_executor | Per_encounter_slot
 type resource_owner = Node of string | Input of string | Layout
 type resource_demand = {

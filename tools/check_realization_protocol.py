@@ -48,6 +48,8 @@ VERSION_MUTATIONS = {
                       (190, "check_realization"), (191, "realization_dependencies"))},
 }
 TRANSPORT_MODULES = frozenset(("biocompiler.core_client", "biocompiler.core_realization"))
+SOURCES = ("tools/check_realization_protocol.py", "tools/check_realization_routing.py",
+           "tools/realization_protocol_parallel.py", "tools/check_realization_reproducibility.py")
 
 
 def require(condition, message):
@@ -316,6 +318,8 @@ def main(argv=None):
     parser.add_argument("--core", required=True, type=Path)
     parser.add_argument("--verify", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--workers", type=int, choices=(1, 2), default=1)
+    parser.add_argument("--role", choices=("core", "verify"))
     args = parser.parse_args(argv)
     return run_main(args, campaign, "biocompiler.realization_protocol_conformance.v1")
 
@@ -331,11 +335,17 @@ def run_main(args, execute, schema):
     directory.mkdir(parents=True, exist_ok=True)
     receipt["_artifact_directory"] = str(directory)
     try:
+        workers, selected_role = getattr(args, "workers", 1), getattr(args, "role", None)
+        require(selected_role in (None, "core", "verify"), "Unknown executable role worker")
+        require(workers in (1, 2) and (selected_role is None or workers == 1), "Nested protocol role workers are prohibited")
+        require((workers == 1 and selected_role is None) or schema in ("biocompiler.realization_protocol_conformance.v1", "biocompiler.realization_routing_conformance.v1"),
+                "Role partitioning requires an explicit protocol or routing campaign")
         require_installed()
         revision = subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True).strip()
         require(os.environ.get("GITHUB_SHA", revision) == revision, "Workflow revision differs")
         receipt.update(revision=revision, source_revision=os.environ.get("GITHUB_HEAD_SHA", revision),
                        run_id=os.environ.get("GITHUB_RUN_ID", "local"))
+        receipt["campaign_sources"] = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in SOURCES}
         clients = []
         for role, binary in (("core", args.core), ("verify", args.verify)):
             require(binary.is_absolute() and binary.is_file() and os.access(binary, os.X_OK), "Missing explicit native executable")
@@ -343,9 +353,19 @@ def run_main(args, execute, schema):
             receipt["executables"][role] = {"path": str(binary), "sha256": pin}
             clients.append(CoreClient(binary, role=role, timeout_seconds=60, expected_sha256=pin))
         corpus = Corpus()
-        execute(clients, corpus, receipt)
+        if selected_role is not None:
+            receipt.update(schema_version=schema.replace("_conformance.v1", "_role.v1"), role=selected_role)
+            clients = [client for client in clients if client.role == selected_role]
+        if workers == 2:
+            if __package__:
+                from .realization_protocol_parallel import execute as parallel_execute
+            else:
+                from realization_protocol_parallel import execute as parallel_execute
+            parallel_execute(args, directory, receipt)
+        else:
+            execute(clients, corpus, receipt)
         expected = corpus.index["coverage"]["sdk_checks_per_role" if "routing" in schema else "protocol_checks_per_role"]
-        require(Counter(x["role"] for x in receipt["checks"]) == {"core": expected, "verify": expected},
+        require(Counter(x["role"] for x in receipt["checks"]) == {client.role: expected for client in clients},
                 "Complete executable-role/call matrix differs")
         receipt["status"], code = "success", 0
     except Exception as error:

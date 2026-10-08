@@ -26,6 +26,70 @@ let read path =
     let size=in_channel_length channel in
     require (size <= 2*1024*1024) "Operational fixture too large";
     Json.parse (really_input_string channel size))
+let descriptor_identity_controls raw descriptor_json =
+  let before= !rejected in
+  let unsupported label ~source ~definitions ~path ~message =
+    (* Source validity and descriptor decoding are outside the rejection
+       catcher: an earlier malformed-input failure cannot satisfy this test. *)
+    let document=D.of_json ~path:"/document" source in
+    require (text "status" (Bioc_checker.Policy_check.check document) = "valid")
+      ("Descriptor control lost generic source validity: "^label);
+    let descriptors=O.descriptors_of_json definitions in
+    require (Json.equal (O.descriptors_to_json descriptors) definitions)
+      ("Descriptor control changed during decoding: "^label);
+    match A.admit ~document ~descriptors with
+    | _ -> failwith ("Unsupported descriptor admitted: "^label)
+    | exception Diagnostic.Error diagnostic ->
+        require (diagnostic.code = "policy_operational_unsupported" &&
+          diagnostic.path = Some path && diagnostic.message = message)
+          ("Descriptor control failed outside its exact admission guard: "^label);
+        incr rejected in
+  let descriptors=items "definitions" descriptor_json in
+  let first=List.hd descriptors in
+  let pin=get "definition" first in
+  let digest=text "digest" pin in
+  require (String.length digest = 64) "Original descriptor digest lost its fixed width";
+  let stale_digest=(if digest.[0] = '0' then "1" else "0")^String.sub digest 1 63 in
+  let stale=replace "definitions"
+    (arr (replace "definition" (replace "digest" (str stale_digest) pin) first :: List.tl descriptors))
+    descriptor_json in
+  unsupported "well-formed stale descriptor digest" ~source:raw ~definitions:stale
+    ~path:"/definitions"
+    ~message:"Operational descriptor is not bound to the complete source DefinitionRef.";
+  let source_definitions=items "definitions" (get "semantics" raw) in
+  let with_definition identity field replacement =
+    let original=List.find (fun value -> text "id" value = identity) source_definitions in
+    let changed=replace field replacement original in
+    let digest=D.document_digest changed in
+    require (digest <> D.document_digest original)
+      "Descriptor signature edit retained its original definition identity";
+    let rec repin value = match value with
+      | Json.Object fields ->
+          let value=obj (List.map (fun (key,value) -> key,repin value) fields) in
+          if List.assoc_opt "$type" fields = Some (str "DefinitionRef") &&
+             List.assoc_opt "id" fields = Some (str identity)
+          then replace "digest" (str digest) value else value
+      | Json.Array values -> arr (List.map repin values)
+      | value -> value in
+    let source=replace "semantics"
+      (replace "definitions" (arr (List.map (fun value ->
+        if text "id" value = identity then changed else value) source_definitions))
+        (get "semantics" raw)) raw |> repin in
+    source,repin descriptor_json in
+  let truth_type=obj ["$type",str "TypeSpec";"kind",str "truth";
+    "unit",Json.Null;"entity_kind",Json.Null] in
+  let formal=obj ["$type",str "Parameter";"id",str "unused_descriptor_argument";
+    "value_type",truth_type;"selection",str "fixed";
+    "value",Json.Null;"lower",Json.Null;"upper",Json.Null] in
+  let source,definitions=with_definition "fixture.observation" "parameters" (arr [formal]) in
+  unsupported "observation formal has no executable argument interpretation" ~source ~definitions
+    ~path:"/document/declarations/4/contract"
+    ~message:"This primitive descriptor takes no formal parameters.";
+  let source,definitions=with_definition "fixture.effect" "result" truth_type in
+  unsupported "abstract effect cannot silently discard a supplied result" ~source ~definitions
+    ~path:"/document/declarations/6/contract"
+    ~message:"This primitive descriptor does not return a value.";
+  require (!rejected = before + 3) "Descriptor identity/signature control census differs"
 let run fixture =
   let raw=get "document" fixture and descriptor_json=get "definitions" fixture in
   let document=D.of_json ~path:"/document" raw and descriptors=O.descriptors_of_json descriptor_json in
@@ -109,6 +173,7 @@ let run fixture =
   List.iter (fun field -> rejects ("wrong complete definition identity "^field) (fun () ->
     admit_definitions (edit_first (fun descriptor -> replace "definition" (replace field (str "changed") (get "definition" descriptor)) descriptor))))
     ["id";"version";"digest"];
+  descriptor_identity_controls raw descriptor_json;
   let source_defs=items "definitions" (get "semantics" raw) in
   let effect_source=List.find (fun declaration -> text "$type" declaration = "Effect") (items "declarations" raw) in
   let effect_definition_id=text "id" (get "contract" effect_source) in

@@ -1,0 +1,123 @@
+{
+  "schema_version": "biocompiler.migration_checkpoint_validation.v1",
+  "scope": "realization protocol and whole-workflow native implementation checkpoints only; full migration remains open",
+  "native_local_execution": false,
+  "checkpoints": [
+    {
+      "pr": 57,
+      "source_revision": "41ab0f99375d7293a4b86c28da1cd5408b7376c0",
+      "tested_revision": "acec050959b50e47d67213fed691c22754dfef32",
+      "source_tree": "ded03e906aa4ea5e9ecb111aa53a1bef9914f271",
+      "tested_tree": "ded03e906aa4ea5e9ecb111aa53a1bef9914f271",
+      "run_id": "36987943622",
+      "run_attempt": "1",
+      "successful_jobs": 36,
+      "aggregate_receipt_sha256": "d731abad28c66f5b1418fc7a7c83ec0b25f04536520aaac4dd5f30ad6e6dd44f",
+      "aggregate_recreation": "byte-equivalent complete object",
+      "python_tests": {
+        "3.11.16": 2505,
+        "3.14.7": 2505
+      },
+      "architecture": {
+        "checks_per_run": 175,
+        "artifact_count": 219,
+        "receipt_sha256": "b1391deb3fd48aca3e2e1d94545871b538b4fe095ccf6ab3991cf60dd9b20b5c"
+      },
+      "realization": {
+        "protocol_checks_per_role": 6719,
+        "sdk_checks_per_role": 4157,
+        "receipt_sha256": "5b9ed00135f77fd50db06f32744a00b9cbe7e8c335f3b4554cdeb98ece33c276"
+      },
+      "native_binaries": {
+        "linux-x86_64": {
+          "manifest_sha256": "8c1511bacf25c06ee8f25743de5529578be4e925f3b11e78037c55dbdce3624a",
+          "machine": "x86_64",
+          "revision": "acec050959b50e47d67213fed691c22754dfef32",
+          "sha256": {
+            "biocompiler-core": "7950fcbde748e2c1937a292d9a489cda683523674a1cc8196113f8e8f347ba60",
+            "biocompiler-verify": "1ed5e3dd3832e35deb3fd4e45f908f4d4555098043ca86829c306c8c3530bfcd"
+          },
+          "system": "Linux"
+        },
+        "macos-arm64": {
+          "manifest_sha256": "f09b1ab7f6c989a4932d37cfb6f5a5080f7a85189c7e7a26f97554f3314cb264",
+          "machine": "arm64",
+          "revision": "acec050959b50e47d67213fed691c22754dfef32",
+          "sha256": {
+            "biocompiler-core": "bb8d42b43499157eb496477692446a6803027ea9d20b1fc71f901e45e0139faa",
+            "biocompiler-verify": "e2884f4ff2aed6f211d2d48b713645c9d0b39e7b501ec51401c108fa48f16da7"
+          },
+          "system": "Darwin"
+        }
+      },
+      "independent_full_artifact_rehash": "identical to both hosted comparison receipts",
+      "native_local_execution": false,
+      "integration": {
+        "commit": "71c56d2fc2eecbdb9efbb3da1e9d82a25c8b4e22",
+        "merged_at": "2026-10-02T16:00:22Z",
+        "tree": "ded03e906aa4ea5e9ecb111aa53a1bef9914f271",
+        "source_tested_integrated_tree_equal": true,
+        "base": "main",
+        "all_36_exact_head_checks_successful_before_merge": true
+      }
+    },
+    {
+      "pr": 58,
+      "source_revision": "241bd423b3b1b877d03c2a556b325994ffe8633b",
+      "tested_revision": "1a34261f420802925edc5342df667a74c8ff93a6",
+      "source_tree": "a4451bb373f542603b05d7176b37919f4dee4073",
+      "tested_tree": "a4451bb373f542603b05d7176b37919f4dee4073",
+      "run_id": "36987950690",
+      "run_attempt": "1",
+      "successful_jobs": 36,
+      "aggregate_receipt_sha256": "197b388b1968aea602a014dee275312b4ead94f7a0a97ea0a456a36f18fdd81e",
+      "aggregate_recreation": "byte-equivalent complete object",
+      "python_tests": {
+        "3.11.16": 2528,
+        "3.14.7": 2528
+      },
+      "architecture": {
+        "checks_per_run": 175,
+        "artifact_count": 219,
+        "receipt_sha256": "1761e4d739486c2ec41beb7c5d3850cb6b772c25eb8582ec96ff1c41524f2276"
+      },
+      "realization": {
+        "protocol_checks_per_role": 6719,
+        "sdk_checks_per_role": 4157,
+        "receipt_sha256": "346c21c63193c8b8b57e8594ac0b27c72f9b46a8f0a95c561f911f4d65d26b11"
+      },
+      "native_binaries": {
+        "linux-x86_64": {
+          "manifest_sha256": "e81086d06be54eda1bd8e75eae79fab62981e8afd689decc1f0bc5ab826bf97c",
+          "machine": "x86_64",
+          "revision": "1a34261f420802925edc5342df667a74c8ff93a6",
+          "sha256": {
+            "biocompiler-core": "c1f5c1caa5758a8e247c5587cdc588ff8ee23ffa323423c4d1190471a37fbb4c",
+            "biocompiler-verify": "1d15940d0acf733904a683cc073ed44c6a73717e17043bc265012341d12a32d0"
+          },
+          "system": "Linux"
+        },
+        "macos-arm64": {
+          "manifest_sha256": "657aec0ba8373ea442eaf66b11aa612ad76d481b36cba3fc300f7422431f676e",
+          "machine": "arm64",
+          "revision": "1a34261f420802925edc5342df667a74c8ff93a6",
+          "sha256": {
+            "biocompiler-core": "16dfc310a7736dce0eb6938ccc561eb133110f36c467c93f920cceb0be15a579",
+            "biocompiler-verify": "603a6abb508e0ac6a40826413ccf9cf3d40e34f76ab6d1c778312861e7d50d6e"
+          },
+          "system": "Darwin"
+        }
+      },
+      "independent_full_artifact_rehash": "identical to both hosted comparison receipts",
+      "native_local_execution": false,
+      "integration": {
+        "commit": "15c58934619909d5a8b97e1aa1f3cc556b010c3d",
+        "merged_at": "2026-10-02T16:01:23Z",
+        "tree": "a4451bb373f542603b05d7176b37919f4dee4073",
+        "source_tested_integrated_tree_equal": true,
+        "base": "main",
+        "all_36_exact_head_checks_successful_before_merge": true
+      }
+    }
+  ]
+}

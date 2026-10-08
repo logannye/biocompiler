@@ -408,7 +408,8 @@ let parse_requirement ~index raw =
   let fields = Json.object_fields ~path raw in
   Json.allowed_fields ~path ~required:["id"; "kind"; "source_node_id"; "lineage"] ~optional:["source"] fields;
   let source = Option.value ~default:Json.Null (List.assoc_opt "source" fields) in
-  let fields = ("source", source) :: List.remove_assoc "source" fields in
+  let fields = List.map (fun key -> key,Json.field key fields)
+      ["id";"kind";"source_node_id";"lineage"] @ ["source",source] in
   let req_kind = match Json.field "kind" fields with
     | Json.String "rule" -> Rule_requirement | Json.String "state" -> State_requirement
     | Json.String "memory" -> Memory_requirement
@@ -713,8 +714,9 @@ let of_json raw =
   let normalized = Intent.to_json graph |> Json.object_fields in
   let normalized_nodes = Json.field "nodes" normalized |> Json.array in
   let program_nodes = List.map2 (fun normalized original ->
-      ("contact_bound", Json.field "contact_bound" original) ::
-      ("requirement_ids", Json.field "requirement_ids" original) :: Json.object_fields normalized)
+      Json.object_fields normalized @
+      ["contact_bound", Json.field "contact_bound" original;
+       "requirement_ids", Json.field "requirement_ids" original])
       normalized_nodes behavior_fields |> List.mapi (fun index fields -> node_of_fields ~index fields) in
   let node_map = List.fold_left (fun map node -> Names.add (Identity.Node.to_string node.node_identity) node map)
       Names.empty program_nodes in

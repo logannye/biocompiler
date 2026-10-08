@@ -1,0 +1,109 @@
+{
+  "git_diff_check": "pass",
+  "mutation_script": {
+    "bytes": 2276,
+    "path": "generated/migration-next/installed-console-correction/mutation_probe.py",
+    "sha256": "35ed8ecb1c11838ae8742ae268bc663f15a0005f4aa773693c99b4ade9766097"
+  },
+  "runtimes": [
+    {
+      "discovery": {
+        "added_ids": [
+          "test_prebuilt_release_chain.HostedPlanTests.test_installed_dispatch_selects_fresh_console_for_complete_lifecycle_and_campaigns",
+          "test_prebuilt_release_chain.HostedPlanTests.test_missing_or_nonexecutable_fresh_console_rejects_host_fallback_before_campaigns"
+        ],
+        "all_prior_3416_preserved": true,
+        "classes": 351,
+        "command": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -B tools/test_shards.py plan --output generated/migration-next/installed-console-correction/plan-311.json",
+        "count": 3418,
+        "lf_sorted_ids_sha256": "6ff31e33b2a1c40879b28f7e983b5abc96508549fe53ef2bd1815497f1bb6040",
+        "plan": {
+          "bytes": 24696388,
+          "path": "generated/migration-next/installed-console-correction/plan-311.json",
+          "sha256": "59e146aeb4fe6eddbf0f3c021fcf7d949061b007a5866379b30eb2450603ac1e"
+        }
+      },
+      "focused": {
+        "command": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -B -m unittest tests.test_prebuilt_release_chain tests.test_prebuilt_sdk_matrix tests.test_prebuilt_ci_plan -v",
+        "log": {
+          "bytes": 7203,
+          "path": "generated/migration-next/installed-console-correction/focused-311.log",
+          "sha256": "dd6ad2a03fce7c16b3845107ceda82bc41288bfcadfd98f7d5adbac13cdc5ed4"
+        },
+        "seconds": 1.43,
+        "status": "pass",
+        "tests": 37
+      },
+      "mutations": {
+        "command": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -B generated/migration-next/installed-console-correction/mutation_probe.py",
+        "controls": 2,
+        "note": "Without PATH prepend, inherited-PATH subtest fails exact selection and absent-PATH subtest raises KeyError PATH. Without exact guard, both absent/nonexecutable console subtests fail to raise before campaign dispatch.",
+        "receipt": {
+          "bytes": 6824,
+          "path": "generated/migration-next/installed-console-correction/mutations-311.json",
+          "sha256": "3b1d93f0f3688ffd4953296cbb7004b083669f929d14da53e00735a78a1bda0e"
+        },
+        "rejected_subtests": 4,
+        "status": "pass"
+      },
+      "python_version": "3.11.15"
+    },
+    {
+      "discovery": {
+        "added_ids": [
+          "test_prebuilt_release_chain.HostedPlanTests.test_installed_dispatch_selects_fresh_console_for_complete_lifecycle_and_campaigns",
+          "test_prebuilt_release_chain.HostedPlanTests.test_missing_or_nonexecutable_fresh_console_rejects_host_fallback_before_campaigns"
+        ],
+        "all_prior_3416_preserved": true,
+        "classes": 351,
+        "command": "PYTHONPATH=src:. python3 -B tools/test_shards.py plan --output generated/migration-next/installed-console-correction/plan-314.json",
+        "count": 3418,
+        "lf_sorted_ids_sha256": "6ff31e33b2a1c40879b28f7e983b5abc96508549fe53ef2bd1815497f1bb6040",
+        "plan": {
+          "bytes": 24696387,
+          "path": "generated/migration-next/installed-console-correction/plan-314.json",
+          "sha256": "0347cbd5040472b67d5cd02ef9a039fd947fb298e71bf8622b57aa0e951aa06f"
+        }
+      },
+      "focused": {
+        "command": "PYTHONPATH=src:. python3 -B -m unittest tests.test_prebuilt_release_chain tests.test_prebuilt_sdk_matrix tests.test_prebuilt_ci_plan -v",
+        "log": {
+          "bytes": 7203,
+          "path": "generated/migration-next/installed-console-correction/focused-314.log",
+          "sha256": "2f5e1d5178c9578463f89b693459bdd4f84aa8b1edbf82c0c80b53cf60a158f8"
+        },
+        "seconds": 1.433,
+        "status": "pass",
+        "tests": 37
+      },
+      "mutations": {
+        "command": "PYTHONPATH=src:. python3 -B generated/migration-next/installed-console-correction/mutation_probe.py",
+        "controls": 2,
+        "note": "Without PATH prepend, inherited-PATH subtest fails exact selection and absent-PATH subtest raises KeyError PATH. Without exact guard, both absent/nonexecutable console subtests fail to raise before campaign dispatch.",
+        "receipt": {
+          "bytes": 7519,
+          "path": "generated/migration-next/installed-console-correction/mutations-314.json",
+          "sha256": "f801d0c604267745d07a4567c1e328e647736fdf1cb62cbe06435817978dbd9a"
+        },
+        "rejected_subtests": 4,
+        "status": "pass"
+      },
+      "python_version": "3.14.6"
+    }
+  ],
+  "schema": "biocompiler.installed_console_source_correction_controls.v1",
+  "scope": "Pure mocked installed() orchestration; no subprocess/native/venv/install/package execution. Exactly two methods added to existing HostedPlanTests; no new class. Both discovery imports had already started before the request to use only one plan; neither rerun.",
+  "source_files": [
+    {
+      "bytes": 26845,
+      "path": "tests/test_prebuilt_release_chain.py",
+      "sha256": "e65cd02cfdc5c107c8a82cb746b9c67c18522049d7e63248eec1f550ac6bb8d6"
+    },
+    {
+      "bytes": 16086,
+      "path": "tools/prebuilt_release_pipeline.py",
+      "sha256": "fe09640b34223aa036d385f6411ada010da380658b9e74e3e2eb7fb563632306"
+    }
+  ],
+  "status": "pass"
+}

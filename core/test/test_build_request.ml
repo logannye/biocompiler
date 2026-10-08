@@ -261,3 +261,20 @@ let () =
   if Array.length Sys.argv = 2 then (
     fixtures Sys.argv.(1);
     Printf.printf "build request: %d retained corpus/oracle/mutation checks passed across 3 request fixtures\n%!" (!checks - unit_checks))
+
+let () =
+  let keys value = List.map fst (Json.object_fields value) in
+  let reversed value = obj (List.rev (Json.object_fields value)) in
+  let target = Request.Target.of_json (reversed legacy_target) in
+  check (keys (Request.Target.to_json target) =
+    ["schema_version";"context_id";"context_version";"payload_format";
+     "capabilities";"compartments";"resources"])
+    "Target normalization lost the original public field order";
+  check (Canonical.encode (Request.Target.to_json target) =
+    Canonical.encode (Request.Target.to_json (Request.Target.of_json legacy_target)))
+    "Target ordering changed canonical authority";
+  let literal = node ~kind:"literal" ~attributes:["value",scalar 1] "literal" in
+  let intent = Bioc_domain.Intent.of_json (program [reversed literal]) in
+  let stored = List.hd (Json.array (get "nodes" (Bioc_domain.Intent.to_json intent))) in
+  check (keys stored = ["id";"kind";"inputs";"attributes";"data_type";"role";"source"])
+    "Intent source metadata moved before original node fields"

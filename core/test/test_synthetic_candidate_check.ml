@@ -131,3 +131,16 @@ let () =
   rejected "realization_input_limit" (fun () -> K.check ?until request candidate cyclic_history);
   same "Failure or cyclic input contaminated an independent synthetic check" result (K.check ?until request candidate history);
   print_endline "synthetic acceptance: 12 complete independent Python results, actual-candidate execution, source coordinates, rejection precedence, exact/shared bounds and failure isolation checked"
+
+let () =
+  let report = E.Check_result.to_json (run (case "baseline")) in
+  let keys value = List.map fst (Json.object_fields value) in
+  let dependencies = get "dependencies" report in
+  require (keys dependencies = ["behavior";"behavior_artifact";"contract";"domain";"target";
+    "mechanism";"observation_map";"history";"horizon";"checker";"model_runner";"reference_evaluator";"settings"])
+    "Synthetic checking moved replaced settings ahead of original dependencies";
+  require (keys (get "settings" dependencies) =
+    ["scope";"intended_use";"human_admission_policy";"time";"response";"nonvacuity";"contact_loss";
+     "coverage";"max_microsteps";"synthetic_acceptance";"synthetic_profile";"synthetic_candidate";
+     "realization_request";"generator_configuration";"catalog";"required_coverage"])
+    "Synthetic settings differ from original mapping-unpack insertion order"

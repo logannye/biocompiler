@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["id","complete_payload_features"],["scope","complete_payload"],["evidence_kind","exact"],["description","Delivered molecule boundaries, regulatory context and other unknown payload features remain unresolved."]]}

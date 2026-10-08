@@ -1,710 +1,1687 @@
 {
   "classes": {
+    "test_architecture_backend.ArchitectureBackendTests": {
+      "seconds": 282.704173,
+      "tests": 16
+    },
+    "test_architecture_build_corpus.ArchitectureBuildCorpusTests": {
+      "seconds": 34.477055,
+      "tests": 7
+    },
+    "test_architecture_check_corpus.ArchitectureCheckCorpusTests": {
+      "seconds": 313.829197,
+      "tests": 12
+    },
+    "test_architecture_contracts_corpus.ArchitectureContractsCorpusTests": {
+      "seconds": 1.177982,
+      "tests": 9
+    },
     "test_architecture_control_causality.ArchitectureChannelControlCausalityTests": {
-      "seconds": 37.757689,
+      "seconds": 52.44893,
       "tests": 4
     },
     "test_architecture_control_pipeline.ArchitectureControlPipelineTests": {
-      "seconds": 60.100712,
+      "seconds": 60.436413,
       "tests": 7
     },
+    "test_architecture_core_cli.ArchitectureCoreCliTests": {
+      "seconds": 2.650803,
+      "tests": 14
+    },
+    "test_architecture_core_routing.ArchitectureCoreRoutingTests": {
+      "seconds": 0.208381,
+      "tests": 8
+    },
     "test_architecture_deployment.DeploymentWindowTests": {
-      "seconds": 33.641912,
+      "seconds": 47.382236,
       "tests": 9
     },
+    "test_architecture_deployment_corpus.ArchitectureDeploymentCorpusTests": {
+      "seconds": 0.055616,
+      "tests": 7
+    },
+    "test_architecture_domains_corpus.ArchitectureDomainsCorpusTests": {
+      "seconds": 71.718285,
+      "tests": 12
+    },
     "test_architecture_execution.CoupledArchitectureExecutionTests": {
-      "seconds": 53.67366,
+      "seconds": 74.34771,
       "tests": 9
     },
     "test_architecture_functional_controls.ActivityControlProofTests": {
-      "seconds": 0.031193,
+      "seconds": 0.044636,
       "tests": 5
     },
     "test_architecture_functional_controls.FiniteStateResetProofTests": {
-      "seconds": 0.047061,
+      "seconds": 0.067477,
       "tests": 7
     },
     "test_architecture_functional_controls.MemoryControlProofTests": {
-      "seconds": 0.016397,
+      "seconds": 0.024142,
       "tests": 4
     },
     "test_architecture_functional_controls.ProductionAdjustmentProofTests": {
-      "seconds": 0.084625,
+      "seconds": 0.119338,
       "tests": 12
     },
     "test_architecture_match_verification.IndependentMatchTests": {
-      "seconds": 27.826376,
+      "seconds": 27.660005,
       "tests": 7
     },
     "test_architecture_matching.ArchitectureMatchingTests": {
-      "seconds": 3.304945,
+      "seconds": 3.242297,
       "tests": 14
     },
     "test_architecture_matching.AutomaticArchitectureCompilationTests": {
-      "seconds": 51.707358,
+      "seconds": 70.128943,
       "tests": 7
     },
+    "test_architecture_producer_corpus.ArchitectureProducerCorpusTests": {
+      "seconds": 77.480427,
+      "tests": 15
+    },
+    "test_architecture_producer_protocol_corpus.ArchitectureProducerProtocolCorpusTests": {
+      "seconds": 4.944309,
+      "tests": 7
+    },
+    "test_architecture_proofs_corpus.ArchitectureProofCorpusTests": {
+      "seconds": 25.131003,
+      "tests": 11
+    },
+    "test_architecture_protocol_corpus.ArchitectureProtocolCorpusTests": {
+      "seconds": 1.671333,
+      "tests": 4
+    },
+    "test_architecture_routing_corpus.ArchitectureRoutingCorpusTests": {
+      "seconds": 23.528312,
+      "tests": 10
+    },
+    "test_architecture_routing_parallel.ArchitecturePartitionTests": {
+      "seconds": 8.0,
+      "tests": 4
+    },
+    "test_architecture_routing_reproducibility.ArchitectureRoutingReproducibilityTests": {
+      "seconds": 1.176935,
+      "tests": 10
+    },
     "test_architecture_search_bounds.ArchitectureSearchBoundsTests": {
-      "seconds": 4.316584,
+      "seconds": 6.046079,
       "tests": 1
     },
+    "test_archive_authority.ArchiveAuthorityTests": {
+      "seconds": 0.061738,
+      "tests": 6
+    },
+    "test_archive_source_origin.ArchiveSourceOriginTests": {
+      "seconds": 5.261168,
+      "tests": 5
+    },
     "test_authoring.AuthoringTests": {
-      "seconds": 0.042378,
+      "seconds": 0.058814,
       "tests": 16
     },
     "test_behavior_artifacts.BehaviorArtifactTests": {
-      "seconds": 0.008196,
+      "seconds": 0.011368,
       "tests": 2
     },
     "test_behavior_cli.BehaviorCliTests": {
-      "seconds": 0.058923,
+      "seconds": 0.059591,
       "tests": 3
     },
+    "test_behavior_domains.BehaviorDomainCorpusTests": {
+      "seconds": 0.886059,
+      "tests": 5
+    },
     "test_behavior_execution.AtomicStateTests": {
-      "seconds": 0.026098,
+      "seconds": 0.026228,
       "tests": 5
     },
     "test_behavior_execution.ContactExecutionTests": {
-      "seconds": 0.027161,
+      "seconds": 0.035678,
       "tests": 6
     },
     "test_behavior_execution.MemoryAndPulseTests": {
-      "seconds": 0.082512,
+      "seconds": 0.120282,
       "tests": 15
     },
     "test_behavior_execution.ObservationAndBoundaryTests": {
-      "seconds": 0.04064,
+      "seconds": 0.059124,
       "tests": 11
     },
     "test_behavior_execution.TemporalExecutionTests": {
-      "seconds": 0.045686,
+      "seconds": 0.064748,
       "tests": 10
     },
     "test_behavior_ir.BehaviorIRTests": {
-      "seconds": 0.068214,
+      "seconds": 0.098846,
       "tests": 13
     },
     "test_build_archive.ArchivePublicationTests": {
-      "seconds": 0.063674,
+      "seconds": 0.052731,
       "tests": 6
     },
     "test_build_archive.BuildArchiveTests": {
-      "seconds": 0.034204,
+      "seconds": 0.036565,
       "tests": 14
     },
     "test_build_manifest.BuildManifestTests": {
-      "seconds": 0.139805,
+      "seconds": 0.184514,
       "tests": 11
     },
     "test_build_request.BuildRequestTests": {
-      "seconds": 0.072412,
+      "seconds": 0.098404,
       "tests": 16
     },
     "test_build_request.RealizationRequestTests": {
-      "seconds": 3.269381,
+      "seconds": 4.911482,
       "tests": 6
     },
     "test_candidate_pipeline.CandidatePipelineTests": {
-      "seconds": 3.569615,
+      "seconds": 4.87718,
       "tests": 8
     },
     "test_candidate_requirements.CandidateRequirementsTests": {
-      "seconds": 0.133667,
+      "seconds": 0.225535,
       "tests": 11
     },
+    "test_candidate_runtime_corpus.CandidateRuntimeCorpusTests": {
+      "seconds": 3.869451,
+      "tests": 7
+    },
     "test_candidate_synthesis.CandidateSynthesisTests": {
-      "seconds": 0.354154,
+      "seconds": 0.482319,
       "tests": 10
     },
     "test_candidate_verification.CandidateVerificationTests": {
-      "seconds": 1.632181,
+      "seconds": 2.245836,
       "tests": 10
     },
     "test_checked_pipeline.CheckedPipelineTests": {
-      "seconds": 0.248278,
+      "seconds": 0.223342,
       "tests": 6
     },
+    "test_checked_pipeline_corpus.CheckedPipelineCorpusTests": {
+      "seconds": 34.46897,
+      "tests": 8
+    },
+    "test_ci_core_groups.CoreGroupTests": {
+      "seconds": 16.0,
+      "tests": 8
+    },
+    "test_ci_native_bundle.NativeBundleTests": {
+      "seconds": 12.0,
+      "tests": 6
+    },
+    "test_ci_scheduling.PartitionedReceiptTests": {
+      "seconds": 14.0,
+      "tests": 7
+    },
+    "test_ci_scheduling.SchedulingTests": {
+      "seconds": 6.0,
+      "tests": 3
+    },
+    "test_ci_validation.ValidationGateTests": {
+      "seconds": 1.074314,
+      "tests": 24
+    },
     "test_circuit_bindings.CircuitBindingTests": {
-      "seconds": 116.776189,
+      "seconds": 112.30351,
       "tests": 18
     },
+    "test_circuit_bindings_corpus.CircuitBindingsCorpusTests": {
+      "seconds": 7.852904,
+      "tests": 8
+    },
     "test_circuit_checker_independence.CircuitCheckerIndependenceTests": {
-      "seconds": 3.959509,
+      "seconds": 5.054855,
       "tests": 4
     },
     "test_circuit_construction_checking.CircuitConstructionCheckingTests": {
-      "seconds": 115.155832,
+      "seconds": 155.842275,
       "tests": 51
     },
     "test_circuit_construction_edges.CircuitConstructionEdgeTests": {
-      "seconds": 15.296484,
+      "seconds": 14.643353,
       "tests": 17
     },
     "test_circuit_construction_ir.CircuitComplexAmountIRTests": {
-      "seconds": 2.435525,
+      "seconds": 3.377366,
       "tests": 13
     },
     "test_circuit_construction_ir.CircuitConstructionIRTests": {
-      "seconds": 3.584187,
+      "seconds": 4.847236,
       "tests": 24
     },
     "test_circuit_construction_ir.CircuitProcessingIRTests": {
-      "seconds": 1.19068,
+      "seconds": 1.505408,
       "tests": 12
     },
     "test_circuit_construction_ir.CircuitRecodingOperationIRTests": {
-      "seconds": 0.724819,
+      "seconds": 0.966445,
       "tests": 13
     },
     "test_circuit_construction_producer.ConstructionProducerTests": {
-      "seconds": 5.413446,
+      "seconds": 7.296017,
       "tests": 6
     },
     "test_circuit_construction_workflow.CircuitConstructionWorkflowTests": {
-      "seconds": 163.517589,
+      "seconds": 216.354602,
       "tests": 17
     },
     "test_circuit_evidence.CircuitEvidenceTests": {
-      "seconds": 136.186512,
+      "seconds": 189.688925,
       "tests": 23
     },
     "test_circuit_frontend.CircuitFrontendTests": {
-      "seconds": 0.378735,
+      "seconds": 0.526621,
       "tests": 14
     },
     "test_circuit_infrastructure_workflow.CircuitInfrastructureWorkflowTests": {
-      "seconds": 119.953595,
+      "seconds": 167.527476,
       "tests": 9
     },
     "test_circuit_inspection.CircuitInspectionTests": {
-      "seconds": 70.70572,
+      "seconds": 99.831721,
       "tests": 11
     },
     "test_circuit_intent.CircuitIntentTests": {
-      "seconds": 3.672962,
+      "seconds": 5.213547,
       "tests": 28
     },
     "test_circuit_intent_checking.CircuitIntentCheckingTests": {
-      "seconds": 10.946132,
+      "seconds": 15.779535,
       "tests": 32
     },
     "test_circuit_intent_workflow.CircuitIntentWorkflowTests": {
-      "seconds": 3.619843,
+      "seconds": 3.557754,
       "tests": 6
     },
     "test_circuit_logic.BooleanSerializationTests": {
-      "seconds": 0.0059,
+      "seconds": 0.007912,
       "tests": 10
     },
     "test_circuit_logic.BooleanTruthTableTests": {
-      "seconds": 0.015316,
+      "seconds": 0.028553,
       "tests": 14
     },
     "test_circuit_molecule_integration.CircuitMoleculeIntegrationTests": {
-      "seconds": 6.50043,
+      "seconds": 9.059095,
       "tests": 35
     },
     "test_circuit_molecule_workflow.CircuitMoleculeWorkflowTests": {
-      "seconds": 3.473645,
+      "seconds": 4.758155,
       "tests": 5
     },
     "test_circuit_observations.CircuitObservationTests": {
-      "seconds": 0.141938,
+      "seconds": 0.191626,
       "tests": 20
     },
     "test_circuit_payloads.CircuitPayloadTests": {
-      "seconds": 3.509931,
+      "seconds": 4.924379,
       "tests": 15
     },
     "test_circuit_processing_producer.ProcessingProducerTests": {
-      "seconds": 6.088114,
+      "seconds": 8.468976,
       "tests": 6
     },
     "test_circuit_profile.CircuitProfileTests": {
-      "seconds": 0.486329,
+      "seconds": 0.671801,
       "tests": 22
     },
     "test_circuit_profile_checking.CircuitProfileCheckingTests": {
-      "seconds": 0.865063,
+      "seconds": 0.866511,
       "tests": 22
     },
     "test_circuit_profile_workflow.CircuitProfileWorkflowTests": {
-      "seconds": 0.944286,
+      "seconds": 1.294638,
       "tests": 5
     },
     "test_circuit_recoding.CircuitRecodingTests": {
-      "seconds": 0.416675,
+      "seconds": 0.410954,
       "tests": 14
     },
     "test_circuit_recoding_producer.RecodingProducerTests": {
-      "seconds": 9.398832,
+      "seconds": 13.152262,
       "tests": 11
     },
     "test_circuit_review_adversarial.CircuitReviewAdversarialTests": {
-      "seconds": 222.537587,
+      "seconds": 305.443631,
       "tests": 8
     },
     "test_circuit_review_bundle.CircuitReviewBundleTests": {
-      "seconds": 195.140318,
+      "seconds": 265.417637,
       "tests": 11
     },
     "test_circuit_review_workflow.CircuitReviewWorkflowTests": {
-      "seconds": 183.564751,
+      "seconds": 248.456632,
       "tests": 6
     },
     "test_circuit_source_checking.CircuitSourceCheckingTests": {
-      "seconds": 1.904721,
+      "seconds": 2.792739,
       "tests": 33
     },
     "test_circuit_source_readiness.CircuitSourceReadinessTests": {
-      "seconds": 0.368747,
+      "seconds": 0.549852,
       "tests": 11
     },
     "test_circuit_source_workflow.CircuitSourceWorkflowTests": {
-      "seconds": 0.295228,
+      "seconds": 0.446647,
       "tests": 3
     },
     "test_circuit_sources.CircuitSourceTests": {
-      "seconds": 2.362973,
+      "seconds": 2.867973,
       "tests": 23
     },
     "test_circuit_transitions.CircuitTransitionTests": {
-      "seconds": 0.652809,
+      "seconds": 0.931552,
       "tests": 33
     },
+    "test_cli_runtime_counterparts.CliRuntimeCounterpartsTests": {
+      "seconds": 0.283845,
+      "tests": 3
+    },
+    "test_component_acceptance_corpus.ComponentAcceptanceCorpusTests": {
+      "seconds": 38.468171,
+      "tests": 6
+    },
     "test_component_adapters.ComponentAdapterTests": {
-      "seconds": 0.265079,
+      "seconds": 0.368178,
       "tests": 5
     },
     "test_component_admission.ComponentAdmissionTests": {
-      "seconds": 0.005605,
+      "seconds": 0.009819,
       "tests": 10
     },
     "test_component_audit.ComponentAuditTests": {
-      "seconds": 0.028549,
+      "seconds": 0.0421,
       "tests": 12
     },
     "test_component_contracts.ComponentRecordTests": {
-      "seconds": 0.006414,
+      "seconds": 0.007355,
       "tests": 6
     },
     "test_component_contracts.DomainTests": {
-      "seconds": 0.001156,
+      "seconds": 0.002105,
       "tests": 9
     },
+    "test_component_contracts_corpus.ComponentContractCorpusTests": {
+      "seconds": 0.171614,
+      "tests": 10
+    },
     "test_component_linker.ComponentLinkerTests": {
-      "seconds": 0.163695,
+      "seconds": 0.243009,
       "tests": 30
     },
     "test_component_pipeline.ComponentPipelineTests": {
-      "seconds": 4.168633,
+      "seconds": 4.019663,
       "tests": 9
     },
     "test_component_pipeline_audit.ComponentPipelineAuditTests": {
-      "seconds": 2.308742,
+      "seconds": 2.394405,
       "tests": 7
     },
     "test_component_pipeline_manager.ComponentStageManagerTests": {
-      "seconds": 0.00218,
+      "seconds": 0.003237,
       "tests": 2
     },
     "test_component_registry.ComponentRegistryTests": {
-      "seconds": 0.206082,
+      "seconds": 0.345678,
       "tests": 11
     },
+    "test_component_runtime_corpus.ComponentRuntimeCorpusTests": {
+      "seconds": 90.535655,
+      "tests": 6
+    },
+    "test_components_corpus.ComponentsCorpusTests": {
+      "seconds": 0.249843,
+      "tests": 9
+    },
     "test_construct_assembly.ConstructAssemblyTests": {
-      "seconds": 0.067628,
+      "seconds": 0.093712,
       "tests": 10
     },
     "test_construct_audit.ConstructProvenanceAuditTests": {
-      "seconds": 0.025493,
+      "seconds": 0.036883,
       "tests": 1
     },
     "test_construct_checker.ConstructCheckerTests": {
-      "seconds": 0.34794,
+      "seconds": 0.497203,
       "tests": 12
     },
     "test_construct_ir.ConstructSchemaTests": {
-      "seconds": 0.096138,
+      "seconds": 0.141776,
       "tests": 11
     },
     "test_construct_pipeline.ConstructPipelineTests": {
-      "seconds": 0.390715,
+      "seconds": 0.548438,
       "tests": 9
     },
     "test_construct_pipeline_audit.ConstructAdmissionAuditTests": {
-      "seconds": 0.002499,
+      "seconds": 0.004048,
       "tests": 5
     },
+    "test_construction_artifacts_corpus.ConstructionArtifactsCorpusTests": {
+      "seconds": 46.735617,
+      "tests": 9
+    },
+    "test_construction_check_corpus.ConstructionCheckCorpusTests": {
+      "seconds": 21.196706,
+      "tests": 7
+    },
+    "test_construction_corpus.ConstructionCorpusTests": {
+      "seconds": 21.984195,
+      "tests": 8
+    },
+    "test_construction_producer_corpus.ConstructionProducerCorpusTests": {
+      "seconds": 439.748173,
+      "tests": 10
+    },
+    "test_core_architecture.ArchitectureTransportTests": {
+      "seconds": 0.034391,
+      "tests": 9
+    },
+    "test_core_architecture_producer.ArchitectureProducerTransportTests": {
+      "seconds": 0.178164,
+      "tests": 16
+    },
+    "test_core_artifacts.ArtifactCodecTests": {
+      "seconds": 0.0013,
+      "tests": 3
+    },
+    "test_core_artifacts.ArtifactProcessTests": {
+      "seconds": 2.650017,
+      "tests": 8
+    },
+    "test_core_boundaries.CoreBoundaryTests": {
+      "seconds": 50.715325,
+      "tests": 23
+    },
+    "test_core_client.CoreJsonTests": {
+      "seconds": 0.001815,
+      "tests": 7
+    },
+    "test_core_client.CoreProcessTests": {
+      "seconds": 0.999112,
+      "tests": 11
+    },
+    "test_core_conformance.CoreConformanceTests": {
+      "seconds": 0.938717,
+      "tests": 17
+    },
+    "test_core_distribution.CoreDistributionTests": {
+      "seconds": 0.132659,
+      "tests": 16
+    },
+    "test_core_pipeline_build_views.BuildStoreTests": {
+      "seconds": 38.495043,
+      "tests": 4
+    },
+    "test_core_pipeline_build_views.BuildViewTests": {
+      "seconds": 1.810241,
+      "tests": 5
+    },
+    "test_core_pipeline_callback_session.CallbackSessionTests": {
+      "seconds": 33.776323,
+      "tests": 25
+    },
+    "test_core_pipeline_manager.CorePipelineManagerTests": {
+      "seconds": 0.089013,
+      "tests": 41
+    },
+    "test_core_pipeline_ordered_merge.OrderedMergeTests": {
+      "seconds": 0.007078,
+      "tests": 3
+    },
+    "test_core_pipeline_provider_views.StructuralProviderViewsTests": {
+      "seconds": 7.632283,
+      "tests": 14
+    },
+    "test_core_pipeline_registration_interception.RegistrationInterceptionTests": {
+      "seconds": 3.811924,
+      "tests": 9
+    },
+    "test_core_pipeline_session.SessionCodecTests": {
+      "seconds": 0.689446,
+      "tests": 5
+    },
+    "test_core_pipeline_session.SessionProcessTests": {
+      "seconds": 4.592181,
+      "tests": 22
+    },
+    "test_core_realization.RealizationTransportTests": {
+      "seconds": 0.865311,
+      "tests": 8
+    },
+    "test_core_reference_attempts.Attempts": {
+      "seconds": 0.10104,
+      "tests": 7
+    },
+    "test_core_reference_host.CoreReferenceHostTests": {
+      "seconds": 0.006191,
+      "tests": 15
+    },
+    "test_core_reference_manager.ReferenceManagerTests": {
+      "seconds": 8.701999,
+      "tests": 15
+    },
+    "test_core_reference_provider_views.ReferenceProviderViewsTests": {
+      "seconds": 0.876513,
+      "tests": 13
+    },
+    "test_core_reference_views.CoreReferenceViewsTests": {
+      "seconds": 0.491227,
+      "tests": 6
+    },
+    "test_core_synthetic_inspection.SyntheticInspectionClientTests": {
+      "seconds": 8.629203,
+      "tests": 7
+    },
+    "test_core_synthetic_producer.SyntheticProducerTransportTests": {
+      "seconds": 3.130002,
+      "tests": 10
+    },
+    "test_core_synthetic_producer_public.PublicSyntheticProducerClientTests": {
+      "seconds": 5.095728,
+      "tests": 5
+    },
+    "test_core_workflow.WorkflowProcessTests": {
+      "seconds": 3.914324,
+      "tests": 1
+    },
+    "test_core_workflow.WorkflowTransportTests": {
+      "seconds": 7.287912,
+      "tests": 12
+    },
+    "test_core_workflow_authority.WorkflowAuthorityTransportTests": {
+      "seconds": 4.554261,
+      "tests": 13
+    },
     "test_deployment.DeploymentTests": {
-      "seconds": 0.322253,
+      "seconds": 0.356642,
       "tests": 30
     },
     "test_executable_payload.ExecutablePayloadTests": {
-      "seconds": 109.573018,
+      "seconds": 155.015309,
       "tests": 18
     },
     "test_executable_payload_verification.ExecutablePayloadVerificationTests": {
-      "seconds": 84.36366,
+      "seconds": 118.703001,
       "tests": 26
     },
     "test_expressions.ExpressionTests": {
-      "seconds": 0.046928,
+      "seconds": 0.047888,
       "tests": 17
     },
+    "test_fixed_pipeline_literals.FixedPipelineLiteralsTests": {
+      "seconds": 18.30984,
+      "tests": 8
+    },
     "test_human_acceptance.HumanAcceptanceTests": {
-      "seconds": 1.009597,
+      "seconds": 1.515456,
       "tests": 32
     },
     "test_human_admission.AdmissionBoundaryTests": {
-      "seconds": 0.527452,
+      "seconds": 0.533326,
       "tests": 20
     },
     "test_human_admission.AdmissionRecordTests": {
-      "seconds": 0.04006,
+      "seconds": 0.043199,
       "tests": 13
     },
     "test_human_behavior.HumanBehaviorTests": {
-      "seconds": 0.257626,
+      "seconds": 0.340904,
       "tests": 29
     },
     "test_human_profile_cases.HumanProfileCaseTests": {
-      "seconds": 1.130129,
+      "seconds": 1.129611,
       "tests": 17
     },
     "test_human_profile_cases.ProfileEvidenceTests": {
-      "seconds": 3.911357,
+      "seconds": 5.670863,
       "tests": 6
     },
     "test_human_profile_cases.TraceSearchDistinctionTests": {
-      "seconds": 0.243453,
+      "seconds": 0.358846,
       "tests": 6
     },
     "test_human_target.HumanTargetTests": {
-      "seconds": 0.03997,
+      "seconds": 0.06134,
       "tests": 19
     },
+    "test_human_wrapper_corpus.HumanWrapperCorpusTests": {
+      "seconds": 4.64238,
+      "tests": 8
+    },
     "test_implementation_requirements.ImplementationRequirementsTests": {
-      "seconds": 0.421196,
+      "seconds": 0.60681,
       "tests": 18
     },
     "test_implementation_verification.ImplementationVerificationTests": {
-      "seconds": 8.101478,
+      "seconds": 12.766089,
       "tests": 11
     },
     "test_implementation_workflow.ImplementationWorkflowTests": {
-      "seconds": 13.761719,
+      "seconds": 19.267563,
       "tests": 11
     },
+    "test_lowering_corpus.LoweringCorpusTests": {
+      "seconds": 1.019804,
+      "tests": 8
+    },
     "test_m9_admission_audit.M9AdmissionAuditTests": {
-      "seconds": 0.168812,
+      "seconds": 0.173858,
       "tests": 4
     },
     "test_m9_admission_audit.PayloadAdmissionAuditTests": {
-      "seconds": 0.006961,
+      "seconds": 0.010431,
       "tests": 2
     },
+    "test_manager_registration_source_lineage.ManagerRegistrationLineageTests": {
+      "seconds": 15.804888,
+      "tests": 5
+    },
     "test_material_reconciliation.MaterialReconciliationTests": {
-      "seconds": 0.055232,
+      "seconds": 0.064895,
+      "tests": 13
+    },
+    "test_migration_case_b.MigrationCaseBBaselineTests": {
+      "seconds": 33.326443,
+      "tests": 10
+    },
+    "test_migration_inventory.MigrationInventoryTests": {
+      "seconds": 9.338586,
       "tests": 13
     },
     "test_molecular_behavior.MolecularBehaviorTests": {
-      "seconds": 0.861643,
+      "seconds": 1.171872,
       "tests": 11
     },
     "test_molecular_checker.MolecularCheckerTests": {
-      "seconds": 0.427766,
+      "seconds": 0.600597,
       "tests": 10
     },
     "test_molecular_design.MolecularDesignTests": {
-      "seconds": 0.165627,
+      "seconds": 0.224264,
       "tests": 8
     },
     "test_molecular_design_build.MolecularDesignPackageTests": {
-      "seconds": 1.212433,
+      "seconds": 1.684946,
       "tests": 10
     },
     "test_molecular_design_checker.MolecularDesignCheckerTests": {
-      "seconds": 0.162771,
+      "seconds": 0.230282,
       "tests": 13
     },
     "test_molecular_design_workflow.MolecularDesignWorkflowTests": {
-      "seconds": 0.803873,
+      "seconds": 0.80112,
       "tests": 5
     },
     "test_molecular_examples.MolecularExampleTests": {
-      "seconds": 0.329698,
+      "seconds": 0.55426,
       "tests": 3
     },
     "test_molecular_implementation.MolecularImplementationTests": {
-      "seconds": 0.552804,
+      "seconds": 0.546165,
       "tests": 12
     },
     "test_molecular_ir.MolecularSchemaTests": {
-      "seconds": 0.14075,
+      "seconds": 0.142957,
       "tests": 10
     },
     "test_molecular_pipeline.MolecularPipelineTests": {
-      "seconds": 0.807715,
+      "seconds": 1.071704,
       "tests": 9
     },
     "test_molecular_planning.MolecularPlanningTests": {
-      "seconds": 0.019059,
+      "seconds": 0.026785,
       "tests": 2
     },
+    "test_molecular_transitions_corpus.MolecularTransitionsCorpusTests": {
+      "seconds": 0.836883,
+      "tests": 8
+    },
     "test_molecule_chemistry.MoleculeChemistryTests": {
-      "seconds": 0.06597,
+      "seconds": 0.175598,
       "tests": 21
     },
+    "test_molecule_chemistry_corpus.MoleculeChemistryCorpusTests": {
+      "seconds": 0.628138,
+      "tests": 9
+    },
     "test_molecule_coordinates.MoleculeCoordinateTests": {
-      "seconds": 0.029497,
+      "seconds": 0.040765,
       "tests": 24
     },
     "test_molecule_records.MoleculeRecordTests": {
-      "seconds": 0.873697,
+      "seconds": 1.387735,
       "tests": 5
     },
+    "test_molecules_corpus.MoleculesCorpusTests": {
+      "seconds": 25.717127,
+      "tests": 9
+    },
     "test_namespace_migration.NamespaceMigrationTests": {
-      "seconds": 0.019221,
+      "seconds": 0.017416,
       "tests": 3
     },
+    "test_native_fixture_wiring.NativeFixtureWiringTests": {
+      "seconds": 6.00756,
+      "tests": 7
+    },
+    "test_native_synthetic_inspection_campaign.SyntheticInspectionCampaignTests": {
+      "seconds": 27.678074,
+      "tests": 7
+    },
+    "test_native_synthetic_producer_campaign.SyntheticProducerCampaignTests": {
+      "seconds": 9.007746,
+      "tests": 6
+    },
+    "test_native_synthetic_public_sdk_campaign.PublicSyntheticSDKCampaignTests": {
+      "seconds": 27.970989,
+      "tests": 5
+    },
+    "test_native_synthetic_selection_cli_campaign.NativeSyntheticSelectionCliCampaignTests": {
+      "seconds": 268.145276,
+      "tests": 6
+    },
+    "test_native_workflow_authority.WorkflowAuthorityTests": {
+      "seconds": 13.573996,
+      "tests": 9
+    },
+    "test_native_workflow_campaign.WorkflowCampaignHarnessTests": {
+      "seconds": 79.77535,
+      "tests": 3
+    },
+    "test_native_workflow_campaign.WorkflowProjectionTests": {
+      "seconds": 5.843618,
+      "tests": 7
+    },
+    "test_native_workflow_cli_campaign.NativeWorkflowCliCampaignTests": {
+      "seconds": 67.353218,
+      "tests": 6
+    },
+    "test_native_workflow_presentation.WorkflowPresentationTests": {
+      "seconds": 82.335648,
+      "tests": 8
+    },
+    "test_native_workflow_public_sdk.WorkflowPublicSdkCampaignTests": {
+      "seconds": 405.622457,
+      "tests": 6
+    },
+    "test_package_domain_authority.PackageAuthorityTests": {
+      "seconds": 0.402826,
+      "tests": 6
+    },
+    "test_package_metadata_source_lineage.PackageMetadataSourceLineageTests": {
+      "seconds": 4.219728,
+      "tests": 6
+    },
     "test_payload_architecture.PayloadArchitectureTests": {
-      "seconds": 212.601432,
+      "seconds": 293.860398,
       "tests": 13
     },
     "test_payload_architecture_ir.ArchitectureContractTests": {
-      "seconds": 0.941054,
+      "seconds": 1.317976,
       "tests": 13
     },
     "test_payload_architecture_verification.PayloadArchitectureVerificationTests": {
-      "seconds": 236.08792,
+      "seconds": 233.043616,
       "tests": 38
     },
     "test_payload_contracts.PayloadContractTests": {
-      "seconds": 1.433111,
+      "seconds": 1.999413,
       "tests": 14
     },
     "test_payload_execution.ChannelExecutionTests": {
-      "seconds": 0.014011,
+      "seconds": 0.019075,
       "tests": 2
     },
     "test_payload_execution.ExecutionManifestTests": {
-      "seconds": 0.011066,
+      "seconds": 0.01644,
       "tests": 3
     },
     "test_payload_execution.IntegralExecutionTests": {
-      "seconds": 0.066281,
+      "seconds": 0.063173,
       "tests": 7
     },
     "test_payload_execution.StatefulExecutionTests": {
-      "seconds": 0.029548,
+      "seconds": 0.04168,
       "tests": 2
     },
     "test_payload_profiles.PayloadProfileTests": {
-      "seconds": 0.064268,
+      "seconds": 0.087948,
       "tests": 10
     },
     "test_payload_requirements.PayloadDependencyGroundingTests": {
-      "seconds": 0.000476,
+      "seconds": 0.000592,
       "tests": 3
     },
     "test_payload_requirements.PayloadRequirementsTests": {
-      "seconds": 0.180704,
+      "seconds": 0.182376,
       "tests": 18
     },
     "test_payload_selection.PayloadSelectionTests": {
-      "seconds": 74.175835,
+      "seconds": 101.067772,
       "tests": 14
     },
+    "test_payload_structure_check_corpus.PayloadStructureCheckCorpusTests": {
+      "seconds": 37.36397,
+      "tests": 11
+    },
+    "test_payload_structure_corpus.PayloadStructureCorpusTests": {
+      "seconds": 0.167756,
+      "tests": 7
+    },
     "test_pipeline.PipelineTests": {
-      "seconds": 0.01846,
+      "seconds": 0.025622,
       "tests": 21
     },
     "test_pipeline_audit.PipelineAuditTests": {
-      "seconds": 0.003551,
+      "seconds": 0.003824,
+      "tests": 4
+    },
+    "test_pipeline_authoring_sources.AuthoringSourceTests": {
+      "seconds": 0.186671,
+      "tests": 6
+    },
+    "test_pipeline_callback_frame_budget.CallbackFrameBudgetTests": {
+      "seconds": 0.051218,
+      "tests": 1
+    },
+    "test_pipeline_callback_objects.CallbackObjectsTests": {
+      "seconds": 0.855046,
+      "tests": 23
+    },
+    "test_pipeline_callback_semantics.PipelineCallbackSemanticsTests": {
+      "seconds": 1.086216,
+      "tests": 6
+    },
+    "test_pipeline_contract_literals.PipelineContractLiteralTests": {
+      "seconds": 1.206039,
+      "tests": 2
+    },
+    "test_pipeline_deferred_runtime.PipelineDeferredRuntimeTests": {
+      "seconds": 8.843412,
+      "tests": 8
+    },
+    "test_pipeline_deferred_runtime_receipt.PipelineDeferredRuntimeReceiptTests": {
+      "seconds": 22.695459,
+      "tests": 6
+    },
+    "test_pipeline_deferred_semantics.PipelineDeferredSemanticsTests": {
+      "seconds": 4.703899,
+      "tests": 9
+    },
+    "test_pipeline_fixed_build_semantics.PipelineFixedBuildSemanticsTests": {
+      "seconds": 54.832496,
+      "tests": 9
+    },
+    "test_pipeline_fixed_continuation_campaign.ContinuationReceiptTests": {
+      "seconds": 98.348387,
+      "tests": 9
+    },
+    "test_pipeline_fixed_continuation_campaign.PipelineFixedContinuationCampaignTests": {
+      "seconds": 123.058351,
+      "tests": 3
+    },
+    "test_pipeline_fixed_continuation_identity.PipelineFixedContinuationIdentityTests": {
+      "seconds": 14.0,
+      "tests": 7
+    },
+    "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls": {
+      "seconds": 18.0,
+      "tests": 9
+    },
+    "test_pipeline_fixed_continuation_workers.ContinuationSourceDeltaControls": {
+      "seconds": 6.0,
+      "tests": 3
+    },
+    "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls": {
+      "seconds": 22.0,
+      "tests": 11
+    },
+    "test_pipeline_fixed_direct_controls.DirectControlTests": {
+      "seconds": 103.876135,
+      "tests": 6
+    },
+    "test_pipeline_fixed_initializer_receipts.FixedInitializerSemanticReceiptTests": {
+      "seconds": 5.281352,
+      "tests": 9
+    },
+    "test_pipeline_fixed_provider_campaign.PipelineFixedProviderCampaignTests": {
+      "seconds": 383.449774,
+      "tests": 11
+    },
+    "test_pipeline_fixed_provider_semantics.PipelineFixedProviderSemanticsTests": {
+      "seconds": 9.961135,
+      "tests": 12
+    },
+    "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests": {
+      "seconds": 15.556308,
+      "tests": 5
+    },
+    "test_pipeline_fixed_registration_campaign.FixedInitializerReceiptTests": {
+      "seconds": 3.382794,
+      "tests": 2
+    },
+    "test_pipeline_fixed_registration_campaign.PipelineFixedRegistrationCampaignTests": {
+      "seconds": 8.666116,
+      "tests": 8
+    },
+    "test_pipeline_fixed_registration_receipts.RegistrationReceiptTests": {
+      "seconds": 134.759716,
+      "tests": 7
+    },
+    "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests": {
+      "seconds": 0.066163,
+      "tests": 4
+    },
+    "test_pipeline_fixed_registration_runtime.FixedRegistrationRuntimeTests": {
+      "seconds": 0.066894,
+      "tests": 7
+    },
+    "test_pipeline_graph_diagnostics.PublicGraphDiagnosticSourceTests": {
+      "seconds": 4.0,
+      "tests": 2
+    },
+    "test_pipeline_graph_diagnostics.PublicGraphDiagnosticTests": {
+      "seconds": 10.0,
+      "tests": 5
+    },
+    "test_pipeline_historical_source_integrity.PipelineHistoricalSourceIntegrityTests": {
+      "seconds": 1.056463,
+      "tests": 3
+    },
+    "test_pipeline_identity_semantics.PipelineIdentitySemanticsTests": {
+      "seconds": 1.208075,
+      "tests": 8
+    },
+    "test_pipeline_manager_campaign.FixedSerializationGuardTests": {
+      "seconds": 4.407189,
+      "tests": 7
+    },
+    "test_pipeline_manager_campaign.PipelineManagerCampaignTests": {
+      "seconds": 85.930016,
+      "tests": 24
+    },
+    "test_pipeline_manager_context_bindings.DeferredContextBindingsTests": {
+      "seconds": 5.86702,
+      "tests": 6
+    },
+    "test_pipeline_manager_trace.PipelineManagerTraceTests": {
+      "seconds": 15.899506,
+      "tests": 9
+    },
+    "test_pipeline_occurrence_source.OccurrenceSourceTests": {
+      "seconds": 8.0,
+      "tests": 4
+    },
+    "test_pipeline_reference_campaign.ReferenceCampaignSourceTests": {
+      "seconds": 4.185277,
+      "tests": 3
+    },
+    "test_pipeline_reference_campaign.ReferenceFrameInitializerTests": {
+      "seconds": 0.018066,
+      "tests": 1
+    },
+    "test_pipeline_reference_campaign.ReferenceGraphCorrespondenceTests": {
+      "seconds": 0.000646,
+      "tests": 2
+    },
+    "test_pipeline_reference_campaign.ReferenceObservedEvidenceTests": {
+      "seconds": 0.003858,
+      "tests": 3
+    },
+    "test_pipeline_reference_campaign.ReferenceSourceCallpointTests": {
+      "seconds": 4.181726,
+      "tests": 1
+    },
+    "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests": {
+      "seconds": 0.011003,
+      "tests": 4
+    },
+    "test_pipeline_reference_runtime.ReferenceRuntimeAuthorityTests": {
+      "seconds": 0.050485,
+      "tests": 5
+    },
+    "test_pipeline_session_campaign.PipelineSessionCampaignTests": {
+      "seconds": 141.266262,
+      "tests": 11
+    },
+    "test_prebuilt_ci_plan.HostedCiPlanTests": {
+      "seconds": 1.132072,
+      "tests": 11
+    },
+    "test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests": {
+      "seconds": 0.053965,
+      "tests": 6
+    },
+    "test_prebuilt_core_materials.MaterialsTests": {
+      "seconds": 0.048062,
+      "tests": 5
+    },
+    "test_prebuilt_core_release.PrebuiltReleasePolicyTests": {
+      "seconds": 0.005576,
+      "tests": 5
+    },
+    "test_prebuilt_installed_inputs.InstalledInputsTests": {
+      "seconds": 0.091606,
+      "tests": 5
+    },
+    "test_prebuilt_installed_inputs.StartedCancellationTests": {
+      "seconds": 0.052224,
+      "tests": 1
+    },
+    "test_prebuilt_release_chain.ArchiveBoundaryTests": {
+      "seconds": 0.000747,
+      "tests": 2
+    },
+    "test_prebuilt_release_chain.HostedPlanTests": {
+      "seconds": 0.014716,
+      "tests": 6
+    },
+    "test_prebuilt_release_chain.SdkBackendCanonicalizationTests": {
+      "seconds": 0.01857,
+      "tests": 6
+    },
+    "test_prebuilt_release_chain.WholeReleaseTests": {
+      "seconds": 0.047844,
+      "tests": 5
+    },
+    "test_prebuilt_sdk_matrix.MatrixTests": {
+      "seconds": 0.007556,
+      "tests": 5
+    },
+    "test_prebuilt_sdk_matrix.SdkWheelTests": {
+      "seconds": 0.00168,
+      "tests": 4
+    },
+    "test_prebuilt_source_counterpart.InstalledHelperCounterpartTests": {
+      "seconds": 1.527979,
+      "tests": 4
+    },
+    "test_public_synthetic_inspection.PublicSyntheticInspectionTests": {
+      "seconds": 12.880819,
+      "tests": 8
+    },
+    "test_public_synthetic_producers.PublicSyntheticProducerTests": {
+      "seconds": 2.265262,
+      "tests": 8
+    },
+    "test_realization_backend.RealizationBackendTests": {
+      "seconds": 5.621552,
+      "tests": 7
+    },
+    "test_realization_binaries.NativeInputTests": {
+      "seconds": 0.070129,
       "tests": 4
     },
     "test_realization_checker.CheckArtifactTests": {
-      "seconds": 0.059912,
+      "seconds": 0.085794,
       "tests": 9
     },
     "test_realization_checker.FiniteTraceCheckerTests": {
-      "seconds": 0.127564,
+      "seconds": 0.179633,
       "tests": 22
     },
-    "test_realization_contracts.RealizationContractTests": {
-      "seconds": 0.008081,
-      "tests": 13
-    },
-    "test_realization_integration.RealizationIntegrationTests": {
-      "seconds": 1.828295,
+    "test_realization_checks_corpus.RealizationChecksCorpusTests": {
+      "seconds": 99.693825,
       "tests": 6
     },
+    "test_realization_contracts.RealizationContractTests": {
+      "seconds": 0.014039,
+      "tests": 13
+    },
+    "test_realization_foundation_corpus.RealizationFoundationCorpusTests": {
+      "seconds": 53.348456,
+      "tests": 4
+    },
+    "test_realization_integration.RealizationIntegrationTests": {
+      "seconds": 1.775545,
+      "tests": 6
+    },
+    "test_realization_protocol_corpus.RealizationProtocolCorpusTests": {
+      "seconds": 39.935664,
+      "tests": 9
+    },
+    "test_realization_protocol_parallel.ProtocolRoleTests": {
+      "seconds": 38.0,
+      "tests": 19
+    },
+    "test_realization_reproducibility.RealizationReproducibilityTests": {
+      "seconds": 10.352727,
+      "tests": 3
+    },
+    "test_realization_routing.RealizationRoutingTests": {
+      "seconds": 521.394952,
+      "tests": 4
+    },
+    "test_realization_source_lineage.RealizationSourceLineageTests": {
+      "seconds": 0.146406,
+      "tests": 5
+    },
+    "test_realization_workflow_corpus.RealizationWorkflowCorpusTests": {
+      "seconds": 300.444571,
+      "tests": 7
+    },
+    "test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests": {
+      "seconds": 4.218853,
+      "tests": 7
+    },
+    "test_reference_attempt_receipts.ReferenceAttemptReceiptTests": {
+      "seconds": 1.667236,
+      "tests": 6
+    },
+    "test_reference_attempt_source.ReferenceAttemptSourceTests": {
+      "seconds": 1.77643,
+      "tests": 3
+    },
+    "test_reference_backend.ReferenceRoutingTests": {
+      "seconds": 3.080867,
+      "tests": 19
+    },
     "test_reference_builds.ReferenceBuildInputsTests": {
-      "seconds": 0.118285,
+      "seconds": 0.179258,
       "tests": 8
     },
+    "test_reference_contracts_corpus.ReferenceContractsCorpusTests": {
+      "seconds": 46.395244,
+      "tests": 8
+    },
+    "test_reference_execution_corpus.ReferenceExecutionCorpusTests": {
+      "seconds": 6.812412,
+      "tests": 9
+    },
+    "test_reference_execution_guard.ReferenceExecutionGuardTests": {
+      "seconds": 35.784414,
+      "tests": 12
+    },
+    "test_reference_input_authority.ReferenceInputAuthorityTests": {
+      "seconds": 0.0843,
+      "tests": 5
+    },
+    "test_reference_original_counterpart.ReferenceOriginalCounterpartTests": {
+      "seconds": 57.185436,
+      "tests": 10
+    },
     "test_reference_package.ReferencePackageTests": {
-      "seconds": 3.237928,
+      "seconds": 4.544885,
       "tests": 12
     },
     "test_reference_package_audit.ReferencePackageAuditTests": {
-      "seconds": 0.364625,
+      "seconds": 0.361503,
       "tests": 4
     },
+    "test_reference_package_authority.ReferencePackageAuthorityTests": {
+      "seconds": 1.090244,
+      "tests": 5
+    },
+    "test_reference_pipeline_original_counterpart.ReferencePipelineOriginalCounterpartTests": {
+      "seconds": 62.163614,
+      "tests": 7
+    },
+    "test_reference_pipeline_semantics.ReferencePipelineSemanticsTests": {
+      "seconds": 45.011738,
+      "tests": 9
+    },
+    "test_reference_pipeline_transcript.ReferenceTranscriptTests": {
+      "seconds": 30.79236,
+      "tests": 6
+    },
     "test_references.ReferenceTests": {
-      "seconds": 0.901976,
-      "tests": 12
+      "seconds": 1.27006,
+      "tests": 13
+    },
+    "test_request_domains.RequestDomainCorpusTests": {
+      "seconds": 12.966232,
+      "tests": 8
+    },
+    "test_runtime_numbers_corpus.RuntimeNumberCorpusTests": {
+      "seconds": 0.033758,
+      "tests": 2
     },
     "test_semantic_matrix.SemanticRegressionMatrixTests": {
-      "seconds": 0.052758,
+      "seconds": 0.076136,
       "tests": 4
     },
     "test_semantic_metamorphic.SemanticMetamorphicTests": {
-      "seconds": 0.243348,
+      "seconds": 0.352665,
       "tests": 5
     },
     "test_sequence_emission.SequenceEmissionTests": {
-      "seconds": 0.103616,
+      "seconds": 0.145395,
       "tests": 7
     },
     "test_sequence_export.SequenceExportTests": {
-      "seconds": 0.291749,
+      "seconds": 0.413123,
       "tests": 8
     },
+    "test_sequence_export_authority.SequenceAuthorityTests": {
+      "seconds": 0.220919,
+      "tests": 5
+    },
     "test_serialization.SerializationTests": {
-      "seconds": 0.340758,
+      "seconds": 0.476317,
       "tests": 21
     },
-    "test_studio_adversarial.StudioAdversarialTests": {
-      "seconds": 2.565644,
+    "test_source_manifest_corpus.SourceManifestCorpusTests": {
+      "seconds": 3.450093,
+      "tests": 8
+    },
+    "test_source_transport_corpus.SourceTransportCorpusTests": {
+      "seconds": 126.992131,
       "tests": 7
     },
+    "test_static_gmp_configuration.StaticGmpConfigurationTests": {
+      "seconds": 0.013974,
+      "tests": 7
+    },
+    "test_studio_adversarial.StudioAdversarialTests": {
+      "seconds": 3.325546,
+      "tests": 7
+    },
+    "test_studio_assets.StudioAssetTests": {
+      "seconds": 0.002846,
+      "tests": 2
+    },
     "test_studio_cli.StudioCliTests": {
-      "seconds": 0.039095,
+      "seconds": 0.053878,
       "tests": 2
     },
     "test_studio_construction.StudioConstructionTests": {
-      "seconds": 82.559944,
+      "seconds": 109.502361,
       "tests": 11
     },
     "test_studio_review.StudioReviewHTTPTests": {
-      "seconds": 25.18091,
+      "seconds": 36.604162,
       "tests": 1
     },
     "test_studio_review.StudioReviewTests": {
-      "seconds": 134.234483,
+      "seconds": 184.297077,
       "tests": 9
     },
     "test_studio_server.StudioServerTests": {
-      "seconds": 0.390873,
+      "seconds": 0.529849,
       "tests": 6
     },
     "test_studio_service.StudioServiceTests": {
-      "seconds": 4.55711,
+      "seconds": 4.500571,
       "tests": 9
     },
+    "test_synthetic_acceptance_corpus.SyntheticAcceptanceCorpusTests": {
+      "seconds": 123.627432,
+      "tests": 7
+    },
+    "test_synthetic_authority_corpus.SyntheticAuthorityCorpusTests": {
+      "seconds": 32.748039,
+      "tests": 6
+    },
     "test_synthetic_build.SyntheticBuildTests": {
-      "seconds": 1.919617,
+      "seconds": 2.634176,
       "tests": 11
     },
     "test_synthetic_design_workflows.SyntheticDesignWorkflowTests": {
-      "seconds": 14.385604,
+      "seconds": 18.441444,
       "tests": 8
     },
     "test_synthetic_generation.SyntheticGenerationTests": {
-      "seconds": 2.028161,
+      "seconds": 2.81215,
       "tests": 17
     },
+    "test_synthetic_inspection_corpus.SyntheticInspectionCorpusTests": {
+      "seconds": 10.082165,
+      "tests": 6
+    },
     "test_synthetic_model.ContactModelTests": {
-      "seconds": 0.00106,
+      "seconds": 0.001624,
       "tests": 3
     },
     "test_synthetic_model.InertialModelTests": {
-      "seconds": 0.003585,
+      "seconds": 0.006117,
       "tests": 9
     },
     "test_synthetic_model.MechanismArtifactTests": {
-      "seconds": 0.002661,
+      "seconds": 0.004735,
       "tests": 6
     },
     "test_synthetic_model.TypedModelTests": {
-      "seconds": 0.002123,
+      "seconds": 0.003074,
       "tests": 5
     },
+    "test_synthetic_producer_cli.SyntheticProducerCliTests": {
+      "seconds": 5.659926,
+      "tests": 5
+    },
+    "test_synthetic_producer_source_lineage.SyntheticProducerSourceLineageTests": {
+      "seconds": 3.668559,
+      "tests": 6
+    },
+    "test_synthetic_producers_corpus.SyntheticProducersCorpusTests": {
+      "seconds": 213.474811,
+      "tests": 9
+    },
     "test_synthetic_selection.SyntheticSelectionTests": {
-      "seconds": 0.441831,
+      "seconds": 0.642274,
       "tests": 15
     },
+    "test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests": {
+      "seconds": 100.181677,
+      "tests": 5
+    },
+    "test_synthetic_selection_cli_source_lineage.SyntheticSelectionCliSourceLineageTests": {
+      "seconds": 1.129885,
+      "tests": 3
+    },
     "test_synthetic_temporal_model.MemoryModelTests": {
-      "seconds": 0.004676,
+      "seconds": 0.007328,
       "tests": 8
     },
     "test_synthetic_temporal_model.PulseModelTests": {
-      "seconds": 0.003434,
+      "seconds": 0.003665,
       "tests": 7
     },
     "test_synthetic_temporal_model.SustainedModelTests": {
-      "seconds": 0.002454,
+      "seconds": 0.003424,
       "tests": 6
     },
     "test_synthetic_temporal_model.TemporalArtifactTests": {
-      "seconds": 0.00633,
+      "seconds": 0.009917,
       "tests": 6
     },
     "test_synthetic_verification_workflow.SyntheticVerificationWorkflowTests": {
-      "seconds": 5.49916,
+      "seconds": 7.824247,
       "tests": 10
     },
     "test_temporal_and_cooperation.TemporalAndCooperationTests": {
-      "seconds": 0.032055,
+      "seconds": 0.046365,
       "tests": 8
     },
     "test_temporal_components.TemporalComponentTests": {
-      "seconds": 5.696564,
+      "seconds": 7.954348,
       "tests": 15
     },
     "test_temporal_generation.TemporalGenerationTests": {
-      "seconds": 1.324667,
+      "seconds": 1.860706,
       "tests": 15
     },
+    "test_test_shards.TestShardAccountingTests": {
+      "seconds": 3.79517,
+      "tests": 15
+    },
+    "test_transition_check_corpus.TransitionCheckCorpusTests": {
+      "seconds": 34.196696,
+      "tests": 8
+    },
     "test_verification_campaign.VerificationCampaignTests": {
-      "seconds": 5.283975,
+      "seconds": 7.28816,
       "tests": 3
     },
     "test_verification_exploration.AdversarialHistoryTests": {
-      "seconds": 0.024183,
+      "seconds": 0.03461,
       "tests": 2
     },
     "test_verification_exploration.BooleanExplorationTests": {
-      "seconds": 0.015659,
+      "seconds": 0.016209,
       "tests": 7
     },
     "test_verification_exploration.CounterexampleReductionTests": {
-      "seconds": 0.007003,
+      "seconds": 0.009955,
       "tests": 5
     },
     "test_verification_mutations.EvidenceCoverageAuditTests": {
-      "seconds": 0.050235,
+      "seconds": 0.071059,
       "tests": 4
     },
     "test_verification_mutations.VerificationMutationCampaignTests": {
-      "seconds": 0.11656,
+      "seconds": 0.118516,
       "tests": 3
     },
     "test_workflow.WorkflowTests": {
-      "seconds": 0.068283,
+      "seconds": 0.103272,
       "tests": 12
+    },
+    "test_workflow_backend.WorkflowBackendTests": {
+      "seconds": 5.201851,
+      "tests": 18
+    },
+    "test_workflow_cli_capture.WorkflowCliCaptureTests": {
+      "seconds": 46.509073,
+      "tests": 11
+    },
+    "test_workflow_cli_lineage.WorkflowCliLineageTests": {
+      "seconds": 48.34745,
+      "tests": 9
+    },
+    "test_workflow_native_cli.NativeWorkflowCliTests": {
+      "seconds": 40.352988,
+      "tests": 12
+    },
+    "test_workflow_public_sdk.WorkflowPublicSdkTests": {
+      "seconds": 9.34407,
+      "tests": 9
+    },
+    "test_workflow_reproducibility.WorkflowReproducibilityTests": {
+      "seconds": 4.551096,
+      "tests": 4
+    },
+    "test_workflow_source_lineage.WorkflowSourceLineageTests": {
+      "seconds": 4.06902,
+      "tests": 9
     }
   },
   "provenance": {
-    "method": "Successive completed unittest line timestamps; class setup is charged to the next test. First startup interval is excluded. Hints only, never test inventory or evidence of execution.",
-    "observed_verbose_records": 1980,
-    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
-    "python": "3.14.7",
-    "revision": "be9015a37be90b9403ebb03ddeedae4a10fe459f",
-    "run_id": 36888965970,
-    "suite_tests": 1981
+    "measurement": {
+      "class_count": 354,
+      "method": "Per-class maximum of measured (test method + class setup/teardown) seconds across the two hosted Python runtimes; exact original method counts. Residual shard time is retained separately, not concealed as class cost.",
+      "python": [
+        "3.11.16",
+        "3.14.7"
+      ],
+      "run_attempt": 1,
+      "run_id": 37169286045,
+      "scope": "Non-authoritative draft scheduling hints only; not test inventory/execution/acceptance. Re-derive using actual integrated PR86 discovery before applying.",
+      "sorted_lf_ids_sha256": "35c008f805e7f7b86ca3b672fc8ce877453e8c41faf574e92aa6cd2189451b6c",
+      "source_revision": "2cf35b440ce9fca6dc951709b27f8122f00b81f7",
+      "tested_revision": "794a360b0d82a21604b8f4a4ef00199090ce0043",
+      "unit_count": 3436
+    },
+    "reconciled_inventory": {
+      "classes": 367,
+      "sorted_lf_ids_sha256": "85d75c5e72afe190929573749b1b8f9a1436460e6471471582f07f31aa89df1f",
+      "tests": 3527
+    },
+    "scope": "Historical placement input only; fresh discovery/execution/accounting remain mandatory.",
+    "unmeasured": {
+      "test_architecture_routing_parallel.ArchitecturePartitionTests": {
+        "complete_estimated_seconds": 8.0,
+        "fallback_seconds": 8.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_architecture_routing_parallel.ArchitecturePartitionTests.test_changed_and_unlisted_artifacts_are_rejected_before_publication",
+          "test_architecture_routing_parallel.ArchitecturePartitionTests.test_every_case_and_all_b_derived_controls_remain_exactly_once",
+          "test_architecture_routing_parallel.ArchitecturePartitionTests.test_incomplete_failed_stale_unguarded_and_duplicate_partitions_reject",
+          "test_architecture_routing_parallel.ArchitecturePartitionTests.test_wrong_outcomes_or_inconsistent_native_pins_fail_original_checker"
+        ]
+      },
+      "test_ci_core_groups.CoreGroupTests": {
+        "complete_estimated_seconds": 16.0,
+        "fallback_seconds": 16.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_ci_core_groups.CoreGroupTests.test_changed_missing_duplicate_reordered_recipe_is_rejected",
+          "test_ci_core_groups.CoreGroupTests.test_original_complete_plan_and_distinct_output_paths",
+          "test_ci_core_groups.CoreGroupTests.test_receipts_reject_stale_missing_duplicate_failed_and_modified_logs",
+          "test_ci_core_groups.CoreGroupTests.test_shell_order_pipefail_all_groups_and_full_logs",
+          "test_ci_core_groups.CoreGroupTests.test_timeout_and_spawn_failure_are_recorded",
+          "test_ci_core_groups.CoreGroupTests.test_two_groups_overlap_and_keep_original_receipt_order",
+          "test_ci_core_groups.CoreGroupTests.test_worker_count_is_bounded_before_execution",
+          "test_ci_core_groups.CoreGroupTests.test_workflow_runs_and_checks_complete_plan_before_success"
+        ]
+      },
+      "test_ci_native_bundle.NativeBundleTests": {
+        "complete_estimated_seconds": 12.0,
+        "fallback_seconds": 12.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_ci_native_bundle.NativeBundleTests.test_actual_dune_suite_census_and_argument_order_are_preserved",
+          "test_ci_native_bundle.NativeBundleTests.test_complete_bundle_restores_exact_bytes_and_executable_modes",
+          "test_ci_native_bundle.NativeBundleTests.test_every_suite_executes_and_one_failure_prevents_success",
+          "test_ci_native_bundle.NativeBundleTests.test_stale_tampered_missing_extra_and_duplicate_bundles_never_restore",
+          "test_ci_native_bundle.NativeBundleTests.test_symlinked_or_existing_destinations_are_not_overwritten",
+          "test_ci_native_bundle.NativeBundleTests.test_unhandled_dune_actions_or_fields_and_duplicate_tests_fail_closed"
+        ]
+      },
+      "test_ci_scheduling.PartitionedReceiptTests": {
+        "complete_estimated_seconds": 14.0,
+        "fallback_seconds": 14.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_ci_scheduling.PartitionedReceiptTests.test_all_groups_reconstruct_complete_census_with_separate_lifecycle_logs",
+          "test_ci_scheduling.PartitionedReceiptTests.test_bad_campaign_runtime_source_owner_or_recipe_rejects_before_copy",
+          "test_ci_scheduling.PartitionedReceiptTests.test_changed_or_missing_group_logs_and_campaign_artifacts_are_rechecked",
+          "test_ci_scheduling.PartitionedReceiptTests.test_missing_group_cannot_aggregate",
+          "test_ci_scheduling.PartitionedReceiptTests.test_native_input_bridge_uses_actual_owned_manifest_and_rejects_rehashed_forgery",
+          "test_ci_scheduling.PartitionedReceiptTests.test_native_input_rejection_survives_repairing_its_outer_hash",
+          "test_ci_scheduling.PartitionedReceiptTests.test_symlinked_and_overlapping_evidence_is_rejected"
+        ]
+      },
+      "test_ci_scheduling.SchedulingTests": {
+        "complete_estimated_seconds": 6.0,
+        "fallback_seconds": 6.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_ci_scheduling.SchedulingTests.test_complete_campaign_partition_and_all_runtime_jobs_are_required",
+          "test_ci_scheduling.SchedulingTests.test_omitted_repeated_or_unreviewed_campaign_groups_fail_before_execution",
+          "test_ci_scheduling.SchedulingTests.test_workflow_removes_long_campaigns_from_build_critical_path"
+        ]
+      },
+      "test_native_fixture_wiring.NativeFixtureWiringTests": {
+        "complete_estimated_seconds": 6.00756,
+        "fallback_seconds": 6.0,
+        "kind": "measured_plus_new_methods",
+        "unmeasured_test_ids": [
+          "test_native_fixture_wiring.NativeFixtureWiringTests.test_bundled_runner_executes_every_original_suite_and_ordered_fixture_argument",
+          "test_native_fixture_wiring.NativeFixtureWiringTests.test_missing_duplicate_or_reordered_runner_suite_arguments_are_rejected",
+          "test_native_fixture_wiring.NativeFixtureWiringTests.test_missing_duplicate_or_unbound_workflow_fixtures_and_runner_are_rejected"
+        ]
+      },
+      "test_pipeline_fixed_continuation_identity.PipelineFixedContinuationIdentityTests": {
+        "complete_estimated_seconds": 14.0,
+        "fallback_seconds": 14.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_pipeline_fixed_continuation_identity.PipelineFixedContinuationIdentityTests.test_driver_identity_uses_identical_source_text_across_python_minors",
+          "test_pipeline_fixed_continuation_identity.PipelineFixedContinuationIdentityTests.test_equal_authority_does_not_allow_borrowing_another_occurrence_graph",
+          "test_pipeline_fixed_continuation_identity.PipelineFixedContinuationIdentityTests.test_equal_serialized_authorities_retain_distinct_source_identity",
+          "test_pipeline_fixed_continuation_identity.PipelineFixedContinuationIdentityTests.test_every_occurrence_has_original_context_and_independent_graph",
+          "test_pipeline_fixed_continuation_identity.PipelineFixedContinuationIdentityTests.test_graph_bytes_and_observer_cannot_change_under_rehashed_inventory",
+          "test_pipeline_fixed_continuation_identity.PipelineFixedContinuationIdentityTests.test_missing_reordered_and_reassigned_occurrences_are_rejected",
+          "test_pipeline_fixed_continuation_identity.PipelineFixedContinuationIdentityTests.test_six_frozen_authored_graphs_remain_exact"
+        ]
+      },
+      "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls": {
+        "complete_estimated_seconds": 18.0,
+        "fallback_seconds": 18.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_actual_artifact_collision_rejects_merge",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_changed_raw_receipt_cannot_be_hidden_by_parsed_claim",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_complete_worker_merge_preserves_source_order_and_raw_evidence",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_failed_or_mixed_revision_worker_cannot_merge",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_missing_and_reordered_workers_cannot_merge",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_nonzero_worker_exit_cannot_be_hidden_by_success_receipt",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_repaired_aggregate_execution_cannot_invent_test_success",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_repaired_raw_worker_receipt_must_match_aggregate_checks",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_worker_outcomes_cannot_drop_partition_proof"
+        ]
+      },
+      "test_pipeline_fixed_continuation_workers.ContinuationSourceDeltaControls": {
+        "complete_estimated_seconds": 6.0,
+        "fallback_seconds": 6.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_pipeline_fixed_continuation_workers.ContinuationSourceDeltaControls.test_exact_additive_delta_precedes_unchanged_occurrence_witness",
+          "test_pipeline_fixed_continuation_workers.ContinuationSourceDeltaControls.test_extra_delta_and_rehashed_witness_are_rejected",
+          "test_pipeline_fixed_continuation_workers.ContinuationSourceDeltaControls.test_frozen_original_driver_functions_remain_exact"
+        ]
+      },
+      "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls": {
+        "complete_estimated_seconds": 22.0,
+        "fallback_seconds": 22.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_class_assertion_failure_is_not_partial_success",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_class_fixture_and_ordered_methods_keep_shared_identity",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_equal_but_distinct_method_code_is_rejected",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_failed_worker_is_retained_and_cannot_become_success",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_group_case_selection_keeps_each_context_and_all_calls",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_group_comparison_rejects_equal_authority_with_changed_physical_graph",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_invalid_bound_and_duplicate_jobs_cannot_launch",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_launch_failure_drains_previously_started_workers",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_one_worker_is_a_true_serial_limit",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_timeout_terminates_worker_and_retains_failure",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_two_process_bound_and_source_order_survive_out_of_order_finishes"
+        ]
+      },
+      "test_pipeline_graph_diagnostics.PublicGraphDiagnosticSourceTests": {
+        "complete_estimated_seconds": 4.0,
+        "fallback_seconds": 4.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_pipeline_graph_diagnostics.PublicGraphDiagnosticSourceTests.test_extra_source_omitted_diagnostic_and_rehashed_witness_are_rejected",
+          "test_pipeline_graph_diagnostics.PublicGraphDiagnosticSourceTests.test_new_delta_composes_before_unchanged_authoring_and_original_path_proofs"
+        ]
+      },
+      "test_pipeline_graph_diagnostics.PublicGraphDiagnosticTests": {
+        "complete_estimated_seconds": 10.0,
+        "fallback_seconds": 10.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_pipeline_graph_diagnostics.PublicGraphDiagnosticTests.test_canonical_scalar_types_signed_zero_missing_keys_and_lengths_stay_distinct",
+          "test_pipeline_graph_diagnostics.PublicGraphDiagnosticTests.test_diagnostic_limits_are_bounded_and_do_not_call_live_object_hooks",
+          "test_pipeline_graph_diagnostics.PublicGraphDiagnosticTests.test_failed_diagnostic_preserves_original_comparison_exception_and_nonassertion_errors",
+          "test_pipeline_graph_diagnostics.PublicGraphDiagnosticTests.test_mapping_order_failure_retains_exact_first_actual_and_expected_leaf",
+          "test_pipeline_graph_diagnostics.PublicGraphDiagnosticTests.test_success_uses_original_equal_and_never_requests_diagnostics"
+        ]
+      },
+      "test_pipeline_occurrence_source.OccurrenceSourceTests": {
+        "complete_estimated_seconds": 8.0,
+        "fallback_seconds": 8.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_pipeline_occurrence_source.OccurrenceSourceTests.test_exact_complete_predecessors_are_restored",
+          "test_pipeline_occurrence_source.OccurrenceSourceTests.test_extra_changes_and_rehashed_witnesses_are_rejected",
+          "test_pipeline_occurrence_source.OccurrenceSourceTests.test_new_original_task_keeps_the_complete_prior_source_and_data_closure",
+          "test_pipeline_occurrence_source.OccurrenceSourceTests.test_occurrence_controls_run_before_native_work_with_prior_preflight"
+        ]
+      },
+      "test_realization_protocol_parallel.ProtocolRoleTests": {
+        "complete_estimated_seconds": 38.0,
+        "fallback_seconds": 38.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_campaign_recipe_only_enables_protocol_and_routing_parallelism",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_changed_extra_symlinked_and_colliding_artifacts_reject_before_publication",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_each_routing_role_must_preserve_complete_guard",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_exact_full_13438_order_and_original_independent_checker",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_forged_self_consistent_report_fails_unchanged_semantic_checker",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_full_8314_routing_order_guards_and_original_body",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_identical_role_artifacts_deduplicate_with_original_receipt_shape",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_independent_installed_recipe_rejects_serial_missing_or_extra_workers",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_mode_does_not_accept_arbitrary_campaign_callable_or_schema",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_original_case_and_boundary_bodies_are_byte_for_byte_unchanged",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_postrun_each_routing_guard_and_raw_report_bytes_are_required",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_postrun_metadata_source_closure_and_safe_paths_fail_closed",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_raw_workers_are_rechecked_independently_after_aggregation",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_relative_custom_output_keeps_owned_mode_worker_root",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_shared_runner_dispatches_serial_coordinator_and_both_selected_roles",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_source_run_runtime_package_corpus_executable_ownership_is_exact",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_two_isolated_workers_keep_exact_commands_environment_and_wait_on_failure",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_worker_completion_order_does_not_change_merge_order",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_wrong_missing_reordered_duplicated_or_failed_role_cannot_publish"
+        ]
+      }
+    }
   },
   "schema": "biocompiler.unittest_duration_hints.v1",
   "unknown_seconds_per_test": 2.0

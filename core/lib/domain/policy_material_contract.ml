@@ -34,6 +34,7 @@ let provider_ref_of_json value=
   {definition_id=name(get "id" value);definition_version=name(get "version" value);definition_digest=sha(get "digest" value)}
 type resource_unit=Truth_cells|Evidence_records|Edge_history_cells|Generation_counters
   |Active_attempt_records|Retained_correlation_records|Timer_cells|Control_event_records|Input_rows_per_tick
+  |Machine_state_bits|Machine_correlation_records
 type resource_scope=Per_executor|Per_encounter_slot
 type resource_owner=Node of string|Input of string|Layout
 type resource_demand={demand_id:string;unit:resource_unit;scope:resource_scope;quantity:int;owner:resource_owner}
@@ -43,11 +44,13 @@ let resource_unit_name=function Truth_cells->"truth_cells"|Evidence_records->"ev
   |Edge_history_cells->"edge_history_cells"|Generation_counters->"generation_counters"
   |Active_attempt_records->"active_attempt_records"|Retained_correlation_records->"retained_correlation_records"
   |Timer_cells->"timer_cells"|Control_event_records->"control_event_records"|Input_rows_per_tick->"input_rows_per_tick"
+|Machine_state_bits->"machine_state_bits"|Machine_correlation_records->"machine_correlation_records"
 let resource_unit_of_json value=match Json.string value with
   |"truth_cells"->Truth_cells|"evidence_records"->Evidence_records|"edge_history_cells"->Edge_history_cells
   |"generation_counters"->Generation_counters|"active_attempt_records"->Active_attempt_records
   |"retained_correlation_records"->Retained_correlation_records|"timer_cells"->Timer_cells
   |"control_event_records"->Control_event_records|"input_rows_per_tick"->Input_rows_per_tick
+  |"machine_state_bits"->Machine_state_bits|"machine_correlation_records"->Machine_correlation_records
   |_->Diagnostic.fail "policy_material_contract" "Unknown material resource unit."
 let resource_scope_name=function Per_executor->"per_executor"|Per_encounter_slot->"per_encounter_slot"
 let resource_scope_of_json value=match Json.string value with

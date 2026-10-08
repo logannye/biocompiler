@@ -1,0 +1,14 @@
+test_current_source_closure_explicitly_pins_distribution_bytes (test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_current_source_closure_explicitly_pins_distribution_bytes) ... ok
+test_lazy_installed_resolver_import_remains_in_closed_source_authority (test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_lazy_installed_resolver_import_remains_in_closed_source_authority) ... ok
+test_loaded_unlisted_module_does_not_expand_source_authority (test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_loaded_unlisted_module_does_not_expand_source_authority) ... ok
+test_omitted_or_changed_distribution_source_is_rejected (test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_omitted_or_changed_distribution_source_is_rejected) ... ok
+test_actual_two_runtimes_and_current_authority_are_required (test_pipeline_reference_runtime.ReferenceRuntimeAuthorityTests.test_actual_two_runtimes_and_current_authority_are_required) ... ok
+test_all_four_slots_require_separate_matching_runtime_reconstruction (test_pipeline_reference_runtime.ReferenceRuntimeAuthorityTests.test_all_four_slots_require_separate_matching_runtime_reconstruction) ... ok
+test_complete_matrix_and_independent_worker_success_are_mandatory (test_pipeline_reference_runtime.ReferenceRuntimeAuthorityTests.test_complete_matrix_and_independent_worker_success_are_mandatory) ... ok
+test_source_run_binary_execution_kind_and_runtime_cannot_be_relabelled (test_pipeline_reference_runtime.ReferenceRuntimeAuthorityTests.test_source_run_binary_execution_kind_and_runtime_cannot_be_relabelled) ... ok
+test_worker_report_and_full_artifact_inventory_are_independently_bound (test_pipeline_reference_runtime.ReferenceRuntimeAuthorityTests.test_worker_report_and_full_artifact_inventory_are_independently_bound) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.052s
+
+OK

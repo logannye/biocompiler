@@ -1,0 +1,4 @@
+usage: biocompiler synthetic-replay [-h] --expected-request EXPECTED_REQUEST
+                                    [--output OUTPUT]
+                                    path
+biocompiler synthetic-replay: error: the following arguments are required: --expected-request

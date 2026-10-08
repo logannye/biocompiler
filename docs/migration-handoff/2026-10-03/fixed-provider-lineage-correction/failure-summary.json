@@ -1,0 +1,29 @@
+{
+  "artifact": {
+    "bytes": 21698926,
+    "id": 11277686984,
+    "members": 19887,
+    "sha256": "0d4abf30642902e85b9597195f1f38e4eb77bbc56354e8cf79325edada9151eb",
+    "unique_member_names": true
+  },
+  "failure": "Corpus() rejects original compiler/pipeline.py pin before creating provider receipt or starting that native campaign",
+  "job_id": 111219403082,
+  "manager": {
+    "completed_checks": 5,
+    "completed_comparison_checks": 34,
+    "completed_deferred_checks": 47,
+    "python_version": "3.14.7",
+    "revision": "c832bd54498cd6c070d04cc7bb805bbca99bc7c1",
+    "run_id": "37121925726",
+    "source_revision": "0dd0fe54f3d1f0e502b30188f096cb5387fbb9b2",
+    "status": "success"
+  },
+  "manager_receipt_sha256": "5ddb90efd4827262a458e70b991787fed76a95e807d05f7da818f2d3d485b0c2",
+  "provider_receipt_present": false,
+  "retained_log": {
+    "path": "generated/migration-next/pr85-current-fresh-failure/pipeline-fixed-providers.log",
+    "sha256": "c15ecea9cf8eaa16577f1a7a186f3638b8b34f3b15c62aa723e17d334bf92c4c"
+  },
+  "run_id": 37121925726,
+  "source_revision": "0dd0fe54f3d1f0e502b30188f096cb5387fbb9b2"
+}

@@ -1,0 +1,1 @@
+"{\n  \"assumption\": \"Both payloads enter the same cell\",\n  \"consumer_molecule\": \"reference_cds\",\n  \"id\": \"same-cell\",\n  \"kind\": \"same_cell\",\n  \"provider_molecule\": \"helper\",\n  \"requirement_ids\": [],\n  \"schema_version\": \"biocompiler.construct_dependency.v0.1\"\n}"

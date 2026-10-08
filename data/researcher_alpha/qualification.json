@@ -1,0 +1,124 @@
+{
+  "candidates": [
+    {
+      "biological_reference": false,
+      "complete_software_authority": true,
+      "disposition": "selected_for_engineering_rehearsal_only",
+      "external_sequence_assets_copied": false,
+      "functional_expression_reference": false,
+      "id": "artificial-staged-and-state-reading",
+      "remaining": [
+        "Fresh current-revision public facade and installed-package validation",
+        "Real researcher task qualification and usability walkthrough",
+        "Owner distribution terms"
+      ],
+      "source": "project-authored software literals"
+    },
+    {
+      "disposition": "incomplete_reference_negative_control",
+      "id": "existing-murine-fapcar-cds",
+      "known": {
+        "alphabet": "RNA",
+        "length": 1491,
+        "record_id": "wo2022081694a1.murine-fapcar.seq3",
+        "scope": "exact_CDS_reference_only",
+        "sequence_sha256": "90b1d6267fa865806bf73f384125d55d009207e65aac5328045ae7b8e0e4e9d6"
+      },
+      "missing": [
+        "complete_delivered_molecule_boundaries",
+        "five_prime_UTR",
+        "three_prime_UTR",
+        "cap",
+        "nucleotide_modifications",
+        "exact_poly_A_tail",
+        "delivered_molecule_topology",
+        "molecular_behavior_contract",
+        "human_immune_applicability"
+      ],
+      "rights": "No explicit open-content license established in existing curation; patent rights not assessed. No sequence or excerpt copied here.",
+      "source_context": "Murine study-associated construct; not human immune or in-vivo applicability evidence.",
+      "sources": [
+        {
+          "url": "https://patents.google.com/patent/WO2022081694A1/en",
+          "version": "WO2022081694A1 published 2022-04-21"
+        },
+        {
+          "bytes": 16395,
+          "repository_path": "data/references/fap_car/manifest.json",
+          "sha256": "f2969e3594cc1bcfa06c9dd0c886adcf68452799be69b568fedca5c6fa3fbb5f"
+        },
+        {
+          "bytes": 6920,
+          "repository_path": "data/references/fap_car/curation.md",
+          "sha256": "49de271968e1dc792820d89df18b81659fadbd396151b55db4e23f90cc41799c"
+        }
+      ]
+    },
+    {
+      "access": "Login required for sequence download.",
+      "disposition": "not_qualified",
+      "human_immune_applicability": "not_established",
+      "id": "addgene-183475",
+      "material_terms": "Academic/nonprofit only; UBMTA.",
+      "missing": [
+        "downloaded_versioned_sequence_authority",
+        "complete_delivered_RNA_boundaries",
+        "complete_chemistry_and_tail_authority",
+        "sequence_redistribution_terms",
+        "requested_implementation_contracts"
+      ],
+      "record_name": "pGEM4Z-EGFP",
+      "reviewed": "Public deposit page; sequence download not accessed.",
+      "sequence_redistribution": "not_established",
+      "url": "https://www.addgene.org/183475/"
+    },
+    {
+      "access": "Login required for sequence download.",
+      "disposition": "not_qualified",
+      "human_immune_applicability": "not_established",
+      "id": "addgene-203348",
+      "known_conflict": {
+        "declared_transcript_length": 1038,
+        "depositor_correction_tail_bases": 74,
+        "name_and_purpose_tail_bases": 64,
+        "resolution": "Requires exact downloaded sequence and construction authority; no sequence inferred."
+      },
+      "material_terms": "Academic/nonprofit only; UBMTA.",
+      "missing": [
+        "downloaded_versioned_sequence_authority",
+        "resolved_tail_authority",
+        "complete_delivered_RNA_chemistry",
+        "sequence_redistribution_terms",
+        "requested_implementation_contracts"
+      ],
+      "record_name": "pGEM4Z-T7-5'UTR-EGFP-3'UTR-A64",
+      "reviewed": "Public deposit page; sequence download not accessed.",
+      "sequence_redistribution": "not_established",
+      "url": "https://www.addgene.org/203348/"
+    },
+    {
+      "disposition": "requires_source_review_and_assets",
+      "id": "human-t-cell-engineered-backbones",
+      "missing": [
+        "complete_accessible_versioned_sequence_authority",
+        "chemistry_profile_support",
+        "asset_distribution_terms",
+        "independent_reference_review",
+        "requested_implementation_contracts"
+      ],
+      "profile_gap": "Reported partial pseudouridine enrichment cannot be represented by silently using an unmodified coding region.",
+      "reported_asset_access": "Full sequences/maps available upon request and subject to institutional MTAs.",
+      "reviewed": "Primary-page search text only; full-page open returned a browser challenge. No asset downloaded.",
+      "title": "Engineered mRNA backbones for gene expression in human T cells",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13101584/"
+    }
+  ],
+  "comparison_engineering_project": "comparison-input.json",
+  "experimental_suitability": "not_established",
+  "new_wet_lab_results": false,
+  "real_researcher_project_status": "open",
+  "review_date": "2026-10-07",
+  "schema_version": "biocompiler.researcher_alpha_qualification.v0.1",
+  "search_scope": "Time-bounded existing-asset and primary-source qualification; not exhaustive.",
+  "selected_engineering_project": "staged-input.json"
+}

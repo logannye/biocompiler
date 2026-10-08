@@ -1,0 +1,40 @@
+{
+  "baseline_tests": 3408,
+  "runtimes": {
+    "311": {
+      "added": [
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_exact_and_one_short_lifetime_boundary_include_close_frames",
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_old_resource_profile_and_declaration_rejected_before_application",
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_one_million_node_frame_cap_remains_separate_from_lifetime",
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_v2_lifetime_crosses_old_ceiling_and_reduced_lifetime_still_closes",
+        "test_pipeline_callback_frame_budget.CallbackFrameBudgetTests.test_independent_frame_and_lifetime_exact_and_one_short_bounds",
+        "test_prebuilt_ci_plan.HostedCiPlanTests.test_callback_budget_restoration_preserves_prior_source_proofs",
+        "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_callback_witness_location_inventory_and_archive_tampering_reject",
+        "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_exact_callback_profile_source_restores_whole_original_client"
+      ],
+      "classes": 351,
+      "plan_sha256": "b63ed5f0d6864897abd96c00fd570a50997ed60b3dec0f3e8a43607e7927073a",
+      "removed": [],
+      "test_ids_lf_sha256": "cf27c05ddcfa8cc4f96c4ae7bf5d11bece4e64edfc9edb2e77c82880185e04f4",
+      "tests": 3416
+    },
+    "314": {
+      "added": [
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_exact_and_one_short_lifetime_boundary_include_close_frames",
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_old_resource_profile_and_declaration_rejected_before_application",
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_one_million_node_frame_cap_remains_separate_from_lifetime",
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_v2_lifetime_crosses_old_ceiling_and_reduced_lifetime_still_closes",
+        "test_pipeline_callback_frame_budget.CallbackFrameBudgetTests.test_independent_frame_and_lifetime_exact_and_one_short_bounds",
+        "test_prebuilt_ci_plan.HostedCiPlanTests.test_callback_budget_restoration_preserves_prior_source_proofs",
+        "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_callback_witness_location_inventory_and_archive_tampering_reject",
+        "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_exact_callback_profile_source_restores_whole_original_client"
+      ],
+      "classes": 351,
+      "plan_sha256": "6848102412b8ff59e998ef42f337d3847ff5d91382402116f301ef329ab1f5f5",
+      "removed": [],
+      "test_ids_lf_sha256": "cf27c05ddcfa8cc4f96c4ae7bf5d11bece4e64edfc9edb2e77c82880185e04f4",
+      "tests": 3416
+    }
+  },
+  "scope": "Discovery only, not execution; corrected working tree based on b27f5244"
+}

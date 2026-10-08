@@ -1,0 +1,147 @@
+{
+  "python_version": "3.11.15",
+  "scope": "complete startup corpus/declaration/source-file reads only; subprocess and network audited forbidden",
+  "rows": [
+    {
+      "module": "check_native_workflow",
+      "source_sha256": "47b44cf0a375cae1fe9491bd9c2397bc2a296f32e428505cf3efaf77b5e9f622",
+      "case_count": 112,
+      "status": "passed",
+      "seconds": 1.158
+    },
+    {
+      "module": "check_native_workflow_presentation",
+      "source_sha256": "db6495fa79dc2c7e5251882d9dfb27186aa5699676966c129c8481931e80e08d",
+      "case_count": 137,
+      "campaign_sources": {
+        "tools/check_native_workflow_presentation.py": "db6495fa79dc2c7e5251882d9dfb27186aa5699676966c129c8481931e80e08d",
+        "tests/test_native_workflow_presentation.py": "14c7daf1ac4a4d68865b9d6d1c0de69751b2f84b171938691dab1d7dfafc9ccb",
+        "tools/check_native_workflow.py": "47b44cf0a375cae1fe9491bd9c2397bc2a296f32e428505cf3efaf77b5e9f622",
+        "tools/check_workflow_reproducibility.py": "d76b6c6d411d8113523a09b7779a6c59dab43060c222480eefa1432a7e32107f"
+      },
+      "status": "passed",
+      "seconds": 2.119
+    },
+    {
+      "module": "check_native_workflow_authority",
+      "source_sha256": "849bee319887217fc9c2922bfd47d531304e622b40a4a3e6fe753605c4256c06",
+      "case_count": 23,
+      "campaign_sources": {
+        "tools/check_native_workflow_authority.py": "849bee319887217fc9c2922bfd47d531304e622b40a4a3e6fe753605c4256c06",
+        "tests/test_native_workflow_authority.py": "8ba6024cab4ca8f98606423618ac19cb6c6ba8a35497093c576ed4c14bcaf9bb",
+        "tools/check_native_workflow.py": "47b44cf0a375cae1fe9491bd9c2397bc2a296f32e428505cf3efaf77b5e9f622",
+        "tools/check_workflow_reproducibility.py": "d76b6c6d411d8113523a09b7779a6c59dab43060c222480eefa1432a7e32107f"
+      },
+      "status": "passed",
+      "seconds": 0.058
+    },
+    {
+      "module": "check_native_workflow_public_sdk",
+      "source_sha256": "459e9510e2738dc8a4908f517abcd774fcfd5f153adea54799f7dcd048e6839e",
+      "case_count": 164,
+      "campaign_sources": {
+        "tools/check_native_workflow_public_sdk.py": "459e9510e2738dc8a4908f517abcd774fcfd5f153adea54799f7dcd048e6839e",
+        "tests/test_native_workflow_public_sdk.py": "6b4eba7b21e4d20d0b719b67b6828720e9b3d1682eca1ee988577c9e69ab2aad",
+        "tools/check_native_workflow_presentation.py": "db6495fa79dc2c7e5251882d9dfb27186aa5699676966c129c8481931e80e08d",
+        "tools/check_native_workflow.py": "47b44cf0a375cae1fe9491bd9c2397bc2a296f32e428505cf3efaf77b5e9f622",
+        "tools/check_workflow_reproducibility.py": "d76b6c6d411d8113523a09b7779a6c59dab43060c222480eefa1432a7e32107f"
+      },
+      "status": "passed",
+      "seconds": 2.126
+    },
+    {
+      "module": "check_native_workflow_cli",
+      "source_sha256": "e902e5faf7fcd8c76ff34825a065a5961c79cc3b5b2e427467090d5d5cef3890",
+      "baseline_cases": 70,
+      "case_count": 70,
+      "campaign_sources": {
+        "tools/check_native_workflow_cli.py": "e902e5faf7fcd8c76ff34825a065a5961c79cc3b5b2e427467090d5d5cef3890",
+        "tools/check_native_workflow_public_sdk.py": "459e9510e2738dc8a4908f517abcd774fcfd5f153adea54799f7dcd048e6839e",
+        "tools/freeze_workflow_cli.py": "a811548539232ee29f8fd1c52620e51778c2bf895df62847db4474591ec89564",
+        "tests/test_native_workflow_cli_campaign.py": "cb31b329c70da8aeeaad03003090ad6f5790ca622cb3d668bd7d0fdbdcabd306",
+        "tools/cli_runtime_counterparts.py": "5214379137ef5a40f1004451d89c618698e1fcae1702b0716fe592017505894c",
+        "tests/conformance/workflow-cli-runtime-counterparts-v1.json": "93d8ffeb4ec490839d7906151f92df7b3fb43d31c94f8f2fa983f93aeb6ac8db"
+      },
+      "status": "passed",
+      "seconds": 2.011
+    },
+    {
+      "module": "check_native_synthetic_producer",
+      "source_sha256": "9b2a09c3b2810a068d11f2c1a92e4bfb7bec3d3bb63601e65a4c2d64adb12085",
+      "case_count": 1226,
+      "campaign_sources": {
+        "tools/check_native_synthetic_producer.py": "9b2a09c3b2810a068d11f2c1a92e4bfb7bec3d3bb63601e65a4c2d64adb12085",
+        "tests/test_native_synthetic_producer_campaign.py": "3ef00c01249c6ef5e87929bb9d11c0129710b1d06e24a520ec6d49459a6ce99c",
+        "tools/check_workflow_reproducibility.py": "d76b6c6d411d8113523a09b7779a6c59dab43060c222480eefa1432a7e32107f",
+        "tools/check_realization_binaries.py": "cdc1eeaa24aa500aec60ecb0e170e5652cb2d43b7952a9d55026066b4f399a13",
+        "protocol/synthetic-producer-v1.json": "11a071cd0c8ad12f7caa4c413f2958fd7f1896520d1f9c083059e7b308cfce07"
+      },
+      "status": "passed",
+      "seconds": 1.366
+    },
+    {
+      "module": "check_native_synthetic_public_sdk",
+      "source_sha256": "909e2bfa52bc97d8c4e519931bd9f031e4415625c7010719a8b8f684b3804015",
+      "case_count": 1235,
+      "campaign_sources": {
+        "tools/check_native_synthetic_public_sdk.py": "909e2bfa52bc97d8c4e519931bd9f031e4415625c7010719a8b8f684b3804015",
+        "tests/test_native_synthetic_public_sdk_campaign.py": "fabbc7cec90489d082e9820a5d78c17a775f260c070bc0ce185e3dfcc6f3cef0",
+        "tools/check_native_synthetic_producer.py": "9b2a09c3b2810a068d11f2c1a92e4bfb7bec3d3bb63601e65a4c2d64adb12085",
+        "tests/test_native_synthetic_producer_campaign.py": "3ef00c01249c6ef5e87929bb9d11c0129710b1d06e24a520ec6d49459a6ce99c",
+        "tools/check_native_workflow_public_sdk.py": "459e9510e2738dc8a4908f517abcd774fcfd5f153adea54799f7dcd048e6839e",
+        "tools/check_native_workflow.py": "47b44cf0a375cae1fe9491bd9c2397bc2a296f32e428505cf3efaf77b5e9f622",
+        "tools/check_native_workflow_presentation.py": "db6495fa79dc2c7e5251882d9dfb27186aa5699676966c129c8481931e80e08d",
+        "tools/check_workflow_reproducibility.py": "d76b6c6d411d8113523a09b7779a6c59dab43060c222480eefa1432a7e32107f",
+        "tools/check_realization_binaries.py": "cdc1eeaa24aa500aec60ecb0e170e5652cb2d43b7952a9d55026066b4f399a13",
+        "protocol/synthetic-producer-v1.json": "11a071cd0c8ad12f7caa4c413f2958fd7f1896520d1f9c083059e7b308cfce07"
+      },
+      "status": "passed",
+      "seconds": 3.014
+    },
+    {
+      "module": "check_native_synthetic_selection_cli",
+      "source_sha256": "9822725b704fcab547a3afed967a4a31f27cce1ab8de4567ed8eed7f3546f230",
+      "baseline_cases": 72,
+      "case_count": 72,
+      "campaign_sources": {
+        "tools/check_native_synthetic_selection_cli.py": "9822725b704fcab547a3afed967a4a31f27cce1ab8de4567ed8eed7f3546f230",
+        "tests/test_native_synthetic_selection_cli_campaign.py": "4ddf53e55df6cec6be55c8d598c7a2bd57cb88791b83eec0f27f47b6f7403db5",
+        "tools/freeze_synthetic_selection_cli.py": "b181b47e592781a91966e90779f2c667b80f070cbc03cd0390406598b9870520",
+        "tools/freeze_workflow_cli.py": "a811548539232ee29f8fd1c52620e51778c2bf895df62847db4474591ec89564",
+        "tools/cli_runtime_counterparts.py": "5214379137ef5a40f1004451d89c618698e1fcae1702b0716fe592017505894c",
+        "tools/check_native_synthetic_producer.py": "9b2a09c3b2810a068d11f2c1a92e4bfb7bec3d3bb63601e65a4c2d64adb12085",
+        "tools/check_workflow_reproducibility.py": "d76b6c6d411d8113523a09b7779a6c59dab43060c222480eefa1432a7e32107f",
+        "tools/check_realization_binaries.py": "cdc1eeaa24aa500aec60ecb0e170e5652cb2d43b7952a9d55026066b4f399a13",
+        "tests/conformance/synthetic-selection-cli-runtime-counterparts-v1.json": "f9af4b5dedcdb12243209b862d0808866f1ae62355aca291465be75c7f00824b",
+        "protocol/synthetic-producer-public-v1.json": "5b7d0ffc4f015a46b6432fbdbad824e989683f74abedbe128368012a5a5b4f03",
+        "protocol/synthetic-producer-v1.json": "11a071cd0c8ad12f7caa4c413f2958fd7f1896520d1f9c083059e7b308cfce07",
+        "core/test/test_synthetic_producer_public_protocol.ml": "56d63cd634c8172f60e1698ca5ea028ad93a016c0da2682b8912262832347bcb",
+        "core/lib/domain/synthetic_build_request.ml": "c3a36639720029b139976e317b69ee4e65a7a186b58b9d2c4e0739d97ccc59ba",
+        "core/lib/domain/build_request.ml": "3f76185e51716fdac932b711a10fd77d8cd13c22d2a86fb81fd91f3c69a56891",
+        "core/lib/producer_service/synthetic_producer_public_service.ml": "a441f8912ebbc6adef1b6abc4e63e88daa2632fd09a8c3873ff2584cd2b625ea"
+      },
+      "status": "passed",
+      "seconds": 0.234
+    },
+    {
+      "module": "check_native_synthetic_inspection",
+      "source_sha256": "b8a2e7f79e5540ac41ef84060fe8f05d157234882bf5d5f4f2148160dcf2ed62",
+      "case_count": 9660,
+      "campaign_sources": {
+        "tools/check_native_synthetic_inspection.py": "b8a2e7f79e5540ac41ef84060fe8f05d157234882bf5d5f4f2148160dcf2ed62",
+        "tests/test_native_synthetic_inspection_campaign.py": "016f0b0ee2ed07974094b77ec65291a3aaca14e7cda30fa28783eb4048730ab9",
+        "tools/synthetic_inspection_corpus.py": "75b54ab71cb201029045f3505339cb824d405e65bedd770ec0f339bd8d7fec0a",
+        "tests/test_synthetic_inspection_corpus.py": "3363c45e75197fa4e67736c1151e35c57ea75462f232c224d929481bc8d0ab87",
+        "tools/check_native_synthetic_producer.py": "9b2a09c3b2810a068d11f2c1a92e4bfb7bec3d3bb63601e65a4c2d64adb12085",
+        "tools/check_native_workflow_public_sdk.py": "459e9510e2738dc8a4908f517abcd774fcfd5f153adea54799f7dcd048e6839e",
+        "tools/check_workflow_reproducibility.py": "d76b6c6d411d8113523a09b7779a6c59dab43060c222480eefa1432a7e32107f",
+        "tools/check_realization_binaries.py": "cdc1eeaa24aa500aec60ecb0e170e5652cb2d43b7952a9d55026066b4f399a13",
+        "protocol/synthetic-inspection-v1.json": "64256b32c001d6b836a0c94c6cf4afcafb6a96a7062d463bcb06dd4f5c6cb603",
+        "tests/conformance/synthetic-inspection-supplemental-v1.json": "c9b6179b9c36ee56cd11706f4bf5593f23524de054ff9cb245610245170b818d",
+        "core/test/test_synthetic_inspection_protocol.ml": "4fd26dc23b6b5e66c03b4b3a34d5b1967da0a903a354397a637764e96b1e5950"
+      },
+      "status": "passed",
+      "seconds": 3.156
+    }
+  ]
+}

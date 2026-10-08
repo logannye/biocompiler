@@ -66,6 +66,11 @@ def run_construct_pipeline(
     Reuse requires ``manager.result('construct', scope='reference_construct')``.
     No upstream behavioral proof or sequence-emission success is inferred.
     """
+    from sys import modules
+    _reference_backend = modules.get("biocompiler.reference_backend")
+    _reference_route = None if _reference_backend is None else _reference_backend.current()
+    if _reference_route is not None:
+        return _reference_route.construct(request, registry, manifests)
     require(
         isinstance(request, ConstructRequest), "Expected a frozen ConstructRequest."
     )

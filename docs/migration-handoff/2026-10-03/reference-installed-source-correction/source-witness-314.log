@@ -1,0 +1,15 @@
+test_callback_budget_restoration_preserves_prior_source_proofs (tests.test_prebuilt_ci_plan.HostedCiPlanTests.test_callback_budget_restoration_preserves_prior_source_proofs) ... ok
+test_deferred_context_restoration_rejects_unreviewed_or_extra_source_changes (tests.test_prebuilt_ci_plan.HostedCiPlanTests.test_deferred_context_restoration_rejects_unreviewed_or_extra_source_changes) ... ok
+test_every_native_test_command_survives_and_static_preparation_precedes_dependencies (tests.test_prebuilt_ci_plan.HostedCiPlanTests.test_every_native_test_command_survives_and_static_preparation_precedes_dependencies) ... ok
+test_every_previous_required_job_and_variant_remains_with_two_additions (tests.test_prebuilt_ci_plan.HostedCiPlanTests.test_every_previous_required_job_and_variant_remains_with_two_additions) ... ok
+test_fixed_provider_restoration_rejects_unreviewed_source_changes (tests.test_prebuilt_ci_plan.HostedCiPlanTests.test_fixed_provider_restoration_rejects_unreviewed_source_changes) ... ok
+test_fresh_four_runtime_slots_have_no_source_install_or_dynamic_gmp_fallback (tests.test_prebuilt_ci_plan.HostedCiPlanTests.test_fresh_four_runtime_slots_have_no_source_install_or_dynamic_gmp_fallback) ... ok
+test_hosted_audit_selection_resolves_tool_symlinks_without_relaxing_release_inputs (tests.test_prebuilt_ci_plan.HostedCiPlanTests.test_hosted_audit_selection_resolves_tool_symlinks_without_relaxing_release_inputs) ... ok
+test_installed_path_edits_are_finite_and_no_semantic_case_body_is_changed (tests.test_prebuilt_ci_plan.HostedCiPlanTests.test_installed_path_edits_are_finite_and_no_semantic_case_body_is_changed) ... ok
+test_reference_distribution_restoration_retains_the_complete_original_path_proof (tests.test_prebuilt_ci_plan.HostedCiPlanTests.test_reference_distribution_restoration_retains_the_complete_original_path_proof) ... ok
+test_sdk_assembly_pins_build_tools_and_both_material_companions (tests.test_prebuilt_ci_plan.HostedCiPlanTests.test_sdk_assembly_pins_build_tools_and_both_material_companions) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.325s
+
+OK

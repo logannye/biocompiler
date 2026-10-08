@@ -6,6 +6,8 @@ open Bioc_wire
 module I = Bioc_domain.Policy_implementation
 
 val profile : string
+val staged_execution_profile : string
+val execution_profile : I.t -> string
 type reason = Missing | Stale | Invalid | Conflicting
 type truth_signal = { value : I.truth option; reasons : reason list }
 type binding = { slot : string option; generation : int }
@@ -33,12 +35,17 @@ type attempt_status = Active | Completed | Failed | Timed_out | Reset_invalidate
 type attempt = { attempt_id : string; ordinal : int; bank : string; binding : binding;
   executor : string; subject : string; gate : string; guard : I.endpoint;
   causes : string list; product : string; started_tick : int; deadline_tick : int;
-  ended_tick : int option; status : attempt_status; authorization : I.truth }
+  ended_tick : int option; status : attempt_status; authorization : I.truth; machine : string option }
 type truth_write = { commit : string; destination : string; binding : binding; value : I.truth }
 type request = { commit : string; bank : string; activation : activation; product : string }
+type machine_snapshot = { bank : string; binding : binding; state : string; retained_attempts : string list }
+type machine_write = { commit : string; destination : string; binding : binding; state : string }
+type machine_transition = { bank : string; gate : string; commit : string; binding : binding;
+  destination : string; retained_attempts : string list }
 type signal = Truth of truth_signal | Product of string | Events of event list
   | Activations of activation list | Writes of truth_write list
   | Requests of request list | Attempts of attempt list
+  | Machine of machine_snapshot | Machine_writes of machine_write list
 type port_value = { endpoint : I.endpoint; binding : binding; signal : signal }
 type evidence_snapshot = { bank : string; binding : binding; signal : truth_signal;
   observed_tick : int option; available_tick : int option; occurrences : string list }
@@ -48,19 +55,27 @@ type action_kind = Deferred of activation * reason list
   | Feedback_accepted of string * string | Feedback_rejected of string * string * string
   | Observation_batch of { bank : string; binding : binding; input_ids : string list;
       retained_ids : string list; evidence : evidence; observed_tick : int }
-  | State_written of truth_write | Effect_requested of attempt
+  | State_written of truth_write | Effect_requested of attempt | Machine_transition of machine_transition
 type action = { microstep : int; detail : action_kind }
 type round = { microstep : int; ports : port_value list }
 type slot_snapshot = { slot_id : string; generation : int; active : bool }
 type frame = { tick : int; rounds : round list; outputs : port_value list;
   events : event list; actions : action list; creations : attempt list;
-  attempts : attempt list; evidence : evidence_snapshot list; slots : slot_snapshot list }
+  attempts : attempt list; evidence : evidence_snapshot list; slots : slot_snapshot list;
+  machines : machine_snapshot list; execution_profile : string }
 type state
 type usage = { work : int; retained : int; allocations : int }
 
-(** Validates the closed initial runtime shape: direct gate/arbiter/commit
+(** Validates the closed runtime shape: direct gate/arbiter/commit
     control, one initiating gate and exact guard channel per attempt bank,
-    evidence-only observed edges, and no cross-scope mutable state. *)
+    evidence-only observed edges, and no cross-scope mutable state. A staged
+    gate reads the exact machine bank targeted by its transition commit.
+    Retained-attempt gates consume explicit outcome selectors. State and
+    correlation filters never become the retained source guard; a false or
+    Unknown transition guard is silently inactive, as in source execution.
+    Machine lineage is replaced by a newly requested batch, preserved when
+    no requests start, and cleared on entry to a terminal state. All capacity
+    checks precede state/request commits; predecessor states are immutable. *)
 val initialize : implementation:I.t -> environment:environment -> limits:limits -> state
 val next_tick : state -> int
 val usage : state -> usage

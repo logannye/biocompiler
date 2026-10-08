@@ -3,6 +3,11 @@
 val implementation_version : string
 val profile_version : string
 val profile : Bioc_wire.Json.t
+(* Separately negotiated presentation leaves every v1 profile/receipt unchanged. *)
+val presentation_implementation_version : string
+val presentation_profile_version : string
+val presentation_version : string
+val presentation_profile : Bioc_wire.Json.t
 val profiles : (string * Bioc_wire.Json.t) list
 val operations : string list
 val validation_scopes : string list
@@ -18,7 +23,9 @@ type result = { artifact : string; result : Bioc_wire.Json.t }
    Descriptor transports may supply [load_retained_record] instead of an already
    parsed record. It runs only after complete fresh authority decoding, preserving
    historical authority-before-record error precedence. It must charge its read,
-   parse and retained lifetime on the same [budget]; it is not a wire callback. *)
+   parse and retained lifetime on the same [budget]; it is not a wire callback.
+   V2 commands are checked after fresh authority decoding and before execution
+   or retained-record loading. Presentation counts share the same work budget. *)
 val handle_in : budget:Bioc_realization_checker.Verification_workflow_budget.t ->
   executable:Bioc_wire.Protocol.executable -> request_id:string -> operation:string ->
   payload:Bioc_wire.Json.t -> authority:Bioc_wire.Json.t ->

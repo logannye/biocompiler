@@ -1,0 +1,1679 @@
+name: Compiler checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Only newer revisions of the same PR replace prior work. Main pushes and
+# manual runs keep unique groups, so neither can cancel another needed run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+# Explicit bash makes piped checker/type-check failures fail their run step.
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  unit-plan:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Install package
+        run: python -m pip install .
+      - name: Discover every test and balance five whole-class shards
+        run: python tools/test_shards.py plan --start-directory tests --shards 5 --output generated/unit-plan/plan.json
+      - name: Retain exact test plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-plan-py${{ matrix.python-version }}
+          path: generated/unit-plan/plan.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  unit-tests:
+    needs: unit-plan
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        python-version: ["3.11", "3.14"]
+        shard: [0, 1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Install package
+        run: python -m pip install .
+      - uses: actions/download-artifact@v4
+        with:
+          name: unit-plan-py${{ matrix.python-version }}
+          path: generated/unit-plan
+      - name: Rediscover and execute assigned tests with timing and accounting
+        run: python tools/test_shards.py run --plan generated/unit-plan/plan.json --shard ${{ matrix.shard }} --output generated/unit-result/shard-${{ matrix.shard }}.json
+      - name: Retain test outcomes even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-result-py${{ matrix.python-version }}-shard-${{ matrix.shard }}
+          path: generated/unit-result/shard-${{ matrix.shard }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  unit-accounting:
+    if: always()
+    needs: [unit-plan, unit-tests]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Install package
+        run: python -m pip install .
+      - uses: actions/download-artifact@v4
+        with:
+          name: unit-plan-py${{ matrix.python-version }}
+          path: generated/unit-plan
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: unit-result-py${{ matrix.python-version }}-shard-*
+          path: generated/unit-results
+          merge-multiple: true
+      - name: Require every discovered test exactly once and all shards successful
+        if: always()
+        run: |
+          python tools/test_shards.py verify --plan generated/unit-plan/plan.json \
+            --result generated/unit-results/shard-0.json --result generated/unit-results/shard-1.json \
+            --result generated/unit-results/shard-2.json --result generated/unit-results/shard-3.json \
+            --result generated/unit-results/shard-4.json --output generated/unit-accounting/accounting-py${{ matrix.python-version }}.json
+      - name: Retain coverage accounting and measured shard runtimes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-accounting-py${{ matrix.python-version }}
+          path: generated/unit-accounting/accounting-py${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  installed-executable:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job installed-executable --variant ${{ matrix.python-version }} --output generated/ci/start.json
+      - name: Install package
+        run: python -m pip install .
+      - name: Compile and independently replay executable RNA payloads outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          PAYLOAD_OUTPUT: ${{ github.workspace }}/generated/executable-rna-payload-ci
+        run: |
+          python "$GITHUB_WORKSPACE/examples/executable_payload.py" --output "$PAYLOAD_OUTPUT"
+          biocompiler payload-build --request "$PAYLOAD_OUTPUT/request.json" --output "$PAYLOAD_OUTPUT/cli.build.json"
+          biocompiler payload-verify "$PAYLOAD_OUTPUT/cli.build.json" --expected-request "$PAYLOAD_OUTPUT/request.json" > "$PAYLOAD_OUTPUT/verification.json"
+          biocompiler payload-fasta "$PAYLOAD_OUTPUT/cli.build.json" --expected-request "$PAYLOAD_OUTPUT/request.json" > "$PAYLOAD_OUTPUT/cli.fasta"
+          biocompiler inspect "$PAYLOAD_OUTPUT/cli.build.json" > "$PAYLOAD_OUTPUT/inspection.json"
+          python -c "import os, pathlib; p = pathlib.Path(os.environ['PAYLOAD_OUTPUT']); assert (p / 'build.json').read_bytes() == (p / 'cli.build.json').read_bytes(); assert (p / 'payloads.fasta').read_bytes() == (p / 'cli.fasta').read_bytes()"
+      - name: Retain executable RNA payload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: executable-rna-payload-py${{ matrix.python-version }}
+          path: generated/executable-rna-payload-ci/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/installed-executable-${{ matrix.python-version }}.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-installed-executable-${{ matrix.python-version }}
+          path: generated/ci/installed-executable-${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  installed-architecture:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job installed-architecture --variant ${{ matrix.python-version }} --output generated/ci/start.json
+      - name: Install package
+        run: python -m pip install .
+      - name: Compile and independently replay RNA architectures, automatic matches and controls outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          ARCHITECTURE_OUTPUT: ${{ github.workspace }}/generated/payload-architecture-ci
+        run: python "$GITHUB_WORKSPACE/tools/check_payload_architecture_install.py" --output "$ARCHITECTURE_OUTPUT"
+      - name: Retain complete RNA architecture and paired export evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: payload-architecture-py${{ matrix.python-version }}
+          path: generated/payload-architecture-ci/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/installed-architecture-${{ matrix.python-version }}.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-installed-architecture-${{ matrix.python-version }}
+          path: generated/ci/installed-architecture-${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  circuit-integration:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job circuit-integration --variant ${{ matrix.python-version }} --output generated/ci/start.json
+      - name: Install package
+        run: python -m pip install .
+      - name: Check source metadata and circuit infrastructure outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          INFRA_OUTPUT: ${{ github.workspace }}/generated/circuit-infrastructure-ci
+          SOURCE_OUTPUT: ${{ github.workspace }}/generated/circuit-sources-ci
+          REVIEW_OUTPUT: ${{ github.workspace }}/generated/circuit-review-ci
+        run: |
+          python "$GITHUB_WORKSPACE/examples/circuit_sources.py" --output "$SOURCE_OUTPUT"
+          biocompiler circuit-sources-check --inventory "$SOURCE_OUTPUT/inventory.json" --output "$SOURCE_OUTPUT/cli.assessment.json"
+          biocompiler circuit-sources-verify "$SOURCE_OUTPUT/cli.assessment.json" --expected-inventory "$SOURCE_OUTPUT/inventory.json"
+          biocompiler circuit-sources-readiness "$SOURCE_OUTPUT/inventory.json" --output "$SOURCE_OUTPUT/cli.readiness.json"
+          python "$GITHUB_WORKSPACE/examples/circuit_infrastructure.py" --output "$INFRA_OUTPUT"
+          biocompiler circuit-bindings-check "$INFRA_OUTPUT/candidate.json" --expected-request "$INFRA_OUTPUT/binding-request.json" --output "$INFRA_OUTPUT/cli.binding-assessment.json"
+          biocompiler circuit-bindings-verify "$INFRA_OUTPUT/cli.binding-assessment.json" --candidate "$INFRA_OUTPUT/candidate.json" --expected-request "$INFRA_OUTPUT/binding-request.json"
+          biocompiler circuit-evidence-capture "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/evidence-request.json" --output "$INFRA_OUTPUT/cli.evidence-receipt.json"
+          biocompiler circuit-evidence-check "$INFRA_OUTPUT/cli.evidence-receipt.json" --build "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/evidence-request.json" --output "$INFRA_OUTPUT/cli.evidence-assessment.json"
+          biocompiler circuit-evidence-verify "$INFRA_OUTPUT/cli.evidence-assessment.json" --receipt "$INFRA_OUTPUT/cli.evidence-receipt.json" --build "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/evidence-request.json"
+          biocompiler circuit-inspect "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/request.json" --output "$INFRA_OUTPUT/cli.inspection.json"
+          biocompiler circuit-diff "$INFRA_OUTPUT/build.json" "$INFRA_OUTPUT/build.json" --expected-before "$INFRA_OUTPUT/request.json" --expected-after "$INFRA_OUTPUT/request.json" --output "$INFRA_OUTPUT/cli.diff.json"
+          python "$GITHUB_WORKSPACE/examples/circuit_review.py" --output "$REVIEW_OUTPUT"
+          biocompiler circuit-review-create "$REVIEW_OUTPUT/build.json" --expected-authority "$REVIEW_OUTPUT/authority.json" --source-assessment "$REVIEW_OUTPUT/source-assessment.json" --binding-assessment "$REVIEW_OUTPUT/binding-assessment.json" --evidence-receipt "$REVIEW_OUTPUT/evidence-receipt.json" --evidence-assessment "$REVIEW_OUTPUT/evidence-assessment.json" --output "$REVIEW_OUTPUT/cli.review.bcb"
+          biocompiler circuit-review-inspect "$REVIEW_OUTPUT/cli.review.bcb" --output "$REVIEW_OUTPUT/inspection.json"
+          biocompiler circuit-review-verify "$REVIEW_OUTPUT/cli.review.bcb" --expected-authority "$REVIEW_OUTPUT/authority.json" --output "$REVIEW_OUTPUT/cli.verification.json"
+          biocompiler inspect "$REVIEW_OUTPUT/authority.json"
+          python -c "import os, pathlib; p = pathlib.Path(os.environ['REVIEW_OUTPUT']); assert (p / 'review.bcb').read_bytes() == (p / 'cli.review.bcb').read_bytes(); assert (p / 'verification.json').read_bytes() == (p / 'cli.verification.json').read_bytes()"
+      - name: Retain infrastructure contract evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: circuit-infrastructure-evidence-py${{ matrix.python-version }}
+          path: |
+            generated/circuit-infrastructure-ci/
+            generated/circuit-sources-ci/
+            generated/circuit-review-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Build and replay supplied circuit constructions outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          CIRCUIT_OUTPUT: ${{ github.workspace }}/generated/circuit-construction-ci
+        run: |
+          python "$GITHUB_WORKSPACE/examples/circuit_construction.py" --output "$CIRCUIT_OUTPUT"
+          biocompiler circuit-build --request "$CIRCUIT_OUTPUT/request.json" --output "$CIRCUIT_OUTPUT/cli.build.json"
+          biocompiler circuit-verify "$CIRCUIT_OUTPUT/cli.build.json" --expected-request "$CIRCUIT_OUTPUT/request.json"
+          biocompiler circuit-export "$CIRCUIT_OUTPUT/cli.build.json" --expected-request "$CIRCUIT_OUTPUT/request.json" --output "$CIRCUIT_OUTPUT/export.json"
+          biocompiler circuit-verify "$CIRCUIT_OUTPUT/export.json" --expected-request "$CIRCUIT_OUTPUT/request.json"
+          biocompiler inspect "$CIRCUIT_OUTPUT/request.json"
+          biocompiler inspect "$CIRCUIT_OUTPUT/candidate.json"
+          biocompiler inspect "$CIRCUIT_OUTPUT/assessment.json"
+          biocompiler inspect "$CIRCUIT_OUTPUT/export.json"
+          python -c "import json, os, pathlib; p = pathlib.Path(os.environ['CIRCUIT_OUTPUT']); assert json.loads((p / 'build.json').read_text()) == json.loads((p / 'cli.build.json').read_text()) == json.loads((p / 'export.json').read_text())"
+      - name: Retain supplied circuit construction evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: circuit-construction-evidence-py${{ matrix.python-version }}
+          path: generated/circuit-construction-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Inspect structured circuit molecule declarations
+        run: |
+          python examples/circuit_molecules.py --output generated/circuit-molecules-ci
+          biocompiler inspect generated/circuit-molecules-ci/bundle.json
+          biocompiler inspect generated/circuit-molecules-ci/record.json
+      - name: Retain declared molecule identity evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: circuit-molecule-declarations-py${{ matrix.python-version }}
+          path: generated/circuit-molecules-ci/
+      - name: Check circuit intent authoring and independent replay
+        run: |
+          python examples/circuit_intent.py --output generated/circuit-intent-ci
+          biocompiler circuit-intent-check --request generated/circuit-intent-ci/product.request.json --output generated/circuit-intent-ci/cli.assessment.json
+          biocompiler circuit-intent-verify generated/circuit-intent-ci/cli.assessment.json --expected-request generated/circuit-intent-ci/product.request.json
+          biocompiler inspect generated/circuit-intent-ci/reference.request.json
+          biocompiler inspect generated/circuit-intent-ci/cli.assessment.json
+      - name: Retain circuit intent evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: circuit-intent-evidence-py${{ matrix.python-version }}
+          path: generated/circuit-intent-ci/
+      - name: Check human circuit profile scope and independent authority
+        run: |
+          python examples/circuit_profile.py --output generated/circuit-profile-ci
+          biocompiler circuit-profile-check --request generated/circuit-profile-ci/product.request.json --output generated/circuit-profile-ci/cli.assessment.json
+          biocompiler circuit-profile-verify generated/circuit-profile-ci/cli.assessment.json --expected-request generated/circuit-profile-ci/product.request.json
+          biocompiler inspect generated/circuit-profile-ci/reference.request.json
+          biocompiler inspect generated/circuit-profile-ci/cli.assessment.json
+      - name: Retain circuit profile evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: circuit-profile-evidence-py${{ matrix.python-version }}
+          path: generated/circuit-profile-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/circuit-integration-${{ matrix.python-version }}.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-circuit-integration-${{ matrix.python-version }}
+          path: generated/ci/circuit-integration-${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  integration-examples:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job integration-examples --variant ${{ matrix.python-version }} --output generated/ci/start.json
+      - name: Install package
+        run: python -m pip install .
+      - name: Check human benchmark audit integrity and claim boundaries
+        run: python tools/check_human_benchmark_audit.py
+      - name: Reconstruct reviewed partial material evidence
+        run: python tools/check_material_reconciliation.py
+      - name: Run authoring examples
+        run: python examples/intent_programs.py
+      - name: Compile and independently verify intent-directed molecular candidates
+        run: |
+          python examples/intent_candidate.py --output generated/intent-candidate-ci
+          biocompiler candidate-build --request generated/intent-candidate-ci/product_a.request.json --output generated/intent-candidate-ci/cli.build.json
+          biocompiler candidate-verify generated/intent-candidate-ci/cli.build.json --expected-request generated/intent-candidate-ci/product_a.request.json
+          biocompiler candidate-fasta generated/intent-candidate-ci/cli.build.json --expected-request generated/intent-candidate-ci/product_a.request.json > generated/intent-candidate-ci/cli.fasta
+      - name: Retain intent-directed molecular candidate evidence
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: intent-candidate-evidence-py${{ matrix.python-version }}
+          path: generated/intent-candidate-ci
+      - name: Run behavior trace example
+        run: python examples/behavior_trace.py
+      - name: Analyze requirements and compile declared molecular implementations
+        run: |
+          python examples/molecular_implementation.py --output generated/molecular-implementation-ci
+          biocompiler implementation-analyze --request generated/molecular-implementation-ci/source.json --output generated/molecular-implementation-ci/requirements-cli.json
+          biocompiler implementation-build --request generated/molecular-implementation-ci/compact.request.json --output generated/molecular-implementation-ci/cli.build.json
+          biocompiler implementation-verify generated/molecular-implementation-ci/cli.build.json --expected-request generated/molecular-implementation-ci/compact.request.json
+          biocompiler implementation-fasta generated/molecular-implementation-ci/cli.build.json --expected-request generated/molecular-implementation-ci/compact.request.json > generated/molecular-implementation-ci/cli.fasta
+          biocompiler inspect generated/molecular-implementation-ci/requirements-cli.json
+          biocompiler inspect generated/molecular-implementation-ci/cli.build.json
+          python -c "import subprocess; result = subprocess.run(['biocompiler', 'implementation-build', '--request', 'generated/molecular-implementation-ci/strict.request.json', '--output', 'generated/molecular-implementation-ci/strict-cli.build.json']); assert result.returncode == 1, result.returncode"
+      - name: Retain molecular implementation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: molecular-implementation-evidence-py${{ matrix.python-version }}
+          path: generated/molecular-implementation-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Run independent realization checks
+        run: python examples/realization_check.py
+      - name: Run checked request-to-synthetic pipeline
+        run: python examples/checked_pipeline.py
+      - name: Run checked temporal generation
+        run: python examples/temporal_pipeline.py
+      - name: Build and reconstruct portable temporal synthetic packages
+        run: |
+          python examples/synthetic_build.py --output generated/synthetic-ci
+          biocompiler synthetic-build --request generated/synthetic-ci/request.json --output generated/synthetic-ci/cli.bcb > generated/synthetic-ci/build.json
+          biocompiler synthetic-inspect generated/synthetic-ci/cli.bcb > generated/synthetic-ci/inspect.json
+          biocompiler synthetic-verify generated/synthetic-ci/cli.bcb --expected-request generated/synthetic-ci/request.json > generated/synthetic-ci/verify.json
+      - name: Retain synthetic workflow evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: synthetic-workflow-python-${{ matrix.python-version }}
+          path: generated/synthetic-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Select, compose and reconstruct a bounded digital design
+        run: |
+          python examples/synthetic_selection.py
+          python examples/synthetic_design.py --output generated/synthetic-design-ci
+          biocompiler synthetic-select --request generated/synthetic-design-ci/request.json --output generated/synthetic-design-ci/selection-cli.json > generated/synthetic-design-ci/selection-summary.json
+          biocompiler synthetic-build --request generated/synthetic-design-ci/request.json --output generated/synthetic-design-ci/design-cli.bcb > generated/synthetic-design-ci/build-summary.json
+          biocompiler synthetic-inspect generated/synthetic-design-ci/design-cli.bcb > generated/synthetic-design-ci/inspect.json
+          biocompiler synthetic-verify generated/synthetic-design-ci/design-cli.bcb --expected-request generated/synthetic-design-ci/request.json > generated/synthetic-design-ci/verify.json
+          biocompiler synthetic-explore --request generated/synthetic-design-ci/campaign-request.json --output generated/synthetic-design-ci/campaign-cli-record.json > generated/synthetic-design-ci/campaign-summary.json
+          biocompiler synthetic-replay generated/synthetic-design-ci/campaign-cli-record.json --expected-request generated/synthetic-design-ci/campaign-request.json > generated/synthetic-design-ci/replay.json
+      - name: Retain and replay failed temporal verification evidence
+        run: |
+          python examples/synthetic_verification.py --output generated/synthetic-verification-ci
+          biocompiler synthetic-check --request generated/synthetic-verification-ci/check-request.json --output generated/synthetic-verification-ci/check-cli-record.json > generated/synthetic-verification-ci/check-summary.json
+          python -c "import subprocess; result = subprocess.run(['biocompiler', 'synthetic-check', '--request', 'generated/synthetic-verification-ci/wrong-reset-request.json', '--output', 'generated/synthetic-verification-ci/wrong-reset-cli-record.json']); assert result.returncode == 1, result.returncode" > generated/synthetic-verification-ci/wrong-reset-summary.json
+          biocompiler synthetic-reduce --request generated/synthetic-verification-ci/reduction-request.json --output generated/synthetic-verification-ci/reduction-cli-record.json > generated/synthetic-verification-ci/reduction-summary.json
+          biocompiler synthetic-replay generated/synthetic-verification-ci/reduction-cli-record.json --expected-request generated/synthetic-verification-ci/reduction-request.json > generated/synthetic-verification-ci/replay.json
+          biocompiler inspect generated/synthetic-verification-ci/wrong-reset-cli-record.json > generated/synthetic-verification-ci/inspection.json
+      - name: Retain design selection and verification workflow evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: synthetic-design-python-${{ matrix.python-version }}
+          path: |
+            generated/synthetic-design-ci/
+            generated/synthetic-verification-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Run checked component linking and reference selection
+        run: python examples/component_linking.py
+      - name: Assemble and reconstruct complete structural RNA designs
+        run: |
+          python examples/molecular_design.py --output generated/molecular-design-ci
+          biocompiler molecular-design-build --request generated/molecular-design-ci/request.json --output generated/molecular-design-ci/cli.bcb > generated/molecular-design-ci/build-summary.json
+          biocompiler molecular-design-inspect generated/molecular-design-ci/cli.bcb > generated/molecular-design-ci/inspection.json
+          biocompiler molecular-design-verify generated/molecular-design-ci/cli.bcb --expected-request generated/molecular-design-ci/request.json > generated/molecular-design-ci/verification.json
+          biocompiler inspect generated/molecular-design-ci/handoff.json > generated/molecular-design-ci/handoff-inspection.json
+          biocompiler inspect generated/molecular-design-ci/substitution-failure.json > generated/molecular-design-ci/failure-inspection.json
+      - name: Retain molecular design and candidate-checking evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: molecular-design-python-${{ matrix.python-version }}
+          path: generated/molecular-design-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Run checked DNA and RNA reference construct assembly
+        run: python examples/reference_construct.py
+      - name: Emit, check and export exact DNA and RNA reference CDSs
+        run: python examples/reference_sequences.py
+      - name: Build and reconstruct portable reference packages
+        run: |
+          mkdir -p generated/reference-ci
+          python examples/reference_build.py > generated/reference-ci/example.log 2>&1
+          biocompiler reference-build --alphabet RNA --reference-dir data/references/fap_car --output generated/reference-ci/rna.bcb > generated/reference-ci/build.json 2> generated/reference-ci/build.log
+          biocompiler reference-inspect generated/reference-ci/rna.bcb > generated/reference-ci/inspect.json
+          python -c "import json, pathlib, subprocess; identity = json.loads(pathlib.Path('generated/reference-ci/build.json').read_text())['build_fingerprint']; subprocess.run(['biocompiler', 'reference-verify', 'generated/reference-ci/rna.bcb', '--expected-build', identity], check=True)" > generated/reference-ci/verify.json 2> generated/reference-ci/verify.log
+      - name: Run bounded verification and preserve counterexample evidence
+        run: |
+          mkdir -p generated/verification-ci
+          python examples/verification_campaign.py --output generated/verification-ci > generated/verification-ci/campaign.log 2>&1
+          cat generated/verification-ci/campaign.log
+          biocompiler inspect generated/verification-ci/bounded-report.json > generated/verification-ci/inspection.json
+      - name: Retain verification campaign evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: verification-evidence-python-${{ matrix.python-version }}
+          path: generated/verification-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Check molecular correspondence and whole-molecule readiness
+        run: |
+          mkdir -p generated/m9-ci
+          python examples/molecular_contract.py --output generated/m9-ci/molecular > generated/m9-ci/molecular.log 2>&1
+          cat generated/m9-ci/molecular.log
+          python examples/payload_readiness.py --output generated/m9-ci/payload > generated/m9-ci/payload.log 2>&1
+          cat generated/m9-ci/payload.log
+          biocompiler inspect generated/m9-ci/molecular/molecular-behavior-result.json > generated/m9-ci/molecular-inspection.json
+      - name: Retain M9 contract and readiness evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: molecular-readiness-python-${{ matrix.python-version }}
+          path: generated/m9-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Retain reference build failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: reference-build-failure-python-${{ matrix.python-version }}
+          path: generated/reference-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Inspect CLI
+        run: |
+          biocompiler --version
+          biocompiler architecture
+      - name: Record and inspect unresolved human target contract
+        run: |
+          python examples/human_target.py --output generated/human-target-ci
+          biocompiler inspect generated/human-target-ci/human-target.json
+      - name: Check and inspect bounded human secretion contracts
+        run: |
+          python examples/human_behavior.py --output generated/human-behavior-ci
+          biocompiler inspect generated/human-behavior-ci/human-behavior-request.json
+          biocompiler inspect generated/human-behavior-ci/trace-pass.json
+          biocompiler inspect generated/human-behavior-ci/trace-fail.json
+          biocompiler inspect generated/human-behavior-ci/trace-unknown.json
+      - name: Retain human behavior contract evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: human-behavior-evidence-python-${{ matrix.python-version }}
+          path: generated/human-behavior-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Check and inspect human deployment contracts
+        run: |
+          python examples/human_deployment.py --output generated/deployment-ci
+          biocompiler inspect generated/deployment-ci/request-unknown.json
+          biocompiler inspect generated/deployment-ci/assessment-pass.json
+          biocompiler inspect generated/deployment-ci/assessment-fail.json
+          biocompiler inspect generated/deployment-ci/assessment-unsupported.json
+      - name: Retain deployment contract evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: deployment-evidence-python-${{ matrix.python-version }}
+          path: generated/deployment-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Check and inspect required and prohibited human behavior
+        run: |
+          python examples/human_acceptance.py --output generated/acceptance-ci
+          biocompiler inspect generated/acceptance-ci/human-acceptance-request.json
+          biocompiler inspect generated/acceptance-ci/assessment-pass.json
+          biocompiler inspect generated/acceptance-ci/assessment-fail.json
+          biocompiler inspect generated/acceptance-ci/assessment-unknown.json
+          biocompiler inspect generated/acceptance-ci/assessment-unsupported.json
+      - name: Retain human acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: human-acceptance-evidence-python-${{ matrix.python-version }}
+          path: generated/acceptance-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Check human admission and inspect software-only artifacts
+        run: |
+          python examples/human_admission.py --output generated/admission-ci
+          biocompiler inspect generated/admission-ci/human-request.json
+          biocompiler inspect generated/admission-ci/human-assessment.json
+          biocompiler inspect generated/admission-ci/software-assessment.json
+          biocompiler inspect generated/admission-ci/human-selection.json
+      - name: Retain human admission evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: human-admission-evidence-python-${{ matrix.python-version }}
+          path: generated/admission-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Run and recheck proposed human profile cases
+        run: |
+          python examples/human_profile_cases.py --output generated/profile-cases-ci
+          python examples/human_profile_cases.py --verify generated/profile-cases-ci
+          biocompiler inspect generated/profile-cases-ci/positive/request.json
+          biocompiler inspect generated/profile-cases-ci/positive/acceptance.json
+          biocompiler inspect generated/profile-cases-ci/conflicting_healthy/acceptance.json
+          biocompiler inspect generated/profile-cases-ci/underspecified_deployment/deployment.json
+          biocompiler inspect generated/profile-cases-ci/unsupported_co_payload/admission.json
+      - name: Retain proposed human profile cases
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: human-profile-cases-python-${{ matrix.python-version }}
+          path: generated/profile-cases-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Import scaffold interfaces
+        run: |
+          python -c "from biocompiler.compiler.passes import CompilerPass, PassResult; from biocompiler.semantics.context import TargetContext; from biocompiler.verification.evidence import Obligation"
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/integration-examples-${{ matrix.python-version }}.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-integration-examples-${{ matrix.python-version }}
+          path: generated/ci/integration-examples-${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  executable-rna-reproducibility:
+    needs: installed-executable
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job executable-rna-reproducibility --variant cross-python --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: executable-rna-payload-py3.11
+          path: artifacts/python311
+      - uses: actions/download-artifact@v4
+        with:
+          name: executable-rna-payload-py3.14
+          path: artifacts/python314
+      - name: Compare exact RNA and contract artifacts across Python versions
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          roots = [Path('artifacts/python311'), Path('artifacts/python314')]
+          manifests = [{str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                        for p in root.rglob('*') if p.is_file()} for root in roots]
+          assert manifests[0], 'Missing executable RNA artifacts'
+          assert manifests[0] == manifests[1], 'Cross-Python RNA artifacts differ'
+          for name, digest in sorted(manifests[0].items()):
+              print(digest, name)
+          PY
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/executable-rna-reproducibility-cross-python.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-executable-rna-reproducibility-cross-python
+          path: generated/ci/executable-rna-reproducibility-cross-python.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  payload-architecture-reproducibility:
+    needs: installed-architecture
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job payload-architecture-reproducibility --variant cross-python --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: payload-architecture-py3.11
+          path: artifacts/python311
+      - uses: actions/download-artifact@v4
+        with:
+          name: payload-architecture-py3.14
+          path: artifacts/python314
+      - name: Compare complete source, model, RNA, matching, control and manifest artifacts across Python versions
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          roots = [Path('artifacts/python311'), Path('artifacts/python314')]
+          manifests = [{str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                        for p in root.rglob('*') if p.is_file()} for root in roots]
+          cases = [*'abcdef', 'automatic_timing', 'automatic_b', 'automatic_f',
+                   'memory_reset', 'state_reset', 'production_adjustment', 'activity_control']
+          required = {f'{case}/{name}' for case in cases
+                      for name in ('request.json', 'build.json', 'payloads.fasta', 'manifest.json',
+                                   'cli.build.json', 'cli.export.json', 'cli.verification.json')}
+          assert required <= manifests[0].keys(), 'Missing complete architecture acceptance artifacts'
+          assert manifests[0] == manifests[1], 'Cross-Python architecture artifacts differ'
+          for name, digest in sorted(manifests[0].items()):
+              print(digest, name)
+          print('Identical artifacts:', len(manifests[0]))
+          PY
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/payload-architecture-reproducibility-cross-python.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-payload-architecture-reproducibility-cross-python
+          path: generated/ci/payload-architecture-reproducibility-cross-python.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  circuit-reproducibility:
+    needs: circuit-integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job circuit-reproducibility --variant cross-python --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: circuit-infrastructure-evidence-py3.11
+          path: artifacts/python311
+      - uses: actions/download-artifact@v4
+        with:
+          name: circuit-infrastructure-evidence-py3.14
+          path: artifacts/python314
+      - name: Compare complete deterministic infrastructure artifacts across Python versions
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          roots = [Path('artifacts/python311'), Path('artifacts/python314')]
+          manifests = [{str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                        for p in root.rglob('*') if p.is_file()} for root in roots]
+          assert manifests[0], 'Missing infrastructure artifacts'
+          assert manifests[0] == manifests[1], 'Cross-Python infrastructure artifacts differ'
+          for name, digest in sorted(manifests[0].items()):
+              print(digest, name)
+          print('Identical artifacts:', len(manifests[0]))
+          PY
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/circuit-reproducibility-cross-python.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-circuit-reproducibility-cross-python
+          path: generated/ci/circuit-reproducibility-cross-python.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  studio-browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Record tested revision and platform
+        run: |
+          python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+          node --version
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job studio-browser --variant 3.11 --output generated/ci/start.json
+      - name: Install package and browser test tools
+        run: |
+          python -m pip install .
+          npm install --prefix generated/browser-tools --no-save --ignore-scripts playwright@1.62.1
+          node generated/browser-tools/node_modules/playwright/cli.js install --with-deps chromium
+      - name: Exercise the installed guided workspace in a browser
+        env:
+          NODE_PATH: ${{ github.workspace }}/generated/browser-tools/node_modules
+          STUDIO_TEST_OUTPUT: ${{ github.workspace }}/generated/studio-browser-ci
+        run: node tests/browser/studio.cjs
+      - name: Exercise retained construction inspection and lossless save in a browser
+        env:
+          NODE_PATH: ${{ github.workspace }}/generated/browser-tools/node_modules
+          STUDIO_TEST_OUTPUT: ${{ github.workspace }}/generated/studio-browser-ci
+          CIRCUIT_INFRASTRUCTURE_OUTPUT: ${{ github.workspace }}/generated/circuit-infrastructure-ci
+          CIRCUIT_SOURCES_OUTPUT: ${{ github.workspace }}/generated/circuit-sources-ci
+          CONSTRUCTION_BROWSER_SUITE: inspection
+        run: |
+          cd "$RUNNER_TEMP"
+          python "$GITHUB_WORKSPACE/examples/circuit_infrastructure.py" --output "$CIRCUIT_INFRASTRUCTURE_OUTPUT"
+          python "$GITHUB_WORKSPACE/examples/circuit_sources.py" --output "$CIRCUIT_SOURCES_OUTPUT"
+          node "$GITHUB_WORKSPACE/tests/browser/construction.cjs"
+      - name: Exercise current source binding and evidence review in a browser
+        env:
+          NODE_PATH: ${{ github.workspace }}/generated/browser-tools/node_modules
+          STUDIO_TEST_OUTPUT: ${{ github.workspace }}/generated/studio-browser-ci
+          CIRCUIT_INFRASTRUCTURE_OUTPUT: ${{ github.workspace }}/generated/circuit-infrastructure-ci
+          CIRCUIT_SOURCES_OUTPUT: ${{ github.workspace }}/generated/circuit-sources-ci
+          CONSTRUCTION_BROWSER_SUITE: review
+        run: node tests/browser/construction.cjs
+      - name: Retain GUI screenshots and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: studio-browser-evidence
+          path: generated/studio-browser-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/studio-browser-3.11.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-studio-browser-3.11
+          path: generated/ci/studio-browser-3.11.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  ocaml-core:
+    runs-on: ${{ matrix.runner }}
+    # Complete installed campaigns and every corpus exceeded 90 minutes on Linux.
+    # Preserve every check; this allowance is not a measured runtime target.
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+          - runner: macos-14
+            platform: macos-arm64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Record revision and verify the actual native platform
+        run: python tools/ci_validation.py start --job ocaml-core --variant ${{ matrix.platform }} --output generated/ci/start.json
+      - uses: ocaml/setup-ocaml@93303b622b2522e4411e295f9e77411a24912ac7 # v3, pinned 2026-10-01
+        with:
+          ocaml-compiler: "5.4.0"
+          opam-pin: false
+          opam-repositories: |
+            default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
+      - name: Resolve pinned native dependencies and retain the platform lock
+        run: |
+          opam install core/biocompiler_core.opam --deps-only --with-test --yes
+          opam lock core/biocompiler_core.opam
+          mkdir -p generated/core
+          cp biocompiler_core.opam.locked generated/core/dependencies.opam.locked
+          opam switch export generated/core/switch.export
+          opam list --installed --columns=name,version > generated/core/packages.txt
+      - name: Install Python package and check compiler/checker dependency separation
+        run: |
+          python -m pip install .
+          python tools/check_core_boundaries.py --output generated/core/boundaries.json
+      - name: Strictly type-check the migrated Python transport boundary
+        run: |
+          python -m pip install --only-binary=:all: --platform any --require-hashes \
+            --target generated/typecheck -r tools/typecheck-requirements.txt
+          PYTHONPATH=generated/typecheck python -m mypy --config-file tools/mypy-core.ini | tee generated/core/python-types.txt
+      - name: Compile native core and standalone verifier
+        id: native_build
+        run: |
+          opam exec -- dune build --root core @all
+      - name: Run every native literal and mutation suite
+        run: |
+          set -o pipefail
+          BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS="$GITHUB_WORKSPACE/tests/conformance/archive-container-311.json" \
+          BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS="$GITHUB_WORKSPACE/tests/conformance/archive-container-314.json" \
+          BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-311.json" \
+          BIOCOMPILER_REFERENCE_PACKAGE_PYTHON314_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-314.json" \
+          BIOCOMPILER_REFERENCE_SEQUENCE_EXPORT_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-sequence-export-314.json" \
+          BIOCOMPILER_REFERENCE_INPUTS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-inputs-311.json" \
+          BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-packages-311.json" \
+          BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS="$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1" \
+          BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json" \
+          BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS="$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" \
+          BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/candidate-runtime-v1.json" \
+          BIOCOMPILER_COMPONENT_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/component-runtime-v1.json" \
+          BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-foundation-v1.json" \
+          BIOCOMPILER_REALIZATION_CHECKS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-checks-v1.json" \
+          BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/component-acceptance-v1.json" \
+          BIOCOMPILER_SYNTHETIC_AUTHORITY_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-authority-v1.json" \
+          BIOCOMPILER_SYNTHETIC_ACCEPTANCE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-acceptance-v1.json" \
+          BIOCOMPILER_SYNTHETIC_PRODUCERS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-producers-v1.json" \
+          BIOCOMPILER_REALIZATION_WORKFLOW_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-workflow-v1.json" \
+          BIOCOMPILER_CHECKED_PIPELINE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" \
+          BIOCOMPILER_FIXED_PIPELINE_CONTINUATIONS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-continuations-native-v1.json" \
+          BIOCOMPILER_FIXED_PIPELINE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" \
+          BIOCOMPILER_LOWERING_CORPUS="$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" \
+          BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS="$GITHUB_WORKSPACE/tests/conformance/pipeline-callback-semantics-v1.json" \
+          BIOCOMPILER_PIPELINE_CALLBACK_DECLARATION="$GITHUB_WORKSPACE/protocol/pipeline-callback-channel-v1.json" \
+          BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION="$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" \
+          BIOCOMPILER_PIPELINE_SESSION_DECLARATION="$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" \
+          BIOCOMPILER_PIPELINE_CONTRACT_LITERALS="$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" \
+          BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION="$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" \
+          BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES="$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" \
+            opam exec -- dune runtest --root core 2>&1 | tee generated/core/native-tests.txt
+      - name: Retain native suite diagnostics before longer installed campaigns
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-native-tests-${{ matrix.platform }}
+          path: generated/core/native-tests.txt
+          if-no-files-found: ignore
+          overwrite: true
+          retention-days: 7
+      - name: Check historical JSON spelling, rejection order and parser bounds
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_legacy_json.exe | tee generated/core/test_legacy_json.txt
+      - name: Check typed historical reference, construct and molecular domains
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_domains.exe | tee generated/core/test_reference_domains.txt
+      - name: Independently check exact reference layout, sequence and translation
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_checkers.exe "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1" | tee generated/core/test_reference_checkers.txt
+      - name: Check shared reference producer work and output bounds
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_producer_budget.exe "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1" | tee generated/core/test_reference_producer_budget.txt
+      - name: Replay every original reference domain, producer and checker observation
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_contracts_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json" | tee generated/core/test_reference_contracts_corpus.txt
+      - name: Check live reference construct admission, provenance and lifetime bounds
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_construct_pipeline.exe "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_construct_pipeline.txt
+      - name: Check same-manager exact CDS continuation and retained failure state
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_molecular_pipeline.exe "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_molecular_pipeline.txt
+      - name: Check reference workflow phase ownership and historical result capabilities
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_workflow.exe "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_workflow.txt
+      - name: Check same-owner Molecular attempts and historical provider roots
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_molecular_attempts.exe "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_molecular_attempts.txt
+      - name: Check framed reference manager callbacks and historical builds
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_callback_manager.txt
+      - name: Check complete original archive bytes and cumulative resource limits
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_stored_zip.exe "$GITHUB_WORKSPACE/tests/conformance/archive-container-311.json" "$GITHUB_WORKSPACE/tests/conformance/archive-container-314.json" | tee generated/core/test_stored_zip.txt
+      - name: Check exact package manifests and independently accepted sequence exports
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_reference_package_manifest.exe "$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-311.json" "$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-314.json" | tee generated/core/test_reference_package_manifest.txt
+          core/_build/default/test/test_reference_sequence_export.exe "$GITHUB_WORKSPACE/tests/conformance/reference-sequence-export-314.json" | tee generated/core/test_reference_sequence_export.txt
+      - name: Check original snapshots, complete native packages and persistent ownership
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_work_budget_retention.exe | tee generated/core/test_work_budget_retention.txt
+          core/_build/default/test/test_reference_inputs.exe "$GITHUB_WORKSPACE/tests/conformance/reference-inputs-314.json" | tee generated/core/test_reference_inputs.txt
+          core/_build/default/test/test_reference_package_workflow.exe "$GITHUB_WORKSPACE/tests/conformance/reference-packages-314.json" | tee generated/core/test_reference_package_workflow.txt
+      - name: Check retained request, behavior and coordinate domain corpora
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_build_request.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" | tee generated/core/build-request-domain.txt
+          core/_build/default/test/test_behavior.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/behavior-domains-v1.json" | tee generated/core/behavior-domain.txt
+          core/_build/default/test/test_molecule_coordinates.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-coordinates-v1.json" | tee generated/core/molecule-coordinates-domain.txt
+          core/_build/default/test/test_circuit_request.exe "$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json" | tee generated/core/circuit-request-domain.txt
+          core/_build/default/test/test_lowering_check.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json" | tee generated/core/lowering-check.txt
+      - name: Check exact scalar arithmetic and complete per-role reference traces
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_runtime_number.exe "$GITHUB_WORKSPACE/tests/conformance/runtime-numbers-v1.json" | tee generated/core/runtime-numbers.txt
+          core/_build/default/test/test_execution_data.exe "$GITHUB_WORKSPACE/tests/conformance/reference-execution-v1.json" | tee generated/core/execution-data.txt
+          core/_build/default/test/test_reference.exe "$GITHUB_WORKSPACE/tests/conformance/reference-execution-v1.json" | tee generated/core/reference-execution.txt
+      - name: Check fresh lowering against exact retained source authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_lowering.exe "$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" | tee generated/core/lowering-producer.txt
+      - name: Check component domains and fresh compatibility assessments
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_component_contract.exe "$GITHUB_WORKSPACE/tests/conformance/component-contracts-v1.json" | tee generated/core/component-contracts.txt
+      - name: Check bounded molecular declarations and serialization
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_molecular_record.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-chemistry-v1.json" | tee generated/core/molecular-records.txt
+      - name: Check molecular chemistry and nominal identity
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_molecule_chemistry.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-chemistry-v1.json" | tee generated/core/molecule-chemistry.txt
+      - name: Check supplied deployment windows and exact decimal interval boundaries
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_architecture_deployment.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-deployment-v1.json" | tee generated/core/test_architecture_deployment.txt
+      - name: Check complete component declarations and contextual model contracts
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_component.exe "$GITHUB_WORKSPACE/tests/conformance/components-v1.json" | tee generated/core/test_component.txt
+      - name: Check full human source wrapper authority and circuit correspondence
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_human_wrappers.exe "$GITHUB_WORKSPACE/tests/conformance/human-wrappers-v1.json" | tee generated/core/test_human_wrappers.txt
+      - name: Check molecular inventories, nominal identities and complete request authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_molecule.exe "$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json" | tee generated/core/test_molecule.txt
+          core/_build/default/test/test_molecule_set.exe "$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json" | tee generated/core/test_molecule_set.txt
+      - name: Check supplied payload structure contracts and required region inventories
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_payload_structure.exe "$GITHUB_WORKSPACE/tests/conformance/payload-structure-v1.json" | tee generated/core/test_payload_structure.txt
+      - name: Check architecture bindings, controls, channels and source constraints
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_architecture_contract.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-contracts-v1.json" | tee generated/core/test_architecture_contract.txt
+      - name: Check explicit molecular transitions, edits and translation policies
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_molecular_transitions.exe "$GITHUB_WORKSPACE/tests/conformance/molecular-transitions-v1.json" | tee generated/core/test_molecular_transitions.txt
+      - name: Check complete construction operation and request declarations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_construction.exe "$GITHUB_WORKSPACE/tests/conformance/construction-v1.json" | tee generated/core/test_construction.txt
+      - name: Check unchecked construction artifacts and exact derivation inventories
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_construction_artifact.exe "$GITHUB_WORKSPACE/tests/conformance/construction-artifacts-v1.json" | tee generated/core/test_construction_artifact.txt
+      - name: Independently check required payload regions against supplied authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_payload_structure_check.exe "$GITHUB_WORKSPACE/tests/conformance/payload-structure-check-v1.json" | tee generated/core/test_payload_structure_check.txt
+      - name: Check complete payload templates and architecture refinement authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_architecture_domains.exe "$GITHUB_WORKSPACE/tests/conformance/payload-templates-v1.json" "$GITHUB_WORKSPACE/tests/conformance/architecture-domains-v1.json" | tee generated/core/test_architecture_domains.txt
+      - name: Independently check declared molecular chemistry and feature transitions
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_transition_check.exe "$GITHUB_WORKSPACE/tests/conformance/transition-check-v1.json" | tee generated/core/test_transition_check.txt
+      - name: Independently reconstruct complete construction candidates and replay acceptance
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_construction_check.exe "$GITHUB_WORKSPACE/tests/conformance/construction-check-v1.json" | tee generated/core/test_construction_check.txt
+      - name: Check historical source manifests and independently reconstruct source inventories
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_source_manifest.exe "$GITHUB_WORKSPACE/tests/conformance/source-manifest-v1.json" | tee generated/core/test_source_manifest.txt
+          core/_build/default/test/test_source_check.exe "$GITHUB_WORKSPACE/tests/conformance/source-manifest-v1.json" | tee generated/core/test_source_check.txt
+      - name: Check complete historical architecture builds and assessment scope
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_architecture_build.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-build-v1.json" | tee generated/core/test_architecture_build.txt
+      - name: Independently check supplementary circuit bindings against original source
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_circuit_bindings.exe "$GITHUB_WORKSPACE/tests/conformance/circuit-bindings-v1.json" | tee generated/core/test_circuit_bindings.txt
+      - name: Independently prove bounded source controls and exact deployment intervals
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_architecture_controls_check.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-controls-check-v1.json" | tee generated/core/test_architecture_controls_check.txt
+          core/_build/default/test/test_architecture_deployment_check.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-deployment-check-v1.json" | tee generated/core/test_architecture_deployment_check.txt
+      - name: Independently reconstruct complete architecture acceptance and replay
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_architecture_check.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-check-v1.json" | tee generated/core/test_architecture_check.txt
+      - name: Check complete generic composition, selection and actual component behavior corpus
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_component_acceptance_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/component-acceptance-v1.json" | tee generated/core/test_component_acceptance_corpus.txt
+      - name: Check complete synthetic candidate and catalog authority corpus
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_synthetic_authority_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-authority-v1.json" | tee generated/core/test_synthetic_authority_corpus.txt
+      - name: Independently check complete synthetic candidate and component assembly corpus
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_synthetic_acceptance_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-acceptance-v1.json" | tee generated/core/test_synthetic_acceptance_corpus.txt
+      - name: Check complete synthetic generation, bounded selection and component adaptation corpus
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_synthetic_producers_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-producers-v1.json" | tee generated/core/test_synthetic_producers_corpus.txt
+      - name: Check producer-only protocol, complete receipts and resource boundaries
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_synthetic_producer_protocol.exe | tee generated/core/test_synthetic_producer_protocol.txt
+      - name: Check complete public synthetic build authority and selection receipts
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_synthetic_producer_public_protocol.exe | tee generated/core/test_synthetic_producer_public_protocol.txt
+      - name: Check native helper authority, exact structural queries and registry replay
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_synthetic_inspection_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" "$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" | tee generated/core/test_synthetic_inspection_protocol.txt
+      - name: Check deferred manager access and reentrant callback mutations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_deferred_pass_manager.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_deferred_pass_manager.txt
+      - name: Check nested callback framing and cumulative channel authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_callback_channel.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-channel-v1.json" | tee generated/core/test_pipeline_callback_channel.txt
+      - name: Check deferred host capability envelopes and lifetime authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_host_bridge.exe | tee generated/core/test_pipeline_host_bridge.txt
+      - name: Check live callback manager dispatch and native acceptance authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_callback_manager.txt
+      - name: Check persistent manager state and cumulative session resource bounds
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_session.exe "$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_session.txt
+      - name: Check complete pipeline contract records and original constructor rejections
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_contract.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_pipeline_contract.txt
+      - name: Check native stage acceptance, scoped completion and transitive freshness
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pass_manager.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_pass_manager.txt
+      - name: Preserve original validator comparison order, identity and callback mutations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_provider_comparison.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-callback-semantics-v1.json" | tee generated/core/test_provider_comparison.txt
+      - name: Replay original manager commands, callback bodies and complete state changes
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_checked_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" | tee generated/core/test_checked_pipeline_corpus.txt
+      - name: Check lowering and independent preservation share the caller work ancestor
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_lowering_budget.exe "$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" | tee generated/core/test_lowering_budget.txt
+      - name: Replay fixed native pipelines and original post-return manager observations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_fixed_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-continuations-native-v1.json" | tee generated/core/test_fixed_pipeline_corpus.txt
+      - name: Check every original workflow, exploration, reduction and callback observation
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          set -o pipefail
+          core/_build/default/test/test_realization_workflow_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/realization-workflow-v1.json" | tee generated/core/test_realization_workflow_corpus.txt
+      - name: Check cross-language bytes, structural intent and independent lowering correspondence
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_core_conformance.py \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output generated/core/conformance.json
+      - name: Check installed standalone architecture verification and fresh replay
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_architecture_protocol.py \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output generated/core/architecture-protocol.json
+      - name: Check native producer protocol with original case B authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_producer_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" | tee generated/core/producer-protocol.txt
+      - name: Check installed architecture compilation and paired export
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/architecture-producer-protocol"
+          cd "$RUNNER_TEMP/architecture-producer-protocol"
+          python "$GITHUB_WORKSPACE/tools/check_architecture_producer_protocol.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output "$GITHUB_WORKSPACE/generated/core/architecture-producer-protocol.json"
+      - name: Check installed public architecture SDK and CLI on Python 3.11
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/architecture-routing-3.11"
+          cd "$RUNNER_TEMP/architecture-routing-3.11"
+          python "$GITHUB_WORKSPACE/tools/check_architecture_routing.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output "$GITHUB_WORKSPACE/generated/core/architecture-routing-3.11.json"
+      - name: Select Python 3.14 without changing the native job runtime
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        id: routing_python314
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          update-environment: false
+      - name: Check installed public architecture SDK and CLI on Python 3.14
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' && steps.routing_python314.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          ROUTING_PYTHON: ${{ steps.routing_python314.outputs.python-path }}
+        run: |
+          "$ROUTING_PYTHON" -m pip install .
+          mkdir -p "$RUNNER_TEMP/architecture-routing-3.14"
+          cd "$RUNNER_TEMP/architecture-routing-3.14"
+          "$ROUTING_PYTHON" "$GITHUB_WORKSPACE/tools/check_architecture_routing.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output "$GITHUB_WORKSPACE/generated/core/architecture-routing-3.14.json"
+      - name: Compare complete construction producer and workflow artifacts
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_construction_producer.exe "$GITHUB_WORKSPACE/tests/conformance/construction-producer-v1.json" | tee generated/core/construction-producer.txt
+      - name: Compare source manifests, matching, architecture production and paired export
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_architecture_producer.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-producer-v1.json" | tee generated/core/architecture-producer.txt
+      - name: Compare complete coupled source transport traces and rejection signatures
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_source_transport.exe "$GITHUB_WORKSPACE/tests/conformance/source-transport-v1.json" | tee generated/core/source-transport.txt
+      - name: Compare every captured independent candidate model trace and rejection
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_candidate_runtime_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/candidate-runtime-v1.json" | tee generated/core/candidate-runtime.txt
+      - name: Compare complete locked registry, assembly reconstruction and component execution
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_component_runtime_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/component-runtime-v1.json" | tee generated/core/component-runtime.txt
+      - name: Compare complete realization declarations, evidence identities and fresh admission
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_realization_foundation_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/realization-foundation-v1.json" | tee generated/core/realization-foundation.txt
+      - name: Compare complete checked-request and finite-history realization observations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_realization_checks_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/realization-checks-v1.json" | tee generated/core/realization-checks.txt
+      - name: Retain revision-bound native executables
+        run: |
+          cp core/_build/default/bin/core/main.exe generated/core/biocompiler-core
+          cp core/_build/default/bin/verify/main.exe generated/core/biocompiler-verify
+          python -c 'import hashlib,json,os,pathlib,platform; p=pathlib.Path("generated/core"); p.joinpath("binaries.json").write_text(json.dumps({"revision":os.environ["GITHUB_SHA"],"system":platform.system(),"machine":platform.machine(),"sha256":{n:hashlib.sha256(p.joinpath(n).read_bytes()).hexdigest() for n in ("biocompiler-core","biocompiler-verify")}},sort_keys=True,indent=2)+"\n")'
+      - name: Retain native evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-${{ matrix.platform }}
+          path: generated/core/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 7
+      - name: Record successful native validation
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/ocaml-core-${{ matrix.platform }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-ocaml-core-${{ matrix.platform }}
+          path: generated/ci/ocaml-core-${{ matrix.platform }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  architecture-core-reproducibility:
+    needs: ocaml-core
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job architecture-core-reproducibility --variant cross-platform --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-linux-x86_64
+          path: artifacts/core/linux-x86_64
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-macos-arm64
+          path: artifacts/core/macos-arm64
+      - name: Install Python package for retained artifact comparison
+        run: python -m pip install .
+      - name: Compare exact SDK and CLI artifacts across Python versions and native platforms
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_architecture_routing_reproducibility.py --root artifacts/core --output generated/core-reproducibility/receipt.json
+      - name: Retain complete comparison receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: architecture-core-reproducibility
+          path: generated/core-reproducibility/receipt.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/architecture-core-reproducibility-cross-platform.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-architecture-core-reproducibility-cross-platform
+          path: generated/ci/architecture-core-reproducibility-cross-platform.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  realization-conformance:
+    needs: ocaml-core
+    runs-on: ${{ matrix.runner }}
+    # Both complete installed campaigns retain every original occurrence.
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.11"
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.14"
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.11"
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.14"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Bind the required Python and native platform variant
+        run: python tools/ci_validation.py start --job realization-conformance --variant ${{ matrix.platform }}-py${{ matrix.python-version }} --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-${{ matrix.platform }}
+          path: artifacts/native
+      - name: Verify both exact-revision executables before restoring executable bits
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_realization_binaries.py --root artifacts/native --platform ${{ matrix.platform }} --prepare --output generated/realization/native-inputs.json
+      - name: Provide the macOS GMP runtime required by the pinned native binaries
+        if: runner.os == 'macOS'
+        run: |
+          brew list --versions gmp >/dev/null 2>&1 || brew install gmp
+          otool -L artifacts/native/biocompiler-core
+          otool -L artifacts/native/biocompiler-verify
+      - name: Install the same-revision Python package
+        run: python -m pip install .
+      - name: Execute every retained direct and replay operation outside the checkout
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/realization-protocol"
+          cd "$RUNNER_TEMP/realization-protocol"
+          python "$GITHUB_WORKSPACE/tools/check_realization_protocol.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --output "$GITHUB_WORKSPACE/generated/realization/protocol.json"
+      - name: Exercise every direct SDK route with Python semantic authority blocked
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/realization-routing"
+          cd "$RUNNER_TEMP/realization-routing"
+          python "$GITHUB_WORKSPACE/tools/check_realization_routing.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --output "$GITHUB_WORKSPACE/generated/realization/routing.json"
+      - name: Execute complete workflow artifacts with Python semantic authority blocked
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/verification-workflow"
+          cd "$RUNNER_TEMP/verification-workflow"
+          BIOCOMPILER_WORKFLOW_CORE_SHA="$(python -c 'import json,os; from pathlib import Path; print(json.loads((Path(os.environ["GITHUB_WORKSPACE"])/"artifacts/native/binaries.json").read_text())["sha256"]["biocompiler-core"])')"
+          BIOCOMPILER_WORKFLOW_VERIFY_SHA="$(python -c 'import json,os; from pathlib import Path; print(json.loads((Path(os.environ["GITHUB_WORKSPACE"])/"artifacts/native/binaries.json").read_text())["sha256"]["biocompiler-verify"])')"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_manager_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-manager.json"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_provider_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-providers.json"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_continuation_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-continuations.json"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_registration_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-registration.json"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_reference_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-reference.json"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-session.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow_presentation.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow-presentation.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow_authority.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow-authority.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow_public_sdk.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow-public-sdk.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow_cli.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow-cli.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_synthetic_producer.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/synthetic-producer.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_synthetic_public_sdk.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/synthetic-public-sdk.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_synthetic_selection_cli.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/synthetic-selection-cli.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_synthetic_inspection.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/synthetic-inspection.json"
+      - name: Retain complete protocol and SDK artifacts even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: realization-${{ matrix.platform }}-py${{ matrix.python-version }}
+          path: generated/realization/
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+      - name: Record successful complete conformance
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/realization-${{ matrix.platform }}-py${{ matrix.python-version }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-realization-${{ matrix.platform }}-py${{ matrix.python-version }}
+          path: generated/ci/realization-${{ matrix.platform }}-py${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  realization-core-reproducibility:
+    needs: [ocaml-core, realization-conformance]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        id: reference_python311
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-python@v5
+        id: reference_python314
+        with:
+          python-version: "3.14"
+          update-environment: false
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job realization-core-reproducibility --variant cross-platform --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-linux-x86_64
+          path: artifacts/core/linux-x86_64
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-macos-arm64
+          path: artifacts/core/macos-arm64
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: realization-*
+          path: artifacts/realization
+      - name: Install package for complete frozen conformance expectations
+        run: |
+          "${{ steps.reference_python311.outputs.python-path }}" -m pip install .
+          "${{ steps.reference_python314.outputs.python-path }}" -m pip install .
+      - name: Require exact complete results across both Python versions and native platforms
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_realization_reproducibility.py --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/receipt.json
+      - name: Require complete workflow artifacts and semantic receipts across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_workflow_reproducibility.py --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow.json
+      - name: Require complete native presentation evidence across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_workflow_presentation.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-presentation.json
+      - name: Require complete source-authority preflight evidence across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_workflow_authority.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-authority.json
+      - name: Require complete public SDK workflow views across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_workflow_public_sdk.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-public-sdk.json
+      - name: Require complete actual installed workflow CLI children across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_workflow_cli.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-cli.json
+      - name: Require complete native producer evidence across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_synthetic_producer.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/synthetic-producer.json
+      - name: Require complete public synthetic SDK observations across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_synthetic_public_sdk.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/synthetic-public-sdk.json
+      - name: Require complete synthetic selection CLI observations across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_synthetic_selection_cli.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/synthetic-selection-cli.json
+      - name: Require every original synthetic helper observation across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_synthetic_inspection.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/synthetic-inspection.json
+      - name: Require complete live pipeline sessions across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_pipeline_session_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-session.json
+      - name: Require complete live manager identity, comparison and deferred-access replay
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_pipeline_manager_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-manager.json
+      - name: Require complete fixed-provider typed returns and source identities across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_pipeline_fixed_provider_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-providers.json
+      - name: Require original retained-manager continuations and complete public build identities across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_pipeline_fixed_continuation_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-continuations.json
+      - name: Require original fixed registration interception and retained rejection state across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_pipeline_fixed_registration_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-registration.json
+      - name: Reconstruct original reference workflows with each actual Python runtime across all four installed slots
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_pipeline_reference_install.py --compare \
+            --root artifacts/realization --native-root artifacts/core \
+            --python311 "${{ steps.reference_python311.outputs.python-path }}" \
+            --python314 "${{ steps.reference_python314.outputs.python-path }}" \
+            --output generated/realization-reproducibility/pipeline-reference.json
+      - name: Retain complete comparison receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: realization-core-reproducibility
+          path: generated/realization-reproducibility/*.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+      - name: Record successful complete comparison
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/realization-core-reproducibility-cross-platform.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-realization-core-reproducibility-cross-platform
+          path: generated/ci/realization-core-reproducibility-cross-platform.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  studio-typescript:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job studio-typescript --variant 3.11 --output generated/ci/start.json
+      - name: Install package and pinned TypeScript tooling without lifecycle scripts
+        run: |
+          python -m pip install .
+          npm --prefix studio ci --ignore-scripts
+      - name: Require strict types and exact committed release assets before rebuilding
+        run: |
+          npm --prefix studio run typecheck
+          npm --prefix studio run check:assets
+          npm --prefix studio test
+          python tools/migration_inventory.py --check
+      - name: Record successful TypeScript validation
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/studio-typescript-3.11.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-studio-typescript-3.11
+          path: generated/ci/studio-typescript-3.11.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  validation:
+    name: Validation complete
+    if: always()
+    needs:
+      - unit-plan
+      - unit-tests
+      - unit-accounting
+      - installed-executable
+      - installed-architecture
+      - circuit-integration
+      - integration-examples
+      - studio-browser
+      - executable-rna-reproducibility
+      - payload-architecture-reproducibility
+      - circuit-reproducibility
+      - ocaml-core
+      - architecture-core-reproducibility
+      - realization-conformance
+      - realization-core-reproducibility
+      - studio-typescript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ci-job-*
+          path: generated/ci-job-receipts
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: unit-accounting-py*
+          path: generated/ci-test-accounting
+          merge-multiple: true
+      - name: Reject missing, skipped, cancelled, failed or stale required work
+        if: always()
+        env:
+          CI_NEEDS: ${{ toJSON(needs) }}
+        run: python tools/ci_validation.py gate --receipts generated/ci-job-receipts --accounting generated/ci-test-accounting --output generated/validation/receipt.json
+      - name: Retain final revision, job, test coverage and timing receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-receipt
+          path: generated/validation/receipt.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7

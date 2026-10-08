@@ -29,6 +29,10 @@ let decode_record_in ~budget ?(path="") raw =
   B.with_workspace budget (fun () -> V.Record.decode_with_request ~limits:(B.input_codec budget) ~path
     ~decode_request:(fun ~path raw -> decode_request_in ~budget ~path raw) raw)
 let option label = function Some value -> value | None -> Diagnostic.fail "synthetic_verification" label
+let replace key value fields =
+  if List.mem_assoc key fields then
+    List.map (fun (name,previous) -> name,(if name=key then value else previous)) fields
+  else fields @ [key,value]
 let checker budget request checked ~parent ~until history =
   let realization = V.Request.realization request and candidate = V.Request.candidate request in
   let result = match V.Request.mode request with
@@ -48,14 +52,14 @@ let checker budget request checked ~parent ~until history =
     "verification_mode",Json.String (match V.Request.mode request with V.Candidate->"candidate"|V.Model->"model");
     "verification_candidate",Json.String (C.fingerprint candidate);
     "verification_realization",Json.String (R.artifact_fingerprint realization)] in
-  let settings = List.fold_left (fun fields (key,value) -> (key,value)::List.remove_assoc key fields) settings additions in
-  let dependencies = Json.Object (("settings",Json.Object settings)::List.remove_assoc "settings" dependencies) in
+  let settings = List.fold_left (fun fields (key,value) -> replace key value fields) settings additions in
+  let dependencies = Json.Object (replace "settings" (Json.Object settings) dependencies) in
   let dependency_size = X.Codec.measure ~limits dependencies in
   (* The fixed native dependency envelope has <=20 settings, <=128 nodes and
      <8192 bytes. Cover entry, horizon and packing measurements before import. *)
   W.charge parent (3 * (X.Codec.work_bounds dependency_size).measure);
   let typed_dependencies = E.Dependency_snapshot.of_json dependencies in
-  let raw = Json.Object (("dependencies",dependencies)::List.remove_assoc "dependencies"
+  let raw = Json.Object (replace "dependencies" dependencies
       (Json.object_fields (E.Check_result.to_json result))) in
   let size = X.Codec.measure ~limits raw in
   W.charge parent (X.Codec.work_bounds size).measure;

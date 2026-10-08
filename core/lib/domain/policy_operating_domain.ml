@@ -120,7 +120,35 @@ let of_json raw =
   {raw;clock=name "clock" raw;executor_role=name "role" executor;executor_identity=name "identity" executor;
    horizon_ticks;encounters;fixed_observations;observation_factors;lifecycle_factors;feedback_factors;logical_limits}
 
-let validate_for ~(behavior:O.behavior) (domain:t) =
+let validate_for ?charge ~(behavior:O.behavior) (domain:t) =
+  (* Domain remains producer/checker independent. The callback counts only the
+     compatibility and identity passes; exploration is deliberately untouched. *)
+  let metered = Option.is_some charge in
+  let charge = Option.value ~default:(fun _ -> ()) charge in
+  let rec preflight value = if metered then (
+    charge 1;
+    match value with
+    | Json.String value -> charge (String.length value)
+    | Json.Int value -> charge (1 + Z.numbits value)
+    | Json.Float _ -> charge 64
+    | Json.Array values -> List.iter (fun value -> charge 1; preflight value) values
+    | Json.Object fields -> List.iter (fun (key,value) -> charge (1 + String.length key); preflight value) fields
+    | Json.Null | Json.Bool _ -> ()) in
+  let module List = struct
+    include Stdlib.List
+    let length values = Stdlib.List.iter (fun _ -> charge 1) values; Stdlib.List.length values
+    let iter f values = Stdlib.List.iter (fun value -> charge 1; f value) values
+    let filter f values = Stdlib.List.iter (fun _ -> charge 1) values;
+      Stdlib.List.filter (fun value -> charge 1; f value) values
+    let find_opt f values = Stdlib.List.find_opt (fun value -> charge 1; f value) values
+  end in
+  let find code identity get values =
+    match List.find_opt (fun value -> let candidate=get value in
+      charge (String.length candidate); charge (String.length identity); candidate=identity) values with
+    | Some value -> value | None -> Diagnostic.fail code ("Unknown operating-domain reference: "^identity) in
+  let fingerprint value =
+    preflight value; preflight value; Canonical.fingerprint value in
+  preflight domain.raw; preflight (O.behavior_to_json behavior);
   let compatible condition message=require condition "policy_domain_source" message in
   compatible(List.length behavior.roles=1 && (List.hd behavior.roles).role_id=domain.executor_role) "Domain executor declaration differs from supplied behavior.";
   compatible(List.length behavior.clocks=1 && (List.hd behavior.clocks).clock_id=domain.clock) "Domain clock differs from supplied behavior.";
@@ -143,7 +171,7 @@ let validate_for ~(behavior:O.behavior) (domain:t) =
     require(store.value_type=O.Truth_type) "policy_domain_unsupported" "Dynamic state in this profile is three-valued truth; fixed text product parameters remain unchanged.";
     let initial_keys=match store.scope with O.Executor _->1 | O.Encounter identity->List.length(List.filter(fun(e:encounter)->e.declaration=identity)domain.encounters) in
     require(initial_keys<=store.capacity) "policy_domain_source_capacity" "Initial live encounter keys exceed source storage capacity; this input domain cannot be pruned to hide the violation.")behavior.stores;
-  let validation_id=Canonical.fingerprint(obj["domain",str(digest domain);"behavior",str(Canonical.fingerprint(O.behavior_to_json behavior))]) in
+  let validation_id=fingerprint(obj["domain",str(fingerprint domain.raw);"behavior",str(fingerprint(O.behavior_to_json behavior))]) in
   {domain;behavior;resolution;validation_id}
 
 type attempt_key = { context:context; generation:int; effect_id:string; creation_ordinal:int }

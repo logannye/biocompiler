@@ -92,6 +92,30 @@ with routed_execution():
             self.assertEqual(forged_build.to_dict(), forged[2])
         self.assertEqual(self.build, original)
 
+    def test_complete_cli_parser_registration_is_allowed_without_semantic_execution(self):
+        from contextlib import redirect_stdout
+        from io import StringIO
+        from biocompiler.cli import main
+
+        with redirect_stdout(StringIO()), routed_execution() as seen:
+            with self.assertRaises(SystemExit) as exited:
+                main(["--help"])
+        self.assertEqual(exited.exception.code, 0)
+        for name in ("_workflow_core_arguments", "_synthetic_producer_core_arguments"):
+            self.assertIn("biocompiler.cli." + name, seen)
+
+    def test_parser_registration_allowance_does_not_admit_commands_or_name_prefixes(self):
+        def forbidden():
+            return True
+
+        for name in ("_workflow_core_client", "_verification_command", "_selection_command",
+                     "_workflow_core_arguments_extra", "_synthetic_producer_core_arguments_extra"):
+            function = FunctionType(forbidden.__code__.replace(co_name=name, co_qualname=name),
+                                    {"__name__": "biocompiler.cli"})
+            with self.subTest(name=name), self.assertRaisesRegex(AssertionError, "Python semantic authority executed"):
+                with routed_execution():
+                    function()
+
     def test_legacy_semantic_helpers_and_evaluators_remain_blocked(self):
         def forbidden():
             return True

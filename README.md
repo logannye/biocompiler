@@ -107,6 +107,16 @@ We see three possibilities worth testing over the coming decades:
 
 That is the asymmetric opportunity we are pursuing. Its value must be earned through broader end-to-end capabilities, independent experimental collaborations, and measurable improvements in researchers' workflows. These are hypotheses and milestones, not claims of established adoption or clinical performance.
 
+## Researcher alpha workflow
+
+The [researcher-alpha roadmap](docs/researcher-alpha-roadmap.md) tracks the current
+lab-free delivery work. Its [quickstart](docs/researcher-alpha-quickstart.md)
+introduces caller-owned projects, complete original-input preservation, separate
+Core compilation and Verify export, and fresh verification of the exact
+FASTA/manifest pair. The first two examples are explicitly artificial software
+references. Hosted installation and release acceptance, qualification of a useful
+real research project, and independent researcher review remain separate gates.
+
 ## Explore the project
 
 Start with the [example guide](examples/README.md) or the [guided workspace](docs/studio-v0.1.md). From a source checkout with Python 3.11 or newer, launch the local browser example without installing:

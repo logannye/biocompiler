@@ -1,0 +1,610 @@
+diff --git a/core/lib/pipeline_service/callback_channel.ml b/core/lib/pipeline_service/callback_channel.ml
+index f42df3a48..c6eda97b1 100644
+--- a/core/lib/pipeline_service/callback_channel.ml
++++ b/core/lib/pipeline_service/callback_channel.ml
+@@ -5,2 +5,3 @@ let protocol = "biocompiler.pipeline_callback_channel.v1"
+-let profile = "biocompiler.core.pipeline_callback_channel.v1"
+-let declaration = Json.parse {|{"application":"caller_supplied_exact_declaration;channel_has_no_manager_or_acceptance_authority","client_fields":{"close":["protocol","profile","session_id","kind","sequence","parent_invocation"],"command":["protocol","profile","session_id","kind","sequence","parent_invocation","operation","arguments"],"continue":["protocol","profile","session_id","kind","sequence","invocation_id","invocation_sha256","outcome"],"hello":["protocol","profile","session_id","kind","sequence","declaration","application","limits"]},"close":"top_level_only;successful_null_reply_with_closed_true;no_resume","continuation_binding":"only_exact_current_top_invocation_id_and_body_sha256_may_complete","continuation_outcomes":{"raise":["status","token"],"return":["status","value"]},"event_sequence":"zero_then_exact_successor_across_replies_invocations_and_fatal","exception":"opaque_bounded_host_token_preserved;only_explicit_rejected_reply_or_Host_exception_keeps_application_live","fatal":"pipeline_callback_fatal;closed_latched;nullable_last_validated_request_binding;no_retry_or_fatal_write_after_uncertain_write","fixed_limits":{"frame_header_bytes":9,"max_action_bytes":128,"max_json_depth":128,"max_json_number_characters":4300,"max_json_string_bytes":4194304,"max_token_bytes":128,"terminal_bytes":8192,"terminal_work":1000000},"framing":"8_lowercase_hex_utf8_body_bytes_then_LF_then_exact_body","hello":"exact_complete_transport_and_application_declarations;null_or_complete_positive_integer_limit_reductions;already_consumed_prefix_counts","hello_result_fields":["declaration","application","limits"],"host_execution":"arbitrary_host_callback_cpu_and_memory_outside_native_bound;application_must_charge_its_native_work_and_retention_to_channel","invocation_identity":"event_id_and_sha256_exact_invocation_body_without_frame_header","limits":{"max_commands":10000,"max_frame_bytes":33554432,"max_frames":1000000,"max_json_nodes":1000000,"max_pending_invocations":128,"max_retained_bytes":134217728,"max_total_bytes":268435456,"max_work":1000000000000},"parent_binding":"command_parent_is_current_top_invocation_or_null_at_top_level;invocation_parent_is_enclosing_invocation","profile":"biocompiler.core.pipeline_callback_channel.v1","protocol":"biocompiler.pipeline_callback_channel.v1","reply_outcomes":{"ok":["status","value"],"raise":["status","token"],"rejected":["status","value"]},"request_identity":"sha256_exact_utf8_body_without_frame_header","retention":"cumulative_canonical_application_declaration_and_received_body_bytes_plus_callback_arguments_and_explicit_application_reservations;no_refund","schema_version":"biocompiler.pipeline_callback_channel_declaration.v1","sequence":"hello_zero_then_exact_successor_across_commands_continuations_and_close","server_fields":{"fatal":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","code","closed","usage"],"invoke":["protocol","profile","session_id","kind","event_id","invocation_id","parent_invocation","command_sequence","command_sha256","action","arguments","usage"],"reply":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","outcome","closed","usage"]},"session_identity":"client_canonical_lowercase_uuid_bound_to_one_channel_no_reconnect","terminal_reserve":"prepaid_1000000_work;normal_frames_leave_8192_bytes_and_one_frame;one_fatal_may_exceed_reduced_frame_and_node_ceilings_within_prepaid_byte_work_bound","usage":"conservative_reservations_before_io_or_allocation;partial_headers_and_bodies_remain_charged;json_nodes_counts_all_received_and_published_keys_and_values","usage_fields":["work_charged","work_remaining","input_bytes","output_bytes","frames","commands","json_nodes","pending_invocations","retained_bytes"]}|}
++let profile = "biocompiler.core.pipeline_callback_channel.v2"
++let declaration = Json.parse {|{"application":"caller_supplied_exact_declaration;channel_has_no_manager_or_acceptance_authority","client_fields":{"close":["protocol","profile","session_id","kind","sequence","parent_invocation"],"command":["protocol","profile","session_id","kind","sequence","parent_invocation","operation","arguments"],"continue":["protocol","profile","session_id","kind","sequence","invocation_id","invocation_sha256","outcome"],"hello":["protocol","profile","session_id","kind","sequence","declaration","application","limits"]},"close":"top_level_only;successful_null_reply_with_closed_true;no_resume","continuation_binding":"only_exact_current_top_invocation_id_and_body_sha256_may_complete","continuation_outcomes":{"raise":["status","token"],"return":["status","value"]},"event_sequence":"zero_then_exact_successor_across_replies_invocations_and_fatal","exception":"opaque_bounded_host_token_preserved;only_explicit_rejected_reply_or_Host_exception_keeps_application_live","fatal":"pipeline_callback_fatal;closed_latched;nullable_last_validated_request_binding;no_retry_or_fatal_write_after_uncertain_write","fixed_limits":{"frame_header_bytes":9,"max_action_bytes":128,"max_frame_json_nodes":1000000,"max_json_depth":128,"max_json_number_characters":4300,"max_json_string_bytes":4194304,"max_token_bytes":128,"terminal_bytes":8192,"terminal_work":1000000},"framing":"8_lowercase_hex_utf8_body_bytes_then_LF_then_exact_body","hello":"exact_complete_transport_and_application_declarations;null_or_complete_positive_integer_limit_reductions;already_consumed_prefix_counts","hello_result_fields":["declaration","application","limits"],"host_execution":"arbitrary_host_callback_cpu_and_memory_outside_native_bound;application_must_charge_its_native_work_and_retention_to_channel","invocation_identity":"event_id_and_sha256_exact_invocation_body_without_frame_header","limits":{"max_commands":10000,"max_frame_bytes":33554432,"max_frames":1000000,"max_json_nodes":2000000,"max_pending_invocations":128,"max_retained_bytes":134217728,"max_total_bytes":268435456,"max_work":1000000000000},"parent_binding":"command_parent_is_current_top_invocation_or_null_at_top_level;invocation_parent_is_enclosing_invocation","profile":"biocompiler.core.pipeline_callback_channel.v2","protocol":"biocompiler.pipeline_callback_channel.v1","reply_outcomes":{"ok":["status","value"],"raise":["status","token"],"rejected":["status","value"]},"request_identity":"sha256_exact_utf8_body_without_frame_header","retention":"cumulative_canonical_application_declaration_and_received_body_bytes_plus_callback_arguments_and_explicit_application_reservations;no_refund","schema_version":"biocompiler.pipeline_callback_channel_declaration.v1","sequence":"hello_zero_then_exact_successor_across_commands_continuations_and_close","server_fields":{"fatal":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","code","closed","usage"],"invoke":["protocol","profile","session_id","kind","event_id","invocation_id","parent_invocation","command_sequence","command_sha256","action","arguments","usage"],"reply":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","outcome","closed","usage"]},"session_identity":"client_canonical_lowercase_uuid_bound_to_one_channel_no_reconnect","terminal_reserve":"prepaid_1000000_work;normal_frames_leave_8192_bytes_and_one_frame;one_fatal_may_exceed_reduced_frame_and_node_ceilings_within_prepaid_byte_work_bound","usage":"conservative_reservations_before_io_or_allocation;partial_headers_and_bodies_remain_charged;json_nodes_counts_all_received_and_published_keys_and_values","usage_fields":["work_charged","work_remaining","input_bytes","output_bytes","frames","commands","json_nodes","pending_invocations","retained_bytes"]}|}
++let maximum_frame_nodes = 1_000_000
+@@ -24 +25 @@ let defaults = {max_frame_bytes=33_554_432;max_total_bytes=268_435_456;
+-  max_retained_bytes=134_217_728;max_work=maximum_work;max_json_nodes=1_000_000;
++  max_retained_bytes=134_217_728;max_work=maximum_work;max_json_nodes=2_000_000;
+@@ -74 +75,4 @@ let codec state ~max_nodes =
+-  C.make_limits ~max_bytes:state.limits.max_frame_bytes ~max_nodes ~charge:(W.charge state.work) ()
++  (* The resource profile enlarges only the complete session allowance. Every
++     independently encoded or parsed frame keeps the original node ceiling. *)
++  C.make_limits ~max_bytes:state.limits.max_frame_bytes
++    ~max_nodes:(min maximum_frame_nodes max_nodes) ~charge:(W.charge state.work) ()
+@@ -86 +90 @@ let create ~io ~application ~dispatch () =
+-    ~max_nodes:defaults.max_json_nodes ~charge:(W.charge root) ()) application in
++    ~max_nodes:maximum_frame_nodes ~charge:(W.charge root) ()) application in
+@@ -191 +195 @@ let read state =
+-    ~max_nodes:(max 1 (state.limits.max_json_nodes-state.json_nodes))
++    ~max_nodes:(min maximum_frame_nodes (max 1 (state.limits.max_json_nodes-state.json_nodes)))
+diff --git a/core/test/test_pipeline_callback_channel.ml b/core/test/test_pipeline_callback_channel.ml
+index 31a580bf7..6440d9780 100644
+--- a/core/test/test_pipeline_callback_channel.ml
++++ b/core/test/test_pipeline_callback_channel.ml
+@@ -290,0 +291,76 @@ let test_lifetime_nodes () =
++let test_resource_profile () =
++  require (C.protocol="biocompiler.pipeline_callback_channel.v1" &&
++    C.profile="biocompiler.core.pipeline_callback_channel.v2") "Framing or resource profile identity differs";
++  require (integer "max_json_nodes" (get "limits" C.declaration)=2_000_000 &&
++    integer "max_frame_json_nodes" (get "fixed_limits" C.declaration)=1_000_000)
++    "Resource profile conflates frame and lifetime nodes";
++  let original_profile=str "biocompiler.core.pipeline_callback_channel.v1" in
++  let original=set "profile" original_profile
++    (set "limits" (controls "max_json_nodes" 1_000_000)
++      (set "fixed_limits" (obj (List.remove_assoc "max_frame_json_nodes"
++        (Json.object_fields (get "fixed_limits" C.declaration)))) C.declaration)) in
++  List.iter (fun greeting ->
++    let h=harness () and dispatched=ref false in
++    enqueue h greeting;enqueue h (command 1 "echo" Json.Null);
++    let state=create h (fun _ _ -> dispatched:=true;C.Success Json.Null) in
++    C.run state;fatal h state;
++    require (not !dispatched && List.length (responses h)=1)
++      "Old resource declaration reached application dispatch")
++    [set "profile" original_profile (set "declaration" original (hello ()));
++     set "declaration" original (hello ())]
++let node_session limits left right =
++  let h=harness () and dispatched=ref 0 in
++  enqueue h (hello ~limits ());
++  enqueue h (command 1 "consume" (Json.Array (List.init left (fun _ -> Json.Null))));
++  enqueue h (command 2 "consume" (Json.Array (List.init right (fun _ -> Json.Null))));
++  enqueue h (close 3);
++  let state=create h (fun _ _ -> incr dispatched;C.Success Json.Null) in
++  C.run state;h,state,!dispatched
++let test_profile_lifetime_boundary () =
++  (* Derive framing overhead from a complete real exchange. Only array cardinality
++     changes, so an independent key/value census fixes the exact lifetime total. *)
++  let payloads limits =
++    let baseline,_,count=node_session limits 0 0 in
++    require (count=2 && Json.boolean (get "closed" (last baseline))) "Node baseline did not close";
++    census baseline;
++    let remaining=2_000_000-integer "json_nodes" (get "usage" (last baseline)) in
++    let left=remaining/2 in
++    let right=remaining-left in
++    List.iter (fun count -> require (count+nodes (command 1 "consume" (Json.Array []))<=1_000_000)
++      "Lifetime fixture exceeds the independent frame ceiling") [left;right];
++    left,right in
++  let left,right=payloads Json.Null in
++  let exact,_,count=node_session Json.Null left right in
++  require (count=2 && Json.boolean (get "closed" (last exact)) &&
++    text "kind" (last exact)="reply" && integer "json_nodes" (get "usage" (last exact))=2_000_000)
++    "Default profile did not admit its exact cumulative node boundary";
++  census exact;
++  let left,right=payloads (controls "max_json_nodes" 2_000_000) in
++  let short,state,count=node_session (controls "max_json_nodes" 1_999_999) left right in
++  fatal short state;
++  require (count=2 && short.input="" && List.length (responses short)=4)
++    "One-short lifetime limit did not withhold only the final close reply";
++  let reduced,state,count=node_session (controls "max_json_nodes" 1_000_000) left right in
++  fatal reduced state;
++  require (count<2) "Reduced original lifetime ceiling was reset or ignored"
++let test_frame_node_boundaries () =
++  let run incoming count =
++    let h=harness () and dispatched=ref false in
++    let large=Json.Array (List.init count (fun _ -> Json.Null)) in
++    enqueue h (hello ());
++    enqueue h (command 1 "frame" (if incoming then large else Json.Null));
++    enqueue h (close 2);
++    let state=create h (fun _ _ -> dispatched:=true;C.Success (if incoming then Json.Null else large)) in
++    C.run state;h,state,!dispatched in
++  List.iter (fun incoming ->
++    let baseline,_,_=run incoming 0 in
++    let overhead=if incoming then nodes (command 1 "frame" (Json.Array []))
++      else nodes (List.nth (responses baseline) 1) in
++    let exact,_,dispatched=run incoming (1_000_000-overhead) in
++    require (dispatched && text "kind" (last exact)="reply" &&
++      Json.boolean (get "closed" (last exact))) "Exact frame node boundary was rejected";
++    census exact;
++    let overflow,state,dispatched=run incoming (1_000_001-overhead) in
++    fatal overflow state;
++    require (dispatched=(not incoming) && List.length (responses overflow)=2)
++      "Oversized frame reached dispatch or publication under the larger lifetime ceiling") [true;false]
+@@ -335 +411,2 @@ let () =
+-    test_uncertain_write;test_reductions;test_lifetime_resources;test_lifetime_nodes;test_retention_no_refund;
++    test_uncertain_write;test_reductions;test_lifetime_resources;test_lifetime_nodes;test_resource_profile;
++    test_profile_lifetime_boundary;test_frame_node_boundaries;test_retention_no_refund;
+diff --git a/core/test/test_reference_contracts_corpus.ml b/core/test/test_reference_contracts_corpus.ml
+index fc0df4324..7168ec450 100644
+--- a/core/test/test_reference_contracts_corpus.ml
++++ b/core/test/test_reference_contracts_corpus.ml
+@@ -156,0 +157,30 @@ let reference_routed_original root name expected current =
++let reference_callback_original root name expected current =
++  let old_pin="0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018"
++  and current_pin="96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a" in
++  require(name="src/biocompiler/core_pipeline_callback_session.py" && expected=old_pin &&
++    Canonical.sha256 current=current_pin) "Unreviewed reference callback source substitution";
++  let witness=source_witness root "tests/conformance/reference-callback-source-counterpart-v1.json"
++    "e3be989e0a76913f64ec959d4354bb4a352c70e0bf661ca58df68db15e544b5c" in
++  Json.exact_fields ["schema_version";"base_revision";"path";"original_sha256";"current_sha256";
++    "original_bytes";"current_bytes";"changes";"scope"] (Json.object_fields witness);
++  require(text "schema_version" witness="biocompiler.reference_callback_source_counterpart.v1" &&
++    text "base_revision" witness="b27f52447f49c749d33cac17f3bbb6fe772cbc24" &&
++    text "path" witness=name && text "original_sha256" witness=old_pin &&
++    text "current_sha256" witness=current_pin && integer(field "original_bytes" witness)=32312 &&
++    integer(field "current_bytes" witness)=String.length current &&
++    text "scope" witness="Exact historical source restoration only; current resource profile validation is separate")
++    "Reference callback source witness lost its exact authority";
++  let changes=array "changes" witness in
++  let spans=List.map(fun change ->
++    Json.exact_fields ["old_start_line";"old_end_line";"new_start_line";"new_end_line";"before";"after"]
++      (Json.object_fields change);
++    integer(field "old_start_line" change),integer(field "old_end_line" change),
++    integer(field "new_start_line" change),integer(field "new_end_line" change)) changes in
++  require(spans=[31,31,31,31;33,33,33,33;309,309,309,309;377,376,377,379;
++    380,380,383,383;411,411,414,414;421,421,424,425;430,430,434,435])
++    "Reference callback exact source span census differs";
++  let restored=restore_source_lines current changes in
++  require(String.length restored=integer(field "original_bytes" witness))
++    "Reference callback whole source byte count differs";
++  restored
++
+@@ -159,0 +190,2 @@ let reference_original root name expected current =
++    else if name="src/biocompiler/core_pipeline_callback_session.py" then
++      reference_callback_original root name expected current
+diff --git a/protocol/pipeline-callback-channel-v1.json b/protocol/pipeline-callback-channel-v1.json
+index 5037cfeaf..439549b74 100644
+--- a/protocol/pipeline-callback-channel-v1.json
++++ b/protocol/pipeline-callback-channel-v1.json
+@@ -1 +1 @@
+-{"application":"caller_supplied_exact_declaration;channel_has_no_manager_or_acceptance_authority","client_fields":{"close":["protocol","profile","session_id","kind","sequence","parent_invocation"],"command":["protocol","profile","session_id","kind","sequence","parent_invocation","operation","arguments"],"continue":["protocol","profile","session_id","kind","sequence","invocation_id","invocation_sha256","outcome"],"hello":["protocol","profile","session_id","kind","sequence","declaration","application","limits"]},"close":"top_level_only;successful_null_reply_with_closed_true;no_resume","continuation_binding":"only_exact_current_top_invocation_id_and_body_sha256_may_complete","continuation_outcomes":{"raise":["status","token"],"return":["status","value"]},"event_sequence":"zero_then_exact_successor_across_replies_invocations_and_fatal","exception":"opaque_bounded_host_token_preserved;only_explicit_rejected_reply_or_Host_exception_keeps_application_live","fatal":"pipeline_callback_fatal;closed_latched;nullable_last_validated_request_binding;no_retry_or_fatal_write_after_uncertain_write","fixed_limits":{"frame_header_bytes":9,"max_action_bytes":128,"max_json_depth":128,"max_json_number_characters":4300,"max_json_string_bytes":4194304,"max_token_bytes":128,"terminal_bytes":8192,"terminal_work":1000000},"framing":"8_lowercase_hex_utf8_body_bytes_then_LF_then_exact_body","hello":"exact_complete_transport_and_application_declarations;null_or_complete_positive_integer_limit_reductions;already_consumed_prefix_counts","hello_result_fields":["declaration","application","limits"],"host_execution":"arbitrary_host_callback_cpu_and_memory_outside_native_bound;application_must_charge_its_native_work_and_retention_to_channel","invocation_identity":"event_id_and_sha256_exact_invocation_body_without_frame_header","limits":{"max_commands":10000,"max_frame_bytes":33554432,"max_frames":1000000,"max_json_nodes":1000000,"max_pending_invocations":128,"max_retained_bytes":134217728,"max_total_bytes":268435456,"max_work":1000000000000},"parent_binding":"command_parent_is_current_top_invocation_or_null_at_top_level;invocation_parent_is_enclosing_invocation","profile":"biocompiler.core.pipeline_callback_channel.v1","protocol":"biocompiler.pipeline_callback_channel.v1","reply_outcomes":{"ok":["status","value"],"raise":["status","token"],"rejected":["status","value"]},"request_identity":"sha256_exact_utf8_body_without_frame_header","retention":"cumulative_canonical_application_declaration_and_received_body_bytes_plus_callback_arguments_and_explicit_application_reservations;no_refund","schema_version":"biocompiler.pipeline_callback_channel_declaration.v1","sequence":"hello_zero_then_exact_successor_across_commands_continuations_and_close","server_fields":{"fatal":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","code","closed","usage"],"invoke":["protocol","profile","session_id","kind","event_id","invocation_id","parent_invocation","command_sequence","command_sha256","action","arguments","usage"],"reply":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","outcome","closed","usage"]},"session_identity":"client_canonical_lowercase_uuid_bound_to_one_channel_no_reconnect","terminal_reserve":"prepaid_1000000_work;normal_frames_leave_8192_bytes_and_one_frame;one_fatal_may_exceed_reduced_frame_and_node_ceilings_within_prepaid_byte_work_bound","usage":"conservative_reservations_before_io_or_allocation;partial_headers_and_bodies_remain_charged;json_nodes_counts_all_received_and_published_keys_and_values","usage_fields":["work_charged","work_remaining","input_bytes","output_bytes","frames","commands","json_nodes","pending_invocations","retained_bytes"]}
++{"application":"caller_supplied_exact_declaration;channel_has_no_manager_or_acceptance_authority","client_fields":{"close":["protocol","profile","session_id","kind","sequence","parent_invocation"],"command":["protocol","profile","session_id","kind","sequence","parent_invocation","operation","arguments"],"continue":["protocol","profile","session_id","kind","sequence","invocation_id","invocation_sha256","outcome"],"hello":["protocol","profile","session_id","kind","sequence","declaration","application","limits"]},"close":"top_level_only;successful_null_reply_with_closed_true;no_resume","continuation_binding":"only_exact_current_top_invocation_id_and_body_sha256_may_complete","continuation_outcomes":{"raise":["status","token"],"return":["status","value"]},"event_sequence":"zero_then_exact_successor_across_replies_invocations_and_fatal","exception":"opaque_bounded_host_token_preserved;only_explicit_rejected_reply_or_Host_exception_keeps_application_live","fatal":"pipeline_callback_fatal;closed_latched;nullable_last_validated_request_binding;no_retry_or_fatal_write_after_uncertain_write","fixed_limits":{"frame_header_bytes":9,"max_action_bytes":128,"max_frame_json_nodes":1000000,"max_json_depth":128,"max_json_number_characters":4300,"max_json_string_bytes":4194304,"max_token_bytes":128,"terminal_bytes":8192,"terminal_work":1000000},"framing":"8_lowercase_hex_utf8_body_bytes_then_LF_then_exact_body","hello":"exact_complete_transport_and_application_declarations;null_or_complete_positive_integer_limit_reductions;already_consumed_prefix_counts","hello_result_fields":["declaration","application","limits"],"host_execution":"arbitrary_host_callback_cpu_and_memory_outside_native_bound;application_must_charge_its_native_work_and_retention_to_channel","invocation_identity":"event_id_and_sha256_exact_invocation_body_without_frame_header","limits":{"max_commands":10000,"max_frame_bytes":33554432,"max_frames":1000000,"max_json_nodes":2000000,"max_pending_invocations":128,"max_retained_bytes":134217728,"max_total_bytes":268435456,"max_work":1000000000000},"parent_binding":"command_parent_is_current_top_invocation_or_null_at_top_level;invocation_parent_is_enclosing_invocation","profile":"biocompiler.core.pipeline_callback_channel.v2","protocol":"biocompiler.pipeline_callback_channel.v1","reply_outcomes":{"ok":["status","value"],"raise":["status","token"],"rejected":["status","value"]},"request_identity":"sha256_exact_utf8_body_without_frame_header","retention":"cumulative_canonical_application_declaration_and_received_body_bytes_plus_callback_arguments_and_explicit_application_reservations;no_refund","schema_version":"biocompiler.pipeline_callback_channel_declaration.v1","sequence":"hello_zero_then_exact_successor_across_commands_continuations_and_close","server_fields":{"fatal":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","code","closed","usage"],"invoke":["protocol","profile","session_id","kind","event_id","invocation_id","parent_invocation","command_sequence","command_sha256","action","arguments","usage"],"reply":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","outcome","closed","usage"]},"session_identity":"client_canonical_lowercase_uuid_bound_to_one_channel_no_reconnect","terminal_reserve":"prepaid_1000000_work;normal_frames_leave_8192_bytes_and_one_frame;one_fatal_may_exceed_reduced_frame_and_node_ceilings_within_prepaid_byte_work_bound","usage":"conservative_reservations_before_io_or_allocation;partial_headers_and_bodies_remain_charged;json_nodes_counts_all_received_and_published_keys_and_values","usage_fields":["work_charged","work_remaining","input_bytes","output_bytes","frames","commands","json_nodes","pending_invocations","retained_bytes"]}
+diff --git a/src/biocompiler/core_pipeline_callback_session.py b/src/biocompiler/core_pipeline_callback_session.py
+index a3b22267a..59a5b9e35 100644
+--- a/src/biocompiler/core_pipeline_callback_session.py
++++ b/src/biocompiler/core_pipeline_callback_session.py
+@@ -31 +31 @@ from biocompiler.pipeline_callback_objects import CallbackObjects, HostCompletio
+-_DECLARATION_JSON = "{\"application\":\"caller_supplied_exact_declaration;channel_has_no_manager_or_acceptance_authority\",\"client_fields\":{\"close\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"sequence\",\"parent_invocation\"],\"command\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"sequence\",\"parent_invocation\",\"operation\",\"arguments\"],\"continue\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"sequence\",\"invocation_id\",\"invocation_sha256\",\"outcome\"],\"hello\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"sequence\",\"declaration\",\"application\",\"limits\"]},\"close\":\"top_level_only;successful_null_reply_with_closed_true;no_resume\",\"continuation_binding\":\"only_exact_current_top_invocation_id_and_body_sha256_may_complete\",\"continuation_outcomes\":{\"raise\":[\"status\",\"token\"],\"return\":[\"status\",\"value\"]},\"event_sequence\":\"zero_then_exact_successor_across_replies_invocations_and_fatal\",\"exception\":\"opaque_bounded_host_token_preserved;only_explicit_rejected_reply_or_Host_exception_keeps_application_live\",\"fatal\":\"pipeline_callback_fatal;closed_latched;nullable_last_validated_request_binding;no_retry_or_fatal_write_after_uncertain_write\",\"fixed_limits\":{\"frame_header_bytes\":9,\"max_action_bytes\":128,\"max_json_depth\":128,\"max_json_number_characters\":4300,\"max_json_string_bytes\":4194304,\"max_token_bytes\":128,\"terminal_bytes\":8192,\"terminal_work\":1000000},\"framing\":\"8_lowercase_hex_utf8_body_bytes_then_LF_then_exact_body\",\"hello\":\"exact_complete_transport_and_application_declarations;null_or_complete_positive_integer_limit_reductions;already_consumed_prefix_counts\",\"hello_result_fields\":[\"declaration\",\"application\",\"limits\"],\"host_execution\":\"arbitrary_host_callback_cpu_and_memory_outside_native_bound;application_must_charge_its_native_work_and_retention_to_channel\",\"invocation_identity\":\"event_id_and_sha256_exact_invocation_body_without_frame_header\",\"limits\":{\"max_commands\":10000,\"max_frame_bytes\":33554432,\"max_frames\":1000000,\"max_json_nodes\":1000000,\"max_pending_invocations\":128,\"max_retained_bytes\":134217728,\"max_total_bytes\":268435456,\"max_work\":1000000000000},\"parent_binding\":\"command_parent_is_current_top_invocation_or_null_at_top_level;invocation_parent_is_enclosing_invocation\",\"profile\":\"biocompiler.core.pipeline_callback_channel.v1\",\"protocol\":\"biocompiler.pipeline_callback_channel.v1\",\"reply_outcomes\":{\"ok\":[\"status\",\"value\"],\"raise\":[\"status\",\"token\"],\"rejected\":[\"status\",\"value\"]},\"request_identity\":\"sha256_exact_utf8_body_without_frame_header\",\"retention\":\"cumulative_canonical_application_declaration_and_received_body_bytes_plus_callback_arguments_and_explicit_application_reservations;no_refund\",\"schema_version\":\"biocompiler.pipeline_callback_channel_declaration.v1\",\"sequence\":\"hello_zero_then_exact_successor_across_commands_continuations_and_close\",\"server_fields\":{\"fatal\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"event_id\",\"sequence\",\"request_sha256\",\"code\",\"closed\",\"usage\"],\"invoke\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"event_id\",\"invocation_id\",\"parent_invocation\",\"command_sequence\",\"command_sha256\",\"action\",\"arguments\",\"usage\"],\"reply\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"event_id\",\"sequence\",\"request_sha256\",\"outcome\",\"closed\",\"usage\"]},\"session_identity\":\"client_canonical_lowercase_uuid_bound_to_one_channel_no_reconnect\",\"terminal_reserve\":\"prepaid_1000000_work;normal_frames_leave_8192_bytes_and_one_frame;one_fatal_may_exceed_reduced_frame_and_node_ceilings_within_prepaid_byte_work_bound\",\"usage\":\"conservative_reservations_before_io_or_allocation;partial_headers_and_bodies_remain_charged;json_nodes_counts_all_received_and_published_keys_and_values\",\"usage_fields\":[\"work_charged\",\"work_remaining\",\"input_bytes\",\"output_bytes\",\"frames\",\"commands\",\"json_nodes\",\"pending_invocations\",\"retained_bytes\"]}"
++_DECLARATION_JSON = "{\"application\":\"caller_supplied_exact_declaration;channel_has_no_manager_or_acceptance_authority\",\"client_fields\":{\"close\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"sequence\",\"parent_invocation\"],\"command\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"sequence\",\"parent_invocation\",\"operation\",\"arguments\"],\"continue\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"sequence\",\"invocation_id\",\"invocation_sha256\",\"outcome\"],\"hello\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"sequence\",\"declaration\",\"application\",\"limits\"]},\"close\":\"top_level_only;successful_null_reply_with_closed_true;no_resume\",\"continuation_binding\":\"only_exact_current_top_invocation_id_and_body_sha256_may_complete\",\"continuation_outcomes\":{\"raise\":[\"status\",\"token\"],\"return\":[\"status\",\"value\"]},\"event_sequence\":\"zero_then_exact_successor_across_replies_invocations_and_fatal\",\"exception\":\"opaque_bounded_host_token_preserved;only_explicit_rejected_reply_or_Host_exception_keeps_application_live\",\"fatal\":\"pipeline_callback_fatal;closed_latched;nullable_last_validated_request_binding;no_retry_or_fatal_write_after_uncertain_write\",\"fixed_limits\":{\"frame_header_bytes\":9,\"max_action_bytes\":128,\"max_frame_json_nodes\":1000000,\"max_json_depth\":128,\"max_json_number_characters\":4300,\"max_json_string_bytes\":4194304,\"max_token_bytes\":128,\"terminal_bytes\":8192,\"terminal_work\":1000000},\"framing\":\"8_lowercase_hex_utf8_body_bytes_then_LF_then_exact_body\",\"hello\":\"exact_complete_transport_and_application_declarations;null_or_complete_positive_integer_limit_reductions;already_consumed_prefix_counts\",\"hello_result_fields\":[\"declaration\",\"application\",\"limits\"],\"host_execution\":\"arbitrary_host_callback_cpu_and_memory_outside_native_bound;application_must_charge_its_native_work_and_retention_to_channel\",\"invocation_identity\":\"event_id_and_sha256_exact_invocation_body_without_frame_header\",\"limits\":{\"max_commands\":10000,\"max_frame_bytes\":33554432,\"max_frames\":1000000,\"max_json_nodes\":2000000,\"max_pending_invocations\":128,\"max_retained_bytes\":134217728,\"max_total_bytes\":268435456,\"max_work\":1000000000000},\"parent_binding\":\"command_parent_is_current_top_invocation_or_null_at_top_level;invocation_parent_is_enclosing_invocation\",\"profile\":\"biocompiler.core.pipeline_callback_channel.v2\",\"protocol\":\"biocompiler.pipeline_callback_channel.v1\",\"reply_outcomes\":{\"ok\":[\"status\",\"value\"],\"raise\":[\"status\",\"token\"],\"rejected\":[\"status\",\"value\"]},\"request_identity\":\"sha256_exact_utf8_body_without_frame_header\",\"retention\":\"cumulative_canonical_application_declaration_and_received_body_bytes_plus_callback_arguments_and_explicit_application_reservations;no_refund\",\"schema_version\":\"biocompiler.pipeline_callback_channel_declaration.v1\",\"sequence\":\"hello_zero_then_exact_successor_across_commands_continuations_and_close\",\"server_fields\":{\"fatal\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"event_id\",\"sequence\",\"request_sha256\",\"code\",\"closed\",\"usage\"],\"invoke\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"event_id\",\"invocation_id\",\"parent_invocation\",\"command_sequence\",\"command_sha256\",\"action\",\"arguments\",\"usage\"],\"reply\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"event_id\",\"sequence\",\"request_sha256\",\"outcome\",\"closed\",\"usage\"]},\"session_identity\":\"client_canonical_lowercase_uuid_bound_to_one_channel_no_reconnect\",\"terminal_reserve\":\"prepaid_1000000_work;normal_frames_leave_8192_bytes_and_one_frame;one_fatal_may_exceed_reduced_frame_and_node_ceilings_within_prepaid_byte_work_bound\",\"usage\":\"conservative_reservations_before_io_or_allocation;partial_headers_and_bodies_remain_charged;json_nodes_counts_all_received_and_published_keys_and_values\",\"usage_fields\":[\"work_charged\",\"work_remaining\",\"input_bytes\",\"output_bytes\",\"frames\",\"commands\",\"json_nodes\",\"pending_invocations\",\"retained_bytes\"]}"
+@@ -33 +33 @@ PROTOCOL = 'biocompiler.pipeline_callback_channel.v1'
+-PROFILE = 'biocompiler.core.pipeline_callback_channel.v1'
++PROFILE = 'biocompiler.core.pipeline_callback_channel.v2'
+@@ -309 +309 @@ class CorePipelineCallbackSession:
+-        value = cast(dict[str, Any], decode_document(body))
++        value = cast(dict[str, Any], decode_document(body, max_nodes=self._frame_node_limit()))
+@@ -376,0 +377,3 @@ class CorePipelineCallbackSession:
++    def _frame_node_limit(self) -> int:
++        return min(_FIXED['max_frame_json_nodes'], self._limits['max_json_nodes'])
++
+@@ -380 +383 @@ class CorePipelineCallbackSession:
+-        body = encode_document(value, max_bytes=self._limits['max_frame_bytes'], max_nodes=self._limits['max_json_nodes'])
++        body = encode_document(value, max_bytes=self._limits['max_frame_bytes'], max_nodes=self._frame_node_limit())
+@@ -411 +414 @@ class CorePipelineCallbackSession:
+-                                max_nodes=max(self._limits['max_json_nodes'], _FIXED['terminal_bytes']))
++                                max_nodes=max(self._frame_node_limit(), _FIXED['terminal_bytes']))
+@@ -421 +424,2 @@ class CorePipelineCallbackSession:
+-        self._node_count += _nodes(value)
++        frame_nodes = _nodes(value)
++        self._node_count += frame_nodes
+@@ -430 +434,2 @@ class CorePipelineCallbackSession:
+-        _require(len(raw) <= self._limits['max_frame_bytes'] and self._node_count <= self._limits['max_json_nodes'],
++        _require(len(raw) <= self._limits['max_frame_bytes'] and frame_nodes <= self._frame_node_limit()
++                 and self._node_count <= self._limits['max_json_nodes'],
+diff --git a/tests/test_core_pipeline_callback_session.py b/tests/test_core_pipeline_callback_session.py
+index ad6e6b826..6ff7e92ff 100644
+--- a/tests/test_core_pipeline_callback_session.py
++++ b/tests/test_core_pipeline_callback_session.py
+@@ -520,0 +521,96 @@ class CallbackSessionTests(unittest.TestCase):
++    def test_v2_lifetime_crosses_old_ceiling_and_reduced_lifetime_still_closes(self):
++        self.assertEqual(capability_profile()['profile'], 'biocompiler.core.pipeline_callback_channel.v2')
++        self.assertEqual(capability_profile()['limits']['max_json_nodes'], 2_000_000)
++        self.assertEqual(capability_profile()['fixed_limits']['max_frame_json_nodes'], 1_000_000)
++        payload = [None] * 180_000
++        for ceiling in (2_000_000, 1_000_000):
++            with self.subTest(ceiling=ceiling):
++                limits = capability_profile()['limits']
++                limits['max_json_nodes'] = ceiling
++                session = self.session(self.core(timeout_seconds=30), limits=limits)
++                pid = session.pid
++                totals = []
++                for _ in range(2):
++                    response = session.call('echo', payload)
++                    self.assertEqual(response.result, payload)
++                    totals.append(response.usage['json_nodes'])
++                if ceiling == 2_000_000:
++                    response = session.call('echo', payload)
++                    self.assertEqual(response.result, payload)
++                    totals.append(response.usage['json_nodes'])
++                    self.assertGreater(totals[-1], 1_000_000)
++                    self.assertEqual(totals, sorted(set(totals)))
++                    self.assertEqual(session.pid, pid)
++                    session.close()
++                    self.assertFalse(session.invalidated)
++                else:
++                    with self.assertRaisesRegex(CoreProtocolError, 'document limits'):
++                        session.call('echo', payload)
++                    self.assertTrue(session.invalidated)
++                    self.assertIsNotNone(session.returncode)
++                    before = len(session.traffic)
++                    with self.assertRaisesRegex(CoreProtocolError, 'cannot reconnect'):
++                        session.call('echo', None)
++                    self.assertEqual(len(session.traffic), before)
++
++    def test_exact_and_one_short_lifetime_boundary_include_close_frames(self):
++        limits = capability_profile()['limits']
++        limits['max_json_nodes'] = 10_000
++        probe = self.session(limits=limits)
++        probe.call('echo', [None] * 200)
++        exact = probe.close().usage['json_nodes']
++        for ceiling in (exact, exact - 1):
++            with self.subTest(ceiling=ceiling):
++                limits = capability_profile()['limits']
++                limits['max_json_nodes'] = ceiling
++                session = self.session(limits=limits)
++                response = session.call('echo', [None] * 200)
++                self.assertLess(response.usage['json_nodes'], ceiling)
++                if ceiling == exact:
++                    self.assertEqual(session.close().usage['json_nodes'], ceiling)
++                    self.assertFalse(session.invalidated)
++                    self.assertEqual(session.returncode, 0)
++                else:
++                    with self.assertRaisesRegex(CoreProtocolError, 'document limits'):
++                        session.close()
++                    self.assertTrue(session.invalidated)
++                    self.assertIsNotNone(session.returncode)
++
++    def test_one_million_node_frame_cap_remains_separate_from_lifetime(self):
++        session = self.session(self.core(before_reply="outcome = {'status':'ok','value':None}", timeout_seconds=30))
++        skeleton = {'protocol': transport.PROTOCOL, 'profile': transport.PROFILE,
++            'session_id': session._nonce, 'kind': 'command', 'sequence': 1,
++            'parent_invocation': None, 'operation': 'echo', 'arguments': []}
++        count = 1_000_000 - transport._nodes(skeleton)
++        response = session.call('echo', [None] * count)
++        self.assertEqual(transport._nodes(session.traffic[-2].value), 1_000_000)
++        self.assertGreater(response.usage['json_nodes'], 1_000_000)
++        before = len(session.traffic)
++        with self.assertRaisesRegex(CoreProtocolError, 'node limit'):
++            session.call('echo', [None] * (count + 1))
++        self.assertEqual(len(session.traffic), before)
++        self.assertFalse(session.invalidated)  # Local encoding rejected before any I/O.
++        session.close()
++        session = self.session(self.core(before_reply="outcome = {'status':'ok','value':[None]*1_000_000}",
++            timeout_seconds=30))
++        with self.assertRaisesRegex(CoreProtocolError, 'node limit'):
++            session.call('echo', None)
++        self.assertTrue(session.invalidated)
++        self.assertIsNotNone(session.returncode)
++
++    def test_old_resource_profile_and_declaration_rejected_before_application(self):
++        old = capability_profile()
++        old['profile'] = 'biocompiler.core.pipeline_callback_channel.v1'
++        old['limits']['max_json_nodes'] = 1_000_000
++        del old['fixed_limits']['max_frame_json_nodes']
++        marker = Path(self.directory.name) / 'application-was-used'
++        mutations = ["value['profile'] = 'biocompiler.core.pipeline_callback_channel.v1'",
++            f"value['outcome']['value']['declaration'] = {old!r}"]
++        for mutation in mutations:
++            with self.subTest(mutation=mutation):
++                core = self.core(before='if next_event == 0: ' + mutation,
++                    before_reply=f"open({str(marker)!r}, 'w').write('used')")
++                with self.assertRaises(CoreProtocolError):
++                    self.session(core)
++                self.assertFalse(marker.exists())
++
+diff --git a/tests/test_prebuilt_ci_plan.py b/tests/test_prebuilt_ci_plan.py
+index c0d3e7191..6ac3c931f 100644
+--- a/tests/test_prebuilt_ci_plan.py
++++ b/tests/test_prebuilt_ci_plan.py
+@@ -22,0 +23,30 @@ PROVIDER_DELTA_SHA256='67c11513477659bb81c2e9a0cfb87191fd669cf2caf2acce0962e77f5
++BUDGET_DELTA=ROOT/'tests/conformance/callback-budget-checker-source-delta-v1.json'
++BUDGET_DELTA_SHA256='6cb03e6dfa5c76528bf9370be992634b6a9fbad5219a1e43c042090abd48ff8b'
++
++
++def restore_callback_budget_source(current, proof_bytes):
++    """Restore the exact checker before the separate per-frame node bound."""
++    def require(condition,message):
++        if not condition:raise AssertionError(message)
++    require(hashlib.sha256(proof_bytes).hexdigest()==BUDGET_DELTA_SHA256,
++        'Unreviewed callback-budget source witness')
++    proof=json.loads(proof_bytes)
++    require(set(proof)=={'schema','path','historical','current','spans'}
++        and proof['schema']=='biocompiler.callback_budget_checker_source_delta.v1'
++        and proof['path']=='tools/check_pipeline_manager_install.py',
++        'Callback-budget witness shape differs')
++    require(proof['current']=={'bytes':len(current),'sha256':hashlib.sha256(current).hexdigest()},
++        'Current checker differs from the reviewed callback-budget correction')
++    spans=proof['spans']
++    require(type(spans) is list and len(spans)==1 and set(spans[0])=={'offset','before','after'}
++        and type(spans[0]['offset']) is int and spans[0]['offset']>=0
++        and spans[0]['before']=='        nodes += json_nodes(value)\n'
++        and type(spans[0]['after']) is str and spans[0]['after'],
++        'Callback-budget source span census differs')
++    row=spans[0];offset=row['offset'];before=row['before'].encode();after=row['after'].encode()
++    require(current[offset:offset+len(after)]==after,'Callback-budget source span bytes differ')
++    restored=current[:offset]+before+current[offset+len(after):]
++    require(proof['historical']=={'revision':'b27f52447f49c749d33cac17f3bbb6fe772cbc24',
++        'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
++        'Complete historical callback checker source differs')
++    return restored
+@@ -186,0 +217 @@ class HostedCiPlanTests(unittest.TestCase):
++                new=restore_callback_budget_source(new,BUDGET_DELTA.read_bytes())
+@@ -205 +236,2 @@ class HostedCiPlanTests(unittest.TestCase):
+-        current=(ROOT/'tools/check_pipeline_manager_install.py').read_bytes()
++        current=restore_callback_budget_source((ROOT/'tools/check_pipeline_manager_install.py').read_bytes(),
++            BUDGET_DELTA.read_bytes())
+@@ -232,0 +265,25 @@ class HostedCiPlanTests(unittest.TestCase):
++    def test_callback_budget_restoration_preserves_prior_source_proofs(self):
++        current=(ROOT/'tools/check_pipeline_manager_install.py').read_bytes()
++        witness=BUDGET_DELTA.read_bytes();proof=json.loads(witness)
++        restored=restore_callback_budget_source(current,witness)
++        self.assertEqual(hashlib.sha256(restored).hexdigest(),
++            '59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb')
++        self.assertEqual(hashlib.sha256(restore_deferred_context_source(restored,CONTEXT_DELTA.read_bytes())).hexdigest(),
++            'd12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7')
++        for label,mutant in {
++                'historical source':restored,
++                'comparison boundary':current.replace(b'frame_nodes <= min(',b'frame_nodes < min('),
++                'unrelated body':current.replace(b'def validate_deferred_accesses(',b'def unchecked_accesses('),
++                'additional function':current+b'\ndef unreviewed():\n    return True\n',
++                'newline normalization':current.replace(b'\n',b'\r\n')}.items():
++            with self.subTest(change=label):
++                self.assertNotEqual(mutant,current)
++                with self.assertRaises(AssertionError):restore_callback_budget_source(mutant,witness)
++                forged=json.loads(witness)
++                forged['current']={'bytes':len(mutant),'sha256':hashlib.sha256(mutant).hexdigest()}
++                with self.assertRaisesRegex(AssertionError,'Unreviewed callback-budget source witness'):
++                    restore_callback_budget_source(mutant,json.dumps(forged,sort_keys=True,indent=2).encode()+b'\n')
++        proof['spans'][0]['offset']+=1
++        with self.assertRaisesRegex(AssertionError,'Unreviewed callback-budget source witness'):
++            restore_callback_budget_source(current,json.dumps(proof,sort_keys=True,indent=2).encode()+b'\n')
++
+diff --git a/tests/test_reference_original_counterpart.py b/tests/test_reference_original_counterpart.py
+index 914b984e7..ed5e6a0ef 100644
+--- a/tests/test_reference_original_counterpart.py
++++ b/tests/test_reference_original_counterpart.py
+@@ -2,0 +3,2 @@ from copy import deepcopy
++import ast
++import json
+@@ -31 +33 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
+-        self.assertEqual([name for name, row in rows.items() if row['substituted']], sorted([original.CORE_SOURCE, original.TEST, *original.ROUTE_SOURCES]))
++        self.assertEqual([name for name, row in rows.items() if row['substituted']], sorted([original.CORE_SOURCE, original.CALLBACK_SOURCE, original.TEST, *original.ROUTE_SOURCES]))
+@@ -34 +36,3 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
+-        self.assertEqual(len(receipt['manifest']['data']), 4007)
++        self.assertEqual(len(receipt['manifest']['data']), 4009)
++        self.assertEqual(rows[original.CALLBACK_SOURCE]['origin_sha256'], original.CALLBACK_CURRENT_SHA)
++        self.assertEqual(rows[original.CALLBACK_SOURCE]['sha256'], original.CALLBACK_ORIGINAL_SHA)
+@@ -56 +60,2 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
+-                     'module-path', 'missing-module', 'inventory', 'narrowed-tests', 'core-witness', 'core-update', 'attempt-witness', 'route-witness', 'current-core-copy'):
++                     'module-path', 'missing-module', 'inventory', 'narrowed-tests', 'core-witness', 'core-update', 'attempt-witness', 'route-witness', 'current-core-copy',
++                     'callback-witness', 'current-callback-copy', 'missing-callback-witness'):
+@@ -77,0 +83,6 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
++            elif kind == 'callback-witness': manifest['callback_source_witness']['correspondence']['changes'][0]['after'] += '# forged\n'
++            elif kind == 'missing-callback-witness': del manifest['callback_source_witness']
++            elif kind == 'current-callback-copy':
++                callback = next(row for row in rows if row['logical'] == original.CALLBACK_SOURCE)
++                callback['sha256'] = callback['origin_sha256']
++                callback['substituted'] = False
+@@ -104 +115,2 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
+-                            original.CORE_MERGE_UPDATE, original.CORE_ATTEMPT_UPDATE, original.ROUTE_WITNESS):
++                            original.CORE_MERGE_UPDATE, original.CORE_ATTEMPT_UPDATE, original.ROUTE_WITNESS,
++                            original.CALLBACK_BLOB, original.CALLBACK_WITNESS):
+@@ -149,0 +162,55 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
++    def test_exact_callback_profile_source_restores_whole_original_client(self):
++        current = (original.ROOT / original.CALLBACK_SOURCE).read_bytes()
++        restored, proof = original.callback_source_witness(current)
++        self.assertEqual(restored, (original.ROOT / original.CALLBACK_BLOB).read_bytes())
++        self.assertEqual(original.sha(restored), original.CALLBACK_ORIGINAL_SHA)
++        self.assertEqual(len(restored), 32312)
++        self.assertEqual(len(proof['correspondence']['changes']), 8)
++        self.assertIn('current resource profile validation is separate', proof['scope'])
++        def declaration(raw):
++            tree = ast.parse(raw)
++            row = next(node for node in tree.body if isinstance(node, ast.Assign)
++                and any(isinstance(target, ast.Name) and target.id == '_DECLARATION_JSON' for target in node.targets))
++            return json.loads(ast.literal_eval(row.value))
++        before, after = declaration(restored), declaration(current)
++        self.assertEqual(before['profile'], 'biocompiler.core.pipeline_callback_channel.v1')
++        self.assertEqual(after['profile'], 'biocompiler.core.pipeline_callback_channel.v2')
++        self.assertEqual(before['limits']['max_json_nodes'], 1_000_000)
++        self.assertEqual(after['limits']['max_json_nodes'], 2_000_000)
++        self.assertEqual(after['fixed_limits']['max_frame_json_nodes'], 1_000_000)
++        self.assertEqual(after['protocol'], before['protocol'])
++        for changed in (current+b'\n', restored,
++                current.replace(b'max_frame_json_nodes', b'max_other_json_nodes', 1),
++                b'# relocated client\n'+current):
++            with self.subTest(pin=original.sha(changed)), self.assertRaisesRegex(AssertionError, 'exact counterpart'):
++                original.callback_source_witness(changed)
++
++    def test_callback_witness_location_inventory_and_archive_tampering_reject(self):
++        raw = (original.ROOT / original.CALLBACK_SOURCE).read_bytes()
++        _, proof = original.callback_source_witness(raw)
++        for kind in ('offset', 'missing-span', 'duplicate-span', 'before', 'after', 'path', 'base', 'current-hash', 'archive'):
++            changed = deepcopy(proof['correspondence'])
++            if kind == 'offset': changed['changes'][0]['new_start_line'] += 1
++            elif kind == 'missing-span': changed['changes'].pop()
++            elif kind == 'duplicate-span': changed['changes'].append(changed['changes'][-1].copy())
++            elif kind in ('before', 'after'): changed['changes'][0][kind] += '# forged\n'
++            elif kind == 'path': changed['path'] = original.CORE_SOURCE
++            elif kind == 'base': changed['base_revision'] = '0' * 40
++            elif kind == 'current-hash': changed['current_sha256'] = original.CALLBACK_ORIGINAL_SHA
++            encoded = original.canonical(changed) + b'\n'
++            with tempfile.TemporaryDirectory() as directory:
++                root = Path(directory)
++                for logical in (original.CALLBACK_WITNESS, original.CALLBACK_BLOB):
++                    target = root / logical
++                    target.parent.mkdir(parents=True, exist_ok=True)
++                    target.write_bytes((original.ROOT / logical).read_bytes())
++                (root / original.CALLBACK_WITNESS).write_bytes(encoded)
++                if kind == 'archive':
++                    target = root / original.CALLBACK_BLOB
++                    target.write_bytes(target.read_bytes()+b'\n')
++                with self.subTest(kind=kind), patch.object(original, 'ROOT', root):
++                    # Even a repaired witness digest cannot authorize a new path,
++                    # location, span census or archived source identity.
++                    with patch.object(original, 'CALLBACK_WITNESS_SHA', original.sha(encoded)), self.assertRaises(AssertionError):
++                        original.callback_source_witness(raw)
++
+diff --git a/tools/check_pipeline_manager_install.py b/tools/check_pipeline_manager_install.py
+index db28ac01b..d1819b325 100644
+--- a/tools/check_pipeline_manager_install.py
++++ b/tools/check_pipeline_manager_install.py
+@@ -1903 +1903,4 @@ def validate_frames(rows, artifacts, channel, application, *, sessions=None, det
+-        nodes += json_nodes(value)
++        frame_nodes = json_nodes(value)
++        require(frame_nodes <= min(channel["fixed_limits"]["max_frame_json_nodes"], limits["max_json_nodes"]),
++            "Callback frame exceeds selected JSON node bound")
++        nodes += frame_nodes
+diff --git a/tools/check_realization_workflow_corpus.py b/tools/check_realization_workflow_corpus.py
+index 1fc149817..5403d5fd4 100644
+--- a/tools/check_realization_workflow_corpus.py
++++ b/tools/check_realization_workflow_corpus.py
+@@ -32 +32 @@ REVIEWED_ADDITIONS = {
+-    "src/biocompiler/core_pipeline_callback_session.py": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018",
++    "src/biocompiler/core_pipeline_callback_session.py": "96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a",
+diff --git a/tools/reference_original_counterpart.py b/tools/reference_original_counterpart.py
+index 73c94f174..9919723a8 100644
+--- a/tools/reference_original_counterpart.py
++++ b/tools/reference_original_counterpart.py
+@@ -32,0 +33,6 @@ CORE_SOURCE = 'src/biocompiler/core_pipeline_manager.py'
++CALLBACK_SOURCE = 'src/biocompiler/core_pipeline_callback_session.py'
++CALLBACK_ORIGINAL_SHA = '0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018'
++CALLBACK_CURRENT_SHA = '96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a'
++CALLBACK_BLOB = 'tests/conformance/reference-original-sources-v1/' + CALLBACK_ORIGINAL_SHA + '.blob'
++CALLBACK_WITNESS = 'tests/conformance/reference-callback-source-counterpart-v1.json'
++CALLBACK_WITNESS_SHA = 'e3be989e0a76913f64ec959d4354bb4a352c70e0bf661ca58df68db15e544b5c'
+@@ -204,0 +211,41 @@ def core_source_witness(raw=None):
++def callback_source_witness(raw=None):
++    """Restore one exact resource-profile update to its whole archived client."""
++    encoded = local_file(ROOT, CALLBACK_WITNESS).read_bytes()
++    require(sha(encoded) == CALLBACK_WITNESS_SHA, 'Reference callback source witness changed')
++    witness = json.loads(encoded)
++    require(set(witness) == {'schema_version', 'base_revision', 'path', 'original_sha256',
++        'current_sha256', 'original_bytes', 'current_bytes', 'changes', 'scope'} and
++        witness['schema_version'] == 'biocompiler.reference_callback_source_counterpart.v1' and
++        witness['base_revision'] == 'b27f52447f49c749d33cac17f3bbb6fe772cbc24' and
++        witness['path'] == CALLBACK_SOURCE and witness['original_sha256'] == CALLBACK_ORIGINAL_SHA and
++        witness['current_sha256'] == CALLBACK_CURRENT_SHA and
++        witness['scope'] == 'Exact historical source restoration only; current resource profile validation is separate',
++        'Reference callback source correspondence differs')
++    current = local_file(ROOT, CALLBACK_SOURCE).read_bytes() if raw is None else raw
++    archived = local_file(ROOT, CALLBACK_BLOB).read_bytes()
++    require(type(current) is bytes and sha(current) == CALLBACK_CURRENT_SHA and
++        len(current) == witness['current_bytes'], 'Captured reference callback source is outside its exact counterpart')
++    require(sha(archived) == CALLBACK_ORIGINAL_SHA and len(archived) == witness['original_bytes'],
++        'Original reference callback archive changed')
++    changes = witness['changes']
++    fields = ('old_start_line', 'old_end_line', 'new_start_line', 'new_end_line')
++    require(type(changes) is list and len(changes) == 8 and all(type(row) is dict and
++        set(row) == {*fields, 'before', 'after'} and all(type(row[key]) is int for key in fields) and
++        type(row['before']) is str and type(row['after']) is str for row in changes) and
++        [tuple(row[key] for key in fields) for row in changes] ==
++        [(31, 31, 31, 31), (33, 33, 33, 33), (309, 309, 309, 309), (377, 376, 377, 379),
++         (380, 380, 383, 383), (411, 411, 414, 414), (421, 421, 424, 425), (430, 430, 434, 435)],
++        'Reference callback exact source span census differs')
++    lines, original = current.decode().splitlines(keepends=True), archived.decode().splitlines(keepends=True)
++    for row in changes:
++        require(''.join(lines[row['new_start_line']-1:row['new_end_line']]) == row['after'] and
++            ''.join(original[row['old_start_line']-1:row['old_end_line']]) == row['before'],
++            'Reference callback complete source span differs')
++    for row in reversed(changes):
++        lines[row['new_start_line']-1:row['new_end_line']] = row['before'].splitlines(keepends=True)
++    require(''.join(lines).encode() == archived, 'Reference callback restoration differs from entire archived source')
++    return archived, {'path': CALLBACK_SOURCE, 'archive': CALLBACK_BLOB, 'archive_sha256': CALLBACK_ORIGINAL_SHA,
++        'current_sha256': CALLBACK_CURRENT_SHA, 'witness': CALLBACK_WITNESS, 'witness_sha256': CALLBACK_WITNESS_SHA,
++        'correspondence': witness, 'scope': witness['scope']}
++
++
+@@ -273 +320,2 @@ def data_closure(index):
+-                              (CORE_ATTEMPT_UPDATE, CORE_ATTEMPT_UPDATE_SHA), (ROUTE_WITNESS, ROUTE_WITNESS_SHA)):
++                              (CORE_ATTEMPT_UPDATE, CORE_ATTEMPT_UPDATE_SHA), (ROUTE_WITNESS, ROUTE_WITNESS_SHA),
++                              (CALLBACK_BLOB, CALLBACK_ORIGINAL_SHA), (CALLBACK_WITNESS, CALLBACK_WITNESS_SHA)):
+@@ -289,0 +338,3 @@ def source_closure(index, package_root):
++        elif logical == CALLBACK_SOURCE:
++            require(identity == CALLBACK_ORIGINAL_SHA, 'Frozen reference callback authority changed')
++            copied, _ = callback_source_witness(raw)
+@@ -332,0 +384 @@ def run(*, test_module=TEST_MODULE, test_ids=None):
++                    'callback_source_witness': callback_source_witness()[1],
+@@ -370 +422 @@ def validate(receipt):
+-            'sources', 'data', 'test_witness', 'source_inventory', 'core_source_witness', 'route_source_witnesses'} and manifest['schema'] == SCHEMA,
++            'sources', 'data', 'test_witness', 'source_inventory', 'core_source_witness', 'callback_source_witness', 'route_source_witnesses'} and manifest['schema'] == SCHEMA,
+@@ -380,0 +433,2 @@ def validate(receipt):
++    require(manifest['callback_source_witness'] == callback_source_witness()[1],
++            'Original reference callback source correspondence differs')
+diff --git a/tests/conformance/callback-budget-checker-source-delta-v1.json b/tests/conformance/callback-budget-checker-source-delta-v1.json
+new file mode 100644
+index 000000000..acff16eaa
+--- /dev/null
++++ b/tests/conformance/callback-budget-checker-source-delta-v1.json
+@@ -0,0 +1,20 @@
++{
++  "current": {
++    "bytes": 171939,
++    "sha256": "da71eecb632c740ba8e5c8fd5ccf85d6174d71c901ec70cbc041ce5adb1c63a6"
++  },
++  "historical": {
++    "bytes": 171731,
++    "revision": "b27f52447f49c749d33cac17f3bbb6fe772cbc24",
++    "sha256": "59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb"
++  },
++  "path": "tools/check_pipeline_manager_install.py",
++  "schema": "biocompiler.callback_budget_checker_source_delta.v1",
++  "spans": [
++    {
++      "after": "        frame_nodes = json_nodes(value)\n        require(frame_nodes <= min(channel[\"fixed_limits\"][\"max_frame_json_nodes\"], limits[\"max_json_nodes\"]),\n            \"Callback frame exceeds selected JSON node bound\")\n        nodes += frame_nodes\n",
++      "before": "        nodes += json_nodes(value)\n",
++      "offset": 117066
++    }
++  ]
++}
+diff --git a/tests/conformance/reference-callback-source-counterpart-v1.json b/tests/conformance/reference-callback-source-counterpart-v1.json
+new file mode 100644
+index 000000000..b1f75a87b
+--- /dev/null
++++ b/tests/conformance/reference-callback-source-counterpart-v1.json
+@@ -0,0 +1 @@
++{"base_revision":"b27f52447f49c749d33cac17f3bbb6fe772cbc24","changes":[{"after":"_DECLARATION_JSON = \"{\\\"application\\\":\\\"caller_supplied_exact_declaration;channel_has_no_manager_or_acceptance_authority\\\",\\\"client_fields\\\":{\\\"close\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"sequence\\\",\\\"parent_invocation\\\"],\\\"command\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"sequence\\\",\\\"parent_invocation\\\",\\\"operation\\\",\\\"arguments\\\"],\\\"continue\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"sequence\\\",\\\"invocation_id\\\",\\\"invocation_sha256\\\",\\\"outcome\\\"],\\\"hello\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"sequence\\\",\\\"declaration\\\",\\\"application\\\",\\\"limits\\\"]},\\\"close\\\":\\\"top_level_only;successful_null_reply_with_closed_true;no_resume\\\",\\\"continuation_binding\\\":\\\"only_exact_current_top_invocation_id_and_body_sha256_may_complete\\\",\\\"continuation_outcomes\\\":{\\\"raise\\\":[\\\"status\\\",\\\"token\\\"],\\\"return\\\":[\\\"status\\\",\\\"value\\\"]},\\\"event_sequence\\\":\\\"zero_then_exact_successor_across_replies_invocations_and_fatal\\\",\\\"exception\\\":\\\"opaque_bounded_host_token_preserved;only_explicit_rejected_reply_or_Host_exception_keeps_application_live\\\",\\\"fatal\\\":\\\"pipeline_callback_fatal;closed_latched;nullable_last_validated_request_binding;no_retry_or_fatal_write_after_uncertain_write\\\",\\\"fixed_limits\\\":{\\\"frame_header_bytes\\\":9,\\\"max_action_bytes\\\":128,\\\"max_frame_json_nodes\\\":1000000,\\\"max_json_depth\\\":128,\\\"max_json_number_characters\\\":4300,\\\"max_json_string_bytes\\\":4194304,\\\"max_token_bytes\\\":128,\\\"terminal_bytes\\\":8192,\\\"terminal_work\\\":1000000},\\\"framing\\\":\\\"8_lowercase_hex_utf8_body_bytes_then_LF_then_exact_body\\\",\\\"hello\\\":\\\"exact_complete_transport_and_application_declarations;null_or_complete_positive_integer_limit_reductions;already_consumed_prefix_counts\\\",\\\"hello_result_fields\\\":[\\\"declaration\\\",\\\"application\\\",\\\"limits\\\"],\\\"host_execution\\\":\\\"arbitrary_host_callback_cpu_and_memory_outside_native_bound;application_must_charge_its_native_work_and_retention_to_channel\\\",\\\"invocation_identity\\\":\\\"event_id_and_sha256_exact_invocation_body_without_frame_header\\\",\\\"limits\\\":{\\\"max_commands\\\":10000,\\\"max_frame_bytes\\\":33554432,\\\"max_frames\\\":1000000,\\\"max_json_nodes\\\":2000000,\\\"max_pending_invocations\\\":128,\\\"max_retained_bytes\\\":134217728,\\\"max_total_bytes\\\":268435456,\\\"max_work\\\":1000000000000},\\\"parent_binding\\\":\\\"command_parent_is_current_top_invocation_or_null_at_top_level;invocation_parent_is_enclosing_invocation\\\",\\\"profile\\\":\\\"biocompiler.core.pipeline_callback_channel.v2\\\",\\\"protocol\\\":\\\"biocompiler.pipeline_callback_channel.v1\\\",\\\"reply_outcomes\\\":{\\\"ok\\\":[\\\"status\\\",\\\"value\\\"],\\\"raise\\\":[\\\"status\\\",\\\"token\\\"],\\\"rejected\\\":[\\\"status\\\",\\\"value\\\"]},\\\"request_identity\\\":\\\"sha256_exact_utf8_body_without_frame_header\\\",\\\"retention\\\":\\\"cumulative_canonical_application_declaration_and_received_body_bytes_plus_callback_arguments_and_explicit_application_reservations;no_refund\\\",\\\"schema_version\\\":\\\"biocompiler.pipeline_callback_channel_declaration.v1\\\",\\\"sequence\\\":\\\"hello_zero_then_exact_successor_across_commands_continuations_and_close\\\",\\\"server_fields\\\":{\\\"fatal\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"event_id\\\",\\\"sequence\\\",\\\"request_sha256\\\",\\\"code\\\",\\\"closed\\\",\\\"usage\\\"],\\\"invoke\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"event_id\\\",\\\"invocation_id\\\",\\\"parent_invocation\\\",\\\"command_sequence\\\",\\\"command_sha256\\\",\\\"action\\\",\\\"arguments\\\",\\\"usage\\\"],\\\"reply\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"event_id\\\",\\\"sequence\\\",\\\"request_sha256\\\",\\\"outcome\\\",\\\"closed\\\",\\\"usage\\\"]},\\\"session_identity\\\":\\\"client_canonical_lowercase_uuid_bound_to_one_channel_no_reconnect\\\",\\\"terminal_reserve\\\":\\\"prepaid_1000000_work;normal_frames_leave_8192_bytes_and_one_frame;one_fatal_may_exceed_reduced_frame_and_node_ceilings_within_prepaid_byte_work_bound\\\",\\\"usage\\\":\\\"conservative_reservations_before_io_or_allocation;partial_headers_and_bodies_remain_charged;json_nodes_counts_all_received_and_published_keys_and_values\\\",\\\"usage_fields\\\":[\\\"work_charged\\\",\\\"work_remaining\\\",\\\"input_bytes\\\",\\\"output_bytes\\\",\\\"frames\\\",\\\"commands\\\",\\\"json_nodes\\\",\\\"pending_invocations\\\",\\\"retained_bytes\\\"]}\"\n","before":"_DECLARATION_JSON = \"{\\\"application\\\":\\\"caller_supplied_exact_declaration;channel_has_no_manager_or_acceptance_authority\\\",\\\"client_fields\\\":{\\\"close\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"sequence\\\",\\\"parent_invocation\\\"],\\\"command\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"sequence\\\",\\\"parent_invocation\\\",\\\"operation\\\",\\\"arguments\\\"],\\\"continue\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"sequence\\\",\\\"invocation_id\\\",\\\"invocation_sha256\\\",\\\"outcome\\\"],\\\"hello\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"sequence\\\",\\\"declaration\\\",\\\"application\\\",\\\"limits\\\"]},\\\"close\\\":\\\"top_level_only;successful_null_reply_with_closed_true;no_resume\\\",\\\"continuation_binding\\\":\\\"only_exact_current_top_invocation_id_and_body_sha256_may_complete\\\",\\\"continuation_outcomes\\\":{\\\"raise\\\":[\\\"status\\\",\\\"token\\\"],\\\"return\\\":[\\\"status\\\",\\\"value\\\"]},\\\"event_sequence\\\":\\\"zero_then_exact_successor_across_replies_invocations_and_fatal\\\",\\\"exception\\\":\\\"opaque_bounded_host_token_preserved;only_explicit_rejected_reply_or_Host_exception_keeps_application_live\\\",\\\"fatal\\\":\\\"pipeline_callback_fatal;closed_latched;nullable_last_validated_request_binding;no_retry_or_fatal_write_after_uncertain_write\\\",\\\"fixed_limits\\\":{\\\"frame_header_bytes\\\":9,\\\"max_action_bytes\\\":128,\\\"max_json_depth\\\":128,\\\"max_json_number_characters\\\":4300,\\\"max_json_string_bytes\\\":4194304,\\\"max_token_bytes\\\":128,\\\"terminal_bytes\\\":8192,\\\"terminal_work\\\":1000000},\\\"framing\\\":\\\"8_lowercase_hex_utf8_body_bytes_then_LF_then_exact_body\\\",\\\"hello\\\":\\\"exact_complete_transport_and_application_declarations;null_or_complete_positive_integer_limit_reductions;already_consumed_prefix_counts\\\",\\\"hello_result_fields\\\":[\\\"declaration\\\",\\\"application\\\",\\\"limits\\\"],\\\"host_execution\\\":\\\"arbitrary_host_callback_cpu_and_memory_outside_native_bound;application_must_charge_its_native_work_and_retention_to_channel\\\",\\\"invocation_identity\\\":\\\"event_id_and_sha256_exact_invocation_body_without_frame_header\\\",\\\"limits\\\":{\\\"max_commands\\\":10000,\\\"max_frame_bytes\\\":33554432,\\\"max_frames\\\":1000000,\\\"max_json_nodes\\\":1000000,\\\"max_pending_invocations\\\":128,\\\"max_retained_bytes\\\":134217728,\\\"max_total_bytes\\\":268435456,\\\"max_work\\\":1000000000000},\\\"parent_binding\\\":\\\"command_parent_is_current_top_invocation_or_null_at_top_level;invocation_parent_is_enclosing_invocation\\\",\\\"profile\\\":\\\"biocompiler.core.pipeline_callback_channel.v1\\\",\\\"protocol\\\":\\\"biocompiler.pipeline_callback_channel.v1\\\",\\\"reply_outcomes\\\":{\\\"ok\\\":[\\\"status\\\",\\\"value\\\"],\\\"raise\\\":[\\\"status\\\",\\\"token\\\"],\\\"rejected\\\":[\\\"status\\\",\\\"value\\\"]},\\\"request_identity\\\":\\\"sha256_exact_utf8_body_without_frame_header\\\",\\\"retention\\\":\\\"cumulative_canonical_application_declaration_and_received_body_bytes_plus_callback_arguments_and_explicit_application_reservations;no_refund\\\",\\\"schema_version\\\":\\\"biocompiler.pipeline_callback_channel_declaration.v1\\\",\\\"sequence\\\":\\\"hello_zero_then_exact_successor_across_commands_continuations_and_close\\\",\\\"server_fields\\\":{\\\"fatal\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"event_id\\\",\\\"sequence\\\",\\\"request_sha256\\\",\\\"code\\\",\\\"closed\\\",\\\"usage\\\"],\\\"invoke\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"event_id\\\",\\\"invocation_id\\\",\\\"parent_invocation\\\",\\\"command_sequence\\\",\\\"command_sha256\\\",\\\"action\\\",\\\"arguments\\\",\\\"usage\\\"],\\\"reply\\\":[\\\"protocol\\\",\\\"profile\\\",\\\"session_id\\\",\\\"kind\\\",\\\"event_id\\\",\\\"sequence\\\",\\\"request_sha256\\\",\\\"outcome\\\",\\\"closed\\\",\\\"usage\\\"]},\\\"session_identity\\\":\\\"client_canonical_lowercase_uuid_bound_to_one_channel_no_reconnect\\\",\\\"terminal_reserve\\\":\\\"prepaid_1000000_work;normal_frames_leave_8192_bytes_and_one_frame;one_fatal_may_exceed_reduced_frame_and_node_ceilings_within_prepaid_byte_work_bound\\\",\\\"usage\\\":\\\"conservative_reservations_before_io_or_allocation;partial_headers_and_bodies_remain_charged;json_nodes_counts_all_received_and_published_keys_and_values\\\",\\\"usage_fields\\\":[\\\"work_charged\\\",\\\"work_remaining\\\",\\\"input_bytes\\\",\\\"output_bytes\\\",\\\"frames\\\",\\\"commands\\\",\\\"json_nodes\\\",\\\"pending_invocations\\\",\\\"retained_bytes\\\"]}\"\n","new_end_line":31,"new_start_line":31,"old_end_line":31,"old_start_line":31},{"after":"PROFILE = 'biocompiler.core.pipeline_callback_channel.v2'\n","before":"PROFILE = 'biocompiler.core.pipeline_callback_channel.v1'\n","new_end_line":33,"new_start_line":33,"old_end_line":33,"old_start_line":33},{"after":"        value = cast(dict[str, Any], decode_document(body, max_nodes=self._frame_node_limit()))\n","before":"        value = cast(dict[str, Any], decode_document(body))\n","new_end_line":309,"new_start_line":309,"old_end_line":309,"old_start_line":309},{"after":"    def _frame_node_limit(self) -> int:\n        return min(_FIXED['max_frame_json_nodes'], self._limits['max_json_nodes'])\n\n","before":"","new_end_line":379,"new_start_line":377,"old_end_line":376,"old_start_line":377},{"after":"        body = encode_document(value, max_bytes=self._limits['max_frame_bytes'], max_nodes=self._frame_node_limit())\n","before":"        body = encode_document(value, max_bytes=self._limits['max_frame_bytes'], max_nodes=self._limits['max_json_nodes'])\n","new_end_line":383,"new_start_line":383,"old_end_line":380,"old_start_line":380},{"after":"                                max_nodes=max(self._frame_node_limit(), _FIXED['terminal_bytes']))\n","before":"                                max_nodes=max(self._limits['max_json_nodes'], _FIXED['terminal_bytes']))\n","new_end_line":414,"new_start_line":414,"old_end_line":411,"old_start_line":411},{"after":"        frame_nodes = _nodes(value)\n        self._node_count += frame_nodes\n","before":"        self._node_count += _nodes(value)\n","new_end_line":425,"new_start_line":424,"old_end_line":421,"old_start_line":421},{"after":"        _require(len(raw) <= self._limits['max_frame_bytes'] and frame_nodes <= self._frame_node_limit()\n                 and self._node_count <= self._limits['max_json_nodes'],\n","before":"        _require(len(raw) <= self._limits['max_frame_bytes'] and self._node_count <= self._limits['max_json_nodes'],\n","new_end_line":435,"new_start_line":434,"old_end_line":430,"old_start_line":430}],"current_bytes":32588,"current_sha256":"96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a","original_bytes":32312,"original_sha256":"0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018","path":"src/biocompiler/core_pipeline_callback_session.py","schema_version":"biocompiler.reference_callback_source_counterpart.v1","scope":"Exact historical source restoration only; current resource profile validation is separate"}
+diff --git a/tests/test_pipeline_callback_frame_budget.py b/tests/test_pipeline_callback_frame_budget.py
+new file mode 100644
+index 000000000..ba45294bc
+--- /dev/null
++++ b/tests/test_pipeline_callback_frame_budget.py
+@@ -0,0 +1,45 @@
++"""Independent receipt-budget controls; fabricated traffic is not native parity."""
++from copy import deepcopy
++from pathlib import Path
++import tempfile
++import unittest
++from unittest.mock import patch
++
++from tests.test_pipeline_manager_campaign import fake_frames
++from tools import check_pipeline_manager_install as campaign
++
++
++class CallbackFrameBudgetTests(unittest.TestCase):
++    def fixture(self, directory, channel, application):
++        directory.mkdir()
++        receipt = {"_artifact_directory": str(directory), "artifacts": {}}
++        with patch.object(campaign, "declarations", return_value=(channel, application)):
++            rows = fake_frames(receipt)
++        artifacts = campaign.Artifacts(directory, receipt["artifacts"])
++        counts = [campaign.json_nodes(campaign.frame_body(artifacts.raw(row["frame"]))) for row in rows]
++        return rows, artifacts, counts
++
++    def test_independent_frame_and_lifetime_exact_and_one_short_bounds(self):
++        channel, application = campaign.declarations()
++        with tempfile.TemporaryDirectory() as temporary:
++            directory = Path(temporary)
++            _, _, counts = self.fixture(directory / "baseline", channel, application)
++            largest, total = max(counts), sum(counts)
++            self.assertLess(largest, total)
++            for frame_limit, lifetime_limit, diagnostic in (
++                    (largest, total, None),
++                    (largest - 1, total, "frame exceeds selected JSON node bound"),
++                    (largest, total - 1, "Cumulative JSON node budget exceeded")):
++                with self.subTest(frame_limit=frame_limit, lifetime_limit=lifetime_limit):
++                    selected = deepcopy(channel)
++                    selected["fixed_limits"]["max_frame_json_nodes"] = frame_limit
++                    selected["limits"]["max_json_nodes"] = lifetime_limit
++                    rows, artifacts, current_counts = self.fixture(
++                        directory / f"{frame_limit}-{lifetime_limit}", selected, application)
++                    self.assertEqual(current_counts, counts)
++                    if diagnostic is None:
++                        result = campaign.validate_frames(rows, artifacts, selected, application)
++                        self.assertEqual(result["frames"], len(rows))
++                    else:
++                        with self.assertRaisesRegex(AssertionError, diagnostic):
++                            campaign.validate_frames(rows, artifacts, selected, application)

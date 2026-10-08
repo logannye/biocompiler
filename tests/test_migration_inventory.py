@@ -18,6 +18,19 @@ class MigrationInventoryTests(unittest.TestCase):
     def setUpClass(cls):
         cls.actual = inventory.build_inventory(inventory.ROOT)
 
+    def test_research_project_remains_authoring_and_fresh_native_transport(self):
+        entries = [entry for entry in self.actual['entries']
+                   if entry['current_implementation']['source'] == 'policy.research_project']
+        self.assertTrue(entries)
+        for entry in entries:
+            contract = self.actual['contracts'][entry['contract']]
+            self.assertEqual(contract['target_owner'], 'Python')
+            self.assertEqual(contract['source_authority'],
+                'explicit_original_project_and_supplied_component_authority_only_fresh_native_checks_authorize_conditional_paired_export')
+            self.assertEqual(contract['disposition'],
+                'retain_public_project_authoring_and_supplied_inputs_with_fresh_native_verification_before_export')
+            self.assertEqual(entry['migration_state'], 'legacy')
+
     def fixture(self, *, package="__version__ = '0.1.0'\n", cli=None, server=None):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
@@ -91,6 +104,106 @@ def main(argv=None):
                               if option not in {"-h", "--help"}}
             static_flags = {flag for argument in actual[name]["arguments"] for flag in argument["flags"]}
             self.assertEqual(expected_flags, static_flags, name)
+
+    def test_static_json_profile_metadata_is_parsed_without_executing_code(self):
+        def resolve(name):
+            self.assertEqual(name, "_PROFILE_JSON")
+            return '{"profile":"fixture.profile.v1","size":9007199254740993}'
+        expression = ast.parse("json.loads(_PROFILE_JSON)", mode="eval").body
+        self.assertEqual(inventory.literal(expression, resolve),
+                         {"profile": "fixture.profile.v1", "size": 9007199254740993})
+        for text in ('{"x":1,"x":2}', '{"x":NaN}', '{broken'):
+            with self.assertRaises(inventory.InventoryError):
+                inventory.literal(expression, lambda _: text)
+        for expression in ("json.loads(dynamic())", "json.loads(9)",
+                           "json.loads('{}', object_hook=execute)", "other.loads('{}')"):
+            with self.assertRaises(inventory.InventoryError):
+                inventory.literal(ast.parse(expression, mode="eval").body, resolve)
+
+    def test_qualified_discovered_module_constants_are_inert_and_exact(self):
+        root = self.fixture()
+        (root / "src/biocompiler/constants.py").write_text(
+            "LIMIT = 13\nMAXIMUM = LIMIT * 3\nraise RuntimeError('must not execute')\n")
+        declarations = (
+            "from biocompiler import constants as limits\n",
+            "from . import constants as limits\n",
+            "import biocompiler.constants as limits\n",
+        )
+        for imported in declarations:
+            with self.subTest(imported=imported):
+                (root / "src/biocompiler/consumer.py").write_text(
+                    imported + "PROFILE = {'limit': limits.LIMIT, 'maximum': limits.MAXIMUM}\n"
+                    "raise RuntimeError('must not execute')\n")
+                sources = inventory.Sources(root)
+                self.assertEqual(sources.value("biocompiler.consumer", "PROFILE"),
+                                 {"limit": 13, "maximum": 39})
+        (root / "src/biocompiler/consumer.py").write_text(
+            "from biocompiler.constants import MAXIMUM as CAP\nPROFILE = {'limit': CAP}\n")
+        self.assertEqual(inventory.Sources(root).value("biocompiler.consumer", "PROFILE"),
+                         {"limit": 39})
+
+    def test_qualified_constant_lookup_rejects_unresolved_or_dynamic_sources(self):
+        root = self.fixture()
+        (root / "src/biocompiler/constants.py").write_text("LIMIT = 13\nDYNAMIC = execute()\n")
+        for declaration in (
+            "from biocompiler import constants as limits\nPROFILE = limits.MISSING\n",
+            "from biocompiler import constants as limits\nPROFILE = limits.DYNAMIC\n",
+            "from external import constants as limits\nPROFILE = limits.LIMIT\n",
+            "from biocompiler import absent as limits\nPROFILE = limits.LIMIT\n",
+        ):
+            with self.subTest(declaration=declaration):
+                (root / "src/biocompiler/consumer.py").write_text(declaration)
+                with self.assertRaises(inventory.InventoryError):
+                    inventory.Sources(root).value("biocompiler.consumer", "PROFILE")
+
+    def test_qualified_constant_cycle_retains_fail_closed_boundary(self):
+        root = self.fixture()
+        (root / "src/biocompiler/constants.py").write_text(
+            "from biocompiler import consumer as original\nLIMIT = original.PROFILE\n")
+        (root / "src/biocompiler/consumer.py").write_text(
+            "from biocompiler import constants as limits\nPROFILE = limits.LIMIT\n")
+        with self.assertRaisesRegex(inventory.InventoryError, "Cyclic constant"):
+            inventory.Sources(root).value("biocompiler.consumer", "PROFILE")
+
+    def test_package_attribute_cannot_be_mistaken_for_same_named_module(self):
+        for package in (
+            "constants = {'LIMIT': 91}\n",
+            "class constants:\n    LIMIT = 91\n",
+            "from biocompiler.other import constants\n",
+        ):
+            with self.subTest(package=package):
+                root = self.fixture(package=package)
+                (root / "src/biocompiler/constants.py").write_text("LIMIT = 13\n")
+                (root / "src/biocompiler/other.py").write_text("class constants:\n    LIMIT = 91\n")
+                (root / "src/biocompiler/consumer.py").write_text(
+                    "from biocompiler import constants as limits\nPROFILE = limits.LIMIT\n")
+                with self.assertRaisesRegex(inventory.InventoryError, "Ambiguous imported module constant"):
+                    inventory.Sources(root).value("biocompiler.consumer", "PROFILE")
+
+    def test_dynamic_package_lookup_requires_exact_reviewed_lazy_guard(self):
+        hook = '''def __getattr__(name: str):
+    if name not in _LEGACY_EXPORTS:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    _load_legacy_exports()
+    return globals()[name]
+'''
+        prefix = "_LEGACY_EXPORTS = {}\n__all__ = []\n"
+        root = self.fixture(package=prefix + hook)
+        (root / "src/biocompiler/constants.py").write_text("LIMIT = 13\n")
+        (root / "src/biocompiler/consumer.py").write_text(
+            "from biocompiler import constants as limits\nPROFILE = limits.LIMIT\n")
+        self.assertEqual(inventory.Sources(root).value("biocompiler.consumer", "PROFILE"), 13)
+        for package in (
+            "def __getattr__(name):\n    return type('Shadow', (), {'LIMIT': 91})\n",
+            prefix + hook.replace("name not in", "name in"),
+            prefix + "@unknown\n" + hook,
+            prefix + "AttributeError = RuntimeError\n" + hook,
+            prefix + "__getattr__ = dynamic()\n",
+        ):
+            with self.subTest(package=package):
+                (root / "src/biocompiler/__init__.py").write_text(package)
+                with self.assertRaisesRegex(inventory.InventoryError, "Dynamic imported module constant"):
+                    inventory.Sources(root).value("biocompiler.consumer", "PROFILE")
 
     def test_real_schema_and_module_declarations_cannot_disappear(self):
         modules = {source["path"] for source in self.actual["sources"].values() if source["path"].endswith(".py") and source["path"].startswith("src/")}

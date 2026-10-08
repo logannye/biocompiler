@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["args",{"$type":"tuple","items":["missing","input","out"]}],["kwargs",{"$type":"mapping","class":"builtins.dict","items":[]}],["subject",{"$type":"manager","id":"manager/665"}],["bound",{"$type":"mapping","class":"builtins.dict","items":[["pass_id","missing"],["input_id","input"],["output_id","out"],["configuration",null]]}]]}

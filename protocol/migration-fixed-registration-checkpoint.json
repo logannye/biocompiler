@@ -1,0 +1,197 @@
+{
+  "deferred_by_user": [
+    "conversational_authoring",
+    "expanded_Studio",
+    "biological_quality_and_correctness_work"
+  ],
+  "hosted_requirements": {
+    "complete_existing_gates_retained": true,
+    "independent_compare": "tools/check_pipeline_fixed_registration_install.py --compare",
+    "installed_command": "tools/check_pipeline_fixed_registration_install.py",
+    "native_test_suites": 102,
+    "platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "previous_failed_run": 37070525064,
+    "previous_failure_correction": "protocol/migration-callback-corpus-selection-correction.json",
+    "python_versions": [
+      "3.11",
+      "3.14"
+    ],
+    "required_jobs": 36
+  },
+  "local_validation": {
+    "adapter_lineage_trace_original_integrity": {
+      "python3.11_seconds": 119.107,
+      "python3.14_runs": [
+        {
+          "seconds": 78.379,
+          "tests": 86
+        },
+        {
+          "seconds": 37.34,
+          "tests": 26
+        }
+      ],
+      "tests_each": 112
+    },
+    "boundary_ci_inventory_cli_runtime_core_manager": {
+      "python3.11_runs": [
+        {
+          "seconds": 34.863,
+          "tests": 56
+        },
+        {
+          "seconds": 3.64,
+          "tests": 54
+        },
+        {
+          "seconds": 0.248,
+          "tests": 3
+        }
+      ],
+      "python3.14_seconds": 34.479,
+      "tests_each": 113
+    },
+    "complete_registration_frames": {
+      "baseline_cases": 3,
+      "original_calls": 33,
+      "python3.11_seconds": 51.587,
+      "python3.14_seconds": 47.499,
+      "repaired_semantic_mutants": 20,
+      "scope": "Python_framed_fixture_and_receipt_checker_controls_not_native_execution",
+      "test_groups_each": 7
+    },
+    "diff_check": "passed",
+    "discovery_only": {
+      "classes_each": 304,
+      "is_execution": false,
+      "tests_each": 3110
+    },
+    "existing_provider_direct_continuation": {
+      "python3.11_seconds": 249.188,
+      "python3.14_seconds": 223.255,
+      "tests_each": 29
+    },
+    "inventory_entries": 3258,
+    "native_local_execution": false,
+    "new_campaign_initializer_runtime": {
+      "python3.11_seconds": 7.881,
+      "python3.14_seconds": 8.284,
+      "tests_each": 26
+    },
+    "prior_source_lineage_and_workflow_corpus": {
+      "python3.14_tests": 31,
+      "seconds": 129.174
+    },
+    "python_versions": [
+      "3.11.15",
+      "3.14.6"
+    ],
+    "strict_mypy_modules": 22
+  },
+  "parent_source": "b8120bfb1bb20ef89e8f722a7a425d8ae8a90a25",
+  "pending": [
+    "complete_corrected_hosted_acceptance",
+    "remaining_supported_workflow_families",
+    "existing_SDK_CLI_Studio_routing",
+    "canonical_package_export_ownership",
+    "prebuilt_core_distribution_and_fresh_installation",
+    "validated_profile_OCaml_cutover_and_Python_semantic_retirement",
+    "full_integrated_release_gates"
+  ],
+  "production_default": "python",
+  "roadmap": [
+    "LM-03",
+    "LM-12",
+    "LM-25",
+    "LM-CUTOFF-1"
+  ],
+  "schema_version": "biocompiler.migration_fixed_registration_checkpoint.v1",
+  "scope": {
+    "complete_original_operations": 33,
+    "fixed_boundaries": 6,
+    "fixed_inventory_boundaries": 136,
+    "manager_inventory_contexts": 476,
+    "original_methods": 3,
+    "prefix_operations": 24,
+    "remaining_excluded_boundaries": 4,
+    "remaining_exclusions": [
+      "three original invalid-configuration inputs",
+      "one original mocked package boundary"
+    ],
+    "retained_managers": 3,
+    "suffix_operations": 9
+  },
+  "source_files": {
+    ".github/workflows/ci.yml": "6be89be8c42d40dc1b03648fb51fdd67a1ef509a8984a147859d47c8f9348c60",
+    "core/lib/pipeline/component_pipeline.ml": "be2c86ddda680b4433a5917008516f49acbed56550994ff8b5f91763e85303e7",
+    "core/lib/pipeline/component_pipeline.mli": "ff1b79a677baac3f1c0ffc0bbeb74054ca3da4accf942088c7210d52f06c0934",
+    "core/lib/pipeline/synthetic_pipeline.ml": "b9c6b38890120d31ca0e24e516247c74918c2276b029a9a4ebdc1eb5f898c1a6",
+    "core/lib/pipeline/synthetic_pipeline.mli": "8cb6a9f509f52e34668d3d8281dcdb894522a3fb65b7233bffef9b1c6b9f0fe5",
+    "core/lib/pipeline_service/callback_manager.ml": "5df3a3ac6a39baa1608f2e309d1647313fd0e6688f1dae38e03f2758a66a9fed",
+    "core/test/dune": "71520ffcdf66c2a1547d0320538e083e2df8dafb61522ce8aeac61a22704057c",
+    "core/test/test_pipeline_callback_manager.ml": "3aefe2044beae52f870ed0cc4ac01e1727dc4be20d87bcc55460a34389b1b98e",
+    "docs/language-migration-roadmap.md": "5529af77780bd8570ba22f6c1dcf86d2f691c4a8aca6fbe17b25518e47034324",
+    "docs/migration-fixed-registration-interception.md": "03a36b0d7f26e9cf2b03959d4b27e7d68827a48ececb5ed28a610d0932d7a79a",
+    "protocol/migration-callback-corpus-selection-correction.json": "7853960b51a4261f1500bf3f6185ad8e5acf7fe0d24353b1696deed1d9f622dc",
+    "protocol/migration-inventory.json": "08fd9f54d8f310a579c3547d6b7b677fbca73876511adaa50121003cc5916878",
+    "protocol/migration-workflow-service-validation.json": "c85ea7f7834a0ce414d6c07ea1faf2e1ba4f41c8b0cb133eb79c9164df7d4824",
+    "protocol/pipeline-callback-manager-v1.json": "bed51827e50cf885f4104b8afd4630330e4f28867f943115ec5e216b2bfa948e",
+    "src/biocompiler/compiler/pipeline.py": "dccba32618ecc7923b8a02ff54f114d515ff4e50908f45e27a8cda0a3f531be0",
+    "src/biocompiler/core_pipeline_manager.py": "40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3",
+    "tests/conformance/manager-registration-runtime-sites-v1.json": "031dcc78de94ea39e7032bcb71a0bf78520b946934f70838b528b1a707ddda46",
+    "tests/conformance/manager-registration-source-lineage-v1.json": "f00be511bd184aa4e4d743f2f9cf86ae819ff09c7fd795cd740bce8c9c3db157",
+    "tests/conformance/manager-registration-tool-lineage-v1.json": "635f083aa69afb240da3f3c15de50f31cc6672e404b0cd41ea3fb574731af474",
+    "tests/pipeline_fixed_initializer_fixture.py": "b083d0534abc62460efab3a90c2ad7ca77d903be285b25583e631bc04ad5aef1",
+    "tests/pipeline_fixed_registration_fixture.py": "53fe882673e3239e5b6b27fbb33785a16e08437687fd5f91c4751a009fed82aa",
+    "tests/test_ci_validation.py": "b9351e133e759078596489b85a754a58e03e2d00be28c474e8c5a271c6c3ff90",
+    "tests/test_core_pipeline_manager.py": "9af1e857b37fc29ebc8719e024e7ea9c6486850ed86e8ad9f61d0c102995024e",
+    "tests/test_core_pipeline_registration_interception.py": "8eca990f1cb602307c3b6e885585e8fc8d77614573db1e4547a161281ea3ac8b",
+    "tests/test_manager_registration_source_lineage.py": "5da69ad32ce1512d2fa058ec8e5facb97fb27fdb875a2d4eb0fdaf9cde4c0800",
+    "tests/test_pipeline_callback_semantics.py": "3ceb6d2886b40e1b112944eae70bbd658dbc80d2ddb615777c418bc353eab2a4",
+    "tests/test_pipeline_deferred_runtime.py": "b83ba4870eee5a32e2a6fa14069feb4c4a9e925a17fc1501a841715c05123272",
+    "tests/test_pipeline_deferred_runtime_receipt.py": "098b2ecec56c4c141d488c3fcbf988d32d885d22e23e66d6e0f23503db967a48",
+    "tests/test_pipeline_deferred_semantics.py": "cabd15ce78a2f1c975344c0c2f4f4529f04d0efd85a874d00656b9447bda6dc0",
+    "tests/test_pipeline_fixed_build_semantics.py": "5f5ecd793a00e92745da33f053612dcb7ddf08e998a16b3ef838415412fb4de8",
+    "tests/test_pipeline_fixed_continuation_campaign.py": "e36cf6208263f81f540e40a9117e671ebacb31e71b795f198d6ae181a9902ad2",
+    "tests/test_pipeline_fixed_direct_controls.py": "b1a095dfe9659008690d7e1e380e599d5360a5d3310db2e021c780c0235fa6c3",
+    "tests/test_pipeline_fixed_initializer_receipts.py": "206c94a48abb4482cf75e5af964cf7fd5ad79ef342039e711ff1a2bfe7435216",
+    "tests/test_pipeline_fixed_provider_campaign.py": "e5ca39ea498418042eeac711250b515e095ff8f22910553c9beb73e7f5e86df9",
+    "tests/test_pipeline_fixed_provider_semantics.py": "0d9d88184d5090ab7865a595a1b7e273df2f2e45557744da517074f78aba02f3",
+    "tests/test_pipeline_fixed_registration_campaign.py": "9f3e758da8675f48a994b72e05e687ecfd250b4720bae77e17b345744a2090e2",
+    "tests/test_pipeline_fixed_registration_receipts.py": "4e1aa4547d99f4f93be7bc4d06e657c406a6d579f0a438bba23ab89d799ac71f",
+    "tests/test_pipeline_fixed_registration_runtime.py": "de4ba62e137a48d2e35757b35ccebe7d5779f52e5e195f5f2f943c00d648493d",
+    "tests/test_pipeline_identity_semantics.py": "289aaf844688157672903fdf3f62890dd1d1cfa37dc7df2e5db710b3ebd2fbd6",
+    "tests/test_pipeline_manager_campaign.py": "5416a9ba583d8d07b66b8cf8c3b9fb994aa98d4681530d999c653700824278de",
+    "tests/test_pipeline_manager_trace.py": "f2fa9438d323e5bb932efdb4235fc25194429ddf8d1ae3ce62edd2a81b1c9875",
+    "tests/test_workflow_cli_lineage.py": "b1cb953b42fd243d3ef7a47b4eaaac246ebcc281031c3f50e27102dae0decb1d",
+    "tools/check_core_boundaries.py": "180d716812d63f4c5d2b006dff8c9bf10d81bbc0be329cd1850a9c87c862013b",
+    "tools/check_pipeline_fixed_continuation_install.py": "976d575b3190f2f891fe8b470ee4cec85b59cda6761c143feb552ed161c48cac",
+    "tools/check_pipeline_fixed_provider_install.py": "03bd395842ba2a6aa228a6392f004bb9c68c9fa8ed3615d90be2f3b3e51b70b8",
+    "tools/check_pipeline_fixed_registration_install.py": "de75f006cd0b3ada6308736b1b8f3df69dfa6a1e3271deab9a5218785b73dc5e",
+    "tools/check_pipeline_manager_install.py": "e26986c6be557e366e183654f1e5ab1f10664670291f5d1959b9a49b4aae5abb",
+    "tools/check_pipeline_manager_trace.py": "78094647690e21e4a36c9266c42bb2a92eccfb58c1f54d858399500d546c0067",
+    "tools/check_pipeline_session_install.py": "7f0fedf58a59f2a5aad9c2cfef64872aa93a6784942b2508ff7c1b12793ac61d",
+    "tools/check_realization_workflow_corpus.py": "79e274240fe2c5ef0c803e86aa94794addb6cfb20d7e978eed3c196d7bec1bc0",
+    "tools/check_synthetic_selection_cli_corpus.py": "f22bc962f5b1d67a50f23d574526fa1b6898b918432b2e6b1df6e2a28c8fbbe5",
+    "tools/check_workflow_cli_corpus.py": "f20b064953b3b16b426acc961861ac7269c384f372b32b42f67095b03420aa55",
+    "tools/manager_registration_source_lineage.py": "93d51425616ab85658792e3171f8e64a8a2f0e850dd98b364063aaa1088119d0",
+    "tools/pipeline_fixed_direct_controls.py": "e561099b6c759fdc61d11669b85dc94970fc5b93b11f31a61f51c011d60feb3c",
+    "tools/pipeline_fixed_initializer_receipts.py": "35740948502cde6a2947dfd28d710857890846d3df14349fd79b1015602250a4",
+    "tools/pipeline_fixed_registration_runtime.py": "8d2e16b1db25dd295e7ce204096bade148b94215cece9087a2dcb20a6b2980e6",
+    "tools/pipeline_original_counterpart.py": "dbc5fca8d0be13904d6bd0de947128015664de7dc5920f495c7ab6129b4d02b8",
+    "tools/pipeline_registration_guard.py": "af3da9c97c2ccc8df2e361b80cd876309a82bcf596da9d92edafdea2f1e8554c",
+    "tools/realization_source_lineage.py": "5ecb8686661ccf128301d23ac220d7b917b072ab2379bce1ad0c8ae4b562f03b"
+  },
+  "source_preservation": {
+    "manager_prefix_lines": 5,
+    "original_test_instances_classes_ids_and_result_categories_preserved": true,
+    "original_test_modules": 7,
+    "separate_original_tool_counterpart": "tools/check_pipeline_session_install.py",
+    "unchanged_original_corpora_and_capture_bodies": true,
+    "whole_original_manager_restored": true
+  },
+  "status": "source_and_local_python_validation_complete_hosted_acceptance_pending"
+}

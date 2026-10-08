@@ -1,0 +1,213 @@
+{
+  "campaign_inventory": [
+    {
+      "campaign": "protocol",
+      "path": "tools/check_realization_protocol.py",
+      "read_only_classification": "campaign consumes pinned corpus or reconstructed CLI filesystem inputs; no call to the affected frozen portable temporal authoring sequence found",
+      "sha256": "38abf7668e0f9525c833deff5d2d3d43397c063123a606070146685c993628e5"
+    },
+    {
+      "campaign": "routing",
+      "path": "tools/check_realization_routing.py",
+      "read_only_classification": "campaign consumes pinned corpus or reconstructed CLI filesystem inputs; no call to the affected frozen portable temporal authoring sequence found",
+      "sha256": "2a5270112529efb4f756d8f63642f06568735bbd9be976fafdea256e9601a4fa"
+    },
+    {
+      "campaign": "pipeline-manager",
+      "path": "tools/check_pipeline_manager_install.py",
+      "read_only_classification": "other original callback/identity/deferred counterpart tasks; canonical children run with cwd=their source overlay; no temporal portable-source sequence found",
+      "sha256": "da71eecb632c740ba8e5c8fd5ccf85d6174d71c901ec70cbc041ce5adb1c63a6"
+    },
+    {
+      "campaign": "pipeline-fixed-providers",
+      "path": "tools/check_pipeline_fixed_provider_install.py",
+      "read_only_classification": "temporal authoring without portable_sources; absolute source normalized by original example before provider witness; retained current campaign succeeded",
+      "sha256": "8d5f72afe93ec0dbb84b5d5321633ea653b274e4845645c4fd064a3f62319117"
+    },
+    {
+      "campaign": "pipeline-fixed-continuations",
+      "path": "tools/check_pipeline_fixed_continuation_install.py",
+      "read_only_classification": "confirmed affected temporal authoring; fresh capture, native original replay, and receipt reconstruction use the same loader-bound context",
+      "sha256": "733d9823b203dc31c9f36715433f98ef654d08e1c6aba3cefb19e9b85e9447fd"
+    },
+    {
+      "campaign": "pipeline-fixed-registration",
+      "path": "tools/check_pipeline_fixed_registration_install.py",
+      "read_only_classification": "shares loader-bound context for fresh/native/reconstruction authoring; checked example has no temporal normalization; no separately observed failure claimed",
+      "sha256": "7d82173b470564d45247ecbb2ebf029eae09fa1391cf2f4ae1b007c0e39fdf8b"
+    },
+    {
+      "campaign": "pipeline-reference",
+      "path": "tools/check_pipeline_reference_install.py",
+      "read_only_classification": "construct/molecular original bodies and separate source mapping; original counterpart child cwd=canonical overlay; no temporal portable-source sequence found",
+      "sha256": "d1cf550d00b79c2445de8c948ad7f3865379b4d77addc117fe8ea6e75772ff38"
+    },
+    {
+      "campaign": "pipeline-session",
+      "path": "tools/check_pipeline_session_install.py",
+      "read_only_classification": "campaign consumes pinned corpus or reconstructed CLI filesystem inputs; no call to the affected frozen portable temporal authoring sequence found",
+      "sha256": "05b56ffa7969cea9630c2c901111f9c94fad40ac544770450932282eb35f4b62"
+    },
+    {
+      "campaign": "workflow",
+      "path": "tools/check_native_workflow.py",
+      "read_only_classification": "campaign consumes pinned corpus or reconstructed CLI filesystem inputs; no call to the affected frozen portable temporal authoring sequence found",
+      "sha256": "47b44cf0a375cae1fe9491bd9c2397bc2a296f32e428505cf3efaf77b5e9f622"
+    },
+    {
+      "campaign": "workflow-presentation",
+      "path": "tools/check_native_workflow_presentation.py",
+      "read_only_classification": "campaign consumes pinned corpus or reconstructed CLI filesystem inputs; no call to the affected frozen portable temporal authoring sequence found",
+      "sha256": "db6495fa79dc2c7e5251882d9dfb27186aa5699676966c129c8481931e80e08d"
+    },
+    {
+      "campaign": "workflow-authority",
+      "path": "tools/check_native_workflow_authority.py",
+      "read_only_classification": "campaign consumes pinned corpus or reconstructed CLI filesystem inputs; no call to the affected frozen portable temporal authoring sequence found",
+      "sha256": "849bee319887217fc9c2922bfd47d531304e622b40a4a3e6fe753605c4256c06"
+    },
+    {
+      "campaign": "workflow-public-sdk",
+      "path": "tools/check_native_workflow_public_sdk.py",
+      "read_only_classification": "campaign consumes pinned corpus or reconstructed CLI filesystem inputs; no call to the affected frozen portable temporal authoring sequence found",
+      "sha256": "459e9510e2738dc8a4908f517abcd774fcfd5f153adea54799f7dcd048e6839e"
+    },
+    {
+      "campaign": "workflow-cli",
+      "path": "tools/check_native_workflow_cli.py",
+      "read_only_classification": "campaign consumes pinned corpus or reconstructed CLI filesystem inputs; no call to the affected frozen portable temporal authoring sequence found",
+      "sha256": "e902e5faf7fcd8c76ff34825a065a5961c79cc3b5b2e427467090d5d5cef3890"
+    },
+    {
+      "campaign": "synthetic-producer",
+      "path": "tools/check_native_synthetic_producer.py",
+      "read_only_classification": "campaign consumes pinned corpus or reconstructed CLI filesystem inputs; no call to the affected frozen portable temporal authoring sequence found",
+      "sha256": "9b2a09c3b2810a068d11f2c1a92e4bfb7bec3d3bb63601e65a4c2d64adb12085"
+    },
+    {
+      "campaign": "synthetic-public-sdk",
+      "path": "tools/check_native_synthetic_public_sdk.py",
+      "read_only_classification": "campaign consumes pinned corpus or reconstructed CLI filesystem inputs; no call to the affected frozen portable temporal authoring sequence found",
+      "sha256": "909e2bfa52bc97d8c4e519931bd9f031e4415625c7010719a8b8f684b3804015"
+    },
+    {
+      "campaign": "synthetic-selection-cli",
+      "path": "tools/check_native_synthetic_selection_cli.py",
+      "read_only_classification": "campaign consumes pinned corpus or reconstructed CLI filesystem inputs; no call to the affected frozen portable temporal authoring sequence found",
+      "sha256": "9822725b704fcab547a3afed967a4a31f27cce1ab8de4567ed8eed7f3546f230"
+    },
+    {
+      "campaign": "synthetic-inspection",
+      "path": "tools/check_native_synthetic_inspection.py",
+      "read_only_classification": "campaign consumes pinned corpus or reconstructed CLI filesystem inputs; no call to the affected frozen portable temporal authoring sequence found",
+      "sha256": "b8a2e7f79e5540ac41ef84060fe8f05d157234882bf5d5f4f2148160dcf2ed62"
+    }
+  ],
+  "cause": {
+    "chain": [
+      "tools/check_pipeline_fixed_continuation_install.py:campaign fresh oracle.capture",
+      "tools/capture_pipeline_fixed_build_semantics.py:265 portable_sources",
+      "tools/freeze_realization_acceptance.py:150-154 temporal relative label",
+      "examples/temporal_pipeline.py:51-54 resolves against external cwd before relative_to(repository)"
+    ],
+    "diagnostic": "The relative label resolves under the fresh installed directory, not the unchanged example source repository."
+  },
+  "early_gate_review": {
+    "current_pr85": "Small authoring and diagnostic tests in both existing unit-plan slots after install and before discovery; ocaml-core needs unit-plan. No cycle, no changed38-job/23-ordinary-receipt census, no long-unit prerequisite, all full shard accounting remains mandatory. Other unrelated jobs remain parallel.",
+    "future_pr86": "Move small modules into existing both-minor ci-preflight and remove duplicate unit-plan execution. Compose with prepared native_fixture_wiring and pipeline_reference_runtime additions; rederive integrated census.",
+    "limitation": "Source/hash-only check_ci_preflight cannot exercise this authoring path; focused actual original authoring controls are required."
+  },
+  "failed_run": {
+    "campaign": "pipeline-fixed-continuations",
+    "completed_checks": 0,
+    "duration_seconds": 2.487294,
+    "job_id": 111326572424,
+    "run_id": 37158616787,
+    "source": "705480688a7e37e6c0f03447226350684512342f"
+  },
+  "recorded_controls_review": [
+    {
+      "path": "generated/migration-next/installed-authoring-source-correction/controls-3.11.json",
+      "python_version": "3.11.15 (main, Mar 25 2026, 02:58:47) [Clang 22.1.1 ]",
+      "reviewed_only_not_rerun": true,
+      "sha256": "8bbbb0a5132c10f53f7d859c2b009ff1e034b829ba6626979a214e69a741ef92",
+      "test_count": 6
+    },
+    {
+      "path": "generated/migration-next/installed-authoring-source-correction/controls-3.14.json",
+      "python_version": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+      "reviewed_only_not_rerun": true,
+      "sha256": "a78b5719b6cb19aef6e847d3059da21213ed41fb0297329931b27939dc11b9b7",
+      "test_count": 6
+    }
+  ],
+  "repair_pins": {
+    "tests/test_pipeline_authoring_sources.py": "bba9c6762a6e872a788455ba8d3fda525dab06289004fcce202338a8cf01baed",
+    "tools/check_pipeline_fixed_continuation_install.py": "733d9823b203dc31c9f36715433f98ef654d08e1c6aba3cefb19e9b85e9447fd",
+    "tools/check_pipeline_fixed_registration_install.py": "7d82173b470564d45247ecbb2ebf029eae09fa1391cf2f4ae1b007c0e39fdf8b",
+    "tools/pipeline_authoring_sources.py": "375961ab50658efa9d6ae2a7ea84cc3baba03a690f35d39519dfe5b333bfb92d"
+  },
+  "repair_review": [
+    "Wrapper is bound once by load_oracle and reused by all continuation and registration context sites.",
+    "Frozen helper computes its historical label first; only exact temporal logical label is anchored before original SourceLocation construction.",
+    "Unchanged temporal example itself converts the source back to original logical provenance before freeze; no request/state rewrite.",
+    "Original SourceLocation call order/count, exceptional restoration and external cwd remain preserved.",
+    "Helper and focused test are included in campaign_sources; helper is included in fixed counterpart finite overlay.",
+    "Frozen semantic source inventories need no rewrite; separate installed-checker source preservation requires the root-owned reversible driver delta."
+  ],
+  "scope": "Source-only cause, repair, seventeen campaign path audit, original preservation and early topology review. No native/product campaign execution, independent test rerun, network, or acceptance claim.",
+  "status": "review_complete_no_open_concrete_findings",
+  "unchanged_originals": {
+    "baseline": "705480688a7e37e6c0f03447226350684512342f",
+    "changed_paths": [],
+    "count": 46,
+    "paths_sha256": {
+      "examples/checked_pipeline.py": "5b17188e4a27f50aa4b9959907ff2c931de1a0c7ac7b3549f6618cfed14e6e28",
+      "examples/synthetic_build.py": "f9379512d9b538bd2ff7e9a44b8d04c2369d42198bf4ff9a46b23c39776b8509",
+      "examples/synthetic_design.py": "be35a2742e790157b7ca4fe9a77453b0b217bdfe4533a5dcc893fee8f7cfd70a",
+      "examples/synthetic_verification.py": "5ab8fe27967eb21288389a6fc4385d811c875ed23cdcb5d76f8b3ac4e9c4ec12",
+      "examples/temporal_pipeline.py": "933752e2134bf81b8394598df981a6b72d9ea716e09b4ecc77efc3a0d0975325",
+      "src/biocompiler/artifacts/provenance.py": "f2eaa6500f25a842b5afdca59d9479513ba85b3c8c8aeb030dc49141a9090086",
+      "src/biocompiler/compiler/behavior.py": "979d295210fc1884d3ee8eb23172cf35e17152a32bd0730fbca9882f729f81ad",
+      "src/biocompiler/compiler/components.py": "dc9edc3cb5fee5aef128a5a096ff6c20bfbf2af97f1077b74851a505d4b5d034",
+      "src/biocompiler/compiler/passes.py": "97250c61b3207a093e0a0d87244724ae078bce6b6257fd1b7049661a91ceafbf",
+      "src/biocompiler/compiler/pipeline.py": "dccba32618ecc7923b8a02ff54f114d515ff4e50908f45e27a8cda0a3f531be0",
+      "src/biocompiler/compiler/request.py": "6b87777cfad4a06fe485e6fb4d29bdd02312f99df5193ea0d3351a57e1065caf",
+      "src/biocompiler/compiler/synthetic.py": "9ecf345ff5ea4da687b6344342862c68cd116296e01308f8d4c76d05dc091ff2",
+      "src/biocompiler/compiler/synthetic_build.py": "8ba430132fc1e8dd6158005cc5e3bc810fe36a5efd8225e289276562abf653c4",
+      "src/biocompiler/frontend/graph.py": "34b55b2f190a34a3b35d678a914aefd065a3e64679e778d9ab809071fe2b0cd6",
+      "src/biocompiler/ir/behavior.py": "6bca0b5b75f1ea39cf8687182a0ced9834a258c2568a7962ff7eeecc6f355623",
+      "src/biocompiler/ir/component_assembly.py": "f372353241d50f749e9ce09ff4ae0ee4ba2a032f26a89be970cb8813fc555757",
+      "src/biocompiler/ir/component_contracts.py": "4a1b2517feeac7f7cf4b2761b4a3468910e30721aa420d46cf55ae2b2f2ce183",
+      "src/biocompiler/ir/components.py": "98bd21853432e8a65c526920bffa2b1bd1bc015ab8ccf0b9f4f8898b04bf2d0f",
+      "src/biocompiler/ir/composition.py": "23dd26fec42b46566d778855ee384aab0e11ed4a729fe98f6c8a8754cd9fe46d",
+      "src/biocompiler/ir/intent.py": "711545a1b67f2d6049848d2cef8739f89098d2596687c375d7f62d2e94680de6",
+      "src/biocompiler/ir/mechanism.py": "a46514ab13e5f93f0e46ffe03839855a869aa85b99cededd5831cb5c016b542d",
+      "src/biocompiler/ir/serialization.py": "4d5ad0c7572a3ca70159dc4657c1815e85ff62cc37f542f8584200964a0149e3",
+      "src/biocompiler/registry/components.py": "1c426fa2782a4e158f00031755fde34363ed8803c31098a9528494057796b236",
+      "src/biocompiler/registry/synthetic.py": "a90517f96a41f4185ab256aca190d46a114d4981918f94a184d1a4047b9fc015",
+      "src/biocompiler/semantics/component_contracts.py": "4e8aba88cd4799a7a05b1d94eb4a12db224cecd89627412d11ba50e3045534bf",
+      "src/biocompiler/semantics/context.py": "01ba61ae8709ed7f61959203600bd59b950e0c9ceb830ce1f10922c660dd8c53",
+      "src/biocompiler/semantics/contracts.py": "36b52305bb14890418cdbc0a31e7a2973b58b1892b6920f667abb9b7c289bd18",
+      "src/biocompiler/semantics/realization.py": "63ac6c30737691570b8c904828f6f756aecd49618f1c0783f888bc692573e25e",
+      "src/biocompiler/semantics/types.py": "da0708de4bd5fbcd1a2f00546a1619f37c8e6a9748a94758362af242655f3bc1",
+      "src/biocompiler/synthesis/components.py": "f9e2bce68cdd47b0d1a1a1fe7f6820b3d84099d4d4f5b008e9b45808ad1ced29",
+      "src/biocompiler/synthesis/selection.py": "038a6bf48a0d8b1207fe2d71e96a7993991c486df49ec210bf204ce47315f14c",
+      "src/biocompiler/synthesis/synthetic.py": "c6753e172b5f3a22c03f3d3546c1a8feca0c9f60a03bee9f132a9bd9291d285a",
+      "src/biocompiler/verification/components.py": "1112dfd60791cb55eac6343c8e7a08d59f3b9f11a1618dc1fb1a82654da3af4a",
+      "src/biocompiler/verification/evidence.py": "6a58e23a2deb26b3ae3e38bea61bb9ed36e3a1bb28142fdb244bd443cb89dc79",
+      "src/biocompiler/verification/realization.py": "d3c4af798c37b6311ba0fd81c5fc8cbcb1abe5c16527047f545dbe976761e013",
+      "tests/conformance/pipeline-fixed-build-semantics-v1.json": "b423e1d60fbe688090bd44787ccb372a10847681cd8a011fd897cface9b9e28e",
+      "tests/conformance/pipeline-fixed-provider-semantics-v1.json": "1f25d16d8fa9688ea34b4937f1d4a2c10fdf44d862daf8990168247758a019e7",
+      "tests/test_component_pipeline.py": "872cc4f47d9dd27ed047128ea38b51af5001c459bc0037448cb07a623ae9c447",
+      "tests/test_component_pipeline_audit.py": "ff71dd65006f28f4d76952324102c08b1e68253a855bc3337b1c72852ee9f9c2",
+      "tests/test_synthetic_design_workflows.py": "c00c25121d5437f1d5c9419d5be9e2286d5f7e8abac4e29213dea6a521dd1322",
+      "tests/test_temporal_components.py": "fb6688b1a84f0751aedae09ca1a4309e703b9e7a49b5aab06b8ea6e7dff7b498",
+      "tests/test_temporal_generation.py": "365d84c37be73619f1a7d099e4e1b405b623d27bd5fe360f9699a1dfe204ba0d",
+      "tools/capture_pipeline_fixed_build_semantics.py": "4b8b0d0f059cd7230193a53c122357ce50fd636018924d8fe2c533a2d3317495",
+      "tools/capture_pipeline_fixed_provider_semantics.py": "c260107754b8fec20b2089c3f863c89d7c5099d1e6b245c8f2c2c43111d4066b",
+      "tools/check_pipeline_session_install.py": "05b56ffa7969cea9630c2c901111f9c94fad40ac544770450932282eb35f4b62",
+      "tools/freeze_realization_acceptance.py": "9db5dfa67f3141b8c43fd4e399bf5a1ee66568cab80ed77f3946d0d81c90f6f9"
+    }
+  }
+}

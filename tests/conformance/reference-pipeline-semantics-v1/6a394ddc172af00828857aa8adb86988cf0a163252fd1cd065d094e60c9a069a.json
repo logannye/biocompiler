@@ -1,0 +1,1 @@
+{"closure":[["contract",{"ref":"object/10036"}]],"defaults":{"scalar":"NoneType","value":null},"kind":"provider","kwdefaults":{"scalar":"NoneType","value":null},"source":{"file":"src/biocompiler/compiler/molecular.py","freevars":["contract"],"line":117,"module":"biocompiler.compiler.molecular","qualname":"run_molecular_pipeline.<locals>.source_links"}}

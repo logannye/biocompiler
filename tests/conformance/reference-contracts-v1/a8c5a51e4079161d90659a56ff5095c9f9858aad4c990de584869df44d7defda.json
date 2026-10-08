@@ -1,0 +1,1 @@
+{"assumption":"Both payloads enter the same cell","consumer_molecule":"reference_cds","id":"same-cell","kind":"same_cell","provider_molecule":"helper","requirement_ids":[],"schema_version":"biocompiler.construct_dependency.v0.1"}

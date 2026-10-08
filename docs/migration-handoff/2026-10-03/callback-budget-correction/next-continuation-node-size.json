@@ -1,0 +1,13 @@
+{
+  "scope": "Deterministic node-size calculation from the already recorded first component producer output tree; missing continuation was not sent and no native replay performed",
+  "case": "temporal:requested",
+  "command_sequence": 7617,
+  "last_event_id": 7645,
+  "last_usage_nodes": 982095,
+  "output_tree_nodes": 38678,
+  "next_continuation_nodes": 38698,
+  "projected_nodes": 1020793,
+  "ceiling": 1000000,
+  "producer_reply_sequence": 7619,
+  "proposal_output_nodes": 15210
+}

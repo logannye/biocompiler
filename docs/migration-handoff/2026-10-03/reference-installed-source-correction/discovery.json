@@ -1,0 +1,41 @@
+{
+  "schema_version": "biocompiler.reference_source_discovery.v1",
+  "runtimes": [
+    {
+      "python": "3.11.15",
+      "count": 3423,
+      "classes": 352,
+      "id_sha256": "19c7b1ed2bd2d70302e2c93f2e45e9168c3d77d108bb19fae7e19871290caf5d",
+      "added": [
+        "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_current_source_closure_explicitly_pins_distribution_bytes",
+        "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_lazy_installed_resolver_import_remains_in_closed_source_authority",
+        "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_loaded_unlisted_module_does_not_expand_source_authority",
+        "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_omitted_or_changed_distribution_source_is_rejected",
+        "test_prebuilt_ci_plan.HostedCiPlanTests.test_reference_distribution_restoration_retains_the_complete_original_path_proof"
+      ],
+      "removed": [],
+      "native_execution": false,
+      "full_execution": false
+    },
+    {
+      "python": "3.14.6",
+      "count": 3423,
+      "classes": 352,
+      "id_sha256": "19c7b1ed2bd2d70302e2c93f2e45e9168c3d77d108bb19fae7e19871290caf5d",
+      "added": [
+        "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_current_source_closure_explicitly_pins_distribution_bytes",
+        "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_lazy_installed_resolver_import_remains_in_closed_source_authority",
+        "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_loaded_unlisted_module_does_not_expand_source_authority",
+        "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_omitted_or_changed_distribution_source_is_rejected",
+        "test_prebuilt_ci_plan.HostedCiPlanTests.test_reference_distribution_restoration_retains_the_complete_original_path_proof"
+      ],
+      "removed": [],
+      "native_execution": false,
+      "full_execution": false
+    }
+  ],
+  "preserved_prior_count": 3418,
+  "preserved_prior_id_sha256": "6ff31e33b2a1c40879b28f7e983b5abc96508549fe53ef2bd1815497f1bb6040",
+  "inventory_entries": 3310,
+  "full_hosted_execution": false
+}

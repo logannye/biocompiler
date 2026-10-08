@@ -1,0 +1,160 @@
+{
+  "base_source_revision": "d3bef33bf45e0e80797cb30956fc8dc02e58b8eb",
+  "correction": {
+    "description": "Add the single explicit current source pin for distribution discovery. Preserve closed loaded-module admission and exact installed bytes. Restore only that exact two-line addition before the unchanged complete historical 14-file hash/AST proof.",
+    "product_native_guard_oracle_changes": false,
+    "source_pins": {
+      "tests/conformance/reference-distribution-source-delta-v1.json": {
+        "bytes": 655,
+        "sha256": "06475b6327dac7dc67187956e14abb3a0771574307e4fbf460795c49ab905a06"
+      },
+      "tests/test_pipeline_reference_runtime.py": {
+        "bytes": 13106,
+        "sha256": "90809996bafb862508cd93ed69e53494b433f641c548469f23f8788c76c1cfa6"
+      },
+      "tests/test_prebuilt_ci_plan.py": {
+        "bytes": 25726,
+        "sha256": "6bec54bcb232fefecdc2c7e9c83f2369b288aec1f9ac1795e7aaa111962e4cc5"
+      },
+      "tools/pipeline_reference_runtime.py": {
+        "bytes": 17333,
+        "sha256": "2038afce45cd6f0490957370286a0a3ba8fc0fca402c0daf30b2bede1d67d70e"
+      }
+    }
+  },
+  "created_at_utc": "2026-10-03T22:28:55.539896+00:00",
+  "evidence": {
+    "discovery-311.log": {
+      "bytes": 917,
+      "sha256": "fd06de2a2c6e3e7d940e507ee5b1be998ab341a2a4405015e320e57c5b104c7b"
+    },
+    "discovery-314.log": {
+      "bytes": 916,
+      "sha256": "9e33026018585bb7ce6b31afcb747d13f396399f565fe643daab91f0122becff"
+    },
+    "discovery.json": {
+      "bytes": 2246,
+      "sha256": "bd7f457db32f8a055c7e0f0da6cfba37876c70534bf9fcfe3f25215917e89f6e"
+    },
+    "focused-py311.log": {
+      "bytes": 1946,
+      "sha256": "4b54ec6d2f63c8c3506b0d589436a79c44d2c3e31d6c661b77f5eae947993ded"
+    },
+    "focused-py314.log": {
+      "bytes": 1946,
+      "sha256": "4b54ec6d2f63c8c3506b0d589436a79c44d2c3e31d6c661b77f5eae947993ded"
+    },
+    "independent-review.json": {
+      "bytes": 10728,
+      "sha256": "9bc24e7e0190c14c09a6d5cab8322405065b10d7c07ed4753b28d4efbaeb1e7a"
+    },
+    "inventory-check.log": {
+      "bytes": 42,
+      "sha256": "f71083e97a33518aa7f72084fbe9887c4111012d5cff140a60f2776aa2b50470"
+    },
+    "original-campaign-controls-311.log": {
+      "bytes": 2202,
+      "sha256": "6e51156c0b3e85181015b78db9fa0b0d5d159e5a1ee4a4040da0f571c686b742"
+    },
+    "original-campaign-controls-314.log": {
+      "bytes": 2202,
+      "sha256": "acbf90b3d98a3cd8b2783df0122c2aef39791b242827e25ca0220299821044bf"
+    },
+    "original-test-ids.json": {
+      "bytes": 520,
+      "sha256": "51c02ac0fe90a08f79a5dbe3f4377bd39dfcca277794abbc55f111ae478e13f4"
+    },
+    "pipeline_reference_runtime.py.before": {
+      "bytes": 17193,
+      "sha256": "928cf47c58572f8fb85c7669b47eb6a40201be4d4a4eb8bb4ac4899340f133de"
+    },
+    "pre-fix-controls.log": {
+      "bytes": 2489,
+      "sha256": "bc779772b52aeeedd1d22a7c591bf14732e0de710d2b5e3e8e007831ab4390e7"
+    },
+    "pre-fix-missing-authority.json": {
+      "bytes": 833,
+      "sha256": "c0366b83d62454fb219086090ae69b5b0efd13422cd8b962dff5447a35033105"
+    },
+    "source-controls.json": {
+      "bytes": 6165,
+      "sha256": "5081a06e9ba8f75e5d473c0eb8608a8265afe0a302ecfad53f1447bd17ddcaef"
+    },
+    "source-witness-311.log": {
+      "bytes": 2133,
+      "sha256": "1ca99e92bd2b1408430d66562237dbad218220d9a442b54f06ee675dae1fb992"
+    },
+    "source-witness-314.log": {
+      "bytes": 2133,
+      "sha256": "975c24ff22a86664a9413ea7f9fe24d3e54d3bde10534f6cc10a0e92bff71883"
+    },
+    "test_pipeline_reference_runtime.py.before": {
+      "bytes": 7930,
+      "sha256": "50b248572f6879f94b93e2a67cf4f567c9c01349c9cd72b6b41724a6f6613af5"
+    }
+  },
+  "finding": {
+    "description": "Installed-layout resolution lazily imports biocompiler.core_distribution after the initial source check. The post-campaign installed_sources check rejects that loaded module because product_sources omits its explicit current source authority.",
+    "evidence_kind": "static_source_review_and_inert_fixture_reproduction",
+    "observed_hosted_failure": false,
+    "reproduced_error": "Loaded reference module lacks current source authority: biocompiler.core_distribution"
+  },
+  "migration_status": {
+    "LM-CUTOFF-1": "open",
+    "LM-CUTOFF-2": "open",
+    "LM-CUTOFF-3": "open",
+    "LM-CUTOFF-4": "open",
+    "production_default": "Python"
+  },
+  "preserved_authority": [
+    "Original reference corpus and semantic oracle bytes",
+    "Every original test ID and original runtime-test class AST",
+    "Original 14-file installed-path witness, archived source bytes and existing assertions",
+    "All execution guards, product modules, callback resource profile and migration states"
+  ],
+  "required_hosted_validation": {
+    "campaigns_per_slot": 17,
+    "exact_corrected_source": true,
+    "installed_slots": 4,
+    "jobs": 38,
+    "native_suites_per_platform": 118,
+    "ordinary_job_receipts": 23,
+    "platforms": [
+      "Linux x86_64",
+      "macOS arm64"
+    ],
+    "prior_run_acceptance_transfers": false,
+    "python_minor_versions": [
+      "3.11",
+      "3.14"
+    ]
+  },
+  "schema_version": "biocompiler.reference_installed_source_correction_checkpoint.v1",
+  "status": "source_correction_focused_controls_pass_hosted_gate_required",
+  "validation": {
+    "added_ids": 5,
+    "discovered_classes_per_runtime": 352,
+    "discovered_count_per_runtime": 3423,
+    "focused_test_count_per_runtime": 29,
+    "fresh_installation": false,
+    "full_test_execution": false,
+    "independent_review_findings": [],
+    "inventory_entries": 3310,
+    "inventory_unchanged": true,
+    "modules": {
+      "test_pipeline_reference_campaign": 10,
+      "test_pipeline_reference_runtime": 9,
+      "test_prebuilt_ci_plan": 10
+    },
+    "native_compilation": false,
+    "native_execution": false,
+    "platform": "local macOS arm64; pure source and inert orchestration controls only",
+    "removed_ids": 0,
+    "retained_prior_ids": 3418,
+    "runtimes": [
+      "3.11.15",
+      "3.14.6"
+    ],
+    "sorted_lf_test_id_sha256": "19c7b1ed2bd2d70302e2c93f2e45e9168c3d77d108bb19fae7e19871290caf5d"
+  }
+}

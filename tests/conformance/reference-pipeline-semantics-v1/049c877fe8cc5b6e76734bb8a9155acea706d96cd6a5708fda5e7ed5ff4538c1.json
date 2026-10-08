@@ -1,0 +1,1 @@
+{"class":"biocompiler.compiler.construct.ConstructBuild","class_schema":null,"fields":[["candidate",{"ref":"object/19840"}],["check_result",{"ref":"object/19869"}],["result",{"ref":"object/19838"}],["manager",{"ref":"object/19321"}]],"instance_fields":["candidate","check_result","result","manager"],"kind":"dataclass"}

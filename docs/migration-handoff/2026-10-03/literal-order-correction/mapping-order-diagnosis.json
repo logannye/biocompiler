@@ -1,0 +1,1746 @@
+[
+  {
+    "equal_ignoring_only_mapping_item_order_for_diagnosis": true,
+    "event_names": [
+      "intent_to_behavior",
+      "behavior_to_synthetic",
+      "synthetic_to_components"
+    ],
+    "exact_equal": false,
+    "id": "static:requested",
+    "mapping_order_differences": [
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          0,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          3,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          0,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          3,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          0,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          3,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          0,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          3,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      }
+    ]
+  },
+  {
+    "equal_ignoring_only_mapping_item_order_for_diagnosis": true,
+    "event_names": [
+      "intent_to_behavior",
+      "behavior_to_synthetic",
+      "synthetic_to_components"
+    ],
+    "exact_equal": false,
+    "id": "static:selected_equal",
+    "mapping_order_differences": [
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          0,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          3,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          0,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          3,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          0,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          3,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          0,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          3,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      }
+    ]
+  },
+  {
+    "equal_ignoring_only_mapping_item_order_for_diagnosis": true,
+    "event_names": [
+      "intent_to_behavior",
+      "behavior_to_synthetic",
+      "synthetic_to_components"
+    ],
+    "exact_equal": false,
+    "id": "temporal:requested",
+    "mapping_order_differences": [
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          0,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          1,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          2,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          5,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          6,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          7,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          8,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          9,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          18,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          0,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          19,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          0,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          1,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          2,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          5,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          6,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          7,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          8,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          9,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          18,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          1,
+          "calls",
+          1,
+          "value",
+          "output",
+          "mechanism",
+          "nodes",
+          "items",
+          19,
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          0,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          1,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          2,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          5,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          6,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          7,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          8,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          9,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          18,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          0,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          19,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          0,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          1,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          2,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          5,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          6,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          7,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          8,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          9,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"value\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          18,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      },
+      {
+        "actual_keys": [
+          "kind",
+          "type",
+          "value",
+          "unit",
+          "canonical_value"
+        ],
+        "expected_keys": [
+          "kind",
+          "value",
+          "unit",
+          "canonical_value",
+          "type"
+        ],
+        "path": [
+          "events",
+          2,
+          "calls",
+          1,
+          "value",
+          "output",
+          "registry",
+          "components",
+          "items",
+          19,
+          "synthetic_model",
+          "attributes",
+          "map:{\"scalar\":\"str\",\"value\":\"duration\"}"
+        ]
+      }
+    ]
+  }
+]

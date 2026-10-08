@@ -1,0 +1,390 @@
+{
+  "corrected_hosted_acceptance": false,
+  "correction": {
+    "framing_protocol_unchanged": true,
+    "matching": "Exact complete declaration and resource profile required before application use",
+    "max_frame_json_nodes": 1000000,
+    "max_session_json_nodes": 2000000,
+    "other_resource_limits_unchanged": true,
+    "resource_profile": "biocompiler.core.pipeline_callback_channel.v2",
+    "scope": "Finite larger lifetime budget; no reset, refund, reconnect or fixture reduction; sufficiency requires full hosted campaigns"
+  },
+  "diagnosis": {
+    "artifact": {
+      "bytes": 37709711,
+      "id": 11282096717,
+      "sha256": "bfe07dab43cbdb8be1efc9657d502b8bf1e641413667d18e8b7c814ecbba2dbe",
+      "unique_members": 41130
+    },
+    "failure": {
+      "campaign": "pipeline-fixed-providers",
+      "case": "temporal:requested",
+      "command_sequence": 7617,
+      "complete_static_case_ids": [
+        "static:requested",
+        "static:selected_equal"
+      ],
+      "error": "CoreProtocolError: Callback session cumulative JSON node limit exceeded",
+      "invalidated": true,
+      "last_action": "ordered-json",
+      "last_event_id": 7645,
+      "last_usage_nodes": 982095,
+      "receipt_bytes": 7638776,
+      "receipt_sha256": "60a7f3301b31749c1d8d499c1452981df88e5f871a8d4c6ef612ac8c7ada5724",
+      "retained_frames": 15292
+    },
+    "job": 111253671825,
+    "platform": "macos-arm64",
+    "preceding_manager": {
+      "comparison_coverage": {
+        "cases": 34,
+        "comparison_events": 28,
+        "manager_events": 78,
+        "raised_events": 18
+      },
+      "completed_checks": 5,
+      "coverage": {
+        "cases": 5,
+        "events": 34,
+        "records": 10
+      },
+      "deferred_coverage": {
+        "accesses": 290,
+        "cases": 47,
+        "events": 157,
+        "marker_exceptions": 19,
+        "nested_events": 21,
+        "raised_events": 45
+      },
+      "receipt_bytes": 5700430,
+      "receipt_sha256": "d71187671335ac9209487fcc7114ccf05e4a5033d458fb59478ecb7160d44f24",
+      "status": "success"
+    },
+    "python": "3.14.7",
+    "run_id": 37133499708,
+    "scope": "Actual retained hosted failure and preceding manager success only; complete fixed-provider and all17 fresh-installed campaigns are not accepted.",
+    "source_revision": "b27f52447f49c749d33cac17f3bbb6fe772cbc24",
+    "tested_revision": "64673221a35d7e0c95bc0c9165dcc8a93b006869"
+  },
+  "discovery": {
+    "baseline_tests": 3408,
+    "capture_note": "The two discovery source manifests differ only in the callback contract documentation edited between captures. Product/test sources and discovered IDs are identical; neither capture is full unit execution.",
+    "runtimes": {
+      "311": {
+        "added": [
+          "test_core_pipeline_callback_session.CallbackSessionTests.test_exact_and_one_short_lifetime_boundary_include_close_frames",
+          "test_core_pipeline_callback_session.CallbackSessionTests.test_old_resource_profile_and_declaration_rejected_before_application",
+          "test_core_pipeline_callback_session.CallbackSessionTests.test_one_million_node_frame_cap_remains_separate_from_lifetime",
+          "test_core_pipeline_callback_session.CallbackSessionTests.test_v2_lifetime_crosses_old_ceiling_and_reduced_lifetime_still_closes",
+          "test_pipeline_callback_frame_budget.CallbackFrameBudgetTests.test_independent_frame_and_lifetime_exact_and_one_short_bounds",
+          "test_prebuilt_ci_plan.HostedCiPlanTests.test_callback_budget_restoration_preserves_prior_source_proofs",
+          "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_callback_witness_location_inventory_and_archive_tampering_reject",
+          "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_exact_callback_profile_source_restores_whole_original_client"
+        ],
+        "classes": 351,
+        "plan_sha256": "b63ed5f0d6864897abd96c00fd570a50997ed60b3dec0f3e8a43607e7927073a",
+        "removed": [],
+        "test_ids_lf_sha256": "cf27c05ddcfa8cc4f96c4ae7bf5d11bece4e64edfc9edb2e77c82880185e04f4",
+        "tests": 3416
+      },
+      "314": {
+        "added": [
+          "test_core_pipeline_callback_session.CallbackSessionTests.test_exact_and_one_short_lifetime_boundary_include_close_frames",
+          "test_core_pipeline_callback_session.CallbackSessionTests.test_old_resource_profile_and_declaration_rejected_before_application",
+          "test_core_pipeline_callback_session.CallbackSessionTests.test_one_million_node_frame_cap_remains_separate_from_lifetime",
+          "test_core_pipeline_callback_session.CallbackSessionTests.test_v2_lifetime_crosses_old_ceiling_and_reduced_lifetime_still_closes",
+          "test_pipeline_callback_frame_budget.CallbackFrameBudgetTests.test_independent_frame_and_lifetime_exact_and_one_short_bounds",
+          "test_prebuilt_ci_plan.HostedCiPlanTests.test_callback_budget_restoration_preserves_prior_source_proofs",
+          "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_callback_witness_location_inventory_and_archive_tampering_reject",
+          "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_exact_callback_profile_source_restores_whole_original_client"
+        ],
+        "classes": 351,
+        "plan_sha256": "6848102412b8ff59e998ef42f337d3847ff5d91382402116f301ef329ab1f5f5",
+        "removed": [],
+        "test_ids_lf_sha256": "cf27c05ddcfa8cc4f96c4ae7bf5d11bece4e64edfc9edb2e77c82880185e04f4",
+        "tests": 3416
+      }
+    },
+    "scope": "Discovery only, not execution; corrected working tree based on b27f5244"
+  },
+  "evidence": {
+    "README.md": {
+      "bytes": 1553,
+      "sha256": "3be47c204bf63a6c91b943b204140936531d17e4bb2c3ad970aa98ec05031b1f"
+    },
+    "artifact.json": {
+      "bytes": 728,
+      "sha256": "b5655baea246249dd09d3ad36d94cfd68d68279606ec39284ac2cc428272628d"
+    },
+    "callback-correction-validation.json": {
+      "bytes": 1794,
+      "sha256": "1c02e38044fbd04dadb80509294e1f477f4355d87191249fe1ad7957702b7510"
+    },
+    "callback-tests-311.log": {
+      "bytes": 99,
+      "sha256": "ff4e3aa4bd57a14e6cad5dd144605a85b624948ee94ca47a195d70c804a0b283"
+    },
+    "callback-tests-314.log": {
+      "bytes": 99,
+      "sha256": "d44a12b5aa7971a583d81148bdcdad80c12eef3c86d7e68f2587b9099c404dff"
+    },
+    "checker-controls-311.log": {
+      "bytes": 12969,
+      "sha256": "225de581c16ea6f6d5c20c3f03fbcbbc1a3c22e2da6302ef20924fae4bff1134"
+    },
+    "checker-controls-314.log": {
+      "bytes": 12969,
+      "sha256": "0854c29c31f0547433a72722acf030346a49b1eecc1872285b815f02cd180dd7"
+    },
+    "correction.patch": {
+      "bytes": 75083,
+      "sha256": "830aa7eb0bfb87c6a8d0340bcc32bdd318384cdedf6ce2326a1d264128e168f0"
+    },
+    "diagnosis.json": {
+      "bytes": 1754,
+      "sha256": "7b16b80719c944791cc9e50f79417313ea950ba087413a4d524b89680d5a116c"
+    },
+    "discovery-311.log": {
+      "bytes": 202,
+      "sha256": "b17aec87bb15f99254bc85a64edc011d3c2df858beb57eca6d2e846cbdc4a698"
+    },
+    "discovery-314.log": {
+      "bytes": 201,
+      "sha256": "88ca373cc4049f30559809604c26dfb19e52234a8925dfb02cc7817df359c5a6"
+    },
+    "discovery.json": {
+      "bytes": 2895,
+      "sha256": "2edd8636bc4b2a173112cdf69efd596b3443cc038571a0774277c8669c151e53"
+    },
+    "independent-discovery-inventory-review.json": {
+      "bytes": 8235,
+      "sha256": "205a657c523f0bc858ccf7e7124507805298194c8bca9028ac69d267ffac6d55"
+    },
+    "installed-release.json": {
+      "bytes": 11178,
+      "sha256": "7eea638698b0b0cf9e433caed94cb1a774d12886324dab676360d96c8f1b6964"
+    },
+    "inventory-check.log": {
+      "bytes": 42,
+      "sha256": "f71083e97a33518aa7f72084fbe9887c4111012d5cff140a60f2776aa2b50470"
+    },
+    "inventory-generation.log": {
+      "bytes": 42,
+      "sha256": "4ead103335dae5c8d48ddb36abe848820de538f019782e3afa609d8621a8bcc3"
+    },
+    "inventory-tests-311.log": {
+      "bytes": 2559,
+      "sha256": "181375a1c19982881228cf6cdfb625fc5b17b508f304abb6aec12e37d87a9ee2"
+    },
+    "inventory-tests-314.log": {
+      "bytes": 2559,
+      "sha256": "47ebde984c0bf66d8c6c640715ba6a244118b49a1ea3ce44532ac947c91ac348"
+    },
+    "local-validation-summary.json": {
+      "bytes": 30823,
+      "sha256": "ef120dfa12af1a98058da7d33ecff7d3f795ff7c59a65a645a9f8ba9e68037e5"
+    },
+    "mypy.log": {
+      "bytes": 44,
+      "sha256": "44323f12010ebbb5daa4cefef4cc4308006fe3b26ad3ced614a993eb79a8b535"
+    },
+    "next-continuation-node-size.json": {
+      "bytes": 484,
+      "sha256": "767b580d49ae5d91613cd8d29aa835c03b6ff47c03b4e2d140b87be8af9e2e6f"
+    },
+    "pipeline-fixed-providers.log": {
+      "bytes": 145,
+      "sha256": "721220097a7ca4ea22f212280e1470b9e471b8ca749875cac398b43056032666"
+    },
+    "pipeline-manager.log": {
+      "bytes": 120,
+      "sha256": "6b717a9251eb9a8911e74c875021b13b6c9fc7dba6ff666fff1b9c88ef93ba11"
+    },
+    "preserved-authority.json": {
+      "bytes": 876,
+      "sha256": "ec45e9fbe70fec2d21780b4172fc63ab7959a973f5206600814339df6c0fc2e0"
+    },
+    "prior-native-sdk-checkpoint.json": {
+      "bytes": 6650,
+      "sha256": "c41381570f62a3353c773240f8f694e947491d3cb8c7af4edec194e3c8d3b155"
+    },
+    "provider-node-census.json": {
+      "bytes": 14111,
+      "sha256": "42f16d4877c2436ebe700a48dbf2c574ae7ab418475c6c0116c99d8bff76b399"
+    },
+    "reference-counterpart-311.log": {
+      "bytes": 118,
+      "sha256": "db011b867d5af98ece335c7cb9d5e396e62ced2687d527384fdf01d6fbd973e6"
+    },
+    "reference-counterpart-314.log": {
+      "bytes": 118,
+      "sha256": "20b8c2728811231509132062de458d218bdd91a0b2f09d4f4a066069b969a866"
+    },
+    "reference-source-validation.json": {
+      "bytes": 7101,
+      "sha256": "712391878c465171d7fe35a14219863372e2e1637e882e1726bb15ba1ad51462"
+    },
+    "source-guards-311.log": {
+      "bytes": 122,
+      "sha256": "9f05991db6b331d50820187036b30ea6bea5e97ad067e737fb0b533580100bee"
+    },
+    "source-guards-314.log": {
+      "bytes": 122,
+      "sha256": "5c29f270c92b72bc118852e3edab2ff6c9c275c01d0d3784ac5faf4216a9a62b"
+    },
+    "source-pins.json": {
+      "bytes": 2225,
+      "sha256": "4ca35ba60035dffadaf333e683e3025895ba4a24d28864a1545723a1c4b9973b"
+    },
+    "startup-audit-3.11.15.json": {
+      "bytes": 9812,
+      "sha256": "8b39a92d4d9627f4658b6f93bd84aab8f4b7964e6671e7ac70006b19e74c4e57"
+    },
+    "startup-audit-3.14.6.json": {
+      "bytes": 9811,
+      "sha256": "45632942e9bc915111f58b066b18d33f8ea4e874be80d8f3f370e76a8965813b"
+    },
+    "startup-eight-3.11.15.json": {
+      "bytes": 5204,
+      "sha256": "fdac8ba8b46d6bc38b587e9c7469197302c4e00c3a65b1a67ed0116188d6ac38"
+    },
+    "startup-eight-3.14.6.json": {
+      "bytes": 5203,
+      "sha256": "2814f51a76aae96882de8051b2fed15361d4345d842badd5194010f078445a5c"
+    },
+    "startup-eight-311.log": {
+      "bytes": 3880,
+      "sha256": "5dccf8d0565b292262ff14a52e33337e5ea8cf650ac98ab8d2d9858b81cff42e"
+    },
+    "startup-eight-314.log": {
+      "bytes": 3880,
+      "sha256": "15be87fc6c10f1cae8419f733a32d2b220b15062360650f2f7791f4f7a6c01da"
+    },
+    "startup-nine-311.log": {
+      "bytes": 1732,
+      "sha256": "e689c4f25a1bee4997f8e3757907082ec79ef9e35b2e579f190a796a0149da33"
+    },
+    "startup-nine-314.log": {
+      "bytes": 1732,
+      "sha256": "d46855c17417ca0073de4076319e1a3c7701be2643af5a5bcea01c892e138505"
+    },
+    "startup_audit.py": {
+      "bytes": 3014,
+      "sha256": "1f68606df1126e749bc0a599d6f104945c6dfe518f674feae2f79badff377e39"
+    },
+    "startup_eight_audit.py": {
+      "bytes": 4359,
+      "sha256": "0ceb1729a69a6cb69b39196112b2b548553defe868302bf68f8459738ccdcc14"
+    },
+    "temporal-action-node-census.json": {
+      "bytes": 7546,
+      "sha256": "9a9c256fa99bae119d3ef26b6df57a5f4a2f582bbea5d8348f01c726fe6524b5"
+    }
+  },
+  "failed_run_id": 37133499708,
+  "local_controls": {
+    "callback_tests_each": 25,
+    "checker_tests_each": 61,
+    "inventory_tests_each": 13,
+    "native_execution": false,
+    "reference_tests_each": 18,
+    "runtimes": [
+      "3.11.15",
+      "3.14.6"
+    ],
+    "source_guard_tests_each": 22,
+    "standalone_inventory_check": {
+      "command": "python3 -B tools/migration_inventory.py --check",
+      "exit_code": 0,
+      "log": "inventory-check.log"
+    },
+    "startup_loaders_each": 17,
+    "startup_process_and_network_forbidden": true,
+    "strict_mypy_source_count": 28
+  },
+  "migration_cutoffs_complete": false,
+  "native_tests": {
+    "executed_locally": false,
+    "native_suite_census_per_platform": 118,
+    "new_groups": 3
+  },
+  "peer_review": "Native/Python source and exact historical source witnesses reviewed independently with no actionable finding",
+  "preserved_authority": {
+    "source_base": "b27f52447f49c749d33cac17f3bbb6fe772cbc24",
+    "unchanged": {
+      "tests/conformance/deferred-context-checker-source-delta-v1.json": "c052ed313423f5b4a016b8f8474d50a9364e278904983f3d139eb9e1ca8e4253",
+      "tests/conformance/fixed-provider-checker-source-delta-v1.json": "67c11513477659bb81c2e9a0cfb87191fd669cf2caf2acce0962e77f54a50b8b",
+      "tests/conformance/pipeline-fixed-provider-semantics-v1.json": "1f25d16d8fa9688ea34b4937f1d4a2c10fdf44d862daf8990168247758a019e7",
+      "tests/conformance/prebuilt-installed-path-delta-v1.json": "f64bcd82834b120dbe0c848a94a0ac8e0fe117ea3fedd22a136a2bc415025dbd",
+      "tests/conformance/reference-contracts-v1.json": "f0d3acadad15fbc29f195fc1a7dae875e8fb027565ec20fdbe1934fec7f3cf1b",
+      "tests/conformance/reference-original-sources-v1.json": "df3323eceb20d967ea9ae8909da94f38660a1995d0e0314531bc5989516b014a"
+    }
+  },
+  "prior_evidence_changed": false,
+  "remaining": "Run full exact-source hosted 38-job gate including all3416 units on both runtimes,118 native suites per platform and17 installed campaigns on all4 slots. Merge85 with merge commit, prove olderheads contained, close remaining superseded PRs, validate actualmain before exact-head leased cleanup. Preserve85branch and all local worktrees.",
+  "schema": "biocompiler.callback_budget_correction.v1",
+  "source_before_correction": "b27f52447f49c749d33cac17f3bbb6fe772cbc24",
+  "source_pins": {
+    "core/lib/pipeline_service/callback_channel.ml": {
+      "bytes": 22910,
+      "sha256": "a354d59d996434e7089d4609aefc8d5ea470773ed40d2ba90fcdd643771f13f4"
+    },
+    "core/test/test_pipeline_callback_channel.ml": {
+      "bytes": 26441,
+      "sha256": "a01d5ecd63355560a500d2362a69023c5b159654d533596dfe0baba898698097"
+    },
+    "core/test/test_reference_contracts_corpus.ml": {
+      "bytes": 31880,
+      "sha256": "e8c1ad0f2705db8a32d98e7a7b71813a86588b507c897de19501c2ffe197ac65"
+    },
+    "protocol/pipeline-callback-channel-v1.json": {
+      "bytes": 3770,
+      "sha256": "55a58a12cb009616075e0aedf68e6b21394f4fb8b137b4880aab92ef47fa683e"
+    },
+    "src/biocompiler/core_pipeline_callback_session.py": {
+      "bytes": 32588,
+      "sha256": "96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a"
+    },
+    "tests/conformance/callback-budget-checker-source-delta-v1.json": {
+      "bytes": 813,
+      "sha256": "6cb03e6dfa5c76528bf9370be992634b6a9fbad5219a1e43c042090abd48ff8b"
+    },
+    "tests/conformance/reference-callback-source-counterpart-v1.json": {
+      "bytes": 12105,
+      "sha256": "e3be989e0a76913f64ec959d4354bb4a352c70e0bf661ca58df68db15e544b5c"
+    },
+    "tests/test_core_pipeline_callback_session.py": {
+      "bytes": 30964,
+      "sha256": "f1a2a2109c7c58344f95be92210dabe64a2543a3be833b9cf1ac4254ab3e5990"
+    },
+    "tests/test_pipeline_callback_frame_budget.py": {
+      "bytes": 2496,
+      "sha256": "9cb266f4b37d5990a58e94feece3d53f0aacc98f2eed266a2ab1c51fff84fb05"
+    },
+    "tests/test_prebuilt_ci_plan.py": {
+      "bytes": 21531,
+      "sha256": "a8b3c4b15314f6717528cdde5f6a027e6f9187453f5de4bc335af6dc7702f564"
+    },
+    "tests/test_reference_original_counterpart.py": {
+      "bytes": 19418,
+      "sha256": "6022a5fe582e2b9d4a73b37709684e330b18328cb326e3a7c02d31f50faf8580"
+    },
+    "tools/check_pipeline_manager_install.py": {
+      "bytes": 171939,
+      "sha256": "da71eecb632c740ba8e5c8fd5ccf85d6174d71c901ec70cbc041ce5adb1c63a6"
+    },
+    "tools/check_realization_workflow_corpus.py": {
+      "bytes": 9606,
+      "sha256": "df320e37e9087bc358839a346e32724ef391160163598e4d997a3b7f8240e803"
+    },
+    "tools/reference_original_counterpart.py": {
+      "bytes": 37416,
+      "sha256": "3375aa754f8d5ce6360487fb3efbe4bc0d3c3f970f4650fae4c96f071f6228ff"
+    }
+  },
+  "source_restorations": {
+    "callback_client": "Eight exact spans restore whole immutable original client in Python and OCaml reference loaders; original sources and documents unchanged",
+    "checker": "One exact span restores whole b27 checker before unchanged deferred-context and fourteen-file installed-path proofs"
+  },
+  "tested_merge_revision": "64673221a35d7e0c95bc0c9165dcc8a93b006869"
+}

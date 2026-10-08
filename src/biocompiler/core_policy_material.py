@@ -74,9 +74,9 @@ def _preservation(response: CoreResponse, request: dict[str, JsonValue], candida
 
 
 
-def _context_inventories(request: dict[str, JsonValue], report: dict[str, JsonValue],
+def _context_obligations(request: dict[str, JsonValue], report: dict[str, JsonValue],
                          leaf: dict[str, JsonValue]) -> None:
-    """Retain original inventories; capacity and biological semantics remain native."""
+    """Retain complete source obligations and exact original provider evidence."""
     preservation = _record(report["preservation"], "Preservation")
     binding = _record(preservation["binding"], "Binding")
     admission = _record(binding["source_admission"], "Admission")
@@ -102,6 +102,14 @@ def _context_inventories(request: dict[str, JsonValue], report: dict[str, JsonVa
     if not _same(leaf["discharges"], expected_discharges) or not _same(leaf["source_obligations"], expected_obligations):
         raise CoreProtocolError("Context changed or omitted original source obligations or provider discharge evidence")
 
+
+def _context_inventories(request: dict[str, JsonValue], report: dict[str, JsonValue],
+                         leaf: dict[str, JsonValue]) -> None:
+    """Retain original inventories; capacity and biological semantics remain native."""
+    _context_obligations(request, report, leaf)
+    context = _record(request["context"], "Original context")
+    providers = _rows(context.get("providers"), "Original context providers")
+    provider_bodies = [_record(provider.get("body"), "Original provider body") for provider in providers]
     contract = _record(request["material_contract"], "Original material contract")
     body = _record(contract.get("body"), "Original material body")
     resources = _rows(body.get("resources"), "Original resources")
@@ -145,6 +153,43 @@ def _context_inventories(request: dict[str, JsonValue], report: dict[str, JsonVa
             raise CoreProtocolError("Context changed an original allocation reservation or its order")
 
 
+def _structure(value: JsonValue, *, authority: JsonValue, construction: JsonValue, outcome: JsonValue) -> None:
+    """Validate retained PM/content evidence; all semantic checking remains native."""
+    structure = _object(value, {"schema_version", "profile", "implementation_version", "claim_scope", "authority_fingerprint",
+        "candidate_fingerprint", "content_reconstruction", "content_outcome", "structural_outcome", "outcome", "checked_clauses",
+        "PM-08_scope", "unassessed_clauses", "members", "diagnostics", "context_status", "implementation", "policy", "material_binding", "export"}, "Fresh structural evidence")
+    if (structure.get("schema_version") != "biocompiler.policy_mrna_structure_assessment.v0.1"
+            or structure.get("profile") != "biocompiler.policy_mrna_completeness.v0.1"
+            or structure.get("implementation_version") != "biocompiler.ocaml.policy_mrna_structure_check.v0.1"
+            or structure.get("claim_scope") != "exact_supplied_mrna_structure_and_derivation_only"):
+        raise CoreProtocolError("Structural evidence changed its narrow profile")
+    _pin(structure.get("authority_fingerprint"), authority, "Original structure authority")
+    _pin(structure.get("candidate_fingerprint"), construction, "Original construction candidate")
+    if (not _same(structure["checked_clauses"], ["PM-02", "PM-03", "PM-04", "PM-05", "PM-06", "PM-07", "PM-09"])
+            or not _same(structure["unassessed_clauses"], ["PM-01", "PM-08_external_component_binding", "PM-10", "PM-11", "PM-12"])
+            or structure["PM-08_scope"] != "supplied_construction_region_chemistry_product_declaration_provenance_only"
+            or any(structure[key] != "unassessed" for key in ("context_status", "implementation", "policy", "material_binding"))
+            or structure["export"] != "withheld"):
+        raise CoreProtocolError("Structural evidence upgraded or omitted a separate obligation")
+    content = _object(structure["content_reconstruction"], {"schema_version", "implementation_version", "claim_scope", "authority_fingerprint",
+        "candidate_fingerprint", "reconstructed_fingerprint", "outcome", "context_status", "payload_completeness", "diagnostics"}, "Independent content reconstruction")
+    authority = _record(authority, "Original structure authority")
+    if (content["schema_version"] != "biocompiler.construction_content_assessment.v0.1"
+            or content["implementation_version"] != "biocompiler.ocaml.construction_content_check.v0.1"
+            or content["claim_scope"] != "exact_supplied_template_molecular_content"
+            or content["context_status"] != "unassessed" or content["payload_completeness"] != "unassessed"):
+        raise CoreProtocolError("Content reconstruction changed its authority or claim scope")
+    _pin(content["authority_fingerprint"], {"schema_version": "biocompiler.construction_content_authority.v0.1",
+        "template": authority.get("template"), "member_order": authority.get("member_order")}, "Original neutral construction authority")
+    _pin(content["candidate_fingerprint"], construction, "Content candidate")
+    if content["outcome"] == "pass":
+        _pin(content["reconstructed_fingerprint"], construction, "Independently reconstructed content")
+    if content["outcome"] != structure["content_outcome"]:
+        raise CoreProtocolError("Structure omitted independent reconstruction outcome")
+    if outcome == "pass" and any(structure.get(key) != "pass" for key in ("outcome", "content_outcome", "structural_outcome")):
+        raise CoreProtocolError("Material PASS contradicts structural reconstruction")
+
+
 def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue]) -> None:
     contract = _record(request["material_contract"], "Original material contract")
     body = _record(contract.get("body"), "Original complete material case")
@@ -169,39 +214,8 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
                 ("proposed_fingerprint", candidate["material_binding"]), ("candidate_fingerprint", candidate["construction"]),
                 ("preservation_evidence_fingerprint", report["preservation"])):
             _pin(leaf[key], original, key)
-        structure = _object(leaf["structure"], {"schema_version", "profile", "implementation_version", "claim_scope", "authority_fingerprint",
-            "candidate_fingerprint", "content_reconstruction", "content_outcome", "structural_outcome", "outcome", "checked_clauses",
-            "PM-08_scope", "unassessed_clauses", "members", "diagnostics", "context_status", "implementation", "policy", "material_binding", "export"}, "Fresh structural evidence")
-        if (structure.get("schema_version") != "biocompiler.policy_mrna_structure_assessment.v0.1"
-                or structure.get("profile") != "biocompiler.policy_mrna_completeness.v0.1"
-                or structure.get("implementation_version") != "biocompiler.ocaml.policy_mrna_structure_check.v0.1"
-                or structure.get("claim_scope") != "exact_supplied_mrna_structure_and_derivation_only"):
-            raise CoreProtocolError("Structural evidence changed its narrow profile")
-        _pin(structure.get("authority_fingerprint"), body.get("structure_authority"), "Original structure authority")
-        _pin(structure.get("candidate_fingerprint"), candidate["construction"], "Original construction candidate")
-        if (not _same(structure["checked_clauses"], ["PM-02", "PM-03", "PM-04", "PM-05", "PM-06", "PM-07", "PM-09"])
-                or not _same(structure["unassessed_clauses"], ["PM-01", "PM-08_external_component_binding", "PM-10", "PM-11", "PM-12"])
-                or structure["PM-08_scope"] != "supplied_construction_region_chemistry_product_declaration_provenance_only"
-                or any(structure[key] != "unassessed" for key in ("context_status", "implementation", "policy", "material_binding"))
-                or structure["export"] != "withheld"):
-            raise CoreProtocolError("Structural evidence upgraded or omitted a separate obligation")
-        content = _object(structure["content_reconstruction"], {"schema_version", "implementation_version", "claim_scope", "authority_fingerprint",
-            "candidate_fingerprint", "reconstructed_fingerprint", "outcome", "context_status", "payload_completeness", "diagnostics"}, "Independent content reconstruction")
-        authority = _record(body.get("structure_authority"), "Original structure authority")
-        if (content["schema_version"] != "biocompiler.construction_content_assessment.v0.1"
-                or content["implementation_version"] != "biocompiler.ocaml.construction_content_check.v0.1"
-                or content["claim_scope"] != "exact_supplied_template_molecular_content"
-                or content["context_status"] != "unassessed" or content["payload_completeness"] != "unassessed"):
-            raise CoreProtocolError("Content reconstruction changed its authority or claim scope")
-        _pin(content["authority_fingerprint"], {"schema_version": "biocompiler.construction_content_authority.v0.1",
-            "template": authority.get("template"), "member_order": authority.get("member_order")}, "Original neutral construction authority")
-        _pin(content["candidate_fingerprint"], candidate["construction"], "Content candidate")
-        if content["outcome"] == "pass":
-            _pin(content["reconstructed_fingerprint"], candidate["construction"], "Independently reconstructed content")
-        if content["outcome"] != structure["content_outcome"]:
-            raise CoreProtocolError("Structure omitted independent reconstruction outcome")
-        if leaf["outcome"] == "pass" and any(structure.get(key) != "pass" for key in ("outcome", "content_outcome", "structural_outcome")):
-            raise CoreProtocolError("Material PASS contradicts structural reconstruction")
+        _structure(leaf["structure"], authority=body.get("structure_authority"),
+                   construction=candidate["construction"], outcome=leaf["outcome"])
     context = report["context"]
     if context is not None:
         leaf = _object(context, {"schema_version", "profile", "implementation_version", "context_fingerprint", "material_binding_fingerprint",
@@ -235,7 +249,9 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
             raise CoreProtocolError("Material stage status contradicts its retained evidence")
 
 
-def _obligations(report: dict[str, JsonValue]) -> None:
+def _obligations(report: dict[str, JsonValue], *, material_key: str = "material",
+                 accepted_status: str = "checked_material",
+                 conjunction_stage: str = "conditional_material_context_conjunction") -> None:
     preservation = _record(report["preservation"], "Preservation")
     binding = _record(preservation["binding"], "Binding")
     admission = _record(binding["source_admission"], "Admission")
@@ -250,8 +266,25 @@ def _obligations(report: dict[str, JsonValue]) -> None:
                 raise CoreProtocolError("Unresolved obligation carries contradictory discharge evidence")
         elif row["status"] == "discharged":
             stage = row["stage"]
+            if stage == "bounded_machine_semantics_and_declared_requirements":
+                evidence = _object(row["evidence"], {"preservation", "machine_binding", "state_and_terminal_semantics", "prefixes",
+                    "retained_attempt_identity", "universal_termination", "progress"}, "Bounded machine evidence")
+                if (material_key != "assembly" or row["obligation"] != "machine_reachability_termination_and_progress"
+                        or binding.get("schema_version") != "biocompiler.policy_implementation_binding_report.v0.2"
+                        or binding.get("profile") != "biocompiler.policy_staged_source_graph.v0.1"
+                        or preservation.get("status") != "checked_implementation"
+                        or any(evidence[key] != expected for key, expected in (
+                            ("state_and_terminal_semantics", "exact_bounded_source_correspondence"),
+                            ("prefixes", "complete_original_domain"), ("retained_attempt_identity", "creation_fixed_injective"),
+                            ("universal_termination", "not_claimed"), ("progress", "declared_requirements_only")))):
+                    raise CoreProtocolError("Machine obligation widened its exact bounded interpretation")
+                _pin(evidence["preservation"], preservation, "Machine preservation")
+                _pin(evidence["machine_binding"], binding, "Machine binding")
+                continue
+            if row["obligation"] == "machine_reachability_termination_and_progress":
+                raise CoreProtocolError("Machine obligation requires its explicit bounded interpretation")
             keys = {"bounded_implementation_preservation": ("preservation",), "declared_context": ("context",),
-                    "conditional_material_context_conjunction": ("preservation", "material", "context")}
+                    conjunction_stage: ("preservation", material_key, "context")}
             if type(stage) is not str or stage not in keys:
                 raise CoreProtocolError("Unknown original-obligation discharge stage")
             evidence = _object(row["evidence"], set(keys[stage]), "Obligation evidence pins")
@@ -262,24 +295,28 @@ def _obligations(report: dict[str, JsonValue]) -> None:
         else:
             raise CoreProtocolError("Unknown obligation disposition")
     complete = report["all_original_obligations_discharged"]
-    checked = report["status"] == "checked_material"
+    checked = report["status"] == accepted_status
     stages = (preservation["status"] == "checked_implementation" and report["catalog"] is not None
-              and report["material_status"] == "pass" and report["context_status"] == "pass")
-    if (type(complete) is not bool or report["status"] not in ("checked_material", "not_accepted")
+              and report[material_key + "_status"] == "pass" and report["context_status"] == "pass")
+    if (type(complete) is not bool or report["status"] not in (accepted_status, "not_accepted")
             or checked != (stages and all(row["status"] == "discharged" for row in rows)) or complete != checked):
         raise CoreProtocolError("Material acceptance contradicts complete stage and obligation evidence")
 
 
 def _artifact(value: JsonValue, *, operation: str, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
-              report: dict[str, JsonValue], limits: JsonValue) -> None:
-    if operation != "export-policy-material":
+              report: dict[str, JsonValue], limits: JsonValue,
+              export_operation: str = "export-policy-material", accepted_status: str = "checked_material",
+              export_schema: str = EXPORT_SCHEMA, manifest_schema: str = "biocompiler.policy_mrna_manifest.v0.1",
+              request_profile: str = REQUEST_PROFILE, claim_scope: str = "bounded_conditional_policy_to_exact_mrna",
+              premise: str = "supplied_model_to_sequence_and_provider_contracts") -> None:
+    if operation != export_operation:
         if value is not None:
             raise CoreProtocolError("Only a fresh native export invocation may return an artifact")
         return
-    if report["status"] != "checked_material":
+    if report["status"] != accepted_status:
         raise CoreProtocolError("Export returned without complete fresh material acceptance")
     artifact = _object(value, {"schema_version", "fasta", "fasta_sha256", "manifest", "manifest_sha256"}, "Fresh paired export")
-    if artifact["schema_version"] != EXPORT_SCHEMA or type(artifact["fasta"]) is not str:
+    if artifact["schema_version"] != export_schema or type(artifact["fasta"]) is not str:
         raise CoreProtocolError("Export changed its exact artifact profile")
     if artifact["fasta_sha256"] != hashlib.sha256(artifact["fasta"].encode("utf-8")).hexdigest():
         raise CoreProtocolError("FASTA bytes differ from their native digest")
@@ -287,8 +324,8 @@ def _artifact(value: JsonValue, *, operation: str, request: dict[str, JsonValue]
     manifest = _object(artifact["manifest"], {"schema_version", "profile", "claim_scope", "premise", "request", "candidate", "limits",
         "assessment", "bindings", "members", "fasta_sha256", "empirical", "original_authority"}, "Complete native manifest")
     if any(manifest[key] != expected for key, expected in (
-            ("schema_version", "biocompiler.policy_mrna_manifest.v0.1"), ("profile", REQUEST_PROFILE),
-            ("claim_scope", "bounded_conditional_policy_to_exact_mrna"), ("premise", "supplied_model_to_sequence_and_provider_contracts"),
+            ("schema_version", manifest_schema), ("profile", request_profile),
+            ("claim_scope", claim_scope), ("premise", premise),
             ("empirical", "unassessed"), ("original_authority", "retain_original_inputs_separately"))):
         raise CoreProtocolError("Manifest upgraded or changed its exact export claim")
     for key, expected in (("request", request), ("candidate", candidate), ("limits", limits), ("assessment", report)):
@@ -298,14 +335,22 @@ def _artifact(value: JsonValue, *, operation: str, request: dict[str, JsonValue]
     for key, expected in (("request_fingerprint", request), ("candidate_fingerprint", candidate),
             ("invocation_fingerprint", {"request": request, "candidate": candidate, "limits": limits}), ("assessment_fingerprint", report)):
         _pin(bindings[key], expected, "Manifest " + key)
-    construction = _record(candidate["construction"], "Checked construction")
+    _artifact_members(construction=candidate["construction"], members=manifest["members"],
+                      fasta=artifact["fasta"], fasta_sha256=artifact["fasta_sha256"],
+                      manifest_fasta_sha256=manifest["fasta_sha256"])
+
+
+def _artifact_members(*, construction: JsonValue, members: JsonValue, fasta: JsonValue,
+                      fasta_sha256: JsonValue, manifest_fasta_sha256: JsonValue) -> None:
+    """Validate the exact pair against checked construction data, independent of envelope."""
+    construction = _record(construction, "Checked construction")
     inventory = _record(construction.get("inventory"), "Checked molecular inventory")
     molecules = _rows(inventory.get("molecules"), "Checked molecules")
-    members = _rows(manifest["members"], "Manifest members")
-    if not molecules or len(members) != len(molecules) or not _same([molecule.get("id") for molecule in molecules], construction.get("member_order")):
+    member_rows = _rows(members, "Manifest members")
+    if not molecules or len(member_rows) != len(molecules) or not _same([molecule.get("id") for molecule in molecules], construction.get("member_order")):
         raise CoreProtocolError("Manifest lost the exact nonempty ordered member inventory")
     fasta_parts: list[str] = []
-    for index, (raw, molecule) in enumerate(zip(members, molecules), 1):
+    for index, (raw, molecule) in enumerate(zip(member_rows, molecules), 1):
         member = _object(raw, {"fasta_id", "member_id", "molecule", "sequence_sha256"}, "Manifest member")
         fasta_id = f"rna_{index:04d}"
         sequence = molecule.get("sequence")
@@ -317,7 +362,7 @@ def _artifact(value: JsonValue, *, operation: str, request: dict[str, JsonValue]
             raise CoreProtocolError("Manifest sequence hash differs from exact native sequence bytes")
         fasta_parts.append(f">{fasta_id} alphabet=RNA\n")
         fasta_parts.extend(sequence[offset:offset + 80] + "\n" for offset in range(0, len(sequence), 80))
-    if artifact["fasta"] != "".join(fasta_parts) or manifest["fasta_sha256"] != artifact["fasta_sha256"]:
+    if fasta != "".join(fasta_parts) or manifest_fasta_sha256 != fasta_sha256:
         raise CoreProtocolError("FASTA and manifest do not represent the same exact checked member pair")
 
 

@@ -6,7 +6,6 @@ module H = Molecule_chemistry
 module T = Molecular_transition
 module A = Construction_artifact
 module R = Recoding_producer
-module Names = Map.Make (String)
 let implementation_version = "biocompiler.ocaml.construction_producer.v0.1"
 module Limits = struct
   type t = {produced_residues:int; final_residues:int; work:int}
@@ -69,13 +68,18 @@ let complement alphabet = function
   | 'A' -> if alphabet=G.Dna then 'T' else 'U' | 'C' -> 'G' | 'G' -> 'C' | 'T' | 'U' -> 'A'
   | _ -> raise (Problem "invalid_operation")
 let regular_step budget step available remaining final_limit used =
-  R.reserve_json budget (C.Transform_step.to_json step);
+  let module Meter=Bioc_checker.Policy_generation_meter.Make(struct let charge=R.outer_meter budget end) in
+  let module List=Meter.List in
+  let module String=Meter.String in
+  let ( @ ) = List.append in
+
+  R.reserve_json budget (R.step_json budget step);
   let operation = C.Transform_step.operation step in
   let selections = C.operation_selections operation in
   R.charge budget (List.length selections);
-  require (List.for_all (fun selection -> R.Available.find (C.Value_ref.id (C.Selection.value selection)) available <> None) selections)
+  require (List.for_all (fun selection -> R.Available.find ~charge:(R.outer_charge budget) (C.Value_ref.id (C.Selection.value selection)) available <> None) selections)
     "unavailable_input";
-  let inputs = List.map (fun selection -> Option.get (R.Available.find (C.Value_ref.id (C.Selection.value selection)) available)) selections in
+  let inputs = List.map (fun selection -> Option.get (R.Available.find ~charge:(R.outer_charge budget) (C.Value_ref.id (C.Selection.value selection)) available)) selections in
   require (List.for_all (fun value -> R.sequence_extent value=H.Complete) inputs) "incomplete_input";
   let paths = List.map2 path_for selections inputs in
   let first = List.hd inputs in
@@ -144,8 +148,8 @@ let regular_step budget step available remaining final_limit used =
           cursor := !cursor+String.length chunk;
           chunk,A.Derived_segment.make ~destination ~source_id:(C.Value_ref.id (C.Selection.value selection)) ~source_path:path ~rule)
           (List.combine selections inputs) paths) in
-      R.reserve_json budget (C.Product_port.to_json port);
-      R.reserve_json budget (H.to_json (R.chemistry first));
+      R.reserve_json budget (R.port_json budget port);
+      R.reserve_json budget (R.chemistry_json budget (R.chemistry first));
       let frame = output_space port length alphabet topology in
       let transition = C.Product_port.chemistry_transition port in
       let chemistry = match T.Chemistry.mode transition with
@@ -156,7 +160,7 @@ let regular_step budget step available remaining final_limit used =
       R.charge budget (List.length features + List.length segments + length);
       let value=A.Value.make ~id:(C.Product_port.id port) ~space:frame ~sequence:(String.concat "" chunks) ~chemistry ~features ~segments
         ~step_id:(C.Transform_step.id step) ~sequence_extent:H.Complete ~consumed:[] in
-      R.reserve_output budget (A.Value.to_json value);value) recipes lengths
+      R.reserve_output budget (R.value_json budget value);value) recipes lengths
   with Diagnostic.Error diagnostic as error ->
     if diagnostic.code="construction_producer_limit" then raise error else raise (Problem "invalid_operation")
 
@@ -167,7 +171,13 @@ type recipe = {
 }
 let construct_recipe budget (limits:Limits.t) (recipe:recipe) ~authority_json
     ~make_bundle ~bundle_to_json ~subject_complete ~validate_bundle ~make_candidate =
-  let available = ref (R.Available.of_bindings (List.map (fun source -> C.Root_source.id source,R.Root (C.Root_source.molecule source))
+  let module Meter=Bioc_checker.Policy_generation_meter.Make(struct let charge=R.outer_meter budget end) in
+  let module List=Meter.List in
+  let module String=Meter.String in
+  let ( @ ) = List.append in
+  let module Names=Meter.Names in
+
+  let available = ref (R.Available.of_bindings ~charge:(R.outer_charge budget) (List.map (fun source -> C.Root_source.id source,R.Root (C.Root_source.molecule source))
       recipe.sources)) in
   let values = ref [] and diagnostics = ref [] and missing = ref [] and work = ref 0 in
   let add value = diagnostics := value :: !diagnostics in
@@ -181,22 +191,22 @@ let construct_recipe budget (limits:Limits.t) (recipe:recipe) ~authority_json
           let result = R.construct_step ~budget ~step ~available:!available ~remaining_residues:remaining () in
           work := !work+result.used_residues;
           (match result.diagnostic with Some code -> record code | None ->
-              values := List.rev_append result.values !values;available := R.Available.add_products result.values !available)
+              values := List.rev_append result.values !values;available := R.Available.add_products ~charge:(R.outer_charge budget) result.values !available)
       | _ ->
           let used = ref 0 in
           (try
              let staged = regular_step budget step !available remaining limits.final_residues used in
              work := !work + !used;values := List.rev_append staged !values;
-             available := R.Available.add_products staged !available
+             available := R.Available.add_products ~charge:(R.outer_charge budget) staged !available
            with Problem code -> work := !work + !used;record code)) recipe.steps;
   let final_size = List.fold_left (fun count member ->
-      match R.Available.find (C.Value_ref.id (C.Output_member.value member)) !available with
+      match R.Available.find ~charge:(R.outer_charge budget) (C.Value_ref.id (C.Output_member.value member)) !available with
       | None -> count | Some value -> count+G.Space.length (R.space value)) 0 recipe.output_members in
   let finish bundle missing amounts =
     R.reserve_json budget (authority_json ());
-    List.iter (fun value -> R.reserve_json budget (A.Value.to_json value)) !values;
+    List.iter (fun value -> R.reserve_json budget (R.value_json budget value)) !values;
     Option.iter (fun value -> R.reserve_json budget (bundle_to_json value);R.reserve_output budget (bundle_to_json value)) bundle;
-    List.iter (fun value -> R.reserve_output budget (Molecule_set.Amount.to_json value)) amounts;
+    List.iter (fun value -> R.reserve_output budget (R.amount_json budget value)) amounts;
     make_candidate ~values:(List.rev !values)
       ~bundle ~missing_members:(List.sort_uniq String.compare missing) ~diagnostics:(List.sort_uniq String.compare !diagnostics)
       ~experimental_amounts:amounts in
@@ -207,12 +217,12 @@ let construct_recipe budget (limits:Limits.t) (recipe:recipe) ~authority_json
     let molecules = List.filter_map (fun member ->
         let id = C.Output_member.id member in
         let failed code = add ("member:" ^ id ^ ":" ^ code);missing := id :: !missing;None in
-        match R.Available.find (C.Value_ref.id (C.Output_member.value member)) !available with
+        match R.Available.find ~charge:(R.outer_charge budget) (C.Value_ref.id (C.Output_member.value member)) !available with
         | None -> failed "unavailable_value"
         | Some value ->
             R.charge budget (G.Space.length (R.space value));
-            R.reserve_json budget (H.to_json (R.chemistry value));
-            List.iter (fun feature -> R.reserve_json budget (Molecule.Feature.to_json feature)) (R.features value);
+            R.reserve_json budget (R.chemistry_json budget (R.chemistry value));
+            List.iter (fun feature -> R.reserve_json budget (R.feature_json budget feature)) (R.features value);
             try
               require (C.Output_member.sequence_extent member=R.sequence_extent value) "invalid_molecule";
               let space = G.Space.of_json (set "id" (str (C.Output_member.space_id member)) (G.Space.to_json (R.space value))) in
@@ -222,7 +232,7 @@ let construct_recipe budget (limits:Limits.t) (recipe:recipe) ~authority_json
                   ~sequence_extent:(C.Output_member.sequence_extent member) ~coding_status:(C.Output_member.coding_status member)
                   ~assembly:[origin] ~features:(relabel_features (C.Output_member.space_id member) (R.features value))
                   ~chemistry:(relabel_chemistry (C.Output_member.space_id member) (R.chemistry value)) ~provenance:(C.Output_member.provenance member) in
-              R.reserve_staged budget (Molecule.to_json molecule);
+              R.reserve_staged budget (R.molecule_json budget molecule);
               if not (Molecule.declared_nominal_complete molecule) then add ("member:" ^ id ^ ":nominal_incomplete");
               Some molecule
             with Problem _ | Diagnostic.Error _ -> failed "invalid_molecule") recipe.output_members in
@@ -235,17 +245,17 @@ let construct_recipe budget (limits:Limits.t) (recipe:recipe) ~authority_json
         else try
           let constituents = List.map (fun item ->
               let molecule = Names.find (C.Complex_constituent.member_id item) by_id in
-              R.reserve_json budget (Molecule.to_json molecule);
+              R.reserve_json budget (R.molecule_json budget molecule);
               Molecule.Constituent.make ~molecule_id:(Molecule.id molecule) ~molecule_fingerprint:(Molecule.fingerprint molecule)
                 ~stoichiometry:(C.Complex_constituent.stoichiometry item) ~provenance:(C.Complex_constituent.provenance item)) (C.Complex_member.constituents plan) in
           let value=Molecule.Complex.make ~id ~kind:(C.Complex_member.kind plan) ~constituents ~provenance:(C.Complex_member.provenance plan) in
-          R.reserve_staged budget (Molecule.Complex.to_json value);Some value
+          R.reserve_staged budget (R.complex_json budget value);Some value
         with Diagnostic.Error diagnostic as error -> if diagnostic.code="construction_producer_limit" then raise error else failed "invalid_molecule")
         recipe.complex_members in
     if !missing<>[] then finish None !missing [] else
     let bundle,amounts = try
       let subjects = List.fold_left (fun map item -> Names.add (Molecule.Complex.id item) (Molecule.Complex.fingerprint item) map)
-          (Names.map (fun value -> R.reserve_json budget (Molecule.to_json value);Molecule.fingerprint value) by_id) complexes in
+          (Names.map (fun value -> R.reserve_json budget (R.molecule_json budget value);Molecule.fingerprint value) by_id) complexes in
       let roles = List.concat_map (fun requirement -> match C.Member_requirement.member_id requirement with None -> []
           | Some id -> List.map (fun role ->
               R.charge budget 1;
@@ -272,8 +282,8 @@ let construct_recipe budget (limits:Limits.t) (recipe:recipe) ~authority_json
       add "bundle:invalid_inventory";None,[] in
     finish bundle [] amounts)
 
-let construct ?parent ?(limits=Limits.make ()) original = R.protect (fun () ->
-  let budget = R.make_budget ?parent ~maximum:limits.work () in
+let construct ?parent ?charge ?(limits=Limits.make ()) original = R.protect (fun () ->
+  let budget = R.make_budget ?parent ?charge ~maximum:limits.work () in
   R.charge budget 1;
   R.reserve_json budget (C.Request.to_json original);
   let request = C.Request.of_json (C.Request.to_json original) in
@@ -286,11 +296,17 @@ let construct ?parent ?(limits=Limits.make ()) original = R.protect (fun () ->
     ~validate_bundle:(fun bundle amounts -> ignore (Molecule_set.Artifact.make ~bundle ~experimental_amounts:amounts ~run_metadata:[]))
     ~make_candidate:(A.make ~request_fingerprint:(C.Request.fingerprint request)))
 
-let construct_template ?parent ?(limits=Limits.make ()) ~member_order original = R.protect (fun () ->
+let construct_template ?parent ?charge ?(limits=Limits.make ()) ~member_order original = R.protect (fun () ->
   let module P = Payload_template in
   let module K = Construction_content in
-  let budget = R.make_budget ?parent ~maximum:limits.work () in
+  let budget = R.make_budget ?parent ?charge ~maximum:limits.work () in
   R.charge budget 1;
+  let module Meter=Bioc_checker.Policy_generation_meter.Make(struct let charge=R.outer_meter budget end) in
+  let module List=Meter.List in
+  let module Canonical=Meter.Canonical in
+  R.Serialization.template (R.outer_charge budget) original;
+  Meter.serialization (P.to_json original);
+  List.iter (fun member -> R.outer_charge budget (String.length member)) member_order;
   let authority = K.authority_json ~template:original ~member_order in
   R.reserve_json budget authority;
   let template = P.of_json (P.to_json original) in
@@ -298,12 +314,50 @@ let construct_template ?parent ?(limits=Limits.make ()) ~member_order original =
       output_members=P.output_members template;complex_members=P.complex_members template;
       requirements=P.requirements template;amounts=P.amounts template} in
   let make_bundle ~molecules ~complexes ~role_instances ~form_mappings =
+    List.iter (R.Serialization.molecule (R.outer_charge budget)) molecules;
+    List.iter (R.Serialization.complex (R.outer_charge budget)) complexes;
+    List.iter (R.Serialization.role (R.outer_charge budget)) role_instances;
+    List.iter (R.Serialization.mapping (R.outer_charge budget)) form_mappings;
     let by_id = List.map (fun molecule -> Molecule.id molecule,molecule) molecules in
     let molecules = List.map (fun id -> List.assoc id by_id) member_order in
     K.Inventory.make ~id:(P.id template ^ ".molecules") ~molecules ~complexes ~role_instances ~form_mappings in
   construct_recipe budget limits recipe ~authority_json:(fun () -> authority)
-    ~make_bundle ~bundle_to_json:K.Inventory.to_json ~subject_complete:K.Inventory.subject_complete
-    ~validate_bundle:K.Inventory.validate_amounts
+    ~make_bundle ~bundle_to_json:(fun inventory ->
+      List.iter (R.Serialization.molecule (R.outer_charge budget)) (K.Inventory.molecules inventory);
+      List.iter (R.Serialization.complex (R.outer_charge budget)) (K.Inventory.complexes inventory);
+      List.iter (R.Serialization.role (R.outer_charge budget)) (K.Inventory.role_instances inventory);
+      List.iter (R.Serialization.mapping (R.outer_charge budget)) (K.Inventory.form_mappings inventory);
+      K.Inventory.to_json inventory)
+    ~subject_complete:K.Inventory.subject_complete
+    ~validate_bundle:(fun inventory amounts ->
+      List.iter (R.Serialization.amount (R.outer_charge budget)) amounts;
+      K.Inventory.validate_amounts inventory amounts)
     ~make_candidate:(fun ~values ~bundle ~missing_members ~diagnostics ~experimental_amounts ->
+      Option.iter (fun inventory ->
+        List.iter (R.Serialization.molecule (R.outer_charge budget)) (K.Inventory.molecules inventory);
+        List.iter (R.Serialization.complex (R.outer_charge budget)) (K.Inventory.complexes inventory);
+        List.iter (R.Serialization.role (R.outer_charge budget)) (K.Inventory.role_instances inventory);
+        List.iter (R.Serialization.mapping (R.outer_charge budget)) (K.Inventory.form_mappings inventory)) bundle;
+      List.iter (R.Serialization.value (R.outer_charge budget)) values;
+      List.iter (R.Serialization.amount (R.outer_charge budget)) experimental_amounts;
+      List.iter (fun value -> R.outer_charge budget (String.length value)) (missing_members @ diagnostics);
       K.make ~authority_fingerprint:(Canonical.fingerprint authority) ~member_order ~values ~inventory:bundle
         ~missing_members ~diagnostics ~experimental_amounts))
+
+let content_json ?charge content =
+  match charge with None -> Construction_content.to_json content | Some charge ->
+  let module K=Construction_content in
+  let module Meter=Bioc_checker.Policy_generation_meter.Make(struct let charge=charge end) in
+  let module List=Meter.List in
+  charge 1;
+  List.iter (fun value -> charge (String.length value)) (K.member_order content);
+  List.iter (R.Serialization.value charge) (K.values content);
+  Option.iter (fun inventory ->
+    List.iter (R.Serialization.molecule charge) (K.Inventory.molecules inventory);
+    List.iter (R.Serialization.complex charge) (K.Inventory.complexes inventory);
+    List.iter (R.Serialization.role charge) (K.Inventory.role_instances inventory);
+    List.iter (R.Serialization.mapping charge) (K.Inventory.form_mappings inventory)) (K.inventory content);
+  List.iter (fun value -> charge (String.length value)) (K.missing_members content);
+  List.iter (fun value -> charge (String.length value)) (K.diagnostics content);
+  List.iter (R.Serialization.amount charge) (K.experimental_amounts content);
+  let raw=K.to_json content in Meter.serialization raw; raw

@@ -166,9 +166,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                                        role="core" if arguments.core else "verify",
                                        timeout_seconds=arguments.timeout,
                                        expected_sha256=arguments.expected_sha256)
-                client = PolicyMaterialClient(transport)
+                material_client = PolicyMaterialClient(transport)
                 if arguments.command == "compile-material-native":
-                    material_result = client.compile(request, limits)
+                    material_result = material_client.compile(request, limits)
                 else:
                     candidate = cast(JsonValue, _operational_json(arguments.candidate))
                     if isinstance(candidate, dict) and candidate.get("schema_version") == RESULT_SCHEMA:
@@ -177,15 +177,15 @@ def main(argv: Sequence[str] | None = None) -> int:
                         candidate = candidate["candidate"]
                     inputs += (arguments.candidate,)
                     if arguments.command == "check-material-native":
-                        material_result = client.check(request, candidate, limits)
+                        material_result = material_client.check(request, candidate, limits)
                     elif arguments.command == "replay-material-native":
                         saved = cast(JsonValue, _operational_json(arguments.report))
                         inputs += (arguments.report,)
-                        material_result = client.replay(request, candidate, limits, saved)
+                        material_result = material_client.replay(request, candidate, limits, saved)
                     else:
                         from .material import export
 
-                        material_result = export(request, candidate=candidate, limits=limits, client=client,
+                        material_result = export(request, candidate=candidate, limits=limits, client=material_client,
                                                  output=arguments.output, input_paths=inputs, replace=arguments.replace)
                         notice = {"status": "written", "operation": arguments.command,
                                   "output": str(arguments.output), "format": "RNA_FASTA_and_canonical_manifest_zip"}
@@ -212,9 +212,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                                        role="core" if arguments.core else "verify",
                                        timeout_seconds=arguments.timeout,
                                        expected_sha256=arguments.expected_sha256)
-                client = PolicyImplementationClient(transport)
+                implementation_client = PolicyImplementationClient(transport)
                 if arguments.command == "compile-implementation-native":
-                    implementation_result = client.compile(request, limits)
+                    implementation_result = implementation_client.compile(request, limits)
                 else:
                     candidate = cast(JsonValue, _operational_json(arguments.candidate))
                     if isinstance(candidate, dict) and candidate.get("schema_version") == RESULT_SCHEMA:
@@ -223,11 +223,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                         candidate = candidate["candidate"]
                     inputs += (arguments.candidate,)
                     if arguments.command == "check-implementation-native":
-                        implementation_result = client.check(request, candidate, limits)
+                        implementation_result = implementation_client.check(request, candidate, limits)
                     else:
                         saved = cast(JsonValue, _operational_json(arguments.report))
                         inputs += (arguments.report,)
-                        implementation_result = client.replay(request, candidate, limits, saved)
+                        implementation_result = implementation_client.replay(request, candidate, limits, saved)
             except CoreError as error:
                 raise ValueError(str(error)) from error
             result = implementation_result.result
@@ -284,28 +284,28 @@ def main(argv: Sequence[str] | None = None) -> int:
                                            role="core" if arguments.core else "verify",
                                            timeout_seconds=arguments.timeout,
                                            expected_sha256=arguments.expected_sha256)
-                    client = OperationalPolicyClient(transport)
+                    operational_client = OperationalPolicyClient(transport)
                     definitions = cast(JsonValue, _operational_json(arguments.definitions))
                     inputs += (arguments.definitions,)
                     if arguments.command == "compile-native":
-                        native_result = operational.compile(record, definitions=definitions, client=client)
+                        native_result = operational.compile(record, definitions=definitions, client=operational_client)
                     else:
                         candidate = cast(JsonValue, _operational_json(arguments.candidate, field="candidate"))
                         inputs += (arguments.candidate,)
                         if arguments.command == "check-lowering-native":
                             native_result = operational.check_lowering(record, definitions=definitions,
-                                                                       candidate=candidate, client=client)
+                                                                       candidate=candidate, client=operational_client)
                         else:
                             timeline = cast(JsonValue, _operational_json(arguments.timeline))
                             inputs += (arguments.timeline,)
                             if arguments.command == "execute-native":
                                 native_result = operational.execute(record, definitions=definitions, candidate=candidate,
-                                                                    timeline=timeline, client=client)
+                                                                    timeline=timeline, client=operational_client)
                             else:
                                 retained_report = cast(JsonValue, _operational_json(arguments.report, field="report"))
                                 inputs += (arguments.report,)
                                 native_result = operational.replay(record, definitions=definitions, candidate=candidate,
-                                                                   timeline=timeline, report=retained_report, client=client)
+                                                                   timeline=timeline, report=retained_report, client=operational_client)
                 except CoreError as error:
                     raise ValueError(str(error)) from error
                 result = native_result.result

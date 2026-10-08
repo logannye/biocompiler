@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.mappingproxy","items":[["schema_version","components.v1"],["nodes",{"$type":"tuple","items":[{"$type":"mapping","class":"builtins.mappingproxy","items":[["id","n"],["kind","component"],["value",1]]}]}]]}

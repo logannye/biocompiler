@@ -1,0 +1,55 @@
+{
+  "base_source_revision": "00fbfac6510183d5ddd7cd224305b1c2ccf915ca",
+  "checks": [
+    {
+      "command": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -m unittest tests.test_prebuilt_ci_plan tests.test_pipeline_manager_context_bindings tests.test_pipeline_manager_campaign -q",
+      "log": "generated/migration-next/pr85-unit-correction-failure/correction-tests-311.log",
+      "log_sha256": "c81f25027d653cbd6d68ef0a37efa9e935ec071f8fef1adf38e7488035142e67",
+      "python": "3.11.15",
+      "result": "PASS",
+      "seconds": 52.254,
+      "tests": 44
+    },
+    {
+      "command": "PYTHONPATH=src:. python3 -m unittest tests.test_prebuilt_ci_plan tests.test_pipeline_manager_context_bindings tests.test_pipeline_manager_campaign -q",
+      "log": "generated/migration-next/pr85-unit-correction-failure/correction-tests-314.log",
+      "log_sha256": "5ebc1d844416ae76fbafa26133fc97ce15522d03be68b2fc62339d5154861e76",
+      "python": "3.14.6",
+      "result": "PASS",
+      "seconds": 51.872,
+      "tests": 44
+    }
+  ],
+  "failure_job_id": 111195668945,
+  "failure_run_id": 37120447580,
+  "finite_restoration": {
+    "current": {
+      "bytes": 171731,
+      "sha256": "59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb"
+    },
+    "historical": {
+      "bytes": 163600,
+      "revision": "817a8ed1154975befd293327dfabdf7798ed2b4c",
+      "sha256": "d12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7"
+    },
+    "reads_original_bytes_without_newline_normalization": true,
+    "spans": 2,
+    "whole_restoration_independently_matches_git": true
+  },
+  "fresh_hosted_acceptance": false,
+  "git_diff_check": "PASS",
+  "native_execution": false,
+  "new_test_methods": 1,
+  "original14_file_witness": {
+    "path": "tests/conformance/prebuilt-installed-path-delta-v1.json",
+    "sha256": "f64bcd82834b120dbe0c848a94a0ac8e0fe117ea3fedd22a136a2bc415025dbd",
+    "unchanged": true
+  },
+  "peer_review": "Independent native peer confirmed exact163600-byte old source againstGit817a8ed and unchanged14-file witness; no remaining concrete finding.",
+  "schema": "biocompiler.deferred_context_prebuilt_source_correction.v1",
+  "scope": "Test-only additive finite source counterpart. Original14-file whole-source/AST assertions remain mandatory after exact approved checker correction restoration. No source acceptance broadening.",
+  "source_pins": {
+    "tests/conformance/deferred-context-checker-source-delta-v1.json": "c052ed313423f5b4a016b8f8474d50a9364e278904983f3d139eb9e1ca8e4253",
+    "tests/test_prebuilt_ci_plan.py": "1895affcb2335e4b1b948bc13fdd5acb89a466416dcedcb5830deac16b80b6e3"
+  }
+}

@@ -269,6 +269,73 @@ let requirement_rejection_controls first=
     let _,monitor=finish runtime monitor 0 4 in
     check monitor)cases;
   print_endline "six source-admitted requirement rejection controls passed"
+let requirement_scope_parameter_controls first=
+  let original=R.of_json(get "request" first)in
+  let expected_ids=List.filter_map(fun value->if get "$type" value=str "Requirement"
+    then Some(text "id" value)else None)(declarations first)in
+  let fresh label case=
+    let request=R.of_json(get "request" case)in
+    require(text "status"(Bioc_checker.Policy_check.check(R.document request))="valid")
+      (label^": control must remain generically source-valid");
+    List.iter(fun key->require(Json.equal(get key(get "request" case))(get key(get "request" first)))
+      (label^": changed an original domain, model, definition or bound"))
+      ["operating_domain";"implementation_library";"definitions";"catalog_bindings";"budgets"];
+    List.iter(fun key->require(Json.equal(get key(D.to_json(R.document request)))(get key(D.to_json(R.document original))))
+      (label^": changed original deployment, catalog or assurance"))["deployment";"implementations";"assurance"];
+    List.iter(fun value->if text "id" value<>"scoped_memory"then
+      require(Json.equal value(declaration case(text "id" value)))(label^": changed an unrelated source declaration"))
+      (declarations first);
+    (* No expected-error catch encloses source admission, correspondence or
+       binding. Only a freshly bound source may reach the monitor below. *)
+    let bound,runtime,monitor=initialize case in
+    require(R.fingerprint request<>R.fingerprint original &&
+      R.fingerprint(A.request(B.admitted_inputs bound))=R.fingerprint request &&
+      text "request_fingerprint"(B.report bound)=R.fingerprint request)
+      (label^": monitor detached from revised original authority");
+    bound,runtime,monitor in
+  let ledger label case monitor=
+    let rows=items "requirements"(M.report monitor)in
+    require(List.map(text "id")rows=expected_ids)(label^": hard-requirement inventory changed");
+    List.iter(fun value->require(Json.equal(get "source" value)(declaration case(text "id" value)))
+      (label^": monitor changed an original hard requirement"))rows;
+    assert_claim monitor in
+  let scope=obj["$type",str "Scope";"kind",str "program";"subject",Json.Null]in
+  let program_scope=edit first "scoped_memory" ["scope"]scope in
+  let _,runtime,monitor=fresh "program scope" program_scope in
+  let unsupported monitor=
+    ledger "program scope" program_scope monitor;
+    require(List.filter_map(fun(value:M.requirement_summary)->
+      if value.verdict=M.Unsupported_requirement then Some value.id else None)(M.summaries monitor)=["scoped_memory"])
+      "Program scope failed outside its independent monitor boundary";
+    require(text "unsupported_reason"(row "scoped_memory" monitor)="unsupported_scope")
+      "Program scope lost exact unsupported_scope reason";
+    let coverage=summary "scoped_memory" monitor in
+    require(coverage.samples=0 && coverage.matched_triggers=0 &&
+      items "obligations"(row "scoped_memory" monitor)=[])
+      "Unsupported program scope invented samples or obligations"in
+  unsupported monitor;
+  let _,monitor=finish runtime monitor 0 4 in unsupported monitor;
+  let parameter=get "value"(List.hd(items "parameters"(declaration first "response")))in
+  require(get "op" parameter=str "parameter" && get "scope" parameter=Json.Null &&
+    get "value" parameter=Json.Null && text "id"(get "ref" parameter)="product" &&
+    text "kind"(get "value_type" parameter)="text" &&
+    get "value"(declaration first "product")=str "fixture.product.alpha")
+    "Parameter-equality witness no longer reads the original fixed text product";
+  let equality=true_literal first|>set["op"](str "eq")|>set["value"]Json.Null
+    |>set["args"](arr[parameter;parameter])in
+  let parameter_case=edit first "scoped_memory" ["condition"]equality in
+  let _,runtime,monitor=fresh "product parameter equality" parameter_case in
+  let runtime,monitor,_=apply runtime monitor(batch 0 [observe 0 "e1"(P.Known false);observe 0 "e2"(P.Known false)])in
+  let runtime,monitor,_=apply runtime monitor(batch 1 [observe 1 "e1"(P.Known true);observe 1 "e2"(P.Known true)])in
+  let _,monitor=finish runtime monitor 2 4 in
+  ledger "product parameter equality" parameter_case monitor;
+  List.iter(fun id->assert_verdict monitor id M.Passed)expected_ids;
+  let coverage=summary "scoped_memory" monitor in
+  require(coverage.horizon_complete && coverage.samples=10 && coverage.true_samples=10 &&
+    coverage.false_samples=0 && coverage.unknown_samples=0 &&
+    get "unsupported_reason"(row "scoped_memory" monitor)=Json.Null)
+    "Fixed-product parameter equality differs from ten literal true slot/tick samples";
+  parameter_case
 let resource_controls first=
   let _,runtime,monitor=initialize ~limits:{M.max_work=100000000;max_obligations=1;max_samples=100000}first in
   let runtime,monitor,_=apply runtime monitor(batch 0 [observe 0 "e1"(P.Known false);observe 0 "e2"(P.Known false)])in
@@ -312,5 +379,6 @@ let ()=
   let cases=items "cases"(read Sys.argv.(1))in
   let first=List.nth cases 0 and second=List.nth cases 1 in
   literals first second;progress_controls first;requirement_rejection_controls first;
-  resource_controls first;List.iter crosscheck cases;
+  let parameter_case=requirement_scope_parameter_controls first in
+  resource_controls first;List.iter crosscheck(cases@[parameter_case]);
   print_endline "independent candidate requirement monitor literals and fresh source cross-checks passed"

@@ -83,7 +83,7 @@ let prepare budget ?until behavior contract domain target mechanism observation_
     "horizon", obj ["until", (match until with None -> Json.Null | Some value -> N.to_json value); "effective", N.to_json horizon];
     "checker", str checker_version; "model_runner", str Synthetic.runner_version;
     "reference_evaluator", str reference_evaluator_version;
-    "settings", obj (("max_microsteps", Json.int 1000) :: Json.object_fields settings)]) in
+    "settings", obj (Json.object_fields settings @ ["max_microsteps", Json.int 1000])]) in
   {frames; horizon; dependencies}
 let dependencies_with_usage ?until ?limits ?parent behavior contract domain target mechanism observation_map history =
   let budget = Budget.create ?parent ?limits () in

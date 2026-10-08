@@ -1,0 +1,71 @@
+{
+  "record_fingerprint": "b002e2169aeba138d14e6b0e7aa4a1fe69e1d60ed8ce9474dad25bae9492c47b",
+  "request_fingerprint": "a2222e64a4c7db47852774890d0e29007adbfa2e0c733a29fc32868ed7fa66ce",
+  "operation": "check",
+  "mode": "candidate",
+  "intended_use": "software_test",
+  "human_therapeutic_admission": "not_admitted",
+  "claim_scope": "Historical finite-history software-model verification record; fresh replay requires independent complete operation authority. No universal, biological or human therapeutic claim.",
+  "outcome": "unknown",
+  "diagnostics": [
+    {
+      "code": "unexercised_response",
+      "message": "No active response deadline was exercised for this requirement.",
+      "requirement_id": "contact_pulse",
+      "node_id": "n000019",
+      "source": {
+        "file": "examples/temporal_pipeline.py",
+        "line": 30,
+        "function": "build_request"
+      }
+    },
+    {
+      "code": "unexercised_response",
+      "message": "No active response deadline was exercised for this requirement.",
+      "requirement_id": "local_pulse",
+      "node_id": "n000017",
+      "source": {
+        "file": "examples/temporal_pipeline.py",
+        "line": 29,
+        "function": "build_request"
+      }
+    },
+    {
+      "code": "unexercised_response",
+      "message": "No active response deadline was exercised for this requirement.",
+      "requirement_id": "memory_readout",
+      "node_id": "n000020",
+      "source": {
+        "file": "examples/temporal_pipeline.py",
+        "line": 31,
+        "function": "build_request"
+      }
+    }
+  ],
+  "counterexamples": [],
+  "coverage": [
+    {
+      "requirement_id": "contact_pulse",
+      "activation_deadlines_checked": 0,
+      "inactive_deadlines_checked": 2,
+      "incomplete_episode_count": 0,
+      "cancelled_episode_count": 0
+    },
+    {
+      "requirement_id": "local_pulse",
+      "activation_deadlines_checked": 0,
+      "inactive_deadlines_checked": 1,
+      "incomplete_episode_count": 0,
+      "cancelled_episode_count": 0
+    },
+    {
+      "requirement_id": "memory_readout",
+      "activation_deadlines_checked": 0,
+      "inactive_deadlines_checked": 1,
+      "incomplete_episode_count": 0,
+      "cancelled_episode_count": 0
+    }
+  ],
+  "replay": "Fresh execution reproduced the declared outcome; this does not turn a failure or unknown into PASS.",
+  "output": "/tmp/biocompiler-workflow-cli-v1/cases/candidate_unknown-replay/output.json"
+}

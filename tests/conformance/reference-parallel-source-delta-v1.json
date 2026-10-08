@@ -1,0 +1,30 @@
+{
+  "current": {
+    "bytes": 17918,
+    "sha256": "8316869ed38ed7a5173c959a4995c2f00b0b5b70e8170675876f01a56e770e1c"
+  },
+  "historical": {
+    "bytes": 17333,
+    "revision": "ce744f6afccae3014b21bf0a876d54858764b321",
+    "sha256": "2038afce45cd6f0490957370286a0a3ba8fc0fca402c0daf30b2bede1d67d70e"
+  },
+  "path": "tools/pipeline_reference_runtime.py",
+  "schema": "biocompiler.reference_parallel_source_delta.v1",
+  "spans": [
+    {
+      "after": "from concurrent.futures import ThreadPoolExecutor\n",
+      "before": "",
+      "offset": 523
+    },
+    {
+      "after": "        jobs=[]\n",
+      "before": "",
+      "offset": 12656
+    },
+    {
+      "after": "                jobs.append((name,target,python,pin,inputs_pin,artifacts,output,command))\n        # Only pipe I/O and waiting overlap. Source/receipt preparation stays on\n        # this thread; each reconstruction owns its process-local instrumentation.\n        # Leaving the executor drains every started worker even when one fails.\n        with ThreadPoolExecutor(max_workers=4) as executor:\n            futures=[executor.submit(subprocess.run,job[-1],cwd=temporary,\n                capture_output=True,timeout=1800,check=False) for job in jobs]\n        for (name,target,python,pin,inputs_pin,artifacts,output,command),future in zip(jobs,futures):\n            completed=future.result()\n            require(len(completed.stdout)+len(completed.stderr)<=1024*1024,'Reference reconstruction diagnostics exceeded bound')\n            require(completed.returncode==0,'Reference independent reconstruction failed: '+completed.stderr.decode('utf-8','replace'))\n            report,report_pin=r.read(output)\n            expected={'schema_version':'biocompiler.reference_independent_reconstruction.v1','status':'success',\n                'receipt_sha256':pin,'revision':revision,'source_revision':source_revision,'run_id':run_id,\n                'native_platform':target,'campaign_sources':tools,'python_sources':sources,\n                'interpreter':str(interpreters[python]),'interpreter_sha256':sha(r.raw_file(interpreters[python],256*1024*1024)),\n                'complete_artifacts':artifacts.verified}\n            for key,value in expected.items():equal(report.get(key),value,'Unbound reference reconstruction worker: '+key)\n            require(report['python_version'].startswith(python+'.'),'Reference worker used another runtime')\n            projected=canonical(report['projection']['original_behavior'])\n            require(common is None or projected==common,'Original reference public behavior differs across runtimes')\n            common=projected\n            receipts[name]={'receipt_sha256':pin,'native_inputs_sha256':inputs_pin,'independent_reconstruction':report,\n                'independent_reconstruction_sha256':report_pin,'complete_artifacts':artifacts.verified}\n",
+      "before": "                completed=subprocess.run(command,cwd=temporary,capture_output=True,timeout=1800,check=False)\n                require(len(completed.stdout)+len(completed.stderr)<=1024*1024,'Reference reconstruction diagnostics exceeded bound')\n                require(completed.returncode==0,'Reference independent reconstruction failed: '+completed.stderr.decode('utf-8','replace'))\n                report,report_pin=r.read(output)\n                expected={'schema_version':'biocompiler.reference_independent_reconstruction.v1','status':'success',\n                    'receipt_sha256':pin,'revision':revision,'source_revision':source_revision,'run_id':run_id,\n                    'native_platform':target,'campaign_sources':tools,'python_sources':sources,\n                    'interpreter':str(interpreters[python]),'interpreter_sha256':sha(r.raw_file(interpreters[python],256*1024*1024)),\n                    'complete_artifacts':artifacts.verified}\n                for key,value in expected.items():equal(report.get(key),value,'Unbound reference reconstruction worker: '+key)\n                require(report['python_version'].startswith(python+'.'),'Reference worker used another runtime')\n                projected=canonical(report['projection']['original_behavior'])\n                require(common is None or projected==common,'Original reference public behavior differs across runtimes')\n                common=projected\n                receipts[name]={'receipt_sha256':pin,'native_inputs_sha256':inputs_pin,'independent_reconstruction':report,\n                    'independent_reconstruction_sha256':report_pin,'complete_artifacts':artifacts.verified}\n",
+      "offset": 14309
+    }
+  ]
+}

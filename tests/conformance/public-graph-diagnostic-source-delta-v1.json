@@ -1,0 +1,30 @@
+{
+  "current": {
+    "bytes": 74660,
+    "sha256": "a50d4f3bed59fdd308a169e765e3d8b9145ad616c290e7bf635765f038f9b5b4"
+  },
+  "historical": {
+    "bytes": 71452,
+    "revision": "2cf35b440ce9fca6dc951709b27f8122f00b81f7",
+    "sha256": "733d9823b203dc31c9f36715433f98ef654d08e1c6aba3cefb19e9b85e9447fd"
+  },
+  "path": "tools/check_pipeline_fixed_continuation_install.py",
+  "schema": "biocompiler.public_graph_diagnostic_source_delta.v1",
+  "spans": [
+    {
+      "after": "def public_graph_difference(actual, expected):\n    \"\"\"Bounded advisory detail from encoded graphs, never an acceptance test.\"\"\"\n    remaining = 16_384\n\n    def preview(value):\n        kind = type(value)\n        if kind is str:\n            return {'type': 'str', 'length': len(value), 'prefix': value[:128]}\n        if kind in (list, dict):\n            return {'type': kind.__name__, 'length': len(value)}\n        if kind is int and value.bit_length() > 256:\n            return {'type': 'int', 'bits': value.bit_length()}\n        if value is None or kind in (bool, int, float):\n            return {'type': kind.__name__, 'value': value}\n        return {'type': 'unsupported'}\n\n    def visit(left, right, path):\n        nonlocal remaining\n        remaining -= 1\n        detail = {'path': path, 'actual': preview(left), 'expected': preview(right)}\n        if remaining < 0 or len(path) > 48:\n            return {**detail, 'reason': 'scan-limit'}\n        if type(left) is not type(right):\n            return {**detail, 'reason': 'type'}\n        if type(left) is dict:\n            if len(left) > 64 or len(right) > 64 or any(type(key) is not str or len(key) > 64\n                    for value in (left, right) for key in value):\n                return {**detail, 'reason': 'scan-limit'}\n            for key in sorted(left.keys() | right.keys()):\n                if key not in left or key not in right:\n                    return {'path': path+[key], 'reason': 'missing-key',\n                        'actual': preview(left[key]) if key in left else {'missing': True},\n                        'expected': preview(right[key]) if key in right else {'missing': True}}\n                found = visit(left[key], right[key], path+[key])\n                if found is not None:\n                    return found\n            return None\n        if type(left) is list:\n            for index, (item, wanted) in enumerate(zip(left, right)):\n                found = visit(item, wanted, path+[index])\n                if found is not None:\n                    return found\n            return {**detail, 'reason': 'length'} if len(left) != len(right) else None\n        if ((type(left) is str and max(len(left), len(right)) > 4096)\n                or (type(left) is int and max(left.bit_length(), right.bit_length()) > 256)):\n            return {**detail, 'reason': 'scan-limit'}\n        if left is None or type(left) in (bool, int, float, str):\n            return {**detail, 'reason': 'value'} if canonical(left) != canonical(right) else None\n        return {**detail, 'reason': 'unsupported'}\n\n    detail = visit(actual, expected, []) or {'reason': 'no-difference-in-bounded-view'}\n    raw = canonical(detail)\n    return raw.decode('utf-8') if len(raw) <= 8192 else '{\"reason\":\"diagnostic-output-limit\"}'\n\n\ndef equal_public_graph(actual, expected):\n    try:\n        equal(actual, expected, 'Complete public native build values or physical identities differ')\n    except AssertionError as error:\n        try:\n            detail = public_graph_difference(actual, expected)\n        except Exception:\n            detail = '{\"reason\":\"diagnostic-unavailable\"}'\n        error.args = (error.args[0]+'; first public graph difference: '+detail,)\n        raise\n\n\n",
+      "before": "",
+      "offset": 14156
+    },
+    {
+      "after": "        equal_public_graph(case['graph'], public_graph(self.corpus.authorities[expected['authority']]))\n",
+      "before": "        equal(case['graph'], public_graph(self.corpus.authorities[expected['authority']]),\n            'Complete public native build values or physical identities differ')\n",
+      "offset": 22614
+    },
+    {
+      "after": "    'tests/test_pipeline_graph_diagnostics.py',\n",
+      "before": "",
+      "offset": 24068
+    }
+  ]
+}

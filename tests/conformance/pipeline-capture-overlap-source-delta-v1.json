@@ -1,0 +1,75 @@
+{
+  "base_revision": "54e73a5c10c7f86a5f389ea7b71932f68ed0c092",
+  "files": {
+    "tools/check_pipeline_fixed_continuation_install.py": {
+      "current": {
+        "bytes": 80060,
+        "sha256": "0e6f01fc8de19e39814ec14aaf5b8b6eb7d3a5836f52f4e80bd02b29d027c4ae"
+      },
+      "historical": {
+        "bytes": 79097,
+        "sha256": "8d459519d221e364f65cd218973dbc415b352581af72a28aba403f4d85315103"
+      },
+      "spans": [
+        {
+          "after": "    'tools/pipeline_capture_overlap_source.py', 'tests/test_pipeline_capture_overlap.py',\n    'tests/conformance/pipeline-capture-overlap-source-delta-v1.json',\n",
+          "before": "",
+          "offset": 28350
+        },
+        {
+          "after": "def capture_counterpart_pair(receipt, task, expected, capture):\n    \"\"\"Join two fresh isolated captures before publishing their exact proof.\"\"\"\n    counterpart=providers.tool('pipeline_original_counterpart')\n    original, current = counterpart.run_with_capture(task, capture)\n    equal(counterpart.validate(original), expected, 'Complete fresh original counterpart differs from frozen authority')\n    proof = counterpart.metadata_correspondence(current, original)\n    receipt['fresh_original'] = providers.artifact(receipt, canonical(expected))\n    receipt['current_original'] = providers.artifact(receipt, canonical(current))\n    receipt['original_counterpart'] = providers.artifact(receipt, canonical(original))\n    receipt['original_correspondence'] = providers.artifact(receipt, canonical(proof))\n    return current\n\n\n",
+          "before": "",
+          "offset": 36087
+        },
+        {
+          "after": "    capture_counterpart_pair(receipt, 'fixed-build-original', corpus.build,\n        lambda: oracle.capture(retain=originals))\n",
+          "before": "    fresh = oracle.capture(retain=originals)\n    providers.capture_counterpart(receipt, fresh, 'fixed-build-original', corpus.build)\n",
+          "offset": 36347
+        },
+        {
+          "after": "",
+          "before": "    current_occurrences = occurrences.capture(corpus, oracle, sys.modules[__name__])\n",
+          "offset": 36561
+        },
+        {
+          "after": "    current_occurrences = capture_counterpart_pair(occurrence_receipt,\n        'fixed-continuation-original', occurrence_original,\n        lambda: occurrences.capture(corpus, oracle, sys.modules[__name__]))\n",
+          "before": "    providers.capture_counterpart(occurrence_receipt, current_occurrences,\n        'fixed-continuation-original', occurrence_original)\n",
+          "offset": 36762
+        }
+      ]
+    },
+    "tools/pipeline_original_counterpart.py": {
+      "current": {
+        "bytes": 29233,
+        "sha256": "f92c33b8b10c4eede05ee8132f6d45390dfa01b209bad901a45760e70bd59243"
+      },
+      "historical": {
+        "bytes": 26683,
+        "sha256": "8c0fa1a8433805a0805e374502c5b61fe8e28de382a51dfb40d9f643e22b15bc"
+      },
+      "spans": [
+        {
+          "after": "from concurrent.futures import ThreadPoolExecutor\nimport time\n",
+          "before": "",
+          "offset": 425
+        },
+        {
+          "after": "def _capture_process(command, *, cwd, env, timeout, capture, popen=None):\n    \"\"\"One isolated Python child and one parent capture; drain I/O concurrently.\n\n    The I/O thread touches only this Popen. A child timeout stops/drains the\n    child while the original parent body runs to its own normal boundary; the\n    pair cannot publish or reach native execution after either failure.\n    \"\"\"\n    process = (subprocess.Popen if popen is None else popen)(command, cwd=cwd, env=env,\n        stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n    started = time.monotonic()\n    def drain():\n        try:\n            return process.communicate(timeout=max(0, timeout-(time.monotonic()-started)))\n        except subprocess.TimeoutExpired:\n            process.kill()\n            process.communicate()\n            raise\n    primary = False\n    try:\n        with ThreadPoolExecutor(max_workers=1, thread_name_prefix='original-capture-io') as pool:\n            future = pool.submit(drain)\n            try:\n                current = capture()\n            except BaseException:\n                primary = True\n                try:\n                    if process.poll() is None: process.kill()\n                except BaseException: pass\n                try: future.result()\n                except BaseException: pass\n                raise\n            stdout, stderr = future.result()\n        return subprocess.CompletedProcess(command, process.returncode, stdout, stderr), current\n    except BaseException:\n        primary = True\n        raise\n    finally:\n        try:\n            if process.poll() is None: process.kill()\n            process.wait()\n            for stream in (process.stdout, process.stderr):\n                if stream is not None: stream.close()\n        except BaseException:\n            if not primary: raise\n\n\ndef run_with_capture(task, capture):\n    require(task in ('fixed-build-original', 'fixed-continuation-original') and callable(capture),\n        'Unreviewed paired original capture')\n    return run(task, _capture=capture)\n\n\ndef run(task='deferred', *, test_module=None, test_ids=None, _capture=None):\n",
+          "before": "def run(task='deferred', *, test_module=None, test_ids=None):\n",
+          "offset": 6384
+        },
+        {
+          "after": "        command = [sys.executable, '-I', '-c', script, str(overlay)]\n        timeout = 600 if task == 'fixed-continuation-original' else 90\n        if _capture is None:\n            completed = subprocess.run(command, cwd=directory, env=environment,\n                stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)\n        else:\n            require(task in ('fixed-build-original', 'fixed-continuation-original') and callable(_capture),\n                'Unreviewed paired original capture')\n            completed, current = _capture_process(command, cwd=directory, env=environment,\n                timeout=timeout, capture=_capture)\n",
+          "before": "        completed = subprocess.run([sys.executable, '-I', '-c', script, str(overlay)],\n            cwd=directory, env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE,\n            timeout=600 if task == 'fixed-continuation-original' else 90)\n",
+          "offset": 10040
+        },
+        {
+          "after": "        return value if _capture is None else (value, current)\n",
+          "before": "        return value\n",
+          "offset": 10656
+        }
+      ]
+    }
+  },
+  "schema": "biocompiler.pipeline_capture_overlap_source_delta.v1"
+}

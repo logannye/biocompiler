@@ -306,6 +306,12 @@ IDs match. That in-process ownership token is not serialized and does not alter
 deterministic digests. Explicit import of declarative data re-establishes local
 reference closure through structural checking.
 
+The `state`, `channel` and `require` helpers check the input record's ownership
+before making a namespaced copy. A record already owned by another builder needs
+explicit declarative import, just as it does for `add`. Encounter construction
+checks both the generated target and encounter before adding either; a rejected
+expansion leaves the declarations and source map unchanged.
+
 `dump(..., overwrite=False)` uses atomic no-clobber publication. Loading performs
 no dynamic imports, dependency downloads or backend discovery. Schema export is
 derived from the reviewed closed registry. Wire changes require an explicit
@@ -363,6 +369,19 @@ serialization rejection, immutable handoff, CLI and installed import isolation.
 `tools/mypy-policy.ini` defines strict typing for the complete new package.
 `tools/check_policy_install.py` checks an existing installation outside the source
 checkout without loading compiler/native modules.
+
+Two additional static ledgers make the reviewed source boundary inspectable.
+`protocol/policy-public-api-coverage-v0.1.json` inventories authored declarations,
+builder/pattern expansions, exports and submission input keys with distinct
+witness roles; rows marked `source_only` have no claimed behavioral witness.
+`protocol/policy-source-context-coverage-v0.1.json` indexes the reviewed source
+unit/scope rules and their caller contexts, retaining differences between Python
+authoring and native source assessment. Their corresponding
+`tools/check_policy_public_api_coverage.py` and
+`tools/check_policy_source_context_coverage.py` commands check closed identities,
+source drift and reviewed metadata without importing the policy package.
+Neither ledger establishes executed semantics, whole-stack coverage or material
+acceptance. The normal unit suite retains their adversarial drift controls.
 
 Still required in later layers: authoritative semantics and units; reference
 execution; temporal/uncertainty interpretation; quantified domains and observation

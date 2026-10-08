@@ -14,8 +14,17 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class RealizationWorkflowSourceScopeTests(unittest.TestCase):
     OPERATIONAL_MODULES = {
+        "src/biocompiler/policy/research_project.py": "biocompiler.policy.research_project",
+        "src/biocompiler/core_policy_component_selection.py": "biocompiler.core_policy_component_selection",
+        "src/biocompiler/policy/component_selection.py": "biocompiler.policy.component_selection",
         "src/biocompiler/core_policy_operational.py": "biocompiler.core_policy_operational",
         "src/biocompiler/policy/operational.py": "biocompiler.policy.operational",
+        "src/biocompiler/core_policy_implementation.py": "biocompiler.core_policy_implementation",
+        "src/biocompiler/policy/implementation.py": "biocompiler.policy.implementation",
+        "src/biocompiler/core_policy_material.py": "biocompiler.core_policy_material",
+        "src/biocompiler/core_policy_component_material.py": "biocompiler.core_policy_component_material",
+        "src/biocompiler/policy/component_material.py": "biocompiler.policy.component_material",
+        "src/biocompiler/policy/material.py": "biocompiler.policy.material",
         "src/biocompiler/policy/cli.py": "biocompiler.policy.cli",
     }
 
@@ -30,6 +39,11 @@ class RealizationWorkflowSourceScopeTests(unittest.TestCase):
         historical = {row["path"] for row in scope["historical_sources"]}
         additions = {row["path"]: row["sha256"] for row in scope["reviewed_additions"]}
         self.assertEqual(scope["historical_corpus_pin"], PIN)
+        self.assertEqual(len(additions), 62)
+        self.assertEqual(additions["src/biocompiler/core_workflow.py"],
+                         "43b57b87a2d89db200463d8aed8b7eea7e262cf1c4ea02c772843598dbda90df")
+        self.assertEqual(additions["src/biocompiler/core_artifacts.py"],
+                         "77cf4dc31efb782c7fbb44fe8e79714a60e2e20374f9e7569fdce8f70d8ec59a")
         for path, module in self.OPERATIONAL_MODULES.items():
             with self.subTest(path=path):
                 self.assertNotIn(path, historical)
@@ -80,7 +94,12 @@ import sys
 from tools.check_realization_workflow_corpus import deny_added_modules, source_scope
 from tools.freeze_realization_workflow import source_inventory
 scope = source_scope(source_inventory())
-names = ("biocompiler.core_policy_operational", "biocompiler.policy.operational", "biocompiler.policy.cli")
+names = ("biocompiler.core_policy_operational", "biocompiler.policy.operational",
+         "biocompiler.core_policy_implementation", "biocompiler.policy.implementation",
+         "biocompiler.core_policy_material", "biocompiler.policy.material", "biocompiler.policy.cli",
+         "biocompiler.core_policy_component_material", "biocompiler.policy.component_material",
+         "biocompiler.core_policy_component_selection", "biocompiler.policy.component_selection",
+         "biocompiler.policy.research_project")
 for name in names:
     assert name in scope["denied_modules"]
     for attempted in (name, name + ".unreviewed"):
@@ -400,7 +419,7 @@ class RealizationWorkflowCorpusTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="workflow-independent-recapture-") as directory:
             log = Path(directory) / "recapture.log"
             with log.open("w") as output:
-                result = subprocess.run([sys.executable, str(ROOT / "tools/freeze_realization_workflow.py"), "--check"],
+                result = subprocess.run([sys.executable, str(ROOT / "tools/check_workflow_routed_recapture.py"), "--check"],
                     cwd=ROOT, env={**os.environ, "PYTHONPATH": str(ROOT / "src"), "PYTHONHASHSEED": "0"},
                     stdout=output, stderr=subprocess.STDOUT, timeout=600)
             self.assertEqual(result.returncode, 0, log.read_text()[-4000:])

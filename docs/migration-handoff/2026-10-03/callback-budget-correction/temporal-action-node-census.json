@@ -1,0 +1,434 @@
+[
+  {
+    "kind_action": "reply:call-native-provider",
+    "frames": 6,
+    "nodes": 266828,
+    "bytes": 2301485
+  },
+  {
+    "kind_action": "invoke:literal",
+    "frames": 1749,
+    "nodes": 104235,
+    "bytes": 1479214
+  },
+  {
+    "kind_action": "reply:inspect-ordered",
+    "frames": 1,
+    "nodes": 88883,
+    "bytes": 831728
+  },
+  {
+    "kind_action": "invoke:attr",
+    "frames": 1754,
+    "nodes": 85946,
+    "bytes": 1148255
+  },
+  {
+    "kind_action": "invoke:contains",
+    "frames": 1299,
+    "nodes": 66249,
+    "bytes": 873390
+  },
+  {
+    "kind_action": "continue:attr",
+    "frames": 1754,
+    "nodes": 40342,
+    "bytes": 664321
+  },
+  {
+    "kind_action": "continue:literal",
+    "frames": 1749,
+    "nodes": 40227,
+    "bytes": 662408
+  },
+  {
+    "kind_action": "continue:ordered-json",
+    "frames": 443,
+    "nodes": 27371,
+    "bytes": 307730
+  },
+  {
+    "kind_action": "continue:contains",
+    "frames": 1299,
+    "nodes": 27279,
+    "bytes": 466319
+  },
+  {
+    "kind_action": "invoke:compare",
+    "frames": 441,
+    "nodes": 23373,
+    "bytes": 300172
+  },
+  {
+    "kind_action": "invoke:next",
+    "frames": 472,
+    "nodes": 22184,
+    "bytes": 296427
+  },
+  {
+    "kind_action": "invoke:is-instance",
+    "frames": 449,
+    "nodes": 22001,
+    "bytes": 295228
+  },
+  {
+    "kind_action": "invoke:freeze-json",
+    "frames": 444,
+    "nodes": 20868,
+    "bytes": 284924
+  },
+  {
+    "kind_action": "invoke:ordered-json",
+    "frames": 444,
+    "nodes": 20868,
+    "bytes": 285368
+  },
+  {
+    "kind_action": "invoke:vars",
+    "frames": 432,
+    "nodes": 20304,
+    "bytes": 273867
+  },
+  {
+    "kind_action": "reply:run",
+    "frames": 2,
+    "nodes": 19719,
+    "bytes": 227572
+  },
+  {
+    "kind_action": "continue:next",
+    "frames": 472,
+    "nodes": 12700,
+    "bytes": 190673
+  },
+  {
+    "kind_action": "command:initialize-components",
+    "frames": 1,
+    "nodes": 10653,
+    "bytes": 76949
+  },
+  {
+    "kind_action": "continue:freeze-json",
+    "frames": 444,
+    "nodes": 10212,
+    "bytes": 168229
+  },
+  {
+    "kind_action": "continue:vars",
+    "frames": 432,
+    "nodes": 9936,
+    "bytes": 163719
+  },
+  {
+    "kind_action": "continue:is-instance",
+    "frames": 449,
+    "nodes": 9429,
+    "bytes": 161008
+  },
+  {
+    "kind_action": "continue:compare",
+    "frames": 441,
+    "nodes": 9261,
+    "bytes": 158160
+  },
+  {
+    "kind_action": "invoke:hydrate-context",
+    "frames": 3,
+    "nodes": 7145,
+    "bytes": 74072
+  },
+  {
+    "kind_action": "reply:hello",
+    "frames": 1,
+    "nodes": 1530,
+    "bytes": 29676
+  },
+  {
+    "kind_action": "hello",
+    "frames": 1,
+    "nodes": 1482,
+    "bytes": 29128
+  },
+  {
+    "kind_action": "invoke:set-attribute-equal",
+    "frames": 2,
+    "nodes": 1400,
+    "bytes": 11817
+  },
+  {
+    "kind_action": "invoke:iter",
+    "frames": 22,
+    "nodes": 1034,
+    "bytes": 13715
+  },
+  {
+    "kind_action": "invoke:origin-reference",
+    "frames": 18,
+    "nodes": 904,
+    "bytes": 11957
+  },
+  {
+    "kind_action": "command:register",
+    "frames": 6,
+    "nodes": 694,
+    "bytes": 9783
+  },
+  {
+    "kind_action": "invoke:get-item",
+    "frames": 12,
+    "nodes": 612,
+    "bytes": 7866
+  },
+  {
+    "kind_action": "invoke:callable",
+    "frames": 12,
+    "nodes": 564,
+    "bytes": 7504
+  },
+  {
+    "kind_action": "invoke:mapping-values",
+    "frames": 12,
+    "nodes": 564,
+    "bytes": 7582
+  },
+  {
+    "kind_action": "invoke:provider-reference",
+    "frames": 12,
+    "nodes": 564,
+    "bytes": 7631
+  },
+  {
+    "kind_action": "continue:iter",
+    "frames": 22,
+    "nodes": 506,
+    "bytes": 8248
+  },
+  {
+    "kind_action": "invoke:register-fixed",
+    "frames": 3,
+    "nodes": 486,
+    "bytes": 6478
+  },
+  {
+    "kind_action": "continue:origin-reference",
+    "frames": 18,
+    "nodes": 414,
+    "bytes": 6779
+  },
+  {
+    "kind_action": "invoke:call",
+    "frames": 6,
+    "nodes": 315,
+    "bytes": 3995
+  },
+  {
+    "kind_action": "continue:provider-reference",
+    "frames": 12,
+    "nodes": 306,
+    "bytes": 4776
+  },
+  {
+    "kind_action": "invoke:set-equal",
+    "frames": 6,
+    "nodes": 300,
+    "bytes": 3921
+  },
+  {
+    "kind_action": "invoke:native-provider",
+    "frames": 6,
+    "nodes": 282,
+    "bytes": 3977
+  },
+  {
+    "kind_action": "invoke:dict",
+    "frames": 6,
+    "nodes": 282,
+    "bytes": 3734
+  },
+  {
+    "kind_action": "invoke:mapping-items",
+    "frames": 6,
+    "nodes": 282,
+    "bytes": 3789
+  },
+  {
+    "kind_action": "continue:mapping-values",
+    "frames": 12,
+    "nodes": 276,
+    "bytes": 4493
+  },
+  {
+    "kind_action": "continue:get-item",
+    "frames": 12,
+    "nodes": 276,
+    "bytes": 4493
+  },
+  {
+    "kind_action": "reply:register",
+    "frames": 6,
+    "nodes": 258,
+    "bytes": 3369
+  },
+  {
+    "kind_action": "continue:callable",
+    "frames": 12,
+    "nodes": 252,
+    "bytes": 4271
+  },
+  {
+    "kind_action": "invoke:is-none",
+    "frames": 4,
+    "nodes": 188,
+    "bytes": 2531
+  },
+  {
+    "kind_action": "invoke:bind-provider",
+    "frames": 3,
+    "nodes": 147,
+    "bytes": 2000
+  },
+  {
+    "kind_action": "invoke:call-provider",
+    "frames": 3,
+    "nodes": 147,
+    "bytes": 2004
+  },
+  {
+    "kind_action": "invoke:document",
+    "frames": 3,
+    "nodes": 141,
+    "bytes": 1903
+  },
+  {
+    "kind_action": "invoke:truth",
+    "frames": 3,
+    "nodes": 141,
+    "bytes": 1894
+  },
+  {
+    "kind_action": "continue:native-provider",
+    "frames": 6,
+    "nodes": 138,
+    "bytes": 2232
+  },
+  {
+    "kind_action": "continue:dict",
+    "frames": 6,
+    "nodes": 138,
+    "bytes": 2249
+  },
+  {
+    "kind_action": "continue:mapping-items",
+    "frames": 6,
+    "nodes": 138,
+    "bytes": 2249
+  },
+  {
+    "kind_action": "continue:call",
+    "frames": 6,
+    "nodes": 138,
+    "bytes": 2260
+  },
+  {
+    "kind_action": "continue:set-equal",
+    "frames": 6,
+    "nodes": 126,
+    "bytes": 2138
+  },
+  {
+    "kind_action": "command:call-native-provider",
+    "frames": 6,
+    "nodes": 126,
+    "bytes": 2004
+  },
+  {
+    "kind_action": "invoke:tuple",
+    "frames": 2,
+    "nodes": 94,
+    "bytes": 1257
+  },
+  {
+    "kind_action": "continue:is-none",
+    "frames": 4,
+    "nodes": 84,
+    "bytes": 1434
+  },
+  {
+    "kind_action": "reply:initialize-components",
+    "frames": 1,
+    "nodes": 83,
+    "bytes": 971
+  },
+  {
+    "kind_action": "command:run",
+    "frames": 3,
+    "nodes": 77,
+    "bytes": 1223
+  },
+  {
+    "kind_action": "invoke:manager-created",
+    "frames": 1,
+    "nodes": 71,
+    "bytes": 868
+  },
+  {
+    "kind_action": "continue:hydrate-context",
+    "frames": 3,
+    "nodes": 69,
+    "bytes": 1130
+  },
+  {
+    "kind_action": "continue:call-provider",
+    "frames": 3,
+    "nodes": 69,
+    "bytes": 1130
+  },
+  {
+    "kind_action": "continue:document",
+    "frames": 3,
+    "nodes": 69,
+    "bytes": 1130
+  },
+  {
+    "kind_action": "continue:register-fixed",
+    "frames": 3,
+    "nodes": 63,
+    "bytes": 1064
+  },
+  {
+    "kind_action": "continue:bind-provider",
+    "frames": 3,
+    "nodes": 63,
+    "bytes": 1073
+  },
+  {
+    "kind_action": "continue:truth",
+    "frames": 3,
+    "nodes": 63,
+    "bytes": 1073
+  },
+  {
+    "kind_action": "continue:tuple",
+    "frames": 2,
+    "nodes": 46,
+    "bytes": 751
+  },
+  {
+    "kind_action": "continue:set-attribute-equal",
+    "frames": 2,
+    "nodes": 42,
+    "bytes": 716
+  },
+  {
+    "kind_action": "continue:manager-created",
+    "frames": 1,
+    "nodes": 21,
+    "bytes": 353
+  },
+  {
+    "kind_action": "command:inspect-ordered",
+    "frames": 1,
+    "nodes": 17,
+    "bytes": 275
+  }
+]

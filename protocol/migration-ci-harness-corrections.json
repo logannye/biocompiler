@@ -1,0 +1,170 @@
+{
+  "corrections": [
+    {
+      "branch": "codex/ocaml-workflow-service",
+      "files": {
+        "core/test/test_artifact_io.ml": {
+          "after_sha256": "91a3d11a851f8f3dd9c8a0e85f28f5221c12cd035b8bed1708783a0e54d3dfef",
+          "before_sha256": "8cbb8db827a617f95807367a863bf6d5e994315a8c0a45bb2afb5377469b4ccb",
+          "bytes": 22485
+        },
+        "tools/check_core_boundaries.py": {
+          "after_sha256": "676bf1db5057545f5e1d3149c69256af1b54493f23e6e55b1d3ef1a5fd741548",
+          "before_sha256": "e7f543d3ce3dfb411fe06ff506311122309926c273458c04cd48bd31e2382eb6",
+          "bytes": 30401
+        }
+      },
+      "head": "f0b7b602d09cc2441dfe466fe135658a005d7d83",
+      "native_validation": "pending",
+      "old_head": "32bf0af04f188638384d6344cc26d824fe53f372",
+      "parent_static_boundaries": "pass",
+      "parents": [
+        "32bf0af04f188638384d6344cc26d824fe53f372"
+      ],
+      "pr": 59,
+      "tree": "f186dddf90d469be0dd27af38b8e00e1ad9882c4"
+    },
+    {
+      "branch": "codex/ocaml-workflow-public-checkpoint",
+      "files": {
+        "core/test/test_artifact_io.ml": {
+          "after_sha256": "91a3d11a851f8f3dd9c8a0e85f28f5221c12cd035b8bed1708783a0e54d3dfef",
+          "before_sha256": "8cbb8db827a617f95807367a863bf6d5e994315a8c0a45bb2afb5377469b4ccb",
+          "bytes": 22485
+        },
+        "tools/check_core_boundaries.py": {
+          "after_sha256": "c1f35eb8ff7148435b563cd91e3e4711d0f157aa63c85c747222dc089ece16d8",
+          "before_sha256": "ab5bca0c218c5606ddbf6406a98bd490b6c3390cc8b97c0cdf64a1ccbd629d20",
+          "bytes": 30545
+        }
+      },
+      "head": "9ac6658539bfc31718d99f283275bc81ad6868fa",
+      "native_validation": "pending",
+      "old_head": "946ff8ebce6e270511d51f383a9dc63827be3683",
+      "parent_static_boundaries": "pass",
+      "parents": [
+        "946ff8ebce6e270511d51f383a9dc63827be3683",
+        "f0b7b602d09cc2441dfe466fe135658a005d7d83"
+      ],
+      "pr": 60,
+      "tree": "fe4eed4ebbba775695642f78b971c39c182f7bdd"
+    },
+    {
+      "branch": "codex/ocaml-workflow-public-routing",
+      "files": {
+        "core/test/test_artifact_io.ml": {
+          "after_sha256": "91a3d11a851f8f3dd9c8a0e85f28f5221c12cd035b8bed1708783a0e54d3dfef",
+          "before_sha256": "8cbb8db827a617f95807367a863bf6d5e994315a8c0a45bb2afb5377469b4ccb",
+          "bytes": 22485
+        },
+        "tools/check_architecture_routing.py": {
+          "after_sha256": "5d71f456190b641cd8eb61e0dd885e60656b3f9c6da4bd1369ee5715add76a06",
+          "before_sha256": "c01230f705f8b37a1dda02e7e69f6459a00ba96c199a09c189c28296d0bcfafd",
+          "bytes": 26878
+        },
+        "tools/check_core_boundaries.py": {
+          "after_sha256": "c1f35eb8ff7148435b563cd91e3e4711d0f157aa63c85c747222dc089ece16d8",
+          "before_sha256": "ab5bca0c218c5606ddbf6406a98bd490b6c3390cc8b97c0cdf64a1ccbd629d20",
+          "bytes": 30545
+        }
+      },
+      "head": "b3f059c885bdf9cbd6e2693b9adf521c42b198e0",
+      "native_validation": "pending",
+      "old_head": "8f3eacc2b8d05315ee86084666c222a5f00601dc",
+      "parent_static_boundaries": "pass",
+      "parents": [
+        "8f3eacc2b8d05315ee86084666c222a5f00601dc",
+        "9ac6658539bfc31718d99f283275bc81ad6868fa"
+      ],
+      "pr": 61,
+      "tree": "cf3d53f4d2b17c77a8fda812ad647aaa4990827d"
+    },
+    {
+      "branch": "codex/ocaml-synthetic-producer-service",
+      "files": {
+        "core/test/test_artifact_io.ml": {
+          "after_sha256": "91a3d11a851f8f3dd9c8a0e85f28f5221c12cd035b8bed1708783a0e54d3dfef",
+          "before_sha256": "8cbb8db827a617f95807367a863bf6d5e994315a8c0a45bb2afb5377469b4ccb",
+          "bytes": 22485
+        },
+        "tools/check_architecture_routing.py": {
+          "after_sha256": "5d71f456190b641cd8eb61e0dd885e60656b3f9c6da4bd1369ee5715add76a06",
+          "before_sha256": "c01230f705f8b37a1dda02e7e69f6459a00ba96c199a09c189c28296d0bcfafd",
+          "bytes": 26878
+        },
+        "tools/check_core_boundaries.py": {
+          "after_sha256": "88e2d31a1eb55715c0d32d00c9ee003927e7e504e21891b34bf812c3115f07e2",
+          "before_sha256": "d8bf4b9ae29059a11f31fcb078a3e67c1837569bc40d234fe75d842c9d680a53",
+          "bytes": 30802
+        }
+      },
+      "head": "eafedbdda7c3f98830c4e80db971bdb57f19a061",
+      "native_validation": "pending",
+      "old_head": "246d15ab86b95e482a15cd505093e7416c33a6c4",
+      "parent_static_boundaries": "pass",
+      "parents": [
+        "246d15ab86b95e482a15cd505093e7416c33a6c4",
+        "b3f059c885bdf9cbd6e2693b9adf521c42b198e0"
+      ],
+      "pr": 62,
+      "tree": "deb96e83459253b946d56c0fbc392020537c92d7"
+    },
+    {
+      "branch": "codex/ocaml-public-synthetic-producers",
+      "files": {
+        "core/test/test_artifact_io.ml": {
+          "after_sha256": "91a3d11a851f8f3dd9c8a0e85f28f5221c12cd035b8bed1708783a0e54d3dfef",
+          "before_sha256": "8cbb8db827a617f95807367a863bf6d5e994315a8c0a45bb2afb5377469b4ccb",
+          "bytes": 22485
+        },
+        "tools/check_architecture_routing.py": {
+          "after_sha256": "5d71f456190b641cd8eb61e0dd885e60656b3f9c6da4bd1369ee5715add76a06",
+          "before_sha256": "c01230f705f8b37a1dda02e7e69f6459a00ba96c199a09c189c28296d0bcfafd",
+          "bytes": 26878
+        },
+        "tools/check_core_boundaries.py": {
+          "after_sha256": "9f6022fea7b420baf23f63a74e8a9b3ed572b5cd90ca8cb8de02cf562d0261eb",
+          "before_sha256": "b599e79af3982b46609f61a0eef4311322a3523d482bd0e43fb56238beb6347d",
+          "bytes": 30974
+        }
+      },
+      "head": "a068bc2f81f41c7d2e7ca30d0aa931c740ca0fa3",
+      "native_validation": "pending",
+      "old_head": "79eeedfd4236161f8e06206cf3ca897f5f1b5de0",
+      "parent_static_boundaries": "pass",
+      "parents": [
+        "79eeedfd4236161f8e06206cf3ca897f5f1b5de0",
+        "eafedbdda7c3f98830c4e80db971bdb57f19a061"
+      ],
+      "pr": 63,
+      "tree": "727aa21d1bb0404227ee2a6dcd5b960f49071ff5"
+    }
+  ],
+  "defects": [
+    "Architecture conformance guard rejected exact workflow parser registration helper",
+    "macOS devfs stat identity could not discover existing test descriptors"
+  ],
+  "local_validation": {
+    "boundary_inventory_ci_tests": 48,
+    "current_guard_tests": 10,
+    "native_execution": false,
+    "parent_guard_prs": [
+      61,
+      62,
+      63
+    ],
+    "parent_guard_tests_each": 10,
+    "parent_static_boundaries": "pass for PR59\u201363"
+  },
+  "observed_jobs": [
+    110777893064,
+    110777893739
+  ],
+  "observed_run": 36988173318,
+  "scope": [
+    "Exact parser registration helpers only; semantic handlers remain forbidden",
+    "Test-only POSIX descriptor conversion; every original artifact test body remains byte-identical",
+    "Boundary checker permits only the exact declaration in its exact test owner"
+  ],
+  "status": "local_python_and_static_checks_passed_hosted_native_pending"
+}

@@ -1,0 +1,27 @@
+{
+  "scope": "Discovery only, not execution; working tree on base00fbfac",
+  "runtimes": {
+    "311": {
+      "python": "3.11.15",
+      "count": 3398,
+      "classes": 348,
+      "test_ids_lf_sha256": "c58a57857904c4a0a34178d25ecf5a1ec28daf73a978d68b967cc134a84e0082",
+      "added": [
+        "test_prebuilt_ci_plan.HostedCiPlanTests.test_deferred_context_restoration_rejects_unreviewed_or_extra_source_changes"
+      ],
+      "removed": [],
+      "plan_sha256": "8805c13f5664aee0ddf0d561116b01319a605aae7ded857ae1ba3c94e92ede02"
+    },
+    "314": {
+      "python": "3.14.6",
+      "count": 3398,
+      "classes": 348,
+      "test_ids_lf_sha256": "c58a57857904c4a0a34178d25ecf5a1ec28daf73a978d68b967cc134a84e0082",
+      "added": [
+        "test_prebuilt_ci_plan.HostedCiPlanTests.test_deferred_context_restoration_rejects_unreviewed_or_extra_source_changes"
+      ],
+      "removed": [],
+      "plan_sha256": "e9de1c44c04cb00004e9fb59efb7a4ab300790b6d63402de3c1cf57f31e5c0d6"
+    }
+  }
+}

@@ -15,9 +15,9 @@ import sys
 from biocompiler.core_client import CoreRejected
 from biocompiler.realization_backend import RealizationCoreError
 if __package__:
-    from .check_realization_protocol import APIS, Corpus, artifact, canonical, digest, require, run_main
+    from .check_realization_protocol import APIS, Corpus, SOURCES, artifact, canonical, digest, require, run_main
 else:
-    from check_realization_protocol import APIS, Corpus, artifact, canonical, digest, require, run_main
+    from check_realization_protocol import APIS, Corpus, SOURCES, artifact, canonical, digest, require, run_main
 
 _TRANSPORT = frozenset(("biocompiler.core_client", "biocompiler.core_realization",
                         "biocompiler.realization_backend", "biocompiler.errors"))
@@ -107,8 +107,9 @@ def routed_execution():
                     classified[key] = cached
                     seen.add(qualified)
                 policy, qualified, _code = cached
-                require(allowed_frame(frame) if policy is None else policy,
-                        "Python semantic authority executed on native realization route: " + qualified)
+                if not (allowed_frame(frame) if policy is None else policy):
+                    require(False,
+                            "Python semantic authority executed on native realization route: " + qualified)
     sys.setprofile(guard)
     try:
         yield seen
@@ -193,6 +194,8 @@ def main(argv=None):
     parser.add_argument("--core", required=True, type=Path)
     parser.add_argument("--verify", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--workers", type=int, choices=(1, 2), default=1)
+    parser.add_argument("--role", choices=("core", "verify"))
     return run_main(parser.parse_args(argv), campaign, "biocompiler.realization_routing_conformance.v1")
 
 

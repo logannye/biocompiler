@@ -15,3 +15,6 @@ module B = Bioc_domain.Policy_implementation_binding
 
 type proposal = { implementation : I.t; binding : B.t }
 val lower : admitted:A.admitted_inputs -> library:I.library -> proposal
+
+(** Same producer with count-only traversal accounting; failed layouts are charged. *)
+val lower_metered : charge:(int -> unit) -> admitted:A.admitted_inputs -> library:I.library -> proposal

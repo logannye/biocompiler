@@ -1,0 +1,73 @@
+{
+  "actual_ast_definition_sources": {
+    "tools/check_pipeline_fixed_continuation_install.py": {
+      "bytes": 74660,
+      "sha256": "a50d4f3bed59fdd308a169e765e3d8b9145ad616c290e7bf635765f038f9b5b4"
+    },
+    "tools/check_pipeline_session_install.py": {
+      "bytes": 57657,
+      "sha256": "05b56ffa7969cea9630c2c901111f9c94fad40ac544770450932282eb35f4b62"
+    },
+    "tools/check_workflow_reproducibility.py": {
+      "bytes": 22320,
+      "sha256": "d76b6c6d411d8113523a09b7779a6c59dab43060c222480eefa1432a7e32107f"
+    }
+  },
+  "actual_imported_project_sources": {
+    "generated/migration-next/pr85-public-graph-diagnostic/run_controls.py": {
+      "bytes": 4316,
+      "sha256": "9a7d2ea283f851420bf25e2c3b946639c3c01620afa81c7ceabd47d760088681"
+    },
+    "tests/test_pipeline_graph_diagnostics.py": {
+      "bytes": 9013,
+      "sha256": "5911d8c46afd16e2d4d5c4e377d982d491286d2700b63cbfcd39619beed2c101"
+    },
+    "tests/test_prebuilt_ci_plan.py": {
+      "bytes": 33475,
+      "sha256": "b40826f26bb0669e082888b43d98b9f241e3708a4c9a383922d1f336d84031d7"
+    }
+  },
+  "blocked_events": [],
+  "duration_seconds": 0.321535,
+  "errors": 0,
+  "executable": "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+  "failures": 0,
+  "machine": "arm64",
+  "reviewed_sources": {
+    "tests/conformance/public-graph-diagnostic-source-delta-v1.json": {
+      "bytes": 4315,
+      "sha256": "28b90d52d30d291ad1aeee4dad62c35ce012c6f209b02dd4c7972320530ed4c3"
+    },
+    "tests/test_pipeline_graph_diagnostics.py": {
+      "bytes": 9013,
+      "sha256": "5911d8c46afd16e2d4d5c4e377d982d491286d2700b63cbfcd39619beed2c101"
+    },
+    "tests/test_prebuilt_ci_plan.py": {
+      "bytes": 33475,
+      "sha256": "b40826f26bb0669e082888b43d98b9f241e3708a4c9a383922d1f336d84031d7"
+    },
+    "tools/check_pipeline_fixed_continuation_install.py": {
+      "bytes": 74660,
+      "sha256": "a50d4f3bed59fdd308a169e765e3d8b9145ad616c290e7bf635765f038f9b5b4"
+    }
+  },
+  "runtime": "3.11.15",
+  "schema": "biocompiler.public_graph_diagnostic_control.v1",
+  "scope": "seven new pure controls plus two affected source-only checks; no native/original campaign execution",
+  "skipped": 0,
+  "source_proposal_sha256": "0d12aefc919bd7c9a21fe305cb7f8e3d124953ed2580fdf84456c44bbc043a0a",
+  "status": "pass",
+  "system": "Darwin",
+  "test_ids": [
+    "test_pipeline_graph_diagnostics.PublicGraphDiagnosticSourceTests.test_extra_source_omitted_diagnostic_and_rehashed_witness_are_rejected",
+    "test_pipeline_graph_diagnostics.PublicGraphDiagnosticSourceTests.test_new_delta_composes_before_unchanged_authoring_and_original_path_proofs",
+    "test_pipeline_graph_diagnostics.PublicGraphDiagnosticTests.test_canonical_scalar_types_signed_zero_missing_keys_and_lengths_stay_distinct",
+    "test_pipeline_graph_diagnostics.PublicGraphDiagnosticTests.test_diagnostic_limits_are_bounded_and_do_not_call_live_object_hooks",
+    "test_pipeline_graph_diagnostics.PublicGraphDiagnosticTests.test_failed_diagnostic_preserves_original_comparison_exception_and_nonassertion_errors",
+    "test_pipeline_graph_diagnostics.PublicGraphDiagnosticTests.test_mapping_order_failure_retains_exact_first_actual_and_expected_leaf",
+    "test_pipeline_graph_diagnostics.PublicGraphDiagnosticTests.test_success_uses_original_equal_and_never_requests_diagnostics",
+    "test_prebuilt_ci_plan.HostedCiPlanTests.test_installed_path_edits_are_finite_and_no_semantic_case_body_is_changed",
+    "test_prebuilt_ci_plan.HostedCiPlanTests.test_installed_authoring_restoration_rejects_unreviewed_source_changes"
+  ],
+  "tests_run": 9
+}

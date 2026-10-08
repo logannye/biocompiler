@@ -113,12 +113,12 @@ let reject_source_operational label path message case=
   let request=valid_source_case label case in
   rejects_exact label "policy_operational_unsupported" (Some path) message
     (fun()->S.admit ~document:(R.document request) ~descriptors:(R.definitions request))
-let reject_source_domain label message case=
+let reject_source_domain label ?(code="policy_domain_unsupported") message case=
   let request=valid_source_case label case in
   let document=R.document request and descriptors=R.definitions request in
   let behavior=L.lower(S.admit ~document ~descriptors)in
   ignore(Bioc_checker.Policy_correspondence.check ~expected_document:document ~descriptors behavior);
-  rejects_exact label "policy_domain_unsupported" None message(fun()->A.admit ~request ~behavior)
+  rejects_exact label code None message(fun()->A.admit ~request ~behavior)
 let endpoint node port=obj["node",str node;"port",str port]
 let map_wires f case=set["implementation";"wires"]
   (arr(List.map f(Json.array(at["implementation";"wires"]case))))case
@@ -354,6 +354,112 @@ let source_boundary_controls case=
      exclusions; the seven remaining source-valid controls reach the binder. *)
   require(!controls-initial_controls=12)"First-profile contextual boundary control census changed";
   Printf.printf "First-profile contextual source boundaries: 7 graph-binding and 5 operational controls.\n"
+let source_quantity_and_ownership_controls case=
+  let initial_controls= !controls in
+  let source identity=at(declaration_path case identity)case in
+  let edit identity path replacement value=set(declaration_path value identity@path)replacement value in
+  let reference kind identity=obj["$type",str "Ref";"kind",str kind;"id",str identity]in
+  let references operator identity = function
+    |Json.Object fields as value->List.assoc_opt "$type" fields=Some(str "Expr") &&
+        List.assoc_opt "op" fields=Some(str operator) &&
+        (match get "ref" value with Json.Object fields->List.assoc_opt "id" fields=Some(str identity)|_->false)
+    |_->false in
+  let preserve_context changed=
+    List.iter(fun field->require(Json.equal(at["request";field]changed)(at["request";field]case))
+      ("Source boundary control changed original "^field))["operating_domain";"budgets";"implementation_library"];
+    require(Json.equal(get "proposed" changed)(get "proposed" case) &&
+      Json.equal(obj(List.remove_assoc "authority"(Json.object_fields(get "implementation" changed))))
+        (obj(List.remove_assoc "authority"(Json.object_fields(get "implementation" case)))))
+      "Source boundary control repaired the candidate or proposed binding to fit changed source";
+    let requirements value=Json.array(at["request";"document";"program";"declarations"]value)
+      |>List.filter(fun declaration->text "$type" declaration="Requirement")
+      |>List.map(fun declaration->text "id" declaration)in
+    require(requirements changed=requirements case)"Source boundary control dropped or reordered an original requirement";
+    changed in
+  let binding label message changed=reject_source_binding label message
+    (preserve_context(repin_authority changed))in
+  let operational label path message changed=reject_source_operational label path message
+    (preserve_context(repin_authority changed))in
+  let domain label ?(code="policy_domain_unsupported") message changed=reject_source_domain label ~code message
+    (preserve_context(repin_authority changed))in
+  let definitions_path=["request";"document";"program";"semantics";"definitions"]in
+  let definition_path identity=
+    let index=List.find_index(fun definition->text "id" definition=identity)
+      (Json.array(at definitions_path case))|>Option.get in definitions_path@[string_of_int index]in
+  let unit=obj["$type",str "Unit";"id",str "count";"dimension",str "count";
+    "quantity_kind",str "count";"scale",str "1";"reference",Json.Null]in
+  let quantity_type=obj["$type",str "TypeSpec";"kind",str "quantity";"unit",unit;"entity_kind",Json.Null]in
+  let quantity amount=obj["$type",str "Quantity";"amount",str amount;"unit",unit]in
+  let truth_literal=at["assignments";"0";"value"](source "select")in
+  let quantity_literal amount=truth_literal|>set["value_type"]quantity_type|>set["value"](quantity amount)in
+  let equal left right=truth_literal|>set["op"](str "eq")|>set["value"]Json.Null
+    |>set["args"](arr[left;right])in
+  let effect_definition=definition_path(text "id"(get "contract"(source "response")))in
+  let quantity_product=case|>edit "product"["value_type"]quantity_type|>edit "product"["value"](quantity "3")
+    |>edit "response"["parameters";"0";"value";"value_type"]quantity_type
+    |>set(effect_definition@["parameters";"0";"value_type"])quantity_type|>repin_source_definitions in
+  binding "fixed quantity product is outside the text product profile"
+    "Source type is outside this exact truth/product profile." quantity_product;
+  let observation_definition=definition_path(text "id"(get "contract"(source "condition")))in
+  let quantity_observation=case|>edit "condition"["value_type"]quantity_type
+    |>set(observation_definition@["result"])quantity_type
+    |>map_json(fun value->if references "observe" "condition" value then
+      equal(set["value_type"]quantity_type value)(quantity_literal "1")else value)
+    |>repin_source_definitions in
+  domain "quantity observation cannot be reinterpreted by the finite truth alphabet"
+    "The finite domain supports truth-valued dynamic observations only." quantity_observation;
+  let quantity_state=case|>edit "selected"["value_type"]quantity_type|>edit "selected"["initial"](quantity "0")in
+  let quantity_state=List.fold_left(fun changed identity->
+    let assignments=items "assignments"(at(declaration_path changed identity)changed)|>List.map(fun assignment->
+      if text "id"(get "state" assignment)="selected"then set["value"](quantity_literal "1")assignment else assignment)in
+    edit identity["assignments"](arr assignments)changed)quantity_state["select";"exclude"]
+    |>map_json(fun value->if references "state" "selected" value then
+      equal(set["value_type"]quantity_type value)(quantity_literal "1")else value)in
+  operational "quantity state needs storage semantics beyond the operational profile"
+    "/document/program/declarations/5" "State is finite truth/integer/text storage." quantity_state;
+  operational "encounter population subject is not an executable cell identity"
+    "/document/program/declarations/1" "Only concrete encounter-local cell subjects are executable."
+    (edit "encounter/target"["entity_kind"](str "population")case);
+  operational "stable subject cannot borrow encounter-local identity semantics"
+    "/document/program/declarations/1" "Only concrete encounter-local cell subjects are executable."
+    (case|>edit "encounter/target"["identity"](str "stable")|>edit "encounter/target"["encounter"]Json.Null);
+  let executor_state=case|>edit "selected"["scope"]
+    (obj["$type",str "Scope";"kind",str "executor";"subject",reference "Role" "executor"])
+    |>edit "selected"["lifetime"](str "executor")
+    |>map_json(fun value->if references "state" "selected" value then
+      set["scope"](reference "Role" "executor")value else value)in
+  binding "executor-scoped truth state cannot use encounter-replicated registers"
+    "State lifetime, scope, capacity, reset or writer semantics are outside this family." executor_state;
+  let sibling=source "encounter"|>set["id"](str "sibling_encounter")in
+  let sibling_state=case|>append["request";"document";"program";"declarations"]sibling
+    |>edit "selected"["scope";"subject"](reference "Encounter" "sibling_encounter")
+    |>map_json(fun value->if references "state" "selected" value then
+      set["scope"](reference "Encounter" "sibling_encounter")value else value)in
+  operational "one activation cannot write truth state in a sibling encounter"
+    "/document/program/declarations/9"
+    "One behavior occurrence cannot mix distinct encounter declarations, targets or state scopes." sibling_state;
+  let executor_observation=case|>edit "condition"["subject"](reference "Role" "executor")
+    |>map_json(fun value->if references "observe" "condition" value then
+      set["scope"](reference "Role" "executor")value else value)in
+  (* The effect-free exclusion rule must retain a readable encounter binding:
+     its assignment destinations cannot introduce one after the observation
+     becomes executor-scoped. Keep its original guard and read the unchanged
+     encounter-local excluded store explicitly before testing domain admission. *)
+  let excluded_state=at["condition";"args";"0";"args";"1"](source "exclusive_selection")in
+  require(references "state" "excluded" excluded_state &&
+    Json.equal(get "scope" excluded_state)(reference "Encounter" "encounter"))
+    "Executor observation control lost its explicit encounter state operand";
+  let exclusion_guard=get "when"(at(declaration_path executor_observation "exclude")executor_observation)in
+  let exclusion_guard=truth_literal|>set["op"](str "all")|>set["value"]Json.Null
+    |>set["args"](arr[exclusion_guard;equal excluded_state excluded_state])in
+  let executor_observation=edit "exclude"["when"]exclusion_guard executor_observation in
+  domain "executor observation cannot consume encounter-addressed input rows" ~code:"policy_domain_reference"
+    "Unknown operating-domain reference: executor" executor_observation;
+  (* Three quantity and five ownership controls retain the original domain,
+     resource ceilings, models, candidate and all requirement identities. An
+     earlier source-invalid mutation cannot count as a profile rejection. *)
+  require(!controls-initial_controls=8)"Quantity and ownership boundary control census changed";
+  Printf.printf "Quantity and ownership source boundaries: 2 graph-binding, 4 operational, 2 domain controls.\n"
 let ()=
   require(Array.length Sys.argv=4)"Supply binding fixture, original resolved request, and unchanged exclusion source fixture";
   let fixture=read Sys.argv.(1)and original_request=read Sys.argv.(2)and exclusion_source=read Sys.argv.(3)in
@@ -368,6 +474,7 @@ let ()=
   let first_bound=positive first and second_bound=positive second in
   source_profile_controls second;
   source_boundary_controls second;
+  source_quantity_and_ownership_controls second;
   List.iter(fun(case,bound)->
     let original_request=A.request(C.admitted_inputs bound) in
     let original_behavior=O.behavior_to_json(A.behavior(C.admitted_inputs bound))in

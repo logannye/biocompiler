@@ -39,8 +39,20 @@ import prebuilt_release_pipeline as foundation
 SCHEMA = "biocompiler.policy_material_prebuilt_campaign.v0.1"
 PROBE_SCHEMA = "biocompiler.policy_material_prebuilt_probe.v0.1"
 ARTIFACT_SCHEMA = "biocompiler.policy_material_prebuilt_artifact_identity.v0.1"
+COMPONENT_SCHEMA = "biocompiler.policy_material_prebuilt_campaign.v0.2"
+COMPONENT_PROBE_SCHEMA = "biocompiler.policy_material_prebuilt_probe.v0.2"
+COMPONENT_CASES = ("component-profile-core", "component-profile-verify")
+COMPONENT_EVIDENCE = ("component-material", "component-consumer", "component-resolver", "component-role", "component-controls")
+COMPONENT_CLAIM = "supplied_prebuilt_material_and_component_profiles_only"
+STAGED_SCHEMA = "biocompiler.policy_material_prebuilt_campaign.v0.3"
+STAGED_CLAIM = "supplied_prebuilt_material_component_and_staged_profiles_only"
+STAGED_EVIDENCE = ("staged-material",)
+RESEARCHER_SCHEMA = "biocompiler.policy_material_prebuilt_campaign.v0.4"
+RESEARCHER_CLAIM = "supplied_prebuilt_material_component_staged_and_researcher_project_profiles_only"
+RESEARCHER_EVIDENCE = ("researcher-alpha",)
 MAX_JSON = 64 * 1024 * 1024
 MAX_LOG = 8 * 1024 * 1024
+MAX_INSTALLED_RECORD = 2 * 1024 * 1024
 CASES = ("wrong-version", "wrong-platform", "changed-binary", "changed-record", "changed-release", "mismatched-profile")
 ERRORS = {
     "wrong-version": ("CoreUnavailable", "Prebuilt distribution and SDK release differ"),
@@ -106,6 +118,159 @@ def selected_target():
     matches = [name for name, values in build.TARGETS.items() if values[:2] == (platform.system(), platform.machine())]
     require(len(matches) == 1 and sys.version_info[:2] in ((3, 11), (3, 14)), "Unsupported prebuilt material slot")
     return matches[0]
+
+
+def component_pairs(args, count):
+    fixtures = getattr(args, "component_fixture", [])
+    provenances = getattr(args, "component_provenance", [])
+    require((not fixtures and not provenances) or len(fixtures) == len(provenances) == count,
+            "Component mode requires one fixture/provenance pair per native platform")
+    return list(zip(fixtures, provenances))
+
+
+def staged_fixture(args, pairs):
+    path = getattr(args, "staged_fixture", None)
+    if path is not None:
+        require(bool(pairs), "Staged mode requires the preserved component campaign")
+        import check_policy_staged_material_installed as staged
+        staged.staged.checked_fixture(ROOT, path)
+    return path
+
+
+def staged_argv(python, checkout, origin, ownership):
+    import check_policy_staged_material_installed as staged
+    files = ownership["files"]
+    return [str(python), "-B", str(checkout / "tools/check_policy_staged_material_installed.py"),
+            "--fixture", str(checkout / staged.staged.FIXTURE),
+            "--core", files["bin/biocompiler-core"]["path"], "--core-sha256", files["bin/biocompiler-core"]["sha256"],
+            "--verify", files["bin/biocompiler-verify"]["path"], "--verify-sha256", files["bin/biocompiler-verify"]["sha256"],
+            "--output", str(origin / "evidence/staged-material.json")]
+
+
+def staged_identity(receipt, identity, hashes, slot, ownership, sources):
+    """Authenticate the child identity without importing SDK into the driver."""
+    import check_policy_staged_material_installed as staged
+    require(receipt["schema_version"] == staged.SCHEMA and receipt["status"] == "pass"
+            and all(receipt[key] == identity[key] for key in identity) and consumer.slot(receipt) == slot
+            and receipt["package"] == ownership["sdk_root"] and receipt["binary_sha256"] == hashes
+            and receipt["inputs"] == staged.input_pins() and receipt["source_snapshot_sha256"] == core.canonical_digest(sources)
+            and receipt["scope"] == staged.SCOPE and receipt["empirical"] == "unassessed"
+            and receipt["python_semantic_authority"] == "forbidden", "Staged child changed its installed authority or scope")
+
+
+
+def researcher_expected(args, staged_path):
+    path = getattr(args, "researcher_expected", None)
+    if path is not None:
+        require(staged_path is not None, "Researcher mode requires all preserved staged and component campaigns")
+        import check_researcher_alpha_installed as researcher
+        researcher.checked_inputs(ROOT, path)
+    return path
+
+
+def researcher_argv(python, checkout, origin, ownership, expected):
+    import check_researcher_alpha_installed as researcher
+    require(Path(expected).resolve() == ROOT / researcher.EXPECTED, "Researcher expected authority must be the reviewed project packet")
+    files = ownership["files"]
+    return [str(python), "-B", str(checkout / "tools/check_researcher_alpha_installed.py"),
+            "--expected", str(checkout / researcher.EXPECTED),
+            "--core", files["bin/biocompiler-core"]["path"], "--core-sha256", files["bin/biocompiler-core"]["sha256"],
+            "--verify", files["bin/biocompiler-verify"]["path"], "--verify-sha256", files["bin/biocompiler-verify"]["sha256"],
+            "--output", str(origin / "evidence/researcher-alpha.json")]
+
+
+def researcher_identity(receipt, identity, hashes, slot, ownership, sources):
+    """Authenticate the project child without importing SDK into this driver."""
+    import check_researcher_alpha_installed as researcher
+    require(receipt["schema_version"] == researcher.SCHEMA and receipt["status"] == "pass"
+            and all(receipt[key] == identity[key] for key in identity) and consumer.slot(receipt) == slot
+            and receipt["package"] == ownership["sdk_root"] and receipt["binary_sha256"] == hashes
+            and receipt["inputs"] == researcher.input_pins() and receipt["source_snapshot_sha256"] == core.canonical_digest(sources)
+            and receipt["scope"] == researcher.SCOPE and receipt["empirical"] == "unassessed"
+            and receipt["python_semantic_authority"] == "forbidden" and receipt["real_researcher_project_qualified"] is False
+            and receipt["resolution"] == "owned_installed_defaults", "Researcher child changed installed authority or scope")
+
+
+def component_authorities(pairs, identity, native_data):
+    """Authenticate each independent emitter packet against supplied native bytes."""
+    import check_policy_component_fixture as fixture_tool
+    result = {}
+    for fixture, provenance in pairs:
+        value = read_json(provenance)
+        platform_value = value.get("platform", {})
+        key = (platform_value.get("system"), platform_value.get("machine"))
+        targets = [name for name, row in build.TARGETS.items() if row[:2] == key and name in native_data]
+        require(len(targets) == 1 and key not in result, "Duplicate or unexpected component fixture platform")
+        native = native_data[targets[0]]
+        hashes = {role: build.sha(native["entries"]["biocompiler_core/bin/biocompiler-" + role][0]) for role in ("core", "verify")}
+        checked = fixture_tool.validate(ROOT, fixture, provenance, identity=identity, native_sha256=hashes, expected_platform=key)
+        result[key] = {"fixture": fixture, "provenance": provenance, "sources": checked["sources"],
+                       "pins": {"fixture": pin(fixture), "provenance": pin(provenance)}}
+    require(set(result) == {build.TARGETS[name][:2] for name in native_data}, "Missing component fixture platform")
+    require(len({row["pins"]["fixture"]["sha256"] for row in result.values()}) == 1,
+            "Complete original component packets differ across platforms")
+    return result
+
+
+def component_argv(name, python, checkout, origin, ownership, fixture, provenance):
+    files = ownership["files"]
+    if name == "component-material":
+        return [str(python), "-B", str(checkout / "tools/check_policy_component_material.py"), "--installed",
+                "--fixture", str(fixture), "--fixture-provenance", str(provenance),
+                "--core", files["bin/biocompiler-core"]["path"], "--core-sha256", files["bin/biocompiler-core"]["sha256"],
+                "--verify", files["bin/biocompiler-verify"]["path"], "--verify-sha256", files["bin/biocompiler-verify"]["sha256"],
+                "--output", str(origin / "evidence/component-material.json")]
+    require(name == "component-consumer", "Unknown component campaign")
+    return [str(python), "-B", str(checkout / "tools/check_policy_material_consumer.py"), "--profile", "component",
+            "--fixture", str(fixture), "--fixture-provenance", str(provenance),
+            "--producer-receipt", str(origin / "evidence/component-material.json"),
+            "--verify", files["bin/biocompiler-verify"]["path"], "--core-sha256", files["bin/biocompiler-core"]["sha256"],
+            "--network", "required", "--output", str(origin / "evidence/component-consumer.json")]
+
+
+def component_inputs(receipt, evidence, authority, identity, hashes, slot):
+    import check_policy_component_material as component
+    return component.validate_installed(receipt, evidence, component.checked_fixture(ROOT, authority["fixture"]),
+        authority["fixture"], identity, hashes, expected_sources=authority["sources"],
+        fixture_provenance=authority["provenance"], expected_slot=slot)
+
+
+def component_resolver_inputs(receipt, evidence, authority, identity, hashes, slot, package):
+    """Retain complete original inputs without importing a product in the driver.
+
+    The installed child validates the complete component result. The separate
+    four-slot comparator repeats that validation and checks both actual ZIPs.
+    This parent authenticates child sidecar bytes before independent resolver
+    calls; an observed result never supplies the original request or limits.
+    """
+    import check_policy_component_material as component
+    require(receipt["schema_version"] == component.INSTALLED_SCHEMA and receipt["status"] == "pass"
+            and all(receipt[key] == identity[key] for key in identity) and consumer.slot(receipt) == slot
+            and receipt["package"] == package and receipt["binary_sha256"] == hashes
+            and receipt["fixture_sha256"] == authority["pins"]["fixture"]["sha256"]
+            and receipt["fixture_provenance_sha256"] == authority["pins"]["provenance"]["sha256"]
+            and receipt["source_snapshot_sha256"] == core.canonical_digest(authority["sources"])
+            and receipt["python_semantic_authority"] == "forbidden", "Component resolver input receipt authority differs")
+    rows = receipt["observations"]
+    require(type(rows) is list and [(row.get("case"), row.get("name")) for row in rows] ==
+            [(label, name) for label in ("A", "B") for name in component.CASE_NAMES], "Component resolver sidecar census differs")
+    observations = []
+    for row in rows:
+        require(set(row) == {"case", "name", "path", "sha256", "bytes"}, "Component sidecar fields differ")
+        path = component._retained(row["path"], evidence, {key: row[key] for key in ("sha256", "bytes")}, component.MAX_EVIDENCE)
+        require(path.name == row["case"] + "-" + row["name"] + ".json", "Component sidecar name differs")
+        observations.append({"case": row["case"], "name": row["name"], "result": read_json(path)})
+    require(receipt["observations_fingerprint"] == core.canonical_digest(observations), "Complete component sidecar fingerprint differs")
+    fixture = component.checked_fixture(ROOT, authority["fixture"])
+    result = {}
+    for case in fixture["cases"]:
+        label = case["id"]; values = {row["name"]: row["result"] for row in observations if row["case"] == label}
+        require(same(values["compile"], values["check-verify"]) and same(values["compile"], values["replay-verify"])
+                and same(values["export-verify"]["candidate"], values["compile"]["candidate"])
+                and same(values["export-verify"]["report"], values["compile"]["report"]), "Component resolver candidate or original assessment differs")
+        result[label] = {"request": deepcopy(case["request"]), "limits": deepcopy(case["limits"]),
+                         "candidate": values["check-verify"]["candidate"], "checked": values["check-verify"], "exported": values["export-verify"]}
+    return result
 
 
 def artifact_files(root, kind):
@@ -339,6 +504,43 @@ def probe(args):
     env = probe_environment()
     from biocompiler.core_client import CoreUnavailable, CoreProtocolError
     from biocompiler.core_distribution import installed_distribution, installed_core
+    if args.probe in ("component-resolver", "component-role", *COMPONENT_CASES):
+        from biocompiler.core_policy_component_material import PolicyComponentMaterialClient
+        inputs = read_json(args.inputs)
+        require(type(inputs) is dict and set(inputs) == {"A", "B"}, "Complete component originals are required")
+        results = {}
+        for label in ("A", "B"):
+            value = inputs[label]
+            require(set(value) == {"request", "limits", "candidate", "checked", "exported"}, "Component original fields differ")
+            roles = ("core", "verify") if args.probe == "component-resolver" else (
+                "verify" if args.probe == "component-role" else args.probe.removeprefix("component-profile-"),)
+            results[label] = {}
+            for role in roles:
+                client = PolicyComponentMaterialClient(installed_core(role=role, operation="check-policy-component-material", timeout_seconds=60))
+                if args.probe == "component-resolver":
+                    checked = client.check(value["request"], value["candidate"], value["limits"]).result
+                    exported = client.export(value["request"], value["candidate"], value["limits"]).result
+                    require(same(checked, value["checked"]) and same(exported, value["exported"]),
+                            "Component resolver fresh check/export differs from supplied complete originals")
+                    results[label][role] = {"checked": checked, "exported": exported}
+                else:
+                    message = ("Component production requires an explicitly selected Core producer" if args.probe == "component-role"
+                               else "Selected executable lacks the exact component material profile")
+                    try:
+                        if args.probe == "component-role":
+                            client.compile(value["request"], value["limits"])
+                        else:
+                            client.check(value["request"], value["candidate"], value["limits"])
+                    except CoreProtocolError as error:
+                        require(type(error).__name__ == "CoreProtocolError" and str(error) == message,
+                                "Component control failed at an unrelated boundary")
+                        results[label][role] = {"type": type(error).__name__, "message": str(error)}
+                    else:
+                        raise AssertionError("Component resolver control retained authority")
+        result = {"schema_version": COMPONENT_PROBE_SCHEMA, "status": "pass" if args.probe == "component-resolver" else "rejected",
+                  "case": args.probe, "environment": env, "ownership": installed_distribution().ownership(), "results": results}
+        write_json(args.output, result)
+        return
     if args.probe in ERRORS:
         try:
             if args.probe == "mismatched-profile":
@@ -393,6 +595,8 @@ def mutation_files(case, ownership):
     site = package.parent
     native_info = site / ("biocompiler_core-" + build.VERSION + ".dist-info")
     sdk_info = site / ("biocompiler-" + build.VERSION + ".dist-info")
+    if case in COMPONENT_CASES:
+        return [sdk / "core_policy_component_material.py", sdk_info / "RECORD"]
     return {
         "wrong-version": [native_info / "METADATA"], "wrong-platform": [native_info / "WHEEL"],
         "changed-binary": [package / "bin/biocompiler-verify"], "changed-record": [native_info / "RECORD"],
@@ -428,6 +632,11 @@ def installed_mutation(case, ownership):
         elif case == "changed-release":
             value = json.loads(raw); value["platforms"][ownership["native_platform"]] = "0" * 64
             path.write_bytes(build.canonical(value)); rewrite_record(paths[1], "biocompiler/_core_release.json", path.read_bytes())
+        elif case in COMPONENT_CASES:
+            old = b'VALIDATION_SCOPE = "policy-component-mrna-v0.1"'
+            require(raw.count(old) == 1, "Missing component profile mutation target")
+            path.write_bytes(raw.replace(old, b'VALIDATION_SCOPE = "foreign-component-profile"'))
+            rewrite_record(paths[1], "biocompiler/core_policy_component_material.py", path.read_bytes())
         else:
             require(case == "mismatched-profile", "Unknown installed mutation")
             old = b'VALIDATION_SCOPE = "policy-truth-mrna-v0.1"'
@@ -446,10 +655,15 @@ def installed_mutation(case, ownership):
 
 def run(args):
     identity = hosted_identity(); target = selected_target()
+    pairs = component_pairs(args, 1)
+    staged_path = staged_fixture(args, pairs)
+    researcher_path = researcher_expected(args, staged_path)
     require(len(args.platform_root) == len(args.material_authority) == 1, "Run requires one supplied platform artifact slot")
     candidate, sdk_entries, sdk_stamp = candidate_authority(args.release_candidate, args.sdk, identity)
     native = platform_authority(args.platform_root[0], args.material_authority[0], candidate, identity, args.native)
     require(native["target"] == target, "Supplied wheel does not match this hosted runtime")
+    authorities = component_authorities(pairs, identity, {target: native}) if pairs else None
+    component_authority = authorities[(platform.system(), platform.machine())] if authorities else None
     output = args.output_dir.resolve()
     require(not output.exists() and not output.is_relative_to(ROOT), "Fresh output environment must be outside checkout")
     output.mkdir(parents=True); (output / "evidence").mkdir(); (output / "cwd").mkdir()
@@ -499,6 +713,42 @@ def run(args):
     launch("consumer", [str(python), "-B", str(ROOT / "tools/check_policy_material_consumer.py"), "--verify", binaries["verify"],
                         "--fixture", str(args.fixture), "--producer-receipt", str(evidence / "material.json"),
                         "--network", "required", "--output", str(evidence / "consumer.json")])
+    if component_authority:
+        component_fixture = component_authority["fixture"]; provenance = component_authority["provenance"]
+        launch("component-material", component_argv("component-material", python, ROOT, output, ownership, component_fixture, provenance))
+        hashes = {"biocompiler-" + role: ownership["files"]["bin/biocompiler-" + role]["sha256"] for role in ("core", "verify")}
+        original_inputs = component_resolver_inputs(read_json(evidence / "component-material.json"), evidence, component_authority,
+            identity, hashes, (platform.system(), platform.machine(), f"{sys.version_info.major}.{sys.version_info.minor}"), ownership["sdk_root"])
+        component_path = cwd / "component-original-inputs.json"; write_json(component_path, original_inputs)
+        for name in ("component-resolver", "component-role"):
+            value = invoke_probe(name, name, component_path)
+            check_component_probe(value, name, original_inputs, before)
+        component_controls = []
+        for case in COMPONENT_CASES:
+            record_path = mutation_files(case, ownership)[1]
+            installed_record = bounded_bytes(record_path, MAX_INSTALLED_RECORD).decode("utf-8")
+            with installed_mutation(case, ownership) as changes:
+                rejected = invoke_probe(case, case, component_path)
+                check_component_probe(rejected, case, original_inputs, before)
+            restored = invoke_probe(case + "-restored", "ownership")
+            require(same(restored, before), "Component profile mutation was not fully restored")
+            component_controls.append({"case": case, "changes": changes, "rejection": rejected,
+                "restored": consumer.digest(restored), "installed_record": {
+                    "before": installed_record, "restored": pin(record_path, MAX_INSTALLED_RECORD)}})
+        write_json(evidence / "component-controls.json", component_controls)
+        launch("component-consumer", component_argv("component-consumer", python, ROOT, output, ownership, component_fixture, provenance))
+    if staged_path is not None:
+        launch("staged-material", staged_argv(python, ROOT, output, ownership))
+        staged_identity(read_json(evidence / "staged-material.json"), identity,
+                        {"biocompiler-" + role: ownership["files"]["bin/biocompiler-" + role]["sha256"] for role in ("core", "verify")},
+                        (platform.system(), platform.machine(), ".".join(platform.python_version().split(".")[:2])),
+                        ownership, component_authority["sources"])
+    if researcher_path is not None:
+        launch("researcher-alpha", researcher_argv(python, ROOT, output, ownership, researcher_path))
+        researcher_identity(read_json(evidence / "researcher-alpha.json"), identity,
+                            {"biocompiler-" + role: ownership["files"]["bin/biocompiler-" + role]["sha256"] for role in ("core", "verify")},
+                            (platform.system(), platform.machine(), ".".join(platform.python_version().split(".")[:2])),
+                            ownership, component_authority["sources"])
     launch("uninstall", [str(driver), "-m", "pip", "--python", str(python), "uninstall", "--yes", "biocompiler-core"])
     invoke_probe("missing", "missing")
     launch("reinstall", foundation.install_plan(driver, python, args.sdk, args.native))
@@ -512,6 +762,18 @@ def run(args):
               "commands": pin(output / "commands.json", MAX_JSON), "cases": list(CASES),
               "claim": "supplied_prebuilt_material_profile_only", "python_semantic_authority": "forbidden",
               "network": "consumer_required_os_denial", "default_cutover": "unassessed"}
+    if component_authority:
+        result.update(schema_version=COMPONENT_SCHEMA, claim=COMPONENT_CLAIM, component_originals=component_authority["pins"],
+                      component_cases=list(COMPONENT_CASES))
+        result["evidence"].update({"evidence/" + name + ".json": pin(evidence / (name + ".json"), MAX_JSON) for name in COMPONENT_EVIDENCE})
+    if staged_path is not None:
+        import check_policy_staged_material_installed as staged
+        result.update(schema_version=STAGED_SCHEMA, claim=STAGED_CLAIM, staged_originals=staged.input_pins())
+        result["evidence"].update({"evidence/" + name + ".json": pin(evidence / (name + ".json"), MAX_JSON) for name in STAGED_EVIDENCE})
+    if researcher_path is not None:
+        import check_researcher_alpha_installed as researcher
+        result.update(schema_version=RESEARCHER_SCHEMA, claim=RESEARCHER_CLAIM, researcher_originals=researcher.input_pins())
+        result["evidence"].update({"evidence/" + name + ".json": pin(evidence / (name + ".json"), MAX_JSON) for name in RESEARCHER_EVIDENCE})
     write_json(output / "prebuilt.json", result)
     return result
 
@@ -524,23 +786,149 @@ def check_rejection(value, case):
             {"path": "", "loader_variables": [], "isolated": True, "dont_write_bytecode": True}, "Mutation rejection differs")
 
 
-def verify_slot(directory, identity, candidate_path, sdk, sdk_entries, sdk_stamp, native_data, fixture):
+def check_component_probe(value, case, inputs, before):
+    require(case in ("component-resolver", "component-role", *COMPONENT_CASES), "Unexpected component probe")
+    require(type(value) is dict and set(value) == {"schema_version", "status", "case", "environment", "ownership", "results"}
+            and value["schema_version"] == COMPONENT_PROBE_SCHEMA and value["case"] == case
+            and value["status"] == ("pass" if case == "component-resolver" else "rejected")
+            and same(value["ownership"], before["ownership"]) and same(value["environment"], before["environment"]),
+            "Component resolver identity, isolation or status differs")
+    if case == "component-resolver":
+        expected = {label: {role: {key: inputs[label][key] for key in ("checked", "exported")} for role in ("core", "verify")}
+                    for label in ("A", "B")}
+    else:
+        role = "verify" if case == "component-role" else case.removeprefix("component-profile-")
+        message = ("Component production requires an explicitly selected Core producer" if case == "component-role"
+                   else "Selected executable lacks the exact component material profile")
+        expected = {label: {role: {"type": "CoreProtocolError", "message": message}} for label in ("A", "B")}
+    require(same(value["results"], expected), "Complete component resolver outputs or exact rejection boundaries differ")
+
+
+def component_installed_record(text, record_name, sdk_entries, python_version):
+    """Preserve wheel-owned rows and narrowly classify pip's additional rows.
+
+    Installed RECORD is not a wheel member's original byte string: pip adds
+    installer metadata, its console wrapper and bytecode, and may use CRLF.
+    These extra rows never provide release-source authority. All original
+    wheel-owned rows still require their independently supplied exact bytes.
+    """
+    require(type(text) is str and 0 < len(text.encode("utf-8")) <= MAX_INSTALLED_RECORD,
+            "Missing or oversized installed component RECORD authority")
+    require(type(python_version) is str and re.fullmatch(r"3\.(11|14)\.[0-9]+", python_version),
+            "Unexpected installed RECORD runtime")
+    try:
+        rows = list(csv.reader(io.StringIO(text, newline=""), strict=True))
+    except csv.Error as error:
+        raise ValueError("Malformed installed component RECORD") from error
+    require(0 < len(rows) <= 2 * len(sdk_entries) + 4 and all(len(row) == 3 for row in rows),
+            "Installed component RECORD row census differs")
+    names = [row[0] for row in rows]
+    require(len(set(names)) == len(names) and all(0 < len(name) <= 1024 and
+            not any(ord(char) < 32 or ord(char) == 127 for char in name) for name in names),
+            "Duplicate or malformed installed component RECORD path")
+    expected = {name: [name, "sha256=" + base64.urlsafe_b64encode(hashlib.sha256(raw).digest()).rstrip(b"=").decode(), str(len(raw))]
+                for name, (raw, _) in sdk_entries.items() if name != record_name}
+    require(record_name in sdk_entries and record_name.endswith(".dist-info/RECORD"),
+            "Original component wheel RECORD authority is missing")
+    expected[record_name] = [record_name, "", ""]
+    actual = {row[0]: row for row in rows}
+    require(set(expected) <= set(actual) and all(actual[name] == row for name, row in expected.items()),
+            "Installed component RECORD lost exact original wheel rows")
+    tag = "cpython-" + "".join(python_version.split(".")[:2])
+    bytecode = {str(Path(name).parent / "__pycache__" / (Path(name).stem + "." + tag + ".pyc"))
+                for name in sdk_entries if name.startswith("biocompiler/") and name.endswith(".py")}
+    metadata = record_name.removesuffix("RECORD")
+    additions = {metadata + name for name in ("INSTALLER", "REQUESTED", "direct_url.json")}
+    entry_points = sdk_entries.get(metadata + "entry_points.txt")
+    if entry_points is not None and entry_points[0] == b"[console_scripts]\nbiocompiler = biocompiler.entrypoint:main\n":
+        additions.add("../../../bin/biocompiler")
+    for name in set(actual) - set(expected):
+        row = actual[name]
+        if name in bytecode:
+            require(row[1:] == ["", ""], "Installer bytecode cannot claim wheel-source authority")
+        else:
+            require(name in additions and re.fullmatch(r"sha256=[A-Za-z0-9_-]{43}", row[1])
+                    and re.fullmatch(r"0|[1-9][0-9]{0,6}", row[2]) and int(row[2]) <= MAX_INSTALLED_RECORD,
+                    "Unreviewed installed component RECORD addition")
+            encoded = row[1].removeprefix("sha256=")
+            require(base64.urlsafe_b64encode(base64.urlsafe_b64decode(encoded + "=")).rstrip(b"=").decode() == encoded,
+                    "Noncanonical installed RECORD digest")
+    return rows
+
+
+def check_component_controls(directory, data, inputs, sdk_entries):
+    before = data["ownership-before"]; ownership = before["ownership"]
+    for name in ("component-resolver", "component-role"):
+        check_component_probe(data[name], name, inputs, before)
+    controls = data["component-controls"]
+    require(type(controls) is list and [x.get("case") for x in controls] == list(COMPONENT_CASES), "Component mutation census differs")
+    installed_original = None
+    for row in controls:
+        case = row["case"]
+        require(set(row) == {"case", "changes", "rejection", "restored", "installed_record"} and row["restored"] == consumer.digest(before),
+                "Component mutation restoration differs")
+        check_component_probe(row["rejection"], case, inputs, before)
+        require(same(read_json(directory / "evidence" / (case + ".json")), row["rejection"])
+                and same(read_json(directory / "evidence" / (case + "-restored.json")), before), "Component control sidecars differ")
+        paths = mutation_files(case, ownership)
+        require(type(row["changes"]) is list and len(row["changes"]) == len(paths), "Component mutation file census differs")
+        module_name = "biocompiler/core_policy_component_material.py"
+        module_original = sdk_entries[module_name][0]
+        marker = b'VALIDATION_SCOPE = "policy-component-mrna-v0.1"'
+        require(module_original.count(marker) == 1, "Original component profile authority changed")
+        module_changed = module_original.replace(marker, b'VALIDATION_SCOPE = "foreign-component-profile"')
+        record_name = str(paths[1].relative_to(Path(ownership["sdk_root"]).parent))
+        record = row["installed_record"]
+        require(type(record) is dict and set(record) == {"before", "restored"}, "Incomplete installed component RECORD evidence")
+        record_rows = component_installed_record(record["before"], record_name, sdk_entries, before["runtime"]["python_version"])
+        record_original = record["before"].encode("utf-8")
+        require(installed_original is None or installed_original == record_original,
+                "Component controls did not restore the same installed RECORD")
+        installed_original = record_original
+        require(same(record["restored"], {"sha256": build.sha(record_original), "size": len(record_original)}),
+                "Installed component RECORD restoration differs")
+        selected = [entry for entry in record_rows if entry[0] == module_name]
+        require(len(selected) == 1, "Original component wheel RECORD census changed")
+        selected[0][1:] = ["sha256=" + base64.urlsafe_b64encode(hashlib.sha256(module_changed).digest()).rstrip(b"=").decode(), str(len(module_changed))]
+        record_buffer = io.StringIO(newline=""); csv.writer(record_buffer, lineterminator="\n").writerows(record_rows)
+        expected_after = {module_name: module_changed, record_name: record_buffer.getvalue().encode()}
+        for change, path in zip(row["changes"], paths):
+            relative = str(path.relative_to(Path(ownership["sdk_root"]).parent))
+            original = record_original if relative == record_name else sdk_entries[relative][0]
+            require(set(change) == {"path", "before", "after"} and change["path"] == str(path)
+                    and change["before"] == {"sha256": build.sha(original), "size": len(original)}
+                    and same(change["after"], {"sha256": build.sha(expected_after[relative]), "size": len(expected_after[relative])})
+                    and change["after"] != change["before"], "Component mutation lost supplied original wheel-byte authority")
+
+
+def verify_slot(directory, identity, candidate_path, sdk, sdk_entries, sdk_stamp, native_data, fixture, component_authority=None, *, staged_path=None, researcher_path=None):
     value = read_json(directory / "prebuilt.json")
     required = {"schema_version", "status", *identity, "system", "machine", "python_version", "output_root", "checkout_root", "fixture", "source_pins",
                 "artifacts", "evidence", "commands", "cases", "claim", "python_semantic_authority", "network", "default_cutover"}
-    require(type(value) is dict and set(value) == required and value["schema_version"] == SCHEMA and value["status"] == "pass"
+    if component_authority is not None:
+        required |= {"component_originals", "component_cases"}
+    require(staged_path is None or component_authority is not None, "Staged slot requires component authority")
+    if staged_path is not None:
+        required |= {"staged_originals"}
+    require(researcher_path is None or staged_path is not None, "Researcher slot requires preserved staged authority")
+    if researcher_path is not None:
+        required |= {"researcher_originals"}
+    schema = RESEARCHER_SCHEMA if researcher_path is not None else STAGED_SCHEMA if staged_path is not None else COMPONENT_SCHEMA if component_authority is not None else SCHEMA
+    claim = RESEARCHER_CLAIM if researcher_path is not None else STAGED_CLAIM if staged_path is not None else COMPONENT_CLAIM if component_authority is not None else "supplied_prebuilt_material_profile_only"
+    require(type(value) is dict and set(value) == required and value["schema_version"] == schema and value["status"] == "pass"
             and prior_attempt(value, identity), "Stale, failed or incomplete prebuilt slot")
     slot = consumer.slot(value)
     require(slot in {(row[0], row[1], minor) for row in build.TARGETS.values() for minor in ("3.11", "3.14")}, "Unexpected runtime slot")
     target = next(name for name, row in build.TARGETS.items() if row[:2] == slot[:2]); native = native_data[target]
     require(same(value["artifacts"], authority_receipt(candidate_path, sdk, sdk_stamp, native)) and same(value["source_pins"], source_pins())
             and same(value["fixture"], pin(fixture)) and value["cases"] == list(CASES)
-            and value["claim"] == "supplied_prebuilt_material_profile_only" and value["python_semantic_authority"] == "forbidden"
+            and value["claim"] == claim and value["python_semantic_authority"] == "forbidden"
             and value["network"] == "consumer_required_os_denial" and value["default_cutover"] == "unassessed", "Prebuilt slot authority or scope differs")
-    expected_evidence = {"evidence/" + name + ".json" for name in EVIDENCE}
+    evidence_names = EVIDENCE + (COMPONENT_EVIDENCE if component_authority is not None else ()) + (STAGED_EVIDENCE if staged_path is not None else ()) + (RESEARCHER_EVIDENCE if researcher_path is not None else ())
+    expected_evidence = {"evidence/" + name + ".json" for name in evidence_names}
     require(set(value["evidence"]) == expected_evidence and all(same(pin(directory / name, MAX_JSON), row) for name, row in value["evidence"].items())
             and same(value["commands"], pin(directory / "commands.json", MAX_JSON)), "Complete retained slot evidence differs")
-    data = {name: read_json(directory / "evidence" / (name + ".json")) for name in EVIDENCE}
+    data = {name: read_json(directory / "evidence" / (name + ".json")) for name in evidence_names}
     origin = Path(value["output_root"])
     require(origin.is_absolute() and not origin.is_relative_to(ROOT), "Original run was not outside checkout")
     candidate = read_json(candidate_path)
@@ -578,15 +966,57 @@ def verify_slot(directory, identity, candidate_path, sdk, sdk_entries, sdk_stamp
             and resolver["ownership"] == ownership and resolver["environment"] == data["ownership-before"]["environment"]
             and canonical(resolver["results"]) == canonical({role: {"checked": inputs["checked"], "exported": inputs["exported"]}
                                                            for role in ("core", "verify")}), "Fresh installed resolver results differ")
-    check_commands(directory, read_json(directory / "commands.json"), origin, ownership, fixture, value)
+    if component_authority is not None:
+        authority = component_authority[slot[:2]]
+        require(same(value["component_originals"], authority["pins"]) and value["component_cases"] == list(COMPONENT_CASES),
+                "Component original authority or mandatory controls differ")
+        producer = data["component-material"]; offline_component = data["component-consumer"]
+        require(all(row["run_attempt"] == value["run_attempt"] and row["python_version"] == value["python_version"]
+                    for row in (producer, offline_component))
+                and producer["package"] == ownership["sdk_root"] and offline_component["installed_package"] == ownership["sdk_root"]
+                and offline_component["core_sha256"] == expected_binary["biocompiler-core"]
+                and offline_component["verify_sha256"] == expected_binary["biocompiler-verify"],
+                "Component campaign did not use the same current-attempt owned SDK and supplied executables")
+        component_values = component_inputs(producer, directory / "evidence", authority, identity, expected_binary, slot)
+        check_component_controls(directory, data, component_values, sdk_entries)
+    if staged_path is not None:
+        import check_policy_staged_material_installed as staged
+        require(same(value["staged_originals"], staged.input_pins()), "Staged original authority differs")
+        producer = data["staged-material"]
+        staged_identity(producer, {**identity, "run_attempt": value["run_attempt"]}, expected_binary, slot, ownership, authority["sources"])
+        require(producer["python_version"] == value["python_version"], "Staged child runtime differs")
+        staged.validate_installed(producer, directory / "evidence", staged_path, identity, expected_binary,
+                                  expected_sources=authority["sources"], expected_slot=slot)
+    if researcher_path is not None:
+        import check_researcher_alpha_installed as researcher
+        require(same(value["researcher_originals"], researcher.input_pins()), "Researcher original authority differs")
+        producer = data["researcher-alpha"]
+        researcher_identity(producer, {**identity, "run_attempt": value["run_attempt"]}, expected_binary, slot, ownership, authority["sources"])
+        require(producer["python_version"] == value["python_version"], "Researcher child runtime differs")
+        researcher.validate_installed(producer, directory / "evidence", researcher_path, identity, expected_binary,
+                                      expected_sources=authority["sources"], expected_slot=slot)
+    check_commands(directory, read_json(directory / "commands.json"), origin, ownership, fixture, value,
+                   component_authority=component_authority[slot[:2]] if component_authority is not None else None, staged_path=staged_path, researcher_path=researcher_path)
     return slot, data
 
 
-def check_commands(directory, rows, origin, ownership, fixture, receipt):
+def check_commands(directory, rows, origin, ownership, fixture, receipt, *, component_authority=None, staged_path=None, researcher_path=None):
     names = ["create-environment", "install", "ownership-before", "material", "resolver"]
     for case in CASES:
         names.extend((case, case + "-restored"))
-    names += ["consumer", "uninstall", "missing", "reinstall", "ownership-after"]
+    names += ["consumer"]
+    if component_authority is not None:
+        names += ["component-material", "component-resolver", "component-role"]
+        for case in COMPONENT_CASES:
+            names.extend((case, case + "-restored"))
+        names += ["component-consumer"]
+    if staged_path is not None:
+        require(component_authority is not None, "Staged commands require component authority")
+        names += ["staged-material"]
+    if researcher_path is not None:
+        require(staged_path is not None, "Researcher commands require all preserved staged commands")
+        names += ["researcher-alpha"]
+    names += ["uninstall", "missing", "reinstall", "ownership-after"]
     require(type(rows) is list and [row.get("name") for row in rows] == names, "Full installation/ownership command ledger differs")
     checkout = Path(receipt["checkout_root"])
     require(checkout.is_absolute() and not origin.is_relative_to(checkout), "Installed cwd overlaps original checkout")
@@ -616,6 +1046,20 @@ def check_commands(directory, rows, origin, ownership, fixture, receipt):
                     and all(Path(path).is_absolute() for path in argv[9:]), "Installation allowed a source or unsupplied wheel route")
         elif name == "uninstall":
             require(argv == [driver, "-m", "pip", "--python", python, "uninstall", "--yes", "biocompiler-core"], "Uninstall route differs")
+        elif name == "researcher-alpha":
+            require(argv == researcher_argv(python, checkout, origin, ownership, researcher_path) and row["environment"] == "scrubbed_loaders",
+                    "Researcher campaign exact command or isolation differs")
+        elif name == "staged-material":
+            require(argv == staged_argv(python, checkout, origin, ownership) and row["environment"] == "scrubbed_loaders",
+                    "Staged campaign exact command or isolation differs")
+        elif name in ("component-material", "component-consumer"):
+            expected = component_argv(name, python, checkout, origin, ownership,
+                                      component_authority["fixture"], component_authority["provenance"])
+            for flag in ("--fixture", "--fixture-provenance"):
+                index = expected.index(flag) + 1
+                require(len(argv) > index and Path(argv[index]).is_absolute(), "Component original path must be absolute")
+                expected[index] = argv[index]
+            require(argv == expected and row["environment"] == "scrubbed_loaders", "Component campaign exact command or mandatory isolation differs")
         elif name in ("material", "consumer"):
             tool = "check_policy_material" + ("_consumer" if name == "consumer" else "") + ".py"
             require(argv[:3] == [python, "-B", str(checkout / "tools" / tool)], "Delegated campaign changed guard or imported resolver")
@@ -635,11 +1079,16 @@ def check_commands(directory, rows, origin, ownership, fixture, receipt):
                         "--output", str(origin / "evidence" / (name + ".json"))]
             if name in ("resolver", "mismatched-profile"):
                 expected += ["--inputs", str(origin / "cwd/original-inputs.json")]
+            elif name in ("component-resolver", "component-role", *COMPONENT_CASES):
+                expected += ["--inputs", str(origin / "cwd/component-original-inputs.json")]
             require(argv == expected and row["environment"] == "empty_path_scrubbed_loaders", "Resolver probe isolation or exact command differs")
 
 
 def compare(args):
     identity = hosted_identity()
+    pairs = component_pairs(args, 2)
+    staged_path = staged_fixture(args, pairs)
+    researcher_path = researcher_expected(args, staged_path)
     require(len(args.compare) == 4 and len(args.platform_root) == len(args.material_authority) == 2, "Comparison requires exactly four slots and two platform authorities")
     candidate, sdk_entries, sdk_stamp = candidate_authority(args.release_candidate, args.sdk, identity)
     native_data = {}
@@ -648,9 +1097,13 @@ def compare(args):
         require(native["target"] not in native_data, "Duplicate platform artifact")
         native_data[native["target"]] = native
     require(set(native_data) == set(build.TARGETS), "Missing platform wheel")
+    authorities = component_authorities(pairs, identity, native_data) if pairs else None
     slots = {}
     for directory in args.compare:
-        slot, data = verify_slot(directory, identity, args.release_candidate, args.sdk, sdk_entries, sdk_stamp, native_data, args.fixture)
+        options = {"staged_path": staged_path} if staged_path is not None else {}
+        if researcher_path is not None:
+            options["researcher_path"] = researcher_path
+        slot, data = verify_slot(directory, identity, args.release_candidate, args.sdk, sdk_entries, sdk_stamp, native_data, args.fixture, authorities, **options)
         require(slot not in slots, "Duplicate prebuilt runtime slot")
         slots[slot] = data
     require(set(slots) == {(row[0], row[1], minor) for row in build.TARGETS.values() for minor in ("3.11", "3.14")}, "Missing prebuilt runtime slot")
@@ -668,6 +1121,28 @@ def compare(args):
         consumers = [path / "evidence/consumer.json" for path in args.compare]
         material_result = material.compare(producers, native_root, args.fixture)
         consumer_result = consumer.compare(consumers, producers, native_root, args.fixture)
+        if authorities is not None:
+            import check_policy_component_material as component
+            component_producers = [path / "evidence/component-material.json" for path in args.compare]
+            component_consumers = [path / "evidence/component-consumer.json" for path in args.compare]
+            component_fixture = next(iter(authorities.values()))["fixture"]
+            provenances = {key: row["provenance"] for key, row in authorities.items()}
+            component_result = component.compare_installed(component_producers, native_root, component_fixture, provenances)
+            component_consumer_result = consumer.compare(component_consumers, component_producers, native_root,
+                component_fixture, profile="component", fixture_provenances=provenances)
+        if staged_path is not None:
+            import check_policy_staged_material_installed as staged
+            sources = next(iter(authorities.values()))["sources"]
+            require(all(row["sources"] == sources for row in authorities.values()), "Staged source authorities differ across platforms")
+            binaries = {build.TARGETS[target][:2]: {"biocompiler-" + role:
+                build.sha(native["entries"]["biocompiler_core/bin/biocompiler-" + role][0]) for role in ("core", "verify")}
+                for target, native in native_data.items()}
+            staged_result = staged.compare_installed([path / "evidence/staged-material.json" for path in args.compare],
+                staged_path, identity, binaries, expected_sources=sources)
+        if researcher_path is not None:
+            import check_researcher_alpha_installed as researcher
+            researcher_result = researcher.compare_installed([path / "evidence/researcher-alpha.json" for path in args.compare],
+                researcher_path, identity, binaries, expected_sources=sources)
     result = {"schema_version": SCHEMA, "status": "pass", **identity, "source_pins": source_pins(), "fixture": pin(args.fixture),
               "slots": [{"slot": list(slot), "receipt": pin(path / "prebuilt.json"),
                          "run_attempt": read_json(path / "prebuilt.json")["run_attempt"],
@@ -676,30 +1151,48 @@ def compare(args):
                         sorted(((path, consumer.slot(read_json(path / "prebuilt.json"))) for path in args.compare), key=lambda row: row[1])],
               "material": material_result, "consumer": consumer_result,
               "claim": "supplied_prebuilt_material_profile_only", "default_cutover": "unassessed"}
+    if authorities is not None:
+        result.update(schema_version=COMPONENT_SCHEMA, claim=COMPONENT_CLAIM,
+                      component_originals=[{"platform": list(key), **row["pins"]} for key, row in sorted(authorities.items())],
+                      component_material=component_result, component_consumer=component_consumer_result)
+    if staged_path is not None:
+        result.update(schema_version=STAGED_SCHEMA, claim=STAGED_CLAIM, staged_originals=staged.input_pins(), staged_material=staged_result)
+    if researcher_path is not None:
+        result.update(schema_version=RESEARCHER_SCHEMA, claim=RESEARCHER_CLAIM,
+                      researcher_originals=researcher.input_pins(), researcher_project=researcher_result)
     require(not args.output_dir.exists(), "Comparison output must be fresh")
     args.output_dir.mkdir(parents=True); write_json(args.output_dir / "prebuilt-comparison.json", result)
+    if researcher_path is not None:
+        import researcher_alpha_starter
+        researcher_alpha_starter.create_starter(args, result, native_data)
     return result
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    for name in ("sdk", "native", "release-candidate", "fixture", "output-dir", "inputs", "output", "stamp-artifacts"):
+    for name in ("sdk", "native", "release-candidate", "fixture", "staged-fixture", "researcher-expected", "output-dir", "inputs", "output", "stamp-artifacts"):
         parser.add_argument("--" + name, type=Path)
     parser.add_argument("--platform-root", type=Path, action="append", default=[])
     parser.add_argument("--material-authority", type=Path, action="append", default=[])
     parser.add_argument("--compare", type=Path, action="append", default=[])
+    parser.add_argument("--component-fixture", type=Path, action="append", default=[])
+    parser.add_argument("--component-provenance", type=Path, action="append", default=[])
     parser.add_argument("--artifact-kind", choices=("sdk", "native"))
-    parser.add_argument("--probe", choices=("ownership", "resolver", *ERRORS))
+    parser.add_argument("--probe", choices=("ownership", "resolver", *ERRORS, "component-resolver", "component-role", *COMPONENT_CASES))
     args = parser.parse_args()
-    for name in ("sdk", "native", "release_candidate", "fixture", "output_dir", "inputs", "output", "stamp_artifacts"):
+    for name in ("sdk", "native", "release_candidate", "fixture", "staged_fixture", "researcher_expected", "output_dir", "inputs", "output", "stamp_artifacts"):
         if getattr(args, name) is not None:
             setattr(args, name, getattr(args, name).absolute())
     args.platform_root = [path.absolute() for path in args.platform_root]
     args.material_authority = [path.absolute() for path in args.material_authority]
     args.compare = [path.absolute() for path in args.compare]
+    args.component_fixture = [path.absolute() for path in args.component_fixture]
+    args.component_provenance = [path.absolute() for path in args.component_provenance]
     if args.probe:
+        require(not args.component_fixture and not args.component_provenance and args.staged_fixture is None and args.researcher_expected is None, "Probes cannot replace supplied campaign authority")
         require(args.output is not None, "Probe output is required"); probe(args); return
     if args.stamp_artifacts:
+        require(not args.component_fixture and not args.component_provenance and args.staged_fixture is None and args.researcher_expected is None, "Artifact stamps cannot acquire component acceptance")
         require(args.artifact_kind is not None, "Artifact kind is required")
         value = stamp_artifacts(args.stamp_artifacts, args.artifact_kind, hosted_identity())
     else:

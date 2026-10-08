@@ -20,10 +20,19 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_policy_staged_test_support": ("test/policy_staged_support/dune", {"bioc_wire", "bioc_domain"}, "test_support"),
+    "bioc_policy_component_test_support": ("test/policy_component_support/dune", {"bioc_wire", "bioc_domain"}, "test_support"),
+    "bioc_reference_input": ("lib/reference_input/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
+    "bioc_reference_package_service": ("lib/reference_package_service/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "bioc_reference_artifact", "bioc_reference_input", "bioc_reference_export", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"}, "producer"),
+    "bioc_reference_artifact": ("lib/reference_artifact/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
+    "bioc_reference_export": ("lib/reference_export/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "bioc_checker", "zarith"}, "checker_service"),
+    "bioc_artifact": ("lib/artifact/dune", {"bioc_wire", "bioc_checker", "zarith"}, "trusted_primitive"),
+    "bioc_pipeline_service": ("lib/pipeline_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "bioc_synthetic_producer", "zarith"}, "producer"),
+    "bioc_pipeline": ("lib/pipeline/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_synthetic_producer", "bioc_candidate_runtime", "zarith"}, "compiler"),
     "bioc_synthetic_producer": ("lib/synthetic_producer/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"}, "producer"),
     "bioc_realization_checker": ("lib/realization_checker/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_semantics", "bioc_candidate_runtime", "zarith"}, "checker"),
     "bioc_candidate_runtime": ("lib/candidate_runtime/dune", {"bioc_wire", "bioc_domain", "zarith"}, "candidate_runtime"),
-    "bioc_producer_service": ("lib/producer_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_service"}, "producer"),
+    "bioc_producer_service": ("lib/producer_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_service", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"}, "producer"),
     "bioc_wire": ("lib/wire/dune", {"digestif", "zarith"}, "trusted_primitive"),
     "bioc_domain": ("lib/domain/dune", {"bioc_wire", "zarith", "digestif"}, "trusted_domain"),
     "bioc_semantics": ("lib/semantics/dune", {"bioc_wire", "bioc_domain", "zarith"}, "source_semantics"),
@@ -33,14 +42,69 @@ LIBRARIES = {
     "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_semantics", "zarith", "unix"}, "checker_service"),
 }
 EXECUTABLES = {
-    "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service", "bioc_producer_service"}, "core_entrypoint"),
+    "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service", "bioc_producer_service", "bioc_pipeline_service"}, "core_entrypoint"),
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
+PRIVATE_TEST_TOOLS = {
+    "component_originals": ("test/component_fixture_export/dune",
+        {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"}, "test_support"),
+}
 TESTS = {
+    "test_policy_staged_primitives": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "bioc_policy_staged_test_support", "zarith"},
+    "test_policy_staged_regimen_source": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "bioc_semantics"},
+    "test_policy_staged_binding": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_policy_staged_test_support", "zarith"},
+    "test_policy_staged_component_material": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service"},
+    "test_policy_staged_generation": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler"},
+    "test_policy_component_selection_producer": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service", "bioc_policy_component_test_support"},
+    "test_policy_generation_admission": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+    "test_policy_generation_producers": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_policy_component_test_support", "zarith"},
+    "test_work_budget_retention": {"bioc_wire", "bioc_checker"},
+    "test_reference_inputs": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_input", "bioc_reference_package_service"},
+    "test_reference_package_workflow": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_input", "bioc_reference_artifact", "bioc_reference_export", "bioc_reference_package_service", "bioc_pipeline"},
+    "test_stored_zip": {"bioc_wire", "bioc_checker", "bioc_artifact", "zarith"},
+    "test_reference_package_manifest": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_artifact", "zarith"},
+    "test_reference_sequence_export": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_export", "zarith"},
+    "test_legacy_json": {"bioc_wire"},
+    "test_reference_domains": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_reference_checkers": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
+    "test_reference_contracts_corpus": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+    "test_reference_producer_budget": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+    "test_reference_construct_pipeline": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"},
+    "test_reference_molecular_pipeline": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"},
+    "test_reference_workflow": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "bioc_pipeline_service", "zarith"},
+    "test_reference_molecular_attempts": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "bioc_pipeline_service", "zarith"},
+    "test_reference_callback_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline_service", "zarith"},
+    "test_pipeline_callback_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline_service", "bioc_pipeline", "zarith"},
+    "test_deferred_pass_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+    "test_pipeline_callback_channel": {"bioc_wire", "bioc_checker", "bioc_pipeline_service", "zarith"},
+    "test_pipeline_host_bridge": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline_service", "zarith"},
+    'test_pipeline_session': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_compiler', 'bioc_pipeline_service', 'zarith'},
+    'test_provider_comparison': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_compiler', 'zarith'},
+    'test_fixed_pipeline_corpus': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_compiler', 'bioc_pipeline', 'bioc_synthetic_producer', 'zarith'},
+    'test_lowering_budget': {'bioc_domain', 'bioc_wire', 'bioc_compiler', 'bioc_checker'},
+    'test_checked_pipeline_corpus': {'bioc_domain', 'bioc_wire', 'bioc_compiler', 'zarith', 'bioc_checker'},
+    'test_pass_manager': {'bioc_domain', 'bioc_wire', 'bioc_compiler', 'zarith', 'bioc_checker'},
+    'test_pipeline_contract': {'bioc_wire', 'zarith', 'bioc_domain'},
+    "test_synthetic_inspection_protocol": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_compiler", "bioc_producer_service", "zarith"},
+    "test_verification_workflow_authority": {"bioc_wire", "bioc_service", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_policy_material_context": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "bioc_realization_checker"},
     "test_policy_material_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "zarith"},
     "test_policy_material_service": {"bioc_wire", "bioc_service", "bioc_producer_service"},
     "test_policy_material_binding": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "zarith"},
+    "test_policy_component_fragment": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_policy_component_material": {"bioc_wire", "bioc_domain"},
+    "test_policy_component_context_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_policy_component_test_support"},
+    "test_policy_component_material_service": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service", "bioc_policy_component_test_support", "zarith"},
+    "test_policy_component_material_request": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"},
+    "test_policy_component_selection_request": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "zarith"},
+    "test_policy_component_material_candidate": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"},
+    "test_policy_component_selection_candidate": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"},
+    "test_policy_component_selection_common": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_policy_component_test_support"},
+    "test_policy_component_selection_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_producer_service", "bioc_policy_component_test_support", "zarith"},
+    "test_policy_component_selection_scope": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_producer_service", "bioc_policy_component_test_support"},
+    "test_policy_component_selection_service": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service", "bioc_policy_component_test_support", "unix"},
+    "test_policy_component_assembly_rule": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"},
+    "test_policy_component_assembly_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_policy_component_test_support"},
     "test_policy_material_lifecycle": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "zarith"},
     "test_policy_material_compound": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "zarith"},
     "test_policy_material_domain": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "zarith"},
@@ -74,6 +138,8 @@ TESTS = {
     "test_synthetic_selection": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
     "test_synthetic_components": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
     "test_synthetic_producers_corpus": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
+    "test_synthetic_producer_public_protocol": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_producer_service", "bioc_service", "zarith"},
+    "test_synthetic_producer_protocol": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "bioc_producer_service", "bioc_service", "zarith"},
 
     "test_synthetic_candidate_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_synthetic_provenance": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
@@ -170,11 +236,18 @@ ARTIFACT_UNIX = frozenset({"file_descr", "Unix_error", "close", "fstat", "S_REG"
                           "st_dev", "st_ino", "lseek", "SEEK_SET", "read", "single_write_substring"})
 ARTIFACT_TEST_UNIX = ARTIFACT_UNIX | frozenset({"openfile", "O_RDONLY", "O_WRONLY", "O_RDWR", "O_CREAT",
     "O_TRUNC", "O_APPEND", "O_CLOEXEC", "O_NONBLOCK", "write", "stat", "unlink", "pipe", "link"})
+# The hosted selection-service test exercises the real protocol runner through
+# its own executable, bounded pipes and a deadline. No production owner or
+# other test inherits these process permissions.
+SELECTION_SERVICE_TEST_UNIX = frozenset({"Unix_error", "WEXITED", "WNOHANG", "close",
+    "create_process_env", "environment", "gettimeofday", "kill", "pipe", "read", "select",
+    "set_close_on_exec", "set_nonblock", "waitpid", "write_substring"})
+SELECTION_SERVICE_TEST_SYS = frozenset({"argv", "executable_name", "getenv_opt", "sigkill"})
 
 PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
 # Reconstruction is an independent checker's implementation detail. Consumers
 # can request assessment/replay, but cannot obtain an expected candidate to emit.
-PRIVATE_MODULES = {"bioc_checker": ["construction_reconstruction", "architecture_reconstruction"],
+PRIVATE_MODULES = {"bioc_checker": ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"],
                    "bioc_realization_checker": ["realization_monitor", "synthetic_provenance", "synthetic_component_authority"]}
 TOKEN = re.compile(r'\s+|;[^\n]*(?:\n|$)|\(|\)|"(?:\\.|[^"\\])*"|[^\s();"]+')
 IDENTIFIER = re.compile(r"[A-Za-z_][A-Za-z0-9_']*|\.")
@@ -348,18 +421,25 @@ def source_boundary(path, allowed_libraries, *, owner=None):
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Unix":
             members = (ARTIFACT_UNIX if owner == "bioc_service" and path.name == "artifact_io.ml"
-                       else ARTIFACT_TEST_UNIX if owner == "test:test_artifact_io" else frozenset())
+                       else ARTIFACT_TEST_UNIX if owner == "test:test_artifact_io"
+                       else SELECTION_SERVICE_TEST_UNIX if owner == "test:test_policy_component_selection_service"
+                       and path.name == "test_policy_component_selection_service.ml" else frozenset())
             if (tokens[index:index + 2] != ["Unix", "."] or index + 2 >= len(tokens)
                     or tokens[index + 2] not in members):
                 raise BoundaryError(f"Unreviewed native/process/dynamic-code escape Unix in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
-            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus", "test:test_synthetic_acceptance_corpus", "test:test_synthetic_producers_corpus", "test:test_realization_workflow_corpus"}:
+            if owner == "test:test_policy_component_selection_service" and path.name == "test_policy_component_selection_service.ml":
+                reviewed.update(SELECTION_SERVICE_TEST_SYS)
+            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus", "test:test_synthetic_acceptance_corpus", "test:test_synthetic_producers_corpus", "test:test_realization_workflow_corpus", "test:test_reference_contracts_corpus"}:
                 # The test-only document corpus must reject undeclared files.
                 # Production code gains no filesystem or process permission.
                 reviewed.add("readdir")
             if tokens[index:index + 2] != ["Sys", "."] or index + 2 >= len(tokens) or tokens[index + 2] not in reviewed:
                 raise BoundaryError(f"Unreviewed Sys access in {path.name}")
+        if owner == "bioc_artifact" and token == "Bioc_checker":
+            if tokens[index:index + 3] != ["Bioc_checker", ".", "Work_budget"]:
+                raise BoundaryError(f"Archive primitive may use only public checker Work_budget in {path.name}")
         if token.startswith("Bioc_"):
             library = token[:1].lower() + token[1:]
             if library not in allowed_libraries:
@@ -418,15 +498,38 @@ def check_boundaries(root: Path):
                     raise BoundaryError(f"Changed private module boundary for {name}")
                 key = name
             elif kind == "executable":
-                public_name = one(values, "public_name")
-                if public_name not in EXECUTABLES or name != "main" or one(values, "package") != "biocompiler_core":
-                    raise BoundaryError(f"Unreviewed Dune executable: {public_name}")
-                expected_path, expected_dependencies, role = EXECUTABLES[public_name]
-                key = "executable:" + public_name
+                private = [key for key, entry in PRIVATE_TEST_TOOLS.items() if relative == entry[0]]
+                if private:
+                    if len(private) != 1 or name != "main" or set(values) != {"name", "libraries"}:
+                        raise BoundaryError("Changed private source-fixture executable declaration")
+                    expected_path, expected_dependencies, role = PRIVATE_TEST_TOOLS[private[0]]
+                    key = "test_tool:" + private[0]
+                else:
+                    public_name = one(values, "public_name")
+                    if public_name not in EXECUTABLES or name != "main" or one(values, "package") != "biocompiler_core":
+                        raise BoundaryError(f"Unreviewed Dune executable: {public_name}")
+                    expected_path, expected_dependencies, role = EXECUTABLES[public_name]
+                    key = "executable:" + public_name
             else:
                 if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
                     raise BoundaryError(f"Unreviewed native test stanza: {name}")
                 fixture_variables = {
+                    "test_reference_inputs": "%{env:BIOCOMPILER_REFERENCE_INPUTS_CORPUS=missing}",
+                    "test_reference_package_workflow": "%{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing}",
+                    "test_reference_checkers": "%{env:BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS=missing}",
+                    "test_reference_producer_budget": "%{env:BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS=missing}",
+                    "test_reference_contracts_corpus": "%{env:BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS=missing}",
+                    "test_reference_construct_pipeline": "%{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing}",
+                    "test_reference_molecular_pipeline": "%{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing}",
+                    "test_reference_workflow": "%{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing}",
+                    "test_reference_molecular_attempts": "%{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing}",
+                    "test_deferred_pass_manager": "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
+                    "test_pipeline_callback_channel": "%{env:BIOCOMPILER_PIPELINE_CALLBACK_DECLARATION=missing}",
+                    'test_provider_comparison': "%{env:BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS=missing}",
+                    'test_lowering_budget': "%{env:BIOCOMPILER_LOWERING_CORPUS=missing}",
+                    'test_checked_pipeline_corpus': "%{env:BIOCOMPILER_CHECKED_PIPELINE_CORPUS=missing}",
+                    'test_pass_manager': "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
+                    'test_pipeline_contract': "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
                     "test_candidate_runtime_corpus": "%{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing}",
                     "test_component_runtime_corpus": "%{env:BIOCOMPILER_COMPONENT_RUNTIME_CORPUS=missing}",
                     "test_realization_foundation_corpus": "%{env:BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS=missing}",
@@ -439,7 +542,44 @@ def check_boundaries(root: Path):
                 }
                 expected_actions = ([["action", ["run", "%{test}", fixture_variables[name]]]]
                                     if name in fixture_variables else [])
+                if name == "test_synthetic_inspection_protocol":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES=missing}",
+                        "%{env:BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION=missing}"]]]
+                if name == "test_fixed_pipeline_corpus":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}",
+                        "%{env:BIOCOMPILER_FIXED_PIPELINE_CONTINUATIONS=missing}"]]]
+                if name == "test_pipeline_callback_manager":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing}",
+                        "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
+                        "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}"]]]
+                if name == "test_stored_zip":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS=missing}",
+                        "%{env:BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS=missing}"]]]
+                if name == "test_reference_package_manifest":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS=missing}",
+                        "%{env:BIOCOMPILER_REFERENCE_PACKAGE_PYTHON314_CORPUS=missing}"]]]
+                if name == "test_reference_sequence_export":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_REFERENCE_SEQUENCE_EXPORT_CORPUS=missing}"]]]
+                if name == "test_reference_callback_manager":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing}",
+                        "%{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing}"]]]
+                if name == "test_pipeline_session":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_PIPELINE_SESSION_DECLARATION=missing}",
+                        "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}"]]]
                 policy_fixtures = {
+                    "test_policy_staged_primitives": ["policy_implementation_v01.json"],
+                    "test_policy_staged_regimen_source": ["policy_staged_regimen_source_v01.json"],
+                    "test_policy_staged_binding": ["policy_staged_realization_request_v01.json"],
+                    "test_policy_staged_component_material": ["policy_staged_material_v01.json"],
+                    "test_policy_staged_generation": ["policy_staged_realization_request_v01.json"],
                     "test_policy_operational": ["policy_operational_v01.json"],
                     "test_policy_execution": ["policy_operational_v01.json"],
                     "test_policy_operational_service": ["policy_operational_v01.json"],
@@ -458,6 +598,23 @@ def check_boundaries(root: Path):
                     "test_policy_mrna_structure": ["policy_mrna_structure_v01.json"],
                     "test_policy_implementation_service": ["policy_implementation_request_v01.json"],
                     "test_policy_material_binding": ["policy_material_binding_v01.json"],
+                    "test_policy_component_fragment": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_component_material": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_component_assembly_rule": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_component_assembly_check": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_component_material_service": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_component_material_request": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_component_selection_request": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_component_material_candidate": ["policy_material_request_v01.json"],
+                    "test_policy_component_selection_candidate": ['policy_material_request_v01.json'],
+                    "test_policy_component_selection_common": ['policy_material_request_v01.json', 'policy_material_state_v01.json'],
+                    "test_policy_component_selection_check": ['policy_material_request_v01.json'],
+                    "test_policy_component_selection_scope": ["policy_material_request_v01.json"],
+                    "test_policy_component_selection_producer": ["policy_material_request_v01.json"],
+                    "test_policy_generation_admission": ["policy_implementation_binding_v01.json"],
+                    "test_policy_generation_producers": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_component_selection_service": ["policy_material_request_v01.json"],
+                    "test_policy_component_context_check": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_material_context": ["policy_material_context_v01.json"],
                     "test_policy_material_check": ["policy_material_request_v01.json"],
                     "test_policy_material_service": ["policy_material_request_v01.json"],
@@ -484,7 +641,8 @@ def check_boundaries(root: Path):
             if relative != expected_path or dependencies != expected_dependencies or key in graph:
                 raise BoundaryError(f"Changed/duplicate Dune boundary for {key}: {relative} -> {sorted(dependencies)}")
             graph[key], roles[key], locations[path.parent] = sorted(dependencies), role, key
-    expected_nodes = set(LIBRARIES) | {"executable:" + name for name in EXECUTABLES}
+    expected_nodes = (set(LIBRARIES) | {"executable:" + name for name in EXECUTABLES}
+                      | {"test_tool:" + name for name in PRIVATE_TEST_TOOLS})
     if set(graph) != expected_nodes or set(tests) != set(TESTS):
         raise BoundaryError("Missing reviewed libraries, executables or native tests")
     closure = validate_graph(graph, roles)

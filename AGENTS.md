@@ -61,6 +61,11 @@ biocompiler implements Python intent authoring, immutable build/realization requ
 
 ## Development cadence and validation
 
+Active user-approved delivery work follows
+[the researcher-alpha roadmap](docs/researcher-alpha-roadmap.md). Keep its real
+research qualification, software rehearsal, hosted validation and release exits
+distinct. Preserve the independent expected outputs and complete original inputs.
+
 Follow [development validation](docs/development-validation.md) for the approved
 CI protocol. Commit useful local checkpoints freely, push coherent batches, and
 merge a cohesive completed feature when its exact revision passes the required
@@ -68,6 +73,25 @@ checks. Do not require a fresh remote run for every small local edit or hold a
 finished feature for unrelated future work. Preserve active PRs and their valid
 running checks unless a necessary correction changes the tested revision.
 
+- User instruction, 2026-10-07: keep the inner loop local with focused pure-Python,
+  typing and static checks; when native validation is needed, use one focused
+  hosted run per coherent batch. Documentation-only work needs no native build.
+  Use complete cross-platform/installed validation for the integration
+  candidate and fresh actual-main validation. Batch integration PR updates;
+  existing PR-triggered gates are unchanged.
+- Select early feedback by changed profile and shared dependencies. Shared
+  semantics, transport, authority, packaging or receipt changes require broader
+  checks. Profile-specific feedback is a separate scope, not a reduced complete
+  census. Until scoped hosted routing is implemented, the supported development
+  workflow still requires every declared native suite and SDK observation.
+- Profile bottlenecks before adding concurrency. Prioritize repeated canonical
+  encoding/fingerprinting where measured; reuse only owned immutable data within
+  an explicit invocation, preserving exact bytes, resource limits, execution
+  guards, rejection behavior and cumulative publication charges. Do not cache
+  acceptance or bypass the fresh compiler/checker under test.
+- Preserve infrastructure failure evidence and use bounded same-run/revision
+  failed-job recovery when supported. Stop retrying persistent provider or
+  billing failures and continue independent safe work. Record outstanding gates.
 - Use one PR validation run per update, main-branch push validation, and explicit
   manual dispatch when needed; avoid duplicate branch-push and PR runs.
 - Keep all discovered unit tests on Python 3.11 and 3.14, partitioned into five

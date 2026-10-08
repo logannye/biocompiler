@@ -1,0 +1,47 @@
+{
+  "added_methods": 4,
+  "commands": {
+    "311": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -m unittest tests.test_core_pipeline_callback_session -q",
+    "314": "PYTHONPATH=src:. python3 -m unittest tests.test_core_pipeline_callback_session -q"
+  },
+  "controls": {
+    "311": {
+      "count": 25,
+      "log": {
+        "path": "generated/migration-next/pr85-b27-fresh-failure/callback-tests-311.log",
+        "sha256": "ff4e3aa4bd57a14e6cad5dd144605a85b624948ee94ca47a195d70c804a0b283"
+      },
+      "python": "3.11.15",
+      "seconds": 18.905
+    },
+    "314": {
+      "count": 25,
+      "log": {
+        "path": "generated/migration-next/pr85-b27-fresh-failure/callback-tests-314.log",
+        "sha256": "d44a12b5aa7971a583d81148bdcdad80c12eef3c86d7e68f2587b9099c404dff"
+      },
+      "python": "3.14.6",
+      "seconds": 21.563
+    }
+  },
+  "diff_check": "pass",
+  "native_execution": false,
+  "peer_review": "session_native: no concrete blocker in bounded source/test review",
+  "scope": "Python subprocess transport controls only; native compilation and installed17-campaign validation remain hosted and pending",
+  "source_base": "b27f52447f49c749d33cac17f3bbb6fe772cbc24",
+  "source_files": {
+    "protocol/pipeline-callback-channel-v1.json": {
+      "bytes": 3770,
+      "sha256": "55a58a12cb009616075e0aedf68e6b21394f4fb8b137b4880aab92ef47fa683e"
+    },
+    "src/biocompiler/core_pipeline_callback_session.py": {
+      "bytes": 32588,
+      "sha256": "96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a"
+    },
+    "tests/test_core_pipeline_callback_session.py": {
+      "bytes": 30964,
+      "sha256": "f1a2a2109c7c58344f95be92210dabe64a2543a3be833b9cf1ac4254ab3e5990"
+    }
+  },
+  "status": "pass"
+}

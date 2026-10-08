@@ -231,11 +231,12 @@ module Port = struct
     require ~path ((domain_subset ~required:initialization ~supported:domain).outcome <> Fail) "Initial values fall outside the runtime domain.";
     { id = name "id"; direction; meaning = name "meaning"; dtype; unit; role = name "role";
       scope; compartment = name "compartment"; timing; initialization; domain }
-  let to_json value = obj ["schema_version", str schema_version; "id", str value.id;
+  let to_json value = obj ["id", str value.id;
     "direction", str (match value.direction with Input -> "input" | Output -> "output");
-    "meaning", str value.meaning; "dtype", Type_spec.to_json value.dtype; "unit", str value.unit;
+    "meaning", str value.meaning; "unit", str value.unit;
     "role", str value.role; "scope", str (match value.scope with Cell -> "cell" | Contact -> "contact");
     "compartment", str value.compartment; "timing", str (timing_name value.timing);
+    "schema_version", str schema_version; "dtype", Type_spec.to_json value.dtype;
     "initialization", Value_domain.to_json value.initialization; "domain", Value_domain.to_json value.domain]
   let fingerprint value = Canonical.fingerprint (to_json value)
   let make ~id ~direction ~meaning ~dtype ~unit ~role ~scope ~compartment ~timing ~initialization ~domain =

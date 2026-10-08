@@ -104,7 +104,21 @@ assert not biocompiler._legacy_loaded
         actual = source_inventory()
         scope = source_scope(actual)
         self.assertEqual(scope["schema_version"], "biocompiler.realization_workflow_source_scope.v2")
-        self.assertEqual({row["path"] for row in scope["reviewed_source_routes"]}, lineage.ROUTES)
+        expected_routes = {
+            "src/biocompiler/__init__.py",
+            "src/biocompiler/__main__.py",
+            "src/biocompiler/cli.py",
+            "src/biocompiler/compiler/construct.py",
+            "src/biocompiler/compiler/molecular.py",
+            "src/biocompiler/compiler/pipeline.py",
+            "src/biocompiler/compiler/verification_workflow.py",
+            "src/biocompiler/synthesis/components.py",
+            "src/biocompiler/synthesis/selection.py",
+            "src/biocompiler/synthesis/synthetic.py",
+        }
+        self.assertEqual({row["path"] for row in scope["reviewed_source_routes"]}, expected_routes)
+        self.assertEqual(len(scope["reviewed_source_routes"]), len(expected_routes))
+        self.assertEqual(scope["reviewed_routes"], scope["reviewed_source_routes"])
         self.assertIn("biocompiler.policy", scope["denied_modules"])
         self.assertIn("examples.expressive_policies", scope["denied_modules"])
         self.assertNotIn("biocompiler.entrypoint", scope["denied_modules"])

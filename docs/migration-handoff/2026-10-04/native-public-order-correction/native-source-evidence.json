@@ -1,0 +1,407 @@
+{
+  "additional_analogous_path": {
+    "native": "core/lib/realization_checker/synthetic_verification.ml:32",
+    "original": "src/biocompiler/compiler/verification_workflow.py:210-220",
+    "test": "core/test/test_synthetic_verification_workflow.ml"
+  },
+  "base_revision": "2cf35b440ce9fca6dc951709b27f8122f00b81f7",
+  "evidence_limits": [
+    "Static source/byte comparison only; no OCaml parsing, type checking, compilation or execution.",
+    "Order-aligned recorded graph diagnosis is not acceptance and does not validate patched native output.",
+    "Exact original public graph assertions and full hosted campaigns remain required.",
+    "Public declared envelopes use original to_dict order; authored nested mapping order is preserved, not globally sorted."
+  ],
+  "failed_run": 37169286045,
+  "failed_slot": "macos-arm64-py3.14",
+  "family_source_mapping": [
+    [
+      "Candidate.encode",
+      "core/lib/domain/synthetic_authority.ml",
+      301,
+      "src/biocompiler/synthesis/synthetic.py",
+      173
+    ],
+    [
+      "Observable.of_json",
+      "core/lib/domain/measurement_contract.ml",
+      115,
+      "src/biocompiler/semantics/realization.py",
+      122
+    ],
+    [
+      "Check_result.of_json/with_dependencies",
+      "core/lib/domain/realization_evidence.ml",
+      216,
+      "src/biocompiler/verification/evidence.py",
+      514
+    ],
+    [
+      "dependency settings position",
+      "core/lib/realization_checker/synthetic_candidate_check.ml",
+      27,
+      "src/biocompiler/synthesis/synthetic.py",
+      767
+    ],
+    [
+      "synthetic settings additions/base microsteps",
+      "core/lib/realization_checker/synthetic_candidate_check.ml",
+      75,
+      "src/biocompiler/synthesis/synthetic.py",
+      770
+    ],
+    [
+      "Intent.node_json",
+      "core/lib/domain/intent.ml",
+      136,
+      "src/biocompiler/ir/intent.py",
+      146
+    ],
+    [
+      "Target.decode_target",
+      "core/lib/domain/build_request.ml",
+      226,
+      "src/biocompiler/semantics/context.py",
+      86
+    ],
+    [
+      "Behavior node extensions",
+      "core/lib/domain/behavior.ml",
+      716,
+      "src/biocompiler/ir/behavior.py",
+      163
+    ],
+    [
+      "Behavior requirements",
+      "core/lib/domain/behavior.ml",
+      407,
+      "src/biocompiler/semantics/contracts.py",
+      84
+    ],
+    [
+      "Component Port.to_json",
+      "core/lib/domain/component_contract.ml",
+      234,
+      "src/biocompiler/semantics/component_contracts.py",
+      424
+    ],
+    [
+      "component settings additions",
+      "core/lib/realization_checker/component_behavior_check.ml",
+      113,
+      "src/biocompiler/compiler/components.py",
+      85
+    ]
+  ],
+  "files": {
+    "core/lib/domain/behavior.ml": {
+      "after": {
+        "bytes": 50030,
+        "sha256": "b96ff9a5ad8a4e435cb0a06c0fd8821ad2a16ac075e118af6e8793ed16e25439"
+      },
+      "before": {
+        "bytes": 49969,
+        "sha256": "6ef31c576f1cba89f57354f0bbe1f0d6b278c8b8307f501b830cbf219daee943"
+      }
+    },
+    "core/lib/domain/build_request.ml": {
+      "after": {
+        "bytes": 30196,
+        "sha256": "0877bfb283e9c7f4d1080bc8a8a8f29d93acacfb26501d70c96a96c45fe4051a"
+      },
+      "before": {
+        "bytes": 29880,
+        "sha256": "3f76185e51716fdac932b711a10fd77d8cd13c22d2a86fb81fd91f3c69a56891"
+      }
+    },
+    "core/lib/domain/component_contract.ml": {
+      "after": {
+        "bytes": 22719,
+        "sha256": "07ead6824b6221b82f8247a01b471673fc638c86bc780fc9c6c46a62c554729e"
+      },
+      "before": {
+        "bytes": 22715,
+        "sha256": "9a1cfc6cbc61c1dfb93818766fffb5c040de8be3dccce0a66b583a90129d7ee9"
+      }
+    },
+    "core/lib/domain/intent.ml": {
+      "after": {
+        "bytes": 8340,
+        "sha256": "e6060d67d3cbdd0d23a4e5467504cab4f97a638503303b28c88c6791b0e92362"
+      },
+      "before": {
+        "bytes": 8341,
+        "sha256": "8f7dced7bf5e759311aede9cf1b808d77a3635c7a68fc586d8e7349b1bee5ed5"
+      }
+    },
+    "core/lib/domain/measurement_contract.ml": {
+      "after": {
+        "bytes": 11455,
+        "sha256": "3256959c3b71f539adf7356feeaf6c53ff2d67d43c0d369ed02d77cc1d2e3263"
+      },
+      "before": {
+        "bytes": 11341,
+        "sha256": "0b1fe09711c70d67a55f82583c73618bbe92d138e41f4ae55aa767ad2860c056"
+      }
+    },
+    "core/lib/domain/realization_evidence.ml": {
+      "after": {
+        "bytes": 21959,
+        "sha256": "5c358dd4d65a583667b5752f6961645d0dba43e74c1d2500e11ab7f5f07279cd"
+      },
+      "before": {
+        "bytes": 21460,
+        "sha256": "3d7fd4b0dee698ecf4196f2ed28c154c7197eb149fc226f6cb2c02ea84485349"
+      }
+    },
+    "core/lib/domain/synthetic_authority.ml": {
+      "after": {
+        "bytes": 23978,
+        "sha256": "e7e46a821b6ca377d024a00b8c4b6282b112f884876daf0fa74c02f5772a5394"
+      },
+      "before": {
+        "bytes": 23845,
+        "sha256": "774e38d946a1fc7869d528e609790ae2b5f4e683d721bae05291e0eb81a13236"
+      }
+    },
+    "core/lib/realization_checker/component_behavior_check.ml": {
+      "after": {
+        "bytes": 7991,
+        "sha256": "4e6422f91f2d41fcd78536331fd48ad3f0832a559c6b61256af876d133774863"
+      },
+      "before": {
+        "bytes": 7781,
+        "sha256": "51964016603d24dbe117fbc2261b6350648d57496ae715a443fd80be9f2858ba"
+      }
+    },
+    "core/lib/realization_checker/realization_check.ml": {
+      "after": {
+        "bytes": 27314,
+        "sha256": "39af92c4116fc46e2d401d40cfee577b4ccacfc91a33fae2462e3b7a777113c0"
+      },
+      "before": {
+        "bytes": 27315,
+        "sha256": "9a723560eeb1e1286a50290ffbcb03d77ae754b39d47bc5d3fd871912c6b9ed1"
+      }
+    },
+    "core/lib/realization_checker/synthetic_candidate_check.ml": {
+      "after": {
+        "bytes": 11386,
+        "sha256": "8d2ba0029cd1e29b58f53a274e9f11c132905464f6dfab0bf87acc508c986f69"
+      },
+      "before": {
+        "bytes": 11096,
+        "sha256": "2fbfe57b32f58ded380b5dbd19709299f5ed1044cc864223cd46ce7251c6c683"
+      }
+    },
+    "core/lib/realization_checker/synthetic_verification.ml": {
+      "after": {
+        "bytes": 7285,
+        "sha256": "d2c214680094ff896c0899516ac7b91c12b7bd62a60b79a6fee14693b3b54f9b"
+      },
+      "before": {
+        "bytes": 7168,
+        "sha256": "6500d3f93164288bd28e4b5d462cff6bb8c2f6d228654f4da1fc08fd61c0ceb1"
+      }
+    },
+    "core/test/test_behavior.ml": {
+      "added_lines": 17,
+      "after": {
+        "bytes": 28437,
+        "sha256": "79e7b5f413e5f2f41946f55c800592d179a2751bcbcf50ac16c8c5b4a5c04ebe"
+      },
+      "before": {
+        "bytes": 27278,
+        "sha256": "c1069c899a983df44284b2d6fe06c0a94c62dcf6f34f5763920bfd93519af06c"
+      },
+      "new_block_start_line": 327,
+      "original_complete_prefix_preserved": true
+    },
+    "core/test/test_build_request.ml": {
+      "added_lines": 17,
+      "after": {
+        "bytes": 22963,
+        "sha256": "06b937a43579facc78202c9a31fa368712ab1a2dbfc5d53899256f8da77f1cd9"
+      },
+      "before": {
+        "bytes": 21932,
+        "sha256": "f0a60077bc505d710bdc1d8823a761a1b3df9ca518264a222976f9c271fa5567"
+      },
+      "new_block_start_line": 265,
+      "original_complete_prefix_preserved": true
+    },
+    "core/test/test_component_behavior_check.ml": {
+      "added_lines": 14,
+      "after": {
+        "bytes": 436178,
+        "sha256": "05af11112a1e804655cb617c51f27dd2f000418c7410ec734269bdb935d1d8b6"
+      },
+      "before": {
+        "bytes": 435265,
+        "sha256": "67aa27134bffd7ddbabc224faa79ea2f0a6274d80441f46fc246f2631ccfa8bd"
+      },
+      "new_block_start_line": 188,
+      "original_complete_prefix_preserved": true
+    },
+    "core/test/test_component_contract.ml": {
+      "added_lines": 10,
+      "after": {
+        "bytes": 17250,
+        "sha256": "9efe2b0c4c9cfaa78ca32423c3a4f4666c979fd0696debcbc3fa7fa08003c41b"
+      },
+      "before": {
+        "bytes": 16721,
+        "sha256": "fe4c6d0730ab00b7301f4c950bc060591f59f02023482ba01fc3fd2876b0059c"
+      },
+      "new_block_start_line": 217,
+      "original_complete_prefix_preserved": true
+    },
+    "core/test/test_realization_evidence.ml": {
+      "added_lines": 16,
+      "after": {
+        "bytes": 13410,
+        "sha256": "c735bcaa0e6704345e7e88ae712715ea25e6cb0dec44e794eddc4cae337437fe"
+      },
+      "before": {
+        "bytes": 12229,
+        "sha256": "72f58add677864bbc44fb652eb29e344675aa6d725631a258d4e7fc227a1feb9"
+      },
+      "new_block_start_line": 133,
+      "original_complete_prefix_preserved": true
+    },
+    "core/test/test_synthetic_authority.ml": {
+      "added_lines": 19,
+      "after": {
+        "bytes": 507080,
+        "sha256": "d6473dfa89a097031d8cd3b08ebcfcf9df4efbfe032f4e8d52e794e1850a7096"
+      },
+      "before": {
+        "bytes": 505748,
+        "sha256": "ffee8f841c0dc9724e1422d64d7a37300c271abd5f0ecf32ae6bcd3dc1046b88"
+      },
+      "new_block_start_line": 198,
+      "original_complete_prefix_preserved": true
+    },
+    "core/test/test_synthetic_candidate_check.ml": {
+      "added_lines": 13,
+      "after": {
+        "bytes": 275293,
+        "sha256": "d13f6705fa34c27ac9b8688aa61b584662be32b5b4f4d7701dc3de6655f487fc"
+      },
+      "before": {
+        "bytes": 274409,
+        "sha256": "6dd9ff84b21aa6d31f23742e031ee1c03da625ed4b5c7d4cb6344837444a4628"
+      },
+      "new_block_start_line": 135,
+      "original_complete_prefix_preserved": true
+    },
+    "core/test/test_synthetic_verification_workflow.ml": {
+      "added_lines": 17,
+      "after": {
+        "bytes": 1329954,
+        "sha256": "f834257605d9ed77a099b232d6a2c290171ca51da2b879e294470444aab3941b"
+      },
+      "before": {
+        "bytes": 1328768,
+        "sha256": "eb3e3955719a619e4fb5a78ab56643f9e94ab00205c896578581328e433c9c76"
+      },
+      "new_block_start_line": 92,
+      "original_complete_prefix_preserved": true
+    }
+  },
+  "observed_order_families": {
+    "bytes": 9080,
+    "count": 11,
+    "path": "generated/migration-next/resumed-pr85-2cf35b4/failure-37169286045/offline-graph-review/order-families.json",
+    "sha256": "41d3da822098050239d24f6d7e74a61fdc43665c0d09691ab87428c5d2d21176"
+  },
+  "patch": {
+    "bytes": 28628,
+    "sha256": "21fe96cbe370f61bb63ff79f4a553582d3ddc9ddae354ee0497b511feefbc269"
+  },
+  "preservation": {
+    "eight_original_test_files_full_prefix": true,
+    "existing_dune_bytes_unchanged": true,
+    "frozen_original_graph_bytes_unchanged": true,
+    "no_new_native_suite": true,
+    "no_python_oracle_changes": true,
+    "shared_Measurement_contract_replace_unchanged": true
+  },
+  "production_files": [
+    "core/lib/domain/behavior.ml",
+    "core/lib/domain/build_request.ml",
+    "core/lib/domain/component_contract.ml",
+    "core/lib/domain/intent.ml",
+    "core/lib/domain/measurement_contract.ml",
+    "core/lib/domain/realization_evidence.ml",
+    "core/lib/domain/synthetic_authority.ml",
+    "core/lib/realization_checker/component_behavior_check.ml",
+    "core/lib/realization_checker/realization_check.ml",
+    "core/lib/realization_checker/synthetic_candidate_check.ml",
+    "core/lib/realization_checker/synthetic_verification.ml"
+  ],
+  "status": "source_preparation_only_native_unparsed_uncompiled_unexecuted",
+  "test_files": [
+    "core/test/test_synthetic_authority.ml",
+    "core/test/test_build_request.ml",
+    "core/test/test_behavior.ml",
+    "core/test/test_component_contract.ml",
+    "core/test/test_realization_evidence.ml",
+    "core/test/test_synthetic_candidate_check.ml",
+    "core/test/test_component_behavior_check.ml",
+    "core/test/test_synthetic_verification_workflow.ml"
+  ],
+  "unchanged_authorities": {
+    "core/test/dune": {
+      "bytes": 19733,
+      "sha256": "374a48e9928d8fc96f5d4c3f990af812357322d982927726309ee8370d6431a5"
+    },
+    "src/biocompiler/compiler/components.py": {
+      "bytes": 12997,
+      "sha256": "dc9edc3cb5fee5aef128a5a096ff6c20bfbf2af97f1077b74851a505d4b5d034"
+    },
+    "src/biocompiler/compiler/verification_workflow.py": {
+      "bytes": 10702,
+      "sha256": "bb0b8f14eb20ffd92f9187c982e7554823175345699483b757b218cee1000dd9"
+    },
+    "src/biocompiler/ir/behavior.py": {
+      "bytes": 37226,
+      "sha256": "6bca0b5b75f1ea39cf8687182a0ced9834a258c2568a7962ff7eeecc6f355623"
+    },
+    "src/biocompiler/ir/intent.py": {
+      "bytes": 13458,
+      "sha256": "711545a1b67f2d6049848d2cef8739f89098d2596687c375d7f62d2e94680de6"
+    },
+    "src/biocompiler/semantics/component_contracts.py": {
+      "bytes": 18396,
+      "sha256": "4e8aba88cd4799a7a05b1d94eb4a12db224cecd89627412d11ba50e3045534bf"
+    },
+    "src/biocompiler/semantics/context.py": {
+      "bytes": 8316,
+      "sha256": "01ba61ae8709ed7f61959203600bd59b950e0c9ceb830ce1f10922c660dd8c53"
+    },
+    "src/biocompiler/semantics/contracts.py": {
+      "bytes": 5050,
+      "sha256": "36b52305bb14890418cdbc0a31e7a2973b58b1892b6920f667abb9b7c289bd18"
+    },
+    "src/biocompiler/semantics/realization.py": {
+      "bytes": 18950,
+      "sha256": "63ac6c30737691570b8c904828f6f756aecd49618f1c0783f888bc692573e25e"
+    },
+    "src/biocompiler/synthesis/synthetic.py": {
+      "bytes": 33138,
+      "sha256": "c6753e172b5f3a22c03f3d3546c1a8feca0c9f60a03bee9f132a9bd9291d285a"
+    },
+    "src/biocompiler/verification/evidence.py": {
+      "bytes": 20330,
+      "sha256": "6a58e23a2deb26b3ae3e38bea61bb9ed36e3a1bb28142fdb244bd443cb89dc79"
+    },
+    "src/biocompiler/verification/realization.py": {
+      "bytes": 32917,
+      "sha256": "d3c4af798c37b6311ba0fd81c5fc8cbcb1abe5c16527047f545dbe976761e013"
+    },
+    "tests/conformance/pipeline-fixed-build-semantics-v1.json": {
+      "bytes": 8361602,
+      "sha256": "b423e1d60fbe688090bd44787ccb372a10847681cd8a011fd897cface9b9e28e"
+    }
+  }
+}

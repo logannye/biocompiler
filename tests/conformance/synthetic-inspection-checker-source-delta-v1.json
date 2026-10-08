@@ -1,0 +1,203 @@
+{
+  "base_revision": "45476d61e5d85d9d042c17e9fd0797f03bb90c1e",
+  "path": "tools/check_native_synthetic_inspection.py",
+  "schema": "biocompiler.synthetic_inspection_checker_source_delta.v1",
+  "stages": [
+    {
+      "current": {
+        "bytes": 38222,
+        "sha256": "beefdeb218dbb39e92afce0e2b0325edf718313468360f7e45e4c3d6d4dbf6ab"
+      },
+      "historical": {
+        "bytes": 31602,
+        "sha256": "b8a2e7f79e5540ac41ef84060fe8f05d157234882bf5d5f4f2148160dcf2ed62"
+      },
+      "name": "explicit_frozen_wire_boundaries",
+      "spans": [
+        {
+          "after": "\"\"\"Check every rich helper occurrence and its frozen native boundary obligation.\n",
+          "before": "\"\"\"Execute every original rich producer-view helper with installed native authority.\n",
+          "offset": 0
+        },
+        {
+          "after": "four hosted runtimes. The two explicit Python wire boundaries retain historical\nhelper properties and require native rejection, never fresh helper equivalence.\nThis grants no pipeline, package or empirical acceptance.\n",
+          "before": "four hosted runtimes. This grants no pipeline, package or empirical acceptance.\n",
+          "offset": 325
+        },
+        {
+          "after": "SCOPE = \"complete_original_helper_and_explicit_wire_boundary_observations_no_pipeline_package_or_empirical_acceptance\"\n",
+          "before": "SCOPE = \"complete_original_public_helper_observations_no_pipeline_package_or_empirical_acceptance\"\n",
+          "offset": 1480
+        },
+        {
+          "after": "    \"tests/test_synthetic_inspection_boundaries.py\", \"core/lib/wire/json.ml\", \"core/lib/wire/protocol.ml\",\n    \"core/lib/service/service.ml\",\n",
+          "before": "",
+          "offset": 2664
+        },
+        {
+          "after": "BOUNDARY_IDS = tuple(name + \"/tests/test_verification_exploration.py::BooleanExplorationTests.\"\n    \"test_lone_unicode_surrogates_are_rejected_in_configs_and_results/api/5/property/exercised_requirement_ids\"\n    for name in (\"realization-foundation-v1\", \"realization-checks-v1\"))\nBOUNDARY_RECORD_SHA256 = \"b2c5c987d1e185412a29d0457d3c9cc3926a931f32729f199a3769e3d352d3a1\"\n\n\ndef wire_boundary(case):\n    \"\"\"Retain the two frozen Python returns whose original native stage rejects.\"\"\"\n    observation = case[\"evidence\"].get(\"observation\", {})\n    native = observation.get(\"native\", {})\n    if case[\"id\"] not in BOUNDARY_IDS:\n        require(native.get(\"native_stage\") != \"python_wire_boundary\",\n                \"Unreviewed inspection Python wire boundary\")\n        return None\n    original = case[\"evidence\"]\n    raw = original.get(\"original_native_arguments\")\n    require(case[\"api\"] == \"CheckResult.exercised_requirement_ids\" and\n        case[\"operation\"] == \"inspect-synthetic-check-result\" and case[\"error\"] is None and\n        observation[\"api\"] == \"CheckResult.__init__\" and observation[\"outcome\"] == \"returned\" and\n        observation[\"result_format\"] == \"python_json_text\" and\n        observation[\"result\"] == BOUNDARY_RECORD_SHA256 and native == {\n            \"operation\": \"CheckResult\", \"input\": BOUNDARY_RECORD_SHA256,\n            \"input_format\": \"python_json_text\", \"source_stage\": \"constructor\",\n            \"native_stage\": \"python_wire_boundary\", \"expected_code\": \"invalid_json\"} and\n        type(raw) is str and digest(raw) == BOUNDARY_RECORD_SHA256 and\n        raw == original[\"original_result\"] == case[\"payload\"][\"record\"] and\n        case[\"payload\"][\"query\"] == \"coverage\" and case[\"payload\"][\"current\"] is None and\n        case[\"payload\"][\"limits\"] is None and\n        case[\"expected_public\"] == {\"value\": original[\"properties\"][\"exercised_requirement_ids\"], \"properties\": {}} and\n        case[\"expected_value\"] == {\"exercised_requirement_ids\": original[\"properties\"][\"exercised_requirement_ids\"],\n                                   \"freshness\": None}, \"Frozen inspection wire-boundary authority differs\")\n    return {\"classification\": \"original_python_return_native_wire_rejection\",\n            \"native_helper_equivalence\": False, \"original_native\": native,\n            \"original_result_sha256\": BOUNDARY_RECORD_SHA256, \"wire_sha256\": sha(raw.encode(\"ascii\"))}\n\n\ndef preflight_cases(corpus):\n    \"\"\"Check every public import shape and explicit boundary before native work.\"\"\"\n    boundaries = []\n    for case in corpus.cases:\n        if wire_boundary(case) is not None:\n            boundaries.append(case[\"id\"])\n            continue\n        api = case[\"api\"]\n        field = (\"mechanism\" if api == \"MechanismProgram.topological_nodes\" else\n                 \"registry\" if api.startswith(\"ComponentRegistry.\") else\n                 \"selection\" if api == \"SelectionResult.outcome\" else\n                 \"previous\" if api == \"DependencySnapshot.changed\" else \"record\")\n        require(type(case[\"payload\"][field]) is dict, \"Public inspection view lacks complete object authority\")\n    require(boundaries == list(BOUNDARY_IDS), \"Complete original inspection boundary census differs\")\n    return {\"cases\": len(corpus.cases), \"native_wire_boundaries\": boundaries}\n\n\ndef boundary_response():\n    # Both frozen 1476-byte inputs have the same unpaired high surrogate. The\n    # strict parser expects a backslash after its six-byte escape at byte 1303.\n    return envelope(\"core\", None, None, \"error\", None,\n        [{\"code\": \"invalid_json\", \"message\": \"Unexpected JSON token.\", \"path\": \"byte:1303\"}])\n\n\ndef invoke_boundary(case, client):\n    import biocompiler.core_client as transport\n    require(wire_boundary(case) is not None and client.role == \"core\", \"Unbound inspection boundary role\")\n    raw = case[\"evidence\"][\"original_native_arguments\"].encode(\"ascii\")\n    client.capabilities()  # Fresh role/profile evidence, independently checked below.\n    require(client.expected_sha256 is not None and client.executable.is_file() and\n        os.access(client.executable, os.X_OK), \"Unpinned inspection boundary executable\")\n    with client.executable.open(\"rb\") as binary:\n        require(hashlib.file_digest(binary, \"sha256\").hexdigest() == client.expected_sha256,\n                \"Inspection boundary executable changed\")\n    response, code = transport._exchange(client.executable, raw, client.timeout_seconds, None)\n    require(code == 2 and response == canonical(boundary_response()) + b\"\\n\",\n            \"Original inspection wire boundary was not rejected exactly\")\n",
+          "before": "",
+          "offset": 3915
+        },
+        {
+          "after": "    boundaries = [case[\"id\"] for case in corpus.cases if wire_boundary(case) is not None]\n",
+          "before": "",
+          "offset": 8681
+        },
+        {
+          "after": "            \"native_wire_boundary_occurrences\": boundaries,\n            \"public_helper_occurrences\": len(corpus.cases) - len(boundaries),\n",
+          "before": "",
+          "offset": 8812
+        },
+        {
+          "after": "    if role == \"core\" and wire_boundary(case) is not None:\n        require(modules == {\"biocompiler.core_client\"} and\n            [\"biocompiler.core_client\", \"CoreClient.capabilities\", \"output\", \"\"] in entries and\n            [\"biocompiler.core_client\", \"_exchange\", \"output\", \"\"] in entries,\n            \"Missing exact inspection wire-boundary transport guard\")\n    elif role == \"verify\":\n",
+          "before": "    if role == \"verify\":\n",
+          "offset": 9419
+        },
+        {
+          "after": "        boundary = wire_boundary(case) if role == \"core\" else None\n",
+          "before": "",
+          "offset": 13114
+        },
+        {
+          "after": "            if boundary is not None:\n                invoke_boundary(case, clients[role])\n            elif role == \"core\":\n",
+          "before": "            if role == \"core\":\n",
+          "offset": 13195
+        },
+        {
+          "after": "        if boundary is not None:\n            row[\"boundary\"] = artifact(receipt, canonical(boundary))\n",
+          "before": "",
+          "offset": 14909
+        },
+        {
+          "after": "        require(type(row) is dict, \"Unexpected helper observation type\")\n",
+          "before": "        require(type(row) is dict and set(row) == {\"id\", \"api\", \"operation\", \"role\", \"authority\", \"expected\",\n            \"evidence\", \"public\", \"guard\", \"exchanges\"}, \"Unexpected helper observation fields\")\n",
+          "offset": 16228
+        },
+        {
+          "after": "        boundary = wire_boundary(case) if role == \"core\" else None\n        require(set(row) == {\"id\", \"api\", \"operation\", \"role\", \"authority\", \"expected\", \"evidence\", \"public\",\n            \"guard\", \"exchanges\"} | ({\"boundary\"} if boundary is not None else set()),\n            \"Unexpected helper observation fields\")\n        if boundary is not None:\n            require(artifacts.raw(row[\"boundary\"]) == canonical(boundary), \"Original wire-boundary classification differs\")\n",
+          "before": "",
+          "offset": 16651
+        },
+        {
+          "after": "        require(row[\"public\"] is None if role == \"verify\" or boundary is not None else\n",
+          "before": "        require(row[\"public\"] is None if role == \"verify\" else\n",
+          "offset": 17147
+        },
+        {
+          "after": "            response = decode(raw_response)\n            if boundary is not None and ordinal == 1:\n                require(raw_request == case[\"evidence\"][\"original_native_arguments\"].encode(\"ascii\") and\n                    raw_response == canonical(boundary_response()) + b\"\\n\" and exchange[\"exit_code\"] == 2,\n                    \"Complete original native wire-boundary evidence differs\")\n                normalized.append({\"request_bytes_sha256\": sha(raw_request), \"response\": response, \"exit_code\": 2})\n                continue\n            request = decode(raw_request)\n",
+          "before": "            request, response = decode(raw_request), decode(raw_response)\n",
+          "offset": 18189
+        },
+        {
+          "after": "    preflight_cases(corpus)\n",
+          "before": "",
+          "offset": 26799
+        }
+      ]
+    },
+    {
+      "current": {
+        "bytes": 41413,
+        "sha256": "5dbefdf1b4439138ba9ebeccd99457031b6c0df5e0f42d671949341e69218015"
+      },
+      "historical": {
+        "bytes": 38222,
+        "sha256": "beefdeb218dbb39e92afce0e2b0325edf718313468360f7e45e4c3d6d4dbf6ab"
+      },
+      "name": "isolated_occurrence_workers",
+      "spans": [
+        {
+          "after": "PARALLEL_EXECUTION = {\"mode\": \"isolated_occurrences\", \"workers\": 2}\n",
+          "before": "",
+          "offset": 1614
+        },
+        {
+          "after": "    \"tools/synthetic_inspection_workers.py\", \"tests/test_synthetic_inspection_workers.py\",\n",
+          "before": "",
+          "offset": 2960
+        },
+        {
+          "after": "def campaign(clients, corpus, receipt, *, ordinals=None, verify_capabilities=True):\n",
+          "before": "def campaign(clients, corpus, receipt):\n",
+          "offset": 18320
+        },
+        {
+          "after": "    selected = None if ordinals is None else set(ordinals)\n    for ordinal, ((role, _), case) in enumerate(expected_cases(corpus).items()):\n        if selected is not None and ordinal not in selected:\n            continue\n",
+          "before": "    for (role, _), case in expected_cases(corpus).items():\n",
+          "offset": 18525
+        },
+        {
+          "after": "    if not verify_capabilities:\n        return\n",
+          "before": "",
+          "offset": 20904
+        },
+        {
+          "after": "def validate_checks(receipt, corpus, artifacts, *, ordinals=None, verify_capabilities=True):\n",
+          "before": "def validate_checks(receipt, corpus, artifacts):\n",
+          "offset": 21470
+        },
+        {
+          "after": "    if ordinals is not None:\n        order = list(expected)\n        require(type(ordinals) is list and all(type(index) is int for index in ordinals) and\n            ordinals == sorted(set(ordinals)) and all(0 <= index < len(order) for index in ordinals),\n            \"Invalid inspection occurrence selection\")\n        expected = {order[index]: expected[order[index]] for index in ordinals}\n",
+          "before": "",
+          "offset": 21557
+        },
+        {
+          "after": "    require([(row.get(\"role\"), row.get(\"id\")) for row in receipt[\"checks\"]] == list(expected),\n            \"Reordered original inspection occurrences\")\n",
+          "before": "",
+          "offset": 21789
+        },
+        {
+          "after": "    if not verify_capabilities:\n        require(\"verify_capabilities\" not in receipt and \"verify_capability_guard\" not in receipt,\n                \"Unassigned inspection capability witness\")\n        require(artifacts.used == set(artifacts.declared), \"Unreferenced complete inspection evidence\")\n        return {\"checks\": projected, \"verify_capabilities\": None}\n",
+          "before": "",
+          "offset": 27058
+        },
+        {
+          "after": "                \"execution\": PARALLEL_EXECUTION,\n",
+          "before": "",
+          "offset": 30256
+        },
+        {
+          "after": "            if __package__:\n                from . import synthetic_inspection_workers as workers\n            else:\n                import synthetic_inspection_workers as workers\n",
+          "before": "",
+          "offset": 31643
+        },
+        {
+          "after": "            workers.validate_evidence(directory, receipt, corpus)\n",
+          "before": "",
+          "offset": 31722
+        },
+        {
+          "after": "    parser.add_argument(\"--workers\", type=int, choices=(1, 2), default=2)\n    parser.add_argument(\"--worker-index\", type=int, choices=(0, 1))\n",
+          "before": "",
+          "offset": 33182
+        },
+        {
+          "after": "    require(args.worker_index is None or args.workers == 1, \"Inspection workers cannot recursively spawn\")\n",
+          "before": "",
+          "offset": 33217
+        },
+        {
+          "after": "        \"execution\": ({\"mode\": \"occurrence_worker\", \"workers\": 2, \"index\": args.worker_index}\n            if args.worker_index is not None else PARALLEL_EXECUTION if args.workers == 2 else\n            {\"mode\": \"serial_diagnostic\", \"workers\": 1}),\n",
+          "before": "",
+          "offset": 33815
+        },
+        {
+          "after": "        if __package__:\n            from . import synthetic_inspection_workers as workers\n        else:\n            import synthetic_inspection_workers as workers\n        selected = None\n        if args.worker_index is not None:\n            selected = workers.ordinals(corpus, args.worker_index)\n            receipt.update(schema_version=workers.SCHEMA, worker_index=args.worker_index, worker_count=2)\n            campaign(clients, corpus, receipt, ordinals=selected, verify_capabilities=args.worker_index == 0)\n        elif args.workers == 2:\n            workers.execute(args, directory, receipt, corpus)\n        else:\n            campaign(clients, corpus, receipt)\n",
+          "before": "        campaign(clients, corpus, receipt)\n",
+          "offset": 36223
+        },
+        {
+          "after": "        validate_checks(receipt, corpus, Artifacts(directory, receipt[\"artifacts\"]), ordinals=selected,\n                        verify_capabilities=args.worker_index in (None, 0))\n",
+          "before": "        validate_checks(receipt, corpus, Artifacts(directory, receipt[\"artifacts\"]))\n",
+          "offset": 36327
+        },
+        {
+          "after": "        require(source_pins(SOURCES) == receipt[\"campaign_sources\"] and all(\n            sha(Path(sys.modules[name].__file__).read_bytes()) == receipt[\"transport_sources\"][\n                \"src/\" + name.replace(\".\", \"/\") + \".py\"] for name in SOURCE_MODULES),\n                \"Inspection sources changed during execution\")\n",
+          "before": "",
+          "offset": 36595
+        }
+      ]
+    }
+  ]
+}

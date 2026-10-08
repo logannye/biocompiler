@@ -1,0 +1,1 @@
+[{"code":"molecule_count","instance_id":null,"message":"Multi-molecule assembly has no acceptance rule in the exact-CDS profile.","molecule_id":null,"requirement_ids":["exact_reference"],"source":null,"status":"unsupported"}]

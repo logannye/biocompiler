@@ -76,7 +76,8 @@ _ROUTES = {
     "biocompiler.compiler.workflow": ("compile",),
     "biocompiler.compiler.payload_architecture": ("compile_payload_architecture", "export_payload_architecture"),
     "biocompiler.verification.payload_architecture": ("check_payload_architecture", "verify_payload_architecture"),
-    "biocompiler.cli": ("main", "_architecture_core_arguments", "_register_circuit_infrastructure_commands",
+    "biocompiler.cli": ("main", "_architecture_core_arguments", "_workflow_core_arguments",
+                         "_synthetic_producer_core_arguments", "_register_circuit_infrastructure_commands",
                          "_architecture_core_client", "_architecture_core_command", "_architecture_command",
                          "_bounded_text", "_publish_report"),
 }
@@ -257,18 +258,30 @@ def _summary(summary, build, assessment):
             "Complete public CLI summary disagrees with SDK")
 
 
-def campaign(core, verify, corpus, artifacts, guards, receipt):
+def campaign(core, verify, corpus, artifacts, guards, receipt, partition=None):
     checks = receipt["checks"]
     require(not checks and core.role == "core" and verify.role == "verify", "Fresh receipt and both roles required")
     artifacts.mkdir(parents=True, exist_ok=True)
     guards.mkdir(parents=True, exist_ok=True)
     require(not any(artifacts.iterdir()) and not any(guards.iterdir()), "Routing evidence destinations must start empty")
     selected = corpus.selected()
+    if partition is not None:
+        if __package__:
+            from .architecture_routing_parallel import partition_cases
+        else:
+            from architecture_routing_parallel import partition_cases
+        identities = partition_cases(partition)
+        selected = [row for row in selected if row[0] in identities]
+        require({row[0] for row in selected} == set(identities), "Missing architecture partition case")
+    expected_checks = len(selected) * 10 + (15 if any(row[0] == "installed/B" for row in selected) else 0)
+    require(partition is not None or expected_checks == EXPECTED_CHECKS, "Incomplete original routing case census")
     base = None
     core_flags = ["--core-executable", core.executable, "--core-sha256", core.expected_sha256, "--core-timeout", "60"]
     verify_flags = ["--verifier-executable", verify.executable, "--core-sha256", verify.expected_sha256, "--core-timeout", "60"]
     with routed_execution() as seen:
         for prefix, compiled, exported, raw_request, expected in selected:
+            case_started = time.monotonic()
+            print(f"Architecture routing: starting {prefix}", flush=True)
             directory = artifacts / (prefix.split("/", 1)[1].lower() if prefix.startswith("installed/") else prefix.replace("/", "-"))
             directory.mkdir()
             request = bc.PayloadArchitectureRequest.from_dict(raw_request)
@@ -327,57 +340,60 @@ def campaign(core, verify, corpus, artifacts, guards, receipt):
                 checks.append({"id": prefix, "operation": operation, "exit_code": 0})
             require(cli_build.read_bytes() == build_path.read_bytes()
                     and cli_export.read_bytes() == (directory / "api.export.json").read_bytes(), "Installed CLI changed complete SDK artifacts")
-            print(f"Architecture routing: completed {prefix} ({len(checks)}/{EXPECTED_CHECKS} checks)", flush=True)
+            elapsed = round(time.monotonic() - case_started, 6)
+            receipt.setdefault("scenario_timings", {})[prefix] = elapsed
+            print(f"Architecture routing: completed {prefix} in {elapsed}s ({len(checks)}/{expected_checks} checks)", flush=True)
             if prefix == "installed/B":
                 base = (request, build, checked, directory)
 
-        require(base is not None, "Missing baseline for authority rejection")
-        request, build, checked, directory = base
-        for name, raw_request, raw_build in coherent_mutations(_document(request), _document(build)):
-            changed_request = bc.PayloadArchitectureRequest.from_dict(raw_request)
-            changed_build = bc.PayloadArchitectureBuild.from_dict(raw_build)
-            failed = bc.check_payload_architecture(changed_build, expected_request=changed_request, core=core)
-            require(failed.to_dict()["outcome"] == "fail", "Mutant must reach fresh semantic failure: " + name)
-            checks.append({"id": name, "operation": "sdk.check", "outcome": "fail", "assessment": failed.fingerprint})
-            _native_rejection(lambda: bc.export_payload_architecture(changed_build, expected_request=changed_request, core=core),
-                              code="architecture_export_rejected")
-            checks.append({"id": name, "operation": "sdk.export", "error": "architecture_export_rejected"})
-            _native_rejection(lambda: bc.verify_payload_architecture(checked, changed_build, expected_request=changed_request, core=core),
+        require(partition is not None or base is not None, "Missing baseline for authority rejection")
+        if base is not None:
+            request, build, checked, directory = base
+            for name, raw_request, raw_build in coherent_mutations(_document(request), _document(build)):
+                changed_request = bc.PayloadArchitectureRequest.from_dict(raw_request)
+                changed_build = bc.PayloadArchitectureBuild.from_dict(raw_build)
+                failed = bc.check_payload_architecture(changed_build, expected_request=changed_request, core=core)
+                require(failed.to_dict()["outcome"] == "fail", "Mutant must reach fresh semantic failure: " + name)
+                checks.append({"id": name, "operation": "sdk.check", "outcome": "fail", "assessment": failed.fingerprint})
+                _native_rejection(lambda: bc.export_payload_architecture(changed_build, expected_request=changed_request, core=core),
+                                  code="architecture_export_rejected")
+                checks.append({"id": name, "operation": "sdk.export", "error": "architecture_export_rejected"})
+                _native_rejection(lambda: bc.verify_payload_architecture(checked, changed_build, expected_request=changed_request, core=core),
+                                  code="architecture_assessment_mismatch")
+                checks.append({"id": name, "operation": "sdk.replay", "error": "architecture_assessment_mismatch"})
+                request_path, build_path = directory / (name + ".request.json"), directory / (name + ".build.json")
+                _save(request_path, changed_request)
+                _save(build_path, changed_build)
+                summary = _cli(["architecture-verify", build_path, "--expected-request", request_path, *core_flags],
+                               directory=directory, guards=guards, name=name + ".verification", expected=1)
+                _summary(summary, changed_build, failed)
+                checks.append({"id": name, "operation": "cli.verify", "exit_code": 1})
+                existing = directory / "cli.export.json"
+                _cli(["architecture-export", build_path, "--expected-request", request_path, "--output", existing, *core_flags],
+                     directory=directory, guards=guards, name=name + ".export-rejection", expected=2, preserved=(existing, request_path, build_path))
+                checks.append({"id": name, "operation": "cli.export", "exit_code": 2, "preserved_output": True})
+
+            forged = _document(checked)
+            forged["assumptions"].append("Forged historical acceptance assumption.")
+            forged_report = bc.PayloadArchitectureVerification.from_dict(forged)
+            _native_rejection(lambda: bc.verify_payload_architecture(forged_report, build, expected_request=request, core=core),
                               code="architecture_assessment_mismatch")
-            checks.append({"id": name, "operation": "sdk.replay", "error": "architecture_assessment_mismatch"})
-            request_path, build_path = directory / (name + ".request.json"), directory / (name + ".build.json")
-            _save(request_path, changed_request)
-            _save(build_path, changed_build)
-            summary = _cli(["architecture-verify", build_path, "--expected-request", request_path, *core_flags],
-                           directory=directory, guards=guards, name=name + ".verification", expected=1)
-            _summary(summary, changed_build, failed)
-            checks.append({"id": name, "operation": "cli.verify", "exit_code": 1})
-            existing = directory / "cli.export.json"
-            _cli(["architecture-export", build_path, "--expected-request", request_path, "--output", existing, *core_flags],
-                 directory=directory, guards=guards, name=name + ".export-rejection", expected=2, preserved=(existing, request_path, build_path))
-            checks.append({"id": name, "operation": "cli.export", "exit_code": 2, "preserved_output": True})
+            checks.append({"id": "forged-report", "operation": "sdk.replay", "error": "architecture_assessment_mismatch"})
 
-        forged = _document(checked)
-        forged["assumptions"].append("Forged historical acceptance assumption.")
-        forged_report = bc.PayloadArchitectureVerification.from_dict(forged)
-        _native_rejection(lambda: bc.verify_payload_architecture(forged_report, build, expected_request=request, core=core),
-                          code="architecture_assessment_mismatch")
-        checks.append({"id": "forged-report", "operation": "sdk.replay", "error": "architecture_assessment_mismatch"})
-
-        absent = (guards / "missing-native-executable").resolve()
-        require(not absent.exists(), "Missing-executable fixture unexpectedly exists")
-        unavailable = CoreClient(absent)
-        _native_rejection(lambda: bc.compile(request, core=unavailable), unavailable=True)
-        checks.append({"id": "missing-selected-core", "operation": "sdk.compile", "error": "CoreUnavailable"})
-        existing_build = directory / "cli.build.json"
-        _cli(["architecture-build", "--request", directory / "request.json", "--output", existing_build, "--core-executable", absent],
-             directory=directory, guards=guards, name="missing-selected-core", expected=2, preserved=(existing_build,))
-        checks.append({"id": "missing-selected-core", "operation": "cli.build", "exit_code": 2, "preserved_output": True})
-        for name, path in (("request", directory / "request.json"), ("build", existing_build)):
-            _cli(["architecture-export", existing_build, "--expected-request", directory / "request.json", "--output", path, *core_flags],
-                 directory=directory, guards=guards, name="input-alias-" + name, expected=2, preserved=(path,))
-            checks.append({"id": "input-alias-" + name, "operation": "cli.export", "exit_code": 2, "preserved_output": True})
-    require(len(checks) == EXPECTED_CHECKS and len({(item["id"], item["operation"]) for item in checks}) == EXPECTED_CHECKS,
+            absent = (guards / "missing-native-executable").resolve()
+            require(not absent.exists(), "Missing-executable fixture unexpectedly exists")
+            unavailable = CoreClient(absent)
+            _native_rejection(lambda: bc.compile(request, core=unavailable), unavailable=True)
+            checks.append({"id": "missing-selected-core", "operation": "sdk.compile", "error": "CoreUnavailable"})
+            existing_build = directory / "cli.build.json"
+            _cli(["architecture-build", "--request", directory / "request.json", "--output", existing_build, "--core-executable", absent],
+                 directory=directory, guards=guards, name="missing-selected-core", expected=2, preserved=(existing_build,))
+            checks.append({"id": "missing-selected-core", "operation": "cli.build", "exit_code": 2, "preserved_output": True})
+            for name, path in (("request", directory / "request.json"), ("build", existing_build)):
+                _cli(["architecture-export", existing_build, "--expected-request", directory / "request.json", "--output", path, *core_flags],
+                     directory=directory, guards=guards, name="input-alias-" + name, expected=2, preserved=(path,))
+                checks.append({"id": "input-alias-" + name, "operation": "cli.export", "exit_code": 2, "preserved_output": True})
+    require(len(checks) == expected_checks and len({(item["id"], item["operation"]) for item in checks}) == expected_checks,
             "Missing or repeated public architecture route execution")
     receipt["allowed_calls"] = sorted(seen)
     receipt["python_semantics_blocked"] = True
@@ -394,6 +410,8 @@ def main(argv=None):
     parser.add_argument("--verify", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--artifacts", type=Path)
+    parser.add_argument("--workers", type=int, choices=(1, 2), default=1)
+    parser.add_argument("--partition", type=int, choices=(0, 1))
     args = parser.parse_args(arguments)
     started = time.monotonic()
     artifacts = (args.artifacts or args.output.with_suffix("") / "artifacts").resolve()
@@ -414,7 +432,17 @@ def main(argv=None):
             pin = hashlib.sha256(binary.read_bytes()).hexdigest()
             receipt["executables"][role] = {"path": str(binary), "sha256": pin}
             clients.append(CoreClient(binary, role=role, timeout_seconds=60, expected_sha256=pin))
-        campaign(*clients, Corpus(), artifacts, guards, receipt)
+        require(args.partition is None or args.workers == 1, "Nested architecture partitions are prohibited")
+        if args.partition is not None:
+            receipt.update(schema_version="biocompiler.architecture_routing_partition.v1", partition=args.partition)
+        if args.workers == 2:
+            if __package__:
+                from .architecture_routing_parallel import execute
+            else:
+                from architecture_routing_parallel import execute
+            execute(args, artifacts, guards, receipt)
+        else:
+            campaign(*clients, Corpus(), artifacts, guards, receipt, args.partition)
         receipt["status"], code = "success", 0
     except Exception as error:
         receipt["status"], code = "failure", 1

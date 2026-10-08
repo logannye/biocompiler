@@ -1,8 +1,15 @@
 open Bioc_wire
-module D = Bioc_domain.Policy_document
-module Names = Map.Make (String)
-module Seen = Set.Make (String)
 let checker_version = "biocompiler.ocaml.policy_check.v0.1"
+module Make (Charge : sig val charge : int -> unit end) = struct
+module Meter = Policy_generation_meter.Make(Charge)
+module List = Meter.List
+module String = Meter.String
+module Json = Meter.Json
+module D = Meter.Document
+module Names = Meter.Names
+module Seen = Meter.Seen
+let ( ^ ) = Meter.append_string
+let ( @ ) = List.append
 let str x = Json.String x
 let obj x = Json.Object x
 let arr x = Json.Array x
@@ -50,6 +57,7 @@ type state = {
   mutable dependencies : Json.t Names.t; mutable work : int;
 }
 let spend state =
+  Charge.charge 1;
   state.work <- state.work + 1;
   Diagnostic.require (state.work <= 8_000_000) "policy_check_limit" "Policy source analysis exceeds its deterministic work budget."
 let document_path path = if path = "/document" || String.starts_with ~prefix:"/document/" path then path else "/document" ^ path
@@ -532,11 +540,18 @@ let check document =
       Names.add id (source :: Option.value ~default:[] (Names.find_opt id acc)) acc) Names.empty (list "source_map" program) in
   let ledger (d : D.declaration) = obj ["id",str d.id;"kind",str (tag d.value);"path",str (document_path d.path);"value",d.value;
       "sources",arr (List.rev (Option.value ~default:[] (Names.find_opt d.id source_index)))] in
-  obj ["schema_version",str "biocompiler.policy_assessment.v0.1";
+  let result = obj ["schema_version",str "biocompiler.policy_assessment.v0.1";
     "status",str (if state.diagnostics = [] then "valid" else "invalid");
     "document_digest",str (D.fingerprint document);"program_digest",str (D.document_digest program);"artifact_digest",str (D.artifact_digest document);
     "declarations",arr (List.map ledger declarations);
     "requirements",arr (List.filter_map (fun (d : D.declaration) -> if tag d.value = "Requirement" then Some (ledger d) else None) declarations);
     "required_features",strings features;"dependencies",arr dependencies;"assumptions",strings assumptions;
     "unresolved_obligations",strings (Seen.elements state.obligations);"diagnostics",arr (List.rev state.diagnostics);
-    "semantic_status",str "unresolved";"target_status",str "unassessed";"lowering",str "unsupported";"artifact",str "withheld"]
+    "semantic_status",str "unresolved";"target_status",str "unassessed";"lowering",str "unsupported";"artifact",str "withheld"] in
+  Meter.preflight result;
+  result
+end
+
+let check ?(charge = Policy_generation_meter.no_charge) document =
+  let module Checked = Make(struct let charge = charge end) in
+  Checked.check document

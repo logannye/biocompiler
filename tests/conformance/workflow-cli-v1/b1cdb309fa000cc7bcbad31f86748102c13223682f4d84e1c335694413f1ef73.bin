@@ -1,0 +1,46 @@
+import atexit, hashlib, importlib.abc, json, os, pathlib, sys
+config = json.loads(pathlib.Path(os.environ["BIOCOMPILER_CLI_CAPTURE_CONFIG"]).read_bytes())
+denied = tuple(config["denied_modules"])
+class Deny(importlib.abc.MetaPathFinder):
+    def find_spec(self, fullname, path=None, target=None):
+        if any(fullname == name or fullname.startswith(name + ".") for name in denied):
+            raise AssertionError("Original CLI imported excluded transport: " + fullname)
+        return None
+finder = Deny()
+sys.meta_path.insert(0, finder)
+assert not any(name in sys.modules for name in denied)
+fault = config["fault"]
+if fault is not None:
+    import biocompiler.cli as cli
+    kind = fault["kind"]
+    if kind in ("replace", "fsync"):
+        def broken(*args, **kwargs):
+            raise OSError(fault["message"])
+        setattr(cli.os, kind, broken)
+    elif kind == "short_write":
+        original_fdopen = cli.os.fdopen
+        class Short:
+            def __init__(self, stream): self.stream = stream
+            def __enter__(self): self.stream.__enter__(); return self
+            def __exit__(self, *args): return self.stream.__exit__(*args)
+            def __getattr__(self, name): return getattr(self.stream, name)
+            def write(self, data): return self.stream.write(data[:-1])
+        cli.os.fdopen = lambda *args, **kwargs: Short(original_fdopen(*args, **kwargs))
+    elif kind == "serialized_length":
+        # Runs the real workflow first; only the later publication serializer
+        # is a deliberate boundary fault. This output has no semantic claim.
+        cli.SyntheticVerificationRecord.to_json = lambda self: " " * fault["bytes"]
+    else:
+        raise AssertionError("Unknown explicitly frozen publication fault")
+def audit():
+    root = pathlib.Path(config["root"])
+    modules = {}
+    for name, module in sorted(sys.modules.items()):
+        if name == "biocompiler" or name.startswith("biocompiler."):
+            path = pathlib.Path(module.__file__)
+            relative = path.relative_to(root).as_posix()
+            modules[name] = {"path": relative, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+    record = {"modules": modules, "guard_active": finder in sys.meta_path,
+              "denied_absent": not any(name in sys.modules for name in denied)}
+    pathlib.Path(config["audit"]).write_text(json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n")
+atexit.register(audit)

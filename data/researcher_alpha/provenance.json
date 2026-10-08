@@ -1,0 +1,110 @@
+{
+  "claim": "Frozen input authority and independently declared expected values. No historical acceptance transfers to the new facade or revision.",
+  "comparison_origin": {
+    "artifact_member": "component-originals.json",
+    "bytes": 473066,
+    "declaration_status": "source_declarations_only",
+    "generation": "Existing hosted private declaration emitter; source declarations only, not assembled output, acceptance, or empirical evidence.",
+    "generation_provenance": {
+      "action": {
+        "argv": [
+          "opam",
+          "exec",
+          "--",
+          "/home/runner/work/biocompiler/biocompiler/core/_build/default/test/component_fixture_export/main.exe",
+          "/home/runner/work/biocompiler/biocompiler/core/test/data/policy_material_request_v01.json",
+          "/home/runner/work/biocompiler/biocompiler/core/test/data/policy_material_state_v01.json",
+          "/home/runner/work/biocompiler/biocompiler/core/test/policy_component_support/literals.ml",
+          "/home/runner/work/biocompiler/biocompiler/core/test/policy_component_support/requests.ml",
+          "/home/runner/work/biocompiler/biocompiler/generated/development-feedback/component-originals.json"
+        ],
+        "elapsed_seconds": 0.1644247430000405,
+        "log": "component-originals.log",
+        "log_pin": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "name": "component-originals",
+        "returncode": 0,
+        "status": "passed"
+      },
+      "interpretation": "Retained historical source-declaration generation provenance only; no current acceptance is asserted.",
+      "receipt_bytes": 591477,
+      "receipt_member": "public-sdk.json",
+      "receipt_sha256": "26b3030b457be4ca00534df99740234acbdead4d4d29696de54f7d346e872a07"
+    },
+    "schema_version": "biocompiler.policy_component_original_fixture.v0.1",
+    "selection": "case B request and limits, unchanged JSON values",
+    "sha256": "726975219d34d5aad255440b89d58283f8cce1a2e4a6adfb6f6fea01feb41249",
+    "source_sha256": {
+      "core/test/data/policy_material_request_v01.json": "3c8d3ac797b29f41371d94e1093103dfdd35400896a1a0829a8ec166c7a397a6",
+      "core/test/data/policy_material_state_v01.json": "9628f56fb43cd9c0b768db443bfb1e85bfef2bab4d0a209681fbd8f3a72a6af1",
+      "core/test/policy_component_support/literals.ml": "11414beb14436fedbf97cf59019a1a58fcf2b5885ebcd66b5745137791cdd85d",
+      "core/test/policy_component_support/requests.ml": "906aa3bef24536222ab242f8808d493dead7c110edb018e06b4f59e7eda1525b"
+    },
+    "upstream_revision": "fdb65bd3a2a73f058d71720726368443bc525864",
+    "upstream_run_attempt": "1",
+    "upstream_run_id": "37672167257",
+    "upstream_run_url": "https://github.com/logannye/biocompiler/actions/runs/37672167257"
+  },
+  "files": [
+    {
+      "bytes": 479420,
+      "path": "staged-input.json",
+      "sha256": "639e565c0fd1a7167dfdfe958c59f8087e55ab704a19726dff68de3d2b11e366"
+    },
+    {
+      "bytes": 356921,
+      "path": "comparison-input.json",
+      "sha256": "06511469e841fefd8de4ad1d6be84f20005d8c5fa3473571013c95a762b30f46"
+    },
+    {
+      "bytes": 4489,
+      "path": "expected.json",
+      "sha256": "ee332f922023e535ae4360e5ed6a8a4764011e293eca39fb40424f931a641519"
+    },
+    {
+      "bytes": 5206,
+      "path": "qualification.json",
+      "sha256": "35f66db6b7d27fe86715ff77f255b23253ae70501bbdc88ada1f96f702909706"
+    },
+    {
+      "bytes": 3943,
+      "path": "negative-controls.json",
+      "sha256": "154b218b41c68d1672f19965d092767c8b91fbaac1ddb425cb3b0263ee2d17a0"
+    }
+  ],
+  "oracle_sources": [
+    {
+      "locations": [
+        "driver_component: root driver_body literal",
+        "decision_component: leader_A and leader_B literals",
+        "root: coding and terminal-tail coordinates",
+        "chemistry: artificial_cap and empty modification inventory"
+      ],
+      "path": "core/test/policy_component_support/literals.ml",
+      "sha256": "11414beb14436fedbf97cf59019a1a58fcf2b5885ebcd66b5745137791cdd85d"
+    },
+    {
+      "locations": [
+        "request original roots and finite operating domain"
+      ],
+      "path": "core/test/data/policy_staged_material_v01.json",
+      "sha256": "d764d9a8f3ca3e64998eddb43de5750cc30425fb59713b09b09cb31560f74daf"
+    }
+  ],
+  "recorded_date": "2026-10-07",
+  "rights_record": {
+    "external_biological_sequence_assets_copied": false,
+    "origin": "Existing project-authored artificial software literals and supplied contract declarations.",
+    "project_distribution_license": "Not selected by this corpus; no project LICENSE was present at qualification. No third-party license or patent permission is inferred."
+  },
+  "schema_version": "biocompiler.researcher_alpha_corpus_provenance.v0.1",
+  "staged_origin": {
+    "bytes": 550066,
+    "path": "core/test/data/policy_staged_material_v01.json",
+    "seed_sha256": "d03cdf56a0a5cbbfab5ce5bdd9585ef85bf493e88464005b9147aa7dd3ecfe4a",
+    "selection": "request and limits, unchanged JSON values",
+    "sha256": "d764d9a8f3ca3e64998eddb43de5750cc30425fb59713b09b09cb31560f74daf"
+  }
+}

@@ -34,6 +34,16 @@ whether the supplied parts fulfill their contracts remains unresolved. The
 broader DNA utilities and earlier milestones described below are infrastructure
 and historical context, not an additional current product target.
 
+
+The additive persistent pipeline session source now keeps one native manager in
+one Core process, with explicit original-authority commands and a shared lifetime
+budget. Python transports framed commands and immutable byte receipts; serialized
+records cannot install acceptance. Fixed synthetic/component providers and
+partial logical-error state remain native. Independent Verify has no session
+entry point or producer dependency. This source checkpoint still requires hosted
+validation and public typed manager/callback integration before production use;
+see the [migration roadmap](language-migration-roadmap.md).
+
 biocompiler translates supported high-level therapeutic intent into exact RNA payload specifications for human immune cells engineered in vivo, conditional on supplied executable component contracts and sequence templates. Python is the implemented authoring language; natural-language authoring is a future frontend to the same explicit requirements. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**. Each molecular choice remains traceable to the intended response, its deployment context, declared assumptions and any separately supplied evidence.
 
 **Human in-vivo immune-cell deployment is the sole product target.** Non-human

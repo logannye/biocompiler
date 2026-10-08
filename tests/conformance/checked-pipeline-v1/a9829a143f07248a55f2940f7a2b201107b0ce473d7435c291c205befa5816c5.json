@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.ScopedObligation","fields":{"description":"A selected coding sequence does not implement product processing, localization or secretion.","evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"unresolved"},"id":"secretion_mechanism","scope":"therapeutic_implementation"}}

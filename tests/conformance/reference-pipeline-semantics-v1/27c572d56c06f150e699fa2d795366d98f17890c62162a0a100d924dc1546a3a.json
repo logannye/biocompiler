@@ -1,0 +1,1 @@
+{"class":"mappingproxy","items":[[{"scalar":"str","value":"policy"},{"scalar":"str","value":"ascii-layout-whitespace-and-uppercase.v1"}],[{"scalar":"str","value":"removed_ascii_whitespace"},{"scalar":"int","value":28}],[{"scalar":"str","value":"uppercased_characters"},{"scalar":"int","value":0}]],"kind":"mapping"}

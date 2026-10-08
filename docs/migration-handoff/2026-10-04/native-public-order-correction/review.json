@@ -1,0 +1,38 @@
+{
+  "base_revision": "2cf35b440ce9fca6dc951709b27f8122f00b81f7",
+  "focused_python": {
+    "3.11": {
+      "actual_ast_definition_source_count": 3,
+      "actual_imported_project_source_count": 3,
+      "duration_seconds": 0.321535,
+      "log_sha256": "f386d918b7d9d330fef2bd28eb78398a3c13f534fd1e246dd21469665c0983b4",
+      "receipt_sha256": "241323859f3db34e8d07d2195e053ee56cc64b08858d5235a16bb8272c757f55",
+      "runtime": "3.11.15",
+      "status": "pass",
+      "tests_run": 9
+    },
+    "3.14": {
+      "actual_ast_definition_source_count": 3,
+      "actual_imported_project_source_count": 3,
+      "duration_seconds": 0.372067,
+      "log_sha256": "5826ac3dd767994b22b261e915ac740b22691951a0437ac86a3693b665b453be",
+      "receipt_sha256": "23d56c326377e990301a0853832fbf142fed7ec0d4a18013214cca1f8d6cfaca",
+      "runtime": "3.14.6",
+      "status": "pass",
+      "tests_run": 9
+    }
+  },
+  "independent_source_review": "consolidation_review: no remaining concrete issue after root found and corrected normalized Target fixture comparison before execution",
+  "native_diff_sha256": "21fe96cbe370f61bb63ff79f4a553582d3ddc9ddae354ee0497b511feefbc269",
+  "native_source_files_reviewed": 11,
+  "native_status": "source reviewed only; no local native parsing, compilation, execution or packaging",
+  "original_test_prefixes_verified": 8,
+  "static_checks": {
+    "dependency_boundaries": "passed",
+    "diff_whitespace": "passed",
+    "inventory": "3310 entries; generated and checked"
+  },
+  "unchanged_authority_files_verified": 13,
+  "utc": "2026-10-04T05:22:42.230606+00:00",
+  "whole_validation": "requires fresh exact-revision hosted CI; prior failed run and diagnostic alignment are not acceptance"
+}

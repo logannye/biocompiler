@@ -15,6 +15,9 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
 
+[project.optional-dependencies]
+core = ["biocompiler-core==0.1.0.dev29"]
+
 [project.scripts]
 biocompiler = "biocompiler.entrypoint:main"
 
@@ -28,4 +31,4 @@ Issues = "https://github.com/logannye/biocompiler/issues"
 where = ["src"]
 
 [tool.setuptools.package-data]
-biocompiler = ["py.typed", "studio/static/*", "studio/data/*.json"]
+biocompiler = ["_core_release.json", "py.typed", "studio/static/*", "studio/data/*.json"]

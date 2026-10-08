@@ -1,0 +1,10 @@
+{
+  "pr85_source": "4790ac559c70a77dcbd0141331609b837bba0096",
+  "pr86_source": "ee61eb3e94d0bf93abb308cad7715080be4ed524",
+  "identical_cli_checkers": {
+    "tools/check_native_workflow_cli.py": "e902e5faf7fcd8c76ff34825a065a5961c79cc3b5b2e427467090d5d5cef3890",
+    "tools/check_native_synthetic_selection_cli.py": "9822725b704fcab547a3afed967a4a31f27cce1ab8de4567ed8eed7f3546f230"
+  },
+  "shared_defect": "Fresh environment interpreter is explicit, but child PATH is inherited unchanged; both actual CLI checkers call shutil.which(biocompiler).",
+  "pr85_status": "No fresh-slot failure claimed; defect inferred from identical lookup and inherited environment, supported by actual PR86 inner failures."
+}

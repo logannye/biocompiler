@@ -1,0 +1,155 @@
+{
+  "files": {
+    "tools/check_pipeline_fixed_continuation_install.py": {
+      "current": {
+        "bytes": 76828,
+        "sha256": "5c557ea5d9c1d32e6a1a1a946e6946944b6c30f230cb29506d05ea34a5b14f0a"
+      },
+      "historical": {
+        "bytes": 74660,
+        "sha256": "a50d4f3bed59fdd308a169e765e3d8b9145ad616c290e7bf635765f038f9b5b4"
+      },
+      "spans": [
+        {
+          "after": "    from . import capture_pipeline_fixed_continuation_semantics as occurrences\n",
+          "before": "",
+          "offset": 1018
+        },
+        {
+          "after": "    import capture_pipeline_fixed_continuation_semantics as occurrences\n",
+          "before": "",
+          "offset": 1145
+        },
+        {
+          "after": "OCCURRENCE_ORACLE_SHA256 = '5faf7890dae5a32aa3b9db704ec7ad0661ba2d46632e754540bd2a2139e89c84'\n",
+          "before": "",
+          "offset": 1788
+        },
+        {
+          "after": "            actual = r.raw_file(ROOT / path)\n            if sha(actual) == identity:\n                continue\n",
+          "before": "",
+          "offset": 4508
+        },
+        {
+          "after": "                fixed.source_tool('manager_registration_source_lineage').verify_tool_source(actual, identity)\n",
+          "before": "                fixed.source_tool('manager_registration_source_lineage').verify_tool_source(r.raw_file(ROOT / path), identity)\n",
+          "offset": 4748
+        },
+        {
+          "after": "                raise AssertionError('Original public build source changed: '+path)\n",
+          "before": "                require(sha(r.raw_file(ROOT / path)) == identity, 'Original public build source changed: '+path)\n",
+          "offset": 4893
+        },
+        {
+          "after": "    def __init__(self, core, corpus, oracle, occurrence_graphs=None):\n",
+          "before": "    def __init__(self, core, corpus, oracle):\n",
+          "offset": 17489
+        },
+        {
+          "after": "        self.occurrence_graphs = occurrence_graphs\n",
+          "before": "",
+          "offset": 17602
+        },
+        {
+          "after": "        require(self.occurrence_graphs is not None and expected['id'] in self.occurrence_graphs,\n            'Original per-occurrence public graph is absent')\n        equal_public_graph(case['graph'], self.occurrence_graphs[expected['id']])\n",
+          "before": "        equal_public_graph(case['graph'], public_graph(self.corpus.authorities[expected['authority']]))\n",
+          "offset": 25842
+        },
+        {
+          "after": "    occurrences.SOURCE, 'tests/test_pipeline_fixed_continuation_identity.py',\n",
+          "before": "",
+          "offset": 27116
+        },
+        {
+          "after": "        'original_occurrences': {'path': occurrences.OUTPUT, 'sha256': OCCURRENCE_ORACLE_SHA256,\n            'identity': 'every_original_case_context_and_call_index;deduplicated_complete_graphs_only'},\n",
+          "before": "",
+          "offset": 28400
+        },
+        {
+          "after": "    occurrence_original = occurrences.read_frozen(corpus, sys.modules[__name__])\n    current_occurrences = occurrences.capture(corpus, oracle, sys.modules[__name__])\n    occurrence_receipt = {'_artifact_directory': receipt['_artifact_directory'], 'artifacts': receipt['artifacts']}\n    providers.capture_counterpart(occurrence_receipt, current_occurrences,\n        'fixed-continuation-original', occurrence_original)\n    receipt['occurrence_original'] = {key: value for key, value in occurrence_receipt.items()\n        if key not in ('_artifact_directory', 'artifacts')}\n    occurrence_graphs = occurrences.validate(current_occurrences, corpus, sys.modules[__name__])\n",
+          "before": "",
+          "offset": 33566
+        },
+        {
+          "after": "    witness = NativeWitness(core, corpus, oracle, occurrence_graphs)\n",
+          "before": "    witness = NativeWitness(core, corpus, oracle)\n",
+          "offset": 33634
+        },
+        {
+          "after": "def validate_case(corpus, expected, actual, evidence, details, oracle, authority_objects, *, expected_graph=None):\n",
+          "before": "def validate_case(corpus, expected, actual, evidence, details, oracle, authority_objects):\n",
+          "offset": 40606
+        },
+        {
+          "after": "    if expected_graph is None:\n        expected_graph = public_graph(corpus.authorities[expected['authority']])\n",
+          "before": "    expected_graph = public_graph(corpus.authorities[expected['authority']])\n",
+          "offset": 41172
+        },
+        {
+          "after": "    frozen_occurrences = occurrences.read_frozen(corpus, sys.modules[__name__])\n    current_occurrences, _ = providers.validate_counterpart(receipt['occurrence_original'], artifacts,\n        'fixed-continuation-original', frozen_occurrences)\n    occurrence_objects = []\n    equal(occurrences.capture(corpus, oracle, sys.modules[__name__], retain=occurrence_objects), current_occurrences,\n        'Independent original occurrence authority is not reproducible')\n    occurrence_graphs = occurrences.validate(current_occurrences, corpus, sys.modules[__name__])\n    authorities = {case['id']: objects['authority_objects']\n        for case, objects in zip(current_occurrences['occurrences'], occurrence_objects)}\n",
+          "before": "    authorities = {case['authority_sha256']: objects['authority_objects']\n        for case, objects in zip(corpus.build['cases'], originals)}\n",
+          "offset": 63748
+        },
+        {
+          "after": "            artifacts.json(row['evidence'], r.MAX_ARTIFACT_BYTES), details, oracle, authorities[expected['id']],\n            expected_graph=occurrence_graphs[expected['id']])\n",
+          "before": "            artifacts.json(row['evidence'], r.MAX_ARTIFACT_BYTES), details, oracle, authorities[expected['authority']])\n",
+          "offset": 64711
+        }
+      ]
+    },
+    "tools/pipeline_original_counterpart.py": {
+      "current": {
+        "bytes": 26683,
+        "sha256": "8c0fa1a8433805a0805e374502c5b61fe8e28de382a51dfb40d9f643e22b15bc"
+      },
+      "historical": {
+        "bytes": 25397,
+        "sha256": "a9ebbb5ca05d0b3a43e9fee898f011df9d13047226a11c48a9f0804bfaebfa6e"
+      },
+      "spans": [
+        {
+          "after": "TASKS = ('deferred', 'callbacks', 'identity', 'tests', 'fixed-registration-original', 'fixed-provider-original', 'fixed-build-original', 'fixed-continuation-original')\n",
+          "before": "TASKS = ('deferred', 'callbacks', 'identity', 'tests', 'fixed-registration-original', 'fixed-provider-original', 'fixed-build-original')\n",
+          "offset": 2016
+        },
+        {
+          "after": "    if closure_task(task, test_module) not in ('fixed-build-original', 'fixed-continuation-original'):\n",
+          "before": "    if closure_task(task, test_module) != 'fixed-build-original':\n",
+          "offset": 3001
+        },
+        {
+          "after": "        files.append('tools/capture_pipeline_fixed_continuation_semantics.py')\n    if task in ('fixed-build-original', 'fixed-continuation-original'):\n",
+          "before": "    if task=='fixed-build-original':\n",
+          "offset": 3807
+        },
+        {
+          "after": "    if task in ('fixed-build-original', 'fixed-continuation-original'):\n",
+          "before": "    if task=='fixed-build-original':\n",
+          "offset": 4814
+        },
+        {
+          "after": "    if task == 'fixed-continuation-original':\n        files.extend('data/references/fap_car/' + name for name in\n            ('manifest.json', 'source-excerpts.html', 'independent-audit.json', 'curation.md'))\n        from tools import check_pipeline_fixed_continuation_install as continuation\n        raw = (ROOT / continuation.BUILD_ORACLE).read_bytes()\n        require(lineage.sha(raw) == continuation.BUILD_ORACLE_SHA256,\n            'Original continuation authority archive differs')\n        files.extend('tests/conformance/fixed-pipeline-literals-v1/' + case['authority_sha256'] + '.json'\n            for case in json.loads(raw)['cases'])\n",
+          "before": "",
+          "offset": 5249
+        },
+        {
+          "after": "            cwd=directory, env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE,\n            timeout=600 if task == 'fixed-continuation-original' else 90)\n",
+          "before": "            cwd=directory, env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=90)\n",
+          "offset": 9266
+        },
+        {
+          "after": "        elif manifest['task']=='fixed-continuation-original':\n            from tools import capture_pipeline_fixed_continuation_semantics as occurrence\n            from tools import check_pipeline_fixed_continuation_install as driver\n            value=occurrence.capture(driver.Corpus(), driver.load_oracle(installed=False), driver)\n",
+          "before": "",
+          "offset": 15824
+        },
+        {
+          "after": "    require(counterpart['manifest']['task'] in ('fixed-provider-original','fixed-build-original','fixed-continuation-original','callbacks'),\n",
+          "before": "    require(counterpart['manifest']['task'] in ('fixed-provider-original','fixed-build-original','callbacks'),\n",
+          "offset": 23229
+        }
+      ]
+    }
+  },
+  "revision": "1bd9c2e88573e01b3c46d5134dd30d21c76fa0df",
+  "schema": "biocompiler.pipeline_occurrence_source_delta.v1"
+}

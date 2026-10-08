@@ -1,0 +1,1 @@
+[{"code":"construct_dependencies","instance_id":null,"message":"Construct and co-payload dependencies remain explicit and unresolved in this profile.","molecule_id":null,"requirement_ids":["exact_reference"],"source":null,"status":"unsupported"}]

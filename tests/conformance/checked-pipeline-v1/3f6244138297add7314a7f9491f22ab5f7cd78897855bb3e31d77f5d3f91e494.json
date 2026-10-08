@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.CheckSpec","fields":{"discharges":{"$type":"tuple","items":["component_linkage"]},"evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"model_conditional"},"id":"layout_composition"}}

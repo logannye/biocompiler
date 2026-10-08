@@ -1,0 +1,2593 @@
+{
+  "schema_version": "biocompiler.policy_component_rule_coverage.v0.1",
+  "claim_scope": "reviewed_component_route_and_witness_source_inventory_only",
+  "profile": "policy-component-mrna-v0.1",
+  "sources": [
+    {
+      "path": "core/bin/core/main.ml",
+      "sha256": "f586816392c3b22072c7e2a0d7a0063d621911e0957519f442e0a9727451ecad",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/candidate_runtime/policy_primitives.ml",
+      "sha256": "8350d914aa8ab87d47d568e5968cf37cd4932992145d25c4224a91cf88c7f9cd",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "fail": 27,
+          "require": 34
+        },
+        "profile_literals": {
+          "biocompiler.policy_primitive_execution.v0.1": 1,
+          "biocompiler.policy_staged_primitive_execution.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/candidate_runtime/policy_primitives.mli",
+      "sha256": "b1a9bd2c909d625766ca730fbc6f06eb512e06285126df6ae431a2c4b8b9e154",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_admission.ml",
+      "sha256": "185cd8857caf6ee43461fde6b9c064745cb9a9d692ca16c848134b9777a53745",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "fail": 5,
+          "require": 52
+        },
+        "profile_literals": {
+          "biocompiler.policy_operational_admission.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_admission.mli",
+      "sha256": "5ff3e8bf9b7a12da3f2afb5f006ba1b32643777ef9b0beb509b55da515ffe8f3",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_check.ml",
+      "sha256": "d8fc6d8a30ede74b89d90aca49d7ec77756761f317205e9bf96a906760ccd054",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 59
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_check.v0.1": 1,
+          "biocompiler.policy_assessment.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_check.mli",
+      "sha256": "7ef1d1adfe8e35b356ca84ac603fdb743aff0f33fa33525369fd285be2516176",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_correspondence.ml",
+      "sha256": "12f7b455aec1e4aacf2e261de065979a550c1d2a84c58ff901166d545e499c35",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 4
+        },
+        "profile_literals": {
+          "biocompiler.policy_correspondence.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_correspondence.mli",
+      "sha256": "04a61c09a03520988a19dda0e7806fe8e69e5c24749158f4a1b2be69984770ec",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_generation_meter.ml",
+      "sha256": "13c4647bc0efcb50f239af693e8fa3281fdbca4115ce4e5a84bcd4e9a4a1b965",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_generation_meter.mli",
+      "sha256": "f1bb20416d692f4d0aa72b92028f75f6ea5ca532ae90e1d7593b424e703bf4ba",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_implementation_binding_check.ml",
+      "sha256": "02327961ccdf3ff81a1777f19b6d3cabc9af4a7e50089a8d3bc1806d8f37e0f7",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 27,
+          "Diagnostic.require": 1,
+          "require": 95
+        },
+        "profile_literals": {
+          "biocompiler.policy_implementation_binding_report.v0.1": 1,
+          "biocompiler.policy_implementation_binding_report.v0.2": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_implementation_binding_check.mli",
+      "sha256": "6dbee32bd2ef5ab6b3bffae8a34ddad6fa8cf7cd393c5cbe7f1cd437b8a42ffd",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_realization_admission.ml",
+      "sha256": "6b22b165a96a1aa1b8ab8a73d1485f375e2eb08ef2ffb4e3901d6366d9023b49",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 2,
+          "require": 12,
+          "supported": 11
+        },
+        "profile_literals": {
+          "biocompiler.policy_realization_admission.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_realization_admission.mli",
+      "sha256": "2dd528a0d2d89666d9a960c3dfea626916abe766bbc974a8aaf0ee7c3c23f701",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/construction_producer.ml",
+      "sha256": "6f36a03c157b48bc7f0ed2688e30084b1b1a9cadc4ed3b907fc4adffc71ee67d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 20
+        },
+        "profile_literals": {
+          "biocompiler.molecule_coordinate_path.v0.1": 1,
+          "biocompiler.molecule_coordinate_space.v0.1": 1,
+          "biocompiler.molecule_index_span.v0.1": 1,
+          "biocompiler.ocaml.construction_producer.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/compiler/construction_producer.mli",
+      "sha256": "89533d371dc7e698eb0240dc3c2a47d715534547ac285d5d21a4f30bda740719",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_component_lowering.ml",
+      "sha256": "9e6dc223872e739f516a8602254028b37f29a5bf29be348959f751aa7811f0b0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 2,
+          "supported": 3
+        },
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_component_lowering.mli",
+      "sha256": "aced09ced9c22d4f06520f30d4e077198ba01e04cb832a0360bc79e4b1254a24",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_implementation_lowering.ml",
+      "sha256": "a1e08b6864a5afdf7ea5b4d903306369a97e521048dc22222538a668aa76910b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 11,
+          "Diagnostic.require": 5,
+          "supported": 27
+        },
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_implementation_lowering.mli",
+      "sha256": "894af56fc2275960c62597eed090fc1112a67ca96ce0ef3ac7cdc7babb215af2",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_lowering.ml",
+      "sha256": "9cd1d929568d6802166cc60dc64db421dfc753530d9667ab0fb298199add47d6",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_lowering.mli",
+      "sha256": "aaebf77357465d3191e28953b0ff8b6dbc35bc910a3b5ea6101b1e141c8d383f",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_staged_lowering.ml",
+      "sha256": "52de7854626d3cc0fbc9300f3db2447b619cff3850ebe12561417e56ee48eb79",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 11,
+          "Diagnostic.require": 1,
+          "supported": 28
+        },
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_staged_lowering.mli",
+      "sha256": "d4b1762b581e7a479cd449644e36ce9c33f62dad102591cffffd0d838a67acba",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/recoding_producer.ml",
+      "sha256": "3c5897fc0680a9ee746bbebc59203e104e9ef9a6a5787b9967652d2e8dbb2dab",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "require": 30
+        },
+        "profile_literals": {
+          "biocompiler.construction_producer.resources.v1": 1,
+          "biocompiler.molecule_coordinate_path.v0.1": 1,
+          "biocompiler.molecule_coordinate_space.v0.1": 1,
+          "biocompiler.molecule_index_span.v0.1": 1,
+          "biocompiler.ocaml.recoding_producer.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/compiler/recoding_producer.mli",
+      "sha256": "523903e1f7eaa529a05564a2716b6f87b6608d234c27db09fbc8242a295fd363",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_assembly_proposal.ml",
+      "sha256": "744f915e383f61997e36af948a40b8b15a35f6a19540a49b5bafc9ad7fe43320",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "require": 5
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_assembly_proposal.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_assembly_proposal.mli",
+      "sha256": "2935a1494200b31d8f4b722cd09475882f745a8bdbd8987e4b16f09168fcca78",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_assembly_rule.ml",
+      "sha256": "916ccbb5c7e388873ca5bd4be146adff46b4272f7785bcfdbce720ce50fb8a94",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "fail": 23,
+          "require": 55
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_assembly_rule.v0.1": 1,
+          "biocompiler.policy_exact_component_assembly.v0.1": 1,
+          "biocompiler.policy_identity_transport.v0.1": 1,
+          "biocompiler.policy_staged_component_assembly.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_assembly_rule.mli",
+      "sha256": "a2d73f747fd00b82966e22679e37fc6c6a816c1261236a6f4d49eb44e5fef399",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_context.ml",
+      "sha256": "9aad665146268633f4fd7e51ed33853efc4617cd49c326f2a6ed1a82c9f70c09",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 11
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_complete_records.v0.1": 1,
+          "biocompiler.policy_component_context.v0.1": 1,
+          "biocompiler.policy_component_mrna.v0.1": 1,
+          "biocompiler.policy_component_ordered_union.v0.1": 1,
+          "biocompiler.policy_staged_component_complete_records.v0.1": 1,
+          "biocompiler.policy_staged_component_mrna.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_context.mli",
+      "sha256": "b36c6f93aa100c0b7181f765292a4fa56ddc32e3d90884c1597f8be41999446d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_fragment.ml",
+      "sha256": "5e5c398e4a88683ec7a82f7c658c6a79c1a51f5be88ee078e4da297c5ee9450c",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "fail": 13,
+          "require": 25
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_fragment.resources.v0.1": 1,
+          "biocompiler.policy_component_fragment.v0.1": 1,
+          "biocompiler.policy_exact_fragment.v0.1": 1,
+          "biocompiler.policy_primitive_execution.v0.1": 1,
+          "biocompiler.policy_staged_fragment.v0.1": 1,
+          "biocompiler.policy_staged_primitive_execution.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_fragment.mli",
+      "sha256": "7184863ef76edae4198bca284adaccd72f9c266d0d7fb673def13bef22b6e1a8",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_library.ml",
+      "sha256": "69769174fa3dd14914fbf9037a7d83f12a0795d628931f46b117d671c22a6b2b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 6
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_library.v0.1": 1,
+          "biocompiler.policy_exact_component_library.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_library.mli",
+      "sha256": "8bda829d142efe6bc7b9356c6fec92d09108ef07592df576dda28b282286e42c",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_material.ml",
+      "sha256": "d9a6a919fde6bf34dd75bc37ffe9c4c0e65579b99b9c55e42dd0d33a2c95545b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 6,
+          "Diagnostic.require": 1,
+          "require": 25
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_material.v0.1": 1,
+          "biocompiler.policy_exact_local_material.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_material.mli",
+      "sha256": "842042bda5b80933543e5061e64cc99c722111e53148f4a87e58e10b7c0d9e87",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_material_candidate.ml",
+      "sha256": "c590d17f0c1b2b7e3b89601cc0d9664a0a3770fb9a8a0a06fb17d05fbc611722",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 2
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_material_candidate.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_material_candidate.mli",
+      "sha256": "af8af17f1d891b28a79ecfdf4dea1a3d6bc902ecb7c27ce9c5469980cbbe9016",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_material_request.ml",
+      "sha256": "052666c385fea9b49798dc8484a46619b5fae88ba8c2af27bdc70023414deb98",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 6,
+          "Diagnostic.require": 3,
+          "require": 20
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_material_request.v0.1": 1,
+          "biocompiler.policy_component_material_resources.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_material_request.mli",
+      "sha256": "2d4d773ec7deccc0380dbf9da4996b600221c01fd03196e0118c49c1ab6558cc",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_selection_candidate.ml",
+      "sha256": "9a7448d6721d5dbac2a14487a60e0d0951e70846350261b73a53d86eefcb5dad",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 3,
+          "require": 5
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_selection_candidate.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_selection_candidate.mli",
+      "sha256": "515b2751d95fdef64fd6a1ea783349a02525db82aaa4f0fdadcf157e75745c60",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_selection_request.ml",
+      "sha256": "b9300c96ab66f7b657d39fa2301694e19808343b5f84fcee4505fbfc14d62271",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 3,
+          "require": 8
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_material_selection.v0.1": 1,
+          "biocompiler.policy_component_selection_request.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.2": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_selection_request.mli",
+      "sha256": "24cb9c515d9ca2fd0c8e72d65ddc415974e6f8ea99b6cbfada3db2ed55389a79",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_implementation.ml",
+      "sha256": "764e22441222b9c9e61723f51a0b22de2b169d9568397e3c3bc035e714fd54f1",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "fail": 22,
+          "require": 48
+        },
+        "profile_literals": {
+          "biocompiler.policy_implementation.resources.v0.1": 1,
+          "biocompiler.policy_implementation.v0.1": 1,
+          "biocompiler.policy_implementation_library.v0.1": 1,
+          "biocompiler.policy_primitive_model.v0.1": 1,
+          "biocompiler.policy_staged_observables.v0.1": 1,
+          "biocompiler.policy_staged_primitives.v0.1": 1,
+          "biocompiler.policy_truth_observables.v0.1": 1,
+          "biocompiler.policy_truth_primitives.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_implementation.mli",
+      "sha256": "da5c8cb099088e4da782ef600d37a6e0098c8d7a07184d188eabf6ca08bde623",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_implementation_binding.ml",
+      "sha256": "16db1b9b5e16a9310e4e5a5290e705a9c44e15e08e86fb89586fed1204211088",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 8
+        },
+        "profile_literals": {
+          "biocompiler.policy_exclusive_source_graph.v0.1": 1,
+          "biocompiler.policy_implementation_binding.v0.1": 1,
+          "biocompiler.policy_implementation_binding.v0.2": 1,
+          "biocompiler.policy_staged_source_graph.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_implementation_binding.mli",
+      "sha256": "83392f15f132d38302a09042ccdf2b8e89354ba43023735dd992ef6d37f83609",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_material_contract.ml",
+      "sha256": "af026c68bb6f37db66a20ed6bd126ef72ed04dec1a6e94a959616b4431a83102",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 6,
+          "Diagnostic.require": 1,
+          "require": 15
+        },
+        "profile_literals": {
+          "biocompiler.policy_material_binding.v0.1": 1,
+          "biocompiler.policy_material_contract.v0.1": 1,
+          "biocompiler.policy_material_kernel.v0.1": 1,
+          "biocompiler.policy_primitive_execution.v0.1": 1,
+          "biocompiler.policy_truth_mrna_material.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_material_contract.mli",
+      "sha256": "926c41f0a9c3b93328437c6f628387db9b4b70b9204595f6178a87c7ea8c8266",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_operating_domain.ml",
+      "sha256": "bbdc0925c24c95852f356a513c1707f330da3b936227a24e0234730a9deb5384",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 5,
+          "Diagnostic.require": 1,
+          "require": 27
+        },
+        "profile_literals": {
+          "biocompiler.policy_operating_domain.v0.1": 1,
+          "biocompiler.policy_truth_domain.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_operating_domain.mli",
+      "sha256": "cbaa01212d62d053ac045151b20b31cc2fa95aa4f5e08db93ea0ab2ee044c095",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/producer_service/policy_component_material_producer.ml",
+      "sha256": "106200a230a1eb27373362412e5f53acb99e3190d41ff0a64d3d30e94b84164d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/producer_service/policy_component_material_producer.mli",
+      "sha256": "8b082327497955b7f3137d55df0cddc3d24ec492ce3cd448ece0e6269555348e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/producer_service/policy_component_selection_producer.ml",
+      "sha256": "a2961ec002049305ba82505a0bc81ad79cdccd1f32d8fdff1685cf5634f5acfb",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/producer_service/policy_component_selection_producer.mli",
+      "sha256": "df30b6a90fb9f94c75f0fe93d48935bbbc66de91e992f4c2d0cb27b187ac83e2",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/producer_service/producer_service.ml",
+      "sha256": "5d6be9fffa94bd9b7a160da4348cf1add3d77e6d5326add8d32ef330c73812c9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {
+          "biocompiler.core.architecture_build.v1": 1,
+          "biocompiler.core.architecture_export.v1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/producer_service/producer_service.mli",
+      "sha256": "b38ad3667b8166bcac2582db5cbba300c94f5acd326651f04dcb055377cdbb6d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_assembly_check.ml",
+      "sha256": "14e1f7d6632437d2478a01064c099fe1bfb203c831368060796f116b32709394",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 3,
+          "verify": 34
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_assembly_check.v0.1": 1,
+          "biocompiler.policy_component_assembly_assessment.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_assembly_check.mli",
+      "sha256": "a2e91133165ed883aa73ba4ed96a141c205c84ed4a0a289abf75eb01b7a8ab74",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_context_check.ml",
+      "sha256": "a2397be65baf6d2b43a734a9c31617ff77631d9bbee51fbd32632e2e5e5cc400",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 14,
+          "Diagnostic.require": 5,
+          "fail": 44,
+          "supported": 18
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_context_check.v0.1": 1,
+          "biocompiler.policy_component_context_assessment.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_context_check.mli",
+      "sha256": "a81e90704baba21c11cb69817908fdf36c840f5e01b5af62d740f7d430265b3f",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_material_check.ml",
+      "sha256": "74cb77d78711d916860255cdbc2e65228589e0bf6eac674d9398b99217df14aa",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 4,
+          "require": 6
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_material_check.v0.1": 1,
+          "biocompiler.policy_component_material_assessment.v0.1": 1,
+          "biocompiler.policy_component_material_candidate.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_material_check.mli",
+      "sha256": "1f5d283abdf622e1564a11b11d5d96122fc9c2654b62c649f985d70c61ab52f9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+      "sha256": "e3432d1348223a7212e08b732abd7e556c57cfbbfeb435cf306d1d5510489182",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 2,
+          "require": 9
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_selection_check.v0.1": 1,
+          "biocompiler.policy_component_selection_assessment.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_check.mli",
+      "sha256": "b4bbc4a3daaa9bf506957b5fb730312ba644fc1028e92bc6c98459ae798f06c7",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_common.ml",
+      "sha256": "8ab2c7e39f3de4183c341bc76d4c88621610877a0b6752eabf81928fda169386",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 7,
+          "Diagnostic.require": 2,
+          "supported": 28
+        },
+        "profile_literals": {
+          "biocompiler.construction_concatenate.v0.1": 1,
+          "biocompiler.policy_component_ordered_union.v0.1": 1,
+          "biocompiler.policy_decision_leader_variant.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_common.mli",
+      "sha256": "7e63797efe103400ec5e7221bb2fffa06d4a76d3773dab2463603db903a45e82",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_requirement_monitor.ml",
+      "sha256": "d86aa0c84cbbc8ab442b76abc27dbcca6eb9e2e4d26262dbce9caa969fa60e9b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "fail": 4,
+          "require": 13,
+          "unsupported": 20
+        },
+        "profile_literals": {
+          "biocompiler.policy_candidate_requirements.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_requirement_monitor.mli",
+      "sha256": "915daf881b0c905a3a49326bf21d95f709031ea0e0e96e5487e11ddb57cdf49e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_trace_correspondence.ml",
+      "sha256": "2601fe663881150af28e1c1cd06f6cbc5ea978b796f6c42343b9d2cbffba450b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 7,
+          "Diagnostic.require": 1,
+          "require": 25
+        },
+        "profile_literals": {
+          "biocompiler.policy_exact_trace_correspondence.v0.1": 1,
+          "biocompiler.policy_staged_trace_correspondence.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_trace_correspondence.mli",
+      "sha256": "03b58d78ed61c55ce185cff6976691c2582c05b7c97cd9701581e2d7c366651c",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/service/policy_component_material_format.ml",
+      "sha256": "5335cda324e195b62be991ac928388412504cfa2a53a153117aaaecb7d47d842",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1
+        },
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/service/policy_component_material_format.mli",
+      "sha256": "4dd118bad563612ddfc195faad4eeb83ded97f111c5a73189428d007e06d30da",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/service/policy_component_material_service.ml",
+      "sha256": "c08b062a2c56c8fa29e674fdd81243496b5bfaec5b8faa98c7356976d4d892da",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 4
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_material.v1": 1,
+          "biocompiler.ocaml.policy_component_material.v0.1": 1,
+          "biocompiler.policy_component_material_candidate.v0.1": 1,
+          "biocompiler.policy_component_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_mrna_manifest.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/service/policy_component_material_service.mli",
+      "sha256": "1fa5a6032b78f2a223abefd3fe2e12a1b9be772bdd1822f844a4f10bcc3151f0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/service/policy_component_selection_service.ml",
+      "sha256": "070130aac8acb39308c3fe2de26c582e7bcd3909c549bb201018c506d6108108",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 5,
+          "require": 4
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_selection.v1": 1,
+          "biocompiler.ocaml.policy_component_selection.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_component_selection_publication.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/service/policy_component_selection_service.mli",
+      "sha256": "c492eecc86b131de06d005cd045a2044ffc325e4cef0bb874f75678c29a8cc90",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/service/service.ml",
+      "sha256": "889f5d1ef2f2fd2e901a603e105638ef51addd2380210a72ac495f6e7c643577",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 9
+        },
+        "profile_literals": {
+          "biocompiler.core.artifact_response.v1": 1,
+          "biocompiler.core.artifact_transport.authority.v1": 1,
+          "biocompiler.core.artifact_transport.v1": 1,
+          "biocompiler.core_capabilities.v1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/service/service.mli",
+      "sha256": "854e6c2ef8a060791bf72610fe8e9beb68bb2303de278c45cd5eb15c3310e603",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "src/biocompiler/core_policy_component_material.py",
+      "sha256": "e5645b27e70f39a4979fee53638007044c44d37bec4f1a8af7e866f95a38f9e0",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 16,
+          "Raise": 30
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_material.v1": 1,
+          "biocompiler.ocaml.policy_component_assembly_check.v0.1": 1,
+          "biocompiler.ocaml.policy_component_context_check.v0.1": 1,
+          "biocompiler.ocaml.policy_component_material.v0.1": 1,
+          "biocompiler.ocaml.policy_component_material_check.v0.1": 1,
+          "biocompiler.policy_component_assembly_assessment.v0.1": 1,
+          "biocompiler.policy_component_assembly_proposal.v0.1": 1,
+          "biocompiler.policy_component_context_assessment.v0.1": 1,
+          "biocompiler.policy_component_material_assessment.v0.1": 1,
+          "biocompiler.policy_component_material_candidate.v0.1": 1,
+          "biocompiler.policy_component_material_request.v0.1": 1,
+          "biocompiler.policy_component_material_resources.v0.1": 1,
+          "biocompiler.policy_component_mrna.v0.1": 1,
+          "biocompiler.policy_component_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_exact_component_assembly.v0.1": 2,
+          "biocompiler.policy_staged_component_mrna.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "src/biocompiler/core_policy_component_selection.py",
+      "sha256": "3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 15,
+          "Raise": 28
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_selection.v1": 1,
+          "biocompiler.ocaml.policy_component_selection.v0.1": 1,
+          "biocompiler.ocaml.policy_component_selection_check.v0.1": 1,
+          "biocompiler.policy_component_material_selection.v0.1": 1,
+          "biocompiler.policy_component_selection_assessment.v0.1": 1,
+          "biocompiler.policy_component_selection_candidate.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_component_selection_publication.v0.1": 1,
+          "biocompiler.policy_component_selection_request.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.2": 1,
+          "biocompiler.policy_decision_leader_variant.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "src/biocompiler/core_policy_implementation.py",
+      "sha256": "ca0815363676dd8fd112b91b8d1adf303bedabb0f543ef2305d5f59c433906cd",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 16,
+          "Raise": 43
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_implementation.v1": 1,
+          "biocompiler.ocaml.policy_implementation.v0.1": 1,
+          "biocompiler.policy_bounded_preservation.v0.1": 1,
+          "biocompiler.policy_exclusive_source_graph.v0.1": 1,
+          "biocompiler.policy_implementation.v0.1": 1,
+          "biocompiler.policy_implementation_binding.v0.1": 1,
+          "biocompiler.policy_implementation_binding.v0.2": 1,
+          "biocompiler.policy_implementation_binding_report.v0.1": 1,
+          "biocompiler.policy_implementation_binding_report.v0.2": 2,
+          "biocompiler.policy_implementation_candidate.v0.1": 1,
+          "biocompiler.policy_preservation_report.v0.1": 1,
+          "biocompiler.policy_preservation_resources.v0.1": 1,
+          "biocompiler.policy_realization_admission.v0.1": 1,
+          "biocompiler.policy_realization_inputs.resources.v0.1": 1,
+          "biocompiler.policy_realization_inputs.v0.1": 1,
+          "biocompiler.policy_realization_request.v0.1": 1,
+          "biocompiler.policy_staged_observables.v0.1": 1,
+          "biocompiler.policy_staged_primitives.v0.1": 1,
+          "biocompiler.policy_staged_source_graph.v0.1": 1,
+          "biocompiler.policy_truth_observables.v0.1": 1,
+          "biocompiler.policy_truth_primitives.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "src/biocompiler/core_policy_material.py",
+      "sha256": "bc8d44be6b6aa7a6d56d4352c85d6a2f8c9201ab626e6ebe1bcc265487b46704",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 22,
+          "Raise": 56
+        },
+        "profile_literals": {
+          "biocompiler.construction_content_assessment.v0.1": 1,
+          "biocompiler.construction_content_authority.v0.1": 1,
+          "biocompiler.core.policy_material.v1": 1,
+          "biocompiler.ocaml.construction_content_check.v0.1": 1,
+          "biocompiler.ocaml.policy_material.v0.1": 1,
+          "biocompiler.ocaml.policy_material_binding_check.v0.1": 1,
+          "biocompiler.ocaml.policy_material_check.v0.1": 1,
+          "biocompiler.ocaml.policy_material_context_check.v0.1": 1,
+          "biocompiler.ocaml.policy_mrna_structure_check.v0.1": 1,
+          "biocompiler.policy_implementation_binding_report.v0.2": 1,
+          "biocompiler.policy_material_assessment.v0.1": 1,
+          "biocompiler.policy_material_binding_assessment.v0.1": 1,
+          "biocompiler.policy_material_candidate.v0.1": 1,
+          "biocompiler.policy_material_context_assessment.v0.1": 1,
+          "biocompiler.policy_material_request.v0.1": 1,
+          "biocompiler.policy_material_resources.v0.1": 1,
+          "biocompiler.policy_mrna_completeness.v0.1": 1,
+          "biocompiler.policy_mrna_export.v0.1": 1,
+          "biocompiler.policy_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_mrna_structure_assessment.v0.1": 1,
+          "biocompiler.policy_preservation_report.v0.1": 1,
+          "biocompiler.policy_staged_source_graph.v0.1": 1,
+          "biocompiler.policy_truth_mrna.v0.1": 1,
+          "biocompiler.policy_truth_mrna_material.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "src/biocompiler/policy/component_material.py",
+      "sha256": "24da1db993f5f56ff516ad3b2d14667731f681ebe9f1c9ae6898d0728bd5eaba",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 5
+        },
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "src/biocompiler/policy/component_selection.py",
+      "sha256": "10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 5
+        },
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "src/biocompiler/policy/patterns.py",
+      "sha256": "9640080fa505e361b09a2dd9a644938365549b37c8be3a8ce547bc1391044b48",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 6,
+          "Raise": 5
+        },
+        "profile_literals": {}
+      }
+    }
+  ],
+  "witness_sources": [
+    {
+      "path": "core/test/component_fixture_export/main.ml",
+      "sha256": "90451374f8bf6dfe12d43ef42d5d6d5d5d48fc074067d4f86ae52643cd515b59"
+    },
+    {
+      "path": "core/test/data/policy_material_request_v01.json",
+      "sha256": "3c8d3ac797b29f41371d94e1093103dfdd35400896a1a0829a8ec166c7a397a6"
+    },
+    {
+      "path": "core/test/data/policy_material_state_v01.json",
+      "sha256": "9628f56fb43cd9c0b768db443bfb1e85bfef2bab4d0a209681fbd8f3a72a6af1"
+    },
+    {
+      "path": "core/test/data/policy_staged_material_seed_v01.json",
+      "sha256": "d03cdf56a0a5cbbfab5ce5bdd9585ef85bf493e88464005b9147aa7dd3ecfe4a"
+    },
+    {
+      "path": "core/test/data/policy_staged_material_v01.json",
+      "sha256": "d764d9a8f3ca3e64998eddb43de5750cc30425fb59713b09b09cb31560f74daf"
+    },
+    {
+      "path": "core/test/data/policy_staged_realization_request_v01.json",
+      "sha256": "59eab0475a71f6d7db6481d0cc5103af861f8baedff5ab2b931eb8cd6f19ad24"
+    },
+    {
+      "path": "core/test/data/policy_staged_regimen_source_v01.json",
+      "sha256": "9c60e79e2d62b44a50958bbfdd59be6d807dc97bcb5a647b9c4b11782b371fd8"
+    },
+    {
+      "path": "core/test/policy_component_support/literals.ml",
+      "sha256": "11414beb14436fedbf97cf59019a1a58fcf2b5885ebcd66b5745137791cdd85d"
+    },
+    {
+      "path": "core/test/policy_component_support/requests.ml",
+      "sha256": "906aa3bef24536222ab242f8808d493dead7c110edb018e06b4f59e7eda1525b"
+    },
+    {
+      "path": "core/test/policy_component_support/selection_requests.ml",
+      "sha256": "b8fcf50aeca361b95ca4d6a7b3212d2f126b980f0ff2a26b41fe6cb75a53440f"
+    },
+    {
+      "path": "core/test/policy_staged_support/literals.ml",
+      "sha256": "c00e814ae189eaf822656e8735841115387bb87d90698901af97e047aa876346"
+    },
+    {
+      "path": "core/test/test_policy_component_assembly_check.ml",
+      "sha256": "9ef9cdf0c203d656e14d31d55de13c8383ef192d0c8b279ecec5d0474ce96c4a"
+    },
+    {
+      "path": "core/test/test_policy_component_assembly_rule.ml",
+      "sha256": "4740c1e196dcd3b96f7e6412c669ee065a302644902df31c81c8b9584cc9fb1c"
+    },
+    {
+      "path": "core/test/test_policy_component_context_check.ml",
+      "sha256": "e084873269296602b0893e3501c11cf85a2bc053a5793db9dcc5cb9d5586615f"
+    },
+    {
+      "path": "core/test/test_policy_component_fragment.ml",
+      "sha256": "0cb438f4bdb3cbb2d685262364b9ddc7d5f50ff3659021778aaad8fd32c3846b"
+    },
+    {
+      "path": "core/test/test_policy_component_material.ml",
+      "sha256": "8b4944524a53b09f4e70d1059e18d8d6bee3d94445415937a312bf9a0f2e1f46"
+    },
+    {
+      "path": "core/test/test_policy_component_material_candidate.ml",
+      "sha256": "a27cbb719a77a953da150f570285d78c2b77803e3576dc4b528f1a87e3778d13"
+    },
+    {
+      "path": "core/test/test_policy_component_material_request.ml",
+      "sha256": "055148899799d9f9f1a46095b622885bc516d5cfa751688d4879477f632375ce"
+    },
+    {
+      "path": "core/test/test_policy_component_material_service.ml",
+      "sha256": "9d0e2d79d73b97858a7161fdc3cc466bf08f133627b4b88f42a876d7cd4dd225"
+    },
+    {
+      "path": "core/test/test_policy_component_selection_candidate.ml",
+      "sha256": "4c7ebb698dac0ddfce097d307cd58a6cee720b6bfd62574c40e38295f443c1c4"
+    },
+    {
+      "path": "core/test/test_policy_component_selection_check.ml",
+      "sha256": "7f5755af485868c2e45b0030e9afecc62135f75a88dd031da5c281aa105123de"
+    },
+    {
+      "path": "core/test/test_policy_component_selection_common.ml",
+      "sha256": "e2bb96c068cf29975e071ebb005ac08fca37807a08ae48a92e7ab814a8014d01"
+    },
+    {
+      "path": "core/test/test_policy_component_selection_producer.ml",
+      "sha256": "6d740ed61ec11c4216c0b405ee1568a897164ff140b656050abbfb45517d7981"
+    },
+    {
+      "path": "core/test/test_policy_component_selection_request.ml",
+      "sha256": "5f6071e948f93b88be647970a5673f2a2cafdf2cb4a3b0bbcaef73a8b52f6d18"
+    },
+    {
+      "path": "core/test/test_policy_component_selection_scope.ml",
+      "sha256": "b41a11a2694b5c5e4288fb018459f2eb2ccc7e2a5c155fc9d24e68fab41bbc59"
+    },
+    {
+      "path": "core/test/test_policy_component_selection_service.ml",
+      "sha256": "293b6b49315befce209652f7e7d9285b5fe847f15414781341a4a3db04727ab6"
+    },
+    {
+      "path": "core/test/test_policy_generation_admission.ml",
+      "sha256": "b05d9cbca4cef22d4342ccf35c37c0568ce9add4f7c6e45f27f97d1bf4c78b3e"
+    },
+    {
+      "path": "core/test/test_policy_generation_producers.ml",
+      "sha256": "86438dde4b53d1dfd03eba7ec324ab168ac443100799fb3698dde9c7ae800f5f"
+    },
+    {
+      "path": "core/test/test_policy_staged_binding.ml",
+      "sha256": "be227cf48eef80cd328bc0222bd965b6b68622ccc03722817674a93852d7a9de"
+    },
+    {
+      "path": "core/test/test_policy_staged_component_material.ml",
+      "sha256": "91202424fe7a58492e2fad54302c9d39111255dcab7b445de772c296bbefbd64"
+    },
+    {
+      "path": "core/test/test_policy_staged_generation.ml",
+      "sha256": "3d84d61bdfe4fa59008c272d3e941b1ac6b5d22df390177db9ab20410638ce5b"
+    },
+    {
+      "path": "core/test/test_policy_staged_primitives.ml",
+      "sha256": "323be816755887cda373d66700275bdd99bb6d8d3a194dbd23f17faad81053b3"
+    },
+    {
+      "path": "core/test/test_policy_staged_regimen_source.ml",
+      "sha256": "ab7a866cfb409012d29bcd7a30668ff7ca113516e96c45e283f342977aaf7885"
+    },
+    {
+      "path": "tests/test_core_policy_component_material.py",
+      "sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3"
+    },
+    {
+      "path": "tests/test_core_policy_component_selection.py",
+      "sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace"
+    },
+    {
+      "path": "tests/test_policy_component_fixture.py",
+      "sha256": "ea598815e6016bf0ae08b97d640b8ba6bc3704e163d5cff9e52a71cf44cc0b7a"
+    },
+    {
+      "path": "tests/test_policy_component_install.py",
+      "sha256": "c9e78677ddf3ba6f4e81447b324e82fee277d319d4b662efc5507bd4485ba831"
+    },
+    {
+      "path": "tests/test_policy_component_material.py",
+      "sha256": "9428bfc2938142adb4ea5a00fcf1f8f133ce91e11f82af495ee98a850f45b9d4"
+    },
+    {
+      "path": "tests/test_policy_component_material_campaign.py",
+      "sha256": "acd82d16823f7f8c98b26ffc7ea22e455b41aa390fba16f62420d24035492230"
+    },
+    {
+      "path": "tests/test_policy_component_selection.py",
+      "sha256": "52df2d0cc93f4a162aeb04bfc2e50a77a5e2712c585e18f031bdd5a3ca48cd9d"
+    },
+    {
+      "path": "tests/test_policy_component_selection_witness.py",
+      "sha256": "e8c988fa57cef5bb8861ec7a73821627725b2d8586cadf5ddfe352097bd741ab"
+    },
+    {
+      "path": "tests/test_policy_material_consumer.py",
+      "sha256": "3308e5192595c797896f1f0f0d722f3941a1acb7be821391d8f66bec8989204f"
+    },
+    {
+      "path": "tests/test_policy_material_prebuilt.py",
+      "sha256": "c522d899ed57d769c74e5110ef5595bb722a647613b9ab3e29bd5d39997e707f"
+    },
+    {
+      "path": "tests/test_policy_patterns.py",
+      "sha256": "558339f2bc79643c13eab3b41d581a713ec3eaa90935d6e44df5eca31ee89cb9"
+    },
+    {
+      "path": "tests/test_policy_staged_component_sdk.py",
+      "sha256": "dcc0d6ace917a7a8a506c4c20a05b0e21d09ca6a3be7f0d63c3a331ac944e5df"
+    },
+    {
+      "path": "tests/test_policy_staged_material.py",
+      "sha256": "f0f19ef37f3f6ce63f2d6f52ef0e43f3b3d5becf3b74c63743e112dfc83461db"
+    },
+    {
+      "path": "tests/test_policy_staged_material_installed.py",
+      "sha256": "770b96b54421e438c89ffc6d1d10f9207af682eecb576d704ae16ab39bd03fee"
+    },
+    {
+      "path": "tests/test_policy_staged_regimen_source.py",
+      "sha256": "bea7004b85ef023f754f175c107e241422e909e5fded7aa48e4d7d0342990d82"
+    },
+    {
+      "path": "tools/check_policy_component_fixture.py",
+      "sha256": "5fe14940575d5dd973db5d9ddf5cbc2df9c32b08c9c12330028560f8a618ab7a"
+    },
+    {
+      "path": "tools/check_policy_component_material.py",
+      "sha256": "a03d568eab16b3979a91cacc0f589e0dd99404d8918dcc9419d3cd0f8567e118"
+    },
+    {
+      "path": "tools/check_policy_component_selection.py",
+      "sha256": "7b500132be6a120a7db4c46f817aa874b2db7e4a9ec6671ce289df9c4ad7e8e4"
+    },
+    {
+      "path": "tools/check_policy_material_consumer.py",
+      "sha256": "7ff2a18cbd8eef672f179f8eced77a7d5985720d0646da2263e8142e61694666"
+    },
+    {
+      "path": "tools/check_policy_material_prebuilt.py",
+      "sha256": "a18b84da70b47a14d98ecfa200bb00cf2c0d7626bb5101b7607d53b00db01bf1"
+    },
+    {
+      "path": "tools/check_policy_staged_component_material.py",
+      "sha256": "fd862de7946ef75b8f613686c957c815fac68458c870702368373eb9cf670d27"
+    },
+    {
+      "path": "tools/check_policy_staged_material_installed.py",
+      "sha256": "3d349cfa7d4db42c8b81d0573d833d4749b02cee6266cf8cc587b5961b755e27"
+    },
+    {
+      "path": "tools/check_policy_staged_regimen_source.py",
+      "sha256": "afad1773c06929ecfc7be2b396e9f9b3c17ea9de40ddede3e8aaede67f880144"
+    },
+    {
+      "path": "tools/generate_policy_staged_material_fixture.py",
+      "sha256": "f2cbe0857257ce77ffe46eb76d63b49efbbc757b72125278be1bc5eed0b0f88e"
+    },
+    {
+      "path": "tools/generate_policy_staged_regimen_fixture.py",
+      "sha256": "f0393406f7544b471af8f3b8ee8733e8d4cf4b03d001e449bd54bedc42091a53"
+    }
+  ],
+  "rules": [
+    {
+      "id": "component.fragment",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_component_fragment.ml",
+          "anchor": "let of_json ~library raw =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_fragment.ml",
+          "anchor": "Driver interface or full output inventory changed",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_fragment.ml",
+          "anchor": "repinned model from another library",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Partial typed primitive graphs retain full configured models, every local input/output and ordered atomic ownership; executor constants alone may broadcast.",
+      "limits": "Fragment decoding is not whole-graph scheduling, preservation, material realization or export. Unknown topology/helper semantics remain excluded.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.local_material",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_component_material.ml",
+          "anchor": "let check_products fragment root products =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/domain/policy_component_library.ml",
+          "anchor": "let of_json ~library raw =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_material.ml",
+          "anchor": "Complete driver material definition changed between original families",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_material.ml",
+          "anchor": "Local product requires an explicitly coding root.",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Exact root/features/chemistry/product bodies,14 driver and82/93 decision carrier targets and local provider prerequisites remain independent originals; identical driver reused across A/B.",
+      "limits": "Local declaration decoding does not translate CDS, establish complete delivered RNA, prove provider sufficiency or prove two driver instances in one assembly.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.assembly_rule",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_component_assembly_rule.ml",
+          "anchor": "let check_driver_and_authorization value =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_assembly_rule.ml",
+          "anchor": "Shared complete driver input changed across families",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_assembly_rule.ml",
+          "anchor": "B boundary guard differs from the actual initiating gate guard",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Original two-slot rule fixes full node/wire/input/group/export order, three signal links with exact transport, roots, explicit join, complete material authority and site selections.",
+      "limits": "Exact graph isomorphism only; no hidden helper execution, added latency, automatic material composition axiom or synthesized original catalog.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.ordered_union",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_component_assembly_proposal.ml",
+          "anchor": "let of_json raw =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_assembly_check.ml",
+          "anchor": "let check ?parent",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_assembly_check.ml",
+          "anchor": "Full molecule, feature, chemistry or original provenance differs from independent literal",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_assembly_check.ml",
+          "anchor": "let graph_controls case =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_assembly_check.ml",
+          "anchor": "let original_relation_controls case =",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Private preserved implementation plus total original-slot/local-node bijection must match full ordered union and independently reconstructed17/18-base material with96/107 carrier and3 link projections.",
+      "limits": "Assembly PASS retains catalog/context/resources/obligation/export as withheld or unassessed; equivalent peptide or a partial material relation cannot authorize export.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.original_request",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_component_material_request.ml",
+          "anchor": "let of_json ?(charge=",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/domain/policy_component_context.ml",
+          "anchor": "let of_json raw =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_material_request.ml",
+          "anchor": "New request replaced original realization authority",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_material_request.ml",
+          "anchor": "candidate cannot be embedded as original authority",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Closed versioned request preserves original realization/catalog/DefinitionRefs, component bodies/rule, input/resource inventories, context and exact budgets; no v1 request fabrication.",
+      "limits": "Decoding17-base capacity for18-base B is allowed as original data; fresh contextual sufficiency must reject it later.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.context",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_component_context_check.ml",
+          "anchor": "let check ?parent",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_context_check.ml",
+          "anchor": "Private context changed complete original request, context or assembly",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_context_check.ml",
+          "anchor": "let capacity_controls case =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_context_check.ml",
+          "anchor": "let layout_controls case report =",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Actual private graph/domain and original local minima derive14 ordered demands; complete record widths, shared capacity, lifecycle inputs, recipient, exact time and providers are independently checked.",
+      "limits": "Capacity quantities describe conservative complete software records under supplied contracts, not physical molecular memory or empirical delivery.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.conjunction",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_component_material_check.ml",
+          "anchor": "let check ~request ~behavior",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_material_service.ml",
+          "anchor": "let positive fixture state_reading =",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_material_service.ml",
+          "anchor": "UNKNOWN property or full original obligation ledger was weakened",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Fresh preservation, original catalog, assembly and context jointly discharge all23 original obligations for A/B; extra or UNKNOWN obligations remain complete and unresolved.",
+      "limits": "No decoded report confers a private capability; nine-history conditional result is not unrestricted behavior or biological validity.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.production",
+      "owners": [
+        {
+          "path": "core/lib/compiler/policy_component_lowering.ml",
+          "anchor": "let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~rule",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/producer_service/policy_component_material_producer.ml",
+          "anchor": "let compile payload =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_assembly_check.ml",
+          "anchor": "let producer_controls case other =",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_material_service.ml",
+          "anchor": "Standalone Verify acquired a component producer",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Untrusted bounded arrangement maps generic source lowering into supplied original components without inventing authority; every produced result is freshly checked.",
+      "limits": "Source-driven component selection beyond the exact supplied A/B two-slot isomorphism family is not established.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.export",
+      "owners": [
+        {
+          "path": "core/lib/service/policy_component_material_service.ml",
+          "anchor": "let handle ~operation payload=",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_material_service.ml",
+          "anchor": "let routing_and_publication request limits =",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_material_campaign.py",
+          "anchor": "def test_complete_two_case_inputs_and_actual_zip_pair",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_material_service.ml",
+          "anchor": "hard UNKNOWN source requirement cannot export",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_material_campaign.py",
+          "anchor": "def test_changed_zip_extra_file_and_path_redirect_reject",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Only fresh Core/Verify export yields exact complete FASTA and full manifest hashpair, retaining source/request/candidate/limits/evidence; replay cannot reuse export authority.",
+      "limits": "Hosted source-tree checks are not installed/prebuilt/package release acceptance; v1 whole-kernel route remains separate.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.sdk",
+      "owners": [
+        {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "anchor": "class PolicyComponentMaterialClient:",
+          "occurrence": 1
+        },
+        {
+          "path": "src/biocompiler/policy/component_material.py",
+          "anchor": "def export(",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "tests/test_core_policy_component_material.py",
+          "anchor": "def test_all_four_routes_preserve_complete_original_inputs",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_component_material.py",
+          "anchor": "def source_document(",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_fixture.py",
+          "anchor": "def test_mocked_hosted_emission_pins_one_fixed_command_and_complete_evidence",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_material_campaign.py",
+          "anchor": "def test_four_slots_compare_complete_evidence_and_keep_attempt_identity",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_material_consumer.py",
+          "anchor": "def test_every_fresh_call_and_swapped_original_control_is_explicit",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_material_prebuilt.py",
+          "anchor": "def test_expanded_comparison_preserves_old_gates_and_requires_both_new_four_slot_gates",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "tests/test_policy_component_material.py",
+          "anchor": "def test_legacy_operation_cannot_be_published_as_component_export",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_core_policy_component_material.py",
+          "anchor": "def test_rehashed_assembly_owner_site_and_link_mutations_reject",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_fixture.py",
+          "anchor": "def test_source_run_attempt_platform_and_binary_authority_are_independent",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_material_campaign.py",
+          "anchor": "def test_self_consistent_cross_slot_change_and_shared_omission_reject",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_material_consumer.py",
+          "anchor": "def test_component_cannot_defer_network_or_gain_producer_imports",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_material_prebuilt.py",
+          "anchor": "def test_component_control_receipts_bind_exact_original_and_changed_wheel_bytes",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_install.py",
+          "anchor": "def test_missing_provenance_slot_or_build_order_cannot_satisfy_the_contract",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Immutable complete requests and exact native capability negotiation feed check/replay/fresh paired atomic publication with no Python semantic fallback; hosted A/B Python authoring is compared to full independent originals. Installed witness sources add externally pinned data-only originals, complete four-slot SDK comparison, producer-free offline verification and exact owned-wheel role/profile controls while retaining the historical route.",
+      "limits": "Mock protocol bodies prove transport checks only; they are not native component admission evidence. CLI/root-export expansion is not claimed. Installed campaign source and mocked four-slot controls do not establish hosted execution, OS isolation, actual wheel acceptance or release acceptance.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_request_codec",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_component_selection_request.ml",
+          "anchor": "let of_json ?(charge=fun _ -> ()) raw =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/domain/policy_component_selection_request.ml",
+          "anchor": "let bounded_integer ~minimum ~maximum raw =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_request.ml",
+          "anchor": "Selection erased complete original request spelling or fingerprint",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_request.ml",
+          "anchor": "Evaluation/anchor must use ASCII ID order, independently of ranks",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_request.ml",
+          "anchor": "Shape decoding must retain different complete originals for later common-base checking",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_request.ml",
+          "anchor": "Duplicate ID cannot hide a complete losing alternative",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_request.ml",
+          "anchor": "Opaque child fingerprint is not complete supplied authority",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_request.ml",
+          "anchor": "External work owner can deny before complete decoding",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Closed source-only request codec retains the complete ordered original envelope and fingerprint, fully decodes each child request, bounds one to sixteen distinct ASCII IDs and integer ranks/predicate/budgets, and exposes ASCII-ID evaluation/anchor order independently of rank. Whole-envelope preflight and child decoding are charged to an optional external work owner; bounded integers must also fit the platform before conversion.",
+      "limits": "Static wellformedness only: different complete child originals may decode. Common-authority validation, aggregate checked execution, eligibility, rank-based winner selection, private acceptance tokens, public selection routing and fresh selection export are not implemented by this codec. Declared work ceilings are data for a later checker, not a claim that all inner checks have run.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.material_candidate_codec",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_component_material_candidate.ml",
+          "anchor": "let of_json ?(charge=fun _ -> ()) ~library raw =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_material_candidate.ml",
+          "anchor": "Neutral candidate codec replaced the complete original raw value",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_material_candidate.ml",
+          "anchor": "Domain codec supplied missing semantic authority or removed an unresolved obligation",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_material_candidate.ml",
+          "anchor": "Typed child normalization must not replace the original candidate envelope",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_material_candidate.ml",
+          "anchor": "Actual supplied child library is mandatory",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_material_candidate.ml",
+          "anchor": "Opaque construction fingerprint cannot replace complete material",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_material_candidate.ml",
+          "anchor": "Enclosing checker may deny tiny candidate decoding budget",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Neutral six-field candidate codec retains exact untrusted raw JSON while decoding behavior, implementation against the separately supplied library, binding, assembly proposal and construction through existing domain decoders. Whole-envelope and child preflight share the external charge owner; existing schema and top-level candidate diagnostic path remain explicit.",
+      "limits": "Typed data supplies no preservation, common-authority, material, selection or export acceptance token. An empty behavior ledger and unresolved obligations remain unproved data. Existing component service parsing and publication are unchanged; adoption of this codec by service routes, selection checking and fresh selection export remain unimplemented.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_candidate_codec",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_component_selection_candidate.ml",
+          "anchor": "let of_json ?(charge=fun _ -> ()) ~request raw =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Candidate codec lost raw spelling or either complete input identity",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Candidate input order must be retained separately from ASCII evaluation order",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Shape decoding must retain a known proposed winner even when it violates the outer seventeen-base predicate",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Missing losing child",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Duplicate child ID hides another original",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Child libraries follow original IDs, not candidate array positions",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Outer decoding obeys caller work denial before full child traversal",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Closed untrusted outer candidate codec retains original JSON and canonical identity, binds a separate complete original request identity, requires each original alternative exactly once by ID, and decodes each complete child against that original's supplied implementation library. ASCII-ID evaluation is separate from retained input order. Full envelope, child decoding, encoding and hashing charge the caller before their passes.",
+      "limits": "Static wellformedness only; a proposed winner is untrusted data and may violate the outer predicate. The codec creates no common-authority proof, material or selection capability, public route or export authority.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_common_authority",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_common.ml",
+          "anchor": "let check ~budget ~request =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_common.ml",
+          "anchor": "let reconstruct base target_sequence =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_common.ml",
+          "anchor": "let union original =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "ASCII anchor must be the three-base long original, independently of ranks/input order",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "Equal-length changed-bases expectation must remain a literal",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "Selection original replaced the A decision semantics",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "weaker source assurance horizon",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "re-pinned provider quantity",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "different driver root with the same product and length",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "B is a different program, never the long A material alternative",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "Common comparison obeys the caller's tiny work ceiling",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Producer-independent common-original relation inspects every complete alternative, including the ASCII-ID anchor, and independently reconstructs its ordered semantic union. Only the decision-leader sequence, its full-root/self-origin/carrier geometry, induced concatenate feature and tail coordinates, and exact serialized pin closure may vary. Reconstructing from the anchor with each target sequence must equal that entire original request. This preserves complete source, descriptors, assurance, implementation library, operating domain, driver, contracts, identities, chemistry, provenance, obligations and child budgets outside those closed edits. Bounded preflight, reconstruction, full comparisons and fingerprints charge one supplied work owner.",
+      "limits": "Success returns unit for the closed original relation only; every child still requires fresh inner checking. One complete linear leader plus the unchanged coding driver is supported. Helpers, multiple RNA outputs, arbitrary material rewrites and general component search are unsupported. Source review is not hosted executable validation.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.checked_selection",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+          "anchor": "let check_in ~scope ~candidate:proposed ~limits = protect scope (fun () ->",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+          "anchor": "spend scope budget child_allowance;",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+          "anchor": "let selected = match matches,winner with",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Fresh selection differs from literal hard-constraint/rank/ASCII winner and RNA",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Selection dropped original obligations from a losing or winning child",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Both complete child allowances plus outer work must be conservatively charged",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Complete no-selection was confused with child failure or incomplete search",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Failed losing child was excluded by length or prevented visiting the returned succeeding child",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Wrong feedback on an ineligible loser cannot authorize another winner",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Two full child allowances need outer overhead and cannot refund unused work",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Outer full publication bound: ",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "A differently normalized raw child cannot acquire a token for another fingerprint",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Fresh producer-independent selection checker re-decodes complete originals and proposals, checks the closed common-authority relation, then evaluates every child in ASCII-ID order. It reserves each unchanged complete inner work allowance before fresh inner checking, with no usage refunds or serialized-token authority. Only freshly checked private material capabilities supply exact one-RNA sequences and actual nucleotide lengths. Every child must pass before the hard maximum-length predicate and rank/ASCII-ID preference select a winner, which must match the proposal. Child reports and complete outer publication share cumulative bounds; sticky exhaustion prevents a private selection capability.",
+      "limits": "Checked selection is bounded to the complete explicitly supplied catalog and contracts; biological behavior and unrestricted search are unassessed. A failed child never becomes an ordinary length exclusion. This source-only inventory is not a successful native run or release acceptance, and this batch adds no public selection producer/service/SDK/CLI route or fresh selection export.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_publication_resources",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_component_selection_request.ml",
+          "anchor": "let node_ceiling=if resource_profile_value=resource_profile then max_report_nodes",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_request.ml",
+          "anchor": "Explicit cumulative publication version changed byte/work or node bounds",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_scope.ml",
+          "anchor": "let cumulative_profile original=",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_request.ml",
+          "anchor": "Resource version silently increased the supplied node allowance",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "Old resource version cannot claim the new cumulative ceiling",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_scope.ml",
+          "anchor": "The complete actual frame keeps its independent 250,000-node bound",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Original resource v0.1 keeps its exact 249968-node cumulative ceiling. Explicit v0.2 accepts at most one million cumulative nodes with unchanged byte/work ceilings; every supplied smaller cap remains binding. Input and each publication retain independent 8MiB, 250000-node and depth128 bounds. Exact original resource identity survives checking and export.",
+      "limits": "This is finite logical accounting, not a CPU or peak-memory theorem. No request is automatically upgraded. A complete result that exceeds any original or per-frame limit cannot export.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_scope",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+          "anchor": "let create_scope ?parent ~request:original_request () =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+          "anchor": "let prepare_response ~scope pending ~executable ~protocol_request ~result =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/service/service.ml",
+          "anchor": "let run ?(handler=handle) ?(scoped_handler=scoped_handle) executable =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_scope.ml",
+          "anchor": "Scoped assessment changed standalone evidence or counted unrelated parent usage as owned work",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "Valid actual-frame callback was not run once before success",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_scope.ml",
+          "anchor": "Partial output debit cannot be hidden by catching the exception",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_scope.ml",
+          "anchor": "Identical originals do not permit pending transfer across owners",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_scope.ml",
+          "anchor": "The actual protocol frame exceeds a fitting result-only value",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "A failing success hook emitted an artifact, escaped error bounds, or changed its diagnostic",
+          "occurrence": 1
+        }
+      ],
+      "scope": "One original-bound scope owns total work, independent outer work and cumulative publication through fresh checking and actual-frame admission. Optional parents add caps without replacing local caps. First failure is sticky, pending values are owner-bound, checking and finalization are one-shot, and no reset/refund escapes. Runner consumes the complete-frame hook before bounded encoding/stdout; failures emit null-result bounded errors.",
+      "limits": "Standalone checker evidence/accounting remains compatible. Private preparation data and fresh child material cannot replace outer publication authority. Compilation generation is not covered.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_export",
+      "owners": [
+        {
+          "path": "core/lib/service/policy_component_selection_service.ml",
+          "anchor": "let prepare ~executable ~(request:Protocol.request) =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/service/policy_component_selection_service.ml",
+          "anchor": "let export_artifact scope pending request candidate limits report =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/service/policy_component_material_format.ml",
+          "anchor": "let render ?(charge=fun _ -> ()) checked =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "Fresh outer artifact differs from the independently declared RNA/geometry, full losing authority, or exact paired hashes",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "A losing or winning child lost complete original obligation evidence",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "A changed losing original cannot borrow prior selection evidence",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "All losing candidates must independently pass",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "Late cumulative publication failure leaked a prepared artifact through stdout",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "The unguarded legacy handler bypassed actual-frame admission for selection",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Core and producer-independent Verify fresh check/replay/export retain complete original and candidate censuses, every child report, limits, ranks, predicate and derived winner. Export formats only fresh checked material, binds exact RNA geometry and FASTA/manifest hashes, charges standalone manifest and repeated full-frame occurrences, and rejects stale complete wrappers including loser edits with unchanged winning RNA.",
+      "limits": "Only explicitly supplied same-program leader variants, two components and one RNA member are supported. No selection compile route, hidden generation accounting, CLI extension, installed or release acceptance is implied.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_sdk",
+      "owners": [
+        {
+          "path": "src/biocompiler/core_policy_component_selection.py",
+          "anchor": "class PolicyComponentSelectionClient:",
+          "occurrence": 1
+        },
+        {
+          "path": "src/biocompiler/policy/component_selection.py",
+          "anchor": "def export(",
+          "occurrence": 1
+        },
+        {
+          "path": "src/biocompiler/core_policy_material.py",
+          "anchor": "def _artifact_members(",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "tests/test_core_policy_component_selection.py",
+          "anchor": "def test_all_three_verification_routes_preserve_complete_originals",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_selection.py",
+          "anchor": "def test_fresh_pair_is_reproducible_and_retains_full_catalog",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_component_selection.py",
+          "anchor": "def checked_result(",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "tests/test_core_policy_component_selection.py",
+          "anchor": "def test_loser_edit_invalidates_replay_even_with_unchanged_selected_rna",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_core_policy_component_selection.py",
+          "anchor": "def test_cumulative_publication_counts_repeated_nested_values",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_selection.py",
+          "anchor": "def test_existing_output_is_guarded_before_native_and_bad_export_never_publishes",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_selection_witness.py",
+          "anchor": "def test_both_children_keep_literal_rna_and_complete_domain_obligations",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Immutable explicit transport negotiates the exact native selection profile, validates full original/candidate/child-report/manifest correspondence and the repeated publication census, and uses fresh native export followed by atomic paired publication. Shared child assessment and member-format validation is factored without creating a fictitious child protocol response. Explicit preparation retains original supplied budgets. A separate hosted-only 21-observation source witness reconstructs both Python-authored A originals, prepares each child independently, and exercises fresh Core/Verify selection and four exact paired archives while preserving the old component campaign.",
+      "limits": "Mock peers establish transport rejection behavior only; native common-authority checking, preservation and construction remain OCaml authorities. Public compilation, installed/offline campaigns and complete release/main acceptance remain separate tasks.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_generation",
+      "owners": [
+        {
+          "path": "core/lib/producer_service/policy_component_selection_producer.ml",
+          "anchor": "let produce ~charge original =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/producer_service/policy_component_material_producer.ml",
+          "anchor": "let construct_candidate ?charge request =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/service/policy_component_selection_service.ml",
+          "anchor": "let prepare_generated",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/checker/policy_generation_meter.ml",
+          "anchor": "module Make",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/compiler/recoding_producer.ml",
+          "anchor": "let make_budget",
+          "occurrence": 1
+        },
+        {
+          "path": "src/biocompiler/core_policy_component_selection.py",
+          "anchor": "def compile(",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_producer.ml",
+          "anchor": "Generation result differs from fresh independent Verify result",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_generation_admission.ml",
+          "anchor": "count-only callback changed the old result bytes",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_generation_producers.ml",
+          "anchor": "let failed_layout fixture =",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_component_selection.py",
+          "anchor": "selection-compile-replay",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_producer.ml",
+          "anchor": "Caught generation exhaustion poisons later checking",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_generation_admission.ml",
+          "anchor": "callback failure was replaced, swallowed or followed by further work",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_generation_producers.ml",
+          "anchor": "Failed layout/model scans were refunded or uncharged",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_core_policy_component_selection.py",
+          "anchor": "def test_compile_missing_or_changed_profile_never_calls_production",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Separately negotiated Core generation traverses all original alternatives in ASCII ID order, preserves local producer caps and debits a count-only callback into the same original invocation owner before fresh complete checking and actual-frame admission. Candidate-only generation retains losers; Verify independently rechecks the same wrapper. Python freezes originals and has no semantic fallback; hosted SDK census has 35 observations including generation, permutation, loser edits and corrupt-loser controls.",
+      "limits": "Source inventory only; no native execution or clinical evidence implied. Counts bound explicit data passes, not machine instructions. Compilation withholds artifact; only fresh export can publish. Admission and producer callback failures are terminal and existing local ceilings remain independent of the outer allowance.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.staged_regimen",
+      "owners": [
+        {
+          "path": "src/biocompiler/policy/patterns.py",
+          "anchor": "def ordered_effects(",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/compiler/policy_staged_lowering.ml",
+          "anchor": "let lower_metered ~charge ~admitted ~library =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/checker/policy_implementation_binding_check.ml",
+          "anchor": "let check_staged ~admitted ~implementation ~proposed =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/candidate_runtime/policy_primitives.ml",
+          "anchor": "let initialize ~implementation",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_trace_correspondence.ml",
+          "anchor": "let machine_rows state",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_requirement_monitor.ml",
+          "anchor": "List.length(B.activations binding)",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_assembly_check.ml",
+          "anchor": "let check ?parent",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/domain/policy_component_context.ml",
+          "anchor": "F.staged_phase_profile",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_material_check.ml",
+          "anchor": "let staged_machine_evidence () =",
+          "occurrence": 1
+        },
+        {
+          "path": "src/biocompiler/core_policy_implementation.py",
+          "anchor": "biocompiler.policy_implementation_binding.v0.2",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "tests/test_policy_patterns.py",
+          "anchor": "def test_ordered_effects_literal_machine_and_all_seven_transitions",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_staged_regimen_source.ml",
+          "anchor": "all bounded machine snapshots differ",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/policy_staged_support/literals.ml",
+          "anchor": "Literal graph authority, independent of every lowering producer",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_staged_binding.ml",
+          "anchor": "let assert_literal scenario",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_staged_primitives.ml",
+          "anchor": "let positive implementation=",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_staged_generation.ml",
+          "anchor": "The exact measured allowance failed or changed the candidate",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_staged_component_material.ml",
+          "anchor": "Staged checker did not retain the complete independently enumerated 25-history domain.",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_staged_component_material.ml",
+          "anchor": "Staged construction differs from independent exact molecule authority.",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_staged_material.py",
+          "anchor": "def test_independent_two_stage_premises_preserve_product_and_scope",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_staged_component_material.py",
+          "anchor": "def checked_export(",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_staged_component_sdk.py",
+          "anchor": "def test_inert_export_metadata_preserves_both_artifacts_and_originals",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_staged_material_installed.py",
+          "anchor": "def validate_installed(",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_staged_material_installed.py",
+          "anchor": "def compare_installed(",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_staged_material_installed.py",
+          "anchor": "def test_exact_installed_sidecars_zip_origins_and_mandatory_protocol_gate",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_staged_binding.ml",
+          "anchor": "retained-attempt correlation removed",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_staged_binding.ml",
+          "anchor": "old generation retained as new stage",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_staged_primitives.ml",
+          "anchor": "Unknown handoff guard created stage two",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_staged_primitives.ml",
+          "anchor": "Recovered guard invented a queued completion event",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_staged_generation.ml",
+          "anchor": "A post-charge exhaustion was retried, refunded or swallowed",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_staged_component_material.ml",
+          "anchor": "duplicate-feedback-producer",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_staged_component_material.ml",
+          "anchor": "Absent external feedback was incorrectly promoted to guaranteed completion.",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_staged_material.py",
+          "anchor": "def test_rehashed_mixed_profiles_or_incomplete_anchor_packets_are_rejected",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_staged_component_sdk.py",
+          "anchor": "def test_inert_positive_metadata_cannot_hide_changed_bounded_claims",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_staged_component_sdk.py",
+          "anchor": "def test_hosted_identity_gate_precedes_any_native_launch",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_staged_material_installed.py",
+          "anchor": "def test_rehashed_false_controls_and_promoted_claims_are_rejected",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Versioned encounter-scoped same-product staged execution has one five-state machine, two effects and seven ordered transitions with exact source labels. Source and independently handwritten primitive literals exercise every prefix state, retained attempt identity, failure, timeout, reset, end and encounter isolation; fresh complete-domain preservation and every original hard requirement remain conjunctive. Typed stage request, authorization and feedback-return links compose the implementation with exact synthetic RNA material. Metered generation exposes input scans, rejected alternatives, construction and serialization before fresh independent checking. SDK evidence remains immutable transport and separately inventoried observations. Separate installed-campaign source checks retain exact package origins, sidecars, paired ZIP members and all four externally identified platform/Python slots; this inventory supplies no execution result.",
+      "limits": "Source inventory only: listed tests are not executed by this gate. The bounded machine obligation is discharged only for the complete original domain with declared nonvacuous requirements; universal termination is not claimed. General state encodings, arbitrary FSMs, molecular mechanism discovery, empirical immune-cell behavior and release/main acceptance are not established. Installed-package validation requires its separate campaign and is not established by this source gate. Compile withholds the artifact; fresh export rechecks the complete conjunction.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    }
+  ],
+  "limitations": [
+    "Ten reviewed component-route families complement, and never promote, the unchanged62-family whole-kernel ledger with16partial rows.",
+    "Body hashes, lexical inventories and exact source pointers are review tripwires, not proof of every predicate, combination or test execution.",
+    "Only exact-isomorphic two-component/no-helper one-RNA composition is indexed; model-to-material and provider contracts remain supplied conditional premises.",
+    "No current-head execution, installed distribution, release, empirical biology or human-use acceptance is granted by this static index.",
+    "Two appended domain-codec families add source-only static wellformedness to the ten existing component-route families; they do not establish execution or acceptance. Selection checking, common-authority validation, aggregate execution, winner selection, a public selection route and fresh selection export remain unimplemented.",
+    "The preceding codec-batch limitation records its original boundary. This additive source-only batch defines a complete-census outer candidate codec, independent closed common-original checker and fresh checked-selection capability; hosted executable validation and release acceptance remain separate pending gates. Public selection production/service/SDK/CLI routing and fresh selection export remain unimplemented; helpers, multiple RNA outputs, general material variation and biological viability are outside this batch.",
+    "The preceding checker-batch limitation records its original boundary. This additive source-only batch supplies public selection check/replay/export, one original-bound invocation/publication scope, an explicit versioned cumulative node allowance and immutable Python paired-export adapters. Candidate-generation metering and selection compile, installed/offline validation and release/main acceptance remain open. All previous semantic authorities and obligations are retained; source inventory does not establish test execution.",
+    "The preceding compile-absent statements record the original publication batch. This additive generation rule supersedes only Core compile absence: a separately negotiated metered Core producer is now source-implemented, with artifact withheld and fresh complete Verify comparison required. Verify remains producer-free; historical development feedback is unchanged and does not validate this increment.",
+    "The preceding rules retain their original profile scope and historical evidence. This additive staged rule admits only the reviewed bounded two-stage same-product encounter machine under supplied models; universal termination is not claimed. Static source pins and witness linkage do not establish native, installed, empirical or release/main acceptance."
+  ],
+  "historical_development_feedback": {
+    "revision": "5a45d354ee869f26f0e5d3181c8972a6402baca6",
+    "run_id": "37527311912",
+    "attempt": 1,
+    "scope": "Hosted Linux development feedback:16 native suites plus26 public SDK observations; source-tree only, not transferable to descendants or release acceptance.",
+    "assertions": {
+      "assembly_checker": 469,
+      "context_checker": 323,
+      "complete_service": 152,
+      "sdk_observations": 26
+    }
+  }
+}

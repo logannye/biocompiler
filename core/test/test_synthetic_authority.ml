@@ -194,3 +194,22 @@ let () =
   historical_scope ();
   boundaries ();
   Printf.printf "synthetic authority: %d checks; 22 complete independent artifacts, 74 original Python rejections, both complete catalogs and bounded structural provenance\n" !checks
+
+let () =
+  (* Public order is observable in retained manager payloads, independently of
+     canonical fingerprints. Imports may arrive in a different key order. *)
+  let keys value = List.map fst (Json.object_fields value) in
+  let imported = obj (List.rev (Json.object_fields (raw "base"))) in
+  let candidate = A.of_json imported in
+  let expected = ["schema_version";"intended_use";"human_therapeutic_admission";
+    "request_fingerprint";"mechanism";"observation_map";"source_map";
+    "behavior_requirement_ids";"component_locks";"generator_config"] in
+  check (keys (A.to_json candidate) = expected) "Candidate import changed original public field order";
+  check (keys (copied "candidate" imported) = expected) "Candidate constructor changed original public field order";
+  check (A.fingerprint candidate = A.fingerprint (A.of_json (raw "base")))
+    "Public candidate ordering changed canonical authority";
+  let output = get "output" (List.hd (Json.array (get "nodes" (get "mechanism" (A.to_json candidate))))) in
+  let observable = Measurement_contract.Observable.of_json (obj (List.rev (Json.object_fields output))) in
+  check (keys (Measurement_contract.Observable.to_json observable) =
+    ["schema_version";"id";"dtype";"role";"scope";"compartment"])
+    "Observable type normalization moved the public dtype field"

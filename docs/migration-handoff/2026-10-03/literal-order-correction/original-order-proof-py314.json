@@ -1,0 +1,206 @@
+{
+  "scope": "Pure Python original serializer and literal fixture verification; no OCaml execution or installed acceptance",
+  "python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "cases": [
+    {
+      "name": "registered integer product",
+      "original_order_sites": [
+        {
+          "kind": "scalar",
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ]
+        }
+      ],
+      "unchanged_semantic_expected": true,
+      "reversed_input_exact_original_equal": true
+    },
+    {
+      "name": "registered floating product",
+      "original_order_sites": [
+        {
+          "kind": "scalar",
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ]
+        }
+      ],
+      "unchanged_semantic_expected": true,
+      "reversed_input_exact_original_equal": true
+    },
+    {
+      "name": "registered negative zero",
+      "original_order_sites": [
+        {
+          "kind": "scalar",
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ]
+        }
+      ],
+      "unchanged_semantic_expected": true,
+      "reversed_input_exact_original_equal": true
+    },
+    {
+      "name": "registered positive zero",
+      "original_order_sites": [
+        {
+          "kind": "scalar",
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ]
+        }
+      ],
+      "unchanged_semantic_expected": true,
+      "reversed_input_exact_original_equal": true
+    },
+    {
+      "name": "large integer remains exact",
+      "original_order_sites": [
+        {
+          "kind": "scalar",
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ]
+        }
+      ],
+      "unchanged_semantic_expected": true,
+      "reversed_input_exact_original_equal": true
+    },
+    {
+      "name": "custom conversion retained",
+      "original_order_sites": [
+        {
+          "kind": "scalar",
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ]
+        }
+      ],
+      "unchanged_semantic_expected": true,
+      "reversed_input_exact_original_equal": true
+    },
+    {
+      "name": "interval recursively normalized",
+      "original_order_sites": [
+        {
+          "kind": "interval",
+          "keys": [
+            "kind",
+            "lower",
+            "upper",
+            "type"
+          ]
+        },
+        {
+          "kind": "scalar",
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ]
+        },
+        {
+          "kind": "scalar",
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ]
+        }
+      ],
+      "unchanged_semantic_expected": true,
+      "reversed_input_exact_original_equal": true
+    },
+    {
+      "name": "curve recursively normalized",
+      "original_order_sites": [
+        {
+          "kind": "curve",
+          "keys": [
+            "kind",
+            "type",
+            "points",
+            "interpolation",
+            "extrapolation"
+          ]
+        },
+        {
+          "kind": "scalar",
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ]
+        },
+        {
+          "kind": "scalar",
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ]
+        },
+        {
+          "kind": "scalar",
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ]
+        },
+        {
+          "kind": "scalar",
+          "keys": [
+            "kind",
+            "value",
+            "unit",
+            "canonical_value",
+            "type"
+          ]
+        }
+      ],
+      "unchanged_semantic_expected": true,
+      "reversed_input_exact_original_equal": true
+    }
+  ],
+  "source_sha256": {
+    "core/test/test_domain.ml": "f362b315b4af0a0fc5062d6c7aea045e4c09e7be20b1fca2ff8546743ebaa743",
+    "core/lib/domain/type_spec.ml": "6791aafa688d6438244cdbd791f3cbc605ff041404947df5ce56511a4ca33cb6",
+    "src/biocompiler/semantics/types.py": "da0708de4bd5fbcd1a2f00546a1619f37c8e6a9748a94758362af242655f3bc1"
+  }
+}

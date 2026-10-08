@@ -1,0 +1,1 @@
+[{"code":"component_inventory","instance_id":null,"message":"The layout must contain every selected component exactly once and no additional instance.","molecule_id":null,"requirement_ids":["exact_reference"],"source":null,"status":"fail"}]

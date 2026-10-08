@@ -422,6 +422,18 @@
  (action (run %{test} %{env:BIOCOMPILER_SYNTHETIC_PRODUCERS_CORPUS=missing})))
 
 (test
+ (name test_synthetic_producer_protocol)
+ (modules test_synthetic_producer_protocol)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker
+   bioc_synthetic_producer bioc_producer_service bioc_service zarith))
+
+(test
+ (name test_synthetic_producer_public_protocol)
+ (modules test_synthetic_producer_public_protocol)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker
+   bioc_producer_service bioc_service zarith))
+
+(test
  (name test_realization_protocol)
  (modules test_realization_protocol)
  (libraries bioc_service bioc_wire bioc_checker zarith))
@@ -461,6 +473,174 @@
  (name test_verification_workflow_service)
  (modules test_verification_workflow_service)
  (libraries bioc_wire bioc_service bioc_domain bioc_checker bioc_realization_checker zarith))
+
+(test
+ (name test_verification_workflow_authority)
+ (modules test_verification_workflow_authority)
+ (libraries bioc_wire bioc_service bioc_domain bioc_checker bioc_realization_checker zarith))
+
+(test
+ (name test_synthetic_inspection_protocol)
+ (modules test_synthetic_inspection_protocol)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_compiler bioc_producer_service zarith)
+ (action (run %{test} %{env:BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES=missing} %{env:BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION=missing})))
+
+(test
+ (name test_pipeline_contract)
+ (modules test_pipeline_contract)
+ (libraries bioc_wire bioc_domain zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing})))
+
+(test
+ (name test_pass_manager)
+ (modules test_pass_manager)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing})))
+
+(test
+ (name test_checked_pipeline_corpus)
+ (modules test_checked_pipeline_corpus)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{env:BIOCOMPILER_CHECKED_PIPELINE_CORPUS=missing})))
+
+(test
+ (name test_lowering_budget)
+ (modules test_lowering_budget)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler)
+ (action (run %{test} %{env:BIOCOMPILER_LOWERING_CORPUS=missing})))
+
+(test
+ (name test_fixed_pipeline_corpus)
+ (modules test_fixed_pipeline_corpus)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline bioc_synthetic_producer zarith)
+ (action (run %{test} %{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing} %{env:BIOCOMPILER_FIXED_PIPELINE_CONTINUATIONS=missing})))
+
+(test
+ (name test_provider_comparison)
+ (modules test_provider_comparison)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS=missing})))
+(test
+ (name test_pipeline_session)
+ (modules test_pipeline_session)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline_service zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_SESSION_DECLARATION=missing} %{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing})))
+
+(test
+ (name test_pipeline_host_bridge)
+ (modules test_pipeline_host_bridge)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline_service zarith))
+
+(test
+ (name test_deferred_pass_manager)
+ (modules test_deferred_pass_manager)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing})))
+
+(test
+ (name test_pipeline_callback_channel)
+ (modules test_pipeline_callback_channel)
+ (libraries bioc_wire bioc_checker bioc_pipeline_service zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CALLBACK_DECLARATION=missing})))
+
+(test
+ (name test_pipeline_callback_manager)
+ (modules test_pipeline_callback_manager)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline_service bioc_pipeline zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing} %{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing} %{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing})))
+
+(test
+ (name test_legacy_json)
+ (modules test_legacy_json)
+ (libraries bioc_wire))
+
+(test
+ (name test_reference_domains)
+ (modules test_reference_domains)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_reference_checkers)
+ (modules test_reference_checkers)
+ (libraries bioc_wire bioc_domain bioc_checker zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS=missing})))
+
+(test
+ (name test_reference_contracts_corpus)
+ (modules test_reference_contracts_corpus)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS=missing})))
+
+(test
+ (name test_reference_producer_budget)
+ (modules test_reference_producer_budget)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS=missing})))
+
+(test
+ (name test_reference_construct_pipeline)
+ (modules test_reference_construct_pipeline)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))
+
+(test
+ (name test_reference_molecular_pipeline)
+ (modules test_reference_molecular_pipeline)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))
+
+(test
+ (name test_reference_workflow)
+ (modules test_reference_workflow)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline bioc_pipeline_service zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))
+
+(test
+ (name test_reference_molecular_attempts)
+ (modules test_reference_molecular_attempts)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline bioc_pipeline_service zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))
+
+(test
+ (name test_reference_callback_manager)
+ (modules test_reference_callback_manager)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline_service zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))
+
+(test
+ (name test_stored_zip)
+ (modules test_stored_zip)
+ (libraries bioc_wire bioc_checker bioc_artifact zarith)
+ (action (run %{test} %{env:BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS=missing} %{env:BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS=missing})))
+
+(test
+ (name test_reference_package_manifest)
+ (modules test_reference_package_manifest)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_artifact zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS=missing} %{env:BIOCOMPILER_REFERENCE_PACKAGE_PYTHON314_CORPUS=missing})))
+
+(test
+ (name test_reference_sequence_export)
+ (modules test_reference_sequence_export)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_export zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_SEQUENCE_EXPORT_CORPUS=missing})))
+
+(test
+ (name test_work_budget_retention)
+ (modules test_work_budget_retention)
+ (libraries bioc_wire bioc_checker))
+
+(test
+ (name test_reference_inputs)
+ (modules test_reference_inputs)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_input bioc_reference_package_service)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_INPUTS_CORPUS=missing})))
+
+(test
+ (name test_reference_package_workflow)
+ (modules test_reference_package_workflow)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_input bioc_reference_artifact bioc_reference_export bioc_reference_package_service bioc_pipeline)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing})))
 
 (test
  (name test_policy_operational)
@@ -523,6 +703,12 @@
  (action (run %{test} %{dep:data/policy_implementation_v01.json} %{dep:data/policy_primitives_v01.json})))
 
 (test
+ (name test_policy_staged_primitives)
+ (modules test_policy_staged_primitives)
+ (libraries bioc_wire bioc_domain bioc_candidate_runtime bioc_policy_staged_test_support zarith)
+ (action (run %{test} %{dep:data/policy_implementation_v01.json})))
+
+(test
  (name test_policy_trace_correspondence)
  (modules test_policy_trace_correspondence)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker zarith)
@@ -577,6 +763,99 @@
  (action (run %{test} %{dep:data/policy_material_binding_v01.json})))
 
 (test
+ (name test_policy_component_fragment)
+ (modules test_policy_component_fragment)
+ (libraries bioc_wire bioc_domain zarith)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json}
+              %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_component_material)
+ (modules test_policy_component_material)
+ (libraries bioc_wire bioc_domain)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json}
+              %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_component_assembly_rule)
+ (modules test_policy_component_assembly_rule)
+ (libraries bioc_wire bioc_domain bioc_policy_component_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json}
+              %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_component_assembly_check)
+ (modules test_policy_component_assembly_check)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker bioc_policy_component_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json}
+              %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_component_material_request)
+ (modules test_policy_component_material_request)
+ (libraries bioc_wire bioc_domain bioc_policy_component_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json}
+              %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_component_selection_request)
+ (modules test_policy_component_selection_request)
+ (libraries bioc_wire bioc_domain bioc_policy_component_test_support zarith)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json}
+              %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_component_material_candidate)
+ (modules test_policy_component_material_candidate)
+ (libraries bioc_wire bioc_domain bioc_policy_component_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json})))
+
+(test
+ (name test_policy_component_selection_candidate)
+ (modules test_policy_component_selection_candidate)
+ (libraries bioc_wire bioc_domain bioc_policy_component_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json})))
+
+(test
+ (name test_policy_component_selection_common)
+ (modules test_policy_component_selection_common)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_policy_component_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json}
+              %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_component_selection_check)
+ (modules test_policy_component_selection_check)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_producer_service bioc_policy_component_test_support zarith)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json})))
+
+(test
+ (name test_policy_component_selection_scope)
+ (modules test_policy_component_selection_scope)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_producer_service bioc_policy_component_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json})))
+
+(test
+ (name test_policy_component_selection_service)
+ (modules test_policy_component_selection_service)
+ (libraries bioc_wire bioc_domain bioc_service bioc_producer_service bioc_policy_component_test_support unix)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json})))
+
+(test
+ (name test_policy_component_context_check)
+ (modules test_policy_component_context_check)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker bioc_policy_component_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json}
+              %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_component_material_service)
+ (modules test_policy_component_material_service)
+ (libraries bioc_wire bioc_domain bioc_service bioc_producer_service bioc_policy_component_test_support zarith)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json}
+              %{dep:data/policy_material_state_v01.json})))
+
+(test
  (name test_policy_material_context)
  (modules test_policy_material_context)
  (libraries bioc_wire bioc_domain bioc_compiler bioc_checker bioc_realization_checker)
@@ -625,7 +904,49 @@
  (action (run %{test} %{dep:data/policy_material_timing_v01.json})))
 
 (test
+ (name test_policy_component_selection_producer)
+ (modules test_policy_component_selection_producer)
+ (libraries bioc_wire bioc_domain bioc_service bioc_producer_service bioc_policy_component_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json})))
+
+(test
+ (name test_policy_generation_admission)
+ (modules test_policy_generation_admission)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{dep:data/policy_implementation_binding_v01.json})))
+
+(test
+ (name test_policy_generation_producers)
+ (modules test_policy_generation_producers)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_policy_component_test_support zarith)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json} %{dep:data/policy_material_state_v01.json})))
+
+(test
  (name test_policy_material_state)
  (modules test_policy_material_state)
  (libraries bioc_wire bioc_domain bioc_checker bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
  (action (run %{test} %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_staged_regimen_source)
+ (modules test_policy_staged_regimen_source)
+ (libraries bioc_wire bioc_domain bioc_compiler bioc_checker bioc_semantics)
+ (action (run %{test} %{dep:data/policy_staged_regimen_source_v01.json})))
+
+(test
+ (name test_policy_staged_binding)
+ (modules test_policy_staged_binding)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_policy_staged_test_support zarith)
+ (action (run %{test} %{dep:data/policy_staged_realization_request_v01.json})))
+
+(test
+ (name test_policy_staged_component_material)
+ (modules test_policy_staged_component_material)
+ (libraries bioc_wire bioc_domain bioc_service bioc_producer_service)
+ (action (run %{test} %{dep:data/policy_staged_material_v01.json})))
+
+(test
+ (name test_policy_staged_generation)
+ (modules test_policy_staged_generation)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler)
+ (action (run %{test} %{dep:data/policy_staged_realization_request_v01.json})))

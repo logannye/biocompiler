@@ -1,0 +1,183 @@
+"""Closed source correspondence and genuine historical contract-test execution."""
+from copy import deepcopy
+import json
+from pathlib import Path
+import tempfile
+import unittest
+
+from tools import manager_registration_source_lineage as lineage
+from tools import pipeline_original_counterpart as counterpart
+from tools.pipeline_historical_source_integrity import verify_source_identity
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+class PipelineHistoricalSourceIntegrityTests(unittest.TestCase):
+    def test_policy_entrypoints_require_exact_original_pins_and_complete_current_bytes(self):
+        from tools import policy_entrypoint_source_lineage as policy
+        witness = policy.witness(ROOT)
+        for logical in sorted(policy.ROUTES):
+            entry = witness['sources'][logical]
+            original, current = entry['before_source'].encode(), entry['after_source'].encode()
+            pin = lineage.sha(original)
+            proof = verify_source_identity(ROOT, logical, pin)
+            self.assertEqual(proof, policy.verify_source(ROOT, logical, pin))
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                authority = root / policy.WITNESS
+                authority.parent.mkdir(parents=True)
+                authority.write_bytes((ROOT / policy.WITNESS).read_bytes())
+                path = root / logical
+                path.parent.mkdir(parents=True)
+                path.write_bytes(original)
+                self.assertEqual(verify_source_identity(root, logical, pin), {
+                    'path': logical, 'historical_sha256': pin, 'current_sha256': pin,
+                    'kind': 'identical_bytes', 'witness_sha256': policy.WITNESS_SHA256})
+                path.write_bytes(current)
+                self.assertEqual(verify_source_identity(root, logical, pin), proof)
+                with self.assertRaisesRegex(AssertionError, 'Original policy entrypoint source identity'):
+                    verify_source_identity(root, logical, lineage.sha(current))
+                for changed in (original + b'\n# extra original edit\n',
+                                current + b'\n# extra current edit\n',
+                                current.replace(b'\n', b'\r\n')):
+                    self.assertNotIn(changed, (original, current))
+                    path.write_bytes(changed)
+                    with self.subTest(path=logical), self.assertRaisesRegex(ValueError, 'Current policy entrypoint differs'):
+                        verify_source_identity(root, logical, pin)
+                    with self.assertRaisesRegex(AssertionError, 'Original policy entrypoint source identity'):
+                        verify_source_identity(root, logical, lineage.sha(changed))
+
+    def test_policy_witness_corruption_or_rehashed_source_cannot_supply_new_authority(self):
+        from tools import policy_entrypoint_source_lineage as policy
+        raw = (ROOT / policy.WITNESS).read_bytes()
+        witness = policy.witness(ROOT)
+        for logical in sorted(policy.ROUTES):
+            entry = witness['sources'][logical]
+            for mode in ('whitespace', 'rehashed_before', 'rehashed_after'):
+                with self.subTest(path=logical, mode=mode), tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    authority = root / policy.WITNESS
+                    authority.parent.mkdir(parents=True)
+                    changed = deepcopy(witness)
+                    if mode != 'whitespace':
+                        side = 'before' if mode == 'rehashed_before' else 'after'
+                        changed['sources'][logical][side + '_source'] += '\n# forged source\n'
+                        changed['sources'][logical][side + '_sha256'] = lineage.sha(
+                            changed['sources'][logical][side + '_source'].encode())
+                    authority.write_bytes(raw + b' ' if mode == 'whitespace' else json.dumps(changed).encode())
+                    path = root / logical
+                    path.parent.mkdir(parents=True)
+                    for source in (entry['before_source'], entry['after_source'],
+                                   changed['sources'][logical]['after_source']):
+                        path.write_text(source)
+                        with self.assertRaisesRegex(ValueError, 'Policy entrypoint witness bytes changed'):
+                            verify_source_identity(root, logical, entry['before_sha256'])
+
+    def test_policy_counterpart_does_not_extend_to_pyproject_or_other_paths(self):
+        from tools import policy_entrypoint_source_lineage as policy
+        witness = policy.witness(ROOT)
+        with self.assertRaisesRegex(AssertionError, 'Original captured source bytes changed'):
+            verify_source_identity(ROOT, 'pyproject.toml', witness['sources']['pyproject.toml']['before_sha256'])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / 'ordinary.py'
+            entry = witness['sources']['src/biocompiler/__init__.py']
+            path.write_text(entry['after_source'])
+            with self.assertRaisesRegex(AssertionError, 'Original captured source bytes changed'):
+                verify_source_identity(root, 'ordinary.py', entry['before_sha256'])
+
+    def test_reference_entry_prefixes_require_exact_whole_source_correspondence(self):
+        from tools import reference_original_counterpart as reference
+        for logical in reference.ROUTE_SOURCES:
+            original, witness = reference.route_source_witness(logical)
+            pin = lineage.sha(original)
+            proof = verify_source_identity(ROOT, logical, pin)
+            self.assertEqual(proof['historical_sha256'], pin)
+            self.assertEqual(proof['kind'], 'reference_entry_prefix')
+            self.assertEqual(proof['witness_sha256'], reference.ROUTE_WITNESS_SHA)
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                path = root / logical
+                path.parent.mkdir(parents=True)
+                path.write_bytes(original)
+                self.assertEqual(verify_source_identity(root, logical, pin)['kind'], 'identical_bytes')
+                current = (ROOT / logical).read_bytes()
+                for changed in (current + b'\n# unrelated edit\n',
+                                current.replace(b'if _reference_route is not None:', b'if True:', 1)):
+                    self.assertNotEqual(changed, current)
+                    path.write_bytes(changed)
+                    with self.subTest(path=logical), self.assertRaises(AssertionError):
+                        verify_source_identity(root, logical, pin)
+                    with self.assertRaises(AssertionError):
+                        verify_source_identity(root, logical, lineage.sha(changed))
+
+    def test_only_exact_manager_prefix_can_explain_a_changed_source(self):
+        pin = lineage.HISTORICAL[lineage.PATH]
+        current = (ROOT / lineage.PATH).read_bytes()
+        proof = verify_source_identity(ROOT, lineage.PATH, pin)
+        self.assertEqual(proof['historical_sha256'], pin)
+        self.assertEqual(proof['current_sha256'], lineage.sha(current))
+        self.assertEqual(proof['witness_sha256'], lineage.WITNESS_SHA256)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / lineage.PATH
+            path.parent.mkdir(parents=True)
+            path.write_bytes(lineage.original_source())
+            self.assertEqual(verify_source_identity(root, lineage.PATH, pin)['kind'], 'identical_bytes')
+            for changed in (current + b'\n# unrelated edit\n',
+                            current.replace(b'return native_type._native_register', b'native_type._native_register', 1),
+                            current.replace(b'issubclass(type(self), native_type)', b'True', 1)):
+                path.write_bytes(changed)
+                with self.subTest(pin=lineage.sha(changed)), self.assertRaises(ValueError):
+                    verify_source_identity(root, lineage.PATH, pin)
+                with self.assertRaises(ValueError):
+                    verify_source_identity(root, lineage.PATH, lineage.sha(changed))
+            other = root / 'ordinary.py'
+            other.write_bytes(b'unchanged source\n')
+            expected = lineage.sha(other.read_bytes())
+            self.assertEqual(verify_source_identity(root, 'ordinary.py', expected)['kind'], 'identical_bytes')
+            other.write_bytes(current)
+            with self.assertRaisesRegex(AssertionError, 'Original captured source'):
+                verify_source_identity(root, 'ordinary.py', expected)
+
+    def test_contract_literal_bridge_runs_original_cases_and_keeps_canonical_origins(self):
+        module = 'test_pipeline_contract_literals'
+        classname = module + '.PipelineContractLiteralTests'
+        ids = [classname + '.test_complete_original_literals_reproduce_without_native_execution',
+               classname + '.test_complete_records_keep_numeric_identity_and_scope']
+        receipt = counterpart.run('tests', test_module=module, test_ids=ids)
+        actual = counterpart.validate(receipt)
+        outcomes = counterpart.validate_test_outcomes(actual, ids, classname)
+        self.assertEqual([outcomes[name]['status'] for name in ids], ['success', 'success'])
+        observed = receipt['modules']['biocompiler.compiler.pipeline']
+        self.assertEqual(observed['namespace'], 'biocompiler.compiler.pipeline')
+        self.assertEqual(observed['sha256'], lineage.HISTORICAL[lineage.PATH])
+        rows = {row['logical']: row for row in receipt['manifest']['sources']}
+        self.assertEqual([name for name, row in rows.items() if row['substituted']], [lineage.PATH])
+        capture = 'tools/capture_pipeline_contract_literals.py'
+        self.assertEqual(rows[capture]['sha256'], lineage.sha((ROOT / capture).read_bytes()))
+        self.assertIn('tests/conformance/pipeline-contract-literals-v1.json',
+                      {row['logical'] for row in receipt['manifest']['data']})
+        for mode in ('current-manager', 'foreign-namespace', 'missing-capture', 'changed-index'):
+            changed = deepcopy(receipt)
+            if mode == 'current-manager':
+                changed['modules']['biocompiler.compiler.pipeline']['sha256'] = lineage.sha((ROOT / lineage.PATH).read_bytes())
+            elif mode == 'foreign-namespace':
+                changed['modules']['biocompiler.compiler.pipeline']['namespace'] = 'historical.pipeline'
+            elif mode == 'missing-capture':
+                changed['manifest']['sources'] = [row for row in changed['manifest']['sources'] if row['logical'] != capture]
+            else:
+                changed['manifest']['data'][-1]['sha256'] = '0' * 64
+            with self.subTest(mode=mode), self.assertRaises(AssertionError):
+                counterpart.validate(changed)
+        for mode in ('missing', 'changed-class', 'changed-count'):
+            changed = deepcopy(actual)
+            if mode == 'missing': changed['outcomes'].pop()
+            elif mode == 'changed-class': changed['outcomes'][0]['class'] = 'Another.Class'
+            else: changed['tests'] -= 1
+            with self.subTest(mode=mode), self.assertRaises(AssertionError):
+                counterpart.validate_test_outcomes(changed, ids, classname)
+
+
+if __name__ == '__main__':
+    unittest.main()

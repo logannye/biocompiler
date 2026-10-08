@@ -204,3 +204,12 @@ let placement(value:t)=value.placement
 let delivery_group(value:t)=value.delivery_group
 let helpers(value:t)=value.helpers
 let providers(value:t)=value.providers
+
+(* Shared leaf syntax for separately versioned original contexts. These values
+   do not construct or authorize a whole-graph material context. *)
+let clock_of_json raw = M.check_resources raw; parse_clock raw
+let clock_to_json = clock_json
+let recipient_of_json raw = M.check_resources raw; parse_recipient raw
+let provider_of_json raw = M.check_resources raw; parse_provider raw
+let delivery_group_of_json raw = M.check_resources raw; parse_delivery_group raw
+let delivery_group_to_json = delivery_group_json

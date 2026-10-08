@@ -22,7 +22,13 @@ let limits_json limits = Json.Object ["profile", Json.String "biocompiler.synthe
 type usage = { work_charged : int }
 let str value = Json.String value
 let field key value = Json.field key (Json.object_fields value)
-let replace key value raw = Json.Object ((key, value) :: List.remove_assoc key (Json.object_fields raw))
+(* Python mapping unpack/update preserves existing positions and appends new
+   settings. This local recipe does not reorder unrelated imported mappings. *)
+let replace key value raw =
+  let fields = Json.object_fields raw in
+  Json.Object (if List.mem_assoc key fields then
+    List.map (fun (name,previous) -> name,(if name=key then value else previous)) fields
+    else fields @ [key,value])
 let rec levels count = if count <= 1 then 1 else 1 + levels (count / 2)
 let charge_string budget multiplier value = B.charge budget (multiplier * (String.length value + 1))
 let names budget values =

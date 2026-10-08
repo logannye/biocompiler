@@ -1,4 +1,6 @@
 """Inspectable authoring expansions; these functions do not lower or execute."""
+from typing import Literal
+
 from . import model as m
 from .programs import ProgramBuilder, ref
 from .logic import all_of, not_, literal, arithmetic, compare
@@ -19,14 +21,36 @@ def once_per_scope(builder: ProgramBuilder, name: str, *, executor: m.Ref, scope
         return builder.rule("respond", executor=executor, on=on, when=all_of(permitted, not_(seen.expression)), unknown="defer", effects=(effect,), assignments=(m.Assignment(ref(seen), literal(True)),), arbitration=arbitration)
 
 
-def ordered_effects(builder: ProgramBuilder, name: str, *, executor: m.Ref, scope: m.Scope, on: m.Expr, permitted: m.Expr, first: m.Effect, second: m.Effect, arbitration: m.Arbitration) -> m.Machine:
+def ordered_effects(builder: ProgramBuilder, name: str, *, executor: m.Ref, scope: m.Scope, on: m.Expr, permitted: m.Expr, first: m.Effect, second: m.Effect, arbitration: m.Arbitration, lifetime: Literal["encounter", "executor", "persistent"] | None = None, handoff_when: m.Expr | None = None) -> m.Machine:
+    """Declare two stages, including explicit failure and timeout transitions.
+
+    The handoff guard is sampled on the first effect's completion event. A false
+    or unknown guard leaves the machine in its current state; it does not queue
+    a handoff for a later observation. Effect lifecycle declarations own timeout
+    duration and authorization semantics. This expansion adds no completion,
+    cancellation, retry or biological realization guarantee.
+    """
+    if lifetime is None:
+        if scope.kind == "encounter":
+            lifetime = "encounter"
+        elif scope.kind == "executor":
+            lifetime = "executor"
+        else:
+            raise ValueError("Ordered effects require an explicit lifetime outside executor or encounter scope")
+    if lifetime not in ("encounter", "executor", "persistent"):
+        raise ValueError("Pattern requires encounter, executor or persistent lifetime")
+    if scope.kind in ("encounter", "executor") and lifetime != scope.kind:
+        raise ValueError("Ordered effects lifetime must match executor or encounter scope")
+    handoff_guard = permitted if handoff_when is None else handoff_when
     with builder.namespace(name):
-        machine = builder.machine("stages", executor=executor, scope=scope, states=("ready", "first", "second", "completed", "failed"), initial="ready", terminal=("completed", "failed"), lifetime="executor", arbitration=arbitration)
+        machine = builder.machine("stages", executor=executor, scope=scope, states=("ready", "first", "second", "completed", "failed"), initial="ready", terminal=("completed", "failed"), lifetime=lifetime, arbitration=arbitration)
         builder.transition("start", machine=machine, source="ready", destination="first", on=on, when=permitted, effects=(ref(first),))
-        builder.transition("handoff", machine=machine, source="first", destination="second", on=first.completed, when=permitted, effects=(ref(second),))
+        builder.transition("handoff", machine=machine, source="first", destination="second", on=first.completed, when=handoff_guard, effects=(ref(second),))
         builder.transition("completed", machine=machine, source="second", destination="completed", on=second.completed)
         builder.transition("first_failed", machine=machine, source="first", destination="failed", on=first.failed)
         builder.transition("second_failed", machine=machine, source="second", destination="failed", on=second.failed)
+        builder.transition("first_timed_out", machine=machine, source="first", destination="failed", on=first.event("timed_out"))
+        builder.transition("second_timed_out", machine=machine, source="second", destination="failed", on=second.event("timed_out"))
         return machine
 
 

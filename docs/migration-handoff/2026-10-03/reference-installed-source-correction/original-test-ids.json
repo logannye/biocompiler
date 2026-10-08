@@ -1,0 +1,7 @@
+[
+  "ReferenceRuntimeAuthorityTests.test_all_four_slots_require_separate_matching_runtime_reconstruction",
+  "ReferenceRuntimeAuthorityTests.test_source_run_binary_execution_kind_and_runtime_cannot_be_relabelled",
+  "ReferenceRuntimeAuthorityTests.test_complete_matrix_and_independent_worker_success_are_mandatory",
+  "ReferenceRuntimeAuthorityTests.test_worker_report_and_full_artifact_inventory_are_independently_bound",
+  "ReferenceRuntimeAuthorityTests.test_actual_two_runtimes_and_current_authority_are_required"
+]

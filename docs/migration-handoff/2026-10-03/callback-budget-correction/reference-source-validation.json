@@ -1,0 +1,147 @@
+{
+  "base_revision": "b27f52447f49c749d33cac17f3bbb6fe772cbc24",
+  "callback_source": {
+    "current_bytes": 32588,
+    "current_sha256": "96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a",
+    "git_base_equals_archive": true,
+    "original_bytes": 32312,
+    "original_sha256": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018",
+    "path": "src/biocompiler/core_pipeline_callback_session.py",
+    "spans": 8
+  },
+  "closure": {
+    "added_support": [
+      "tests/conformance/reference-callback-source-counterpart-v1.json",
+      "tests/conformance/reference-original-sources-v1/0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018.blob"
+    ],
+    "copied_sources": 207,
+    "current_data_support": 4009,
+    "historical_sources": 203,
+    "original_documents": 4000,
+    "original_test_cases": 8,
+    "previous_data_support": 4007
+  },
+  "native_review": {
+    "native_execution": false,
+    "retained_log": null,
+    "reviewer": "session_native",
+    "scope": "read-only native/Python witness API, exact8LFspans, empty oldspan377..376, complete32312byte archive, current installed copy/manifest authority",
+    "status": "no concrete finding"
+  },
+  "runs": [
+    {
+      "argv": [
+        "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3",
+        "-m",
+        "unittest",
+        "tests.test_reference_original_counterpart",
+        "tests.test_reference_contracts_corpus"
+      ],
+      "environment": {
+        "PYTHONPATH": "src"
+      },
+      "executable": "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3",
+      "log": {
+        "bytes": 118,
+        "path": "generated/migration-next/pr85-callback-budget-correction/reference-counterpart-311.log",
+        "sha256": "db011b867d5af98ece335c7cb9d5e396e62ced2687d527384fdf01d6fbd973e6"
+      },
+      "python": "3.11.15",
+      "seconds": 45.952,
+      "status": "passed",
+      "tests": 18
+    },
+    {
+      "argv": [
+        "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3",
+        "-m",
+        "unittest",
+        "tests.test_workflow_source_lineage",
+        "tests.test_workflow_cli_lineage",
+        "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_complete_baseline_original_method_and_full_authority_error_census",
+        "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_both_exact_runtime_counterparts_keep_full_actual_source_and_bytes",
+        "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_rehashed_observation_scope_imports_case_and_runtime_mutations_fail",
+        "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_additive_sources_require_individual_pins_and_cannot_enter_children"
+      ],
+      "environment": {
+        "PYTHONPATH": "src"
+      },
+      "executable": "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3",
+      "log": {
+        "bytes": 122,
+        "path": "generated/migration-next/pr85-callback-budget-correction/source-guards-311.log",
+        "sha256": "9f05991db6b331d50820187036b30ea6bea5e97ad067e737fb0b533580100bee"
+      },
+      "python": "3.11.15",
+      "seconds": 26.132,
+      "status": "passed",
+      "tests": 22
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/python3",
+        "-m",
+        "unittest",
+        "tests.test_reference_original_counterpart",
+        "tests.test_reference_contracts_corpus"
+      ],
+      "environment": {
+        "PYTHONPATH": "src"
+      },
+      "executable": "/opt/homebrew/bin/python3",
+      "log": {
+        "bytes": 118,
+        "path": "generated/migration-next/pr85-callback-budget-correction/reference-counterpart-314.log",
+        "sha256": "20b8c2728811231509132062de458d218bdd91a0b2f09d4f4a066069b969a866"
+      },
+      "python": "3.14.6",
+      "seconds": 56.021,
+      "status": "passed",
+      "tests": 18
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/python3",
+        "-m",
+        "unittest",
+        "tests.test_workflow_source_lineage",
+        "tests.test_workflow_cli_lineage",
+        "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_complete_baseline_original_method_and_full_authority_error_census",
+        "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_both_exact_runtime_counterparts_keep_full_actual_source_and_bytes",
+        "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_rehashed_observation_scope_imports_case_and_runtime_mutations_fail",
+        "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_additive_sources_require_individual_pins_and_cannot_enter_children"
+      ],
+      "environment": {
+        "PYTHONPATH": "src"
+      },
+      "executable": "/opt/homebrew/bin/python3",
+      "log": {
+        "bytes": 122,
+        "path": "generated/migration-next/pr85-callback-budget-correction/source-guards-314.log",
+        "sha256": "5c29f270c92b72bc118852e3edab2ff6c9c275c01d0d3784ac5faf4216a9a62b"
+      },
+      "python": "3.14.6",
+      "seconds": 26.488,
+      "status": "passed",
+      "tests": 22
+    }
+  ],
+  "schema": "biocompiler.callback_profile_source_restoration_validation.v1",
+  "scope": "Pure Python finite source restoration and source-guard validation; no native compilation/execution or fresh-installed acceptance",
+  "source_pins": {
+    "core/test/test_reference_contracts_corpus.ml": "e8c1ad0f2705db8a32d98e7a7b71813a86588b507c897de19501c2ffe197ac65",
+    "tests/conformance/reference-callback-source-counterpart-v1.json": "e3be989e0a76913f64ec959d4354bb4a352c70e0bf661ca58df68db15e544b5c",
+    "tests/test_reference_original_counterpart.py": "6022a5fe582e2b9d4a73b37709684e330b18328cb326e3a7c02d31f50faf8580",
+    "tools/check_realization_workflow_corpus.py": "df320e37e9087bc358839a346e32724ef391160163598e4d997a3b7f8240e803",
+    "tools/reference_original_counterpart.py": "3375aa754f8d5ce6360487fb3efbe4bc0d3c3f970f4650fae4c96f071f6228ff"
+  },
+  "unchanged_originals": {
+    "tests/conformance/reference-contracts-v1.json": "f0d3acadad15fbc29f195fc1a7dae875e8fb027565ec20fdbe1934fec7f3cf1b",
+    "tests/conformance/reference-original-sources-v1.json": "df3323eceb20d967ea9ae8909da94f38660a1995d0e0314531bc5989516b014a",
+    "tests/conformance/reference-original-sources-v1/0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018.blob": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018",
+    "tests/conformance/reference-pipeline-semantics-v1.json": "516135a64458bc985294f7b2761138d5613209e3b225028492fe86f22c5092d3",
+    "tests/test_reference_contracts_corpus.py": "9fddd89bbfb9ef3d4ec6ee08ed91454336f1acbe2742889581c05e11f8bc4f80",
+    "tools/capture_reference_pipeline_semantics.py": "f2d2676d960ae49e44b2cca407c427b6eecee9a70cb11d5daf0abdb181c69cd3",
+    "tools/freeze_reference_contracts.py": "9f5696318883ada6e56d582cadff25e2431724e27ab27e28f3eabf864e0f1e1f"
+  }
+}

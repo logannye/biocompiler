@@ -46,6 +46,7 @@ let assert_truth frame node port_name slot value reasons=
 let attempt (frame:P.frame) ordinal=List.find(fun(value:P.attempt)->value.ordinal=ordinal)frame.attempts
 let action_kinds (frame:P.frame)=List.map(fun(value:P.action)->match value.detail with
   |P.Observation_batch _->"observation"|P.State_written _->"write"|P.Effect_requested _->"request"
+  |P.Machine_transition _->"machine"
   |P.Authorization_changed _->"authorization"|P.Feedback_accepted _->"feedback"
   |P.Feedback_rejected _->"rejected"|P.Deferred _->"deferred"|P.Undefined_commit _->"undefined"|P.Suppressed _->"suppressed")frame.actions
 let reconfigure library candidate node_id transform=

@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["args",{"$type":"tuple","items":["recreated"]}],["kwargs",{"$type":"mapping","class":"builtins.dict","items":[]}],["subject",{"$type":"manager","id":"manager/1768"}],["bound",{"$type":"mapping","class":"builtins.dict","items":[["identity","recreated"]]}]]}

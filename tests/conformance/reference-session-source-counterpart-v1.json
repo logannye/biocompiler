@@ -1,0 +1,20 @@
+{
+  "base_revision": "0297d583d5774dc8991fda24c4f8fb39a277cc9a",
+  "changes": [
+    {
+      "after": "            # Exit can race with a readiness snapshot while the final reply is\n            # still buffered. Only stdout EOF proves an incomplete frame; the\n            # existing deadline also bounds pipes inherited by descendants.\n            if 'stdout' in self._eof:\n",
+      "before": "            if 'stdout' in self._eof or self._process.poll() is not None:\n",
+      "new_end_line": 421,
+      "new_start_line": 418,
+      "old_end_line": 418,
+      "old_start_line": 418
+    }
+  ],
+  "current_bytes": 34104,
+  "current_sha256": "8de06056804e4e58350fa562c438acf2b6306a462edd9df3a1da2070f298d169",
+  "original_bytes": 33907,
+  "original_sha256": "b0c744d8f3a38b1681805250ccf93884ba866678527cf366bcf08ff326da080d",
+  "path": "src/biocompiler/core_pipeline_session.py",
+  "schema_version": "biocompiler.reference_session_source_counterpart.v1",
+  "scope": "Exact historical source restoration only; current session transport validation is separate"
+}

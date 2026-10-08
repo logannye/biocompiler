@@ -323,3 +323,20 @@ let () =
   | [_; directory] -> fixture_tests directory
   | [_; directory; broad] -> fixture_tests directory; broad_fixture_tests broad
   | _ -> failwith "usage: test_behavior.exe [absolute-case-b-corpus-directory [absolute-behavior-corpus-json]]"
+
+let () =
+  let reverse value = obj (List.rev (fields value)) in
+  let raw = program [role "cell"; state_node [str "a";str "b"] (str "a")] in
+  let reordered = raw
+    |> set "nodes" (arr (List.map reverse (Json.array (field "nodes" raw))))
+    |> set "requirements" (arr (List.map reverse (Json.array (field "requirements" raw)))) in
+  let actual = Behavior.to_json (Behavior.of_json reordered) in
+  List.iter (fun value -> require (List.map fst (fields value) =
+    ["id";"kind";"inputs";"attributes";"data_type";"role";"source";"contact_bound";"requirement_ids"])
+    "Behavior node extensions displaced original Intent field order") (Json.array (field "nodes" actual));
+  let requirements = Json.array (field "requirements" actual) in
+  require (List.length requirements = 1) "Ordered Behavior control lost its actual requirement";
+  require (List.map fst (fields (List.hd requirements)) = ["id";"kind";"source_node_id";"lineage";"source"])
+    "Requirement source metadata displaced original public fields";
+  require (Canonical.encode actual = Canonical.encode (Behavior.to_json (Behavior.of_json raw)))
+    "Behavior ordering changed validated values"

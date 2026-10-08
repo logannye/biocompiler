@@ -1,0 +1,145 @@
+{
+  "base_source_revision": "d3bef33bf45e0e80797cb30956fc8dc02e58b8eb",
+  "changed_sources": [
+    {
+      "after": {
+        "bytes": 17333,
+        "sha256": "2038afce45cd6f0490957370286a0a3ba8fc0fca402c0daf30b2bede1d67d70e"
+      },
+      "before": {
+        "bytes": 17193,
+        "sha256": "928cf47c58572f8fb85c7669b47eb6a40201be4d4a4eb8bb4ac4899340f133de"
+      },
+      "path": "tools/pipeline_reference_runtime.py"
+    },
+    {
+      "after": {
+        "bytes": 13106,
+        "sha256": "90809996bafb862508cd93ed69e53494b433f641c548469f23f8788c76c1cfa6"
+      },
+      "before": {
+        "bytes": 7930,
+        "sha256": "50b248572f6879f94b93e2a67cf4f567c9c01349c9cd72b6b41724a6f6613af5"
+      },
+      "path": "tests/test_pipeline_reference_runtime.py"
+    }
+  ],
+  "counterpart_dependencies": [
+    {
+      "path": "tests/test_prebuilt_ci_plan.py",
+      "reason": "Existing frozen14-file installed-path witness binds runtime whole-source hash and finite patch equality; root owns adding a finite reversal of this exact two-line span before existing assertions."
+    },
+    {
+      "owner": "root",
+      "path": "tests/conformance/reference-distribution-source-delta-v1.json",
+      "scope": "New finite delta, preserves old prebuilt-installed-path-delta-v1 witness and archived runtime baseline."
+    }
+  ],
+  "created_at_utc": "2026-10-03T22:23:40.997609+00:00",
+  "declarations": "No application or callback v2 protocol declaration changed. Historical reference installed-workflow checkpoint remains historical evidence; root owns current prebuilt checkpoint updates.",
+  "evidence": {
+    "focused-py311.log": {
+      "bytes": 1946,
+      "sha256": "4b54ec6d2f63c8c3506b0d589436a79c44d2c3e31d6c661b77f5eae947993ded"
+    },
+    "focused-py314.log": {
+      "bytes": 1946,
+      "sha256": "4b54ec6d2f63c8c3506b0d589436a79c44d2c3e31d6c661b77f5eae947993ded"
+    },
+    "original-test-ids.json": {
+      "bytes": 520,
+      "sha256": "51c02ac0fe90a08f79a5dbe3f4377bd39dfcca277794abbc55f111ae478e13f4"
+    },
+    "pipeline_reference_runtime.py.before": {
+      "bytes": 17193,
+      "sha256": "928cf47c58572f8fb85c7669b47eb6a40201be4d4a4eb8bb4ac4899340f133de"
+    },
+    "pre-fix-controls.log": {
+      "bytes": 2489,
+      "sha256": "bc779772b52aeeedd1d22a7c591bf14732e0de710d2b5e3e8e007831ab4390e7"
+    },
+    "pre-fix-missing-authority.json": {
+      "bytes": 833,
+      "sha256": "c0366b83d62454fb219086090ae69b5b0efd13422cd8b962dff5447a35033105"
+    },
+    "test_pipeline_reference_runtime.py.before": {
+      "bytes": 7930,
+      "sha256": "50b248572f6879f94b93e2a67cf4f567c9c01349c9cd72b6b41724a6f6613af5"
+    }
+  },
+  "full_hosted_validation": "required_on_final_source_before_integration",
+  "native_execution": false,
+  "preservation": [
+    "No frozen source corpus, original oracle, product module, execution guard or manager reviewed-source closure changed.",
+    "New authority is one explicit current source path; unlisted loaded modules remain rejected.",
+    "Existing five test IDs and complete class AST preserved; four regression IDs added.",
+    "No native compilation/execution, installation, packaging, network call or Git mutation performed."
+  ],
+  "runtime_change": {
+    "only_this_span_changed": true,
+    "purpose": "Pin the current distribution discovery module imported by installed-layout resolution so its exact installed source bytes remain in the closed reference campaign authority.",
+    "span": "    # Installed-layout discovery is current campaign authority, not frozen semantics.\n    paths.add('src/biocompiler/core_distribution.py')\n"
+  },
+  "schema_version": "biocompiler.reference_installed_source_correction.v1",
+  "status": "focused_pure_controls_pass",
+  "tests": {
+    "added_test_ids": [
+      "ReferenceInstalledSourceClosureTests.test_current_source_closure_explicitly_pins_distribution_bytes",
+      "ReferenceInstalledSourceClosureTests.test_lazy_installed_resolver_import_remains_in_closed_source_authority",
+      "ReferenceInstalledSourceClosureTests.test_loaded_unlisted_module_does_not_expand_source_authority",
+      "ReferenceInstalledSourceClosureTests.test_omitted_or_changed_distribution_source_is_rejected"
+    ],
+    "original_test_class_ast_unchanged": true,
+    "original_test_ids": [
+      "ReferenceRuntimeAuthorityTests.test_all_four_slots_require_separate_matching_runtime_reconstruction",
+      "ReferenceRuntimeAuthorityTests.test_source_run_binary_execution_kind_and_runtime_cannot_be_relabelled",
+      "ReferenceRuntimeAuthorityTests.test_complete_matrix_and_independent_worker_success_are_mandatory",
+      "ReferenceRuntimeAuthorityTests.test_worker_report_and_full_artifact_inventory_are_independently_bound",
+      "ReferenceRuntimeAuthorityTests.test_actual_two_runtimes_and_current_authority_are_required"
+    ],
+    "pre_fix": {
+      "direct_missing_authority_reproduction": "pre-fix-missing-authority.json",
+      "exit_code": 1,
+      "expected_failure_count": 1,
+      "log": "pre-fix-controls.log",
+      "new_control_count": 4
+    },
+    "runs": [
+      {
+        "command": [
+          "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+          "-B",
+          "-m",
+          "unittest",
+          "test_pipeline_reference_runtime",
+          "-v"
+        ],
+        "environment": {
+          "PYTHONPATH": "src:tests"
+        },
+        "exit_code": 0,
+        "log": "focused-py311.log",
+        "python": "3.11.15",
+        "tests": 9
+      },
+      {
+        "command": [
+          "python3",
+          "-B",
+          "-m",
+          "unittest",
+          "test_pipeline_reference_runtime",
+          "-v"
+        ],
+        "environment": {
+          "PYTHONPATH": "src:tests"
+        },
+        "exit_code": 0,
+        "log": "focused-py314.log",
+        "python": "3.14.6",
+        "tests": 9
+      }
+    ],
+    "scope": "Actual source-pin builder, real installed-layout resolver and installed source byte validator with an explicitly inert temporary package/distribution discovery stand-in; no fresh installation claim. Original orchestration controls mock workers. New controls deny subprocess.Popen."
+  }
+}

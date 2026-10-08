@@ -1,0 +1,1 @@
+{"closure":[["registry",{"ref":"object/17442"}]],"defaults":{"scalar":"NoneType","value":null},"kind":"provider","kwdefaults":{"scalar":"NoneType","value":null},"source":{"file":"src/biocompiler/compiler/construct.py","freevars":["registry"],"line":185,"module":"biocompiler.compiler.construct","qualname":"run_construct_pipeline.<locals>.verify_linkage"}}

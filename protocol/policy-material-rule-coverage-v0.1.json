@@ -15,7 +15,7 @@
   "sources": [
     {
       "path": "core/bin/core/main.ml",
-      "sha256": "d04b8ef278c4dfd6721bfff5345075473603f0cb78ad54cdb688976a60d06427",
+      "sha256": "f586816392c3b22072c7e2a0d7a0063d621911e0957519f442e0a9727451ecad",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -37,16 +37,17 @@
     },
     {
       "path": "core/lib/candidate_runtime/policy_primitives.ml",
-      "sha256": "1bb404967129fcbdb06d17d97ec5f929b9d3ae65854d6d00be0dd36f8389ed9d",
+      "sha256": "8350d914aa8ab87d47d568e5968cf37cd4932992145d25c4224a91cf88c7f9cd",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 1,
-          "fail": 22,
-          "require": 30
+          "fail": 27,
+          "require": 34
         },
         "profile_literals": {
-          "biocompiler.policy_primitive_execution.v0.1": 1
+          "biocompiler.policy_primitive_execution.v0.1": 1,
+          "biocompiler.policy_staged_primitive_execution.v0.1": 1
         }
       },
       "disposition": "rule_owner",
@@ -54,7 +55,7 @@
     },
     {
       "path": "core/lib/candidate_runtime/policy_primitives.mli",
-      "sha256": "b074f9b0f38cc91409e4f87d7ba09a178c2a4cca4616ed54dc65f90a85e0248a",
+      "sha256": "b1a9bd2c909d625766ca730fbc6f06eb512e06285126df6ae431a2c4b8b9e154",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -124,7 +125,7 @@
     },
     {
       "path": "core/lib/checker/policy_admission.ml",
-      "sha256": "7d8ba644a491438afce37fbd15f0a5c0ad466b077cc29fd145a28704d3b2a6d9",
+      "sha256": "185cd8857caf6ee43461fde6b9c064745cb9a9d692ca16c848134b9777a53745",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -142,7 +143,7 @@
     },
     {
       "path": "core/lib/checker/policy_admission.mli",
-      "sha256": "0497f05a06a6aa2b28366077aff8d5374a56bf07d0f52924c9755f4edc725c1d",
+      "sha256": "5ff3e8bf9b7a12da3f2afb5f006ba1b32643777ef9b0beb509b55da515ffe8f3",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -153,7 +154,7 @@
     },
     {
       "path": "core/lib/checker/policy_check.ml",
-      "sha256": "2aad7572b04cb20fdac3a162c4185cc1b976b895d578a249f230ae7e368b2bd1",
+      "sha256": "d8fc6d8a30ede74b89d90aca49d7ec77756761f317205e9bf96a906760ccd054",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -170,7 +171,7 @@
     },
     {
       "path": "core/lib/checker/policy_check.mli",
-      "sha256": "231e58a02154c0d72131dcf45cca75392e4881762403c339134e77143fb63794",
+      "sha256": "7ef1d1adfe8e35b356ca84ac603fdb743aff0f33fa33525369fd285be2516176",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -181,7 +182,7 @@
     },
     {
       "path": "core/lib/checker/policy_correspondence.ml",
-      "sha256": "437bbb1dcbf1a988a98d7f0520d822e1049052bdd9b1fe61a223f73ccbdcc54b",
+      "sha256": "12f7b455aec1e4aacf2e261de065979a550c1d2a84c58ff901166d545e499c35",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -197,7 +198,7 @@
     },
     {
       "path": "core/lib/checker/policy_correspondence.mli",
-      "sha256": "a80bacf3f9cebd9ec2dad3f60b0d7f0c83028fa455a594e0cab2509e244f9da9",
+      "sha256": "04a61c09a03520988a19dda0e7806fe8e69e5c24749158f4a1b2be69984770ec",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -207,17 +208,40 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/checker/policy_generation_meter.ml",
+      "disposition": "dependency",
+      "reason": "Shared count-only generation accounting dependency; independent material rule meaning and witnesses are retained.",
+      "sha256": "13c4647bc0efcb50f239af693e8fa3281fdbca4115ce4e5a84bcd4e9a4a1b965",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_generation_meter.mli",
+      "disposition": "dependency",
+      "reason": "Shared count-only generation accounting dependency; independent material rule meaning and witnesses are retained.",
+      "sha256": "f1bb20416d692f4d0aa72b92028f75f6ea5ca532ae90e1d7593b424e703bf4ba",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/checker/policy_implementation_binding_check.ml",
-      "sha256": "af77acf6c93f5d7635ce7f4729afac40da4febf38705733ff031a50e5403211a",
+      "sha256": "02327961ccdf3ff81a1777f19b6d3cabc9af4a7e50089a8d3bc1806d8f37e0f7",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 14,
+          "Diagnostic.fail": 27,
           "Diagnostic.require": 1,
-          "require": 50
+          "require": 95
         },
         "profile_literals": {
-          "biocompiler.policy_implementation_binding_report.v0.1": 1
+          "biocompiler.policy_implementation_binding_report.v0.1": 1,
+          "biocompiler.policy_implementation_binding_report.v0.2": 1
         }
       },
       "disposition": "rule_owner",
@@ -225,7 +249,7 @@
     },
     {
       "path": "core/lib/checker/policy_implementation_binding_check.mli",
-      "sha256": "91552a30cff9a16827c1c18fb7d27df406cc2cd7ce3c515974dcbb230ef4915e",
+      "sha256": "6dbee32bd2ef5ab6b3bffae8a34ddad6fa8cf7cd393c5cbe7f1cd437b8a42ffd",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -265,13 +289,13 @@
     },
     {
       "path": "core/lib/checker/policy_realization_admission.ml",
-      "sha256": "3cf0e5b4931051da873140691b0b74e98bea1d51f68db8db157bd6ac4283ecda",
+      "sha256": "6b22b165a96a1aa1b8ab8a73d1485f375e2eb08ef2ffb4e3901d6366d9023b49",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 2,
-          "Diagnostic.require": 1,
-          "require": 11,
+          "Diagnostic.require": 2,
+          "require": 12,
           "supported": 11
         },
         "profile_literals": {
@@ -283,7 +307,7 @@
     },
     {
       "path": "core/lib/checker/policy_realization_admission.mli",
-      "sha256": "b778ff7e4a21c49aafba051741e0a4f5e287be6f537e247255ba7db540362c2c",
+      "sha256": "2dd528a0d2d89666d9a960c3dfea626916abe766bbc974a8aaf0ee7c3c23f701",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -294,7 +318,7 @@
     },
     {
       "path": "core/lib/compiler/construction_producer.ml",
-      "sha256": "c59acedb2cd0a40bce344278c1bc9cbd90644046eb30a45006cda495e4de689e",
+      "sha256": "6f36a03c157b48bc7f0ed2688e30084b1b1a9cadc4ed3b907fc4adffc71ee67d",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -313,7 +337,7 @@
     },
     {
       "path": "core/lib/compiler/construction_producer.mli",
-      "sha256": "540f28bb8be1e88e3e7daa5cbdc41d44d8c3ba27ee8d61765be3647ba1175b58",
+      "sha256": "89533d371dc7e698eb0240dc3c2a47d715534547ac285d5d21a4f30bda740719",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -323,8 +347,34 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/compiler/policy_component_lowering.ml",
+      "sha256": "9e6dc223872e739f516a8602254028b37f29a5bf29be348959f751aa7811f0b0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 2,
+          "supported": 3
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/compiler/policy_component_lowering.mli",
+      "sha256": "aced09ced9c22d4f06520f30d4e077198ba01e04cb832a0360bc79e4b1254a24",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/compiler/policy_implementation_lowering.ml",
-      "sha256": "ca278d98039620eba89f6aaec11008f35bc589748a3479b598e26e732b249681",
+      "sha256": "a1e08b6864a5afdf7ea5b4d903306369a97e521048dc22222538a668aa76910b",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -339,7 +389,7 @@
     },
     {
       "path": "core/lib/compiler/policy_implementation_lowering.mli",
-      "sha256": "c3fac71eba7c2b7bc263169b8a6314142e95bd6bea774cba20e36fe1a6c358c0",
+      "sha256": "894af56fc2275960c62597eed090fc1112a67ca96ce0ef3ac7cdc7babb215af2",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -350,7 +400,7 @@
     },
     {
       "path": "core/lib/compiler/policy_lowering.ml",
-      "sha256": "e78d39ea6a7cf92547c899c6eb758604c236053fbd763832b03a1318a9d6a6ed",
+      "sha256": "9cd1d929568d6802166cc60dc64db421dfc753530d9667ab0fb298199add47d6",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -361,7 +411,7 @@
     },
     {
       "path": "core/lib/compiler/policy_lowering.mli",
-      "sha256": "4b6415b68caae88f5994c8a90e8bbebf73fe907d69aed2d865d703d305636af6",
+      "sha256": "aaebf77357465d3191e28953b0ff8b6dbc35bc910a3b5ea6101b1e141c8d383f",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -369,6 +419,64 @@
       },
       "disposition": "dependency",
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/compiler/policy_staged_lowering.ml",
+      "disposition": "outside_route",
+      "reason": "Separate versioned staged component route; no original whole-kernel material admission authority.",
+      "sha256": "52de7854626d3cc0fbc9300f3db2447b619cff3850ebe12561417e56ee48eb79",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 11,
+          "Diagnostic.require": 1,
+          "supported": 28
+        },
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_staged_lowering.mli",
+      "disposition": "outside_route",
+      "reason": "Separate versioned staged component route; no original whole-kernel material admission authority.",
+      "sha256": "d4b1762b581e7a479cd449644e36ce9c33f62dad102591cffffd0d838a67acba",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/compiler/recoding_producer.ml",
+      "disposition": "dependency",
+      "reason": "Shared count-only generation accounting dependency; independent material rule meaning and witnesses are retained.",
+      "sha256": "3c5897fc0680a9ee746bbebc59203e104e9ef9a6a5787b9967652d2e8dbb2dab",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "require": 30
+        },
+        "profile_literals": {
+          "biocompiler.construction_producer.resources.v1": 1,
+          "biocompiler.molecule_coordinate_path.v0.1": 1,
+          "biocompiler.molecule_coordinate_space.v0.1": 1,
+          "biocompiler.molecule_index_span.v0.1": 1,
+          "biocompiler.ocaml.recoding_producer.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/compiler/recoding_producer.mli",
+      "disposition": "dependency",
+      "reason": "Shared count-only generation accounting dependency; independent material rule meaning and witnesses are retained.",
+      "sha256": "523903e1f7eaa529a05564a2716b6f87b6608d234c27db09fbc8242a295fd363",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
     },
     {
       "path": "core/lib/domain/construction_content.ml",
@@ -400,6 +508,302 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/domain/policy_component_assembly_proposal.ml",
+      "sha256": "744f915e383f61997e36af948a40b8b15a35f6a19540a49b5bafc9ad7fe43320",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "require": 5
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_assembly_proposal.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_assembly_proposal.mli",
+      "sha256": "2935a1494200b31d8f4b722cd09475882f745a8bdbd8987e4b16f09168fcca78",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_assembly_rule.ml",
+      "sha256": "916ccbb5c7e388873ca5bd4be146adff46b4272f7785bcfdbce720ce50fb8a94",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "fail": 23,
+          "require": 55
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_assembly_rule.v0.1": 1,
+          "biocompiler.policy_exact_component_assembly.v0.1": 1,
+          "biocompiler.policy_identity_transport.v0.1": 1,
+          "biocompiler.policy_staged_component_assembly.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_assembly_rule.mli",
+      "sha256": "a2d73f747fd00b82966e22679e37fc6c6a816c1261236a6f4d49eb44e5fef399",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_context.ml",
+      "sha256": "9aad665146268633f4fd7e51ed33853efc4617cd49c326f2a6ed1a82c9f70c09",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 11
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_complete_records.v0.1": 1,
+          "biocompiler.policy_component_context.v0.1": 1,
+          "biocompiler.policy_component_mrna.v0.1": 1,
+          "biocompiler.policy_component_ordered_union.v0.1": 1,
+          "biocompiler.policy_staged_component_complete_records.v0.1": 1,
+          "biocompiler.policy_staged_component_mrna.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_context.mli",
+      "sha256": "b36c6f93aa100c0b7181f765292a4fa56ddc32e3d90884c1597f8be41999446d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_fragment.ml",
+      "sha256": "5e5c398e4a88683ec7a82f7c658c6a79c1a51f5be88ee078e4da297c5ee9450c",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "fail": 13,
+          "require": 25
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_fragment.resources.v0.1": 1,
+          "biocompiler.policy_component_fragment.v0.1": 1,
+          "biocompiler.policy_exact_fragment.v0.1": 1,
+          "biocompiler.policy_primitive_execution.v0.1": 1,
+          "biocompiler.policy_staged_fragment.v0.1": 1,
+          "biocompiler.policy_staged_primitive_execution.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_fragment.mli",
+      "sha256": "7184863ef76edae4198bca284adaccd72f9c266d0d7fb673def13bef22b6e1a8",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_library.ml",
+      "sha256": "69769174fa3dd14914fbf9037a7d83f12a0795d628931f46b117d671c22a6b2b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 6
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_library.v0.1": 1,
+          "biocompiler.policy_exact_component_library.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_library.mli",
+      "sha256": "8bda829d142efe6bc7b9356c6fec92d09108ef07592df576dda28b282286e42c",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_material.ml",
+      "sha256": "d9a6a919fde6bf34dd75bc37ffe9c4c0e65579b99b9c55e42dd0d33a2c95545b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 6,
+          "Diagnostic.require": 1,
+          "require": 25
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_material.v0.1": 1,
+          "biocompiler.policy_exact_local_material.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_material.mli",
+      "sha256": "842042bda5b80933543e5061e64cc99c722111e53148f4a87e58e10b7c0d9e87",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_material_candidate.ml",
+      "sha256": "c590d17f0c1b2b7e3b89601cc0d9664a0a3770fb9a8a0a06fb17d05fbc611722",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 2
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_material_candidate.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_material_candidate.mli",
+      "sha256": "af8af17f1d891b28a79ecfdf4dea1a3d6bc902ecb7c27ce9c5469980cbbe9016",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_material_request.ml",
+      "sha256": "052666c385fea9b49798dc8484a46619b5fae88ba8c2af27bdc70023414deb98",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 6,
+          "Diagnostic.require": 3,
+          "require": 20
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_material_request.v0.1": 1,
+          "biocompiler.policy_component_material_resources.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_material_request.mli",
+      "sha256": "2d4d773ec7deccc0380dbf9da4996b600221c01fd03196e0118c49c1ab6558cc",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_selection_candidate.ml",
+      "sha256": "9a7448d6721d5dbac2a14487a60e0d0951e70846350261b73a53d86eefcb5dad",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 3,
+          "require": 5
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_selection_candidate.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_selection_candidate.mli",
+      "sha256": "515b2751d95fdef64fd6a1ea783349a02525db82aaa4f0fdadcf157e75745c60",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_selection_request.ml",
+      "sha256": "b9300c96ab66f7b657d39fa2301694e19808343b5f84fcee4505fbfc14d62271",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 3,
+          "require": 8
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_material_selection.v0.1": 1,
+          "biocompiler.policy_component_selection_request.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.2": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_selection_request.mli",
+      "sha256": "24cb9c515d9ca2fd0c8e72d65ddc415974e6f8ea99b6cbfada3db2ed55389a79",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/domain/policy_document.ml",
       "sha256": "db2860b602d63df29d1a8240417f8632c37693b797f9561e00395bd1fd2f95dc",
       "census": {
@@ -429,20 +833,22 @@
     },
     {
       "path": "core/lib/domain/policy_implementation.ml",
-      "sha256": "0cfcbdcb9d9dd99b5d7b88842e2b8b139abc5ccb6e4747ada23e4a5827297a37",
+      "sha256": "764e22441222b9c9e61723f51a0b22de2b169d9568397e3c3bc035e714fd54f1",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 1,
           "Diagnostic.require": 1,
-          "fail": 19,
-          "require": 43
+          "fail": 22,
+          "require": 48
         },
         "profile_literals": {
           "biocompiler.policy_implementation.resources.v0.1": 1,
           "biocompiler.policy_implementation.v0.1": 1,
           "biocompiler.policy_implementation_library.v0.1": 1,
           "biocompiler.policy_primitive_model.v0.1": 1,
+          "biocompiler.policy_staged_observables.v0.1": 1,
+          "biocompiler.policy_staged_primitives.v0.1": 1,
           "biocompiler.policy_truth_observables.v0.1": 1,
           "biocompiler.policy_truth_primitives.v0.1": 1
         }
@@ -452,7 +858,7 @@
     },
     {
       "path": "core/lib/domain/policy_implementation.mli",
-      "sha256": "934f7e6fcae6e88163b9b7d564028a651d74f7d0a633adb8fccee8cab1ea3742",
+      "sha256": "da5c8cb099088e4da782ef600d37a6e0098c8d7a07184d188eabf6ca08bde623",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -463,16 +869,18 @@
     },
     {
       "path": "core/lib/domain/policy_implementation_binding.ml",
-      "sha256": "45c819e058ca3c66b727f4a2851d6b9712696f3a9a17e5c4e4992c77608b8eed",
+      "sha256": "16db1b9b5e16a9310e4e5a5290e705a9c44e15e08e86fb89586fed1204211088",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.require": 1,
-          "require": 6
+          "require": 8
         },
         "profile_literals": {
           "biocompiler.policy_exclusive_source_graph.v0.1": 1,
-          "biocompiler.policy_implementation_binding.v0.1": 1
+          "biocompiler.policy_implementation_binding.v0.1": 1,
+          "biocompiler.policy_implementation_binding.v0.2": 1,
+          "biocompiler.policy_staged_source_graph.v0.1": 1
         }
       },
       "disposition": "dependency",
@@ -480,7 +888,7 @@
     },
     {
       "path": "core/lib/domain/policy_implementation_binding.mli",
-      "sha256": "6843fca29304d4847e5df9e731d78381d38058547d64b1b001b7f71a66271c37",
+      "sha256": "83392f15f132d38302a09042ccdf2b8e89354ba43023735dd992ef6d37f83609",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -491,7 +899,7 @@
     },
     {
       "path": "core/lib/domain/policy_material_context.ml",
-      "sha256": "9fb3a60e865d23a094b1c334bb03d63280a9d6480c9edcde31be92d7a499ae20",
+      "sha256": "12d4f24d00a364e5148f283d19c1b2e7fd56f031d68948941dca0950da43b2a0",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -512,7 +920,7 @@
     },
     {
       "path": "core/lib/domain/policy_material_context.mli",
-      "sha256": "b52bf9fcbd1478cab0e7818583a1a85b9a300fd9ba266bf8dce3c408c80dd989",
+      "sha256": "64066b039724843a35292b2f75b58ecb622bbcf4d7961bca03227a2c2f6b1efa",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -523,7 +931,7 @@
     },
     {
       "path": "core/lib/domain/policy_material_contract.ml",
-      "sha256": "afd7b220c3cd675d9eeed8d093626da60d935a30e183bd25423986a037adf486",
+      "sha256": "af026c68bb6f37db66a20ed6bd126ef72ed04dec1a6e94a959616b4431a83102",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -544,7 +952,7 @@
     },
     {
       "path": "core/lib/domain/policy_material_contract.mli",
-      "sha256": "ad98b85ea7972431857e9a49156efd3cdfa563f4e27e28234a5407a2b575f203",
+      "sha256": "926c41f0a9c3b93328437c6f628387db9b4b70b9204595f6178a87c7ea8c8266",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -613,11 +1021,11 @@
     },
     {
       "path": "core/lib/domain/policy_operating_domain.ml",
-      "sha256": "bad7552eaf0642d051f1d7a1cf70ccc3e3e216b2ce5659b9a7ace4577660fd08",
+      "sha256": "bbdc0925c24c95852f356a513c1707f330da3b936227a24e0234730a9deb5384",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 4,
+          "Diagnostic.fail": 5,
           "Diagnostic.require": 1,
           "require": 27
         },
@@ -631,7 +1039,7 @@
     },
     {
       "path": "core/lib/domain/policy_operating_domain.mli",
-      "sha256": "b5a700541f8a58b2dd83c21f01bdf6b1646082eafbe196e810b18e7414817201",
+      "sha256": "cbaa01212d62d053ac045151b20b31cc2fa95aa4f5e08db93ea0ab2ee044c095",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -725,6 +1133,50 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/producer_service/policy_component_material_producer.ml",
+      "sha256": "106200a230a1eb27373362412e5f53acb99e3190d41ff0a64d3d30e94b84164d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/producer_service/policy_component_material_producer.mli",
+      "sha256": "8b082327497955b7f3137d55df0cddc3d24ec492ce3cd448ece0e6269555348e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/producer_service/policy_component_selection_producer.ml",
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json.",
+      "sha256": "a2961ec002049305ba82505a0bc81ad79cdccd1f32d8fdff1685cf5634f5acfb",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/producer_service/policy_component_selection_producer.mli",
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json.",
+      "sha256": "df30b6a90fb9f94c75f0fe93d48935bbbc66de91e992f4c2d0cb27b187ac83e2",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/producer_service/policy_implementation_producer.ml",
       "sha256": "81ffbee4d3862f69c054f9d6031366d99871e72ddbea7165bc515f2a53f6dc5e",
       "census": {
@@ -796,7 +1248,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "abf64d6bfdba2b13bf50159dfdcd6f3f3d198f851ef8854e9009b2e55a3df05e",
+      "sha256": "5d6be9fffa94bd9b7a160da4348cf1add3d77e6d5326add8d32ef330c73812c9",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -810,7 +1262,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.mli",
-      "sha256": "98866b8aec1d940f53f2e60780a50d39170985bf95545acd5bdbcf848423e7ef",
+      "sha256": "b38ad3667b8166bcac2582db5cbba300c94f5acd326651f04dcb055377cdbb6d",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -818,6 +1270,153 @@
       },
       "disposition": "dependency",
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_assembly_check.ml",
+      "sha256": "14e1f7d6632437d2478a01064c099fe1bfb203c831368060796f116b32709394",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 3,
+          "verify": 34
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_assembly_check.v0.1": 1,
+          "biocompiler.policy_component_assembly_assessment.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_assembly_check.mli",
+      "sha256": "a2e91133165ed883aa73ba4ed96a141c205c84ed4a0a289abf75eb01b7a8ab74",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_context_check.ml",
+      "sha256": "a2397be65baf6d2b43a734a9c31617ff77631d9bbee51fbd32632e2e5e5cc400",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 14,
+          "Diagnostic.require": 5,
+          "fail": 44,
+          "supported": 18
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_context_check.v0.1": 1,
+          "biocompiler.policy_component_context_assessment.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_context_check.mli",
+      "sha256": "a81e90704baba21c11cb69817908fdf36c840f5e01b5af62d740f7d430265b3f",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_material_check.ml",
+      "sha256": "74cb77d78711d916860255cdbc2e65228589e0bf6eac674d9398b99217df14aa",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 4,
+          "require": 6
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_material_check.v0.1": 1,
+          "biocompiler.policy_component_material_assessment.v0.1": 1,
+          "biocompiler.policy_component_material_candidate.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_material_check.mli",
+      "sha256": "1f5d283abdf622e1564a11b11d5d96122fc9c2654b62c649f985d70c61ab52f9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+      "sha256": "e3432d1348223a7212e08b732abd7e556c57cfbbfeb435cf306d1d5510489182",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 2,
+          "require": 9
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_selection_check.v0.1": 1,
+          "biocompiler.policy_component_selection_assessment.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_check.mli",
+      "sha256": "b4bbc4a3daaa9bf506957b5fb730312ba644fc1028e92bc6c98459ae798f06c7",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_common.ml",
+      "sha256": "8ab2c7e39f3de4183c341bc76d4c88621610877a0b6752eabf81928fda169386",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 7,
+          "Diagnostic.require": 2,
+          "supported": 28
+        },
+        "profile_literals": {
+          "biocompiler.construction_concatenate.v0.1": 1,
+          "biocompiler.policy_component_ordered_union.v0.1": 1,
+          "biocompiler.policy_decision_leader_variant.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_common.mli",
+      "sha256": "7e63797efe103400ec5e7221bb2fffa06d4a76d3773dab2463603db903a45e82",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
       "path": "core/lib/realization_checker/policy_material_binding_check.ml",
@@ -878,14 +1477,14 @@
     },
     {
       "path": "core/lib/realization_checker/policy_material_context_check.ml",
-      "sha256": "7abd2fb441d9dd0491f61bab33e6d54d613c09e643cffa9e9d6658b8511f6d11",
+      "sha256": "670b8faccb9c5122265c718a71a6459668c7643267d000e8bfa445a8b29bc545",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 14,
           "Diagnostic.require": 4,
           "fail": 39,
-          "supported": 17
+          "supported": 18
         },
         "profile_literals": {
           "biocompiler.ocaml.policy_material_context_check.v0.1": 1,
@@ -938,7 +1537,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_requirement_monitor.ml",
-      "sha256": "4c1cad3e859eb20e4d066aaca8808840fbc73db65534f07511f83c06e906d789",
+      "sha256": "d86aa0c84cbbc8ab442b76abc27dbcca6eb9e2e4d26262dbce9caa969fa60e9b",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -967,16 +1566,17 @@
     },
     {
       "path": "core/lib/realization_checker/policy_trace_correspondence.ml",
-      "sha256": "996e050c608f06ff49f93e28071261b4aa5f6e7bb521fc63694e3d618b5f22e5",
+      "sha256": "2601fe663881150af28e1c1cd06f6cbc5ea978b796f6c42343b9d2cbffba450b",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 6,
+          "Diagnostic.fail": 7,
           "Diagnostic.require": 1,
-          "require": 18
+          "require": 25
         },
         "profile_literals": {
-          "biocompiler.policy_exact_trace_correspondence.v0.1": 1
+          "biocompiler.policy_exact_trace_correspondence.v0.1": 1,
+          "biocompiler.policy_staged_trace_correspondence.v0.1": 1
         }
       },
       "disposition": "dependency",
@@ -984,7 +1584,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_trace_correspondence.mli",
-      "sha256": "0b324756d764be31e14032b16aa99dfe5c16a5758deaf3c25c0af9943365c5b9",
+      "sha256": "03b58d78ed61c55ce185cff6976691c2582c05b7c97cd9701581e2d7c366651c",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1052,6 +1652,94 @@
       },
       "disposition": "dependency",
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/service/policy_component_material_format.ml",
+      "sha256": "5335cda324e195b62be991ac928388412504cfa2a53a153117aaaecb7d47d842",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_component_material_format.mli",
+      "sha256": "4dd118bad563612ddfc195faad4eeb83ded97f111c5a73189428d007e06d30da",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_component_material_service.ml",
+      "sha256": "c08b062a2c56c8fa29e674fdd81243496b5bfaec5b8faa98c7356976d4d892da",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 4
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_material.v1": 1,
+          "biocompiler.ocaml.policy_component_material.v0.1": 1,
+          "biocompiler.policy_component_material_candidate.v0.1": 1,
+          "biocompiler.policy_component_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_mrna_manifest.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_component_material_service.mli",
+      "sha256": "1fa5a6032b78f2a223abefd3fe2e12a1b9be772bdd1822f844a4f10bcc3151f0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_component_selection_service.ml",
+      "sha256": "070130aac8acb39308c3fe2de26c582e7bcd3909c549bb201018c506d6108108",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 5,
+          "require": 4
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_selection.v1": 1,
+          "biocompiler.ocaml.policy_component_selection.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_component_selection_publication.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_component_selection_service.mli",
+      "sha256": "c492eecc86b131de06d005cd045a2044ffc325e4cef0bb874f75678c29a8cc90",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
       "path": "core/lib/service/policy_implementation_service.ml",
@@ -1175,16 +1863,17 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "a4e5dce5198cdbf1a48fb082a72f810fbc572b90617897f12fe7a27c72dca496",
+      "sha256": "889f5d1ef2f2fd2e901a603e105638ef51addd2380210a72ac495f6e7c643577",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 1,
-          "Diagnostic.require": 7
+          "Diagnostic.require": 9
         },
         "profile_literals": {
           "biocompiler.core.artifact_response.v1": 1,
-          "biocompiler.core.artifact_transport.v1": 2,
+          "biocompiler.core.artifact_transport.authority.v1": 1,
+          "biocompiler.core.artifact_transport.v1": 1,
           "biocompiler.core_capabilities.v1": 1
         }
       },
@@ -1193,7 +1882,7 @@
     },
     {
       "path": "core/lib/service/service.mli",
-      "sha256": "64aee24f637242c51b64203132f9e4471c09ac7253c7429d7f7d9b5ffe1bb279",
+      "sha256": "854e6c2ef8a060791bf72610fe8e9beb68bb2303de278c45cd5eb15c3310e603",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1303,14 +1992,113 @@
       "reason": "Narrow prebuilt resolver foundation only; targeted installed material routing and exact-revision acceptance remain pending."
     },
     {
-      "path": "src/biocompiler/core_policy_material.py",
-      "sha256": "b3a28a1f40d475de8848cc6cea45d4c0975042da17b2c90977facca7f2d9100c",
+      "path": "src/biocompiler/core_policy_component_material.py",
+      "sha256": "e5645b27e70f39a4979fee53638007044c44d37bec4f1a8af7e866f95a38f9e0",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 19,
-          "Raise": 54
+          "FunctionDef": 16,
+          "Raise": 30
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_material.v1": 1,
+          "biocompiler.ocaml.policy_component_assembly_check.v0.1": 1,
+          "biocompiler.ocaml.policy_component_context_check.v0.1": 1,
+          "biocompiler.ocaml.policy_component_material.v0.1": 1,
+          "biocompiler.ocaml.policy_component_material_check.v0.1": 1,
+          "biocompiler.policy_component_assembly_assessment.v0.1": 1,
+          "biocompiler.policy_component_assembly_proposal.v0.1": 1,
+          "biocompiler.policy_component_context_assessment.v0.1": 1,
+          "biocompiler.policy_component_material_assessment.v0.1": 1,
+          "biocompiler.policy_component_material_candidate.v0.1": 1,
+          "biocompiler.policy_component_material_request.v0.1": 1,
+          "biocompiler.policy_component_material_resources.v0.1": 1,
+          "biocompiler.policy_component_mrna.v0.1": 1,
+          "biocompiler.policy_component_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_exact_component_assembly.v0.1": 2,
+          "biocompiler.policy_staged_component_mrna.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/core_policy_component_selection.py",
+      "sha256": "3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 15,
+          "Raise": 28
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_selection.v1": 1,
+          "biocompiler.ocaml.policy_component_selection.v0.1": 1,
+          "biocompiler.ocaml.policy_component_selection_check.v0.1": 1,
+          "biocompiler.policy_component_material_selection.v0.1": 1,
+          "biocompiler.policy_component_selection_assessment.v0.1": 1,
+          "biocompiler.policy_component_selection_candidate.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_component_selection_publication.v0.1": 1,
+          "biocompiler.policy_component_selection_request.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.2": 1,
+          "biocompiler.policy_decision_leader_variant.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/core_policy_implementation.py",
+      "disposition": "dependency",
+      "reason": "Shared source-authoring or immutable implementation transport dependency; stage-specific material admission is checked separately.",
+      "sha256": "ca0815363676dd8fd112b91b8d1adf303bedabb0f543ef2305d5f59c433906cd",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 16,
+          "Raise": 43
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_implementation.v1": 1,
+          "biocompiler.ocaml.policy_implementation.v0.1": 1,
+          "biocompiler.policy_bounded_preservation.v0.1": 1,
+          "biocompiler.policy_exclusive_source_graph.v0.1": 1,
+          "biocompiler.policy_implementation.v0.1": 1,
+          "biocompiler.policy_implementation_binding.v0.1": 1,
+          "biocompiler.policy_implementation_binding.v0.2": 1,
+          "biocompiler.policy_implementation_binding_report.v0.1": 1,
+          "biocompiler.policy_implementation_binding_report.v0.2": 2,
+          "biocompiler.policy_implementation_candidate.v0.1": 1,
+          "biocompiler.policy_preservation_report.v0.1": 1,
+          "biocompiler.policy_preservation_resources.v0.1": 1,
+          "biocompiler.policy_realization_admission.v0.1": 1,
+          "biocompiler.policy_realization_inputs.resources.v0.1": 1,
+          "biocompiler.policy_realization_inputs.v0.1": 1,
+          "biocompiler.policy_realization_request.v0.1": 1,
+          "biocompiler.policy_staged_observables.v0.1": 1,
+          "biocompiler.policy_staged_primitives.v0.1": 1,
+          "biocompiler.policy_staged_source_graph.v0.1": 1,
+          "biocompiler.policy_truth_observables.v0.1": 1,
+          "biocompiler.policy_truth_primitives.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "src/biocompiler/core_policy_material.py",
+      "sha256": "bc8d44be6b6aa7a6d56d4352c85d6a2f8c9201ab626e6ebe1bcc265487b46704",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 22,
+          "Raise": 56
         },
         "profile_literals": {
           "biocompiler.construction_content_assessment.v0.1": 1,
@@ -1322,6 +2110,7 @@
           "biocompiler.ocaml.policy_material_check.v0.1": 1,
           "biocompiler.ocaml.policy_material_context_check.v0.1": 1,
           "biocompiler.ocaml.policy_mrna_structure_check.v0.1": 1,
+          "biocompiler.policy_implementation_binding_report.v0.2": 1,
           "biocompiler.policy_material_assessment.v0.1": 1,
           "biocompiler.policy_material_binding_assessment.v0.1": 1,
           "biocompiler.policy_material_candidate.v0.1": 1,
@@ -1333,6 +2122,7 @@
           "biocompiler.policy_mrna_manifest.v0.1": 1,
           "biocompiler.policy_mrna_structure_assessment.v0.1": 1,
           "biocompiler.policy_preservation_report.v0.1": 1,
+          "biocompiler.policy_staged_source_graph.v0.1": 1,
           "biocompiler.policy_truth_mrna.v0.1": 1,
           "biocompiler.policy_truth_mrna_material.v0.1": 1
         }
@@ -1355,7 +2145,7 @@
     },
     {
       "path": "src/biocompiler/policy/cli.py",
-      "sha256": "2eab649fbcf2223e26312b4987a842bf251425b1779ce795a3542fa8ab97cc60",
+      "sha256": "beaff7cf4994019f24fab7361e588a3702b32bb16d357bda42e16000a5060d0f",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -1368,18 +2158,58 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
-      "path": "src/biocompiler/policy/material.py",
-      "sha256": "cabfab5d543c84d5732d9d9adcb1edf1482f45e3ebb80fdab1022ef3bea16359",
+      "path": "src/biocompiler/policy/component_material.py",
+      "sha256": "24da1db993f5f56ff516ad3b2d14667731f681ebe9f1c9ae6898d0728bd5eaba",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
-          "FunctionDef": 8,
+          "FunctionDef": 5
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/policy/component_selection.py",
+      "sha256": "10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 5
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/policy/material.py",
+      "sha256": "5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 9,
           "Raise": 14
         },
         "profile_literals": {}
       },
       "disposition": "rule_owner",
       "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "src/biocompiler/policy/patterns.py",
+      "disposition": "dependency",
+      "reason": "Shared source-authoring or immutable implementation transport dependency; stage-specific material admission is checked separately.",
+      "sha256": "9640080fa505e361b09a2dd9a644938365549b37c8be3a8ce547bc1391044b48",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 6,
+          "Raise": 5
+        },
+        "profile_literals": {}
+      }
     },
     {
       "path": "tools/policy_material_authoring_witness.py",
@@ -1432,12 +2262,16 @@
       "sha256": "bd9dfbb65c456b75fa401049341e85a6de882e8f130b4c76dfdadd9b6dd08968"
     },
     {
+      "path": "core/test/test_policy_execution.ml",
+      "sha256": "b32c6fb2541df9928d5dc229740463c05fe105dcde0beeca0bbdc00ef513ec07"
+    },
+    {
       "path": "core/test/test_policy_implementation.ml",
       "sha256": "1f7373c92d728ca8d707b9363892f487f6543240e2c9b61735f63daf8df26c2e"
     },
     {
       "path": "core/test/test_policy_implementation_binding.ml",
-      "sha256": "72386dd7a3e029b0006fe179193b4ff3898b27172f468c31354a56138902e7ff"
+      "sha256": "84f2d08243fd57d2acc1f1102917e324688684faf4296a7f7c5e80288b7ae8b1"
     },
     {
       "path": "core/test/test_policy_material_binding.ml",
@@ -1449,7 +2283,7 @@
     },
     {
       "path": "core/test/test_policy_material_closure.ml",
-      "sha256": "f80cd96cc81df710e57d8c2d75caa7c2392b45f0794a2e506eb0b72c6c959638"
+      "sha256": "6829d072c2c4774ec1ee374ffbe062284b062e89a96d69c14dc5dfc063049474"
     },
     {
       "path": "core/test/test_policy_material_compound.ml",
@@ -1489,7 +2323,7 @@
     },
     {
       "path": "core/test/test_policy_operational.ml",
-      "sha256": "21d515ca64ad2b9dc56181ad91fefd28c2070967c174a82ef8120c0084a0c71a"
+      "sha256": "5bf3cfd63df5cfd705fab4f9349e3520d2972564381efda425409e5d38d999bb"
     },
     {
       "path": "core/test/test_policy_preservation_check.ml",
@@ -1497,7 +2331,7 @@
     },
     {
       "path": "core/test/test_policy_primitives.ml",
-      "sha256": "b67b398794a75b12bba9d4cdff50d190788f22e9955091258a11ae421a416d83"
+      "sha256": "fa3aa7a1d3626395ea84f04f388a0b956e21a118e8d347a774b3de656fc8d206"
     },
     {
       "path": "core/test/test_policy_realization_admission.ml",
@@ -1505,7 +2339,7 @@
     },
     {
       "path": "core/test/test_policy_requirement_monitor.ml",
-      "sha256": "68f44dd82e0a35c6e2276dde991f659db654894e7a719bd8c0ffb8a599271987"
+      "sha256": "f4eb1f1bc66bb9b00c5788c152e834350971d6ddf9ef377f10d5981e4fcd4cb3"
     },
     {
       "path": "tests/test_policy_material.py",
@@ -1614,12 +2448,32 @@
           "path": "core/lib/checker/policy_admission.ml",
           "anchor": "Reachable source operation has no exact executable descriptor.",
           "occurrence": 1
+        },
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Operational descriptor is not bound to the complete source DefinitionRef.",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Descriptor identity or operational interpretation differs from this contextual use.",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "This primitive descriptor takes no formal parameters.",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "This primitive descriptor does not return a value.",
+          "occurrence": 1
         }
       ],
       "admitted_context": "Every reachable interpreted operation has its full id/version/body digest and closed semantic descriptor; definitions have no uninterpreted clauses or executor/subject qualifiers, and all supplied descriptors are used.",
       "outside_context": {
         "disposition": "mixed",
-        "description": "Missing, duplicate, stale, conflicting, unused or semantically wrong descriptors and unimplemented definition restrictions are unsupported."
+        "description": "Missing, duplicate, stale, conflicting, unused or semantically wrong descriptors and unimplemented definition restrictions are unsupported. Source DefinitionRef identity/category failures reject earlier during fresh source assessment; malformed descriptor digests and unknown semantic tags reject during decoding. After source validation and complete descriptor-index binding, the late bind identity-false branch is unreachable: both closed references contain the same id/version/body digest. Its contextual semantic-tag mismatch remains reachable and is separately witnessed."
       },
       "positive": [
         {
@@ -1629,6 +2483,15 @@
             "occurrence": 1
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Closed semantic descriptor variant lost its versioned tag",
+            "occurrence": 1
+          },
+          "context": "Operational fixture retains all five closed capability, encounter, observation, effect and lifecycle descriptor tags. This is a descriptor/lowering control, not an execution witness for every descriptor context.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -1650,11 +2513,93 @@
           },
           "context": "Two separately instantiated, fully repinned definition controls reject nominal executor_kind and subject_kind constraints after generic source validity; an executable-clause control rejects uninterpreted preconditions.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"missing semantics\"",
+            "occurrence": 1
+          },
+          "context": "Unchanged admitted source loses the reachable Role capability descriptor and rejects at the shared bind lookup; the original positive fixture reaches capability, encounter, observation, effect and lifecycle calls.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"duplicate semantics\"",
+            "occurrence": 1
+          },
+          "context": "Unchanged admitted source repeats an exact descriptor and rejects at descriptor-index construction before contextual binding.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"malformed SHA-256 descriptor ingress\"",
+            "occurrence": 1
+          },
+          "context": "The four 63/65/nonhex/uppercase digest controls exercise descriptor decoding, not complete source identity binding.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"unknown semantic tag\"",
+            "occurrence": 1
+          },
+          "context": "An unrecognized semantic tag rejects during closed descriptor decoding; this is distinct from a recognized tag used in the wrong context.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"contextually wrong semantics\"",
+            "occurrence": 1
+          },
+          "context": "A recognized effect tag replaces the capability tag on the original Role descriptor. Complete identity remains unchanged; the shared contextual semantic-tag predicate rejects.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects (\"wrong complete definition identity \"^field)",
+            "occurrence": 1
+          },
+          "context": "Original id and version mutations reject during descriptor-index binding against unchanged valid source. The original digest mutation is malformed and rejects at decoding; it is retained separately from the well-formed stale-digest control.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"well-formed stale descriptor digest\"",
+            "occurrence": 1
+          },
+          "context": "Fresh source validity and successful descriptor decoding/roundtrip precede the exact rejection catcher. One changed hex digit in the 64-character capability digest reaches policy_operational_unsupported at /definitions with the complete DefinitionRef diagnostic; no source input is altered.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"observation formal has no executable argument interpretation\"",
+            "occurrence": 1
+          },
+          "context": "A fully repinned observation definition adds one fixed truth formal with null value/bounds, preserving its compatible truth result. Source validity and descriptor decoding precede exact policy_operational_unsupported at /document/declarations/4/contract for nonempty formals. Capability/Role, encounter and lifecycle definitions can also carry such source-valid formals and reach this same unconditional non-effect predicate; those three contexts are a shared-guard reachability argument, not separately executed negatives. Effect formals use the separately indexed signature-only branch.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"abstract effect cannot silently discard a supplied result\"",
+            "occurrence": 1
+          },
+          "context": "A fully repinned effect definition adds a truth result while retaining matched empty formals/actuals. Source validity and descriptor decoding precede exact policy_operational_unsupported at /document/declarations/6/contract for non-null results. Capability/Role, encounter and lifecycle definitions can likewise carry source-valid results and reach the same non-observation predicate; those three contexts are a shared-guard reachability argument, not separately executed negatives. Observation null/mismatched results and effect missing/mistyped actuals instead reject earlier under source observation_signature/effect_arguments/effect_argument_type checks.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Descriptor categories beyond the first material observation/effect family retain stage-local operational coverage; their individual positive/rejection witnesses remain to be indexed."
+        "The three exact source-valid identity/signature controls are reviewed source additions awaiting hosted native execution and exact-revision acceptance; this static index does not establish their execution.",
+        "All five descriptor uses and both shared signature guards are mapped. The non-effect formal and non-observation result controls each instantiate one of four reachable source-valid contexts; the other contexts rely on the explicit shared-predicate reachability argument above. Arbitrary combinations and full per-context execution coverage remain outside this index."
       ]
     },
     {
@@ -1824,6 +2769,15 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source encounter contact loss needs another graph profile",
+            "occurrence": 1
+          },
+          "context": "Generic validity, operational admission/lowering and correspondence accept the source-valid contact-loss declaration before independent graph binding explicitly rejects it. This does not supply a contact-loss execution history.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -1884,6 +2838,33 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Evidence reason lost: ",
+            "occurrence": 1
+          },
+          "context": "Literal operational traces retain each named truth-evidence reason; this does not establish numeric evidence support.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Observed/availability time distinction lost",
+            "occurrence": 1
+          },
+          "context": "Operational execution distinguishes observation time from availability time; quiet expiry and delayed evidence retain their stated trace scope.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "kind^\" dynamic source observation is outside the finite truth domain\"",
+            "occurrence": 1
+          },
+          "context": "Source-valid INTEGER/TEXT observations with matching definitions and typed comparisons pass operational admission/correspondence, then reject at the finite truth operating-domain boundary. This is not numeric/text execution coverage.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -1899,7 +2880,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Integer/text/exact-quantity evidence positives and each result-type or quantity-unit mismatch are not individually indexed; the material layer narrows evidence to event truth."
+        "Truth evidence reason/time traces and INTEGER/TEXT operational admission before domain exclusion are indexed. Integer/text/exact-quantity execution positives and each result-type or quantity-unit mismatch remain individually unindexed; material evidence remains event truth."
       ]
     },
     {
@@ -1926,6 +2907,15 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source family has two independent observations",
+            "occurrence": 1
+          },
+          "context": "Two distinct-coherence observations pass fresh operational admission and correspondence before the exact narrow source-family binder rejection; their combined execution is not established here.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -1950,7 +2940,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "A positive multiple-distinct-coherence-group operational fixture is not indexed."
+        "Two distinct-coherence observations have an operational admission/correspondence witness before narrow graph-family rejection. A distinguishing operational execution history for both groups remains unindexed."
       ]
     },
     {
@@ -1977,6 +2967,33 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Reset predicates observed an earlier reset write",
+            "occurrence": 1
+          },
+          "context": "Operational truth resets read a common prestate; this is predicate reset behavior, not reset-inheritance coverage.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Truth reset did not execute once at the silent tick",
+            "occurrence": 1
+          },
+          "context": "Operational truth reset executes at a quiet tick without a new observation; this does not extend the material inheritance profile.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "kind^\" dynamic source state is outside the finite truth domain\"",
+            "occurrence": 1
+          },
+          "context": "Source-valid INTEGER/TEXT state retains typed initial values, assignments and reads through operational admission/correspondence before finite truth-domain exclusion.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -1997,11 +3014,20 @@
           },
           "context": "Source-valid reset inheritance and a separately writerless retained truth store reject at independent state-family binding.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "quantity state needs storage semantics beyond the operational profile",
+            "occurrence": 1
+          },
+          "context": "Source-valid quantity state, assignments and reads reject at the exact operational finite-storage guard, before domain or graph binding.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Integer/text stores and reset inheritance have explicit first-material rejection witnesses. Their broader operational positive execution and nominal enum/quantity state coverage remain unindexed."
+        "INTEGER/TEXT stores and reset inheritance have operational-admission and later first-material rejection witnesses. Broader INTEGER/TEXT execution and inheritance behavior remain unindexed. Quantity storage is explicitly unsupported at operational admission; nominal enum is not a TypeSpec kind in the source grammar."
       ]
     },
     {
@@ -2068,6 +3094,24 @@
           },
           "context": "Explicit Unknown literal remains three-valued truth, distinct from malformed null.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Exact comparison was rounded through binary64",
+            "occurrence": 1
+          },
+          "context": "Operational greater-than on exact integer literals above binary64 precision enables one attempt.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Exact comparison reversed ordering",
+            "occurrence": 1
+          },
+          "context": "Changing that exact integer comparison to less-than withholds the attempt; no numeric material support is claimed.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2083,7 +3127,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "That literal control only distinguishes null from explicit Unknown; operator-by-type positive/rejection closure, including exact-quantity comparisons and compatible/incompatible nominal units, is still pending."
+        "Exact large-integer gt/lt operational execution and the null-versus-Unknown control are indexed. Operator-by-type positive/rejection closure, including exact-quantity comparisons and compatible/incompatible units, remains pending."
       ]
     },
     {
@@ -2109,6 +3153,15 @@
             "occurrence": 1
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Unknown-to-true invented a rising edge",
+            "occurrence": 1
+          },
+          "context": "Literal truth-evidence transition from Unknown to true does not invent a false-to-true rising edge. Numeric/comparison edge behavior is outside this witness.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -2159,7 +3212,7 @@
             "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
             "occurrence": 1
           },
-          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "context": "All four initiation/continuous × continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -2210,6 +3263,24 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Declared priority did not override source declaration order",
+            "occurrence": 1
+          },
+          "context": "Operational priority selects the explicitly higher-ranked rule despite declaration order and retains suppressed arbitration actions.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Identical atomic assignments failed",
+            "occurrence": 1
+          },
+          "context": "Operational identical-only arbitration permits same-value shared executor-state writes from simultaneous encounter activations; material support is not implied.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2225,7 +3296,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Positive priority/identical-only execution remains broader operational coverage; this graph/material profile rejects both alternatives."
+        "Priority ordering/suppression and identical-only shared writes now have operational execution witnesses, while the material profile rejects these alternatives. Full tie, conflict and preemption-context rejection indexing remains pending."
       ]
     },
     {
@@ -2252,6 +3323,33 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Machine did not retain the attempt it started",
+            "occurrence": 1
+          },
+          "context": "Operational machine state retains the identity of its initiated attempt.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Old feedback advanced a newer machine attempt",
+            "occurrence": 1
+          },
+          "context": "Operational machine execution rejects an old attempt completion as a transition for its newer attempt.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Machine timeout did not occur at a silent tick",
+            "occurrence": 1
+          },
+          "context": "Operational machine timeout transitions without a new observation. This remains operational-only machine support.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2267,7 +3365,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "This scope control does not cover each excluded declaration kind; positive machine behavior and each excluded-kind rejection remain to be indexed."
+        "Operational machine attempt lineage, wrong feedback and quiet timeout are indexed. Each excluded coordination, quantification, spatial or inheritance declaration kind still requires its own valid-input/earliest-stage rejection index; no broader material support is inferred."
       ]
     },
     {
@@ -2702,11 +3800,20 @@
           },
           "context": "Twelve additional fully repinned source-valid contextual controls: five exact operational rejections and seven exact graph-binding rejections. No production support is widened.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "let source_quantity_and_ownership_controls case=",
+            "occurrence": 1
+          },
+          "context": "Eight independently source-valid controls preserve original domains, budgets, models, candidate structure and requirement identities: quantity product and executor state reject at binding; quantity state, population/stable subject and mixed sibling-encounter state reject operationally; quantity evidence and executor-subject evidence reject at the operating-domain boundary. The executor-observation control retains a readable encounter-state guard for its effect-free rule, whose assignment destinations cannot introduce that scope. Every earlier validity/admission check remains outside the expected-error catch.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Complete one-rule and two-rule original material requests are now indexed; independently isolated remaining subject/encounter ownership combinations still require explicit witness indexing."
+        "Five exact source-valid ownership controls now index non-cell/stable subjects, executor-scoped state, sibling-encounter state and executor-subject evidence. Missing or inconsistent encounter backlinks and contradictory target/executor fields reject at generic source validation; those are not isolated binder controls. Broader ownership combinations remain outside the indexed witness claims."
       ]
     },
     {
@@ -2789,11 +3896,38 @@
           },
           "context": "An equal text literal actual with a retained fixed product declaration rejects at the independently checked argument-reference contract.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "fixed quantity product is outside the text product profile",
+            "occurrence": 1
+          },
+          "context": "A source-valid fixed quantity product with matching definition, actual argument and refreshed authority reaches the exact graph-binding type rejection.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "quantity observation cannot be reinterpreted by the finite truth alphabet",
+            "occurrence": 1
+          },
+          "context": "A source-valid quantity observation with matching definition and typed equality passes operational admission/correspondence before finite truth-domain rejection.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "quantity state needs storage semantics beyond the operational profile",
+            "occurrence": 1
+          },
+          "context": "A source-valid quantity store with typed initial value, writes and reads rejects at operational finite-storage admission.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Quantity/enum and other source-valid type refinements remain to be individually indexed. Generic-invalid truth/text unit or entity-kind decorations are not binder-reachable controls; the 10 source-valid type/refinement cases are distinguished by their actual admission, domain or binding stage."
+        "Thirteen source-valid type/refinement controls now include quantity product, observation and state at their actual binding, domain and operational boundaries. Other entity/refinement and operator/type interactions remain individually unindexed. TypeSpec has no nominal enum kind; enum and invalid truth/text unit or entity-kind decorations are schema/structural ingress exclusions, not binder-reachable controls."
       ]
     },
     {
@@ -3144,7 +4278,7 @@
             "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
             "occurrence": 1
           },
-          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "context": "All four initiation/continuous × continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         },
         {
@@ -3514,6 +4648,24 @@
           },
           "context": "Source-valid supported truth equality receives a fresh generic candidate, all-nine-history checking/replay and fresh exact export; the paired false equality must fail on every history with no export.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_requirement_monitor.ml",
+            "anchor": "Fixed-product parameter equality differs from ten literal true slot/tick samples",
+            "occurrence": 1
+          },
+          "context": "Fresh original-source admission and graph binding feed the independent monitor. Equality reads the original fixed product parameter and yields ten literal true samples over two encounters and ticks zero through four; every original requirement remains and a separate fresh source execution must agree.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "\"product_parameter_equality\",\"scoped_memory\",\"pass\",None,",
+            "occurrence": 1
+          },
+          "context": "Revised source requirement equates the original fixed product parameter with itself. A fresh generic candidate, complete nine-history Core/Verify check and replay, and fresh paired export must retain the unchanged exact RNA under the revised complete authority.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -3570,11 +4722,29 @@
           },
           "context": "Fractional deadline is generically source-valid but rejected by the earlier positive-integral-tick operational admission rule. Public compile/check/export require its exact diagnostic code/path/message; monitor-level support is not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_requirement_monitor.ml",
+            "anchor": "Program scope failed outside its independent monitor boundary",
+            "occurrence": 1
+          },
+          "context": "Generic-valid program-scoped requirement passes operational admission and graph binding, then the independent monitor reports exact unsupported_scope before and through horizon four without fabricated samples or obligations.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "\"program_scope\",\"scoped_memory\",\"unsupported\",Some \"unsupported_scope\",",
+            "occurrence": 1
+          },
+          "context": "Complete public nine-history checking/replay retains the original requirement inventory and exact unsupported_scope; both fresh exports are withheld rather than dropping the unsupported requirement.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Named field, scope, literal-type, equality and pending-horizon branches are indexed, with fractional deadlines explicitly excluded at operational admission. Other source-invalid or earlier-excluded scope/type forms are not promoted into monitor support; broader requirement alternatives retain their own stage scope."
+        "Named field, executor/program scope, truth/product-parameter equality, literal-type and pending-horizon branches are indexed. Fractional deadlines reject operationally; missing progress response rejects structurally, and absent finite horizon, unsupported requirement kinds or assumptions reject at realization admission. Those earlier exclusions are not monitor support; broader requirement interactions retain their own witness scope."
       ]
     },
     {
@@ -3934,7 +5104,7 @@
           "occurrence": 1
         }
       ],
-      "admitted_context": "PM-02\u201309 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
+      "admitted_context": "PM-02–09 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
       "outside_context": {
         "disposition": "mixed",
         "description": "Core-only/partial RNA, wrong modality, missing member or bounded/unknown unrepresented tail cannot be complete."
@@ -4399,11 +5569,38 @@
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Observation and feedback alias one provider channel",
+            "occurrence": 1
+          },
+          "context": "The current single observation and single feedback cannot alias a provider channel: exact complete_input_source_binding fails on their distinct kind/source before the generic same-kind alias branch.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Wrong input target",
+            "occurrence": 1
+          },
+          "context": "A source-valid supplied input channel naming the wrong recipient fails exact complete_input_source_binding.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Expired input",
+            "occurrence": 1
+          },
+          "context": "An expired supplied observation channel fails guaranteed_inclusive_availability:condition under the original lifetime.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "The one-observation/one-feedback alias control reaches kind/source mismatch before generic same-channel alias detection; no larger input family is claimed."
+        "The indexed channel controls cover wrong target, expiry, unused channel and cross-kind aliasing. The generic same-kind alias branch is unreachable under the exact one-observation/one-feedback profile because kind/source validation rejects first; it is not missing executable support. Broader provider/channel permutation interactions are outside these named witness claims."
       ]
     },
     {

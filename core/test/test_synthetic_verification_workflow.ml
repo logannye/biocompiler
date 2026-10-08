@@ -88,3 +88,20 @@ let () =
   require(replay_usage.evaluations=1 && replay_usage.request_bytes>usage.request_bytes) "Replay failed to account historical and independent inputs";
   check raw(K.run authority);
   Printf.printf "Native synthetic workflow: 12 complete original records, both modes/all operations/all outcomes, fresh replay and shared budget controls passed\n"
+
+let () =
+  let record = K.run (request (case "candidate_pass")) in
+  let report = match V.Record.result record with
+    | V.Checked value -> Bioc_domain.Realization_evidence.Check_result.to_json value
+    | _ -> failwith "Ordered workflow control did not execute a check" in
+  let keys value = List.map fst (Json.object_fields value) in
+  let dependencies = get "dependencies" report in
+  require (keys dependencies = ["behavior";"behavior_artifact";"contract";"domain";"target";
+    "mechanism";"observation_map";"history";"horizon";"checker";"model_runner";"reference_evaluator";"settings"])
+    "Verification workflow displaced the original dependency mapping order";
+  require (keys (get "settings" dependencies) =
+    ["scope";"intended_use";"human_admission_policy";"time";"response";"nonvacuity";"contact_loss";
+     "coverage";"max_microsteps";"synthetic_acceptance";"synthetic_profile";"synthetic_candidate";
+     "realization_request";"generator_configuration";"catalog";"required_coverage";
+     "verification_workflow";"verification_mode";"verification_candidate";"verification_realization"])
+    "Verification settings differ from original mapping-unpack insertion order"

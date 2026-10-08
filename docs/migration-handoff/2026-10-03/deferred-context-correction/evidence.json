@@ -1,0 +1,265 @@
+{
+  "additional_slot_evidence_at": "2026-10-03T11:32:24.061252+00:00",
+  "captured_at": "2026-10-03T11:29:57.069070+00:00",
+  "completed_prerequisites": [
+    {
+      "conclusion": "success",
+      "id": 111163378127,
+      "name": "ocaml-core (ubuntu-24.04, linux-x86_64)"
+    },
+    {
+      "conclusion": "success",
+      "id": 111163378132,
+      "name": "ocaml-core (macos-14, macos-arm64)"
+    },
+    {
+      "conclusion": "success",
+      "id": 111181115173,
+      "name": "prebuilt-core-assembly"
+    }
+  ],
+  "diagnosis": "The host-return path retains the actual proposal source-link tuple as a hydration binding while the typed native context document contains an empty link array. The installed adapter resolves that binding. The deferred receipt checker compared the raw document directly with the observed context, ignoring this intentional bound tuple. The ten retained macOS3.11 mismatches differ only in source_links. macOS3.14 and Linux3.14 retain the identical checker exception; their complete raw frames were not duplicated in this compact evidence.",
+  "failed_slots": [
+    {
+      "actual_python": "3.11.9 (v3.11.9:de54cf5be3, Apr  2 2024, 07:12:50) [Clang 13.0.0 (clang-1300.0.29.30)]",
+      "artifact": {
+        "archive_download_url": "https://api.github.com/repos/logannye/biocompiler/actions/artifacts/11272871445/zip",
+        "digest": "sha256:afd28e21c1478a81a0a5930eadcddf22845fef643e3a4c4ff53194e9337a0d36",
+        "id": 11272871445,
+        "name": "realization-macos-arm64-py3.11",
+        "size_in_bytes": 21708788
+      },
+      "completed_campaigns": [
+        {
+          "name": "protocol",
+          "receipt_sha256": "a3adb3a7cbb6bdc0bcb9fcf5d3a1c296b4f6a3cfb751b12c4532ae63155ba694"
+        },
+        {
+          "name": "routing",
+          "receipt_sha256": "c39c11adfbb34a779bdd9e3b141194e2e871c621d62c1839f2558966b62e1348"
+        }
+      ],
+      "completed_command_logs": [
+        "create-environment.log",
+        "install.log",
+        "smoke.log",
+        "uninstall.log",
+        "missing-package.log",
+        "reinstall.log",
+        "protocol.log",
+        "routing.log"
+      ],
+      "failed_steps": [
+        {
+          "conclusion": "failure",
+          "name": "Execute every existing installed campaign in a fresh wheel-only environment",
+          "status": "completed"
+        }
+      ],
+      "installed_receipt_status": "running",
+      "job": {
+        "conclusion": "failure",
+        "html_url": "https://github.com/logannye/biocompiler/actions/runs/37109100797/job/111181207306",
+        "id": 111181207306,
+        "name": "realization-conformance (macos-14, macos-arm64, 3.11)",
+        "status": "completed"
+      },
+      "minor": "3.11",
+      "not_accepted": true
+    },
+    {
+      "actual_python": "3.14.7 (v3.14.7:823f0323ee6, Aug  5 2026, 07:07:01) [Clang 21.0.0 (clang-2100.1.1.101)]",
+      "artifact": {
+        "archive_download_url": "https://api.github.com/repos/logannye/biocompiler/actions/artifacts/11271524726/zip",
+        "digest": "sha256:a7d0cf482f0b0ecd2313961d638ec08784b1a589f606b53484608b15ff4533b1",
+        "id": 11271524726,
+        "name": "realization-macos-arm64-py3.14",
+        "size_in_bytes": 21699088
+      },
+      "completed_campaigns": [
+        {
+          "name": "protocol",
+          "receipt_sha256": "815aa2dbe7bc6bcd9c4d097df25d073bfe76e00e2fd57aa11e8890976f3b6cb8"
+        },
+        {
+          "name": "routing",
+          "receipt_sha256": "d9221b9939052e75281d1fbdf85afe9f13c8329c910de1c70091d2bee0b34c8e"
+        }
+      ],
+      "completed_command_logs": [
+        "create-environment.log",
+        "install.log",
+        "smoke.log",
+        "uninstall.log",
+        "missing-package.log",
+        "reinstall.log",
+        "protocol.log",
+        "routing.log"
+      ],
+      "failed_steps": [
+        {
+          "conclusion": "failure",
+          "name": "Execute every existing installed campaign in a fresh wheel-only environment",
+          "status": "completed"
+        }
+      ],
+      "installed_receipt_status": "running",
+      "job": {
+        "conclusion": "failure",
+        "html_url": "https://github.com/logannye/biocompiler/actions/runs/37109100797/job/111181207374",
+        "id": 111181207374,
+        "name": "realization-conformance (macos-14, macos-arm64, 3.14)",
+        "status": "completed"
+      },
+      "minor": "3.14",
+      "not_accepted": true
+    },
+    {
+      "actual_python": "3.14.7 (main, Aug  6 2026, 02:19:46) [GCC 13.3.0]",
+      "artifact": {
+        "archive_download_url": "https://api.github.com/repos/logannye/biocompiler/actions/artifacts/11273191509/zip",
+        "digest": "sha256:f329d1225ac442efbefd5b6313f671ab0cd499452fcc6caa2dac2232e48de1ed",
+        "id": 11273191509,
+        "name": "realization-linux-x86_64-py3.14",
+        "size_in_bytes": 21697787
+      },
+      "completed_campaigns": [
+        {
+          "name": "protocol",
+          "receipt_sha256": "2eefcb01e8850c94dc2ceea668dcf64e1e094f3d5f332ca006fd0eb55fcacb84"
+        },
+        {
+          "name": "routing",
+          "receipt_sha256": "7517f46d6c99c0656c88afb8ba4cd96d5ff2c519d152e8c8fd0c294f359d72f3"
+        }
+      ],
+      "completed_command_logs": [
+        "create-environment.log",
+        "install.log",
+        "smoke.log",
+        "uninstall.log",
+        "missing-package.log",
+        "reinstall.log",
+        "protocol.log",
+        "routing.log"
+      ],
+      "failed_steps": [
+        {
+          "conclusion": "failure",
+          "name": "Execute every existing installed campaign in a fresh wheel-only environment",
+          "status": "completed"
+        }
+      ],
+      "installed_receipt_status": "running",
+      "job": {
+        "conclusion": "failure",
+        "html_url": "https://github.com/logannye/biocompiler/actions/runs/37109100797/job/111181207370",
+        "id": 111181207370,
+        "name": "realization-conformance (ubuntu-24.04, linux-x86_64, 3.14)",
+        "status": "completed"
+      },
+      "minor": "3.14",
+      "not_accepted": true
+    }
+  ],
+  "finalized_at": "2026-10-03T11:39:59.939305+00:00",
+  "macos311_full_receipt": {
+    "bytes": 5700565,
+    "retention": "Full receipt and frames remain in the pinned hosted artifact; compact failure evidence is retained here.",
+    "sha256": "843871bf1eeec56bfd7cdebdc40eecfac84efa01f0bdc23adf55b079e64d44e8"
+  },
+  "macos311_manager_receipt": {
+    "completed_checks": 5,
+    "completed_comparison_checks": 34,
+    "completed_deferred_checks": 47,
+    "error": "AssertionError: Deferred callback read a context different from native authority",
+    "machine": "arm64",
+    "python_version": "3.11.9",
+    "revision": "9a65ff9ebb351e73844dd546336869da5034d52c",
+    "run_id": "37109100797",
+    "source_revision": "817a8ed1154975befd293327dfabdf7798ed2b4c",
+    "status": "failure",
+    "system": "Darwin"
+  },
+  "macos311_mismatch_census": {
+    "cases": 8,
+    "different_keys": [
+      "source_links"
+    ],
+    "first": {
+      "access": "validator.enter",
+      "id": "callback:producer_nested_run",
+      "invocation": 105,
+      "ordinal": 2
+    },
+    "observations": 10
+  },
+  "pending_slot_at_finalization": {
+    "basis": "Parent agent latest status before correction checkpoint; not awaited because new-source validation is required.",
+    "job_id": 111181207294,
+    "not_accepted": true,
+    "platform": "linux-x86_64",
+    "python_minor": "3.11",
+    "status": "in_progress"
+  },
+  "run_conclusion_at_collection": null,
+  "run_id": 37109100797,
+  "run_status_at_collection": "in_progress",
+  "run_url": "https://github.com/logannye/biocompiler/actions/runs/37109100797",
+  "schema_version": "biocompiler.deferred_context_failure_evidence.v1",
+  "scope": "Observed hosted failure and source correspondence only. Installed receipts remain running/incomplete after the exception; they are not successful fresh-install evidence. No corrected-revision CI acceptance, native local execution, or cutoff closure.",
+  "source_evidence": [
+    {
+      "bytes": 50712,
+      "path": "core/lib/compiler/pass_manager.ml",
+      "reviewed_lines": [
+        576,
+        581,
+        678
+      ],
+      "sha256": "0bcff3443473dcb7c9eca6b72537913ba400638a78f7fb5b0d38912e49b62edb",
+      "source_revision": "817a8ed1154975befd293327dfabdf7798ed2b4c"
+    },
+    {
+      "bytes": 9888,
+      "path": "core/lib/pipeline_service/host_bridge.ml",
+      "reviewed_lines": [
+        118,
+        127
+      ],
+      "sha256": "1541144f828faa878626617871817f429b4b283d2959850826f908114ebb9e48",
+      "source_revision": "817a8ed1154975befd293327dfabdf7798ed2b4c"
+    },
+    {
+      "bytes": 118868,
+      "path": "core/lib/pipeline_service/callback_manager.ml",
+      "reviewed_lines": [
+        219,
+        236
+      ],
+      "sha256": "042fab41d7a5f2dd0d05f499fd00caf7ffd3816fc0fb1c50b83c8dcbc9ae1fb6",
+      "source_revision": "817a8ed1154975befd293327dfabdf7798ed2b4c"
+    },
+    {
+      "bytes": 93594,
+      "path": "src/biocompiler/core_pipeline_manager.py",
+      "reviewed_lines": [
+        1021,
+        1046
+      ],
+      "sha256": "f5c3410fb93d99182a1c5b9d8f3fa948990a0e1d4ce0b3b609c6b9f470d67bdd",
+      "source_revision": "817a8ed1154975befd293327dfabdf7798ed2b4c"
+    },
+    {
+      "bytes": 163600,
+      "path": "tools/check_pipeline_manager_install.py",
+      "reviewed_lines": [
+        1588
+      ],
+      "sha256": "d12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7",
+      "source_revision": "817a8ed1154975befd293327dfabdf7798ed2b4c"
+    }
+  ],
+  "source_revision": "817a8ed1154975befd293327dfabdf7798ed2b4c",
+  "tested_revision": "9a65ff9ebb351e73844dd546336869da5034d52c"
+}

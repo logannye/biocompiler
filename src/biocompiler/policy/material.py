@@ -5,7 +5,7 @@ import os
 import struct
 from pathlib import Path
 import tempfile
-from typing import Callable, Iterable, cast
+from typing import Callable, Iterable, TypeVar
 import zipfile
 import zlib
 
@@ -21,7 +21,7 @@ def prepare_request(*, implementation_request: JsonValue, material_contract: Jso
     request: JsonValue = {"schema_version": REQUEST_SCHEMA, "profile": REQUEST_PROFILE,
         "implementation_request": implementation_request, "material_contract": material_contract,
         "context": context, "catalog_binding": catalog_binding, "budgets": budgets}
-    return cast(dict[str, JsonValue], _original(decode_json(encode_json(request))))
+    return _original(decode_json(encode_json(request)))
 
 
 def compile(request: JsonValue, *, limits: JsonValue, client: PolicyMaterialClient,
@@ -107,12 +107,24 @@ def export(request: JsonValue, *, candidate: JsonValue, limits: JsonValue, clien
     No saved result is accepted as publication authority. Archive order,
     timestamps, permissions and compression are fixed for reproducible bytes.
     """
+    return _publish_fresh(lambda: client.export(request, candidate, limits, cancelled=cancelled),
+        operation="export-policy-material", status="checked_material", output=output,
+        input_paths=input_paths, replace=replace, cancelled=cancelled)
+
+
+_Result = TypeVar("_Result", bound=PolicyMaterialResult)
+
+
+def _publish_fresh(fresh: Callable[[], _Result], *, operation: str, status: str,
+                   output: Path, input_paths: Iterable[Path] = (), replace: bool = False,
+                   cancelled: Callable[[], bool] | None = None) -> _Result:
+    """Publish one fresh route result with the existing exact paired ZIP format."""
     paths = tuple(Path(value) for value in input_paths)
     output = Path(output)
     destination = _destination(output, paths, replace=replace)
-    result = client.export(request, candidate, limits, cancelled=cancelled)
+    result = fresh()
     artifact = result.artifact
-    if result.operation != "export-policy-material" or result.status != "checked_material" or artifact is None:
+    if result.operation != operation or result.status != status or artifact is None:
         raise CoreProtocolError("Publication requires a fresh native accepted material export")
     fasta = artifact.get("fasta")
     if type(fasta) is not str:

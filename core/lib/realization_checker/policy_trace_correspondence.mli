@@ -8,6 +8,7 @@ module P = Bioc_candidate_runtime.Policy_primitives
 module B = Bioc_checker.Policy_implementation_binding_check
 
 val profile : string
+val staged_profile : string
 type t
 val create : B.checked_binding -> t
 

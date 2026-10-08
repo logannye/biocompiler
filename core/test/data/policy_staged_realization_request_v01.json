@@ -1,0 +1,2216 @@
+{
+  "budgets": {
+    "max_prefixes": 100000,
+    "max_trace_items": 1000000,
+    "max_transitions": 100000,
+    "max_work": 100000000
+  },
+  "catalog_bindings": [
+    {
+      "entry_digest": "9815b929e4e72207ea1fac00f684657861238b19c92941c27796390616a4348e",
+      "entry_id": "staged.same_product.primitives",
+      "entry_version": "1",
+      "models": [
+        {
+          "content_fingerprint": "8f305023bd7c54de8c7776825426d7049d01ec1a0b495b74a5b77538539b63b4",
+          "id": "staged.primitive.evidence",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "34c97a228fc90083f444284389e8933ed63c0e0043b28768f0842f48a6e6ce68",
+          "id": "staged.primitive.machine",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "28a820bd48d10f352c6b6c4beb728a4627d1b3c1aaaeb996c770bb8e19889e7d",
+          "id": "staged.primitive.edge",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "da4e1b85f0878d317cd028cd883e98d3d07a0e65cfe033a2cf67015d9903d688",
+          "id": "staged.primitive.true",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "b9f18177e93c478197dc985846db3cf522fdf7286c7217a2ffe2b673ad374be3",
+          "id": "staged.primitive.product",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "f5f1d5bd0561b22d8173c39ff9482da013ebca53af1f03dc5e6d250bd27e6c7f",
+          "id": "staged.primitive.arbiter",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "327df25227e4a745de24e991b64e671047e57cf859a93048130fac368fd1f4b6",
+          "id": "staged.primitive.attempt",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "b9ff6257b9b94c3d5860e93440acf2faa0c551ab4a22086b246683d6701a622d",
+          "id": "staged.primitive.gate.ready",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "33f11359d188d144d06b3bffc8d26893f7b53ae7926e635b9089cfe4a2f508d6",
+          "id": "staged.primitive.gate.first",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "7f7b3f24ee10848cdfe004b7e6b52dc83098dec611f5da6b2c86bf08bcd8e62b",
+          "id": "staged.primitive.gate.second",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "c63396515d6cbf6823981eac8d84506ed64a165a3ca940e64d74c0426b0bec7f",
+          "id": "staged.primitive.commit.first",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "50bb9c52de895760e9f1aba70ae842f33d7c2a45f57c47072d1f9e4100faacff",
+          "id": "staged.primitive.commit.second",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "62cca2069804ec8c22cafb41610ef618e947d619415e24c50a86a94cd08b32ef",
+          "id": "staged.primitive.commit.completed",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "34572b11d31d2c46927489d21cd58f52948c2d7f0f536ade56c2e8da10d371c4",
+          "id": "staged.primitive.commit.failed",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "6c1f6835e15e87d71b8a64f2d09449962e7a1fb617cae06ff5bd1c2651510e00",
+          "id": "staged.primitive.event.completed",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "b997188d60175dd0baa6cbc09c9d5d8457f470161002bcf8ccd7a3f1bbd045ae",
+          "id": "staged.primitive.event.failed",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        {
+          "content_fingerprint": "037a518f929ab8b6e1779901cae6c2a15ce9dca042dbe5d05f28530825f438a3",
+          "id": "staged.primitive.event.timed_out",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      ],
+      "operation": {
+        "$type": "DefinitionRef",
+        "digest": "360f56dd7ee678b873b6475a8a62446312b88ade7297c2744bc0b43e52225d58",
+        "id": "staged.operation",
+        "version": "1"
+      },
+      "realization": {
+        "$type": "DefinitionRef",
+        "digest": "f488407a381eeaf34ab90027312fc8f53477494c4a83ac18032e6e7bedf122e8",
+        "id": "fixture.realization.primitives",
+        "version": "1"
+      }
+    }
+  ],
+  "definitions": {
+    "definitions": [
+      {
+        "definition": {
+          "$type": "DefinitionRef",
+          "digest": "e9650d5b9bfcc7669ff450bf82cd05e033d7d7db69e388a5e52511d7dcd72b11",
+          "id": "staged.interface",
+          "version": "1"
+        },
+        "semantics": "capability.deferred.v1"
+      },
+      {
+        "definition": {
+          "$type": "DefinitionRef",
+          "digest": "580af7ac90a204f1b7fe29d5f03a264c97f6f24219c707f623981b7bc6c557e3",
+          "id": "staged.encounter",
+          "version": "1"
+        },
+        "semantics": "encounter.explicit.v1"
+      },
+      {
+        "definition": {
+          "$type": "DefinitionRef",
+          "digest": "cf0978cce222b19bdd71e1ac1914c8d623486a39e2b96ee1c717a08629719a4c",
+          "id": "staged.observation",
+          "version": "1"
+        },
+        "semantics": "observation.external_evidence.v1"
+      },
+      {
+        "definition": {
+          "$type": "DefinitionRef",
+          "digest": "360f56dd7ee678b873b6475a8a62446312b88ade7297c2744bc0b43e52225d58",
+          "id": "staged.operation",
+          "version": "1"
+        },
+        "semantics": "effect.abstract_attempt.v1"
+      },
+      {
+        "definition": {
+          "$type": "DefinitionRef",
+          "digest": "fe7431fb91aaa27d73811b38ec757c07ef96e147ca447e218f9c5dee1dc3b17e",
+          "id": "staged.lifecycle",
+          "version": "1"
+        },
+        "semantics": "lifecycle.correlated_feedback.v1"
+      }
+    ],
+    "profile": "biocompiler.policy_operational.v0.1",
+    "schema_version": "biocompiler.policy_operational_definitions.v0.1"
+  },
+  "document": {
+    "$type": "BuildRequest",
+    "assurance": {
+      "$type": "AssuranceRequest",
+      "assumptions": [],
+      "horizon": {
+        "$type": "Quantity",
+        "amount": "5",
+        "unit": {
+          "$type": "Unit",
+          "dimension": "time",
+          "id": "s",
+          "quantity_kind": "duration",
+          "reference": null,
+          "scale": "1"
+        }
+      },
+      "level": "bounded",
+      "requirements": [
+        "first_initiation",
+        "second_initiation"
+      ],
+      "tolerances": []
+    },
+    "deployment": {
+      "$type": "Deployment",
+      "bindings": [
+        {
+          "$type": "RoleBinding",
+          "chassis": {
+            "$type": "ChassisProfile",
+            "activation_states": [
+              "declared"
+            ],
+            "capabilities": [
+              {
+                "$type": "DefinitionRef",
+                "digest": "e9650d5b9bfcc7669ff450bf82cd05e033d7d7db69e388a5e52511d7dcd72b11",
+                "id": "staged.interface",
+                "version": "1"
+              }
+            ],
+            "differentiation_states": [
+              "declared"
+            ],
+            "environment": [
+              {
+                "$type": "DefinitionRef",
+                "digest": "55c5f05a73b8418002eb600f692a7aee4407b682ce05e254cee05719da3aba6c",
+                "id": "exclusion.environment",
+                "version": "1"
+              }
+            ],
+            "id": "exclusion.human_immune",
+            "interfaces": [
+              {
+                "$type": "DefinitionRef",
+                "digest": "e9650d5b9bfcc7669ff450bf82cd05e033d7d7db69e388a5e52511d7dcd72b11",
+                "id": "staged.interface",
+                "version": "1"
+              }
+            ],
+            "lineage": "abstract_immune",
+            "operational_model": {
+              "$type": "DefinitionRef",
+              "digest": "c300833197ec67c58bc8fecb03e23fde2386e4456b984a4ec28000c46950ff64",
+              "id": "exclusion.chassis",
+              "version": "1"
+            },
+            "recipient_class": "immune",
+            "species": "human",
+            "subtype": "supplied_profile",
+            "version": "1"
+          },
+          "role": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          }
+        }
+      ],
+      "delivery": {
+        "$type": "DeliveryContract",
+        "activation": {
+          "$type": "DefinitionRef",
+          "digest": "cb59c463e5408c0f6fe3283598622b9ca289e6db628ce5b7f89988a75b4177fa",
+          "id": "exclusion.delivery",
+          "version": "1"
+        },
+        "arrival": {
+          "$type": "DefinitionRef",
+          "digest": "cb59c463e5408c0f6fe3283598622b9ca289e6db628ce5b7f89988a75b4177fa",
+          "id": "exclusion.delivery",
+          "version": "1"
+        },
+        "assumptions": [],
+        "co_delivery": "none_required",
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "cb59c463e5408c0f6fe3283598622b9ca289e6db628ce5b7f89988a75b4177fa",
+          "id": "exclusion.delivery",
+          "version": "1"
+        },
+        "expression": {
+          "$type": "DefinitionRef",
+          "digest": "cb59c463e5408c0f6fe3283598622b9ca289e6db628ce5b7f89988a75b4177fa",
+          "id": "exclusion.delivery",
+          "version": "1"
+        },
+        "id": "delivery",
+        "intended_recipients": [
+          {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          }
+        ]
+      },
+      "environment": [
+        {
+          "$type": "DefinitionRef",
+          "digest": "55c5f05a73b8418002eb600f692a7aee4407b682ce05e254cee05719da3aba6c",
+          "id": "exclusion.environment",
+          "version": "1"
+        }
+      ],
+      "id": "deployment",
+      "payload": {
+        "$type": "RNAConstraints",
+        "copy_number": null,
+        "design_count": 1,
+        "dose": null,
+        "effector_persistence": null,
+        "format": "RNA",
+        "helper_count": 0,
+        "member_count": 1,
+        "orf_count": 1,
+        "payload_persistence": null,
+        "product_count": 1
+      },
+      "route": "in_vivo"
+    },
+    "implementations": {
+      "$type": "ImplementationCatalogLock",
+      "id": "staged.supplied.catalog",
+      "implementations": [
+        {
+          "$type": "ImplementationBinding",
+          "chassis": [
+            "exclusion.human_immune"
+          ],
+          "dependencies": [],
+          "evidence": [],
+          "id": "staged.same_product.primitives",
+          "operation": {
+            "$type": "DefinitionRef",
+            "digest": "360f56dd7ee678b873b6475a8a62446312b88ade7297c2744bc0b43e52225d58",
+            "id": "staged.operation",
+            "version": "1"
+          },
+          "payload_formats": [
+            "RNA"
+          ],
+          "realization": {
+            "$type": "DefinitionRef",
+            "digest": "f488407a381eeaf34ab90027312fc8f53477494c4a83ac18032e6e7bedf122e8",
+            "id": "fixture.realization.primitives",
+            "version": "1"
+          },
+          "version": "1"
+        }
+      ],
+      "version": "1"
+    },
+    "profile": "biocompiler.policy.v0.1",
+    "program": {
+      "$type": "PolicyProgram",
+      "declarations": [
+        {
+          "$type": "Role",
+          "id": "executor",
+          "lineage_role": false,
+          "population": null,
+          "requires": [
+            {
+              "$type": "DefinitionRef",
+              "digest": "e9650d5b9bfcc7669ff450bf82cd05e033d7d7db69e388a5e52511d7dcd72b11",
+              "id": "staged.interface",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "$type": "Subject",
+          "domain": null,
+          "encounter": {
+            "$type": "Ref",
+            "id": "encounter",
+            "kind": "Encounter"
+          },
+          "entity_kind": "cell",
+          "executor": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          },
+          "id": "encounter/target",
+          "identity": "encounter"
+        },
+        {
+          "$type": "Encounter",
+          "contract": {
+            "$type": "DefinitionRef",
+            "digest": "580af7ac90a204f1b7fe29d5f03a264c97f6f24219c707f623981b7bc6c557e3",
+            "id": "staged.encounter",
+            "version": "1"
+          },
+          "executor": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          },
+          "id": "encounter",
+          "target": {
+            "$type": "Ref",
+            "id": "encounter/target",
+            "kind": "Subject"
+          },
+          "termination": "explicit_event"
+        },
+        {
+          "$type": "Clock",
+          "basis": "logical",
+          "id": "clock",
+          "resolution": {
+            "$type": "Quantity",
+            "amount": "1",
+            "unit": {
+              "$type": "Unit",
+              "dimension": "time",
+              "id": "s",
+              "quantity_kind": "duration",
+              "reference": null,
+              "scale": "1"
+            }
+          },
+          "simultaneous": "atomic_batch"
+        },
+        {
+          "$type": "Observation",
+          "access": "cell",
+          "clock": {
+            "$type": "Ref",
+            "id": "clock",
+            "kind": "Clock"
+          },
+          "coherence": "frame",
+          "contract": {
+            "$type": "DefinitionRef",
+            "digest": "cf0978cce222b19bdd71e1ac1914c8d623486a39e2b96ee1c717a08629719a4c",
+            "id": "staged.observation",
+            "version": "1"
+          },
+          "coverage": "event",
+          "freshness": {
+            "$type": "Quantity",
+            "amount": "10",
+            "unit": {
+              "$type": "Unit",
+              "dimension": "time",
+              "id": "s",
+              "quantity_kind": "duration",
+              "reference": null,
+              "scale": "1"
+            }
+          },
+          "id": "condition",
+          "invalidity": [
+            "missing",
+            "stale",
+            "invalid",
+            "conflicting"
+          ],
+          "observer": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          },
+          "spatial_scope": null,
+          "subject": {
+            "$type": "Ref",
+            "id": "encounter/target",
+            "kind": "Subject"
+          },
+          "value_type": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "truth",
+            "unit": null
+          }
+        },
+        {
+          "$type": "Parameter",
+          "id": "product",
+          "lower": null,
+          "selection": "fixed",
+          "upper": null,
+          "value": "fixture.product.alpha",
+          "value_type": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "text",
+            "unit": null
+          }
+        },
+        {
+          "$type": "Effect",
+          "contract": {
+            "$type": "DefinitionRef",
+            "digest": "360f56dd7ee678b873b6475a8a62446312b88ade7297c2744bc0b43e52225d58",
+            "id": "staged.operation",
+            "version": "1"
+          },
+          "executor": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          },
+          "id": "stage_one",
+          "lifecycle": {
+            "$type": "EffectLifecycle",
+            "authorization": "continuous",
+            "cancellation": "unsupported",
+            "completion": "feedback",
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "fe7431fb91aaa27d73811b38ec757c07ef96e147ca447e218f9c5dee1dc3b17e",
+              "id": "staged.lifecycle",
+              "version": "1"
+            },
+            "failure": "feedback",
+            "feedback_identity": "attempt_executor_subject",
+            "on_loss": "continue",
+            "on_unknown": "defer",
+            "timeout": {
+              "$type": "Quantity",
+              "amount": "2",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "s",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "$type": "Argument",
+              "name": "product",
+              "value": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "parameter",
+                "ref": {
+                  "$type": "Ref",
+                  "id": "product",
+                  "kind": "Parameter"
+                },
+                "scope": null,
+                "value": null,
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              }
+            }
+          ],
+          "relationship": null,
+          "resources": [],
+          "spatial_scope": null,
+          "subject": {
+            "$type": "Ref",
+            "id": "encounter/target",
+            "kind": "Subject"
+          }
+        },
+        {
+          "$type": "Effect",
+          "contract": {
+            "$type": "DefinitionRef",
+            "digest": "360f56dd7ee678b873b6475a8a62446312b88ade7297c2744bc0b43e52225d58",
+            "id": "staged.operation",
+            "version": "1"
+          },
+          "executor": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          },
+          "id": "stage_two",
+          "lifecycle": {
+            "$type": "EffectLifecycle",
+            "authorization": "continuous",
+            "cancellation": "unsupported",
+            "completion": "feedback",
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "fe7431fb91aaa27d73811b38ec757c07ef96e147ca447e218f9c5dee1dc3b17e",
+              "id": "staged.lifecycle",
+              "version": "1"
+            },
+            "failure": "feedback",
+            "feedback_identity": "attempt_executor_subject",
+            "on_loss": "continue",
+            "on_unknown": "defer",
+            "timeout": {
+              "$type": "Quantity",
+              "amount": "2",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "s",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "$type": "Argument",
+              "name": "product",
+              "value": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "parameter",
+                "ref": {
+                  "$type": "Ref",
+                  "id": "product",
+                  "kind": "Parameter"
+                },
+                "scope": null,
+                "value": null,
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              }
+            }
+          ],
+          "relationship": null,
+          "resources": [],
+          "spatial_scope": null,
+          "subject": {
+            "$type": "Ref",
+            "id": "encounter/target",
+            "kind": "Subject"
+          }
+        },
+        {
+          "$type": "Machine",
+          "arbitration": {
+            "$type": "Arbitration",
+            "contract": null,
+            "fairness": "none",
+            "mode": "exclusive",
+            "order": [],
+            "preemption": "forbidden",
+            "tie": "reject",
+            "write_conflict": "reject"
+          },
+          "executor": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          },
+          "id": "regimen/stages",
+          "initial": "ready",
+          "lifetime": "encounter",
+          "scope": {
+            "$type": "Scope",
+            "kind": "encounter",
+            "subject": {
+              "$type": "Ref",
+              "id": "encounter",
+              "kind": "Encounter"
+            }
+          },
+          "states": [
+            "ready",
+            "first",
+            "second",
+            "completed",
+            "failed"
+          ],
+          "terminal": [
+            "completed",
+            "failed"
+          ]
+        },
+        {
+          "$type": "Transition",
+          "assignments": [],
+          "destination": "first",
+          "effects": [
+            {
+              "$type": "Ref",
+              "id": "stage_one",
+              "kind": "Effect"
+            }
+          ],
+          "emissions": [],
+          "id": "regimen/start",
+          "machine": {
+            "$type": "Ref",
+            "id": "regimen/stages",
+            "kind": "Machine"
+          },
+          "on": {
+            "$type": "Expr",
+            "args": [
+              {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "observe",
+                "ref": {
+                  "$type": "Ref",
+                  "id": "condition",
+                  "kind": "Observation"
+                },
+                "scope": {
+                  "$type": "Ref",
+                  "id": "encounter/target",
+                  "kind": "Subject"
+                },
+                "value": null,
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "truth",
+                  "unit": null
+                }
+              }
+            ],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "rising",
+            "ref": null,
+            "scope": null,
+            "value": null,
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "source": "ready",
+          "unknown": "defer",
+          "unknown_target": null,
+          "when": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "observe",
+            "ref": {
+              "$type": "Ref",
+              "id": "condition",
+              "kind": "Observation"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": null,
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            }
+          }
+        },
+        {
+          "$type": "Transition",
+          "assignments": [],
+          "destination": "second",
+          "effects": [
+            {
+              "$type": "Ref",
+              "id": "stage_two",
+              "kind": "Effect"
+            }
+          ],
+          "emissions": [],
+          "id": "regimen/handoff",
+          "machine": {
+            "$type": "Ref",
+            "id": "regimen/stages",
+            "kind": "Machine"
+          },
+          "on": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "effect_event",
+            "ref": {
+              "$type": "Ref",
+              "id": "stage_one",
+              "kind": "Effect"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": "completed",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "source": "first",
+          "unknown": "defer",
+          "unknown_target": null,
+          "when": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "literal",
+            "ref": null,
+            "scope": null,
+            "value": true,
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            }
+          }
+        },
+        {
+          "$type": "Transition",
+          "assignments": [],
+          "destination": "completed",
+          "effects": [],
+          "emissions": [],
+          "id": "regimen/completed",
+          "machine": {
+            "$type": "Ref",
+            "id": "regimen/stages",
+            "kind": "Machine"
+          },
+          "on": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "effect_event",
+            "ref": {
+              "$type": "Ref",
+              "id": "stage_two",
+              "kind": "Effect"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": "completed",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "source": "second",
+          "unknown": "defer",
+          "unknown_target": null,
+          "when": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "literal",
+            "ref": null,
+            "scope": null,
+            "value": true,
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            }
+          }
+        },
+        {
+          "$type": "Transition",
+          "assignments": [],
+          "destination": "failed",
+          "effects": [],
+          "emissions": [],
+          "id": "regimen/first_failed",
+          "machine": {
+            "$type": "Ref",
+            "id": "regimen/stages",
+            "kind": "Machine"
+          },
+          "on": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "effect_event",
+            "ref": {
+              "$type": "Ref",
+              "id": "stage_one",
+              "kind": "Effect"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": "failed",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "source": "first",
+          "unknown": "defer",
+          "unknown_target": null,
+          "when": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "literal",
+            "ref": null,
+            "scope": null,
+            "value": true,
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            }
+          }
+        },
+        {
+          "$type": "Transition",
+          "assignments": [],
+          "destination": "failed",
+          "effects": [],
+          "emissions": [],
+          "id": "regimen/second_failed",
+          "machine": {
+            "$type": "Ref",
+            "id": "regimen/stages",
+            "kind": "Machine"
+          },
+          "on": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "effect_event",
+            "ref": {
+              "$type": "Ref",
+              "id": "stage_two",
+              "kind": "Effect"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": "failed",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "source": "second",
+          "unknown": "defer",
+          "unknown_target": null,
+          "when": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "literal",
+            "ref": null,
+            "scope": null,
+            "value": true,
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            }
+          }
+        },
+        {
+          "$type": "Transition",
+          "assignments": [],
+          "destination": "failed",
+          "effects": [],
+          "emissions": [],
+          "id": "regimen/first_timed_out",
+          "machine": {
+            "$type": "Ref",
+            "id": "regimen/stages",
+            "kind": "Machine"
+          },
+          "on": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "effect_event",
+            "ref": {
+              "$type": "Ref",
+              "id": "stage_one",
+              "kind": "Effect"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": "timed_out",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "source": "first",
+          "unknown": "defer",
+          "unknown_target": null,
+          "when": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "literal",
+            "ref": null,
+            "scope": null,
+            "value": true,
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            }
+          }
+        },
+        {
+          "$type": "Transition",
+          "assignments": [],
+          "destination": "failed",
+          "effects": [],
+          "emissions": [],
+          "id": "regimen/second_timed_out",
+          "machine": {
+            "$type": "Ref",
+            "id": "regimen/stages",
+            "kind": "Machine"
+          },
+          "on": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "effect_event",
+            "ref": {
+              "$type": "Ref",
+              "id": "stage_two",
+              "kind": "Effect"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": "timed_out",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "source": "second",
+          "unknown": "defer",
+          "unknown_target": null,
+          "when": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "literal",
+            "ref": null,
+            "scope": null,
+            "value": true,
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            }
+          }
+        },
+        {
+          "$type": "Requirement",
+          "applies_to": [],
+          "assumptions": [],
+          "clock": {
+            "$type": "Ref",
+            "id": "clock",
+            "kind": "Clock"
+          },
+          "condition": null,
+          "contract": null,
+          "deadline": {
+            "$type": "Quantity",
+            "amount": "1",
+            "unit": {
+              "$type": "Unit",
+              "dimension": "time",
+              "id": "s",
+              "quantity_kind": "duration",
+              "reference": null,
+              "scale": "1"
+            }
+          },
+          "description": "Each requested attempt initiates under the supplied abstract lifecycle.",
+          "horizon": {
+            "$type": "Quantity",
+            "amount": "5",
+            "unit": {
+              "$type": "Unit",
+              "dimension": "time",
+              "id": "s",
+              "quantity_kind": "duration",
+              "reference": null,
+              "scale": "1"
+            }
+          },
+          "id": "first_initiation",
+          "kind": "progress",
+          "lower": null,
+          "response": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "effect_event",
+            "ref": {
+              "$type": "Ref",
+              "id": "stage_one",
+              "kind": "Effect"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": "initiated",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "scope": {
+            "$type": "Scope",
+            "kind": "encounter",
+            "subject": {
+              "$type": "Ref",
+              "id": "encounter",
+              "kind": "Encounter"
+            }
+          },
+          "trigger": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "effect_event",
+            "ref": {
+              "$type": "Ref",
+              "id": "stage_one",
+              "kind": "Effect"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": "requested",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "upper": null
+        },
+        {
+          "$type": "Requirement",
+          "applies_to": [],
+          "assumptions": [],
+          "clock": {
+            "$type": "Ref",
+            "id": "clock",
+            "kind": "Clock"
+          },
+          "condition": null,
+          "contract": null,
+          "deadline": {
+            "$type": "Quantity",
+            "amount": "1",
+            "unit": {
+              "$type": "Unit",
+              "dimension": "time",
+              "id": "s",
+              "quantity_kind": "duration",
+              "reference": null,
+              "scale": "1"
+            }
+          },
+          "description": "Each requested attempt initiates under the supplied abstract lifecycle.",
+          "horizon": {
+            "$type": "Quantity",
+            "amount": "5",
+            "unit": {
+              "$type": "Unit",
+              "dimension": "time",
+              "id": "s",
+              "quantity_kind": "duration",
+              "reference": null,
+              "scale": "1"
+            }
+          },
+          "id": "second_initiation",
+          "kind": "progress",
+          "lower": null,
+          "response": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "effect_event",
+            "ref": {
+              "$type": "Ref",
+              "id": "stage_two",
+              "kind": "Effect"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": "initiated",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "scope": {
+            "$type": "Scope",
+            "kind": "encounter",
+            "subject": {
+              "$type": "Ref",
+              "id": "encounter",
+              "kind": "Encounter"
+            }
+          },
+          "trigger": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "effect_event",
+            "ref": {
+              "$type": "Ref",
+              "id": "stage_two",
+              "kind": "Effect"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": "requested",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "upper": null
+        }
+      ],
+      "id": "bounded_staged_material",
+      "profile": "biocompiler.policy.v0.1",
+      "semantics": {
+        "$type": "SemanticBundle",
+        "definitions": [
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "interface",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "staged.interface",
+            "meaning": "Supplied abstract executor interface.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "encounter",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "staged.encounter",
+            "meaning": "Explicit encounter identity and reset generation.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "observation",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "staged.observation",
+            "meaning": "Timestamped supplied truth evidence.",
+            "parameters": [],
+            "result": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            },
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "operation",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "staged.operation",
+            "meaning": "Request the same abstract product in two distinctly identified stages.",
+            "parameters": [
+              {
+                "$type": "Parameter",
+                "id": "product",
+                "lower": null,
+                "selection": "fixed",
+                "upper": null,
+                "value": null,
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              }
+            ],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "lifecycle",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "staged.lifecycle",
+            "meaning": "Attempt/executor/subject-correlated completion or failure; explicit timeout.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "model",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "exclusion.chassis",
+            "meaning": "Declared human immune context; executable binding pending.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "environment",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "exclusion.environment",
+            "meaning": "Declared in-vivo context; executable domain pending.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "delivery",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "exclusion.delivery",
+            "meaning": "Declared arrival, expression and activation interfaces; binding pending.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "model",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "fixture.realization.primitives",
+            "meaning": "Explicit supplied primitive-library membership only; preservation, deployment, carriers and material remain unassessed.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          }
+        ],
+        "id": "staged.semantics",
+        "profile": "biocompiler.policy.v0.1",
+        "version": "1"
+      },
+      "source_map": [
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "executor",
+          "file": "staged_material_original.py",
+          "line": 1,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "encounter/target",
+          "file": "staged_material_original.py",
+          "line": 2,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "encounter",
+          "file": "staged_material_original.py",
+          "line": 3,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "clock",
+          "file": "staged_material_original.py",
+          "line": 4,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "condition",
+          "file": "staged_material_original.py",
+          "line": 5,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "product",
+          "file": "staged_material_original.py",
+          "line": 6,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "stage_one",
+          "file": "staged_material_original.py",
+          "line": 7,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "stage_two",
+          "file": "staged_material_original.py",
+          "line": 8,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "regimen/stages",
+          "file": "staged_material_original.py",
+          "line": 9,
+          "pattern": "regimen"
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "regimen/start",
+          "file": "staged_material_original.py",
+          "line": 10,
+          "pattern": "regimen"
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "regimen/handoff",
+          "file": "staged_material_original.py",
+          "line": 11,
+          "pattern": "regimen"
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "regimen/completed",
+          "file": "staged_material_original.py",
+          "line": 12,
+          "pattern": "regimen"
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "regimen/first_failed",
+          "file": "staged_material_original.py",
+          "line": 13,
+          "pattern": "regimen"
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "regimen/second_failed",
+          "file": "staged_material_original.py",
+          "line": 14,
+          "pattern": "regimen"
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "regimen/first_timed_out",
+          "file": "staged_material_original.py",
+          "line": 15,
+          "pattern": "regimen"
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "regimen/second_timed_out",
+          "file": "staged_material_original.py",
+          "line": 16,
+          "pattern": "regimen"
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "first_initiation",
+          "file": "staged_material_original.py",
+          "line": 17,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "second_initiation",
+          "file": "staged_material_original.py",
+          "line": 18,
+          "pattern": null
+        }
+      ]
+    }
+  },
+  "implementation_library": {
+    "id": "staged.supplied.library",
+    "models": [
+      {
+        "body": {
+          "configuration": {
+            "freshness_ticks": 10
+          },
+          "primitive": "evidence_bank",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "030b6e8abee2300bfb8701a9710264777ca79956051c493eeb5dd8371dc815f7",
+        "identity": {
+          "content_fingerprint": "8f305023bd7c54de8c7776825426d7049d01ec1a0b495b74a5b77538539b63b4",
+          "id": "staged.primitive.evidence",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "initial": "ready",
+            "retained_capacity": 1,
+            "states": [
+              "ready",
+              "first",
+              "second",
+              "completed",
+              "failed"
+            ],
+            "terminal": [
+              "completed",
+              "failed"
+            ],
+            "writers": 7
+          },
+          "primitive": "machine_bank",
+          "profile": "biocompiler.policy_staged_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "b9184e756a6a626912b1bcf92963f5e662787214b3c3517eab520bc213de6d28",
+        "identity": {
+          "content_fingerprint": "34c97a228fc90083f444284389e8933ed63c0e0043b28768f0842f48a6e6ce68",
+          "id": "staged.primitive.machine",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {},
+          "primitive": "observed_rising",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "identity": {
+          "content_fingerprint": "28a820bd48d10f352c6b6c4beb728a4627d1b3c1aaaeb996c770bb8e19889e7d",
+          "id": "staged.primitive.edge",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "value": "true"
+          },
+          "primitive": "truth_constant",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "149a74a8992a85dd985d11f107c2a55b57319d498a68ef9f89cd11e4f6732638",
+        "identity": {
+          "content_fingerprint": "da4e1b85f0878d317cd028cd883e98d3d07a0e65cfe033a2cf67015d9903d688",
+          "id": "staged.primitive.true",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "product": "fixture.product.alpha"
+          },
+          "primitive": "product_constant",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "replication": {
+            "kind": "executor"
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "fca971476bb8e1636119d4e40db306d075882590ba126215c5b6cfe462bf1448",
+        "identity": {
+          "content_fingerprint": "b9f18177e93c478197dc985846db3cf522fdf7286c7217a2ffe2b673ad374be3",
+          "id": "staged.primitive.product",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "lanes": 7
+          },
+          "primitive": "exclusive_arbiter",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "3ac4e1873ad03e5dcc5b157b95d2a3cabe2dfbb37d8e731a10c343fe1b6bf59f",
+        "identity": {
+          "content_fingerprint": "f5f1d5bd0561b22d8173c39ff9482da013ebca53af1f03dc5e6d250bd27e6c7f",
+          "id": "staged.primitive.arbiter",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "authorization": "continuous",
+            "capacity": 4,
+            "on_loss": "continue",
+            "on_unknown": "defer",
+            "timeout_ticks": 2
+          },
+          "primitive": "attempt_bank",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "7086c0e39827151137d4d122dbb787e91448e029a33fd3ca96a71e438c03a657",
+        "identity": {
+          "content_fingerprint": "327df25227e4a745de24e991b64e671047e57cf859a93048130fac368fd1f4b6",
+          "id": "staged.primitive.attempt",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "correlation": "unbound",
+            "source": "ready"
+          },
+          "primitive": "transition_gate",
+          "profile": "biocompiler.policy_staged_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "f946fe03d27ed92225123b4c01339cf42a15355a9d3d154266a0dd04b40242cb",
+        "identity": {
+          "content_fingerprint": "b9ff6257b9b94c3d5860e93440acf2faa0c551ab4a22086b246683d6701a622d",
+          "id": "staged.primitive.gate.ready",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "correlation": "retained_attempt",
+            "source": "first"
+          },
+          "primitive": "transition_gate",
+          "profile": "biocompiler.policy_staged_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "528b8b274d13fcbefa0eca2290091d0b1f44b294bd03f0be9fcfabbc13d27250",
+        "identity": {
+          "content_fingerprint": "33f11359d188d144d06b3bffc8d26893f7b53ae7926e635b9089cfe4a2f508d6",
+          "id": "staged.primitive.gate.first",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "correlation": "retained_attempt",
+            "source": "second"
+          },
+          "primitive": "transition_gate",
+          "profile": "biocompiler.policy_staged_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "1c01091ea475953a15427d7d0134a4b4b1db4b4076f4ddc4f3378c18c4202ca2",
+        "identity": {
+          "content_fingerprint": "7f7b3f24ee10848cdfe004b7e6b52dc83098dec611f5da6b2c86bf08bcd8e62b",
+          "id": "staged.primitive.gate.second",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "destination": "first",
+            "requests": 1,
+            "writes": 0
+          },
+          "primitive": "transition_commit",
+          "profile": "biocompiler.policy_staged_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "5cfc259c70fdfe1400e4ca4874dda93da07137e8cc021c748390b187bb15cc23",
+        "identity": {
+          "content_fingerprint": "c63396515d6cbf6823981eac8d84506ed64a165a3ca940e64d74c0426b0bec7f",
+          "id": "staged.primitive.commit.first",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "destination": "second",
+            "requests": 1,
+            "writes": 0
+          },
+          "primitive": "transition_commit",
+          "profile": "biocompiler.policy_staged_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "7ec6d52ba3c014e3abc12e641502d1be68acdcd8004cea682ec94571d9a7b7b2",
+        "identity": {
+          "content_fingerprint": "50bb9c52de895760e9f1aba70ae842f33d7c2a45f57c47072d1f9e4100faacff",
+          "id": "staged.primitive.commit.second",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "destination": "completed",
+            "requests": 0,
+            "writes": 0
+          },
+          "primitive": "transition_commit",
+          "profile": "biocompiler.policy_staged_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "36f75d3495f15eba4fa4fed57aa3361c13a243c7a1a7c7b7625460abe68d16d9",
+        "identity": {
+          "content_fingerprint": "62cca2069804ec8c22cafb41610ef618e947d619415e24c50a86a94cd08b32ef",
+          "id": "staged.primitive.commit.completed",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "destination": "failed",
+            "requests": 0,
+            "writes": 0
+          },
+          "primitive": "transition_commit",
+          "profile": "biocompiler.policy_staged_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "60a324e6c6d10ec3c896117911d7069bd62b12e0ef1df1e3265e1a79a8f50fcd",
+        "identity": {
+          "content_fingerprint": "34572b11d31d2c46927489d21cd58f52948c2d7f0f536ade56c2e8da10d371c4",
+          "id": "staged.primitive.commit.failed",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "event_kind": "completed"
+          },
+          "primitive": "event_select",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "249766038529848d9193534024baa7278bb1f546af3f6ca07c884ef3c4c46313",
+        "identity": {
+          "content_fingerprint": "6c1f6835e15e87d71b8a64f2d09449962e7a1fb617cae06ff5bd1c2651510e00",
+          "id": "staged.primitive.event.completed",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "event_kind": "failed"
+          },
+          "primitive": "event_select",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "da1d734267aae3a78f4d07c14252a14d3602a52c279619086d9e21933c2ac5bf",
+        "identity": {
+          "content_fingerprint": "b997188d60175dd0baa6cbc09c9d5d8457f470161002bcf8ccd7a3f1bbd045ae",
+          "id": "staged.primitive.event.failed",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      },
+      {
+        "body": {
+          "configuration": {
+            "event_kind": "timed_out"
+          },
+          "primitive": "event_select",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          },
+          "schema_version": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "configuration_digest": "2f5662d360cfc823078dc521be534a54e0c3b03bf7a56313ab6469713160ddd6",
+        "identity": {
+          "content_fingerprint": "037a518f929ab8b6e1779901cae6c2a15ce9dca042dbe5d05f28530825f438a3",
+          "id": "staged.primitive.event.timed_out",
+          "kind": "model",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      }
+    ],
+    "profile": "biocompiler.policy_staged_primitives.v0.1",
+    "schema_version": "biocompiler.policy_implementation_library.v0.1",
+    "version": "1"
+  },
+  "operating_domain": {
+    "clock": "clock",
+    "encounters": [
+      {
+        "declaration": "encounter",
+        "identity": "e1",
+        "start_tick": 0,
+        "target": "target-1"
+      },
+      {
+        "declaration": "encounter",
+        "identity": "e2",
+        "start_tick": 0,
+        "target": "target-2"
+      }
+    ],
+    "executor": {
+      "identity": "cell-1",
+      "role": "executor"
+    },
+    "feedback_factors": [
+      {
+        "attempt_selector": "all_previously_created",
+        "effect": "stage_one",
+        "max_rows_per_attempt_tick": 1,
+        "outcomes": [
+          "completed",
+          "failed"
+        ],
+        "routes": [
+          "correlated"
+        ],
+        "ticks": [
+          2
+        ]
+      },
+      {
+        "attempt_selector": "all_previously_created",
+        "effect": "stage_two",
+        "max_rows_per_attempt_tick": 1,
+        "outcomes": [
+          "completed",
+          "failed"
+        ],
+        "routes": [
+          "correlated"
+        ],
+        "ticks": [
+          3
+        ]
+      }
+    ],
+    "fixed_observations": [
+      {
+        "available_tick": 0,
+        "observation": "condition",
+        "observed_tick": 0,
+        "slot": "e1",
+        "status": "valid",
+        "value": false
+      },
+      {
+        "available_tick": 0,
+        "observation": "condition",
+        "observed_tick": 0,
+        "slot": "e2",
+        "status": "valid",
+        "value": false
+      },
+      {
+        "available_tick": 1,
+        "observation": "condition",
+        "observed_tick": 1,
+        "slot": "e1",
+        "status": "valid",
+        "value": true
+      },
+      {
+        "available_tick": 1,
+        "observation": "condition",
+        "observed_tick": 1,
+        "slot": "e2",
+        "status": "valid",
+        "value": true
+      }
+    ],
+    "foreign_feedback_factors": [],
+    "horizon_ticks": 5,
+    "lifecycle_factors": [],
+    "logical_limits": {
+      "max_generations_per_slot": 2,
+      "max_live_encounters": 2,
+      "max_source_attempts": 4
+    },
+    "observation_factors": [],
+    "profile": "biocompiler.policy_truth_domain.v0.1",
+    "schema_version": "biocompiler.policy_operating_domain.v0.1"
+  },
+  "profile": "biocompiler.policy_realization_inputs.v0.1",
+  "schema_version": "biocompiler.policy_realization_request.v0.1"
+}

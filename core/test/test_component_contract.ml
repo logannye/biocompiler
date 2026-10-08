@@ -213,3 +213,13 @@ let () =
   | [_] -> literals (); text_literals (); raw_boundary_tests (); Printf.printf "component contract: %d literal checks\n" !checks
   | [_; path] -> corpus path; Printf.printf "component contract: %d corpus checks\n" !checks
   | _ -> failwith "Usage: test_component_contract.exe [component-contracts-v1.json]"
+
+let () =
+  let original = P.to_json (port ()) in
+  let imported = P.of_json (obj (List.rev (Json.object_fields original))) in
+  check (List.map fst (Json.object_fields (P.to_json imported)) =
+    ["id";"direction";"meaning";"unit";"role";"scope";"compartment";"timing";
+     "schema_version";"dtype";"initialization";"domain"])
+    "Port document differs from the original ordered public recipe";
+  check (Canonical.encode (P.to_json imported) = Canonical.encode original)
+    "Port ordering changed validated interface fields"

@@ -1,0 +1,131 @@
+{
+  "all_required_release_jobs": 38,
+  "corrected_hosted_acceptance": false,
+  "correction": "Prevalidate full SDK staging archive, source inventory, RECORD and release pins allowing0664 only for exact SDK RECORD; canonicalize only central external_attr bytes to0644; apply unchanged strict final checks before atomic replacement. Retain failed wheelhouse for diagnostics.",
+  "diagnosis": "Hosted SDK archive check rejects mode or size. Source-backed diagnosis: pinned setuptools80.9.0 WheelFile writes RECORD with regular0664; failed wheel was not retained so its particular member was not inspected. Native wheels and source companions passed independent checks.",
+  "evidence": {
+    "assembly-job.json": {
+      "bytes": 3772,
+      "sha256": "78f84a76f1d72d730e21e0a78aaf181d06c4ae0a4397818fd9429b239589a5cf"
+    },
+    "assembly-job.log": {
+      "bytes": 35427,
+      "sha256": "f66ec681e9f2addd280713c93d5c8d37f9642314ae92625e12d3887d373cf924"
+    },
+    "correction-tests-311.log": {
+      "bytes": 98,
+      "sha256": "694e49a5c85f9efdb2bbf3ec153c1c3a69812f03d195d7b53330fb5cdced5a22"
+    },
+    "correction-tests-314.log": {
+      "bytes": 98,
+      "sha256": "4d7b15c95f351129d7da9070df14ec3a3882591520129a6aac92c06a43758e9f"
+    },
+    "correction-validation.json": {
+      "bytes": 3785,
+      "sha256": "f156f288d3ea9271bccfcfcf319675c6446c78010e9b00190bb5381a74260209"
+    },
+    "correction.patch": {
+      "bytes": 23212,
+      "sha256": "56bd3bfe3d0e94acd2e6f925d0cdc59e105508bcb768b9a2babd35ac40b00916"
+    },
+    "evidence.json": {
+      "bytes": 20686,
+      "sha256": "009b6433f0a980c77a4a6ee0fb4c743ab5d9c9650149df09f47bcad16122f6cf"
+    },
+    "failure-excerpt.txt": {
+      "bytes": 1922,
+      "sha256": "8ffb65d418e7e14ff4f8da2c64dd11d8b7465508da1b4f3c14726580098f467c"
+    },
+    "linux-job.json": {
+      "bytes": 20053,
+      "sha256": "fd1862af5de732e083ebbcd4542da52c9f2a1ebbca6f7ad5740463f43f5304c1"
+    },
+    "macos-job.json": {
+      "bytes": 20044,
+      "sha256": "26ac91e3f320d08aadb61c1468a3b9cc7007c5109c3f3f18c87a8347a2a6c410"
+    },
+    "pr85-audit-tool-tested-merge.json": {
+      "bytes": 304,
+      "sha256": "2a203edb9f3af38101b73b0b5c3332b7e5d9c2eea58b9b04ba76b88d998f329f"
+    },
+    "pr85-audit-tool-unit-accounting-311.zip": {
+      "bytes": 74860,
+      "sha256": "709b78617bfbbf2a91ef38de154d1b7a1c4d21349f733178fd0c6f93f2ff4710"
+    },
+    "pr85-audit-tool-unit-accounting-314.zip": {
+      "bytes": 74863,
+      "sha256": "e510726842391346902e2468906074eeb955e8359f918ef7134e29b34091370f"
+    },
+    "pr85-audit-tool-unit-accounting-review.json": {
+      "bytes": 1622,
+      "sha256": "783ff69d4f0a84577e3cb98998dfd84b1fe20c15de12193598c9febab6547e45"
+    },
+    "run.json": {
+      "bytes": 13013,
+      "sha256": "9ab9acc92ededc8908cd0d3455a7e0889977ef5fc410a763d34b275060ef7447"
+    },
+    "setuptools-LICENSE.txt": {
+      "bytes": 1023,
+      "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+    },
+    "setuptools_bdist_wheel.py.source": {
+      "bytes": 22247,
+      "sha256": "4a49d83d5c21ad13df5ee7663bf82fa8d1c71e1cd27d4f1c12616d428990f712"
+    },
+    "source-evidence.json": {
+      "bytes": 2803,
+      "sha256": "0a2df0fde4a07c9977e16787f4a348b452e69bf24113572367799e6db7474092"
+    },
+    "wheel-LICENSE.txt": {
+      "bytes": 1107,
+      "sha256": "30c23618679108f3e8ea1d2a658c7ca417bdfc891c98ef1a89fa4ff0c9828654"
+    },
+    "wheel_wheelfile.py.source": {
+      "bytes": 8411,
+      "sha256": "5120adb4d949c1a7f1b79d5860514a1bb8e7c73f1d7e16f2a8064bea331303db"
+    }
+  },
+  "failed_run_id": 37101974697,
+  "hosted_before_correction": {
+    "fresh_install_campaigns": "not reached",
+    "native_platforms": [
+      "Linux x86_64",
+      "macOS arm64"
+    ],
+    "native_suites_per_platform": 118,
+    "pythons": [
+      "3.11.16",
+      "3.14.7"
+    ],
+    "successful_jobs": 30,
+    "unit_tests_each": 3385
+  },
+  "local_controls": "correction-validation.json",
+  "migration_cutoffs_complete": false,
+  "new_discovery_count_each": 3391,
+  "schema": "biocompiler.sdk_wheel_mode_correction.v1",
+  "source_before_correction": "b3228d454a823d6ce3eea3735c415cc1afcadd5a",
+  "source_pins": {
+    ".github/workflows/ci.yml": {
+      "bytes": 110110,
+      "sha256": "f42e76e75ada9af4b20f1acef239c18721192464bcc72deb5eaaff99769bd00a"
+    },
+    "protocol/migration-inventory.json": {
+      "bytes": 1525517,
+      "sha256": "a198fcf3a198c92cec1fff3bffced64133438ea38e5a0ef7b2153d080e1e8362"
+    },
+    "tests/test_prebuilt_release_chain.py": {
+      "bytes": 19608,
+      "sha256": "21f1fdee42acec26bacacf2da7b8f68bd146dff44ef8e265f5c6e5da8d7a66d7"
+    },
+    "tools/check_prebuilt_core_release.py": {
+      "bytes": 19015,
+      "sha256": "9d1294a63222dc1689d77d9ef666082338c609257cd256aa0ba3db0dd3a94911"
+    },
+    "tools/prebuilt_release_pipeline.py": {
+      "bytes": 15618,
+      "sha256": "5564773b6d659d2c718b483337db5959e7946880811a4a100a0893223cdefc19"
+    }
+  },
+  "tested_merge_revision": "4b38e5262bf0f87c52dbd638227076a7b856b8e8"
+}

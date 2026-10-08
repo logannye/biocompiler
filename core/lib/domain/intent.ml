@@ -142,7 +142,7 @@ let node_json ~include_source node =
     "data_type", node.data_type;
     "role", (match node.role with None -> Json.Null | Some role -> Json.String (Identity.Role.to_string role))
   ] in
-  Json.Object (if include_source then ("source", node.source) :: fields else fields)
+  Json.Object (if include_source then fields @ ["source", node.source] else fields)
 
 let document ~include_source value = Json.Object [
     "schema_version", Json.String schema_version;

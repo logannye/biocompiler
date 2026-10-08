@@ -1,0 +1,1 @@
+{"class":"biocompiler.ir.construct.LayoutEvidencePolicy","class_schema":"biocompiler.construct_evidence_policy.v0.1","fields":[["semantic_properties",{"ref":"object/6175"}],["invalidated_analyses",{"ref":"object/6176"}]],"instance_fields":["semantic_properties","invalidated_analyses"],"kind":"dataclass"}

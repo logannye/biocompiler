@@ -1,0 +1,1 @@
+{"class":"mappingproxy","items":[[{"scalar":"str","value":"schema_version"},{"scalar":"str","value":"biocompiler.encoding_evidence_policy.v0.1"}],[{"scalar":"str","value":"semantic_properties"},{"ref":"object/18177"}],[{"scalar":"str","value":"invalidated_analyses"},{"ref":"object/18178"}]],"kind":"mapping"}
