@@ -27,7 +27,7 @@ REVIEWED_ADDITIONS = {
     'src/biocompiler/policy/component_inputs.py': '4ccc28475ca07699d4af8e5266edcb94ec34e92ddacc2f7d57bfd12d4253e3f7',
     'examples/author_staged_research_project.py': 'b0ba5562773df57f4a3921ef3c01f0855def5409f198c684e0a96739a4244d4a',
     'examples/researcher_alpha.py': '63d862d55e22de38ba633f901d37c28c7a6fab3cb77ed8604d7fc07df0aac313',
-    'src/biocompiler/core_policy_component_selection.py': '3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2',
+    'src/biocompiler/core_policy_component_selection.py': 'ae4ff5afe6820222bd9f2104300733fdad0cadd3bc059909fee1476dd2241955',
     'src/biocompiler/policy/component_selection.py': '10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80',
     "src/biocompiler/core_distribution.py": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459",
     "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
@@ -53,7 +53,7 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5",
     # Independently reviewed policy transports remain outside original authority.
     'src/biocompiler/policy/component_material.py': '24da1db993f5f56ff516ad3b2d14667731f681ebe9f1c9ae6898d0728bd5eaba',
-    'src/biocompiler/core_policy_component_material.py': 'e5645b27e70f39a4979fee53638007044c44d37bec4f1a8af7e866f95a38f9e0',
+    'src/biocompiler/core_policy_component_material.py': '3d0af98b72acca9f0afe49be8b7cb93aa61a00cab61a37fc4b68d74c4a56443b',
     'src/biocompiler/policy/material.py': '5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79',
     'src/biocompiler/core_policy_material.py': 'bc8d44be6b6aa7a6d56d4352c85d6a2f8c9201ab626e6ebe1bcc265487b46704',
     'src/biocompiler/policy/implementation.py': '4e1de0535cf852885169328aaae035caff9178b367b84f204c1e68eaae478515',
@@ -151,6 +151,7 @@ def source_scope(actual, *, allow_missing_tests=False):
     require(not missing or allow_missing_tests and all(path.startswith("tests/") for path in missing),
             "Historical workflow authority source is missing")
     from tools.policy_entrypoint_source_lineage import PATHS as POLICY_ROUTES, ENTRYPOINT, verify_entrypoint
+    from tools.core_client_encoding_source_lineage import PATHS as ENCODING_ROUTES
     routes = []
     for path in sorted(set(before) & set(current)):
         if before[path] != current[path]:
@@ -158,7 +159,7 @@ def source_scope(actual, *, allow_missing_tests=False):
             from tools.synthetic_producer_source_lineage import HISTORICAL as PRODUCERS
             from tools.manager_registration_source_lineage import HISTORICAL as MANAGERS
             from tools.realization_source_lineage import verify_captured_source, REFERENCE_ROUTES
-            require(path in HISTORICAL or path in PRODUCERS or path in MANAGERS or path in REFERENCE_ROUTES or path in POLICY_ROUTES, "Historical workflow source bytes changed: " + path)
+            require(path in HISTORICAL or path in PRODUCERS or path in MANAGERS or path in REFERENCE_ROUTES or path in POLICY_ROUTES or path in ENCODING_ROUTES, "Historical workflow source bytes changed: " + path)
             require(digest((ROOT / path).read_bytes()) == current[path],
                     "Historical workflow source bytes changed: " + path)
             try:

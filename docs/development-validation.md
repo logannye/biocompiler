@@ -612,8 +612,36 @@ a proven conservative upper bound. Preserve execution guards while profiling;
 installing an unchained profiler must not disable the authoring-execution guard.
 Validate encoding and reuse changes against the original behavior, including
 malformed inputs, limits, aliases/mutation and rejection cases on both supported
-Python versions, before fresh hosted validation of the changed source. These are
-optimization requirements, not a claim that a new encoder or cache exists.
+Python versions, before fresh hosted validation of the changed source.
+
+The component-material and component-selection facades implement one narrow
+instance of this reuse. They retain the original request privately before
+negotiation and give transport a separate byte-derived copy. A bounded literal
+copy of the returned JSON establishes private result ownership; no producer,
+checker, negotiation, native execution or acceptance outcome is cached. Custom
+response classes, callback-bearing metadata and responses that cannot be copied
+within the optimization bounds use the existing uncached validator. A transport
+that substitutes its request cannot redefine the retained original authority,
+with caching enabled or disabled.
+
+The synchronous validation scope enrolls at most 2,048 private containers, stores
+at most 2,048 complete encodings and 16 MiB of encoded bytes, and clears its
+references on every exit. Its scope is isolated by invocation and thread. Literal
+JSON validation still runs on every encoding call, including cache hits, and the
+same streaming encoder handles misses. Copy, enrollment and storage ceilings
+cause uncached work, never a new semantic rejection. The byte ceiling describes
+the cache, not total process memory; private copies and temporary buffers also
+consume memory. All publication walks and cumulative charges remain unchanged.
+
+For this shared transport change, use the complete 31-suite/140-observation
+development route, full installed integration and fresh actual-main gates.
+Pure mocked-peer checks, retained-result differential checks and local timing
+probes establish only their stated scope. Record their exact source and input
+pins and measure ownership-copy costs; do not turn a single retained-result
+improvement into a hosted or whole-workflow speedup claim. The original
+realization and CLI corpora retain their original bytes and hashes; a separate
+closed AST projection documents this exact source extension without transferring
+their historical execution acceptance.
 
 ## Keep native builds hosted
 

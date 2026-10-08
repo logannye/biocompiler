@@ -88,6 +88,9 @@ def verify_captured_source(root: Path, entry):
     if sha256(current) == entry["sha256"]:
         return {"path": entry["path"], "historical_sha256": entry["sha256"],
                 "current_sha256": entry["sha256"], "kind": "identical_bytes"}
+    from tools.core_client_encoding_source_lineage import PATHS as ENCODING_ROUTES, verify_source as verify_encoding
+    if entry["path"] in ENCODING_ROUTES:
+        return verify_encoding(root, entry["path"], entry["sha256"])
     from tools.synthetic_selection_cli_source_lineage import CLI, verify_source as verify_selection_cli
     if entry["path"] == CLI:
         return verify_selection_cli(root, entry["sha256"])

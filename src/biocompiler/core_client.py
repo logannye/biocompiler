@@ -7,7 +7,10 @@ The v1 transport initially supports the POSIX platforms built by hosted CI.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from collections import deque
+from contextlib import contextmanager
+from contextvars import ContextVar
+from dataclasses import dataclass, field
 import hashlib
 import json
 import math
@@ -16,8 +19,9 @@ from pathlib import Path
 import selectors
 import signal
 import subprocess
+from threading import get_ident
 import time
-from typing import BinaryIO, Callable, Literal, TypeAlias, cast
+from typing import BinaryIO, Callable, Iterator, Literal, TypeAlias, cast
 from uuid import uuid4
 
 
@@ -213,8 +217,176 @@ def validate_json(value: object, *, string_limit: int | None = None,
             account(4 if item is None or item is True else 5)
 
 
+# These are optimization bounds, not protocol limits. Declining a copy or an
+# enrollment/cache admission always leaves the ordinary validator in charge.
+_OWNED_COPY_MAX_VISITS = 250_000
+_OWNED_COPY_MAX_CONTAINERS = 50_000
+_OWNED_COPY_MAX_DEPTH = 128
+_OWNED_ENCODING_MAX_ENROLLED = 2_048
+_OWNED_ENCODING_MAX_VISITS = 250_000
+_OWNED_ENCODING_MAX_ENTRIES = 2_048
+_OWNED_ENCODING_MAX_BYTES = 16_777_216
+
+
+@dataclass(frozen=True)
+class _OwnedJson:
+    value: JsonValue
+
+
+def _owned_response_eligible(response: CoreResponse) -> bool:
+    # A custom transport may supply subclasses with callbacks. Keep its existing
+    # validation behavior, but never borrow private roots while invoking hooks.
+    return (type(response) is CoreResponse and type(response.diagnostics) is tuple
+            and len(response.diagnostics) == 0
+            and all(type(value) is str for value in (
+                response.request_id, response.operation, response.status, response.executable, response.version)))
+
+
+@dataclass
+class _CopyFrame:
+    source: list[JsonValue] | dict[str, JsonValue]
+    target: list[JsonValue] | dict[str, JsonValue]
+    children: Iterator[object]
+    depth: int
+    length: int
+
+
+def _try_owned_json_copy(value: JsonValue) -> _OwnedJson | None:
+    """Copy literal containers without hooks, coercion or new protocol errors.
+
+    A shared child is copied at each occurrence; active ancestors detect cycles.
+    The iterator stack bounds temporary storage before inspecting all children.
+    Immutable atoms deliberately receive no encoding validation here: the
+    existing profile preflight retains its diagnostic order and limits.
+    """
+    visits = containers = 0
+    ancestors: set[int] = set()
+    stack: list[_CopyFrame] = []
+
+    def copy(item: JsonValue, depth: int) -> tuple[bool, JsonValue]:
+        nonlocal visits, containers
+        visits += 1
+        if visits > _OWNED_COPY_MAX_VISITS or depth > _OWNED_COPY_MAX_DEPTH:
+            return False, None
+        kind = type(item)
+        if item is None or kind is bool or kind is int or kind is float or kind is str:
+            return True, item
+        if (kind is not dict and kind is not list) or id(item) in ancestors:
+            return False, None
+        containers += 1
+        if containers > _OWNED_COPY_MAX_CONTAINERS:
+            return False, None
+        source = cast(list[JsonValue] | dict[str, JsonValue], item)
+        target: list[JsonValue] | dict[str, JsonValue] = {} if kind is dict else []
+        children: Iterator[object] = iter(source.items()) if type(source) is dict else iter(source)
+        stack.append(_CopyFrame(source, target, children, depth, len(source)))
+        ancestors.add(id(source))
+        return True, target
+
+    accepted, root = copy(value, 0)
+    if not accepted:
+        return None
+    try:
+        while stack:
+            frame = stack[-1]
+            if len(frame.source) != frame.length:
+                return None
+            try:
+                child = next(frame.children)
+            except StopIteration:
+                ancestors.remove(id(frame.source))
+                stack.pop()
+                continue
+            if type(frame.source) is dict:
+                key, item = cast(tuple[object, JsonValue], child)
+                visits += 1
+                if type(key) is not str or visits > _OWNED_COPY_MAX_VISITS:
+                    return None
+                accepted, cloned = copy(item, frame.depth + 1)
+                if not accepted:
+                    return None
+                cast(dict[str, JsonValue], frame.target)[key] = cloned
+            else:
+                accepted, cloned = copy(cast(JsonValue, child), frame.depth + 1)
+                if not accepted:
+                    return None
+                cast(list[JsonValue], frame.target).append(cloned)
+    except RuntimeError:
+        # Exact builtin dictionary iterators report concurrent structural edits.
+        return None
+    return _OwnedJson(root)
+
+
+@dataclass
+class _OwnedEncodingEntry:
+    value: list[JsonValue] | dict[str, JsonValue]
+    data: bytes | None = None
+
+
+@dataclass
+class _OwnedEncoding:
+    owner: int = field(default_factory=get_ident)
+    active: bool = True
+    entries: dict[int, _OwnedEncodingEntry] = field(default_factory=dict)
+    cached_entries: int = 0
+    cached_bytes: int = 0
+
+    def enroll(self, roots: tuple[_OwnedJson, ...]) -> None:
+        # Breadth first admission keeps both roots and nearby repeated evidence
+        # eligible without retaining an unbounded traversal queue.
+        pending: deque[list[JsonValue] | dict[str, JsonValue]] = deque()
+
+        def admit(value: JsonValue) -> None:
+            if ((type(value) is list or type(value) is dict) and id(value) not in self.entries
+                    and len(self.entries) < _OWNED_ENCODING_MAX_ENROLLED):
+                container = value
+                self.entries[id(value)] = _OwnedEncodingEntry(container)
+                pending.append(container)
+
+        for root in roots:
+            admit(root.value)
+        visits = 0
+        while pending and len(self.entries) < _OWNED_ENCODING_MAX_ENROLLED:
+            parent = pending.popleft()
+            for child in parent.values() if type(parent) is dict else parent:
+                visits += 1
+                if visits > _OWNED_ENCODING_MAX_VISITS:
+                    return
+                admit(child)
+                if len(self.entries) >= _OWNED_ENCODING_MAX_ENROLLED:
+                    return
+
+
+_OWNED_ENCODING: ContextVar[_OwnedEncoding | None] = ContextVar("_owned_encoding", default=None)
+
+
+@contextmanager
+def _owned_encoding_scope(*roots: _OwnedJson) -> Iterator[None]:
+    """Borrow private, unexposed roots only during synchronous result validation."""
+    scope = _OwnedEncoding()
+    scope.enroll(roots)
+    token = _OWNED_ENCODING.set(scope)
+    try:
+        yield
+    finally:
+        scope.active = False
+        scope.entries.clear()
+        scope.cached_bytes = scope.cached_entries = 0
+        _OWNED_ENCODING.reset(token)
+
+
 def encode_json(value: JsonValue, *, limit: int = LIMITS["max_request_bytes"]) -> bytes:
     validate_json(value, byte_limit=limit)
+    scope = _OWNED_ENCODING.get()
+    entry = None
+    if scope is not None and scope.active and scope.owner == get_ident():
+        entry = scope.entries.get(id(value))
+        if entry is not None and entry.value is not value:
+            entry = None
+        if entry is not None and entry.data is not None:
+            if len(entry.data) > limit:
+                raise CoreProtocolError("JSON byte budget exceeded")
+            return entry.data
     encoder = json.JSONEncoder(sort_keys=True, separators=(",", ":"),
                                ensure_ascii=False, allow_nan=False)
     data = bytearray()
@@ -223,7 +395,15 @@ def encode_json(value: JsonValue, *, limit: int = LIMITS["max_request_bytes"]) -
         if len(data) + len(chunk) > limit:
             raise CoreProtocolError("JSON byte budget exceeded")
         data.extend(chunk)
-    return bytes(data)
+    encoded = bytes(data)
+    if (entry is not None and scope is not None and scope.active and scope.owner == get_ident()
+            and _OWNED_ENCODING.get() is scope
+            and scope.cached_entries < _OWNED_ENCODING_MAX_ENTRIES
+            and scope.cached_bytes + len(encoded) <= _OWNED_ENCODING_MAX_BYTES):
+        entry.data = encoded
+        scope.cached_entries += 1
+        scope.cached_bytes += len(encoded)
+    return encoded
 
 
 def decode_json(data: bytes, *, limit: int = LIMITS["max_response_bytes"]) -> JsonValue:

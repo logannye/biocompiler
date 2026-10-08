@@ -1020,7 +1020,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_material.py",
-      "sha256": "e5645b27e70f39a4979fee53638007044c44d37bec4f1a8af7e866f95a38f9e0",
+      "sha256": "3d0af98b72acca9f0afe49be8b7cb93aa61a00cab61a37fc4b68d74c4a56443b",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -1051,7 +1051,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_selection.py",
-      "sha256": "3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2",
+      "sha256": "ae4ff5afe6820222bd9f2104300733fdad0cadd3bc059909fee1476dd2241955",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -1319,11 +1319,11 @@
     },
     {
       "path": "tests/test_core_policy_component_material.py",
-      "sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3"
+      "sha256": "d53f13fb346f80b05c03a8a96cfdac3cd3b04fcfa2bf3c65c1446403336e9869"
     },
     {
       "path": "tests/test_core_policy_component_selection.py",
-      "sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace"
+      "sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee"
     },
     {
       "path": "tests/test_policy_component_fixture.py",

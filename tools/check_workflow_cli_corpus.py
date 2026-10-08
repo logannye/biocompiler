@@ -23,6 +23,7 @@ from tools import manager_registration_source_lineage as managers
 from tools import cli_runtime_counterparts as runtime
 from tools import package_metadata_source_lineage as packaging
 from tools import policy_entrypoint_source_lineage as policy_entrypoint
+from tools import core_client_encoding_source_lineage as encoding
 from tools.realization_source_lineage import verify_captured_source, REFERENCE_ROUTES
 
 if __package__:
@@ -142,7 +143,7 @@ def _project(actual, baseline):
         require(path.is_file() and not path.is_symlink() and frozen.sha(path.read_bytes()) == current[name],
                 "Historical CLI filesystem bytes changed: " + name)
         if current[name] != pin:
-            require(name in routes.HISTORICAL or name in producers.HISTORICAL or name in managers.HISTORICAL or name in REFERENCE_ROUTES or name in policy_entrypoint.ROUTES, "Unreviewed historical CLI source change")
+            require(name in routes.HISTORICAL or name in producers.HISTORICAL or name in managers.HISTORICAL or name in REFERENCE_ROUTES or name in policy_entrypoint.ROUTES or name in encoding.PATHS, "Unreviewed historical CLI source change")
             try:
                 reviewed_routes.append(verify_captured_source(ROOT, {"path": name, "sha256": pin}))
             except ValueError as error:
@@ -185,7 +186,7 @@ def _project(actual, baseline):
                 continue
             require(item["path"] in historical and item["sha256"] == current[item["path"]],
                     "Actual CLI child import source is not historical or exactly witnessed")
-            if item["path"] in routes.HISTORICAL or item["path"] in producers.HISTORICAL or item["path"] in managers.HISTORICAL or item["path"] in REFERENCE_ROUTES or item["path"] in policy_entrypoint.ROUTES:
+            if item["path"] in routes.HISTORICAL or item["path"] in producers.HISTORICAL or item["path"] in managers.HISTORICAL or item["path"] in REFERENCE_ROUTES or item["path"] in policy_entrypoint.ROUTES or item["path"] in encoding.PATHS:
                 projected_row["import_audit"]["modules"][module]["sha256"] = historical[item["path"]]
     require(set(actual["retained_source_bytes"]) == set(baseline["retained_source_bytes"]),
             "Actual retained CLI source inventory differs")

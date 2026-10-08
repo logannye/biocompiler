@@ -6,7 +6,7 @@ and returned evidence without a Python semantic or generation fallback.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import hashlib
 from typing import Callable, cast
 
@@ -14,7 +14,7 @@ from biocompiler import core_policy_component_material as component
 from biocompiler import core_policy_material as material
 from biocompiler.core_client import (
     CORE_VERSION, PROTOCOL, CoreClient, CoreProtocolError, CoreResponse, JsonValue,
-    _object, decode_json, encode_json,
+    _OwnedJson, _object, _owned_encoding_scope, _owned_response_eligible, _try_owned_json_copy, decode_json, encode_json,
 )
 
 VALIDATION_SCOPE = "policy-component-selection-mrna-v0.1"
@@ -315,7 +315,8 @@ class PolicyComponentSelectionClient:
     transport: CoreClient
 
     def _call(self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None) -> PolicyComponentSelectionResult:
-        snapshot = cast(dict[str, JsonValue], decode_json(encode_json(payload)))
+        input_bytes = encode_json(payload)
+        snapshot = cast(dict[str, JsonValue], decode_json(input_bytes))
         _measure(snapshot)
         original = _original(snapshot["request"])
         if operation == COMPILE_OPERATION:
@@ -328,7 +329,16 @@ class PolicyComponentSelectionClient:
             raise CoreProtocolError("Selected executable lacks the exact bounded selection profile")
         if operation == COMPILE_OPERATION and not _same(capabilities.profiles.get("policy_component_selection_producer"), PRODUCER_PROFILE):
             raise CoreProtocolError("Selected executable lacks the exact metered selection producer profile")
-        return _result(self.transport.call(operation, snapshot, cancelled=cancelled), snapshot)
+        # Transport never receives the private original authority used below.
+        response = self.transport.call(operation, decode_json(input_bytes), cancelled=cancelled)
+        if not _owned_response_eligible(response):
+            return _result(response, snapshot)
+        owned = _try_owned_json_copy(response.result)
+        if owned is None:
+            return _result(response, snapshot)
+        private_response = replace(response, result=owned.value)
+        with _owned_encoding_scope(_OwnedJson(snapshot), owned):
+            return _result(private_response, snapshot)
 
     def compile(self, request: JsonValue, limits: JsonValue, *, cancelled: Callable[[], bool] | None = None) -> PolicyComponentSelectionResult:
         """Generate and freshly check every supplied alternative without export."""

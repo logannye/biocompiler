@@ -8008,7 +8008,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "PolicyComponentMaterialClient"
         },
-        "syntax_sha256": "6a703353d1a437cd4cc961509b882f3572bc2b9ffbed05e92c842c70d41ce7fe"
+        "syntax_sha256": "73f8d8de522df6e1817b1453911c70a5f6edc14876ea672a16be6ccc8f384e32"
       },
       {
         "id": "biocompiler.core_policy_component_material.PolicyComponentMaterialClient._call",
@@ -8019,7 +8019,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "PolicyComponentMaterialClient._call"
         },
-        "syntax_sha256": "d8eb5874c74a3946a17abc6f06490280835fd2bdd580d5a92c5a3bd7a6dc04ec"
+        "syntax_sha256": "97e562a30cd910ed71661c4ad2af23f02fa2821a9c4b3eac355102421ade76f1"
       },
       {
         "id": "biocompiler.core_policy_component_material.PolicyComponentMaterialClient.check",
@@ -8448,7 +8448,7 @@
           "path": "src/biocompiler/core_policy_component_selection.py",
           "symbol": "PolicyComponentSelectionClient"
         },
-        "syntax_sha256": "6a2bb7aaaaaae6c3529dfcf9830b26bd439173f54c37a00f22e511a4c47e1f15"
+        "syntax_sha256": "71bbd1131e3a16ab3ae49a5ec198bfe32666e278b391521eb5e3f1fa243195d1"
       },
       {
         "id": "biocompiler.core_policy_component_selection.PolicyComponentSelectionClient._call",
@@ -8459,7 +8459,7 @@
           "path": "src/biocompiler/core_policy_component_selection.py",
           "symbol": "PolicyComponentSelectionClient._call"
         },
-        "syntax_sha256": "740aed8fd3b5652d8533826a0a9ee83244930f0c9d0e3abc06b93cae51207e50"
+        "syntax_sha256": "fc65a2b621cf65be06a08db8e77e26710cc4b94b413e90707d6fbd289f83bddc"
       },
       {
         "id": "biocompiler.core_policy_component_selection.PolicyComponentSelectionClient.check",
@@ -17244,10 +17244,10 @@
       "pyproject.toml": "2a4b0285bad04a326241a78990a94bc70b8b8f2e72d417c32e2a7efb5c85b131",
       "src/biocompiler/__init__.py": "983da73517b57dead27b185ebb6ea2c9c34bba9ca89a28aee7b90dae3b3de769",
       "src/biocompiler/__main__.py": "d5b809722d6dfee6e4cb84d0b4a513239d99ae898defe55c1753ac85c21a9eb4",
-      "src/biocompiler/core_client.py": "c8d65a42c1f92cbd75cb5edd176a9463657e03509be8ed487496d78b17be00fc",
+      "src/biocompiler/core_client.py": "02cb76470d2170890937865a761d7c6a79b718f17a6ec30b94e0358234b69433",
       "src/biocompiler/core_policy.py": "9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e",
-      "src/biocompiler/core_policy_component_material.py": "e5645b27e70f39a4979fee53638007044c44d37bec4f1a8af7e866f95a38f9e0",
-      "src/biocompiler/core_policy_component_selection.py": "3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2",
+      "src/biocompiler/core_policy_component_material.py": "3d0af98b72acca9f0afe49be8b7cb93aa61a00cab61a37fc4b68d74c4a56443b",
+      "src/biocompiler/core_policy_component_selection.py": "ae4ff5afe6820222bd9f2104300733fdad0cadd3bc059909fee1476dd2241955",
       "src/biocompiler/core_policy_implementation.py": "ca0815363676dd8fd112b91b8d1adf303bedabb0f543ef2305d5f59c433906cd",
       "src/biocompiler/core_policy_material.py": "bc8d44be6b6aa7a6d56d4352c85d6a2f8c9201ab626e6ebe1bcc265487b46704",
       "src/biocompiler/core_policy_operational.py": "089805c81bf6f84e5cf5e264b6ed89babedc3d692e2a7605429aa388e6d5ed02",
@@ -17313,7 +17313,7 @@
       },
       {
         "path": "src/biocompiler/core_policy_component_material.py",
-        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+        "syntax_sha256": "71fc78b8cc7a173c37a08f002882aa475cb0b6a200bc0aaffed8c3ac916dcb62"
       },
       {
         "path": "src/biocompiler/core_policy_component_material.py",
@@ -17329,7 +17329,7 @@
       },
       {
         "path": "src/biocompiler/core_policy_component_material.py",
-        "syntax_sha256": "8e9c21287bc9b997bb02d3e2216052f4c0b189b02273039d48e1c5cfb03f2cfe"
+        "syntax_sha256": "14948564e1507b374f7c5731b52e8d36cd922b6f031a58c697074611b5e70afc"
       },
       {
         "path": "src/biocompiler/core_policy_component_selection.py",
@@ -17337,7 +17337,7 @@
       },
       {
         "path": "src/biocompiler/core_policy_component_selection.py",
-        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+        "syntax_sha256": "71fc78b8cc7a173c37a08f002882aa475cb0b6a200bc0aaffed8c3ac916dcb62"
       },
       {
         "path": "src/biocompiler/core_policy_component_selection.py",
@@ -17357,7 +17357,7 @@
       },
       {
         "path": "src/biocompiler/core_policy_component_selection.py",
-        "syntax_sha256": "5fe8dee914d2e76306667a96f507f022d1731ee6e078ebc974cdef985583825d"
+        "syntax_sha256": "3154f1dcdaa0ae9d350303332ea63222a667975a7d8562e245ccae928b37f59b"
       },
       {
         "path": "src/biocompiler/core_policy_implementation.py",
@@ -18949,7 +18949,7 @@
     },
     "component.assembly": {
       "distinction": "Rehashed synthetic assembly owner, projection and link responses remain subject to original-authority transport consistency checks.",
-      "file_sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3",
+      "file_sha256": "d53f13fb346f80b05c03a8a96cfdac3cd3b04fcfa2bf3c65c1446403336e9869",
       "path": "tests/test_core_policy_component_material.py",
       "role": "rejection",
       "symbol": "PolicyComponentMaterialTransportTests.test_rehashed_assembly_owner_site_and_link_mutations_reject",
@@ -18965,7 +18965,7 @@
     },
     "component.context": {
       "distinction": "Rehashed synthetic context responses retain full original bounds, demands, reservations and source obligations.",
-      "file_sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3",
+      "file_sha256": "d53f13fb346f80b05c03a8a96cfdac3cd3b04fcfa2bf3c65c1446403336e9869",
       "path": "tests/test_core_policy_component_material.py",
       "role": "rejection",
       "symbol": "PolicyComponentMaterialTransportTests.test_rehashed_context_originals_bounds_and_inventory_mutations_reject",
@@ -18989,7 +18989,7 @@
     },
     "component.negotiation": {
       "distinction": "Exact role/profile negotiation, Verify producer rejection, and no Python semantic fallback under a synthetic transport peer.",
-      "file_sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3",
+      "file_sha256": "d53f13fb346f80b05c03a8a96cfdac3cd3b04fcfa2bf3c65c1446403336e9869",
       "path": "tests/test_core_policy_component_material.py",
       "role": "mixed",
       "symbol": "PolicyComponentMaterialTransportTests.test_verify_capabilities_and_no_semantic_fallback",
@@ -19013,7 +19013,7 @@
     },
     "component.pair": {
       "distinction": "Rehashing a synthetic export cannot hide changed FASTA, manifest originals, member inventory or claim scope.",
-      "file_sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3",
+      "file_sha256": "d53f13fb346f80b05c03a8a96cfdac3cd3b04fcfa2bf3c65c1446403336e9869",
       "path": "tests/test_core_policy_component_material.py",
       "role": "rejection",
       "symbol": "PolicyComponentMaterialTransportTests.test_export_pair_rehash_cannot_hide_changed_material_or_originals",
@@ -19021,7 +19021,7 @@
     },
     "component.partial": {
       "distinction": "A synthetic failed context may report larger required minima and partial reservations without acceptance or artifact.",
-      "file_sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3",
+      "file_sha256": "d53f13fb346f80b05c03a8a96cfdac3cd3b04fcfa2bf3c65c1446403336e9869",
       "path": "tests/test_core_policy_component_material.py",
       "role": "positive",
       "symbol": "PolicyComponentMaterialTransportTests.test_failed_context_retains_truthful_minimum_and_partial_reservations",
@@ -19029,7 +19029,7 @@
     },
     "component.routes": {
       "distinction": "All four separately versioned component transport payloads retain complete supplied originals.",
-      "file_sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3",
+      "file_sha256": "d53f13fb346f80b05c03a8a96cfdac3cd3b04fcfa2bf3c65c1446403336e9869",
       "path": "tests/test_core_policy_component_material.py",
       "role": "positive",
       "symbol": "PolicyComponentMaterialTransportTests.test_all_four_routes_preserve_complete_original_inputs",
@@ -19045,7 +19045,7 @@
     },
     "component.snapshot": {
       "distinction": "Request snapshot precedes peer negotiation; inherited result views preserve immutable complete response bytes.",
-      "file_sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3",
+      "file_sha256": "d53f13fb346f80b05c03a8a96cfdac3cd3b04fcfa2bf3c65c1446403336e9869",
       "path": "tests/test_core_policy_component_material.py",
       "role": "mixed",
       "symbol": "PolicyComponentMaterialTransportTests.test_snapshot_precedes_negotiation_and_result_is_immutable",
@@ -19053,7 +19053,7 @@
     },
     "component.withheld": {
       "distinction": "Nonaccepted and publication-exhausted synthetic results cannot acquire an export artifact.",
-      "file_sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3",
+      "file_sha256": "d53f13fb346f80b05c03a8a96cfdac3cd3b04fcfa2bf3c65c1446403336e9869",
       "path": "tests/test_core_policy_component_material.py",
       "role": "mixed",
       "symbol": "PolicyComponentMaterialTransportTests.test_not_accepted_and_publication_exhaustion_have_no_artifact",
@@ -19061,7 +19061,7 @@
     },
     "component.wrapper": {
       "distinction": "Complete wrapper, budget, obligation and replay-response identities are enforced against supplied inputs.",
-      "file_sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3",
+      "file_sha256": "d53f13fb346f80b05c03a8a96cfdac3cd3b04fcfa2bf3c65c1446403336e9869",
       "path": "tests/test_core_policy_component_material.py",
       "role": "rejection",
       "symbol": "PolicyComponentMaterialTransportTests.test_whole_wrapper_budget_ledger_and_replay_mutations_reject",
@@ -19317,7 +19317,7 @@
     },
     "selection.census": {
       "distinction": "Synthetic complete-census, ordering, rank, exact length, nested evidence and claim mutations reject.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionTransportTests.test_census_order_rank_length_feedback_and_nested_claim_mutations_reject",
@@ -19325,7 +19325,7 @@
     },
     "selection.compile_failure": {
       "distinction": "Malformed generated censuses, unexpected artifacts, upgraded empirical claims, timeout, cancellation and backend rejection have no Python fallback.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionTransportTests.test_compile_rejects_incomplete_census_or_artifact_and_has_no_fallback",
@@ -19333,7 +19333,7 @@
     },
     "selection.compile_losers": {
       "distinction": "Synthetic generated candidates remain deterministic across original order, while changed loser/order authority invalidates saved replay; failed and ineligible alternatives retain their distinct outcomes.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_compile_keeps_all_losers_and_permuted_original_authority",
@@ -19341,7 +19341,7 @@
     },
     "selection.compile_negotiation": {
       "distinction": "Absent or altered producer capabilities stop synthetic generation before its call; verification capability meaning remains unchanged.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionTransportTests.test_compile_missing_or_changed_profile_never_calls_production",
@@ -19349,7 +19349,7 @@
     },
     "selection.compile_role": {
       "distinction": "An explicit Core role is required before transport and the separate producer profile leaves the three-route verification profile unchanged.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_compile_requires_core_before_any_transport_and_preserves_verification_profile",
@@ -19357,7 +19357,7 @@
     },
     "selection.compile_routes": {
       "distinction": "A synthetic Core generation result equals fresh Verify checking/replay and retains complete candidates without an artifact.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "positive",
       "symbol": "PolicyComponentSelectionTransportTests.test_compile_candidate_equals_fresh_verify_without_artifact",
@@ -19373,7 +19373,7 @@
     },
     "selection.compile_snapshot": {
       "distinction": "Synthetic compile negotiation cannot mutate the snapshotted complete originals sent to Core.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_compile_snapshots_originals_before_negotiation",
@@ -19389,7 +19389,7 @@
     },
     "selection.failed_loser": {
       "distinction": "A synthetic failed loser remains inner_not_accepted with eligibility unknown and cannot authorize an export.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_failed_loser_is_not_an_ineligible_success",
@@ -19397,7 +19397,7 @@
     },
     "selection.grammar": {
       "distinction": "Malformed complete candidate census, IDs and ranks reject before a synthetic transport invocation.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionTransportTests.test_original_and_candidate_census_grammar_rejects_before_native",
@@ -19405,7 +19405,7 @@
     },
     "selection.integer": {
       "distinction": "Exact integer-bit and synthetic result preflight bounds apply before fingerprint work.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_integer_and_result_preflight_are_exact_and_precede_fingerprints",
@@ -19413,7 +19413,7 @@
     },
     "selection.loser": {
       "distinction": "A changed losing rank invalidates synthetic saved-wrapper replay despite unchanged winner and RNA.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionTransportTests.test_loser_edit_invalidates_replay_even_with_unchanged_selected_rna",
@@ -19421,7 +19421,7 @@
     },
     "selection.manifest": {
       "distinction": "Synthetic outer manifests retain losing originals, selected-child authority and exact paired material bytes.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionTransportTests.test_outer_manifest_retains_losers_selected_child_and_exact_pair",
@@ -19429,7 +19429,7 @@
     },
     "selection.negotiation": {
       "distinction": "Synthetic capability downgrade, timeout and backend rejection have no Python fallback.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "rejection",
       "symbol": "PolicyComponentSelectionTransportTests.test_capability_downgrade_and_native_failures_have_no_fallback",
@@ -19445,7 +19445,7 @@
     },
     "selection.profiles": {
       "distinction": "Original resource profiles retain the old node ceiling and admit the separate explicit v0.2 ceiling within exact bounds.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_v1_limits_remain_fixed_and_v2_is_explicit",
@@ -19453,15 +19453,15 @@
     },
     "selection.publication": {
       "distinction": "Repeated nested reports, manifest and actual synthetic frame count cumulatively against publication limits.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_cumulative_publication_counts_repeated_nested_values",
-      "syntax_sha256": "a6375654ec15318485505fb6aec958f9c486d884ca6c14fc11efff23f3f5c490"
+      "syntax_sha256": "7fe8e7718b4e5e2239063f495cb2036a9d9b5dd7eee9f88f66a7008d783f4b6a"
     },
     "selection.rank": {
       "distinction": "Synthetic rank ties, length predicate and proposed winner remain bound to the complete original selection.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_rank_tie_predicate_and_proposed_winner_are_bound",
@@ -19469,7 +19469,7 @@
     },
     "selection.routes": {
       "distinction": "Three synthetic selection verification routes retain complete supplied originals and replay wrapper; Core generation is a separately negotiated API.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "positive",
       "symbol": "PolicyComponentSelectionTransportTests.test_all_three_verification_routes_preserve_complete_originals",
@@ -19485,7 +19485,7 @@
     },
     "selection.snapshot": {
       "distinction": "Synthetic transport snapshots preserve complete inputs and immutable result views.",
-      "file_sha256": "8aa2c0c582c592d26b357287da88c02fa9411c1ebd8260b3d21375ddd5b38ace",
+      "file_sha256": "6553db03f1c6aaadaffa0818d4d7ee331fd8e1bd8f24ea2628e9e517f7a02bee",
       "path": "tests/test_core_policy_component_selection.py",
       "role": "mixed",
       "symbol": "PolicyComponentSelectionTransportTests.test_snapshot_and_result_are_immutable",

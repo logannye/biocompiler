@@ -9,6 +9,7 @@ import unittest
 from unittest.mock import patch
 
 from biocompiler import core_policy_component_selection as api
+from biocompiler import core_client as core
 from biocompiler.core_client import CORE_VERSION, PROTOCOL, CoreCancelled, CoreClient, CoreProtocolError, CoreRejected, CoreTimeout, encode_json
 from tests import test_core_policy_component_material as child
 
@@ -290,6 +291,24 @@ class PolicyComponentSelectionTransportTests(unittest.TestCase):
         with self.assertRaises(FrozenInstanceError):
             checked.operation = "foreign"
 
+    def test_transport_cannot_replace_original_authority_with_a_repinned_request(self):
+        original_call = CoreClient.call
+        before = encode_json(self.request)
+
+        def substitute(transport, operation, payload, **kwargs):
+            if operation != "capabilities":
+                payload["request"]["budgets"]["max_work"] -= 1
+            return original_call(transport, operation, payload, **kwargs)
+
+        for entries in (0, 2048):
+            with self.subTest(cache_entries=entries), self.exchange(), \
+                    patch.object(CoreClient, "call", substitute), \
+                    patch.object(core, "_OWNED_ENCODING_MAX_ENTRIES", entries), \
+                    self.assertRaisesRegex(CoreProtocolError, "Complete selection original"):
+                self.check()
+            self.assertEqual(encode_json(self.request), before)
+            self.assertEqual(self.calls[-1]["payload"]["request"]["budgets"]["max_work"], self.request["budgets"]["max_work"] - 1)
+
     def test_loser_edit_invalidates_replay_even_with_unchanged_selected_rna(self):
         with self.exchange():
             old = self.check()
@@ -413,15 +432,41 @@ class PolicyComponentSelectionTransportTests(unittest.TestCase):
              "result": raw, "diagnostics": [], "core": {"implementation": "ocaml", "version": CORE_VERSION, "protocol": PROTOCOL, "executable": "verify"}}]
         sizes = [nodes(value) for value in events]
         self.assertGreater(sum(sizes), max(sizes) + 1)
-        self.request["budgets"]["max_report_nodes"] = max(sizes) + 1
-        with self.exchange(), self.assertRaisesRegex(CoreProtocolError, "cumulative"):
-            self.client.export(self.request, self.candidate, self.limits)
-        self.request["budgets"]["max_report_nodes"] = sum(sizes)
-        with self.exchange():
-            self.client.export(self.request, self.candidate, self.limits)
-        self.request["budgets"]["max_report_nodes"] -= 1
-        with self.exchange(), self.assertRaisesRegex(CoreProtocolError, "cumulative"):
-            self.client.export(self.request, self.candidate, self.limits)
+        original_publication = api._publication
+        publishing = False
+        hits = []
+
+        def publication(*args):
+            nonlocal publishing
+            publishing = True
+            try:
+                return original_publication(*args)
+            finally:
+                publishing = False
+
+        def encoding(value, **kwargs):
+            scope = core._OWNED_ENCODING.get()
+            entry = scope.entries.get(id(value)) if scope is not None else None
+            cached = entry.data if entry is not None and entry.value is value else None
+            actual = encode_json(value, **kwargs)
+            if publishing and cached is not None and actual is cached:
+                hits.append(len(actual))
+            return actual
+
+        for budget, rejects in ((max(sizes) + 1, True), (sum(sizes), False), (sum(sizes) - 1, True)):
+            self.request["budgets"]["max_report_nodes"] = budget
+            hits.clear()
+            with self.subTest(budget=budget), self.exchange(), patch.object(api, "_publication", publication), \
+                    patch.object(api, "encode_json", encoding):
+                if rejects:
+                    with self.assertRaisesRegex(CoreProtocolError, "cumulative"):
+                        self.client.export(self.request, self.candidate, self.limits)
+                else:
+                    self.client.export(self.request, self.candidate, self.limits)
+            if core._OWNED_ENCODING_MAX_ENTRIES:
+                self.assertGreater(len(hits), 0, "Publication must exercise actual byte reuse at every boundary")
+            else:
+                self.assertEqual(hits, [])
 
     def test_capability_downgrade_and_native_failures_have_no_fallback(self):
         for edit in (lambda v: v["profiles"]["policy_component_selection"]["resource_profiles"].pop(),

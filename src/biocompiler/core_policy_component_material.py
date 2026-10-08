@@ -5,12 +5,15 @@ edit: check/export invoke native checking and replay requires exact fresh equali
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Callable, cast
 
 from biocompiler import core_policy_implementation as implementation
 from biocompiler import core_policy_material as material
-from biocompiler.core_client import CoreClient, CoreProtocolError, CoreResponse, JsonValue, _object, decode_json, encode_json
+from biocompiler.core_client import (
+    CoreClient, CoreProtocolError, CoreResponse, JsonValue, _OwnedJson, _object,
+    _owned_encoding_scope, _owned_response_eligible, _try_owned_json_copy, decode_json, encode_json,
+)
 
 VALIDATION_SCOPE = "policy-component-mrna-v0.1"
 IMPLEMENTATION = "biocompiler.ocaml.policy_component_material.v0.1"
@@ -311,7 +314,8 @@ class PolicyComponentMaterialClient:
     transport: CoreClient
 
     def _call(self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None) -> PolicyComponentMaterialResult:
-        snapshot = cast(dict[str, JsonValue], decode_json(encode_json(payload)))
+        input_bytes = encode_json(payload)
+        snapshot = cast(dict[str, JsonValue], decode_json(input_bytes))
         _original(snapshot["request"])
         if operation == "compile-policy-component-material" and self.transport.role != "core":
             raise CoreProtocolError("Component production requires an explicitly selected Core producer")
@@ -320,7 +324,16 @@ class PolicyComponentMaterialClient:
             raise CoreProtocolError("Selected executable lacks the exact component material profile")
         if operation == "compile-policy-component-material" and not _same(capabilities.profiles.get("policy_component_material_producer"), PRODUCER_PROFILE):
             raise CoreProtocolError("Selected executable lacks the exact component producer profile")
-        return _result(self.transport.call(operation, snapshot, cancelled=cancelled), snapshot)
+        # Transport never receives the private original authority used below.
+        response = self.transport.call(operation, decode_json(input_bytes), cancelled=cancelled)
+        if not _owned_response_eligible(response):
+            return _result(response, snapshot)
+        owned = _try_owned_json_copy(response.result)
+        if owned is None:
+            return _result(response, snapshot)
+        private_response = replace(response, result=owned.value)
+        with _owned_encoding_scope(_OwnedJson(snapshot), owned):
+            return _result(private_response, snapshot)
 
     def compile(self, request: JsonValue, limits: JsonValue, *, cancelled: Callable[[], bool] | None = None) -> PolicyComponentMaterialResult:
         return self._call("compile-policy-component-material", {"request": request, "limits": limits}, cancelled=cancelled)

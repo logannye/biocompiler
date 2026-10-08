@@ -1954,14 +1954,14 @@
     },
     {
       "path": "src/biocompiler/core_client.py",
-      "sha256": "c8d65a42c1f92cbd75cb5edd176a9463657e03509be8ed487496d78b17be00fc",
+      "sha256": "02cb76470d2170890937865a761d7c6a79b718f17a6ec30b94e0358234b69433",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "Assert": 1,
-          "ClassDef": 12,
-          "FunctionDef": 24,
-          "Raise": 55
+          "ClassDef": 16,
+          "FunctionDef": 30,
+          "Raise": 56
         },
         "profile_literals": {
           "biocompiler.core.v1": 1,
@@ -1993,7 +1993,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_material.py",
-      "sha256": "e5645b27e70f39a4979fee53638007044c44d37bec4f1a8af7e866f95a38f9e0",
+      "sha256": "3d0af98b72acca9f0afe49be8b7cb93aa61a00cab61a37fc4b68d74c4a56443b",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -2026,7 +2026,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_selection.py",
-      "sha256": "3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2",
+      "sha256": "ae4ff5afe6820222bd9f2104300733fdad0cadd3bc059909fee1476dd2241955",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {

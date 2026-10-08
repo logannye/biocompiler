@@ -14,6 +14,7 @@ import unittest
 from unittest.mock import patch
 
 from biocompiler import core_policy_component_material as api
+from biocompiler import core_client as core
 from biocompiler.core_client import (
     CoreClient, CoreProtocolError, CoreTimeout, CoreRejected, CoreUnsupported,
     PROTOCOL, CORE_VERSION, encode_json,
@@ -251,6 +252,24 @@ class PolicyComponentMaterialTransportTests(unittest.TestCase):
         self.assertTrue(value.candidate["assembly_proposal"]["nodes"])
         with self.assertRaises(FrozenInstanceError):
             value.report_fingerprint = "changed"
+
+    def test_transport_cannot_replace_original_authority_with_a_repinned_request(self):
+        original_call = CoreClient.call
+        before = encode_json(self.request)
+
+        def substitute(transport, operation, payload, **kwargs):
+            if operation != "capabilities":
+                payload["request"]["budgets"]["max_work"] -= 1
+            return original_call(transport, operation, payload, **kwargs)
+
+        for entries in (0, 2048):
+            with self.subTest(cache_entries=entries), self.exchange(), \
+                    patch.object(CoreClient, "call", substitute), \
+                    patch.object(core, "_OWNED_ENCODING_MAX_ENTRIES", entries), \
+                    self.assertRaisesRegex(CoreProtocolError, "Complete original component request"):
+                self.check()
+            self.assertEqual(encode_json(self.request), before)
+            self.assertEqual(self.calls[-1]["payload"]["request"]["budgets"]["max_work"], self.request["budgets"]["max_work"] - 1)
 
     def test_rehashed_assembly_owner_site_and_link_mutations_reject(self):
         mutations = [lambda a: a.update(rule_fingerprint="0" * 64), lambda a: a.update(catalog_authorization="pass"),
