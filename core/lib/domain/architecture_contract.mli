@@ -95,6 +95,10 @@ module Helper : sig
   type t
   val schema_version : string
   val of_json : ?path:string -> Bioc_wire.Json.t -> t
+
+  (** Opt-in grounded policy helper syntax allows an empty assumption list.
+      Contextual initialization and capacity checks remain separate. *)
+  val of_grounded_json : ?path:string -> Bioc_wire.Json.t -> t
   val to_json : t -> Bioc_wire.Json.t
   val fingerprint : t -> string
   val make : id:string -> capability:string -> consumer_component_ids:Identity.Component.t list -> recipient_role:Identity.Role.t -> compartment:string -> availability:availability -> initialization:initialization -> sharing:sharing -> capacity:int -> assumptions:string list -> placement_id:string option -> provider_component_id:Identity.Component.t option -> depends_on:string list -> t

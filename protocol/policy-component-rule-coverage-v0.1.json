@@ -129,7 +129,7 @@
     },
     {
       "path": "core/lib/checker/policy_implementation_binding_check.ml",
-      "sha256": "8c35f7321898f5bffb3ddeab106aaa552db7eab828f03c843a6fb22a273f99c2",
+      "sha256": "44198ef32ff5190d0b63d16b6d83d5674ee4490eaab77582ac68a43a222ede3f",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -208,7 +208,7 @@
     },
     {
       "path": "core/lib/compiler/policy_component_lowering.ml",
-      "sha256": "9af663f7e5442683525a883b9e69aec3668177839afedc27a522505cd5e53bc5",
+      "sha256": "3d4dfd461673dbc4e4cb83238ad3817294f5dcb63300e3dd5dbc86dbfb931604",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -319,8 +319,43 @@
       }
     },
     {
+      "path": "core/lib/domain/architecture_contract.ml",
+      "sha256": "398ad22c7b19ce3689c9fe77929f20c0176e157a0ae01cef4a8d87b6d40a9eb4",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "require": 10
+        },
+        "profile_literals": {
+          "biocompiler.architecture_binding.v0.1": 1,
+          "biocompiler.architecture_channel.v0.1": 1,
+          "biocompiler.architecture_connection.v0.1": 1,
+          "biocompiler.architecture_control.v0.1": 1,
+          "biocompiler.architecture_control_requirement.v0.1": 1,
+          "biocompiler.architecture_helper.v0.1": 1,
+          "biocompiler.architecture_match_policy.v0.1": 1,
+          "biocompiler.architecture_output_binding.v0.1": 1,
+          "biocompiler.architecture_placement.v0.1": 1,
+          "biocompiler.architecture_refinement_instance.v0.1": 1,
+          "biocompiler.recipient_delivery_group.v0.1": 1,
+          "biocompiler.rna_architecture_constraints.v0.2": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/architecture_contract.mli",
+      "sha256": "7ade786201e526fd981a2c0bebe6e36ac1e1696d237cceaa5019fa567d9b670e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/domain/policy_component_assembly_proposal.ml",
-      "sha256": "2894be5fbdfcbf6cc934034b98ee3305dfcd602a1eba66bec21ca500e5f44a59",
+      "sha256": "d21f53d450b4f84b3aa21806d340d0721c9a94636fdd0544fad522e6599b2bd6",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -331,13 +366,14 @@
         "profile_literals": {
           "biocompiler.policy_component_assembly_proposal.v0.1": 1,
           "biocompiler.policy_component_assembly_proposal.v0.2": 1,
-          "biocompiler.policy_component_assembly_proposal.v0.3": 1
+          "biocompiler.policy_component_assembly_proposal.v0.3": 1,
+          "biocompiler.policy_component_assembly_proposal.v0.4": 1
         }
       }
     },
     {
       "path": "core/lib/domain/policy_component_assembly_proposal.mli",
-      "sha256": "fb489052a9754aa49c235a169857be7b53bee84b0ecc52fc8564cdd525b4edc1",
+      "sha256": "b74c7160619fa65079d8d52d874b35285412ba6c9b2c4bcef48be00e3a155929",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -346,20 +382,22 @@
     },
     {
       "path": "core/lib/domain/policy_component_assembly_rule.ml",
-      "sha256": "b4f53ddb9a6f0eb3892b6f8986e6fb86479af2a4adc33dede5b089a4c02ee6d3",
+      "sha256": "6871101d606e5e3038bd243f138b75ef61d37f0f17a0cf7372edc92ea1b72b21",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 1,
           "Diagnostic.require": 1,
           "fail": 28,
-          "require": 80
+          "require": 87
         },
         "profile_literals": {
           "biocompiler.policy_component_assembly_rule.v0.1": 1,
           "biocompiler.policy_component_assembly_rule.v0.2": 1,
           "biocompiler.policy_component_assembly_rule.v0.3": 1,
+          "biocompiler.policy_component_assembly_rule.v0.4": 1,
           "biocompiler.policy_exact_component_assembly.v0.1": 1,
+          "biocompiler.policy_grounded_helper_component_assembly.v0.1": 1,
           "biocompiler.policy_identity_transport.v0.1": 1,
           "biocompiler.policy_instance_component_assembly.v0.1": 1,
           "biocompiler.policy_multi_member_component_assembly.v0.1": 1,
@@ -369,7 +407,7 @@
     },
     {
       "path": "core/lib/domain/policy_component_assembly_rule.mli",
-      "sha256": "f66ba13ad99ec63105872d50a9eb8bfd325929bb6c31c7190b9eac3510430851",
+      "sha256": "35cd75a4505af1112848dd771ad51f2146769c1d6a5b74e0ae86326d5b737945",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -378,19 +416,21 @@
     },
     {
       "path": "core/lib/domain/policy_component_context.ml",
-      "sha256": "7693542daa1dabfbb71ddeb4a9330dd3de3363d6c2d6b3a25257336fb47744a8",
+      "sha256": "070e0ec65395702f05f4b9a71c188f701a09b8f04c6f2286197eba7e3f2135aa",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.require": 1,
-          "require": 15
+          "require": 16
         },
         "profile_literals": {
           "biocompiler.policy_component_complete_records.v0.1": 1,
           "biocompiler.policy_component_context.v0.1": 1,
           "biocompiler.policy_component_context.v0.2": 1,
+          "biocompiler.policy_component_context.v0.3": 1,
           "biocompiler.policy_component_mrna.v0.1": 1,
           "biocompiler.policy_component_ordered_union.v0.1": 1,
+          "biocompiler.policy_grounded_helper_prerequisite_mrna.v0.1": 1,
           "biocompiler.policy_instance_component_mrna.v0.1": 1,
           "biocompiler.policy_instance_ordered_union.v0.1": 1,
           "biocompiler.policy_instance_prerequisite_mrna.v0.1": 1,
@@ -404,7 +444,7 @@
     },
     {
       "path": "core/lib/domain/policy_component_context.mli",
-      "sha256": "fa6bab471cf1054d1c4fc1c0f8f834695ce94fadd266c5adb25c90c2da467c16",
+      "sha256": "e781980cd7c4269ebd45a59a1d14ec42705ba556e73014d4cb367ef7b696a7fd",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -514,13 +554,13 @@
     },
     {
       "path": "core/lib/domain/policy_component_material_request.ml",
-      "sha256": "b9bd9354ad0df7e1c91c5d7342fbbd06a620f0fabb5fb9e7f09692a651782742",
+      "sha256": "d9d2df85bcecf1ac8ec065ea33305f69bfa1140ed54d823cd9398ad754450641",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 6,
           "Diagnostic.require": 3,
-          "require": 28
+          "require": 30
         },
         "profile_literals": {
           "biocompiler.policy_component_material_request.v0.1": 1,
@@ -528,7 +568,9 @@
           "biocompiler.policy_component_material_request.v0.3": 1,
           "biocompiler.policy_component_material_request.v0.4": 1,
           "biocompiler.policy_component_material_request.v0.5": 1,
+          "biocompiler.policy_component_material_request.v0.6": 1,
           "biocompiler.policy_component_material_resources.v0.1": 1,
+          "biocompiler.policy_grounded_helper_prerequisite_mrna.v0.1": 1,
           "biocompiler.policy_instance_component_mrna.v0.1": 1,
           "biocompiler.policy_instance_prerequisite_mrna.v0.1": 1,
           "biocompiler.policy_instance_two_observation_prerequisite_mrna.v0.1": 1,
@@ -538,7 +580,7 @@
     },
     {
       "path": "core/lib/domain/policy_component_material_request.mli",
-      "sha256": "125a197cb6e67490db16a20afbf098ad78923a5cc9a6be9459b1382bb282bdfa",
+      "sha256": "57418ec917ce739aceb0ec863102059227b90dff37fad1373b54c68eb6515fe4",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -589,6 +631,30 @@
     {
       "path": "core/lib/domain/policy_component_selection_request.mli",
       "sha256": "24cb9c515d9ca2fd0c8e72d65ddc415974e6f8ea99b6cbfada3db2ed55389a79",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_helper_material.ml",
+      "sha256": "c3b1fd34e524b8d87280446f425d443bbded8f2df0e6980405a5d0fdeff35c0e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 8
+        },
+        "profile_literals": {
+          "biocompiler.policy_grounded_helper_rna.v0.1": 1,
+          "biocompiler.policy_helper_material.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_helper_material.mli",
+      "sha256": "3f2a436ff27027a1f4cff1acb07646ae4dc3d98ff54673135b85de0072a91551",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -659,13 +725,13 @@
     },
     {
       "path": "core/lib/domain/policy_material_context.ml",
-      "sha256": "68cd5119c261d0ed1efbe40fc42f931553a377fae4bbfc25c29b87d13a23f330",
+      "sha256": "00aab6a0635a99cb59fd171b120483c93035a6004cb168d7a10e2950e0ccf013",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 3,
           "Diagnostic.require": 1,
-          "require": 26
+          "require": 32
         },
         "profile_literals": {
           "biocompiler.policy_complete_signal_identity_transport.v0.1": 1,
@@ -674,14 +740,17 @@
           "biocompiler.policy_material_context.v0.1": 1,
           "biocompiler.policy_material_provider.v0.1": 1,
           "biocompiler.policy_material_provider.v0.2": 1,
+          "biocompiler.policy_material_provider.v0.3": 1,
+          "biocompiler.policy_source_independent_expression_completion.v0.1": 1,
           "biocompiler.policy_staged_primitive_execution.v0.1": 1,
+          "biocompiler.policy_supplied_grounded_helper_capacity.v0.1": 1,
           "biocompiler.policy_truth_mrna.v0.1": 1
         }
       }
     },
     {
       "path": "core/lib/domain/policy_material_context.mli",
-      "sha256": "5bf754c2a38cc14476f4ba0b6a92145dadc9950ae404a750732750d22a0ee538",
+      "sha256": "a94ea43ccca29b6d8f97153e685ea9a5fffd172959741c680279aafdc925241d",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -717,6 +786,31 @@
       }
     },
     {
+      "path": "core/lib/domain/policy_mrna_structure.ml",
+      "sha256": "3aeb028bed4d1902d7dfced0c72963816c4d7e1a929898929a36c6df476c6191",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 6
+        },
+        "profile_literals": {
+          "biocompiler.policy_mrna_completeness.v0.1": 1,
+          "biocompiler.policy_mrna_product_content.v0.1": 1,
+          "biocompiler.policy_mrna_structure_authority.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_mrna_structure.mli",
+      "sha256": "fe6552b38be54484718c843eeaee674be0cb7018b4c559d45e9b9315618adb93",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/domain/policy_operating_domain.ml",
       "sha256": "bbdc0925c24c95852f356a513c1707f330da3b936227a24e0234730a9deb5384",
       "census": {
@@ -743,23 +837,24 @@
     },
     {
       "path": "core/lib/domain/policy_provider_prerequisites.ml",
-      "sha256": "8df56ec75e9f268fd9dab5a3902025e92eac7a9d5625b92cb9f938133931c372",
+      "sha256": "7469176e0244b338dff637ad7115f5c98e33c1a147580050d8257ce8c5aeb0ee",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 2,
           "Diagnostic.require": 1,
-          "require": 20
+          "require": 21
         },
         "profile_literals": {
           "biocompiler.policy_provider_dependency_graph.v0.1": 1,
-          "biocompiler.policy_provider_dependency_graph.v0.2": 1
+          "biocompiler.policy_provider_dependency_graph.v0.2": 1,
+          "biocompiler.policy_provider_dependency_graph.v0.3": 1
         }
       }
     },
     {
       "path": "core/lib/domain/policy_provider_prerequisites.mli",
-      "sha256": "e09c957c6267f40bab24d6872b2c2a3ece7050c844a9677d97b14ae34cb0b61c",
+      "sha256": "91c93197c5476f56ddff3b4f212d2a170a901720e14b3c3cfb6039845faa2d0a",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -835,7 +930,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "fe5bf996d81c20b87f5a3b95202d97bf4223755c09e05d069ed6cba50efc7943",
+      "sha256": "dab08c50ea6ee827db64b377bd669ced1597f1b01337cae03582d14d1435683b",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -856,25 +951,26 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_assembly_check.ml",
-      "sha256": "908e0409120979e35c3d9cd30271c3d2fc134a30dd270427a5f7490f61b7c39d",
+      "sha256": "e435685295d0342ee0dc8a0c5c806f7342679af8ad9be789f168a3b7f7bcd128",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 1,
           "Diagnostic.require": 3,
-          "verify": 63
+          "verify": 78
         },
         "profile_literals": {
           "biocompiler.ocaml.policy_component_assembly_check.v0.1": 1,
           "biocompiler.ocaml.policy_component_assembly_check.v0.2": 1,
           "biocompiler.ocaml.policy_component_assembly_check.v0.3": 1,
+          "biocompiler.ocaml.policy_component_assembly_check.v0.4": 1,
           "biocompiler.policy_component_assembly_assessment.v0.1": 1
         }
       }
     },
     {
       "path": "core/lib/realization_checker/policy_component_assembly_check.mli",
-      "sha256": "a5bd0f30364926be3b4b153f89941d59a0b3e4bff560a4965b71bcb9e8539c38",
+      "sha256": "ce73d26878649d086f37f9fa2050d79212a2b5027a43f905852ff8795073f107",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -883,14 +979,14 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_context_check.ml",
-      "sha256": "04575f33b57359db236ee7010fc370a98b782328ae7df5b7f88ac0981bad3ff6",
+      "sha256": "a363edb4b5660a295b506100c5bbad071c1bf0820de6c03b2e05e809bb310301",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 16,
+          "Diagnostic.fail": 21,
           "Diagnostic.require": 5,
-          "fail": 64,
-          "supported": 24
+          "fail": 89,
+          "supported": 29
         },
         "profile_literals": {
           "biocompiler.ocaml.policy_component_context_check.v0.1": 1,
@@ -898,16 +994,19 @@
           "biocompiler.ocaml.policy_component_context_check.v0.3": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.4": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.5": 1,
+          "biocompiler.ocaml.policy_component_context_check.v0.6": 1,
           "biocompiler.policy_component_context_assessment.v0.1": 1,
           "biocompiler.policy_component_context_assessment.v0.2": 1,
+          "biocompiler.policy_component_context_assessment.v0.3": 1,
           "biocompiler.policy_provider_prerequisite_closure.v0.1": 1,
-          "biocompiler.policy_provider_prerequisite_closure.v0.2": 1
+          "biocompiler.policy_provider_prerequisite_closure.v0.2": 1,
+          "biocompiler.policy_provider_prerequisite_closure.v0.3": 1
         }
       }
     },
     {
       "path": "core/lib/realization_checker/policy_component_context_check.mli",
-      "sha256": "5e1f86dbba02ce0a58865f639c165c0f6ebb12b9d5d50b9b4431decde1787359",
+      "sha256": "7f261400d46ecf11dc585fc5f4dcd2823679fb99dae62b094a5118d81b75cd4a",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -916,7 +1015,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_material_check.ml",
-      "sha256": "d3f45e5564b55ec120aee8853077256c1786e2a7e8d41703190191803eb77a84",
+      "sha256": "3025254e58ba8a04c5b41734b896a54ee2137242b987c32161b0a9242d50cd0e",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -930,9 +1029,11 @@
           "biocompiler.ocaml.policy_component_material_check.v0.3": 1,
           "biocompiler.ocaml.policy_component_material_check.v0.4": 1,
           "biocompiler.ocaml.policy_component_material_check.v0.5": 1,
+          "biocompiler.ocaml.policy_component_material_check.v0.6": 1,
           "biocompiler.policy_component_material_assessment.v0.1": 1,
           "biocompiler.policy_component_material_assessment.v0.2": 1,
           "biocompiler.policy_component_material_assessment.v0.3": 1,
+          "biocompiler.policy_component_material_assessment.v0.4": 1,
           "biocompiler.policy_component_material_candidate.v0.1": 1
         }
       }
@@ -1070,7 +1171,7 @@
     },
     {
       "path": "core/lib/service/policy_component_material_service.ml",
-      "sha256": "7a3cd58d3b0525d7a8999e84b66f7052aaee9fb74922f58cda3a8a3180b6314e",
+      "sha256": "cd787a257b436bd9a1f819a34031140a0566c359c536dc0f7c01cd1b2f25bc6c",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1080,6 +1181,7 @@
         "profile_literals": {
           "biocompiler.core.policy_component_material.v1": 1,
           "biocompiler.ocaml.policy_component_material.v0.1": 1,
+          "biocompiler.ocaml.policy_grounded_helper_prerequisite_material.v0.1": 1,
           "biocompiler.ocaml.policy_instance_component_material.v0.1": 1,
           "biocompiler.ocaml.policy_instance_prerequisite_material.v0.1": 1,
           "biocompiler.ocaml.policy_instance_two_observation_prerequisite_material.v0.1": 1,
@@ -1092,7 +1194,7 @@
     },
     {
       "path": "core/lib/service/policy_component_material_service.mli",
-      "sha256": "1240f3c7e8b7afecf9e6a6f331e203d4e80fa933c3efc8c7e9af98edd1caefe4",
+      "sha256": "3b0278267d347497e04d43a89623f168b19411f8c3cca1f46c0c6cebf1168275",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1129,7 +1231,7 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "50dfa80fd6ce8b6b1c75763378b00736eea4faad4db90213752f876ae87e49f5",
+      "sha256": "f8bbdbe5a8da0e756552f80467ae6cb0052886a3677ae78241598983f375c83d",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1155,30 +1257,34 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_material.py",
-      "sha256": "c41954bac9b2b88b3533163f000505beddbf9b805e1344bef49d854bf0b2f86b",
+      "sha256": "059dab0e0b6801383dfa183a789cf2ef54ae47cd77c1a1f8ac047edb2b6df336",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 26,
-          "Raise": 57
+          "FunctionDef": 28,
+          "Raise": 67
         },
         "profile_literals": {
           "biocompiler.core.policy_component_material.v1": 1,
           "biocompiler.ocaml.policy_component_assembly_check.v0.1": 1,
           "biocompiler.ocaml.policy_component_assembly_check.v0.2": 1,
           "biocompiler.ocaml.policy_component_assembly_check.v0.3": 1,
+          "biocompiler.ocaml.policy_component_assembly_check.v0.4": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.1": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.2": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.3": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.4": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.5": 1,
+          "biocompiler.ocaml.policy_component_context_check.v0.6": 1,
           "biocompiler.ocaml.policy_component_material.v0.1": 1,
           "biocompiler.ocaml.policy_component_material_check.v0.1": 1,
           "biocompiler.ocaml.policy_component_material_check.v0.2": 1,
           "biocompiler.ocaml.policy_component_material_check.v0.3": 1,
           "biocompiler.ocaml.policy_component_material_check.v0.4": 1,
           "biocompiler.ocaml.policy_component_material_check.v0.5": 1,
+          "biocompiler.ocaml.policy_component_material_check.v0.6": 1,
+          "biocompiler.ocaml.policy_grounded_helper_prerequisite_material.v0.1": 1,
           "biocompiler.ocaml.policy_instance_component_material.v0.1": 1,
           "biocompiler.ocaml.policy_instance_prerequisite_material.v0.1": 1,
           "biocompiler.ocaml.policy_instance_two_observation_prerequisite_material.v0.1": 1,
@@ -1188,22 +1294,28 @@
           "biocompiler.policy_component_assembly_proposal.v0.1": 1,
           "biocompiler.policy_component_assembly_proposal.v0.2": 1,
           "biocompiler.policy_component_assembly_proposal.v0.3": 1,
+          "biocompiler.policy_component_assembly_proposal.v0.4": 1,
           "biocompiler.policy_component_context_assessment.v0.1": 1,
           "biocompiler.policy_component_context_assessment.v0.2": 1,
+          "biocompiler.policy_component_context_assessment.v0.3": 1,
           "biocompiler.policy_component_material_assessment.v0.1": 1,
           "biocompiler.policy_component_material_assessment.v0.2": 1,
           "biocompiler.policy_component_material_assessment.v0.3": 1,
+          "biocompiler.policy_component_material_assessment.v0.4": 1,
           "biocompiler.policy_component_material_candidate.v0.1": 1,
           "biocompiler.policy_component_material_request.v0.1": 1,
           "biocompiler.policy_component_material_request.v0.2": 1,
           "biocompiler.policy_component_material_request.v0.3": 1,
           "biocompiler.policy_component_material_request.v0.4": 1,
           "biocompiler.policy_component_material_request.v0.5": 1,
+          "biocompiler.policy_component_material_request.v0.6": 1,
           "biocompiler.policy_component_material_resources.v0.1": 1,
           "biocompiler.policy_component_mrna.v0.1": 1,
           "biocompiler.policy_component_mrna_export.v0.1": 1,
           "biocompiler.policy_component_mrna_manifest.v0.1": 1,
           "biocompiler.policy_exact_component_assembly.v0.1": 2,
+          "biocompiler.policy_grounded_helper_component_assembly.v0.1": 1,
+          "biocompiler.policy_grounded_helper_prerequisite_mrna.v0.1": 1,
           "biocompiler.policy_instance_component_assembly.v0.1": 1,
           "biocompiler.policy_instance_component_mrna.v0.1": 1,
           "biocompiler.policy_instance_prerequisite_mrna.v0.1": 1,
@@ -1213,8 +1325,10 @@
           "biocompiler.policy_multi_member_prerequisite_mrna.v0.1": 1,
           "biocompiler.policy_provider_dependency_graph.v0.1": 1,
           "biocompiler.policy_provider_dependency_graph.v0.2": 1,
+          "biocompiler.policy_provider_dependency_graph.v0.3": 1,
           "biocompiler.policy_provider_prerequisite_closure.v0.1": 1,
           "biocompiler.policy_provider_prerequisite_closure.v0.2": 1,
+          "biocompiler.policy_provider_prerequisite_closure.v0.3": 1,
           "biocompiler.policy_staged_component_mrna.v0.1": 1,
           "biocompiler.policy_staged_primitive_execution.v0.1": 1
         }
@@ -1335,12 +1449,12 @@
     },
     {
       "path": "src/biocompiler/policy/component_material.py",
-      "sha256": "7b3ee86fd10a05561c5ebda0c6562cc2f5dfb10da353744d892e26d42c8847e3",
+      "sha256": "4ec4c9be4588140ea535e4ec2c2e989c4884b53647c84475e7239926c6e94c94",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "FunctionDef": 5,
-          "Raise": 3
+          "Raise": 4
         },
         "profile_literals": {}
       }
@@ -1411,6 +1525,10 @@
       "sha256": "9c60e79e2d62b44a50958bbfdd59be6d807dc97bcb5a647b9c4b11782b371fd8"
     },
     {
+      "path": "core/test/grounded_helper_fixture_export/main.ml",
+      "sha256": "371146ed0259879379018f0e0f860cb3e08fd02cd515b33f8d07781816ba3e7c"
+    },
+    {
       "path": "core/test/instance_fixture_export/main.ml",
       "sha256": "d56dffc39c508aed2b7d82d82ea5fc419c092833c3dafbd4808662346f9bd22f"
     },
@@ -1429,6 +1547,14 @@
     {
       "path": "core/test/policy_component_support/selection_requests.ml",
       "sha256": "b8fcf50aeca361b95ca4d6a7b3212d2f126b980f0ff2a26b41fe6cb75a53440f"
+    },
+    {
+      "path": "core/test/policy_grounded_helper_support/literals.ml",
+      "sha256": "65351478a29509753c3f149bcf9d123a7ced90f3c54ce63c0a92440bd4989fff"
+    },
+    {
+      "path": "core/test/policy_grounded_helper_support/requests.ml",
+      "sha256": "f2f1c427cb926fc369609dc967533628d33ff33ce7cb45a1190d262b29788192"
     },
     {
       "path": "core/test/policy_instance_support/literals.ml",
@@ -1539,6 +1665,10 @@
       "sha256": "86438dde4b53d1dfd03eba7ec324ab168ac443100799fb3698dde9c7ae800f5f"
     },
     {
+      "path": "core/test/test_policy_grounded_helper_material_service.ml",
+      "sha256": "075a4f1128bed2eba0dac3ae2e9f0eae8f1977b1af260d7a5dd3b5ac9b0b4a9e"
+    },
+    {
       "path": "core/test/test_policy_instance_assembly_rule.ml",
       "sha256": "f450a32fa66950bde9eddd7482475dcf89cf34c74ce5dfc3ca8889b38fb211dd"
     },
@@ -1548,7 +1678,7 @@
     },
     {
       "path": "core/test/test_policy_multi_member_material_service.ml",
-      "sha256": "476468dd231de173d0852902022fc309112cdb1732751238cfa00b502eddecde"
+      "sha256": "34dffc56c9d51c5675f9d6d601b96db55446030a84427cf8d4eed8fef01d3e91"
     },
     {
       "path": "core/test/test_policy_prerequisite_material_service.ml",
@@ -1617,6 +1747,26 @@
     {
       "path": "tests/test_policy_component_selection_witness.py",
       "sha256": "e8c988fa57cef5bb8861ec7a73821627725b2d8586cadf5ddfe352097bd741ab"
+    },
+    {
+      "path": "tests/test_policy_grounded_helper_campaign.py",
+      "sha256": "ba7cc73e80fe32e7b49c97a69fb49fb9ab33d161634af64ab49cc245d4ae83e5"
+    },
+    {
+      "path": "tests/test_policy_grounded_helper_fixture.py",
+      "sha256": "815168321b2b9015444140e99dca6bd09f04eb446715b27544dca399c1cbbb45"
+    },
+    {
+      "path": "tests/test_policy_grounded_helper_material.py",
+      "sha256": "2c7e3ee610dd00e2c157303018d8f9b8b0c118b278a7e7a8bdf1a86268a6f5ab"
+    },
+    {
+      "path": "tests/test_policy_grounded_helper_material_installed.py",
+      "sha256": "286c1f0d4dc17fcf74a4fda192642d795b7595e779d5c308aa6ea907055dec4e"
+    },
+    {
+      "path": "tests/test_policy_grounded_helper_prebuilt.py",
+      "sha256": "39490cf533195e63ee5ce5e06adb2f23fcb1d61900c0b750b61b6f418654eb22"
     },
     {
       "path": "tests/test_policy_instance_fixture.py",
@@ -1737,6 +1887,22 @@
     {
       "path": "tools/check_policy_component_selection.py",
       "sha256": "7b500132be6a120a7db4c46f817aa874b2db7e4a9ec6671ce289df9c4ad7e8e4"
+    },
+    {
+      "path": "tools/check_policy_grounded_helper_fixture.py",
+      "sha256": "ac65c3f22d42861b12063b1f2313dc5ef912d89ccdec3aaf1b1001dc003620ee"
+    },
+    {
+      "path": "tools/check_policy_grounded_helper_material.py",
+      "sha256": "93d9441a93c984f80d2634297c5918df69fefbd2d5753bd03ea5b4936c8fcede"
+    },
+    {
+      "path": "tools/check_policy_grounded_helper_material_installed.py",
+      "sha256": "0ae47be0173811ee432a735432c99a86a8e76bb9dc4149b66aaba9de86ef7d41"
+    },
+    {
+      "path": "tools/check_policy_grounded_helper_prebuilt.py",
+      "sha256": "4b36d4505654bfcc07f7d0e1e4180396c7bf4dc8fd3310008ed28d8f0443791e"
     },
     {
       "path": "tools/check_policy_instance_fixture.py",
@@ -3781,6 +3947,228 @@
       "scope": "A separately versioned staged source binds exactly two distinct fixed product parameters to two original effects. Independent lowering reconstruction preserves each product, bank, feedback input, seven-transition machine and complete atomic group. Exactly two named instances own two complete RNA members with molecule-local features, direct original roots and an explicit slot/source/member bijection. Every cross-member link names an exact original catalog transport dependency with complete signal identity, zero delay, no loss or duplication and preserved ordering. The private conjunction binds both original member placements and full shared delivery evidence, all transport allocations, qualified resource demands and complete provider closure before fresh export. Independently authored A/B sources change only the second product and its corresponding RNA; complete node/model/wire/input/export/atomic-group oracles, two exact molecules, all 23 original obligations and the finite 25-history, 86-transition, 87-prefix domain are retained. Three original source files, all 26 lifecycle observations, paired artifacts and four-slot installed comparison are registered separately from earlier campaigns.",
       "limits": "Source inventory only: this gate executes no native suite or SDK campaign and supplies no semantic proof. This bounded family retains one observation, one five-state staged machine, two terminal states, seven transitions, exactly two full RNA roots and products, zero helpers, zero construction steps and six typed inter-member links. The transport contract is an explicit supplied logical premise; co-delivery and sequence checking alone do not prove biological signaling, efficacy or in vivo function. No arbitrary multi-product topology, asynchronous transport, staggered delivery, quantitative fusion or general helper support is established. Complete finite preservation, nonvacuity, context checks and fresh export remain required. Earlier rule meanings and historical feedback are unchanged; source pins do not establish native, installed, release or actual-main acceptance.",
       "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.grounded_helper_composition",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_helper_material.ml",
+          "anchor": "let of_json",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/domain/policy_mrna_structure.ml",
+          "anchor": "let regions_of_json",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/domain/architecture_contract.ml",
+          "anchor": "let of_grounded_json",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/domain/policy_material_context.ml",
+          "anchor": "let provider_with_helper_of_json",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/domain/policy_provider_prerequisites.ml",
+          "anchor": "Helper_environment",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/domain/policy_component_context.ml",
+          "anchor": "let is_grounded_helper",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/domain/policy_component_assembly_rule.ml",
+          "anchor": "let is_grounded_helper",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/domain/policy_component_assembly_proposal.ml",
+          "anchor": "let is_grounded_helper",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/domain/policy_component_material_request.ml",
+          "anchor": "let is_grounded_helper",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_assembly_check.ml",
+          "anchor": "helper_projections",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_context_check.ml",
+          "anchor": "causal_expression_helper_completion_availability",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_context_check.ml",
+          "anchor": "grounded_helper_exact_consumer_inventory",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_material_check.ml",
+          "anchor": "R.is_grounded_helper request",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/service/policy_component_material_service.ml",
+          "anchor": "let grounded_helper_profile=",
+          "occurrence": 1
+        },
+        {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "anchor": "def _helper_inventory(",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_grounded_helper_material_service.ml",
+          "anchor": "Helper-only original edit changed therapeutic source, graph or payloads, or did not change helper RNA",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_grounded_helper_material_service.ml",
+          "anchor": "Helper bootstrap, ownership or exact shared allocations changed",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_grounded_helper_material_service.ml",
+          "anchor": "Helper projection differs from complete independent material and final molecule authority",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/policy_grounded_helper_support/literals.ml",
+          "anchor": "let source_literal",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/policy_grounded_helper_support/requests.ml",
+          "anchor": "let expected",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/grounded_helper_fixture_export/main.ml",
+          "anchor": "source_declarations_only",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_grounded_helper_material.py",
+          "anchor": "def checked_result(",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_grounded_helper_fixture.py",
+          "anchor": "def validate(",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_grounded_helper_material_installed.py",
+          "anchor": "def validate_installed(",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_grounded_helper_prebuilt.py",
+          "anchor": "def compare(",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_grounded_helper_material.py",
+          "anchor": "def test_complete_helper_bootstrap_delivery_and_capacity_receipts_are_bound",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_grounded_helper_campaign.py",
+          "anchor": "def test_a_b_preserve_whole_therapeutic_source_and_change_helper_only",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_grounded_helper_fixture.py",
+          "anchor": "def test_mocked_hosted_emission_preserves_exact_grounded_helper_command_and_separate_output",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_grounded_helper_material_installed.py",
+          "anchor": "def test_complete_26_observations_and_two_zip_pairs_keep_original_authority",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_grounded_helper_prebuilt.py",
+          "anchor": "def test_four_slot_comparison_retains_original_attempts_and_calls_observation_gate",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_grounded_helper_material_service.ml",
+          "anchor": "sum-minus-one shared record capacity",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_grounded_helper_material_service.ml",
+          "anchor": "positive completion at origin zero",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_grounded_helper_material_service.ml",
+          "anchor": "completion before independent expression",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_grounded_helper_material_service.ml",
+          "anchor": "Missing helper provider did not remain unknown and nonexportable",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_grounded_helper_material_service.ml",
+          "anchor": "Incomplete grounded-helper negative control census",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_grounded_helper_material.py",
+          "anchor": "def test_deletion_duplication_and_replacement_of_helper_evidence_reject",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_grounded_helper_material.py",
+          "anchor": "def test_changed_missing_or_duplicated_helper_edge_rejects",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_grounded_helper_campaign.py",
+          "anchor": "def test_independent_oracle_requires_three_members_and_complete_helper_allocation",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_grounded_helper_campaign.py",
+          "anchor": "def test_material_control_changes_only_helper_and_rehashes_only_its_role",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_grounded_helper_fixture.py",
+          "anchor": "def test_legacy_provenance_or_emitter_cannot_substitute_for_grounded_helper_authority",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_grounded_helper_material_installed.py",
+          "anchor": "def test_prior_instance_receipt_and_incomplete_obligations_cannot_be_promoted",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_grounded_helper_prebuilt.py",
+          "anchor": "def test_late_retained_evidence_and_wheel_changes_prevent_comparison_publication",
+          "occurrence": 1
+        }
+      ],
+      "scope": "A separately versioned original assembly adds exactly one complete helper RNA and its product to two complete therapeutic RNA members, while retaining the original staged source, two behavioral instances, products, graph and finite operating domain. The helper material pins its complete original root, four regions, encoded product, chemistry and original catalog capability dependency. Independent assembly projection, the delivered-helper role, all three member placements and exact shared delivery evidence bind the helper to its final molecule. An explicit source-independent expression-completion interval precedes helper availability at the original supplied deployment-clock mapping of source tick zero; guaranteed helper and capacity windows cover the complete execution interval. Typed retained-record capacity is summed over every qualified Attempt_bank owner, while declared sharing capacity separately counts distinct named consumers. Complete provider closure includes helper environment and independent delivery edges and retains all transport dependencies. The private conjunction carries exact helper allocation evidence and every original obligation (24 in the independent witness). Independent A/B originals change only the helper RNA; five original source inputs, all 26 lifecycle observations, paired artifacts and four-slot installed comparison retain the complete 25-history, 86-transition, 87-prefix domain.",
+      "limits": "Source inventory only: this gate executes no native suite or SDK campaign and supplies no semantic proof. The bounded profile has two therapeutic products and exactly one grounded helper product, three complete direct-root RNAs, empty helper material/bootstrap prerequisites, no hidden executable helper node and no new behavioral primitive. Helper capacity and completion are supplied conditional premises: exact RNA/product identity grounds their subject but does not prove biological expression, capacity, signaling, efficacy or in vivo function. No arbitrary helper graph, circular bootstrap, ungrounded resource provider, asynchronous transport, staggered delivery or unrestricted helper dynamics is established. Complete finite preservation, resource accounting, context closure and fresh export remain required. Earlier 25 rule meanings and historical feedback are unchanged; source pins do not establish native, installed, release or actual-main acceptance.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
     }
   ],
   "limitations": [
@@ -3796,7 +4184,8 @@
     "The preceding rules retain their original meaning, profile scope and historical evidence. This additive instance-composition rule supports bounded 2..8 named instances while retaining the one-RNA/one-product four-feature material envelope and existing source semantics. Its three-instance witness repeats the same graph fragment across distinct complete material definitions; arbitrary independent modules and repeated complete material definitions are not established. Source inventory supplies no native, installed, empirical or release/main acceptance. Separately versioned fixture provenance and an additive installed companion preserve the legacy three-role emitter and earlier release campaigns; their source registration does not establish installed execution.",
     "The additive prerequisite-closure rule admits only a separately versioned truth-family named-instance request with nonempty bounded catalog dependencies. Missing provider bodies remain unresolved; only complete private checked closure supports context discharge. Previous profiles, original rule meanings and historical evidence remain unchanged. Source pins and test references do not establish executed validation, biological function or actual-main acceptance.",
     "The additive two-observation composition rule has its own realization, binding and outer material profiles. It extends only the bounded truth-family source to two distinct coherence groups, preserving exact original channels, freshness and ordered uncertainty through named-instance material and prerequisite closure. It does not add frame joining or general observation fusion. The previous 23 component families, all 62 original whole-kernel rule meanings and historical feedback remain unchanged. Source witnesses and pinned inventories do not establish native or installed execution, empirical function or release/main acceptance.",
-    "The additive multi-member composition rule extends a separately versioned staged family to two distinct products and two complete RNA members. Member ownership, local feature identity, explicit original-catalog transport premises and complete delivery/resource/prerequisite evidence are checked before private closure. It adds no helper or new behavioral primitive. The previous 24 component families, all 62 original whole-kernel meanings and historical feedback retain their exact scope. Source inventories do not establish native or installed execution, empirical function or release/main acceptance."
+    "The additive multi-member composition rule extends a separately versioned staged family to two distinct products and two complete RNA members. Member ownership, local feature identity, explicit original-catalog transport premises and complete delivery/resource/prerequisite evidence are checked before private closure. It adds no helper or new behavioral primitive. The previous 24 component families, all 62 original whole-kernel meanings and historical feedback retain their exact scope. Source inventories do not establish native or installed execution, empirical function or release/main acceptance.",
+    "The additive grounded-helper rule extends the existing two-product/two-member staged family with one exact delivered helper RNA, independently supplied completion before source time origin, complete helper environment/delivery closure and typed shared resource accounting. It adds no executable helper behavior and does not infer helper capacity or empirical function from sequence identity. The preceding 25 component families, all 62 original whole-kernel meanings and historical feedback retain their exact scope. Source inventories do not establish native or installed execution, empirical function or release/main acceptance."
   ],
   "historical_development_feedback": {
     "revision": "5a45d354ee869f26f0e5d3181c8972a6402baca6",

@@ -15,6 +15,7 @@ module F = Bioc_domain.Policy_component_fragment
 module CT = Bioc_domain.Construction
 module PT = Bioc_domain.Payload_template
 module PM = Bioc_domain.Policy_mrna_structure
+module HM = Bioc_domain.Policy_helper_material
 module MT = Bioc_domain.Molecular_transition
 module N = Bioc_domain.Molecule
 module G = Bioc_domain.Molecule_coordinates
@@ -25,6 +26,7 @@ module W = Bioc_checker.Work_budget
 let implementation_version = "biocompiler.ocaml.policy_component_assembly_check.v0.1"
 let instance_implementation_version = "biocompiler.ocaml.policy_component_assembly_check.v0.2"
 let multi_member_implementation_version = "biocompiler.ocaml.policy_component_assembly_check.v0.3"
+let grounded_helper_implementation_version = "biocompiler.ocaml.policy_component_assembly_check.v0.4"
 let max_work = 100000000
 let str value = Json.String value
 let obj values = Json.Object values
@@ -59,7 +61,8 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
     "Assembly checker work exceeds its fixed ceiling.";
   let instanced = A.is_instanced rule in
   let multi_member = A.is_multi_member rule in
-  let profile = if multi_member then A.multi_member_profile else if instanced then A.instance_profile else A.profile in
+  let grounded_helper = A.is_grounded_helper rule in
+  let profile = if grounded_helper then A.grounded_helper_profile else if multi_member then A.multi_member_profile else if instanced then A.instance_profile else A.profile in
   let budget = match parent with
     | None -> W.create ~profile ~error_code:"policy_component_assembly_resource_limit" ~maximum ()
     | Some parent -> W.nested ~parent ~profile ~error_code:"policy_component_assembly_resource_limit" ~maximum () in
@@ -92,6 +95,8 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   if multi_member || Q.is_multi_member proposed || R.is_multi_product original then (
     verify (multi_member=Q.is_multi_member proposed) "multi_member_proposal_profile";
     verify (multi_member=R.is_multi_product original) "multi_member_original_source_profile");
+  if grounded_helper || Q.is_grounded_helper proposed then
+    verify (grounded_helper=Q.is_grounded_helper proposed) "grounded_helper_proposal_profile";
   verify (equal (Pin.to_json (Q.rule proposed)) (Pin.to_json (A.identity rule))) "original_assembly_rule_pin";
   verify (A.model_library_digest rule = (I.authority actual).library_digest) "original_model_library";
   verify (A.component_library_digest rule = L.fingerprint components) "original_component_library";
@@ -143,9 +148,14 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   let authority = A.material_authority rule in
   let structure_result = S.check ~parent:budget ~authority ~candidate () in
   let template = PM.template authority in
-  let carrier_projections = ref [] and link_projections = ref [] in
+  let carrier_projections = ref [] and link_projections = ref [] and helper_projections = ref [] in
   if multi_member then (
     let slots=A.slots rule and members=A.member_bindings rule in
+    let helper=A.helper rule in
+    let source_ids=List.map (fun (row:A.member_binding) -> row.source_id) members @
+      (match helper with None -> [] | Some row -> [row.source_id]) in
+    let member_ids=List.map (fun (row:A.member_binding) -> row.member_id) members @
+      (match helper with None -> [] | Some row -> [row.member_id]) in
     let root slot=CT.Root_source.molecule (C.root (A.component rule slot)) in
     let binding slot=List.find (fun (row:A.member_binding) -> row.slot=slot) members in
     let output (row:A.member_binding)=List.find (fun value -> CT.Output_member.id value=row.member_id) (PT.output_members template) in
@@ -154,9 +164,9 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
       "complete_ordered_two_member_ownership";
     verify (PT.steps template=[] && A.joins rule=[] && PT.complex_members template=[] && PT.amounts template=[])
       "direct_root_members_without_covalent_transforms";
-    verify (List.map CT.Root_source.id (PT.sources template)=List.map (fun (row:A.member_binding) -> row.source_id) members &&
-      List.map CT.Output_member.id (PT.output_members template)=List.map (fun (row:A.member_binding) -> row.member_id) members &&
-      PM.member_order authority=List.map (fun (row:A.member_binding) -> row.member_id) members)
+    verify (List.map CT.Root_source.id (PT.sources template)=source_ids &&
+      List.map CT.Output_member.id (PT.output_members template)=member_ids &&
+      PM.member_order authority=member_ids)
       "exact_original_member_order";
     let projected_chemistry ~space chemistry =
       let tail=H.terminal_tail chemistry in
@@ -187,6 +197,31 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
           expression.endpoint.port_id="out") (B.expressions checked_binding))
           "member_product_has_checked_source_expression"
       | _ -> verify false "exactly_one_original_product_per_member") members;
+    Option.iter (fun (helper:A.helper_selection) ->
+      let member=List.find (fun output -> CT.Output_member.id output=helper.member_id) (PT.output_members template) in
+      let source=List.find (fun source -> CT.Root_source.id source=helper.source_id) (PT.sources template) in
+      let expected=List.find (fun (value:PM.member) -> value.id=helper.member_id) (PM.members authority) in
+      verify (equal (CT.Root_source.to_json source)
+        (replace "id" (str helper.source_id) (CT.Root_source.to_json (HM.root helper.material))))
+        "complete_original_helper_root_authority";
+      verify (CT.Value_ref.kind (CT.Output_member.value member)=CT.Value_ref.Root &&
+        CT.Value_ref.id (CT.Output_member.value member)=helper.source_id)
+        "helper_owns_exact_original_root";
+      verify (expected.regions=HM.regions helper.material &&
+        equal (expected_product_json expected.product) (expected_product_json (HM.product helper.material)))
+        "complete_original_helper_regions_and_product";
+      verify (equal (projected_chemistry ~space:(CT.Output_member.space_id member) (HM.chemistry helper.material))
+        (H.to_json expected.chemistry)) "complete_helper_expected_chemistry_projection";
+      let requirements=PT.requirements template in
+      verify (List.map CT.Member_requirement.member_id requirements=List.map Option.some member_ids &&
+        List.map CT.Member_requirement.category requirements=
+          [CT.Member_requirement.Payload;CT.Member_requirement.Payload;CT.Member_requirement.Delivered_helper])
+        "complete_payload_and_delivered_helper_categories";
+      List.iter (fun requirement ->
+        let roles=CT.Member_requirement.roles requirement in
+        verify (roles<>[] && List.for_all (fun role -> CT.Role.purpose role=
+          CT.Member_requirement.category_purpose (CT.Member_requirement.category requirement)) roles)
+          "complete_payload_and_helper_role_purposes") requirements) helper;
     (match S.checked_structure structure_result with
      | None -> ()
      | Some checked ->
@@ -194,7 +229,7 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
        | None -> verify false "fresh_material_inventory_absent"
        | Some inventory ->
          let molecules=K.Inventory.molecules inventory in
-         verify (List.map N.id molecules=List.map (fun (row:A.member_binding) -> row.member_id) members)
+         verify (List.map N.id molecules=member_ids)
            "complete_final_member_inventory";
          List.iter (fun (row:A.member_binding) ->
            let original_root=root row.slot and member=output row in
@@ -214,6 +249,32 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
                  | Some actual -> verify (equal expected (N.Feature.to_json actual)) "complete_final_feature_projection") (N.features original_root);
              verify (equal (projected_chemistry ~space (N.chemistry original_root)) (H.to_json (N.chemistry molecule)))
                "complete_final_member_chemistry_projection") members;
+         Option.iter (fun (helper:A.helper_selection) ->
+           let original=HM.root helper.material in
+           let original_root=CT.Root_source.molecule original in
+           let member=List.find (fun output -> CT.Output_member.id output=helper.member_id) (PT.output_members template) in
+           let space=CT.Output_member.space_id member in
+           match find (fun molecule -> N.id molecule=helper.member_id) molecules with
+           | None -> verify false "original_helper_member_absent"
+           | Some molecule ->
+             charge (String.length (N.sequence original_root)+String.length (N.sequence molecule));
+             verify (N.sequence original_root=N.sequence molecule) "complete_helper_root_bases";
+             verify (List.length (N.features original_root)=4 && List.length (N.features molecule)=4)
+               "exact_four_original_helper_features";
+             List.iter (fun feature -> match project_feature ~offset:0 ~space feature with
+               | None -> verify false "original_helper_feature_path_absent"
+               | Some expected -> match find (fun actual -> N.Feature.id actual=N.Feature.id feature) (N.features molecule) with
+                 | None -> verify false "projected_helper_feature_absent"
+                 | Some actual -> verify (equal expected (N.Feature.to_json actual))
+                     "complete_final_helper_feature_projection") (N.features original_root);
+             verify (equal (H.to_json (N.chemistry original_root)) (H.to_json (HM.chemistry helper.material)))
+               "complete_original_helper_chemistry";
+             verify (equal (projected_chemistry ~space (HM.chemistry helper.material)) (H.to_json (N.chemistry molecule)))
+               "complete_final_helper_chemistry_projection";
+             helper_projections:=obj ["material",HM.to_json helper.material;"source",str helper.source_id;
+               "member",str helper.member_id;"product",expected_product_json (HM.product helper.material);
+               "root_fingerprint",str (Canonical.fingerprint (CT.Root_source.to_json original));
+               "molecule_fingerprint",str (Canonical.fingerprint (N.to_json molecule))]:: !helper_projections) helper;
          let project_site slot (site:C.site) =
            charge 1;
            let row=binding slot in
@@ -432,8 +493,8 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
                "consumer",project_site link.consumer.slot consumer_site] :: !link_projections)) (A.link_carriers rule)));
   let findings = List.rev !findings in
   let outcome_value = if findings<>[] then E.Fail else S.outcome structure_result in
-  let report_value = obj ["schema_version",str "biocompiler.policy_component_assembly_assessment.v0.1";
-    "checker_version",str (if multi_member then multi_member_implementation_version else if instanced then instance_implementation_version else implementation_version);"profile",str profile;
+  let report_value = obj (["schema_version",str "biocompiler.policy_component_assembly_assessment.v0.1";
+    "checker_version",str (if grounded_helper then grounded_helper_implementation_version else if multi_member then multi_member_implementation_version else if instanced then instance_implementation_version else implementation_version);"profile",str profile;
     "original_fingerprint",str (R.fingerprint original);"components_fingerprint",str (L.fingerprint components);
     "rule_fingerprint",str (A.fingerprint rule);"implementation_fingerprint",str (I.fingerprint actual);
     "proposed_fingerprint",str (Q.fingerprint proposed);"candidate_fingerprint",str (K.fingerprint candidate);
@@ -445,7 +506,8 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
     "preservation_evidence_fingerprint",str (Canonical.fingerprint (P.evidence implementation));
     "catalog_authorization",str "unassessed";"context",str "unassessed";"resource_capacity",str "unassessed";
     "input_compatibility",str "unassessed";"source_obligation_discharge",str "unassessed";
-    "empirical",str "unassessed";"artifact",str "withheld";"export",str "withheld"] in
+    "empirical",str "unassessed";"artifact",str "withheld";"export",str "withheld"] @
+    (if grounded_helper then ["helper_projections",arr (List.rev !helper_projections)] else [])) in
   ignore (encoded report_value);
   (* Sticky parent/child exhaustion cannot be converted into a private leaf. *)
   Diagnostic.require (not (W.exhausted budget)) "policy_component_assembly_resource_limit" "Assembly work was exhausted.";

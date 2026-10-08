@@ -23,6 +23,8 @@ let two_observation_schema_version = "biocompiler.policy_component_material_requ
 let two_observation_profile = "biocompiler.policy_instance_two_observation_prerequisite_mrna.v0.1"
 let multi_member_schema_version = "biocompiler.policy_component_material_request.v0.5"
 let multi_member_profile = "biocompiler.policy_multi_member_prerequisite_mrna.v0.1"
+let grounded_helper_schema_version = "biocompiler.policy_component_material_request.v0.6"
+let grounded_helper_profile = "biocompiler.policy_grounded_helper_prerequisite_mrna.v0.1"
 let resource_profile = "biocompiler.policy_component_material_resources.v0.1"
 let str value = Json.String value
 let obj values = Json.Object values
@@ -87,7 +89,8 @@ let of_json ?(charge=fun _ -> ()) raw =
   let raw_bytes = measure raw in M.check_resources raw;
   exact ["schema_version";"profile";"implementation_request";"component_library";"composition_rule";
     "catalog_binding";"input_bindings";"resource_bindings";"context";"budgets"] raw;
-  let multi_member = get "schema_version" raw=str multi_member_schema_version && get "profile" raw=str multi_member_profile in
+  let grounded_helper = get "schema_version" raw=str grounded_helper_schema_version && get "profile" raw=str grounded_helper_profile in
+  let multi_member = grounded_helper || (get "schema_version" raw=str multi_member_schema_version && get "profile" raw=str multi_member_profile) in
   let two_observation = get "schema_version" raw=str two_observation_schema_version && get "profile" raw=str two_observation_profile in
   let prerequisite_closure = multi_member || two_observation || (get "schema_version" raw=str prerequisite_schema_version && get "profile" raw=str prerequisite_profile) in
   let instanced = prerequisite_closure || (get "schema_version" raw=str instance_schema_version && get "profile" raw=str instance_profile) in
@@ -109,6 +112,8 @@ let of_json ?(charge=fun _ -> ()) raw =
   require (A.is_multi_member rule_value=multi_member && X.is_multi_member context_value=multi_member &&
     R.is_multi_product original=multi_member)
     "Original request, realization, assembly and context multi-member profiles must agree.";
+  require (A.is_grounded_helper rule_value=grounded_helper && X.is_grounded_helper context_value=grounded_helper)
+    "Original request, assembly and context grounded-helper profiles must agree.";
   require (if multi_member then A.is_staged rule_value else not prerequisite_closure || not (A.is_staged rule_value))
     (if multi_member then "Multi-member prerequisite closure requires the explicit multi-product staged family."
      else "Prerequisite closure is limited to the existing truth instance profile.");
@@ -183,6 +188,9 @@ let of_json ?(charge=fun _ -> ()) raw =
     | PX.Transport body ->
       require multi_member "Transport providers require the explicit multi-member request family.";
       resolve body.environment
+    | PX.Helper body ->
+      require grounded_helper "Helper providers require the explicit grounded-helper request family.";
+      resolve body.environment; resolve body.delivery
     | PX.Environment _ | PX.Delivery _ -> ()) providers;
   let inputs = List.map (fun row -> exact ["input";"source";"provider";"channel"] row;
     {input_id=text 128 (get "input" row);source=text 256 (get "source" row);provider=C.provider_ref_of_json (get "provider" row);
@@ -242,7 +250,9 @@ let is_instanced value = A.is_instanced value.rule_value
 let requires_prerequisite_closure value = R.requires_prerequisite_closure value.original
 let is_two_observation value = R.is_two_observation value.original
 let is_multi_member value = R.is_multi_product value.original
-let request_profile value = if is_multi_member value then multi_member_profile
+let is_grounded_helper value = A.is_grounded_helper value.rule_value
+let request_profile value = if is_grounded_helper value then grounded_helper_profile
+  else if is_multi_member value then multi_member_profile
   else if is_two_observation value then two_observation_profile
   else if requires_prerequisite_closure value then prerequisite_profile
   else if is_instanced value then instance_profile else profile

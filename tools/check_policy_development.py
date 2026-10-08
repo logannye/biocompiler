@@ -32,6 +32,7 @@ SUITES = (
     ("test_policy_prerequisite_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_two_observation_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_multi_member_material_service", ("data/policy_staged_material_v01.json",)),
+    ("test_policy_grounded_helper_material_service", ("data/policy_staged_material_v01.json",)),
     ("test_policy_instance_assembly_rule", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_instance_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_staged_generation", ("data/policy_staged_realization_request_v01.json",)),
@@ -77,6 +78,7 @@ SDK_BINARIES = {
     "prerequisite_originals": "core/_build/default/test/prerequisite_fixture_export/main.exe",
     "two_observation_originals": "core/_build/default/test/two_observation_fixture_export/main.exe",
     "multi_member_originals": "core/_build/default/test/multi_member_fixture_export/main.exe",
+    "grounded_helper_originals": "core/_build/default/test/grounded_helper_fixture_export/main.exe",
     "core": "core/_build/default/bin/core/main.exe",
     "verify": "core/_build/default/bin/verify/main.exe",
 }
@@ -98,6 +100,9 @@ TWO_OBSERVATION_ORIGINALS = PREREQUISITE_ORIGINALS + (
 MULTI_MEMBER_ORIGINALS = (
     "core/test/data/policy_staged_material_v01.json",
     "core/test/policy_multi_member_support/literals.ml", "core/test/policy_multi_member_support/requests.ml",
+)
+GROUNDED_HELPER_ORIGINALS = MULTI_MEMBER_ORIGINALS + (
+    "core/test/policy_grounded_helper_support/literals.ml", "core/test/policy_grounded_helper_support/requests.ml",
 )
 SELECTION_ORIGINALS = (
     "core/test/data/policy_material_request_v01.json",
@@ -353,22 +358,22 @@ def validate_native_feedback(root, native, prepared):
                 "Changed native command log: " + name)
 
 
-def public_sdk(root, *, instance=False, prerequisites=False, two_observations=False, multi_member=False):
+def public_sdk(root, *, instance=False, prerequisites=False, two_observations=False, multi_member=False, grounded_helper=False):
     """Use the same hosted build for original declarations and the public SDK.
 
     The domain-only helper exports independent source fixtures. Core and Verify
     subsequently check candidates; no fixture report grants acceptance.
     """
     output = root / "generated/development-feedback"
-    require(sum((instance, prerequisites, two_observations, multi_member)) <= 1, "Select one SDK profile")
-    original_paths = MULTI_MEMBER_ORIGINALS if multi_member else TWO_OBSERVATION_ORIGINALS if two_observations else PREREQUISITE_ORIGINALS if prerequisites else INSTANCE_ORIGINALS if instance else SDK_ORIGINALS
-    exporter = SDK_BINARIES["multi_member_originals" if multi_member else "two_observation_originals" if two_observations else "prerequisite_originals" if prerequisites else "instance_originals" if instance else "originals"]
-    packet_name = "multi-member-originals" if multi_member else "two-observation-originals" if two_observations else "prerequisite-originals" if prerequisites else "instance-originals" if instance else "component-originals"
-    campaign_name = "multi-member-sdk" if multi_member else "two-observation-sdk" if two_observations else "prerequisite-sdk" if prerequisites else "instance-sdk" if instance else "component-sdk"
-    report_name = "multi-member-sdk.json" if multi_member else "two-observation-sdk.json" if two_observations else "prerequisite-sdk.json" if prerequisites else "instance-sdk.json" if instance else "public-sdk.json"
-    witness_name = "multi-member-sdk-witness.json" if multi_member else "two-observation-sdk-witness.json" if two_observations else "prerequisite-sdk-witness.json" if prerequisites else "instance-sdk-witness.json" if instance else "sdk-witness.json"
-    script = "tools/check_policy_multi_member_material.py" if multi_member else "tools/check_policy_two_observation_material.py" if two_observations else "tools/check_policy_prerequisite_material.py" if prerequisites else "tools/check_policy_instance_material.py" if instance else "tools/check_policy_component_material.py"
-    report = {"schema": "biocompiler.development-multi-member-sdk-feedback.v0.1" if multi_member else "biocompiler.development-two-observation-sdk-feedback.v0.1" if two_observations else "biocompiler.development-prerequisite-sdk-feedback.v0.1" if prerequisites else "biocompiler.development-instance-sdk-feedback.v0.1" if instance else "biocompiler.development-sdk-feedback.v0.1", "acceptance": False,
+    require(sum((instance, prerequisites, two_observations, multi_member, grounded_helper)) <= 1, "Select one SDK profile")
+    original_paths = GROUNDED_HELPER_ORIGINALS if grounded_helper else MULTI_MEMBER_ORIGINALS if multi_member else TWO_OBSERVATION_ORIGINALS if two_observations else PREREQUISITE_ORIGINALS if prerequisites else INSTANCE_ORIGINALS if instance else SDK_ORIGINALS
+    exporter = SDK_BINARIES["grounded_helper_originals" if grounded_helper else "multi_member_originals" if multi_member else "two_observation_originals" if two_observations else "prerequisite_originals" if prerequisites else "instance_originals" if instance else "originals"]
+    packet_name = "grounded-helper-originals" if grounded_helper else "multi-member-originals" if multi_member else "two-observation-originals" if two_observations else "prerequisite-originals" if prerequisites else "instance-originals" if instance else "component-originals"
+    campaign_name = "grounded-helper-sdk" if grounded_helper else "multi-member-sdk" if multi_member else "two-observation-sdk" if two_observations else "prerequisite-sdk" if prerequisites else "instance-sdk" if instance else "component-sdk"
+    report_name = "grounded-helper-sdk.json" if grounded_helper else "multi-member-sdk.json" if multi_member else "two-observation-sdk.json" if two_observations else "prerequisite-sdk.json" if prerequisites else "instance-sdk.json" if instance else "public-sdk.json"
+    witness_name = "grounded-helper-sdk-witness.json" if grounded_helper else "multi-member-sdk-witness.json" if multi_member else "two-observation-sdk-witness.json" if two_observations else "prerequisite-sdk-witness.json" if prerequisites else "instance-sdk-witness.json" if instance else "sdk-witness.json"
+    script = "tools/check_policy_grounded_helper_material.py" if grounded_helper else "tools/check_policy_multi_member_material.py" if multi_member else "tools/check_policy_two_observation_material.py" if two_observations else "tools/check_policy_prerequisite_material.py" if prerequisites else "tools/check_policy_instance_material.py" if instance else "tools/check_policy_component_material.py"
+    report = {"schema": "biocompiler.development-grounded-helper-sdk-feedback.v0.1" if grounded_helper else "biocompiler.development-multi-member-sdk-feedback.v0.1" if multi_member else "biocompiler.development-two-observation-sdk-feedback.v0.1" if two_observations else "biocompiler.development-prerequisite-sdk-feedback.v0.1" if prerequisites else "biocompiler.development-instance-sdk-feedback.v0.1" if instance else "biocompiler.development-sdk-feedback.v0.1", "acceptance": False,
               "scope": "hosted source-tree SDK feedback; installed and release acceptance remain separate",
               "status": "failed", "actions": []}
     prepared = None
@@ -685,6 +690,10 @@ def researcher_alpha_sdk(root):
     return report
 
 
+def grounded_helper_sdk(root):
+    return public_sdk(root, grounded_helper=True)
+
+
 def multi_member_sdk(root):
     return public_sdk(root, multi_member=True)
 
@@ -710,7 +719,7 @@ def sdk_all(root):
     """
     lanes = (
         (("public-sdk", public_sdk), ("selection-sdk", selection_sdk)),
-        (("instance-sdk", instance_sdk), ("prerequisite-sdk", prerequisite_sdk), ("two-observation-sdk", two_observation_sdk), ("multi-member-sdk", multi_member_sdk), ("staged-source-sdk", staged_source_sdk), ("staged-material-sdk", staged_material_sdk),
+        (("instance-sdk", instance_sdk), ("prerequisite-sdk", prerequisite_sdk), ("two-observation-sdk", two_observation_sdk), ("multi-member-sdk", multi_member_sdk), ("grounded-helper-sdk", grounded_helper_sdk), ("staged-source-sdk", staged_source_sdk), ("staged-material-sdk", staged_material_sdk),
          ("researcher-alpha-sdk", researcher_alpha_sdk)),
     )
 
@@ -737,11 +746,11 @@ def sdk_all(root):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk", "instance-sdk", "prerequisite-sdk", "two-observation-sdk", "multi-member-sdk", "sdk-all"))
+    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk", "instance-sdk", "prerequisite-sdk", "two-observation-sdk", "multi-member-sdk", "grounded-helper-sdk", "sdk-all"))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     try:
-        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk, "staged-material-sdk": staged_material_sdk, "researcher-alpha-sdk": researcher_alpha_sdk, "instance-sdk": instance_sdk, "prerequisite-sdk": prerequisite_sdk, "two-observation-sdk": two_observation_sdk, "multi-member-sdk": multi_member_sdk, "sdk-all": sdk_all}[args.command](root)
+        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk, "staged-material-sdk": staged_material_sdk, "researcher-alpha-sdk": researcher_alpha_sdk, "instance-sdk": instance_sdk, "prerequisite-sdk": prerequisite_sdk, "two-observation-sdk": two_observation_sdk, "multi-member-sdk": multi_member_sdk, "grounded-helper-sdk": grounded_helper_sdk, "sdk-all": sdk_all}[args.command](root)
     except (OSError, ValueError) as error:
         print(str(error), file=sys.stderr)
         return 1

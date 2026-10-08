@@ -195,10 +195,12 @@ let check ~request ~behavior ~implementation ~proposed ~assembly_proposal ~candi
   let prerequisites=if prerequisite_profile && context_result<>Json.Null
     then get "prerequisite_closure" context_result else Json.Null in
   let status=if complete then "checked_component_material" else "not_accepted" in
-  let report_base=["schema_version",str (if R.is_multi_member request then "biocompiler.policy_component_material_assessment.v0.3"
+  let report_base=["schema_version",str (if R.is_grounded_helper request then "biocompiler.policy_component_material_assessment.v0.4"
+    else if R.is_multi_member request then "biocompiler.policy_component_material_assessment.v0.3"
     else if prerequisite_profile then "biocompiler.policy_component_material_assessment.v0.2"
     else "biocompiler.policy_component_material_assessment.v0.1");
-    "profile",str (R.request_profile request);"implementation",str (if R.is_multi_member request then "biocompiler.ocaml.policy_component_material_check.v0.5"
+    "profile",str (R.request_profile request);"implementation",str (if R.is_grounded_helper request then "biocompiler.ocaml.policy_component_material_check.v0.6"
+      else if R.is_multi_member request then "biocompiler.ocaml.policy_component_material_check.v0.5"
       else if R.is_two_observation request then "biocompiler.ocaml.policy_component_material_check.v0.4"
       else if prerequisite_profile then "biocompiler.ocaml.policy_component_material_check.v0.3"
       else if R.is_instanced request then "biocompiler.ocaml.policy_component_material_check.v0.2" else implementation_version);"resource_profile",str R.resource_profile;

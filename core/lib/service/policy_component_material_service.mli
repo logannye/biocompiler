@@ -20,6 +20,10 @@ val two_observation_profile : Json.t
 val two_observation_producer_profile : Json.t
 val multi_member_profile : Json.t
 val multi_member_producer_profile : Json.t
+val grounded_helper_implementation : string
+val grounded_helper_validation_scope : string
+val grounded_helper_profile : Json.t
+val grounded_helper_producer_profile : Json.t
 val schema_version : string
 val resource_profile : string
 val candidate_schema : string

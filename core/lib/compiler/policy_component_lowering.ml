@@ -172,9 +172,11 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
   let binding = binding
     |> set "observations" (arr (List.map (rename_input "input") (Json.array (get "observations" binding))))
     |> set "effects" (arr (List.map (rename_input "feedback") (Json.array (get "effects" binding)))) in
-  let assembly_raw = obj ["schema_version",str (if A.is_multi_member rule then Q.multi_member_schema_version
+  let assembly_raw = obj ["schema_version",str (if A.is_grounded_helper rule then Q.grounded_helper_schema_version
+      else if A.is_multi_member rule then Q.multi_member_schema_version
       else if A.is_instanced rule then Q.instance_schema_version else Q.schema_version);
-    "profile",str (if A.is_multi_member rule then Q.multi_member_profile
+    "profile",str (if A.is_grounded_helper rule then Q.grounded_helper_profile
+      else if A.is_multi_member rule then Q.multi_member_profile
       else if A.is_instanced rule then A.instance_profile else Q.profile);
     "rule",Pin.to_json (A.identity rule);"nodes",arr (List.map (fun value ->
       obj ["slot",str (slot value.reference.slot);"node",str value.reference.node_id;

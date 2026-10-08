@@ -8,6 +8,9 @@ let schema_version="biocompiler.policy_material_context.v0.1"
 let profile="biocompiler.policy_truth_mrna.v0.1"
 let provider_schema="biocompiler.policy_material_provider.v0.1"
 let transport_provider_schema="biocompiler.policy_material_provider.v0.2"
+let helper_provider_schema="biocompiler.policy_material_provider.v0.3"
+let helper_capacity_profile="biocompiler.policy_supplied_grounded_helper_capacity.v0.1"
+let helper_bootstrap_profile="biocompiler.policy_source_independent_expression_completion.v0.1"
 let transport_profile="biocompiler.policy_complete_signal_identity_transport.v0.1"
 let transport_phase_profile="biocompiler.policy_staged_primitive_execution.v0.1"
 let record_profile="biocompiler.policy_material_complete_records.v0.1"
@@ -109,9 +112,13 @@ let parse_channel raw=exact["id";"kind";"source";"observer";"subject";"availabil
     |_->Diagnostic.fail "policy_material_context" "Unknown input boundary interpretation."in
   {channel_id=text(get "id" raw);kind;source=text(get "source" raw);observer=text(get "observer" raw);
    subject=text(get "subject" raw);available=availability(get "availability" raw)}
+type helper_bootstrap={completion:interval;prerequisites:C.provider_ref list}
+let helper_bootstrap_to_json(value:helper_bootstrap)=obj["profile",str helper_bootstrap_profile;
+  "completion",interval_json value.completion;"prerequisites",arr(List.map C.provider_ref_to_json value.prerequisites)]
 type body=Chassis of Json.t|Environment of F.t|Interface of{environment:C.provider_ref;channels:channel list}
   |Delivery of{arrival:interval;expression:interval;activation:interval}
   |Transport of{environment:C.provider_ref;original_clock:Json.t}
+  |Helper of{material:P.t;environment:C.provider_ref;delivery:C.provider_ref;bootstrap:helper_bootstrap}
 type provider={identity:P.t;definition:C.provider_ref;recipient:recipient;available:availability;capacities:capacity list;body:body}
 let provider_body_to_json(value:provider)=
   let fields=match value.body with
@@ -122,10 +129,13 @@ let provider_body_to_json(value:provider)=
     |Transport value->["kind",str "transport";"environment",C.provider_ref_to_json value.environment;
       "original_clock",value.original_clock;"transport_profile",str transport_profile;
       "phase_profile",str transport_phase_profile;"delay_ticks",Json.int 0;"loss",str "none";
-      "duplication",str "none";"ordering",str "preserved";"records",str "complete_signal_identity"]in
+      "duplication",str "none";"ordering",str "preserved";"records",str "complete_signal_identity"]
+    |Helper value->["kind",str "helper";"material",P.to_json value.material;
+      "environment",C.provider_ref_to_json value.environment;"delivery",C.provider_ref_to_json value.delivery;
+      "capacity_profile",str helper_capacity_profile;"bootstrap",helper_bootstrap_to_json value.bootstrap]in
   obj(fields@["definition",C.provider_ref_to_json value.definition;"recipient",recipient_to_json value.recipient;
     "availability",availability_to_json value.available;"capacities",arr(List.map capacity_json value.capacities)])
-let provider_to_json(value:provider)=obj["schema_version",str(match value.body with Transport _->transport_provider_schema|_->provider_schema);"identity",P.to_json value.identity;"body",provider_body_to_json value]
+let provider_to_json(value:provider)=obj["schema_version",str(match value.body with Helper _->helper_provider_schema|Transport _->transport_provider_schema|_->provider_schema);"identity",P.to_json value.identity;"body",provider_body_to_json value]
 let parse_provider raw=exact["schema_version";"identity";"body"]raw;
   require(get "schema_version" raw=str provider_schema)"Unknown provider schema.";
   let body=get "body" raw and identity=P.of_json(get "identity" raw)in
@@ -181,6 +191,31 @@ let parse_transport_provider raw=
     body=Transport{environment=C.provider_ref_of_json(get "environment" body);original_clock}}in
   require(P.content_fingerprint identity=Canonical.fingerprint(provider_body_to_json value))
     "Transport provider identity does not pin its complete fixed transfer premise.";
+  value
+let parse_helper_provider raw=
+  exact["schema_version";"identity";"body"]raw;
+  require(get "schema_version" raw=str helper_provider_schema)"Unknown helper provider schema.";
+  let body=get "body" raw and identity=P.of_json(get "identity" raw)in
+  exact["kind";"definition";"recipient";"availability";"capacities";"material";
+    "environment";"delivery";"capacity_profile";"bootstrap"]body;
+  require(P.kind identity=P.Model && get "kind" body=str "helper")
+    "The helper provider schema admits only a pinned helper body.";
+  require(get "capacity_profile" body=str helper_capacity_profile)
+    "Unsupported supplied helper capacity interpretation.";
+  let material=P.of_json(get "material" body)and bootstrap=get "bootstrap" body in
+  require(P.kind material=P.Model)"Helper provider material must name an exact Model record.";
+  exact["profile";"completion";"prerequisites"]bootstrap;
+  require(get "profile" bootstrap=str helper_bootstrap_profile && get "prerequisites" bootstrap=arr [])
+    "Helper bootstrap requires explicit source-independent expression completion without prerequisites.";
+  let bootstrap={completion=interval(get "completion" bootstrap);prerequisites=[]}in
+  let capacities=List.map parse_capacity(rows 4096(get "capacities" body))in
+  unique "capacity"(List.map(fun(value:capacity)->value.capacity_id)capacities);
+  let value={identity;definition=C.provider_ref_of_json(get "definition" body);recipient=parse_recipient(get "recipient" body);
+    available=availability(get "availability" body);capacities;
+    body=Helper{material;environment=C.provider_ref_of_json(get "environment" body);
+      delivery=C.provider_ref_of_json(get "delivery" body);bootstrap}}in
+  require(P.content_fingerprint identity=Canonical.fingerprint(provider_body_to_json value))
+    "Helper provider identity does not pin its complete capacity and bootstrap premise.";
   value
 type delivery_mode=Co_delivered|Independent
 type delivery_group={group_id:string;recipient_roles:string list;mode:delivery_mode;same_recipient:bool;
@@ -247,5 +282,10 @@ let provider_of_json raw = M.check_resources raw; parse_provider raw
 let provider_with_transport_of_json raw =
   M.check_resources raw;
   if get "schema_version" raw=str provider_schema then parse_provider raw else parse_transport_provider raw
+let provider_with_helper_of_json raw =
+  M.check_resources raw;
+  if get "schema_version" raw=str provider_schema then parse_provider raw
+  else if get "schema_version" raw=str transport_provider_schema then parse_transport_provider raw
+  else parse_helper_provider raw
 let delivery_group_of_json raw = M.check_resources raw; parse_delivery_group raw
 let delivery_group_to_json = delivery_group_json

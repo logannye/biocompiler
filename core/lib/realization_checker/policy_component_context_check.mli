@@ -16,6 +16,8 @@ type checked_context
 (** Minted only after complete fresh prerequisite, deployment, input, resource
     and availability checking. The multi-member profile also checks every
     original member placement and catalog-authorized identity transport.
+    The grounded-helper profile additionally binds exact delivered helper
+    material, independent bootstrap completion and summed typed consumer demands.
     Serialized reports cannot construct this value. *)
 type checked_prerequisite_closure
 val check : ?parent:Bioc_checker.Work_budget.t -> ?maximum:int ->

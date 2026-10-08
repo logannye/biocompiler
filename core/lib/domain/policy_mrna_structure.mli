@@ -18,6 +18,13 @@ type product = { identity:Pinned_identity.t; sequence:string;
 type member = { id:string; regions:regions; product:product; chemistry:Molecule_chemistry.t }
 type t
 
+(** Shared bounded leaves; callers retain whole-document resource preflight.
+    These preserve the structural decoder's syntax without checking translation. *)
+val regions_of_json : Json.t -> regions
+val regions_to_json : regions -> Json.t
+val product_of_json : Json.t -> product
+val product_to_json : product -> Json.t
+
 (** Closed bounded decoding preserves all original construction fields and the
     exact supplied covalent-member order. Region and product consistency is
     established only by the independent checker, never by this decoder. *)

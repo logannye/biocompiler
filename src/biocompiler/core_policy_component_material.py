@@ -37,6 +37,11 @@ MULTI_MEMBER_REQUEST_PROFILE = "biocompiler.policy_multi_member_prerequisite_mrn
 MULTI_MEMBER_ASSEMBLY_PROFILE = "biocompiler.policy_multi_member_component_assembly.v0.1"
 MULTI_MEMBER_IMPLEMENTATION = "biocompiler.ocaml.policy_multi_member_prerequisite_material.v0.1"
 MULTI_MEMBER_VALIDATION_SCOPE = "policy-multi-member-prerequisite-mrna-v0.1"
+GROUNDED_HELPER_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.6"
+GROUNDED_HELPER_REQUEST_PROFILE = "biocompiler.policy_grounded_helper_prerequisite_mrna.v0.1"
+GROUNDED_HELPER_ASSEMBLY_PROFILE = "biocompiler.policy_grounded_helper_component_assembly.v0.1"
+GROUNDED_HELPER_IMPLEMENTATION = "biocompiler.ocaml.policy_grounded_helper_prerequisite_material.v0.1"
+GROUNDED_HELPER_VALIDATION_SCOPE = "policy-grounded-helper-prerequisite-mrna-v0.1"
 REPORT_SCHEMA = "biocompiler.policy_component_material_assessment.v0.1"
 EXPORT_SCHEMA = "biocompiler.policy_component_mrna_export.v0.1"
 MANIFEST_SCHEMA = "biocompiler.policy_component_mrna_manifest.v0.1"
@@ -84,6 +89,13 @@ MULTI_MEMBER_PROFILE: dict[str, JsonValue] = {
 MULTI_MEMBER_PRODUCER_PROFILE: dict[str, JsonValue] = {
     **PRODUCER_PROFILE, "implementation": MULTI_MEMBER_IMPLEMENTATION, "validation_scope": MULTI_MEMBER_VALIDATION_SCOPE,
 }
+GROUNDED_HELPER_PROFILE: dict[str, JsonValue] = {
+    **PROFILE, "request_schema": GROUNDED_HELPER_REQUEST_SCHEMA, "implementation": GROUNDED_HELPER_IMPLEMENTATION,
+    "validation_scope": GROUNDED_HELPER_VALIDATION_SCOPE,
+}
+GROUNDED_HELPER_PRODUCER_PROFILE: dict[str, JsonValue] = {
+    **PRODUCER_PROFILE, "implementation": GROUNDED_HELPER_IMPLEMENTATION, "validation_scope": GROUNDED_HELPER_VALIDATION_SCOPE,
+}
 _REQUEST_FIELDS = {"schema_version", "profile", "implementation_request", "component_library", "composition_rule",
                    "catalog_binding", "input_bindings", "resource_bindings", "context", "budgets"}
 _CANDIDATE_FIELDS = {"schema_version", "behavior", "implementation", "binding", "assembly_proposal", "construction"}
@@ -97,7 +109,8 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
             (INSTANCE_REQUEST_SCHEMA, INSTANCE_REQUEST_PROFILE),
             (PREREQUISITE_REQUEST_SCHEMA, PREREQUISITE_REQUEST_PROFILE),
             (TWO_OBSERVATION_REQUEST_SCHEMA, TWO_OBSERVATION_REQUEST_PROFILE),
-            (MULTI_MEMBER_REQUEST_SCHEMA, MULTI_MEMBER_REQUEST_PROFILE)):
+            (MULTI_MEMBER_REQUEST_SCHEMA, MULTI_MEMBER_REQUEST_PROFILE),
+            (GROUNDED_HELPER_REQUEST_SCHEMA, GROUNDED_HELPER_REQUEST_PROFILE)):
         raise CoreProtocolError("Component material request changed its closed original profile")
     decoder = (implementation._multi_product_original if _multi_member(request) else
                implementation._two_observation_original if _two_observations(request) else
@@ -111,11 +124,13 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
 
 
 def _instanced(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] in (INSTANCE_REQUEST_PROFILE, PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE, MULTI_MEMBER_REQUEST_PROFILE)
+    return request["profile"] in (INSTANCE_REQUEST_PROFILE, PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE,
+                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE)
 
 
 def _prerequisites(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] in (PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE, MULTI_MEMBER_REQUEST_PROFILE)
+    return request["profile"] in (PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE,
+                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE)
 
 
 def _two_observations(request: dict[str, JsonValue]) -> bool:
@@ -123,10 +138,17 @@ def _two_observations(request: dict[str, JsonValue]) -> bool:
 
 
 def _multi_member(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] == MULTI_MEMBER_REQUEST_PROFILE
+    return request["profile"] in (MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE)
+
+
+def _grounded_helper(request: dict[str, JsonValue]) -> bool:
+    return request["profile"] == GROUNDED_HELPER_REQUEST_PROFILE
 
 
 def _profile_settings(request: dict[str, JsonValue]) -> tuple[str, dict[str, JsonValue], dict[str, JsonValue], str, str]:
+    if _grounded_helper(request):
+        return ("policy_grounded_helper_material", GROUNDED_HELPER_PROFILE, GROUNDED_HELPER_PRODUCER_PROFILE,
+                GROUNDED_HELPER_VALIDATION_SCOPE, GROUNDED_HELPER_IMPLEMENTATION)
     if _multi_member(request):
         return ("policy_multi_member_material", MULTI_MEMBER_PROFILE, MULTI_MEMBER_PRODUCER_PROFILE,
                 MULTI_MEMBER_VALIDATION_SCOPE, MULTI_MEMBER_IMPLEMENTATION)
@@ -175,7 +197,7 @@ def _projections(request: dict[str, JsonValue], candidate: dict[str, JsonValue],
     roots = _rows(rule.get("root_bindings"), "Original root bindings")
     authority = _record(rule.get("material_authority"), "Original material authority")
     member_order = authority.get("member_order")
-    if type(member_order) is not list or len(member_order) != (2 if multi_member else 1):
+    if type(member_order) is not list or len(member_order) != (3 if _grounded_helper(request) else 2 if multi_member else 1):
         raise CoreProtocolError("Component evidence lacks its single original member")
     passed = leaf["outcome"] == "pass"
     construction = _record(candidate["construction"], "Construction")
@@ -253,6 +275,20 @@ def _projections(request: dict[str, JsonValue], candidate: dict[str, JsonValue],
                 local_endpoint = _record(port.get("endpoint"), "Original local endpoint")
                 actual = _unique([value for value in bindings if value.get("slot") == slot], "node", local_endpoint.get("node"), "Proposed endpoint")
                 _expect(endpoint, {"node": actual.get("actual"), "port": local_endpoint.get("port")}, "Actual boundary endpoint")
+    if _grounded_helper(request):
+        helper = _object(rule.get("helper"), {"source", "member", "material"}, "Original helper selection")
+        original_material = _record(helper["material"], "Original helper material")
+        helper_body = _record(original_material.get("body"), "Original helper material body")
+        projections = _rows(leaf["helper_projections"], "Helper projections")
+        structure_checked = _record(leaf["structure"], "Helper structural evidence").get("outcome") == "pass"
+        if len(projections) != (1 if structure_checked else 0):
+            raise CoreProtocolError("Assembly changed the complete checked helper projection census")
+        helper_molecules = _rows(_record(construction.get("inventory"), "Checked helper inventory").get("molecules"), "Checked helper molecules") if structure_checked else []
+        for raw in projections:
+            row = _object(raw, {"material", "source", "member", "product", "root_fingerprint", "molecule_fingerprint"}, "Helper projection")
+            _expect(row, {**helper, "product": helper_body.get("product")}, "Original helper projection")
+            _pin(row["root_fingerprint"], helper_body.get("root"), "Complete original helper root")
+            _pin(row["molecule_fingerprint"], _unique(helper_molecules, "id", helper["member"], "Checked helper member"), "Complete helper molecule")
 
 
 def _context_inventory(request: dict[str, JsonValue], report: dict[str, JsonValue], leaf: dict[str, JsonValue]) -> None:
@@ -303,7 +339,7 @@ def _member_transport_inventory(request: dict[str, JsonValue], candidate: dict[s
     bindings = _rows(rule.get("member_bindings"), "Original member bindings")
     placements = _rows(context.get("placements"), "Original member placements")
     retained = _rows(leaf["member_allocations"], "Checked member allocations")
-    if len(bindings) != 2 or len(placements) != 2 or len(retained) > 2 or passed and len(retained) != 2:
+    if len(bindings) != 2 or len(placements) != (3 if _grounded_helper(request) else 2) or len(retained) > 2 or passed and len(retained) != 2:
         raise CoreProtocolError("Context changed the bounded two-member allocation census")
     molecules = _rows(_record(_record(candidate["construction"], "Construction").get("inventory"), "Checked inventory").get("molecules"), "Checked molecules")
     document = _record(_record(request["implementation_request"], "Original implementation request").get("document"), "Original source")
@@ -349,11 +385,67 @@ def _member_transport_inventory(request: dict[str, JsonValue], candidate: dict[s
                 raise CoreProtocolError("Transport changed the original endpoint member owner")
 
 
+def _helper_inventory(request: dict[str, JsonValue], candidate: dict[str, JsonValue], leaf: dict[str, JsonValue]) -> None:
+    """Bind helper receipts to original material, owners and provider bodies."""
+    rows = _rows(leaf["helper_allocations"], "Checked helper allocations")
+    if len(rows) != (1 if leaf["outcome"] == "pass" else 0):
+        raise CoreProtocolError("Context changed the complete checked helper allocation census")
+    if not rows:
+        return
+    rule = _record(_record(request["composition_rule"], "Original rule").get("body"), "Original rule body")
+    selection = _object(rule.get("helper"), {"source", "member", "material"}, "Original helper selection")
+    original_material = _record(selection["material"], "Original helper material")
+    material_body = _record(original_material.get("body"), "Original helper material body")
+    context = _record(request["context"], "Original helper context")
+    helpers = _rows(context.get("helpers"), "Original helpers")
+    placements = _rows(context.get("placements"), "Original placements")
+    if len(helpers) != 1 or len(placements) != 3:
+        raise CoreProtocolError("Helper evidence lost the original one-helper three-placement inventory")
+    placement = placements[2]
+    if placement.get("member_id") != selection["member"]:
+        raise CoreProtocolError("Helper evidence changed its original member placement")
+    providers = _rows(context.get("providers"), "Original helper providers")
+    matches = [row for row in providers if _same(_record(row.get("body"), "Provider body").get("definition"), material_body.get("capability"))]
+    if len(matches) != 1:
+        raise CoreProtocolError("Helper evidence lacks its exact original capability provider")
+    provider = matches[0]
+    body = _record(provider.get("body"), "Original helper provider body")
+    _expect(body, {"kind": "helper", "material": original_material.get("identity")}, "Original helper material provider")
+    document = _record(_record(request["implementation_request"], "Original implementation request").get("document"), "Original source")
+    delivery_ref = _record(_record(document.get("deployment"), "Original deployment").get("delivery"), "Original delivery").get("contract")
+    delivery_matches = [row for row in providers if _same(_record(row.get("body"), "Provider body").get("definition"), delivery_ref)]
+    if len(delivery_matches) != 1:
+        raise CoreProtocolError("Helper evidence lacks its original shared delivery provider")
+    delivery = delivery_matches[0]
+    resources = [row for row in _rows(leaf["resource_allocations"], "Checked resources") if _same(row.get("provider"), material_body.get("capability"))]
+    consumers: list[JsonValue] = []
+    slots = [row.get("slot") for row in _rows(rule.get("components"), "Original instances")]
+    for resource in resources:
+        demand = _record(resource.get("demand"), "Helper resource demand")
+        owner = _object(demand.get("owner"), {"kind", "slot", "node"}, "Qualified helper resource owner")
+        if owner["kind"] != "node" or owner["slot"] not in slots:
+            raise CoreProtocolError("Helper allocation lost its original named instance owner")
+        if owner["slot"] not in consumers:
+            consumers.append(owner["slot"])
+    if not resources:
+        raise CoreProtocolError("Helper allocation lacks the complete original resource consumers")
+    row = _object(rows[0], {"helper", "material", "capability", "source", "member", "placement", "molecule_fingerprint",
+                            "provider", "provider_body", "bootstrap", "delivery", "consumers", "resource_allocations"}, "Checked helper allocation")
+    _expect(row, {"helper": helpers[0], "material": original_material.get("identity"), "capability": material_body.get("capability"),
+                  "source": selection["source"], "member": selection["member"], "placement": placement,
+                  "provider": provider.get("identity"), "provider_body": body, "bootstrap": body.get("bootstrap"),
+                  "delivery": {"definition": delivery_ref, "provider": delivery.get("identity"), "body": delivery.get("body")},
+                  "consumers": consumers, "resource_allocations": [cast(JsonValue, value) for value in resources]}, "Original complete helper allocation")
+    molecules = _rows(_record(_record(candidate["construction"], "Construction").get("inventory"), "Checked inventory").get("molecules"), "Checked molecules")
+    _pin(row["molecule_fingerprint"], _unique(molecules, "id", selection["member"], "Checked helper member"), "Complete allocated helper molecule")
+
+
 def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, JsonValue]) -> None:
     """Bind native closure evidence to original inventories; prove no predicates."""
     from biocompiler.core_policy import _semantic
 
     multi_member = _multi_member(request)
+    grounded_helper = _grounded_helper(request)
     raw, contextual = report["prerequisites"], report["context"]
     if contextual is None:
         if raw is not None or report["prerequisite_status"] != "unassessed":
@@ -365,9 +457,10 @@ def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, Json
     closure = _object(raw, {"schema_version", "profile", "status", "complete", "original_request_fingerprint",
         "assembly_fingerprint", "source_catalog", "pending_dependencies", "instances", "local_requirements", "providers",
         "graph", "operating_domain_fingerprint", "clock", "recipient", "input_allocations", "resource_allocations",
-        "diagnostics", "empirical"} | ({"member_allocations", "transport_allocations"} if multi_member else set()), "Complete prerequisite closure")
+        "diagnostics", "empirical"} | ({"member_allocations", "transport_allocations"} if multi_member else set())
+        | ({"helper_allocations"} if grounded_helper else set()), "Complete prerequisite closure")
     status = context_report["outcome"]
-    _expect(closure, {"schema_version": "biocompiler.policy_provider_prerequisite_closure.v0.2" if multi_member else "biocompiler.policy_provider_prerequisite_closure.v0.1",
+    _expect(closure, {"schema_version": "biocompiler.policy_provider_prerequisite_closure.v0.3" if grounded_helper else "biocompiler.policy_provider_prerequisite_closure.v0.2" if multi_member else "biocompiler.policy_provider_prerequisite_closure.v0.1",
         "profile": request["profile"], "status": status, "complete": status == "pass",
         "diagnostics": context_report["diagnostics"], "empirical": "unassessed"}, "Prerequisite scope")
     if report["prerequisite_status"] != status:
@@ -382,7 +475,7 @@ def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, Json
         "instances": rule.get("components"), "clock": context.get("clock"), "recipient": context.get("recipient"),
         "resource_allocations": context_report["resource_allocations"]}, "Prerequisite original inventories")
     if multi_member:
-        for key in ("member_allocations", "transport_allocations"):
+        for key in ("member_allocations", "transport_allocations") + (("helper_allocations",) if grounded_helper else ()):
             if not _same(closure[key], context_report.get(key)):
                 raise CoreProtocolError("Closure changed the checked member or transport allocations")
             _rows(closure[key], "Checked " + key)
@@ -420,7 +513,7 @@ def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, Json
         if not _same(value, expected):
             raise CoreProtocolError("Closure changed an original input allocation")
     graph = _object(closure["graph"], {"schema_version", "pending_dependencies", "roots", "nodes", "edges", "issues"}, "Original provider dependency graph")
-    _expect(graph, {"schema_version": "biocompiler.policy_provider_dependency_graph.v0.2" if multi_member else "biocompiler.policy_provider_dependency_graph.v0.1", "pending_dependencies": pending}, "Provider graph authority")
+    _expect(graph, {"schema_version": "biocompiler.policy_provider_dependency_graph.v0.3" if grounded_helper else "biocompiler.policy_provider_dependency_graph.v0.2" if multi_member else "biocompiler.policy_provider_dependency_graph.v0.1", "pending_dependencies": pending}, "Provider graph authority")
     program = _record(document.get("program"), "Original prerequisite program")
     definitions = _rows(_record(program.get("semantics"), "Original semantics").get("definitions"), "Original definitions")
 
@@ -487,6 +580,8 @@ def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, Json
             outgoing = [("interface_environment", [body.get("environment")])]
         elif body.get("kind") == "transport" and multi_member:
             outgoing = [("transport_environment", [body.get("environment")])]
+        elif body.get("kind") == "helper" and grounded_helper:
+            outgoing = [("helper_environment", [body.get("environment")]), ("helper_delivery", [body.get("delivery")])]
         elif body.get("kind") == "chassis":
             chassis = _record(body.get("chassis"), "Original chassis")
             for key, relation in (("capabilities", "chassis_capability"), ("interfaces", "chassis_interface"), ("environment", "chassis_environment")):
@@ -526,15 +621,17 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
     instanced = _instanced(request)
     prerequisites = _prerequisites(request)
     multi_member = _multi_member(request)
+    grounded_helper = _grounded_helper(request)
     assembly, context = report["assembly"], report["context"]
     if assembly is not None:
         leaf = _object(assembly, {"schema_version", "checker_version", "profile", "original_fingerprint", "components_fingerprint",
             "rule_fingerprint", "implementation_fingerprint", "proposed_fingerprint", "candidate_fingerprint", "outcome", "diagnostics",
             "claim_scope", "premise", "structure", "carrier_projections", "link_projections", "preservation_evidence_fingerprint",
-            "catalog_authorization", "context", "resource_capacity", "input_compatibility", "source_obligation_discharge", "empirical", "artifact", "export"}, "Assembly evidence")
+            "catalog_authorization", "context", "resource_capacity", "input_compatibility", "source_obligation_discharge", "empirical", "artifact", "export"}
+            | ({"helper_projections"} if grounded_helper else set()), "Assembly evidence")
         _expect(leaf, {"schema_version": "biocompiler.policy_component_assembly_assessment.v0.1",
-            "checker_version": "biocompiler.ocaml.policy_component_assembly_check.v0.3" if multi_member else "biocompiler.ocaml.policy_component_assembly_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_assembly_check.v0.1",
-            "profile": MULTI_MEMBER_ASSEMBLY_PROFILE if multi_member else INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1",
+            "checker_version": "biocompiler.ocaml.policy_component_assembly_check.v0.4" if grounded_helper else "biocompiler.ocaml.policy_component_assembly_check.v0.3" if multi_member else "biocompiler.ocaml.policy_component_assembly_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_assembly_check.v0.1",
+            "profile": GROUNDED_HELPER_ASSEMBLY_PROFILE if grounded_helper else MULTI_MEMBER_ASSEMBLY_PROFILE if multi_member else INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1",
             "claim_scope": "exact_supplied_component_graph_and_material_correspondence", "premise": "supplied_conditional_model_to_sequence_composition_rule",
             **{key: "unassessed" for key in ("catalog_authorization", "context", "resource_capacity", "input_compatibility", "source_obligation_discharge", "empirical")},
             "artifact": "withheld", "export": "withheld"}, "Assembly evidence")
@@ -555,9 +652,10 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
             "outcome", "claim_scope", "record_layout", "minimum_record_layout", "derived_demands", "resource_allocations", "source_obligations", "discharges",
             "diagnostics", "source_receipt_status", "biological_validity", "human_use", "artifact", "export"}
             | ({"prerequisite_closure"} if prerequisites else set())
-            | ({"member_allocations", "transport_allocations"} if multi_member else set()), "Component context evidence")
-        _expect(leaf, {"schema_version": "biocompiler.policy_component_context_assessment.v0.2" if multi_member else "biocompiler.policy_component_context_assessment.v0.1", "profile": context_profile,
-            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.5" if multi_member else
+            | ({"member_allocations", "transport_allocations"} if multi_member else set())
+            | ({"helper_allocations"} if grounded_helper else set()), "Component context evidence")
+        _expect(leaf, {"schema_version": "biocompiler.policy_component_context_assessment.v0.3" if grounded_helper else "biocompiler.policy_component_context_assessment.v0.2" if multi_member else "biocompiler.policy_component_context_assessment.v0.1", "profile": context_profile,
+            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_context_check.v0.5" if multi_member else
             "biocompiler.ocaml.policy_component_context_check.v0.4" if _two_observations(request) else
             "biocompiler.ocaml.policy_component_context_check.v0.3" if prerequisites else
             "biocompiler.ocaml.policy_component_context_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_context_check.v0.1", "claim_scope": "conditional_component_context_and_complete_record_capacity",
@@ -567,6 +665,8 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
         _context_inventory(request, report, leaf)
         if multi_member:
             _member_transport_inventory(request, candidate, leaf)
+        if grounded_helper:
+            _helper_inventory(request, candidate, leaf)
     catalog = report["catalog"]
     if catalog is not None:
         leaf = _object(catalog, {"status", "original_binding", "selected_catalog_entry", "component_library_fingerprint", "rule_fingerprint", "premise"}, "Component catalog bridge")
@@ -590,27 +690,33 @@ class PolicyComponentMaterialResult(material.PolicyMaterialResult):
     """Immutable component evidence; only a fresh export returns paired native bytes."""
 
 
-def _candidate(value: JsonValue, *, instanced: bool = False, multi_member: bool = False) -> dict[str, JsonValue]:
+def _candidate(value: JsonValue, *, instanced: bool = False, multi_member: bool = False,
+               grounded_helper: bool = False) -> dict[str, JsonValue]:
+    if grounded_helper and not (instanced and multi_member):
+        raise CoreProtocolError("Grounded helper proposal requires its explicit named-instance multi-member route")
     candidate = _object(value, _CANDIDATE_FIELDS, "Complete component candidate")
     if candidate["schema_version"] != CANDIDATE_SCHEMA:
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
     proposal = _object(candidate["assembly_proposal"], {"schema_version", "profile", "rule", "nodes"}, "Assembly proposal")
-    _expect(proposal, {"schema_version": "biocompiler.policy_component_assembly_proposal.v0.3" if multi_member else "biocompiler.policy_component_assembly_proposal.v0.2" if instanced else "biocompiler.policy_component_assembly_proposal.v0.1",
-                      "profile": MULTI_MEMBER_ASSEMBLY_PROFILE if multi_member else INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1"}, "Assembly proposal")
+    _expect(proposal, {"schema_version": "biocompiler.policy_component_assembly_proposal.v0.4" if grounded_helper else "biocompiler.policy_component_assembly_proposal.v0.3" if multi_member else "biocompiler.policy_component_assembly_proposal.v0.2" if instanced else "biocompiler.policy_component_assembly_proposal.v0.1",
+                      "profile": GROUNDED_HELPER_ASSEMBLY_PROFILE if grounded_helper else MULTI_MEMBER_ASSEMBLY_PROFILE if multi_member else INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1"}, "Assembly proposal")
     return candidate
 
 
 def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = False,
-            two_observations: bool = False, multi_member: bool = False) -> dict[str, JsonValue]:
+            two_observations: bool = False, multi_member: bool = False,
+            grounded_helper: bool = False) -> dict[str, JsonValue]:
+    if grounded_helper and not multi_member:
+        raise CoreProtocolError("Grounded helper assessment requires its explicit multi-member route")
     if multi_member and (not (instanced and prerequisites) or two_observations):
         raise CoreProtocolError("Multi-member assessment requires its distinct named-instance prerequisite route")
     if two_observations and not (instanced and prerequisites):
         raise CoreProtocolError("Two-observation assessment requires the named-instance prerequisite route")
     report = _object(value, _REPORT_FIELDS | ({"prerequisites", "prerequisite_status"} if prerequisites else set()), "Complete component assessment")
-    _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.3" if multi_member else "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
-        "profile": MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
+    _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.4" if grounded_helper else "biocompiler.policy_component_material_assessment.v0.3" if multi_member else "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
+        "profile": GROUNDED_HELPER_REQUEST_PROFILE if grounded_helper else MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
         PREREQUISITE_REQUEST_PROFILE if prerequisites else INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
-        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.5" if multi_member else "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
+        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_material_check.v0.5" if multi_member else "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
         "biocompiler.ocaml.policy_component_material_check.v0.3" if prerequisites else
         "biocompiler.ocaml.policy_component_material_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
         "claim_scope": CLAIM_SCOPE, "premise": PREMISE, "empirical": "unassessed", "artifact": "withheld", "export": "withheld"}, "Component report")
@@ -653,9 +759,9 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
     candidate = _object(result["candidate"], _CANDIDATE_FIELDS, "Complete component candidate")
     if candidate["schema_version"] != CANDIDATE_SCHEMA or "candidate" in payload and not _same(candidate, payload["candidate"]):
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
-    _candidate(candidate, instanced=instanced, multi_member=_multi_member(request))
+    _candidate(candidate, instanced=instanced, multi_member=_multi_member(request), grounded_helper=_grounded_helper(request))
     report = _report(result["report"], instanced=instanced, prerequisites=prerequisites,
-                     two_observations=_two_observations(request), multi_member=_multi_member(request))
+                     two_observations=_two_observations(request), multi_member=_multi_member(request), grounded_helper=_grounded_helper(request))
     invocation: JsonValue = {"request": request, "candidate": candidate, "limits": payload["limits"]}
     request_hash = _pin(result["request_fingerprint"], request, "Complete original component request")
     candidate_hash = _pin(result["candidate_fingerprint"], candidate, "Complete component candidate")

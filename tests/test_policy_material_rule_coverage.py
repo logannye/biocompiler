@@ -42,13 +42,13 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 153)
+        self.assertEqual(result["sources"], 157)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 25, "sources": 97, "witness_sources": 112,
+        self.assertEqual(result["component_route"], {"rules": 26, "sources": 103, "witness_sources": 125,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -201,7 +201,7 @@ let check x = Diagnostic.require x "code" "message"
                 coverage.source(root, "../foreign.json")
 
     def test_component_route_cannot_be_promoted_into_old_whole_kernel_rules(self):
-        self.assertEqual(len(coverage.COMPONENT_ROUTE_SOURCES), 48)
+        self.assertEqual(len(coverage.COMPONENT_ROUTE_SOURCES), 50)
         self.assertEqual(len(coverage.COMPONENT_SHARED_SOURCES), 29)
         for path in coverage.COMPONENT_ROUTE_SOURCES:
             row = next(value for value in self.original["sources"] if value["path"] == path)
@@ -246,8 +246,72 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_multi_member_composition(self):
+    def before_grounded_helper_composition(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        rule = ledger["rules"][-1]
+        self.assertEqual(rule["id"], "component.grounded_helper_composition")
+        self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in rule[kind]},
+                         set(coverage.COMPONENT_GROUNDED_HELPER_WITNESSES))
+        additions = set(coverage.COMPONENT_GROUNDED_HELPER_SOURCES) | {
+            "core/lib/domain/policy_helper_material." + suffix for suffix in ("ml", "mli")}
+        ledger["sources"] = [row for row in ledger["sources"] if row["path"] not in additions]
+        ledger["witness_sources"] = [row for row in ledger["witness_sources"]
+                                     if row["path"] not in coverage.COMPONENT_GROUNDED_HELPER_WITNESSES]
+        ledger["rules"].pop()
+        ledger["limitations"].pop()
+        return ledger
+
+    def test_grounded_helper_preserves_all_twenty_five_previous_rules_and_provenance(self):
+        projected = self.before_grounded_helper_composition()
+        self.assertEqual((len(projected["rules"]), len(projected["sources"]), len(projected["witness_sources"])),
+                         (25, 97, 112))
+        encoded = json.dumps(coverage.component_metadata(projected), sort_keys=True,
+                             separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "b830c0247fba700bf30892e0bb08d8a2bc5614d30f7b14ec9c994be45dc4a526")
+
+    def test_grounded_helper_exact_conditional_scope_and_complete_witness_census(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        rule = original["rules"][-1]
+        self.assertEqual(len(coverage.COMPONENT_GROUNDED_HELPER_WITNESSES), 13)
+        self.assertEqual((len(original["sources"]), len(original["witness_sources"])), (103, 125))
+        for phrase in ("every original obligation (24 in the independent witness)", "every qualified Attempt_bank owner",
+                       "source-independent expression-completion interval", "five original source inputs"):
+            self.assertIn(phrase, rule["scope"])
+        for phrase in ("Source inventory only", "supplied conditional premises",
+                       "no hidden executable helper node", "does not prove biological expression"):
+            self.assertIn(phrase, rule["limits"])
+        owners = {row["path"] for row in rule["owners"]}
+        for name in ("policy_helper_material", "architecture_contract", "policy_mrna_structure"):
+            self.assertIn("core/lib/domain/" + name + ".ml", owners)
+        for path in coverage.COMPONENT_GROUNDED_HELPER_WITNESSES:
+            ledger = deepcopy(original)
+            ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] != path]
+            with self.subTest(omitted=path), self.assertRaisesRegex(coverage.CoverageError, "census"):
+                coverage.check_component(coverage.ROOT, ledger)
+
+    def test_grounded_helper_new_material_and_shared_decoders_cannot_be_omitted(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        for name in ("policy_helper_material", "architecture_contract", "policy_mrna_structure"):
+            for suffix in ("ml", "mli"):
+                path = "core/lib/domain/" + name + "." + suffix
+                ledger = deepcopy(original)
+                ledger["sources"] = [row for row in ledger["sources"] if row["path"] != path]
+                with self.subTest(omitted=path), self.assertRaisesRegex(coverage.CoverageError, "census"):
+                    coverage.check_component(coverage.ROOT, ledger)
+
+    def test_grounded_helper_sources_cannot_be_promoted_to_empirical_or_execution_proof(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        for key, value in (("evidence_scope", "native_validation_complete"),
+                           ("limits", "Helper RNA establishes biological capacity and guaranteed expression."),
+                           ("negative", deepcopy(original["rules"][-1]["positive"]))):
+            ledger = deepcopy(original)
+            ledger["rules"][-1][key] = value
+            with self.subTest(changed=key), self.assertRaises(coverage.CoverageError):
+                coverage.check_component(coverage.ROOT, ledger)
+
+    def before_multi_member_composition(self):
+        ledger = self.before_grounded_helper_composition()
         rule = ledger["rules"][-1]
         self.assertEqual(rule["id"], "component.multi_member_composition")
         self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in rule[kind]},
@@ -267,9 +331,9 @@ let check x = Diagnostic.require x "code" "message"
 
     def test_multi_member_rule_retains_exact_transport_material_and_witness_scope(self):
         original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
-        rule = original["rules"][-1]
+        rule = next(row for row in original["rules"] if row["id"] == "component.multi_member_composition")
         self.assertEqual(len(coverage.COMPONENT_MULTI_MEMBER_WITNESSES), 13)
-        self.assertEqual(len(original["sources"]), 97)
+        self.assertEqual(len(self.before_grounded_helper_composition()["sources"]), 97)
         for phrase in ("two distinct fixed product parameters", "two complete RNA members",
                        "original catalog transport dependency", "all 23 original obligations"):
             self.assertIn(phrase, rule["scope"])
@@ -285,9 +349,9 @@ let check x = Diagnostic.require x "code" "message"
         original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
         for key, value in (("evidence_scope", "native_validation_complete"),
                            ("limits", "Arbitrary biological transport and helper activity established."),
-                           ("negative", deepcopy(original["rules"][-1]["positive"]))):
+                           ("negative", deepcopy(next(row for row in original["rules"] if row["id"] == "component.multi_member_composition")["positive"]))):
             ledger = deepcopy(original)
-            ledger["rules"][-1][key] = value
+            next(row for row in ledger["rules"] if row["id"] == "component.multi_member_composition")[key] = value
             with self.subTest(changed=key), self.assertRaises(coverage.CoverageError):
                 coverage.check_component(coverage.ROOT, ledger)
 

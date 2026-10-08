@@ -29,12 +29,24 @@ SCHEMA = "biocompiler.policy_public_api_coverage.v0.1"
 CLAIM = "Static public-source inventory and reviewed witness links only; neither executed coverage nor semantic/native/material/release acceptance."
 RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Generated or inherited dataclass runtime protocols are represented by reviewed decorator/field/base contracts, not an exhaustive runtime-attribute census; Python record equality is not symbolic policy comparison."
 # Reviewed separately from source-body pins. This literal binds all138 witness
-# meanings/owners and all896 coverage classifications, so refreshing file/AST
+# meanings/owners and all905 coverage classifications, so refreshing file/AST
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "5cc11771578db41f60eca0aca124269cdf66cb4db3034f093151c91ebfd44b09"
+REVIEWED_METADATA_SHA256 = "2a9ce2139ab87bd5b5288357249a2433bba232c5e1a9fceef6b248c1325aab68"
+GROUNDED_HELPER_DEPENDENCIES = (
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_ASSEMBLY_PROFILE",
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_IMPLEMENTATION",
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_PRODUCER_PROFILE",
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_PROFILE",
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_REQUEST_PROFILE",
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_REQUEST_SCHEMA",
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_VALIDATION_SCOPE",
+    "biocompiler.core_policy_component_material._grounded_helper",
+    "biocompiler.core_policy_component_material._helper_inventory",
+)
 COMPOSITION_DEPENDENCIES = (
+    *GROUNDED_HELPER_DEPENDENCIES,
     'biocompiler.core_policy_component_material.INSTANCE_ASSEMBLY_PROFILE',
     'biocompiler.core_policy_component_material.INSTANCE_IMPLEMENTATION',
     'biocompiler.core_policy_component_material.INSTANCE_PRODUCER_PROFILE',

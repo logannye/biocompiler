@@ -14,6 +14,7 @@ module T = Payload_template
 module PM = Policy_mrna_structure
 module MT = Molecular_transition
 module MC = Policy_material_contract
+module HM = Policy_helper_material
 
 let schema_version = "biocompiler.policy_component_assembly_rule.v0.1"
 let profile = "biocompiler.policy_exact_component_assembly.v0.1"
@@ -22,6 +23,8 @@ let instance_schema_version = "biocompiler.policy_component_assembly_rule.v0.2"
 let instance_profile = "biocompiler.policy_instance_component_assembly.v0.1"
 let multi_member_schema_version = "biocompiler.policy_component_assembly_rule.v0.3"
 let multi_member_profile = "biocompiler.policy_multi_member_component_assembly.v0.1"
+let grounded_helper_schema_version = "biocompiler.policy_component_assembly_rule.v0.4"
+let grounded_helper_profile = "biocompiler.policy_grounded_helper_component_assembly.v0.1"
 let max_instances = 8
 let transport_profile = "biocompiler.policy_identity_transport.v0.1"
 type slot = Decision | Driver | Instance of string
@@ -41,16 +44,17 @@ type input_ref = { slot:slot; external_slot:string; input_id:string }
 type group_ref = { slot:slot; group_id:string }
 type root_binding = { slot:slot; source_id:string }
 type member_binding = { slot:slot; source_id:string; member_id:string }
+type helper_selection = { source_id:string; member_id:string; material:HM.t }
 type transport = { definition:MC.provider_ref; provider:P.t; producer_member:string; consumer_member:string }
 type join = { join_id:string; step_id:string; port_id:string; left:slot; right:slot; offset:int }
 type link_carrier = { kind:link_kind; producer_site:int; consumer_site:int; join_id:string; join_path:string list; transport:transport option }
 type t = {
-  staged:bool; instanced:bool; multi_member:bool; identity_value:P.t; selections:component_selection list; selected:(slot * C.t) list;
+  staged:bool; instanced:bool; multi_member:bool; grounded_helper:bool; identity_value:P.t; selections:component_selection list; selected:(slot * C.t) list;
   library_digest:string; model_digest:string; layout_value:F.slot_layout;
   link_values:link list; node_values:node_ref list; wire_values:wire_ref list;
   input_values:input_ref list; group_values:group_ref list; export_values:endpoint_ref list;
   root_values:root_binding list; member_values:member_binding list; join_values:join list; carrier_values:link_carrier list;
-  material_value:PM.t;
+  material_value:PM.t; helper_value:helper_selection option;
 }
 let str value = Json.String value
 let obj values = Json.Object values
@@ -101,7 +105,7 @@ let kind_of_json ?(instanced=false) raw =
 let expected_links value = if value.instanced then List.map (fun (row:link) -> row.kind) value.link_values
   else if value.staged then staged_links else [Product;Request;Authorization]
 let slots value = List.map (fun (row:component_selection) -> row.slot) value.selections
-let assembly_profile value = if value.multi_member then multi_member_profile else if value.instanced then instance_profile else if value.staged then staged_profile else profile
+let assembly_profile value = if value.grounded_helper then grounded_helper_profile else if value.multi_member then multi_member_profile else if value.instanced then instance_profile else if value.staged then staged_profile else profile
 let scope_name = function Same_encounter_slot -> "same_encounter_slot" | Immutable_executor_broadcast -> "immutable_executor_broadcast"
 let scope_of_json raw = match Json.string raw with
   | "same_encounter_slot" -> Same_encounter_slot | "immutable_executor_broadcast" -> Immutable_executor_broadcast
@@ -173,6 +177,9 @@ let join_of_json ?(instanced=false) raw = exact ["id";"step";"port";"left";"righ
 let member_json (value:member_binding) = obj ["slot",str (slot_name value.slot);"source",str value.source_id;"member",str value.member_id]
 let member_of_json raw = exact ["slot";"source";"member"] raw;
   {slot=slot_of_json ~instanced:true (get "slot" raw);source_id=name (get "source" raw);member_id=name (get "member" raw)}
+let helper_json (value:helper_selection) = obj ["source",str value.source_id;"member",str value.member_id;"material",HM.to_json value.material]
+let helper_of_json raw = exact ["source";"member";"material"] raw;
+  {source_id=name (get "source" raw);member_id=name (get "member" raw);material=HM.of_json (get "material" raw)}
 let transport_to_json (value:transport) = obj ["definition",MC.provider_ref_to_json value.definition;
   "provider",P.to_json value.provider;"producer_member",str value.producer_member;"consumer_member",str value.consumer_member]
 let transport_of_json raw = exact ["definition";"provider";"producer_member";"consumer_member"] raw;
@@ -203,8 +210,9 @@ let body_json value = obj (["primitive_profile",str (if value.staged then I.stag
   (if value.instanced then "joins",arr join_json value.join_values else "join",join_json (List.hd value.join_values));
   "link_carriers",arr (carrier_json ~instanced:value.instanced ~multi_member:value.multi_member) value.carrier_values;
   "material_authority",PM.to_json value.material_value] @
-  (if value.multi_member then ["member_bindings",arr member_json value.member_values] else []))
-let to_json value = obj ["schema_version",str (if value.multi_member then multi_member_schema_version else if value.instanced then instance_schema_version else schema_version);"profile",str (assembly_profile value);
+  (if value.multi_member then ["member_bindings",arr member_json value.member_values] else []) @
+  (if value.grounded_helper then ["helper",helper_json (Option.get value.helper_value)] else []))
+let to_json value = obj ["schema_version",str (if value.grounded_helper then grounded_helper_schema_version else if value.multi_member then multi_member_schema_version else if value.instanced then instance_schema_version else schema_version);"profile",str (assembly_profile value);
   "identity",P.to_json value.identity_value;"body",body_json value]
 
 let check_orders value =
@@ -404,12 +412,19 @@ let check_material_roots value =
   unique "Assembly template root identities are duplicated." (List.map (fun (row:root_binding) -> row.source_id) value.root_values);
   let template=PM.template value.material_value in
   let sources=T.sources template in
-  require (same_inventory (List.map K.Root_source.id sources) (List.map (fun (row:root_binding) -> row.source_id) value.root_values))
+  let helper_sources=match value.helper_value with None -> [] | Some row -> [row.source_id] in
+  require (same_inventory (List.map K.Root_source.id sources) (List.map (fun (row:root_binding) -> row.source_id) value.root_values @ helper_sources))
     "Assembly template must retain exactly the selected bound roots.";
   List.iter (fun (row:root_binding) ->
     let actual=List.find (fun source -> K.Root_source.id source=row.source_id) sources in
     require (equal (K.Root_source.to_json actual) (renamed_root row.source_id (selected_root value row.slot)))
-      "Assembly template root differs from the exact selected component root beyond its declared source-ID rename.") value.root_values
+      "Assembly template root differs from the exact selected component root beyond its declared source-ID rename.") value.root_values;
+  Option.iter (fun (row:helper_selection) ->
+    require (not (List.exists (fun (bound:root_binding) -> bound.source_id=row.source_id) value.root_values))
+      "Helper source cannot alias a behavior-owned source.";
+    let actual=List.find (fun source -> K.Root_source.id source=row.source_id) sources in
+    require (equal (K.Root_source.to_json actual) (renamed_root row.source_id (HM.root row.material)))
+      "Helper template source differs from the complete independently pinned helper root.") value.helper_value
 let check_material value =
   check_material_roots value;
   let template=PM.template value.material_value in
@@ -491,17 +506,31 @@ let check_multi_member_material value =
     List.map (fun (row:member_binding) -> row.source_id) value.member_values=
       List.map (fun (row:root_binding) -> row.source_id) value.root_values)
     "Multi-member bindings must retain every selected instance and source in exact original order.";
-  let member_ids=List.map (fun (row:member_binding) -> row.member_id) value.member_values in
+  let payload_ids=List.map (fun (row:member_binding) -> row.member_id) value.member_values in
+  let member_ids=payload_ids @ (match value.helper_value with None -> [] | Some row -> [row.member_id]) in
+  let source_ids=List.map (fun (row:member_binding) -> row.source_id) value.member_values @
+    (match value.helper_value with None -> [] | Some row -> [row.source_id]) in
   unique "Multi-member output identities are duplicated." member_ids;
-  require (List.map K.Root_source.id sources=List.map (fun (row:member_binding) -> row.source_id) value.member_values &&
+  require (List.map K.Root_source.id sources=source_ids &&
     List.map K.Output_member.id outputs=member_ids && PM.member_order value.material_value=member_ids &&
-    List.map (fun (row:PM.member) -> row.id) expected=member_ids && List.length member_ids=2)
-    "Multi-member authority requires exactly two ordered root, output and mRNA member bindings.";
+    List.map (fun (row:PM.member) -> row.id) expected=member_ids && List.length payload_ids=2 &&
+    List.length member_ids=(if value.grounded_helper then 3 else 2))
+    (if value.grounded_helper then "Grounded-helper authority requires two ordered payload members followed by one helper."
+     else "Multi-member authority requires exactly two ordered root, output and mRNA member bindings.");
   require (value.join_values=[] && T.steps template=[] && T.complex_members template=[] && T.amounts template=[])
     "Multi-member direct-root assembly admits no covalent joins, transformations, complexes or amounts.";
-  require (List.map K.Member_requirement.member_id (T.requirements template)=List.map Option.some member_ids &&
-    List.for_all (fun row -> K.Member_requirement.category row=K.Member_requirement.Payload) (T.requirements template))
-    "Multi-member assembly must retain exactly two ordered payload requirements without helpers.";
+  let requirements=T.requirements template in
+  require (List.map K.Member_requirement.member_id requirements=List.map Option.some member_ids &&
+    (if value.grounded_helper then List.map K.Member_requirement.category requirements=
+      [K.Member_requirement.Payload;K.Member_requirement.Payload;K.Member_requirement.Delivered_helper]
+     else List.for_all (fun row -> K.Member_requirement.category row=K.Member_requirement.Payload) requirements))
+    (if value.grounded_helper then "Grounded-helper assembly requires two Payload requirements and one Delivered_helper requirement."
+     else "Multi-member assembly must retain exactly two ordered payload requirements without helpers.");
+  if value.grounded_helper then List.iter (fun requirement ->
+    let roles=K.Member_requirement.roles requirement in
+    let purpose=K.Member_requirement.category_purpose (K.Member_requirement.category requirement) in
+    require (roles<>[] && List.for_all (fun role -> K.Role.purpose role=purpose) roles)
+      "Grounded-helper material roles must preserve Requested_payload and Helper purposes.") requirements;
   List.iter2 (fun (binding:member_binding) (output,(expected:PM.member)) ->
     let root=K.Root_source.molecule (selected_root value binding.slot) in
     require (K.Value_ref.kind (K.Output_member.value output)=K.Value_ref.Root &&
@@ -518,7 +547,27 @@ let check_multi_member_material value =
         equal (expected_product_json product.expected) (expected_product_json expected.product))
         "Multi-member expected product differs from its own complete selected product or CDS."
     | _ -> fail "Each multi-member component must retain exactly one complete product.")
-    value.member_values (List.combine outputs expected)
+    value.member_values (if value.grounded_helper then List.map (fun id ->
+      List.find (fun output -> K.Output_member.id output=id) outputs,
+      List.find (fun (row:PM.member) -> row.id=id) expected) payload_ids else List.combine outputs expected);
+  Option.iter (fun (helper:helper_selection) ->
+    let output=List.find (fun output -> K.Output_member.id output=helper.member_id) outputs in
+    let expected=List.find (fun (row:PM.member) -> row.id=helper.member_id) expected in
+    let root=K.Root_source.molecule (HM.root helper.material) in
+    require (K.Value_ref.kind (K.Output_member.value output)=K.Value_ref.Root &&
+      K.Value_ref.id (K.Output_member.value output)=helper.source_id &&
+      K.Output_member.form output=N.Delivered_rna && K.Output_member.sequence_extent output=H.Complete &&
+      K.Output_member.coding_status output=N.Coding && G.Space.alphabet (N.space root)=G.Rna &&
+      G.Space.topology (N.space root)=G.Linear && N.sequence_extent root=H.Complete && N.coding_status root=N.Coding)
+      "Helper output must retain its complete linear coding RNA root.";
+    require (List.length (N.features root)=4 && H.modifications (N.chemistry root)=[] &&
+      H.modification_inventory_status (N.chemistry root)=H.Declared)
+      "Helper root requires four complete features and a declared empty modification inventory.";
+    require (expected.regions=HM.regions helper.material &&
+      equal (expected_product_json expected.product) (expected_product_json (HM.product helper.material)))
+      "Helper expected regions and complete product must retain the independent helper material.";
+    require (equal (H.to_json (N.chemistry root)) (H.to_json (HM.chemistry helper.material)))
+      "Helper chemistry must retain its complete original root frame.") value.helper_value
 
 let check_carriers value =
   require (List.map (fun (row:link_carrier) -> row.kind) value.carrier_values=expected_links value)
@@ -550,16 +599,18 @@ let check_carriers value =
 let of_json ~components raw =
   preflight raw;
   exact ["schema_version";"profile";"identity";"body"] raw;
-  let multi_member=get "profile" raw=str multi_member_profile in
+  let grounded_helper=get "profile" raw=str grounded_helper_profile in
+  let multi_member=grounded_helper || get "profile" raw=str multi_member_profile in
   let instanced=multi_member || get "profile" raw=str instance_profile in
   let legacy_staged=get "profile" raw=str staged_profile in
-  require ((multi_member && get "schema_version" raw=str multi_member_schema_version) ||
+  require ((grounded_helper && get "schema_version" raw=str grounded_helper_schema_version) ||
+    (multi_member && not grounded_helper && get "schema_version" raw=str multi_member_schema_version) ||
     (instanced && not multi_member && get "schema_version" raw=str instance_schema_version) ||
     (not instanced && get "schema_version" raw=str schema_version && (get "profile" raw=str profile || legacy_staged)))
     "Unsupported original assembly rule profile.";
   let identity_value=P.of_json (get "identity" raw) and body=get "body" raw in
   exact (["primitive_profile";"observable_profile";"phase_profile";"transport_profile";"slot_layout";"components";"links";
-    "node_order";"wire_order";"input_order";"group_order";"export_order";"root_bindings";(if instanced then "joins" else "join");"link_carriers";"material_authority"] @ (if multi_member then ["member_bindings"] else [])) body;
+    "node_order";"wire_order";"input_order";"group_order";"export_order";"root_bindings";(if instanced then "joins" else "join");"link_carriers";"material_authority"] @ (if multi_member then ["member_bindings"] else []) @ (if grounded_helper then ["helper"] else [])) body;
   let staged=if instanced then get "primitive_profile" body=str I.staged_profile else legacy_staged in
   require (not multi_member || staged) "Multi-member assembly requires the fixed staged primitive profile.";
   require (P.kind identity_value=P.Model && P.content_fingerprint identity_value=Canonical.fingerprint body)
@@ -590,13 +641,14 @@ let of_json ~components raw =
   let join_values=if instanced then List.map (join_of_json ~instanced) (rows (max_instances-1) (get "joins" body))
     else [join_of_json (get "join" body)] in
   require (multi_member || join_values<>[]) "Original assembly requires a bounded nonempty join inventory.";
-  let value={staged;instanced;multi_member;identity_value;selections;selected;library_digest=L.fingerprint components;model_digest=L.model_library_digest components;layout_value;
+  let value={staged;instanced;multi_member;grounded_helper;identity_value;selections;selected;library_digest=L.fingerprint components;model_digest=L.model_library_digest components;layout_value;
     link_values=List.map (link_of_json ~instanced) (rows maximum_links (get "links" body));node_values=List.map (node_of_json ~instanced) (rows 256 (get "node_order" body));
     wire_values=List.map (wire_of_json ~instanced) (rows 2048 (get "wire_order" body));input_values=List.map (input_of_json ~instanced) (rows 64 (get "input_order" body));
     group_values=List.map (group_of_json ~instanced) (rows 64 (get "group_order" body));export_values=List.map (endpoint_of_json ~instanced) (rows 2048 (get "export_order" body));
     root_values=List.map (root_of_json ~instanced) (rows (if instanced then max_instances else 2) (get "root_bindings" body));
     member_values=(if multi_member then List.map member_of_json (rows 2 (get "member_bindings" body)) else []);join_values;
-    carrier_values=List.map (carrier_of_json ~instanced ~multi_member) (rows maximum_links (get "link_carriers" body));material_value=PM.of_json (get "material_authority" body)} in
+    carrier_values=List.map (carrier_of_json ~instanced ~multi_member) (rows maximum_links (get "link_carriers" body));material_value=PM.of_json (get "material_authority" body);
+    helper_value=(if grounded_helper then Some (helper_of_json (get "helper" body)) else None)} in
   let selected_slot slot=require (List.mem_assoc slot selected) "Assembly reference names an unselected component instance." in
   List.iter (fun (row:node_ref) -> selected_slot row.slot) value.node_values;
   List.iter (function Local_wire row -> selected_slot row.slot | Cross_link _ -> ()) value.wire_values;
@@ -636,5 +688,7 @@ let is_instanced value = value.instanced
 let link_name = kind_name
 
 let is_multi_member value = value.multi_member
+let is_grounded_helper value = value.grounded_helper
+let helper value = value.helper_value
 let member_bindings value = value.member_values
 let carrier_transport (value:link_carrier) = value.transport

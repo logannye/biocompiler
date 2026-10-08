@@ -21,8 +21,22 @@ type member={id:string;regions:regions;product:product;chemistry:H.t}
 type t={template:Payload_template.t;member_order:string list;members:member list}
 let product_json (value:product)=obj["identity",P.to_json value.identity;"sequence",str value.sequence;
   "translation_policy",R.Translation_policy.to_json value.translation_policy;"provenance",M.Provenance.to_json value.provenance]
+let regions_to_json (value:regions)=obj["utr5",str value.utr5;"cds",str value.cds;"utr3",str value.utr3;"poly_a",str value.poly_a]
+let regions_of_json fields=
+  exact["utr5";"cds";"utr3";"poly_a"]fields;
+  let regions={utr5=M.text(get "utr5" fields);cds=M.text(get "cds" fields);
+    utr3=M.text(get "utr3" fields);poly_a=M.text(get "poly_a" fields)}in
+  unique[regions.utr5;regions.cds;regions.utr3;regions.poly_a];regions
+let product_of_json product=
+  exact["identity";"sequence";"translation_policy";"provenance"]product;
+  let sequence=M.text ~maximum:M.max_residues(get "sequence" product)in
+  require(String.for_all(String.contains "ACDEFGHIKLMNPQRSTVWY")sequence)"Expected complete product requires canonical amino-acid spelling without a stop symbol.";
+  {identity=P.of_json(get "identity" product);sequence;
+    translation_policy=R.Translation_policy.of_json(get "translation_policy" product);
+    provenance=M.Provenance.of_json(get "provenance" product)}
+let product_to_json=product_json
 let member_json (value:member)=obj["id",str value.id;
-  "regions",obj["utr5",str value.regions.utr5;"cds",str value.regions.cds;"utr3",str value.regions.utr3;"poly_a",str value.regions.poly_a];
+  "regions",regions_to_json value.regions;
   "product",product_json value.product;"chemistry",H.to_json value.chemistry]
 let to_json (value:t)=obj["schema_version",str schema_version;"profile",str profile;
   "template",Payload_template.to_json value.template;"member_order",arr(List.map str value.member_order);
@@ -38,16 +52,8 @@ let of_json raw=
   let members=M.array ~maximum:max_members(get "members" raw)|>List.map(fun value->
     exact["id";"regions";"product";"chemistry"]value;
     let fields=get "regions" value and product=get "product" value in
-    exact["utr5";"cds";"utr3";"poly_a"]fields;
-    let regions={utr5=M.text(get "utr5" fields);cds=M.text(get "cds" fields);
-      utr3=M.text(get "utr3" fields);poly_a=M.text(get "poly_a" fields)}in
-    unique[regions.utr5;regions.cds;regions.utr3;regions.poly_a];
-    exact["identity";"sequence";"translation_policy";"provenance"]product;
-    let sequence=M.text ~maximum:M.max_residues(get "sequence" product)in
-    require(String.for_all(String.contains "ACDEFGHIKLMNPQRSTVWY")sequence)"Expected complete product requires canonical amino-acid spelling without a stop symbol.";
-    let product={identity=P.of_json(get "identity" product);sequence;
-      translation_policy=R.Translation_policy.of_json(get "translation_policy" product);
-      provenance=M.Provenance.of_json(get "provenance" product)}in
+    let regions=regions_of_json fields in
+    let product=product_of_json product in
     {id=M.text(get "id" value);regions;product;chemistry=H.of_json(get "chemistry" value)})in
   require(List.map(fun(member:member)->member.id)members=member_order)"Per-member expectations must preserve the complete original delivered order.";
   let value={template;member_order;members}in M.check_resources(to_json value);value

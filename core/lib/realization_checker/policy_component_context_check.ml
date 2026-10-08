@@ -27,6 +27,7 @@ module Id = Bioc_domain.Identity
 module Pin = Bioc_domain.Pinned_identity
 module M = Bioc_domain.Molecular_record
 module H = Bioc_domain.Policy_provider_prerequisites
+module HM = Bioc_domain.Policy_helper_material
 module W = Bioc_checker.Work_budget
 let implementation_version = "biocompiler.ocaml.policy_component_context_check.v0.1"
 let max_work = 100000000
@@ -180,6 +181,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
   let request=R.of_json ~charge (R.to_json request) in
   let context=R.context request and rule=R.composition_rule request in
   let multi_member=R.is_multi_member request in
+  let grounded_helper=R.is_grounded_helper request in
   let source=PC.binding (A.implementation assembly) in
   let admitted=IB.admitted_inputs source in
   let original=Admission.request admitted and behavior=Admission.behavior admitted and domain=F.specification (Admission.operating_domain admitted) in
@@ -189,6 +191,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       Some(H.derive ~charge ~original:(R.implementation_request request) ~context ()) else None in
   let derived=ref [] and resource_rows=ref [] and input_rows=ref [] and discharged=ref [] and minimum_layout=ref Json.Null in
   let member_rows=ref [] and pending_member_rows=ref [] and transport_rows=ref [] in
+  let helper_rows=ref [] and pending_helper_row=ref Json.Null and helper_delivery=ref Json.Null in
   let equal left right = M.check_resources left;M.check_resources right;
     let left=Canonical.encode left and right=Canonical.encode right in charge (String.length left+String.length right);left=right in
   let attempt () =
@@ -227,12 +230,80 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     let payload=get "payload" deployment in
     supported(text "format" payload="RNA")"rna_required";
     List.iter(fun(key,count)->supported(get key payload=Json.int count)("exact_source_count_required:"^key))
-      ["design_count",1;"member_count",(if multi_member then 2 else 1);"helper_count",0;
-       "orf_count",(if multi_member then 2 else 1);"product_count",(if multi_member then 2 else 1)];
+      ["design_count",1;"member_count",(if grounded_helper then 3 else if multi_member then 2 else 1);
+       "helper_count",(if grounded_helper then 1 else 0);
+       "orf_count",(if grounded_helper then 3 else if multi_member then 2 else 1);
+       "product_count",(if grounded_helper then 3 else if multi_member then 2 else 1)];
     List.iter(fun key->supported(get key payload=Json.Null)("unimplemented_source_payload_field:"^key))
       ["copy_number";"dose";"payload_persistence";"effector_persistence"];
     let structures=Rule.material_authority rule in
-    (if multi_member then (
+    (if grounded_helper then (
+      let selection=match Rule.helper rule with Some value->value
+        |None->Diagnostic.fail "policy_component_context_fail" "grounded_helper_material_absent" in
+      let helper=match X.helpers context with [value]->value
+        |_->Diagnostic.fail "policy_component_context_fail" "exact_one_grounded_helper" in
+      let template=PM.template structures and member_bindings=Rule.member_bindings rule in
+      let inventory=Option.get(K.inventory(MS.content(A.structure assembly))) in
+      let molecules=K.Inventory.molecules inventory and placements=X.placements context in
+      let payload_members=List.map(fun(value:Rule.member_binding)->value.member_id)member_bindings in
+      let members=payload_members@[selection.member_id] in
+      charge(List.length member_bindings+List.length molecules+List.length placements);
+      fail(List.length member_bindings=2 && PM.member_order structures=members &&
+        List.map N.id molecules=members && List.map AC.Placement.member_id placements=members &&
+        List.length(PM.members structures)=3 && List.length(T.output_members template)=3 &&
+        T.steps template=[] && T.complex_members template=[] && T.amounts template=[])
+        "exact_three_member_grounded_helper_inventory";
+      fail(List.map CT.Member_requirement.member_id(T.requirements template)=List.map Option.some members &&
+        List.map CT.Member_requirement.category(T.requirements template)=
+          [CT.Member_requirement.Payload;CT.Member_requirement.Payload;CT.Member_requirement.Delivered_helper])
+        "two_payloads_one_delivered_helper";
+      let group=X.delivery_group context in
+      List.iter2(fun member placement->charge 1;
+        fail(AC.Placement.template_id placement=T.id template && AC.Placement.member_id placement=member &&
+          Id.Role.to_string(AC.Placement.recipient_role placement)=recipient.role &&
+          AC.Placement.compartment placement=recipient.compartment && AC.Placement.delivery_group placement=group.group_id)
+          "placement_identity_or_compartment")members placements;
+      let molecule_fingerprint molecule=let encoded=Canonical.encode(N.to_json molecule) in
+        charge(2*String.length encoded);Canonical.sha256 encoded in
+      List.iteri(fun index (binding:Rule.member_binding)->charge 1;
+        fail(List.length(LC.products(Rule.component rule binding.slot))=1)"one_encoded_product_per_member";
+        pending_member_rows:= !pending_member_rows@[obj["slot",str(Rule.slot_name binding.slot);"source",str binding.source_id;
+          "member",str binding.member_id;"placement",AC.Placement.to_json(List.nth placements index);
+          "molecule_fingerprint",str(molecule_fingerprint(List.nth molecules index))]])member_bindings;
+      let placement=List.nth placements 2 and molecule=List.nth molecules 2 in
+      supported(AC.Helper.availability helper=AC.Helper.Other_rna &&
+        AC.Helper.initialization helper=AC.Helper.After_expression && AC.Helper.assumptions helper=[] &&
+        AC.Helper.depends_on helper=[] && HM.prerequisites selection.material=[])
+        "grounded_helper_source_independent_initialization";
+      fail(AC.Helper.placement_id helper=Some(AC.Placement.id placement) &&
+        Option.map Id.Component.to_string(AC.Helper.provider_component_id helper)=Some(Pin.id(HM.identity selection.material)) &&
+        AC.Helper.capability helper=(HM.capability selection.material).definition_id &&
+        Id.Role.to_string(AC.Helper.recipient_role helper)=recipient.role && AC.Helper.compartment helper=recipient.compartment)
+        "grounded_helper_material_placement_or_recipient";
+      let final_pin=molecule_fingerprint molecule in
+      let root_raw=CT.Root_source.to_json(HM.root selection.material) in
+      let root_encoded=Canonical.encode root_raw in charge(2*String.length root_encoded);
+      let projection=obj["material",HM.to_json selection.material;"source",str selection.source_id;
+        "member",str selection.member_id;"product",PM.product_to_json(HM.product selection.material);
+        "root_fingerprint",str(Canonical.sha256 root_encoded);"molecule_fingerprint",str final_pin] in
+      fail(equal(get "helper_projections"(A.evidence assembly))(arr[projection]))"checked_grounded_helper_projection";
+      pending_helper_row:=obj["helper",AC.Helper.to_json helper;"material",Pin.to_json(HM.identity selection.material);
+        "capability",MC.provider_ref_to_json(HM.capability selection.material);"source",str selection.source_id;
+        "member",str selection.member_id;"placement",AC.Placement.to_json placement;"molecule_fingerprint",str final_pin];
+      fail(group.recipient_roles=[recipient.role] && group.same_recipient)"same_concrete_executor_delivery";
+      supported(group.mode=C.Co_delivered)"independent_delivery_group_unimplemented";
+      supported(group.assumptions=[] && group.exact_count=Some 3 &&
+        (match group.max_count with None->true|Some value->value>=3))"delivery_count_or_assumptions";
+      Option.iter(fun maximum->let total=List.fold_left(fun count molecule->charge 1;
+        count+String.length(N.sequence molecule))0 molecules in fail(total<=maximum)"delivery_sequence_length")group.max_total_bases;
+      let roles=K.Inventory.role_instances inventory in
+      charge(List.length roles);
+      fail(List.length roles=3 && List.for_all(fun member->
+        let matches=List.filter(fun(role:N.Role.t)->N.Role.subject_id role=member)roles in
+        match matches with [role]->N.Role.compartment role=recipient.compartment &&
+          N.Role.purpose role=(if member=selection.member_id then N.Role.Helper else N.Role.Requested_payload)
+        |_->false)members)"grounded_helper_material_role_inventory"
+    ) else if multi_member then (
       let template=PM.template structures and member_bindings=Rule.member_bindings rule in
       let inventory=Option.get(K.inventory(MS.content(A.structure assembly))) in
       let molecules=K.Inventory.molecules inventory and placements=X.placements context in
@@ -344,6 +415,29 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
          fail(equal value.original_clock original_clock)"transport_original_clock";
          (match(resolve value.environment).body with C.Environment _->()|_->fail false "transport_environment_body");
          supported(provider.capacities=[])"transport_resource_supply_unimplemented"
+       |C.Helper value->
+         supported grounded_helper "helper_provider_requires_grounded_helper_profile";
+         let selection=Option.get(Rule.helper rule) in
+         fail(category="capability" && ref_equal provider.definition(HM.capability selection.material))
+           "grounded_helper_capability_definition";
+         fail(equal(Pin.to_json value.material)(Pin.to_json(HM.identity selection.material)))
+           "grounded_helper_complete_material_pin";
+         (match(resolve value.environment).body with C.Environment _->()|_->fail false "helper_environment_body");
+         fail(ref_equal value.delivery(MC.provider_ref_of_json(get "contract" delivery)))"helper_original_delivery_contract";
+         let expression_latest=match(resolve value.delivery).body with C.Delivery phases->phases.expression.latest.seconds
+           |_->Diagnostic.fail "policy_component_context_fail" "helper_independent_delivery_body" in
+         supported(value.bootstrap.prerequisites=[])"helper_bootstrap_prerequisites_unimplemented";
+         fail(Q.leq expression_latest value.bootstrap.completion.earliest.seconds &&
+           Q.leq value.bootstrap.completion.latest.seconds provider.available.onset_min.seconds)
+           "causal_expression_helper_completion_availability";
+         fail(provider.capacities<>[])"grounded_helper_capacity_absent";
+         List.iter(fun(capacity:C.capacity)->charge 1;
+           fail(capacity.unit=MC.Retained_correlation_records && capacity.scope=MC.Per_executor && capacity.slots=[])
+             "grounded_helper_capacity_type_scope";
+           fail(Q.geq capacity.available.onset_max.seconds provider.available.onset_max.seconds &&
+             Q.leq(Q.add capacity.available.onset_min.seconds capacity.available.duration_min.seconds)
+               (Q.add provider.available.onset_min.seconds provider.available.duration_min.seconds))
+             "helper_capacity_guarantee_outside_provider")provider.capacities
        |C.Delivery phases->
          fail(category="delivery")"delivery_definition_category";
          fail(Q.leq phases.arrival.latest.seconds phases.expression.earliest.seconds &&
@@ -369,7 +463,8 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       let body=C.provider_body_to_json provider in
       let delivery=obj["definition",MC.provider_ref_to_json provider.definition;"provider",Pin.to_json provider.identity;
         "body",body]in
-      member_rows:=List.map(fun row->charge 1;obj(Json.object_fields row@["delivery",delivery])) !pending_member_rows
+      member_rows:=List.map(fun row->charge 1;obj(Json.object_fields row@["delivery",delivery])) !pending_member_rows;
+      if grounded_helper then helper_delivery:=delivery
     ));
     List.iter(fun raw->match(resolve(MC.provider_ref_of_json raw)).body with C.Environment _->()|_->fail false "environment_body")
       (items "environment" chassis@items "environment" deployment);
@@ -458,6 +553,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     fail (List.map (fun (row:R.resource_binding) -> row.key) bindings=List.map (fun (row:demand) -> row.key) demands)
       "complete_derived_resource_inventory";
     let usage=Hashtbl.create 32 in
+    let helper_consumers=ref [] and helper_resources=ref [] in
     List.iter2 (fun (allocation:R.resource_binding) (demand:demand) ->
       let provider=resolve allocation.provider in
       let capacity=match List.find_opt (fun (capacity:C.capacity) -> capacity.capacity_id=allocation.capacity_id) provider.capacities with
@@ -469,10 +565,51 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       let old=Option.value ~default:0 (Hashtbl.find_opt usage capacity.pool_id) in
       fail (demand.quantity<=capacity.quantity-old) "shared_capacity_sum_exceeded";
       Hashtbl.replace usage capacity.pool_id (old+demand.quantity);
-      resource_rows:= !resource_rows@[obj ["demand",demand_json demand;"provider",MC.provider_ref_to_json provider.definition;
-        "capacity",str capacity.capacity_id;"pool",str capacity.pool_id;"reserved",Json.int demand.quantity]]) bindings demands;
+      let row=obj ["demand",demand_json demand;"provider",MC.provider_ref_to_json provider.definition;
+        "capacity",str capacity.capacity_id;"pool",str capacity.pool_id;"reserved",Json.int demand.quantity] in
+      resource_rows:= !resource_rows@[row];
+      (match provider.body with C.Helper _->
+        fail(grounded_helper && demand.key.unit=MC.Retained_correlation_records && demand.key.scope=MC.Per_executor)
+          "grounded_helper_bound_demand_type";
+        let slot,node_id=match demand.key.owner with R.Node value->value.slot,value.node_id
+          |_->Diagnostic.fail "policy_component_context_fail" "grounded_helper_requires_attempt_owner" in
+        let nodes=List.combine(Rule.node_order rule)(I.nodes(IB.implementation source)) in
+        charge(List.length nodes);
+        let actual=match List.find_opt(fun((reference:Rule.node_ref),_)->reference.slot=slot && reference.node_id=node_id)nodes with Some(_,node)->node
+          |None->Diagnostic.fail "policy_component_context_fail" "grounded_helper_actual_owner_absent" in
+        (match actual.model.primitive with I.Attempt_bank _->()
+          |_->fail false "grounded_helper_requires_attempt_bank");
+        let instance=Rule.slot_name slot in
+        if not(List.mem instance !helper_consumers)then helper_consumers:= !helper_consumers@[instance];
+        helper_resources:= !helper_resources@[row]
+      |_->())) bindings demands;
     List.iter (fun (provider:C.provider) -> List.iter (fun (capacity:C.capacity) ->
       fail (Hashtbl.mem usage capacity.pool_id) "unused_original_capacity") provider.capacities) providers;
+    (if grounded_helper then (
+      let selection=Option.get(Rule.helper rule) and helper=List.hd(X.helpers context) in
+      let provider=resolve(HM.capability selection.material) in
+      (match provider.body with C.Helper _->()|_->fail false "grounded_helper_provider_kind");
+      let supplied=List.filter(fun(provider:C.provider)->match provider.body with C.Helper _->true|_->false)providers in
+      fail(List.length supplied=1)"exact_one_grounded_helper_provider";
+      let closure=Option.get prerequisites and bridge=R.catalog_binding request in
+      let dependencies=H.dependencies closure in charge(List.length dependencies);
+      fail(List.exists(fun(value:H.pending_dependency)->value.entry_id=bridge.entry_id &&
+        value.entry_digest=bridge.entry_digest && ref_equal value.definition provider.definition)dependencies)
+        "helper_selected_catalog_dependency";
+      let consumers=List.map Id.Component.to_string(AC.Helper.consumer_component_ids helper) in
+      charge(List.length consumers+List.length !helper_consumers);
+      fail(!helper_resources<>[] && List.sort String.compare consumers=List.sort String.compare !helper_consumers)
+        "grounded_helper_exact_consumer_inventory";
+      let count=List.length !helper_consumers in
+      fail(AC.Helper.capacity helper>=count && (match AC.Helper.sharing helper with
+        |AC.Helper.Exclusive->count=1|AC.Helper.Shared->count>=1))"grounded_helper_consumer_capacity";
+      fail(!pending_helper_row<>Json.Null && !helper_delivery<>Json.Null)"grounded_helper_allocation_evidence_absent";
+      let body=C.provider_body_to_json provider in
+      helper_rows:=[obj(Json.object_fields !pending_helper_row@[
+        "provider",Pin.to_json provider.identity;"provider_body",body;"bootstrap",get "bootstrap" body;
+        "delivery", !helper_delivery;"consumers",arr(List.map str !helper_consumers);
+        "resource_allocations",arr !helper_resources])]
+    ));
     let provider_evidence=arr (List.map (fun (provider:C.provider) -> Pin.to_json provider.identity) providers) in
     let names="chassis_capability_and_delivery_suitability"::List.map (fun (provider:C.provider) -> "semantic_definition:" ^ provider.definition.definition_id) providers in
     discharged:=List.filter_map (fun obligation -> if List.mem obligation names then Some {obligation;evidence=provider_evidence} else None) behavior.unresolved_obligations
@@ -495,7 +632,8 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       obj["definition",MC.provider_ref_to_json value.definition;"identity",Pin.to_json value.identity;
         "body_fingerprint",str(fingerprint(C.provider_body_to_json value))])providers in
     let requested=R.implementation_request request in
-    obj(["schema_version",str (if multi_member then "biocompiler.policy_provider_prerequisite_closure.v0.2"
+    obj(["schema_version",str (if grounded_helper then "biocompiler.policy_provider_prerequisite_closure.v0.3"
+      else if multi_member then "biocompiler.policy_provider_prerequisite_closure.v0.2"
       else "biocompiler.policy_provider_prerequisite_closure.v0.1");
       "profile",str context_profile;"status",str(E.outcome_name outcome_value);"complete",Json.Bool(outcome_value=E.Pass);
       "original_request_fingerprint",str(R.fingerprint request);"assembly_fingerprint",str(fingerprint(A.evidence assembly));
@@ -506,10 +644,13 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       "clock",get "clock"(X.to_json context);"recipient",C.recipient_to_json recipient;
       "input_allocations",arr !input_rows;"resource_allocations",arr !resource_rows;
       "diagnostics",arr(List.map str diagnostics);"empirical",str "unassessed"] @
-      (if multi_member then ["member_allocations",arr !member_rows;"transport_allocations",arr !transport_rows] else []))) prerequisites in
-  let report_value=obj (["schema_version",str (if multi_member then "biocompiler.policy_component_context_assessment.v0.2"
+      (if multi_member then ["member_allocations",arr !member_rows;"transport_allocations",arr !transport_rows] else []) @
+      (if grounded_helper then ["helper_allocations",arr !helper_rows] else []))) prerequisites in
+  let report_value=obj (["schema_version",str (if grounded_helper then "biocompiler.policy_component_context_assessment.v0.3"
+    else if multi_member then "biocompiler.policy_component_context_assessment.v0.2"
     else "biocompiler.policy_component_context_assessment.v0.1");
-    "profile",str context_profile;"implementation_version",str (if multi_member then
+    "profile",str context_profile;"implementation_version",str (if grounded_helper then
+      "biocompiler.ocaml.policy_component_context_check.v0.6" else if multi_member then
       "biocompiler.ocaml.policy_component_context_check.v0.5" else if R.is_two_observation request then
       "biocompiler.ocaml.policy_component_context_check.v0.4" else if Option.is_some prerequisites then
       "biocompiler.ocaml.policy_component_context_check.v0.3" else if R.is_instanced request then
@@ -525,7 +666,8 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     "diagnostics",arr (List.map str diagnostics);"source_receipt_status",str "unchanged";
     "biological_validity",str "unassessed";"human_use",str "unassessed";"artifact",str "withheld";"export",str "withheld"] @
     (match closure_evidence with None->[]|Some value->["prerequisite_closure",value]) @
-    (if multi_member then ["member_allocations",arr !member_rows;"transport_allocations",arr !transport_rows] else [])) in
+    (if multi_member then ["member_allocations",arr !member_rows;"transport_allocations",arr !transport_rows] else []) @
+    (if grounded_helper then ["helper_allocations",arr !helper_rows] else [])) in
   let output=W.create_output ~profile:context_profile ~error_code:"policy_component_context_resource_limit" ~max_bytes:M.max_json_bytes ~max_nodes:M.max_items () in
   W.reserve_json output report_value;charge (2*String.length (Canonical.encode report_value));
   Diagnostic.require (not (W.exhausted budget)) "policy_component_context_resource_limit" "Context work was exhausted.";

@@ -23,7 +23,7 @@ REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py", "examples/rese
 REVIEWED_ADDITIONS = {
     # Research-project authoring and the installed example stay excluded from
     # the immutable original workflow cohort and confer no historical authority.
-    'src/biocompiler/policy/research_project.py': '6c9361c4b9d67ee6ded2d75f844e318b209cf1e571fde345d3900c89ac074a34',
+    'src/biocompiler/policy/research_project.py': 'c2bf6d201d183c43594cfe92dd252f0ac25c95e25d1381f6aca079289faec0b0',
     'examples/researcher_alpha.py': '63d862d55e22de38ba633f901d37c28c7a6fab3cb77ed8604d7fc07df0aac313',
     'src/biocompiler/core_policy_component_selection.py': '20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9',
     'src/biocompiler/policy/component_selection.py': '10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80',
@@ -50,8 +50,8 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/core_workflow_authority.py": "ded29c7cd4c16241812bd7f677b0c962d185a724fef1cd7294c7e899c7c32d66",
     "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5",
     # Reviewed versioned instance/prerequisite transports remain outside historical authority.
-    'src/biocompiler/policy/component_material.py': '7b3ee86fd10a05561c5ebda0c6562cc2f5dfb10da353744d892e26d42c8847e3',
-    'src/biocompiler/core_policy_component_material.py': 'c41954bac9b2b88b3533163f000505beddbf9b805e1344bef49d854bf0b2f86b',
+    'src/biocompiler/policy/component_material.py': '4ec4c9be4588140ea535e4ec2c2e989c4884b53647c84475e7239926c6e94c94',
+    'src/biocompiler/core_policy_component_material.py': '059dab0e0b6801383dfa183a789cf2ef54ae47cd77c1a1f8ac047edb2b6df336',
     'src/biocompiler/policy/material.py': '5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79',
     'src/biocompiler/core_policy_material.py': '385611e0d10b6983a530334f470ad03d90d3a039dfb2a43a69f3abdc9447f1c2',
     'src/biocompiler/policy/implementation.py': '32ee740ed0adf4f7e2892c55dc9a1de89f86bbdf0b647aba214d9c321e873569',

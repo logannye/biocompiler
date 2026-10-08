@@ -661,3 +661,20 @@ Fresh context assessment v0.2 and material assessment v0.3 retain both member an
 transport allocations. No earlier schema/profile silently admits these inputs.
 Zero helpers are supported in this increment. See the
 [complete bounded contract](../docs/policy-multi-member-composition-v0.1.md).
+
+### Grounded helper component material profile
+
+The opt-in `policy_grounded_helper_material` capability uses request v0.6,
+implementation `biocompiler.ocaml.policy_grounded_helper_prerequisite_material.v0.1`
+and scope `policy-grounded-helper-prerequisite-mrna-v0.1`. Core alone additionally
+advertises `policy_grounded_helper_material_producer`. Both use the existing
+component-material operations; prior capabilities retain their exact profiles.
+
+The [bounded contract](../docs/policy-grounded-helper-composition-v0.1.md) adds one
+complete, independently pinned material-only helper RNA to two payload RNAs,
+under an explicit supplied capacity and source-independent bootstrap contract.
+Assembly v0.4 and context v0.3 preserve all three molecular identities, complete
+original provider dependency closure, shared-resource reservations and full
+finite source/candidate preservation. The material assessment v0.4 and private
+closure v0.3 cannot be replaced by an earlier report. A successful report retains
+biological validity and human-use suitability as unassessed.

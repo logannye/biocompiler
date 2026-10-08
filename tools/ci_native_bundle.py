@@ -28,6 +28,7 @@ DEPENDENCY_FIXTURES = {
     "test_policy_prerequisite_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
     "test_policy_two_observation_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
     "test_policy_multi_member_material_service": ["data/policy_staged_material_v01.json"],
+    "test_policy_grounded_helper_material_service": ["data/policy_staged_material_v01.json"],
     "test_policy_instance_assembly_rule": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
     "test_policy_instance_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
     "test_policy_staged_generation": ["data/policy_staged_realization_request_v01.json"],
@@ -163,7 +164,8 @@ def expected_members(root):
             "core/_build/default/test/instance_fixture_export/main.exe",
             "core/_build/default/test/prerequisite_fixture_export/main.exe",
             "core/_build/default/test/two_observation_fixture_export/main.exe",
-            "core/_build/default/test/multi_member_fixture_export/main.exe"} | {
+            "core/_build/default/test/multi_member_fixture_export/main.exe",
+            "core/_build/default/test/grounded_helper_fixture_export/main.exe"} | {
         "core/_build/default/test/" + row["name"] + ".exe" for row in plan} | set(dependency_members(root))
 
 

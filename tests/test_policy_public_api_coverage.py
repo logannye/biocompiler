@@ -40,8 +40,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (43, 896, 163, 17, 21))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 254,
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (43, 905, 163, 17, 21))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 263,
             'independent_expansion': 28, 'shared_invariant': 492, 'source_only': 116})
         self.assertEqual(len(self.ledger['syntax_links']), 359)
         self.assertEqual(len(self.ledger['witnesses']), 138)
@@ -59,12 +59,12 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 896)
+        self.assertEqual(len(found['entries']), 905)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
 
     def test_composition_dependencies_preserve_all_previous_api_classifications_and_witness_meanings(self):
-        self.assertEqual(len(c.COMPOSITION_DEPENDENCIES), 51)
+        self.assertEqual(len(c.COMPOSITION_DEPENDENCIES), 60)
         entries = {row['id']: row for row in self.ledger['inventory']['entries']}
         for identity in c.COMPOSITION_DEPENDENCIES:
             self.assertEqual(entries[identity]['scope'], 'dependency')
@@ -80,6 +80,32 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
                              separators=(',', ':'), allow_nan=False).encode('utf-8')
         self.assertEqual(c.digest(encoded), '1ca37142a2beec20c09db60e709e5aa8273da2f5e2002a104ed21c228d6b7d62')
+
+    def test_grounded_helper_dependencies_preserve_all_896_previous_api_meanings(self):
+        self.assertEqual(len(c.GROUNDED_HELPER_DEPENDENCIES), 9)
+        self.assertTrue(set(c.GROUNDED_HELPER_DEPENDENCIES) <= set(c.COMPOSITION_DEPENDENCIES))
+        entries = {row['id']: row for row in self.ledger['inventory']['entries']}
+        for identity in c.GROUNDED_HELPER_DEPENDENCIES:
+            self.assertEqual(entries[identity]['scope'], 'dependency')
+            self.assertEqual(self.ledger['coverage'][identity]['status'], 'dependency')
+            self.assertEqual(self.ledger['coverage'][identity]['witnesses'], [])
+        metadata = {
+            'witnesses': {key: {name: value[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                          for key, value in self.ledger['witnesses'].items()},
+            'coverage': {key: value for key, value in self.ledger['coverage'].items()
+                         if key not in c.GROUNDED_HELPER_DEPENDENCIES},
+        }
+        self.assertEqual(len(metadata['coverage']), 896)
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), '5cc11771578db41f60eca0aca124269cdf66cb4db3034f093151c91ebfd44b09')
+
+    def test_grounded_helper_dependency_cannot_become_public_or_semantic_acceptance(self):
+        for identity in c.GROUNDED_HELPER_DEPENDENCIES:
+            ledger = copy.deepcopy(self.ledger)
+            ledger['coverage'][identity].update(status='source_only', scope='Validated helper behavior.')
+            with self.subTest(identity=identity), self.assertRaisesRegex(c.ApiCoverageError, 'Private dependency classification changed'):
+                c.validate(self.root, ledger)
 
     def test_file_census_rejects_new_module_even_with_repinned_ledger(self):
         path = c.PACKAGE + '/unreviewed.py'

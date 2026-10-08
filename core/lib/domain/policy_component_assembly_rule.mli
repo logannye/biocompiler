@@ -14,6 +14,8 @@ val instance_schema_version : string
 val instance_profile : string
 val multi_member_schema_version : string
 val multi_member_profile : string
+val grounded_helper_schema_version : string
+val grounded_helper_profile : string
 val max_instances : int
 val transport_profile : string
 
@@ -36,6 +38,9 @@ type input_ref = private { slot:slot; external_slot:string; input_id:string }
 type group_ref = private { slot:slot; group_id:string }
 type root_binding = private { slot:slot; source_id:string }
 type member_binding = private { slot:slot; source_id:string; member_id:string }
+type helper_selection = private {
+  source_id:string; member_id:string; material:Policy_helper_material.t;
+}
 type transport = private {
   definition:Policy_material_contract.provider_ref; provider:Pinned_identity.t;
   producer_member:string; consumer_member:string;
@@ -91,3 +96,8 @@ val member_bindings : t -> member_binding list
 val member_for_slot : t -> slot -> member_binding
 val carrier_transport : link_carrier -> transport option
 val transport_to_json : transport -> Json.t
+
+(** One material-only helper in the separately versioned family. It owns no
+    primitive, behavior slot or source expression; capacity is checked later. *)
+val is_grounded_helper : t -> bool
+val helper : t -> helper_selection option

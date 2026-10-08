@@ -64,6 +64,9 @@ from biocompiler.core_policy_component_material import (
     MULTI_MEMBER_PROFILE as MULTI_MEMBER_MATERIAL_PROFILE,
     MULTI_MEMBER_PRODUCER_PROFILE as MULTI_MEMBER_MATERIAL_PRODUCER_PROFILE,
     MULTI_MEMBER_VALIDATION_SCOPE as MULTI_MEMBER_MATERIAL_SCOPE,
+    GROUNDED_HELPER_PROFILE as GROUNDED_HELPER_MATERIAL_PROFILE,
+    GROUNDED_HELPER_PRODUCER_PROFILE as GROUNDED_HELPER_MATERIAL_PRODUCER_PROFILE,
+    GROUNDED_HELPER_VALIDATION_SCOPE as GROUNDED_HELPER_MATERIAL_SCOPE,
 )
 from biocompiler.core_policy_component_selection import (
     PROFILE as COMPONENT_SELECTION_PROFILE, PRODUCER_PROFILE as COMPONENT_SELECTION_PRODUCER_PROFILE,
@@ -235,8 +238,8 @@ def capability_contract(role):
     operations += list(COMPONENT_SELECTION_PROFILE["operations"])
     operations += ["assess-policy", "replay-policy-assessment"] + list(REALIZATION_OPERATIONS) + list(WORKFLOW_OPERATIONS) + [AUTHORITY_OPERATION]
     workflow = workflow_profile()
-    scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE, OPERATIONAL_SCOPE, IMPLEMENTATION_SCOPE, MATERIAL_SCOPE, COMPONENT_MATERIAL_SCOPE, INSTANCE_MATERIAL_SCOPE, PREREQUISITE_MATERIAL_SCOPE, TWO_OBSERVATION_MATERIAL_SCOPE, MULTI_MEMBER_MATERIAL_SCOPE, COMPONENT_SELECTION_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"], workflow_authority_profile()["validation_scope"]]
-    profiles = {"policy_multi_member_material": MULTI_MEMBER_MATERIAL_PROFILE, "policy_two_observation_material": TWO_OBSERVATION_MATERIAL_PROFILE, "policy_prerequisite_material": PREREQUISITE_MATERIAL_PROFILE, "policy_instance_material": INSTANCE_MATERIAL_PROFILE, "policy_component_selection": COMPONENT_SELECTION_PROFILE, "policy_component_material": COMPONENT_MATERIAL_PROFILE, "policy_material": MATERIAL_PROFILE, "policy_implementation": IMPLEMENTATION_PROFILE, "policy_operational": OPERATIONAL_PROFILE, "architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
+    scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE, OPERATIONAL_SCOPE, IMPLEMENTATION_SCOPE, MATERIAL_SCOPE, COMPONENT_MATERIAL_SCOPE, INSTANCE_MATERIAL_SCOPE, PREREQUISITE_MATERIAL_SCOPE, TWO_OBSERVATION_MATERIAL_SCOPE, MULTI_MEMBER_MATERIAL_SCOPE, GROUNDED_HELPER_MATERIAL_SCOPE, COMPONENT_SELECTION_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"], workflow_authority_profile()["validation_scope"]]
+    profiles = {"policy_grounded_helper_material": GROUNDED_HELPER_MATERIAL_PROFILE, "policy_multi_member_material": MULTI_MEMBER_MATERIAL_PROFILE, "policy_two_observation_material": TWO_OBSERVATION_MATERIAL_PROFILE, "policy_prerequisite_material": PREREQUISITE_MATERIAL_PROFILE, "policy_instance_material": INSTANCE_MATERIAL_PROFILE, "policy_component_selection": COMPONENT_SELECTION_PROFILE, "policy_component_material": COMPONENT_MATERIAL_PROFILE, "policy_material": MATERIAL_PROFILE, "policy_implementation": IMPLEMENTATION_PROFILE, "policy_operational": OPERATIONAL_PROFILE, "architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
                 "artifact_transport": ARTIFACT_PROFILE, "verification_workflow": workflow,
                 "verification_workflow_presentation": workflow_presentation_profile(),
                 "artifact_transport_authority": AUTHORITY_ARTIFACT_PROFILE,
@@ -266,6 +269,7 @@ def capability_contract(role):
         profiles["policy_prerequisite_material_producer"] = PREREQUISITE_MATERIAL_PRODUCER_PROFILE
         profiles["policy_two_observation_material_producer"] = TWO_OBSERVATION_MATERIAL_PRODUCER_PROFILE
         profiles["policy_multi_member_material_producer"] = MULTI_MEMBER_MATERIAL_PRODUCER_PROFILE
+        profiles["policy_grounded_helper_material_producer"] = GROUNDED_HELPER_MATERIAL_PRODUCER_PROFILE
         profiles["policy_component_selection_producer"] = COMPONENT_SELECTION_PRODUCER_PROFILE
         claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
     return operations, scopes, profiles, claim

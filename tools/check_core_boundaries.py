@@ -22,6 +22,7 @@ EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 LIBRARIES = {
     "bioc_policy_two_observation_test_support": ("test/policy_two_observation_support/dune", {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support", "bioc_policy_prerequisite_test_support", "zarith"}, "test_support"),
     "bioc_policy_multi_member_test_support": ("test/policy_multi_member_support/dune", {"bioc_wire", "bioc_domain", "zarith"}, "test_support"),
+    "bioc_policy_grounded_helper_test_support": ("test/policy_grounded_helper_support/dune", {"bioc_wire", "bioc_domain", "zarith", "bioc_policy_multi_member_test_support"}, "test_support"),
     "bioc_policy_prerequisite_test_support": ("test/policy_prerequisite_support/dune", {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support"}, "test_support"),
     "bioc_policy_instance_test_support": ("test/policy_instance_support/dune", {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "zarith"}, "test_support"),
     "bioc_policy_staged_test_support": ("test/policy_staged_support/dune", {"bioc_wire", "bioc_domain"}, "test_support"),
@@ -54,6 +55,8 @@ PRIVATE_TEST_TOOLS = {
         {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support", "bioc_policy_prerequisite_test_support", "bioc_policy_two_observation_test_support"}, "test_support"),
     "multi_member_originals": ("test/multi_member_fixture_export/dune",
         {"bioc_wire", "bioc_domain", "bioc_policy_multi_member_test_support"}, "test_support"),
+    "grounded_helper_originals": ("test/grounded_helper_fixture_export/dune",
+        {"bioc_wire", "bioc_domain", "bioc_policy_grounded_helper_test_support"}, "test_support"),
     "prerequisite_originals": ("test/prerequisite_fixture_export/dune",
         {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support", "bioc_policy_prerequisite_test_support"}, "test_support"),
     "component_originals": ("test/component_fixture_export/dune",
@@ -64,6 +67,7 @@ PRIVATE_TEST_TOOLS = {
 TESTS = {
     "test_policy_two_observation_material_service": {"bioc_candidate_runtime", "bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_two_observation_test_support"},
     "test_policy_multi_member_material_service": {"bioc_candidate_runtime", "bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_multi_member_test_support"},
+    "test_policy_grounded_helper_material_service": {"bioc_candidate_runtime", "bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_grounded_helper_test_support"},
     "test_policy_provider_prerequisites": {"bioc_wire", "bioc_domain", "bioc_policy_prerequisite_test_support"},
     "test_policy_prerequisite_material_service": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_prerequisite_test_support"},
     "test_policy_instance_assembly_rule": {"bioc_wire", "bioc_domain", "bioc_policy_instance_test_support"},
@@ -595,6 +599,7 @@ def check_boundaries(root: Path):
                 policy_fixtures = {
                     "test_policy_two_observation_material_service": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_multi_member_material_service": ["policy_staged_material_v01.json"],
+                    "test_policy_grounded_helper_material_service": ["policy_staged_material_v01.json"],
                     "test_policy_provider_prerequisites": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_prerequisite_material_service": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_instance_assembly_rule": ["policy_material_request_v01.json", "policy_material_state_v01.json"],

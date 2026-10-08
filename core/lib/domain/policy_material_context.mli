@@ -7,6 +7,9 @@ val schema_version : string
 val profile : string
 val provider_schema : string
 val transport_provider_schema : string
+val helper_provider_schema : string
+val helper_capacity_profile : string
+val helper_bootstrap_profile : string
 val transport_profile : string
 val transport_phase_profile : string
 val record_profile : string
@@ -33,10 +36,14 @@ type channel = {
   channel_id:string; kind:channel_kind; source:string; observer:string;
   subject:string; available:availability;
 }
+type helper_bootstrap = { completion:interval; prerequisites:C.provider_ref list }
+val helper_bootstrap_to_json : helper_bootstrap -> Json.t
 type body = Chassis of Json.t | Environment of Policy_operating_domain.t
   | Interface of { environment:C.provider_ref; channels:channel list }
   | Delivery of { arrival:interval; expression:interval; activation:interval }
   | Transport of { environment:C.provider_ref; original_clock:Json.t }
+  | Helper of { material:Pinned_identity.t; environment:C.provider_ref;
+                delivery:C.provider_ref; bootstrap:helper_bootstrap }
 type provider = private {
   identity:Pinned_identity.t; definition:C.provider_ref; recipient:recipient;
   available:availability; capacities:capacity list; body:body;
@@ -78,6 +85,10 @@ val provider_of_json : Json.t -> provider
 (** Opt-in provider syntax: legacy v0.1 bodies or the fixed v0.2 transport
     premise. No source authorization, endpoint or availability acceptance. *)
 val provider_with_transport_of_json : Json.t -> provider
+
+(** Additional opt-in helper premise; accepts the preceding provider families
+    and the fixed v0.3 helper syntax without establishing its causal validity. *)
+val provider_with_helper_of_json : Json.t -> provider
 val delivery_group_of_json : Json.t -> delivery_group
 val delivery_group_to_json : delivery_group -> Json.t
 val record_shapes : Json.t

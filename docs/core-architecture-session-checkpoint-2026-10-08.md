@@ -103,3 +103,74 @@ source-bound native and full integration verification.
 Local P4 feedback includes 25 new SDK controls, 96 previous SDK regressions and both strict typing scopes; 47 campaign/fixture/installed/prebuilt inert controls; 46 boundary/bundle tests; 76 development/SDK/fixture tests plus two capability controls; 49 source-scope/CI-plan controls; and 38 rule-inventory tests. None ran native executables. The rule inventory now has 25 families, 97 production sources and 112 witnesses; its projection preserves all previous 24 meanings and all 62 original material rules. The API inventory adds only 51 private dependencies/protocol constants, preserving all 845 previous classifications and 138 witness meanings. Migration inventory has 3,872 entries. Both inventory gates are now early preflight checks, including the opt-in hosted development lane.
 
 The 39 public API inventory controls pass, including all historical projections. The final 82-test orchestration/rule batch passed 81 controls and exposed one stale workflow-text expectation after moving source gates ahead of native setup; the corrected focused control passed. The early gates now explicitly precede OCaml setup. This is local inert feedback only.
+
+## Grounded-helper implementation checkpoint
+
+The separately versioned helper increment is being built in
+`codex/dev-policy/grounded-helper-composition`, based on P4 source `705f6adb3`.
+Both subsequent P4 native corrections are carried forward explicitly; the
+helper checkout is not an accepted descendant of a passing P4 run. Source
+implementation, independent three-member fixtures and SDK/installed orchestration
+are in progress. See the [helper contract](policy-grounded-helper-composition-v0.1.md).
+
+P3 development run `37803803945` at `6feb332688ec838031e4cab9de2f2ee498c7f4b5`
+passed 36 native suites and eight SDK campaigns (208 observations); its independent
+inert audit passed, SHA-256
+`fa18db1b150cbe158f38fb38d8568ad5c250e6533bf8d83d3842973042b2ea89`.
+The P2 audit for `37798264346` remains separate at source `a34ebd6bc`.
+Neither replaces installed, cross-platform or actual-main validation.
+
+P4 corrected source `a459a234f34fe0128fb994d22aca2de9fecff599` is under fresh
+hosted development run `37809478943`. Prior run `37807975704` compiled and passed
+35/37 suites, with no SDK campaign execution. Its authenticated artifact
+`11563489280` has SHA-256
+`07f0568f5de9148b983d5fa50fbea14ef917ae8aba4dcdaad3f98256e46daa02`;
+only inert diagnostics were inspected locally. The correction adds the missing
+producer census entry and keeps the original renaming work exhaustion as a
+negative control before a separate larger-budget check.
+
+P1 PR99 integration run `37799164508` at `a38174303` still has useful healthy
+checks running. Its API inventory correction is prepared in the P1 checkout;
+unit-accounting failures follow the two API-inventory unit failures. Preserve
+the active run, batch all concrete corrections, and require a fresh full gate.
+
+Local helper feedback: 60 earlier profile SDK controls and both CI-pinned strict
+typing scopes (34 core files and 31 policy files) pass. The new helper SDK has
+24 inert tests. Native helper compilation/execution, final inventories and
+installed/integration/main acceptance are not yet established.
+
+The helper batch now has independent A/B three-member originals and 36 native
+negative controls registered, with explicit candidate work budget 2,000,000.
+Both alternatives retain the same two therapeutic products and complete source
+graph/domain; only the supplied helper product changes from MA to MG. This is a
+software fixture under supplied contracts. Source authoring and native test
+registration do not establish executed acceptance.
+
+The 125-test local wiring/boundary/transport batch passed 123 controls; two
+stale expected pass-counts were corrected and their focused rerun passed. The
+new campaign/installed/prebuilt batch passed 40 inert controls, and the source-
+scope/CI-plan batch passed 28. The supported hosted development census is now
+38 native suites and ten SDK campaigns (260 observations). Full native
+integration has 178 suites, 186 executable bundle members, 26 original fixture
+files and 212 total bundle members. No native command ran locally.
+
+The final helper campaign review added complete third-manifest-row/hash checks;
+the complete campaign/fixture/installed/prebuilt rerun passed 50 inert controls
+(12 + 7 + 13 + 18) in 1.448 seconds. An independent source review of the native
+helper witnesses and original oracle found no concrete mismatch; hosted
+compilation and native behavior still require fresh execution.
+
+Final helper source gates pass: 83 inventory controls, 26 component rule families
+with 103 production sources and 125 witnesses, 62 unchanged material rule
+meanings, and 905 API classifications. Independent comparison retained all
+previous 25 component meanings, all previous 896 API classifications, all 138
+witness meanings and all 359 syntax links. Nine new private dependencies and
+protocol constants carry no independent executed-coverage claim. Migration
+inventory is current at 3,888 entries. The final SDK regression rerun passed
+84 controls; the two strict typing scopes remain passing.
+
+Independent review of the helper SDK, original provenance, installed ownership
+and CI wiring found no correctness blocker. The five-original-input description
+and early capability test registration were corrected during that review.
+This coherent source checkpoint is ready for its first hosted development run;
+no helper native, installed, integration or actual-main acceptance is claimed.

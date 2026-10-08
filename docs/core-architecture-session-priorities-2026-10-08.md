@@ -22,8 +22,8 @@ and implementation are present. Its corrected development revision `a34ebd6bc`
 has passed its hosted build, 35 native suites and seven SDK campaigns in run
 `37798264346`; independent artifact audit also passed. Priority 3 is now implemented in the separate
 `codex/dev-policy/two-observation-composition` checkout with an
-[explicit bounded contract](policy-two-observation-composition-v0.1.md); corrected development run `37803803945` has passed its native step and is executing the SDK campaigns after correcting one test diagnostic expectation. Priorities 2–5 must not inherit priority 1's acceptance.
-Priority 4 has a [bounded two-member contract](policy-multi-member-composition-v0.1.md) and implementation in progress; its helper subincrement and priority 5 remain outstanding. The latest user instruction
+[explicit bounded contract](policy-two-observation-composition-v0.1.md); corrected development run `37803803945` at `6feb332688ec838031e4cab9de2f2ee498c7f4b5` passed all 36 native suites and eight SDK campaigns (208 observations), followed by independent inert audit. Priorities 2–5 must not inherit priority 1's acceptance.
+Priority 4 has an implemented [bounded two-member contract](policy-multi-member-composition-v0.1.md), with corrected development run `37809478943` at `a459a234f` pending. Its [grounded-helper subincrement](policy-grounded-helper-composition-v0.1.md) now has core, SDK, independent fixtures and validation wiring in a separate checkout; first hosted native validation is pending. Priority 5 remains outstanding. The latest user instruction
 authorizes continuing these bounded increments sequentially while preserving
 separate exact-revision validation gates.
 
