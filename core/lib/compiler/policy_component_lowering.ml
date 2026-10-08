@@ -9,7 +9,7 @@ module Pin = Bioc_domain.Pinned_identity
 let str value = Json.String value
 let obj value = Json.Object value
 let arr value = Json.Array value
-let slot = function A.Decision -> "decision" | A.Driver -> "driver"
+let slot = A.slot_name
 (* Structured keys are internal matching labels, never implementation names or
    a replacement whole-graph material contract. *)
 let endpoint_json (value:I.endpoint) = obj ["node",str value.node_id;"port",str value.port_id]
@@ -151,7 +151,8 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~r
   let binding = binding
     |> set "observations" (arr (List.map (rename_input "input") (Json.array (get "observations" binding))))
     |> set "effects" (arr (List.map (rename_input "feedback") (Json.array (get "effects" binding)))) in
-  let assembly_raw = obj ["schema_version",str Q.schema_version;"profile",str Q.profile;
+  let assembly_raw = obj ["schema_version",str (if A.is_instanced rule then Q.instance_schema_version else Q.schema_version);
+    "profile",str (if A.is_instanced rule then A.instance_profile else Q.profile);
     "rule",Pin.to_json (A.identity rule);"nodes",arr (List.map (fun value ->
       obj ["slot",str (slot value.reference.slot);"node",str value.reference.node_id;
         "actual",str (actual_id value.key)]) local)] in

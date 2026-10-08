@@ -107,7 +107,7 @@ class ProjectBuild:
 def _route(request: JsonValue) -> Route:
     _require(type(request) is dict, "A complete original component or selection request is required")
     row = cast(dict[str, JsonValue], request)
-    if row.get("schema_version") == component.REQUEST_SCHEMA:
+    if row.get("schema_version") in (component.REQUEST_SCHEMA, component.INSTANCE_REQUEST_SCHEMA):
         component._original(row)
         return "component_material"
     if row.get("schema_version") == selection.REQUEST_SCHEMA:

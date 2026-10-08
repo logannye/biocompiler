@@ -146,7 +146,7 @@ let derive ~charge (binding:IB.checked_binding) rule (domain:F.t) =
   fail (List.sort compare (List.map (fun (demand:demand) -> demand.key) !demands)=List.sort compare keys)
     "complete_derived_resource_inventory";
   let local_minima=List.concat_map (fun slot -> List.filter_map (function LC.Input _ -> None | LC.Capacity value -> Some value.minimum)
-    (LC.provider_requirements (Rule.component rule slot))) [Rule.Decision;Rule.Driver] @ [1;1;1] in
+    (LC.provider_requirements (Rule.component rule slot))) (Rule.slots rule) @ [1;1;1] in
   let demands=List.map2 (fun key minimum ->
     let demand=List.find (fun (demand:demand) -> demand.key=key) !demands in
     {key;quantity=max minimum demand.quantity}) keys local_minima in
@@ -167,7 +167,8 @@ let derive ~charge (binding:IB.checked_binding) rule (domain:F.t) =
 
 let check ?parent ?(maximum=max_work) ~request ~assembly () =
   Diagnostic.require (maximum>=0 && maximum<=max_work) "policy_component_context_resource_limit" "Context work budget exceeds its closed ceiling.";
-  let context_profile=if Rule.is_staged(R.composition_rule request) then X.staged_profile else X.profile in
+  let context_profile=if R.is_instanced request then X.context_profile (R.context request)
+    else if Rule.is_staged(R.composition_rule request) then X.staged_profile else X.profile in
   let budget=match parent with None -> W.create ~profile:context_profile ~error_code:"policy_component_context_resource_limit" ~maximum ()
     | Some parent -> W.nested ~parent ~profile:context_profile ~error_code:"policy_component_context_resource_limit" ~maximum () in
   let charge value=W.charge budget value in charge 1;
@@ -211,7 +212,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     fail(List.length requirements=1 && CT.Member_requirement.category(List.hd requirements)=CT.Member_requirement.Payload)
       "one_payload_no_external_helpers";
     let molecule=List.hd(K.Inventory.molecules(Option.get(K.inventory(MS.content(A.structure assembly)))))in
-    fail(List.length(PM.members structures)=1 && List.length(LC.products(Rule.component rule Rule.Driver))=1)"one_encoded_product";
+    fail(List.length(PM.members structures)=1 && List.length(List.concat_map (fun slot -> LC.products(Rule.component rule slot)) (Rule.slots rule))=1)"one_encoded_product";
     let placement=X.placement context and group=X.delivery_group context in
     fail(AC.Placement.template_id placement=T.id template && AC.Placement.member_id placement=member &&
       Id.Role.to_string(AC.Placement.recipient_role placement)=recipient.role && AC.Placement.compartment placement=recipient.compartment &&
@@ -351,7 +352,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     | exception Diagnostic.Error error when error.code="policy_component_context_fail" -> E.Fail,[error.message]
     | exception Diagnostic.Error error when error.code="policy_component_context_unsupported" -> E.Unsupported,[error.message] in
   let report_value=obj ["schema_version",str "biocompiler.policy_component_context_assessment.v0.1";
-    "profile",str context_profile;"implementation_version",str implementation_version;
+    "profile",str context_profile;"implementation_version",str (if R.is_instanced request then "biocompiler.ocaml.policy_component_context_check.v0.2" else implementation_version);
     "request_fingerprint",str (R.fingerprint request);"context_fingerprint",str (X.fingerprint context);
     "assembly_fingerprint",str (Canonical.fingerprint (A.evidence assembly));
     "outcome",str (E.outcome_name outcome_value);"claim_scope",str "conditional_component_context_and_complete_record_capacity";

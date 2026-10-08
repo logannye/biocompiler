@@ -48,7 +48,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 21, "sources": 90, "witness_sources": 58,
+        self.assertEqual(result["component_route"], {"rules": 22, "sources": 90, "witness_sources": 65,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -246,8 +246,53 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_staged_regimen(self):
+    def before_instance_composition(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        added_witnesses = {
+            "core/test/test_policy_instance_assembly_rule.ml",
+            "core/test/test_policy_instance_material_service.ml",
+            "core/test/policy_instance_support/literals.ml",
+            "core/test/policy_instance_support/requests.ml",
+            "core/test/instance_fixture_export/main.ml",
+            "tests/test_policy_instance_material.py",
+            "tools/check_policy_instance_material.py",
+        }
+        self.assertEqual(set(coverage.COMPONENT_INSTANCE_WITNESSES), added_witnesses)
+        self.assertEqual(ledger["rules"][-1]["id"], "component.instance_composition")
+        self.assertIn("2..8 named instances", ledger["limitations"][-1])
+        ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] not in added_witnesses]
+        ledger["rules"].pop(); ledger["limitations"].pop()
+        return ledger
+
+    def test_instance_composition_preserves_all_twenty_one_previous_rules_and_provenance(self):
+        projected = self.before_instance_composition()
+        encoded = json.dumps(coverage.component_metadata(projected), sort_keys=True,
+                             separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "12a428013a2c057327089930e6742ab24942c43010b3fffaa393d5295e6ec567")
+
+    def test_instance_rule_requires_complete_witness_inventory_and_source_only_scope(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        rule = next(row for row in original["rules"] if row["id"] == "component.instance_composition")
+        self.assertIn("2..8 named instances", rule["scope"])
+        self.assertIn("same primitive graph fragment", rule["scope"])
+        self.assertIn("one RNA and one product", rule["limits"])
+        self.assertIn("Source inventory only", rule["limits"])
+        self.assertEqual(rule["evidence_scope"], "source_only_not_executed_by_this_gate")
+        for path in coverage.COMPONENT_INSTANCE_WITNESSES:
+            ledger = deepcopy(original)
+            ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] != path]
+            with self.subTest(omitted=path), self.assertRaisesRegex(coverage.CoverageError, "census"):
+                coverage.check_component(coverage.ROOT, ledger)
+        for key, value in (("evidence_scope", "native_validation_complete"),
+                           ("limits", "Arbitrary independently stateful modules and multiple RNA accepted.")):
+            ledger = deepcopy(original)
+            next(row for row in ledger["rules"] if row["id"] == rule["id"])[key] = value
+            with self.subTest(changed=key), self.assertRaises(coverage.CoverageError):
+                coverage.check_component(coverage.ROOT, ledger)
+
+    def before_staged_regimen(self):
+        ledger = self.before_instance_composition()
         added_sources = {
             *[f"core/lib/{directory}/{name}.{suffix}" for directory, name in (
                 ("compiler", "policy_staged_lowering"), ("candidate_runtime", "policy_primitives"),
@@ -298,13 +343,13 @@ let check x = Diagnostic.require x "code" "message"
 
     def test_staged_rule_cannot_relabel_source_witnesses_as_native_or_universal(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
-        row = ledger["rules"][-1]
+        row = next(row for row in ledger["rules"] if row["id"] == "component.staged_regimen")
         self.assertIn("independently handwritten", row["scope"])
         self.assertIn("every original hard requirement", row["scope"])
         for key, value in (("evidence_scope", "native_validation_complete"),
                            ("limits", "Universal termination and human efficacy established.")):
             changed = deepcopy(ledger)
-            changed["rules"][-1][key] = value
+            next(item for item in changed["rules"] if item["id"] == row["id"])[key] = value
             with self.assertRaises(coverage.CoverageError):
                 coverage.check_component(coverage.ROOT, changed)
 

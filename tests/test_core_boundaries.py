@@ -53,6 +53,82 @@ class CoreBoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(boundaries.BoundaryError, "Undeclared local module dependency"):
             boundaries.check_boundaries(root)
 
+    def test_original_instance_fixture_tool_is_private_and_domain_only(self):
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        key = "test_tool:instance_originals"
+        self.assertEqual(receipt["roles"][key], "test_support")
+        self.assertEqual(set(receipt["transitive_dependencies"][key]), {
+            "bioc_wire", "bioc_domain", "bioc_policy_component_test_support",
+            "bioc_policy_instance_test_support", "digestif", "zarith"})
+        for public in ("biocompiler-core", "biocompiler-verify"):
+            self.assertNotIn(key, receipt["transitive_dependencies"]["executable:" + public])
+        root = self.copy_core()
+        path = root / "core/test/instance_fixture_export/dune"
+        original = path.read_text()
+        mutations = [original.replace("(name main)", "(name main) (public_name instance-fixture)"),
+                     original.replace("(name main)", "(name changed)"),
+                     original.replace("bioc_policy_instance_test_support", "")]
+        mutations.extend(original.replace("bioc_domain", "bioc_domain " + library)
+                         for library in ("bioc_compiler", "bioc_semantics", "bioc_realization_checker"))
+        for mutant in mutations:
+            path.write_text(mutant)
+            with self.subTest(mutant=mutant), self.assertRaises(boundaries.BoundaryError):
+                boundaries.check_boundaries(root)
+        path.write_text(original)
+        source = root / "core/test/instance_fixture_export/main.ml"
+        source.write_text(source.read_text() + "\nmodule Forbidden = Bioc_compiler.Policy_lowering\n")
+        with self.assertRaisesRegex(boundaries.BoundaryError, "Undeclared local module dependency"):
+            boundaries.check_boundaries(root)
+
+    def test_instance_test_support_is_domain_only_and_absent_from_production_closures(self):
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        name = "bioc_policy_instance_test_support"
+        self.assertEqual(receipt["roles"][name], "test_support")
+        self.assertEqual(set(receipt["transitive_dependencies"][name]),
+                         {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "digestif", "zarith"})
+        for owner in ("executable:biocompiler-core", "executable:biocompiler-verify", "bioc_checker", "bioc_realization_checker"):
+            self.assertNotIn(name, receipt["transitive_dependencies"][owner])
+        root = self.copy_core()
+        path = root / "core/test/policy_instance_support/dune"
+        original = path.read_text()
+        for library in ("bioc_compiler", "bioc_semantics", "bioc_realization_checker"):
+            path.write_text(original.replace("bioc_domain", "bioc_domain " + library))
+            with self.subTest(library=library), self.assertRaisesRegex(boundaries.BoundaryError, "Changed/duplicate Dune boundary"):
+                boundaries.check_boundaries(root)
+        path.write_text(original)
+        source = root / "core/test/policy_instance_support/requests.ml"
+        source.write_text(source.read_text() + "\nmodule Forbidden = Bioc_realization_checker.Policy_preservation_check\n")
+        with self.assertRaisesRegex(boundaries.BoundaryError, "Undeclared local module dependency"):
+            boundaries.check_boundaries(root)
+
+    def test_instance_suites_keep_exact_dependencies_and_both_original_fixture_arguments(self):
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        expected = {
+            "test_policy_instance_assembly_rule": {"bioc_wire", "bioc_domain", "bioc_policy_instance_test_support"},
+            "test_policy_instance_material_service": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler",
+                "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_component_test_support",
+                "bioc_policy_instance_test_support"},
+        }
+        self.assertEqual({name for name in receipt["native_tests"] if name.startswith("test_policy_instance_")}, set(expected))
+        root = self.copy_core()
+        path = root / "core/test/dune"
+        original = path.read_text()
+        for name, libraries in expected.items():
+            self.assertEqual(set(receipt["native_tests"][name]), libraries)
+            start = original.index("(test\n (name " + name + ")")
+            end = original.find("\n\n", start)
+            end = len(original) if end < 0 else end
+            stanza = original[start:end]
+            mutations = [stanza.replace("bioc_domain", "bioc_domain bioc_artifact")]
+            for fixture in ("policy_material_request_v01.json", "policy_material_state_v01.json"):
+                mutations.extend((stanza.replace("%{dep:data/" + fixture + "}", ""),
+                                  stanza.replace(fixture, "foreign.json")))
+            for mutant in mutations:
+                path.write_text(original[:start] + mutant + original[end:])
+                with self.subTest(suite=name, mutant=mutant), self.assertRaises(boundaries.BoundaryError):
+                    boundaries.check_boundaries(root)
+            path.write_text(original)
+
     def test_current_actual_dune_graph_has_separate_verifier_and_explicit_trusted_base(self):
         receipt = boundaries.check_boundaries(boundaries.ROOT)
         self.assertEqual(receipt["status"], "pass")
@@ -68,7 +144,7 @@ class CoreBoundaryTests(unittest.TestCase):
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 171)
+        self.assertEqual(len(receipt["native_tests"]), 173)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")

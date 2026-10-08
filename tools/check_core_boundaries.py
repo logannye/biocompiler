@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_policy_instance_test_support": ("test/policy_instance_support/dune", {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"}, "test_support"),
     "bioc_policy_staged_test_support": ("test/policy_staged_support/dune", {"bioc_wire", "bioc_domain"}, "test_support"),
     "bioc_policy_component_test_support": ("test/policy_component_support/dune", {"bioc_wire", "bioc_domain"}, "test_support"),
     "bioc_reference_input": ("lib/reference_input/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
@@ -48,8 +49,12 @@ EXECUTABLES = {
 PRIVATE_TEST_TOOLS = {
     "component_originals": ("test/component_fixture_export/dune",
         {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"}, "test_support"),
+    "instance_originals": ("test/instance_fixture_export/dune",
+        {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support"}, "test_support"),
 }
 TESTS = {
+    "test_policy_instance_assembly_rule": {"bioc_wire", "bioc_domain", "bioc_policy_instance_test_support"},
+    "test_policy_instance_material_service": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_component_test_support", "bioc_policy_instance_test_support"},
     "test_policy_staged_primitives": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "bioc_policy_staged_test_support", "zarith"},
     "test_policy_staged_regimen_source": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "bioc_semantics"},
     "test_policy_staged_binding": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_policy_staged_test_support", "zarith"},
@@ -575,6 +580,8 @@ def check_boundaries(root: Path):
                         "%{env:BIOCOMPILER_PIPELINE_SESSION_DECLARATION=missing}",
                         "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}"]]]
                 policy_fixtures = {
+                    "test_policy_instance_assembly_rule": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_instance_material_service": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_staged_primitives": ["policy_implementation_v01.json"],
                     "test_policy_staged_regimen_source": ["policy_staged_regimen_source_v01.json"],
                     "test_policy_staged_binding": ["policy_staged_realization_request_v01.json"],

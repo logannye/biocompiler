@@ -15,6 +15,8 @@ module Old = Policy_material_request
 module PX = Policy_material_context
 let schema_version = "biocompiler.policy_component_material_request.v0.1"
 let profile = X.profile
+let instance_schema_version = "biocompiler.policy_component_material_request.v0.2"
+let instance_profile = "biocompiler.policy_instance_component_mrna.v0.1"
 let resource_profile = "biocompiler.policy_component_material_resources.v0.1"
 let str value = Json.String value
 let obj values = Json.Object values
@@ -26,8 +28,13 @@ let text maximum raw = let value = Json.name raw in
 let digest raw = let value = Json.string raw in
   require (String.length value=64 && String.for_all (function '0'..'9'|'a'..'f' -> true | _ -> false) value)
     "Composition request requires a lowercase SHA-256 digest."; value
-let slot_name = function A.Decision -> "decision" | A.Driver -> "driver"
-let slot raw = match Json.string raw with "decision" -> A.Decision | "driver" -> A.Driver
+let slot_name = A.slot_name
+let slot ~instanced raw =
+  if instanced then (
+    let id = text 128 raw in
+    require (id<>"decision" && id<>"driver") "Instance identities cannot use legacy role slots.";
+    A.Instance id)
+  else match Json.string raw with "decision" -> A.Decision | "driver" -> A.Driver
   | _ -> Diagnostic.fail "policy_component_material_request" "Unknown original component slot."
 let pin_equal left right = Json.equal (P.to_json left) (P.to_json right)
 type component_binding = {slot:A.slot;component:P.t}
@@ -41,8 +48,8 @@ let resource_owner_to_json = function
   | Node {slot;node_id} -> obj ["kind",str "node";"slot",str (slot_name slot);"node",str node_id]
   | Input id -> obj ["kind",str "input";"id",str id]
   | Layout -> obj ["kind",str "layout"]
-let owner_of_json raw = match get "kind" raw with
-  | Json.String "node" -> exact ["kind";"slot";"node"] raw; Node {slot=slot (get "slot" raw);node_id=text 128 (get "node" raw)}
+let owner_of_json ~instanced raw = match get "kind" raw with
+  | Json.String "node" -> exact ["kind";"slot";"node"] raw; Node {slot=slot ~instanced (get "slot" raw);node_id=text 128 (get "node" raw)}
   | Json.String "input" -> exact ["kind";"id"] raw; Input (text 128 (get "id" raw))
   | Json.String "layout" -> exact ["kind"] raw; Layout
   | _ -> Diagnostic.fail "policy_component_material_request" "Unknown composition resource owner."
@@ -55,7 +62,7 @@ let resource_keys rule =
         | LC.External_slot_owner id ->
           let input = List.find (fun (row:A.input_ref) -> row.slot=slot && row.external_slot=id) (A.input_order rule) in
           Input input.input_id in
-      Some {owner;unit=value.unit;scope=value.scope}) (LC.provider_requirements (A.component rule slot))) [A.Decision;A.Driver]
+      Some {owner;unit=value.unit;scope=value.scope}) (LC.provider_requirements (A.component rule slot))) (A.slots rule)
   @ [{owner=Layout;unit=C.Generation_counters;scope=C.Per_encounter_slot};
      {owner=Layout;unit=C.Timer_cells;scope=C.Per_executor};
      {owner=Layout;unit=C.Control_event_records;scope=C.Per_executor}]
@@ -74,19 +81,22 @@ let of_json ?(charge=fun _ -> ()) raw =
   let raw_bytes = measure raw in M.check_resources raw;
   exact ["schema_version";"profile";"implementation_request";"component_library";"composition_rule";
     "catalog_binding";"input_bindings";"resource_bindings";"context";"budgets"] raw;
-  require (get "schema_version" raw=str schema_version && get "profile" raw=str profile)
+  let instanced = get "schema_version" raw=str instance_schema_version && get "profile" raw=str instance_profile in
+  require (instanced || (get "schema_version" raw=str schema_version && get "profile" raw=str profile))
     "Unsupported original component material request profile.";
   let original = decode R.of_json (get "implementation_request" raw) in
   let library = decode (L.of_json ~library:(R.implementation_library original)) (get "component_library" raw) in
   let rule_value = decode (A.of_json ~components:library) (get "composition_rule" raw) in
   let context_value = decode X.of_json (get "context" raw) in
+  require (A.is_instanced rule_value=instanced && X.is_instanced context_value=instanced)
+    "Original request, rule and context instance profiles must agree.";
   let bridge = get "catalog_binding" raw in
   exact ["entry_id";"entry_version";"entry_digest";"operation";"realization";"components";"rule"] bridge;
   let catalog = {entry_id=text 256 (get "entry_id" bridge);entry_version=text 256 (get "entry_version" bridge);
     entry_digest=digest (get "entry_digest" bridge);operation=C.provider_ref_of_json (get "operation" bridge);
     realization=C.provider_ref_of_json (get "realization" bridge);rule=P.of_json (get "rule" bridge);
     components=List.map (fun row -> exact ["slot";"component"] row;
-      {slot=slot (get "slot" row);component=P.of_json (get "component" row)}) (M.array ~maximum:2 (get "components" bridge))} in
+      {slot=slot ~instanced (get "slot" row);component=P.of_json (get "component" row)}) (M.array ~maximum:(if instanced then A.max_instances else 2) (get "components" bridge))} in
   let selected = match R.catalog_bindings original with
     | [value] -> value | _ -> Diagnostic.fail "policy_component_material_request" "Composition requires exactly one original realization catalog root." in
   require (selected.entry_id=catalog.entry_id && selected.entry_version=catalog.entry_version && selected.entry_digest=catalog.entry_digest)
@@ -114,17 +124,20 @@ let of_json ?(charge=fun _ -> ()) raw =
   require (List.exists (fun (declaration:D.declaration) -> declaration.kind=D.Effect &&
     equal (get "contract" declaration.value) (C.provider_ref_to_json catalog.operation)) (D.declarations document))
     "Composition catalog operation is not an original source effect contract.";
-  require (List.map (fun (row:component_binding) -> row.slot) catalog.components=[A.Decision;A.Driver] &&
+  require (List.map (fun (row:component_binding) -> row.slot) catalog.components=A.slots rule_value &&
     List.for_all2 (fun (row:component_binding) (selection:A.component_selection) -> row.slot=selection.slot && pin_equal row.component selection.identity)
       catalog.components (A.components rule_value) && pin_equal catalog.rule (A.identity rule_value))
     "Composition catalog bridge must pin exactly the selected components and complete original rule in order.";
-  require (List.length (L.components library)=2 && List.for_all (fun component ->
+  require ((instanced || List.length (L.components library)=2) && List.for_all (fun component ->
     List.exists (fun (row:component_binding) -> pin_equal row.component (LC.identity component)) catalog.components) (L.components library))
-    "Composition request allows only its two selected original components, without alternatives or helpers.";
+    (if instanced then "Composition request allows only selected original component definitions, without alternatives or helpers."
+     else "Composition request allows only its two selected original components, without alternatives or helpers.");
   List.iter (fun selection -> List.iter (fun (node:F.node) ->
     require (List.exists (pin_equal node.model.identity) selected.models)
-      "Selected component primitive lacks the original catalog model membership.") (F.nodes (LC.fragment (A.component rule_value selection)))) [A.Decision;A.Driver];
+      "Selected component primitive lacks the original catalog model membership.") (F.nodes (LC.fragment (A.component rule_value selection)))) (A.slots rule_value);
   let layout = X.record_layout context_value in
+  require (not instanced || layout.staged=A.is_staged rule_value)
+    "Instance context records must use the original primitive phase profile.";
   let union_raw = X.ordered_union_json rule_value in let union_bytes=measure union_raw in spend (2*union_bytes);
   require (pin_equal layout.rule (A.identity rule_value) && layout.union_digest=Canonical.fingerprint union_raw &&
     layout.domain_digest=O.digest (R.operating_domain original) && layout.slots=(A.layout rule_value).slots)
@@ -159,7 +172,7 @@ let of_json ?(charge=fun _ -> ()) raw =
     require (match channel with Some channel -> channel.source=binding.source && channel.kind=channel_kind | None -> false)
       "Composition input provider must retain the declared channel and exact source/kind relation.") inputs (A.input_order rule_value);
   let resources = List.map (fun row -> exact ["owner";"unit";"scope";"provider";"capacity"] row;
-    {key={owner=owner_of_json (get "owner" row);unit=C.resource_unit_of_json (get "unit" row);scope=C.resource_scope_of_json (get "scope" row)};
+    {key={owner=owner_of_json ~instanced (get "owner" row);unit=C.resource_unit_of_json (get "unit" row);scope=C.resource_scope_of_json (get "scope" row)};
      provider=C.provider_ref_of_json (get "provider" row);capacity_id=text 4096 (get "capacity" row)})
     (M.array ~maximum:4096 (get "resource_bindings" raw)) in
   require (List.map (fun (row:resource_binding) -> row.key) resources=resource_keys rule_value)
@@ -192,3 +205,6 @@ let input_bindings value = value.inputs
 let resource_bindings value = value.resources
 let context value = value.context_value
 let budgets value = value.budget_values
+
+let is_instanced value = A.is_instanced value.rule_value
+let request_profile value = if is_instanced value then instance_profile else profile

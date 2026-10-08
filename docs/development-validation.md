@@ -5,7 +5,10 @@ validation coverage and independent checks. The release workflow remains
 [Python checks](../.github/workflows/ci.yml). Development feedback has a separate
 [opt-in hosted workflow](../.github/workflows/policy-development.yml), triggered
 only by pushes to `codex/dev-policy/**`. It builds the native core once on Linux
-and runs 31 fixed staged-regimen, component, selection, generation-metering, protocol, preservation, material and construction suites.
+and runs 33 fixed instance-composition, staged-regimen, component, selection, generation-metering, protocol, preservation, material and construction suites.
+The new instance-composition SDK retains 26 lifecycle observations against two
+independently supplied three-instance originals; its current source checkpoint
+awaits hosted execution. Existing campaign coverage is unchanged.
 The staged source witness retains 33 observations across nine literal timelines;
 the staged material witness retains 16 observations through independent checking
 and paired RNA export. Both use this same fresh native build.
@@ -54,11 +57,12 @@ Focused development uses two native-suite workers after the single successful
 build. Each suite retains its original command, fixture, source and executable
 checks, timeout and separate log. The coordinator alone publishes the fixed
 ordered result inventory and waits for every outcome. After native completion,
-two SDK lanes overlap: component then selection, and staged source then staged
+two SDK lanes overlap: component then selection, and instance composition then
+staged source then staged
 material then the 20-observation researcher-project workflow. Each lane preserves
 its dependencies and existing campaign receipts.
 There are at most two workers in either phase, and no SDK calls are moved into
-unguarded worker threads inside a campaign. All 31 suites and 130 observations
+unguarded worker threads inside a campaign. All 33 suites and 156 observations
 remain mandatory.
 
 At the baseline command durations, this scheduling can remove roughly six
@@ -97,7 +101,7 @@ Choose early feedback from the affected dependency surface. A staged-regimen
 change should get staged feedback promptly; edits to shared semantics, transport,
 authority, packaging or receipt accounting need broader regression coverage.
 **Automatic profile-specific hosted routing is not implemented.** The current
-`policy-development.yml` still requires all 31 native suites and all 130 SDK
+`policy-development.yml` still requires all 33 native suites and all 156 SDK
 observations. Individual witnesses or future scoped runners must report their
 own scope and cannot satisfy that complete census. Until explicit scoped routing
 exists, use the supported complete workflow for hosted development acceptance.

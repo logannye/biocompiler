@@ -9,6 +9,9 @@ module M = Molecular_record
 module AC = Architecture_contract
 let schema_version = "biocompiler.policy_component_context.v0.1"
 let profile = "biocompiler.policy_component_mrna.v0.1"
+let instance_profile = "biocompiler.policy_instance_component_mrna.v0.1"
+let instance_staged_profile = "biocompiler.policy_instance_staged_component_mrna.v0.1"
+let instance_union_profile = "biocompiler.policy_instance_ordered_union.v0.1"
 let record_profile = "biocompiler.policy_component_complete_records.v0.1"
 let staged_profile = "biocompiler.policy_staged_component_mrna.v0.1"
 let staged_record_profile = "biocompiler.policy_staged_component_complete_records.v0.1"
@@ -29,7 +32,7 @@ let arr encode values = Json.Array (List.map encode values)
 let get key raw = Json.field key (Json.object_fields raw)
 let exact keys raw = Json.exact_fields keys (Json.object_fields raw)
 let require condition message = Diagnostic.require condition "policy_component_context" message
-let slot_name = function A.Decision -> "decision" | A.Driver -> "driver"
+let slot_name = A.slot_name
 let reference slot node = obj ["slot",str (slot_name slot);"node",str node]
 let endpoint slot (value:I.endpoint) = obj ["slot",str (slot_name slot);"node",str value.node_id;"port",str value.port_id]
 let ordered_union_json rule =
@@ -57,7 +60,7 @@ let ordered_union_json rule =
       "commits",arr (reference row.slot) group.commits]) (A.group_order rule) in
   let layout = A.layout rule in
   let staged=A.is_staged rule in
-  let value = obj ["schema_version",str union_profile;"primitive_profile",str (if staged then I.staged_profile else I.profile);
+  let value = obj ["schema_version",str (if A.is_instanced rule then instance_union_profile else union_profile);"primitive_profile",str (if staged then I.staged_profile else I.profile);
     "observable_profile",str (if staged then I.staged_observable_profile else I.observable_profile);
     "phase_profile",str (if staged then F.staged_phase_profile else F.phase_profile);"transport_profile",str A.transport_profile;
     "slot_layout",obj ["id",str layout.layout_id;"slots",Json.int layout.slots];
@@ -102,9 +105,10 @@ let record_layout_of_json raw =
   require (Json.equal raw (record_layout_to_json value)) "Composition layout must preserve its complete supplied spelling.";
   value
 let record_layout_fingerprint value = Canonical.fingerprint (record_layout_to_json value)
-type t = {clock_value:X.clock;recipient_value:X.recipient;layout_value:record_layout;
+type t = {instanced:bool;clock_value:X.clock;recipient_value:X.recipient;layout_value:record_layout;
   placement_value:AC.Placement.t;delivery_value:X.delivery_group;provider_values:X.provider list}
-let to_json value = obj ["schema_version",str schema_version;"profile",str (if value.layout_value.staged then staged_profile else profile);
+let to_json value = obj ["schema_version",str schema_version;"profile",str (if value.instanced then (if value.layout_value.staged then instance_staged_profile else instance_profile)
+    else if value.layout_value.staged then staged_profile else profile);
   "clock",X.clock_to_json value.clock_value;"recipient",X.recipient_to_json value.recipient_value;
   "record_layout",record_layout_to_json value.layout_value;"placement",AC.Placement.to_json value.placement_value;
   "delivery_group",X.delivery_group_to_json value.delivery_value;"helpers",Json.Array [];
@@ -112,10 +116,11 @@ let to_json value = obj ["schema_version",str schema_version;"profile",str (if v
 let of_json raw =
   M.check_resources raw;
   exact ["schema_version";"profile";"clock";"recipient";"record_layout";"placement";"delivery_group";"helpers";"providers"] raw;
-  require (get "schema_version" raw=str schema_version && List.mem (get "profile" raw) [str profile;str staged_profile])
+  require (get "schema_version" raw=str schema_version && List.mem (get "profile" raw) [str profile;str staged_profile;str instance_profile;str instance_staged_profile])
     "Unsupported original composition context profile.";
   require (get "helpers" raw=Json.Array []) "Composition context does not support executable or delivered helpers.";
-  let value = {clock_value=X.clock_of_json (get "clock" raw);recipient_value=X.recipient_of_json (get "recipient" raw);
+  let instanced=List.mem (get "profile" raw) [str instance_profile;str instance_staged_profile] in
+  let value = {instanced;clock_value=X.clock_of_json (get "clock" raw);recipient_value=X.recipient_of_json (get "recipient" raw);
     layout_value=record_layout_of_json (get "record_layout" raw);placement_value=AC.Placement.of_json (get "placement" raw);
     delivery_value=X.delivery_group_of_json (get "delivery_group" raw);
     provider_values=List.map X.provider_of_json (M.array ~maximum:128 (get "providers" raw))} in
@@ -136,3 +141,7 @@ let record_layout value = value.layout_value
 let placement value = value.placement_value
 let delivery_group value = value.delivery_value
 let providers value = value.provider_values
+
+let is_instanced value = value.instanced
+let context_profile value = if value.instanced then (if value.layout_value.staged then instance_staged_profile else instance_profile)
+  else if value.layout_value.staged then staged_profile else profile

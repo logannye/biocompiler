@@ -46,6 +46,24 @@ class PolicyDevelopmentSDKTests(unittest.TestCase):
         self.assertEqual(set(result["outputs"]), {"component-originals.json", "sdk-witness.json"})
         self.assertEqual(set(result["binaries"]), set(dev.SDK_BINARIES.values()))
 
+    def test_instance_commands_preserve_separate_domain_authority_and_receipts(self):
+        with mock.patch.object(dev, "command", side_effect=self.command):
+            result = dev.instance_sdk(self.root)
+        output = self.root / "generated/development-feedback"
+        self.assertEqual(result["schema"], "biocompiler.development-instance-sdk-feedback.v0.1")
+        self.assertIs(result["acceptance"], False)
+        self.assertEqual(self.actions[0], ("instance-originals", ["opam", "exec", "--",
+            str(self.root / dev.SDK_BINARIES["instance_originals"]),
+            *(str(self.root / path) for path in dev.INSTANCE_ORIGINALS), str(output / "instance-originals.json")]))
+        self.assertEqual(self.actions[1], ("instance-sdk", [dev.sys.executable, "-B",
+            str(self.root / "tools/check_policy_instance_material.py"),
+            "--fixture", str(output / "instance-originals.json"),
+            "--core", str(self.root / dev.SDK_BINARIES["core"]),
+            "--verify", str(self.root / dev.SDK_BINARIES["verify"]),
+            "--output", str(output / "instance-sdk-witness.json")]))
+        self.assertEqual(set(result["outputs"]), {"instance-originals.json", "instance-sdk-witness.json"})
+        self.assertFalse((output / "public-sdk.json").exists())
+
     def test_source_or_built_binary_change_rejects_before_launch(self):
         for relative in ("src/empty.py", dev.SDK_BINARIES["core"], dev.SDK_BINARIES["verify"], dev.SDK_BINARIES["originals"]):
             with self.subTest(relative=relative):
@@ -137,7 +155,7 @@ class PolicyDevelopmentSelectionSDKTests(unittest.TestCase):
         self.peer.setUp()
         self.addCleanup(self.peer.doCleanups)
         self.root = self.peer.root
-        for relative in set(dev.SDK_ORIGINALS + dev.SELECTION_ORIGINALS):
+        for relative in set(dev.SDK_ORIGINALS + dev.SELECTION_ORIGINALS + dev.INSTANCE_ORIGINALS):
             path = self.root / relative
             if not path.exists():
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -343,7 +361,7 @@ class PolicyDevelopmentParallelSDKTests(unittest.TestCase):
         self.peer.setUp()
         self.addCleanup(self.peer.doCleanups)
         self.root = self.peer.root
-        for relative in set(dev.SDK_ORIGINALS + dev.SELECTION_ORIGINALS):
+        for relative in set(dev.SDK_ORIGINALS + dev.SELECTION_ORIGINALS + dev.INSTANCE_ORIGINALS):
             path = self.root / relative
             if not path.exists():
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -399,14 +417,15 @@ class PolicyDevelopmentParallelSDKTests(unittest.TestCase):
         self.assertEqual(self.maximum, 2)
         self.assertEqual(self.active, 0)
         self.assertCountEqual(self.started, ["component-originals", "component-sdk", "selection-originals",
-            "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk"])
+            "selection-sdk", "instance-originals", "instance-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk"])
         self.assertLess(self.finished.index("component-sdk"), self.finished.index("selection-originals"))
+        self.assertLess(self.started.index("instance-sdk"), self.started.index("staged-source-sdk"))
         self.assertLess(self.started.index("staged-source-sdk"), self.started.index("staged-material-sdk"))
         self.assertLess(self.started.index("staged-material-sdk"), self.started.index("researcher-alpha-sdk"))
-        self.assertEqual(list(reports), ["public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk"])
+        self.assertEqual(list(reports), ["public-sdk", "selection-sdk", "instance-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk"])
         self.assertTrue(all(row["status"] == "passed" and row["acceptance"] is False for row in reports.values()))
         names = {"public-sdk": "public-sdk.json", "selection-sdk": "selection-public-sdk.json",
-                 "staged-source-sdk": "staged-source-sdk.json", "staged-material-sdk": "staged-material-sdk.json",
+                 "instance-sdk": "instance-sdk.json", "staged-source-sdk": "staged-source-sdk.json", "staged-material-sdk": "staged-material-sdk.json",
                  "researcher-alpha-sdk": "researcher-alpha-sdk.json"}
         for name, report in reports.items():
             self.assertEqual(self.read(names[name]), report)

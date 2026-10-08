@@ -36,6 +36,8 @@ ADDED_DEPENDENCIES = {
     "test_policy_staged_binding": ["data/policy_staged_realization_request_v01.json"],
     "test_policy_staged_component_material": ["data/policy_staged_material_v01.json"],
     "test_policy_staged_generation": ["data/policy_staged_realization_request_v01.json"],
+    "test_policy_instance_assembly_rule": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_instance_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
 }
 
 
@@ -68,8 +70,8 @@ class NativeFixtureWiringTests(unittest.TestCase):
         return declared
 
     def assert_reviewed_census(self, declared):
-        self.assertEqual(len(declared), 171, "complete union native suite census changed")
-        self.assertEqual(sum("dependencies" in row for row in declared), 53)
+        self.assertEqual(len(declared), 173, "complete union native suite census changed")
+        self.assertEqual(sum("dependencies" in row for row in declared), 55)
         added = [row for row in declared if row["name"] in ADDED_DEPENDENCIES]
         self.assertEqual(added, [{"name": name, "environment": [], "dependencies": dependencies}
                                 for name, dependencies in ADDED_DEPENDENCIES.items()],
@@ -120,12 +122,13 @@ class NativeFixtureWiringTests(unittest.TestCase):
         self.assertEqual(bundle.expected_members(root), {
             "core/_build/default/bin/core/main.exe", "core/_build/default/bin/verify/main.exe",
             "core/_build/default/test/component_fixture_export/main.exe",
+            "core/_build/default/test/instance_fixture_export/main.exe",
             *("core/_build/default/test/" + row["name"] + ".exe" for row in declared),
             *("core/_build/default/test/" + relative for row in declared for relative in row.get("dependencies", []))},
             "compiled bundle omitted or added a native executable or source dependency fixture")
         members = bundle.expected_members(root)
-        self.assertEqual(len(members), 200)
-        self.assertEqual(sum(path.endswith(".exe") for path in members), 174)
+        self.assertEqual(len(members), 203)
+        self.assertEqual(sum(path.endswith(".exe") for path in members), 177)
         return declared, dict(bindings)
 
     def test_reviewed_baseline_projection_rejects_changes_despite_same_total(self):

@@ -19,6 +19,11 @@ RESULT_SCHEMA = "biocompiler.core.policy_component_material.v1"
 CANDIDATE_SCHEMA = "biocompiler.policy_component_material_candidate.v0.1"
 REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.1"
 REQUEST_PROFILE = "biocompiler.policy_component_mrna.v0.1"
+INSTANCE_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.2"
+INSTANCE_REQUEST_PROFILE = "biocompiler.policy_instance_component_mrna.v0.1"
+INSTANCE_ASSEMBLY_PROFILE = "biocompiler.policy_instance_component_assembly.v0.1"
+INSTANCE_IMPLEMENTATION = "biocompiler.ocaml.policy_instance_component_material.v0.1"
+INSTANCE_VALIDATION_SCOPE = "policy-instance-component-mrna-v0.1"
 REPORT_SCHEMA = "biocompiler.policy_component_material_assessment.v0.1"
 EXPORT_SCHEMA = "biocompiler.policy_component_mrna_export.v0.1"
 MANIFEST_SCHEMA = "biocompiler.policy_component_mrna_manifest.v0.1"
@@ -38,6 +43,13 @@ PROFILE: dict[str, JsonValue] = {
 PRODUCER_PROFILE: dict[str, JsonValue] = {
     "operations": ["compile-policy-component-material"], "implementation": IMPLEMENTATION, "validation_scope": VALIDATION_SCOPE,
 }
+INSTANCE_PROFILE: dict[str, JsonValue] = {
+    **PROFILE, "request_schema": INSTANCE_REQUEST_SCHEMA, "implementation": INSTANCE_IMPLEMENTATION,
+    "validation_scope": INSTANCE_VALIDATION_SCOPE,
+}
+INSTANCE_PRODUCER_PROFILE: dict[str, JsonValue] = {
+    **PRODUCER_PROFILE, "implementation": INSTANCE_IMPLEMENTATION, "validation_scope": INSTANCE_VALIDATION_SCOPE,
+}
 _REQUEST_FIELDS = {"schema_version", "profile", "implementation_request", "component_library", "composition_rule",
                    "catalog_binding", "input_bindings", "resource_bindings", "context", "budgets"}
 _CANDIDATE_FIELDS = {"schema_version", "behavior", "implementation", "binding", "assembly_proposal", "construction"}
@@ -47,7 +59,8 @@ _same, _pin, _record, _rows, _count = material._same, material._pin, material._r
 
 def _original(value: JsonValue) -> dict[str, JsonValue]:
     request = _object(value, _REQUEST_FIELDS, "Original component material request")
-    if request["schema_version"] != REQUEST_SCHEMA or request["profile"] != REQUEST_PROFILE:
+    if (request["schema_version"], request["profile"]) not in ((REQUEST_SCHEMA, REQUEST_PROFILE),
+            (INSTANCE_REQUEST_SCHEMA, INSTANCE_REQUEST_PROFILE)):
         raise CoreProtocolError("Component material request changed its closed original profile")
     implementation._original(request["implementation_request"])
     for key in ("component_library", "composition_rule", "catalog_binding", "context", "budgets"):
@@ -55,6 +68,10 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
     for key in ("input_bindings", "resource_bindings"):
         _rows(request[key], "Original " + key)
     return request
+
+
+def _instanced(request: dict[str, JsonValue]) -> bool:
+    return request["profile"] == INSTANCE_REQUEST_PROFILE
 
 
 def _expect(row: dict[str, JsonValue], expected: dict[str, JsonValue], label: str) -> None:
@@ -71,6 +88,7 @@ def _unique(rows: list[dict[str, JsonValue]], key: str, value: JsonValue, label:
 
 def _projections(request: dict[str, JsonValue], candidate: dict[str, JsonValue], leaf: dict[str, JsonValue]) -> None:
     """Bind retained inventories to originals and candidate; do not reconstruct RNA."""
+    instanced = _instanced(request)
     rule = _record(_record(request["composition_rule"], "Original rule").get("body"), "Original rule body")
     library = _rows(_record(request["component_library"], "Original library").get("components"), "Original components")
     components: dict[str, dict[str, JsonValue]] = {}
@@ -79,8 +97,10 @@ def _projections(request: dict[str, JsonValue], candidate: dict[str, JsonValue],
         if type(slot) is not str or slot in components:
             raise CoreProtocolError("Original component selection has ambiguous slots")
         components[slot] = _record(_unique(library, "identity", row.get("component"), "Selected component").get("body"), "Component body")
-    if list(components) != ["decision", "driver"]:
-        raise CoreProtocolError("Component evidence changed its closed two-component inventory")
+    if (not instanced and list(components) != ["decision", "driver"]
+            or instanced and (not 2 <= len(components) <= 8 or any(slot in ("decision", "driver") for slot in components))):
+        raise CoreProtocolError("Component evidence changed its original bounded instance inventory" if instanced
+                                    else "Component evidence changed its closed two-component inventory")
     roots = _rows(rule.get("root_bindings"), "Original root bindings")
     authority = _record(rule.get("material_authority"), "Original material authority")
     member_order = authority.get("member_order")
@@ -93,12 +113,16 @@ def _projections(request: dict[str, JsonValue], candidate: dict[str, JsonValue],
     features = _rows(_unique(molecules, "id", member_order[0], "Checked member").get("features"), "Checked features") if passed else []
 
     def site(value: JsonValue, slot: str, original: dict[str, JsonValue]) -> None:
-        row = _object(value, {"slot", "root", "source", "feature", "local_path", "member", "path"}, "Retained carrier site")
+        row = _object(value, {"slot", "root", "source", "feature", "local_path", "member", "path"}
+                      | ({"final_feature"} if instanced else set()), "Retained carrier site")
         _expect(row, {"slot": slot, "root": original.get("root"), "source": _unique(roots, "slot", slot, "Root binding").get("source"),
                       "feature": original.get("feature"), "local_path": original.get("path"), "member": member_order[0]}, "Carrier projection")
         _record(row["path"], "Projected carrier path")
+        final_feature = encode_json([slot, original.get("feature")]).decode("utf-8") if instanced else original.get("feature")
+        if instanced:
+            _expect(row, {"final_feature": final_feature}, "Instance-qualified feature identity")
         if passed:
-            feature = _unique(features, "id", original.get("feature"), "Projected final feature")
+            feature = _unique(features, "id", final_feature, "Projected final feature")
             if not _same(row["path"], feature.get("path")):
                 raise CoreProtocolError("Carrier projection differs from the exact checked member feature")
 
@@ -119,10 +143,19 @@ def _projections(request: dict[str, JsonValue], candidate: dict[str, JsonValue],
         raise CoreProtocolError("Assembly omitted or added original cross-link projections")
     proposal = _record(candidate["assembly_proposal"], "Assembly proposal")
     bindings = _rows(proposal.get("nodes"), "Proposed node bindings")
-    join = _record(rule.get("join"), "Original join")
+    join = _record(rule.get("join"), "Original join") if not instanced else {}
+    joins = _rows(rule.get("joins"), "Original joins") if instanced else []
     for raw, original in zip(returned, links):
-        row = _object(raw, {"link", "join", "offset", "producer_endpoint", "consumer_endpoint", "producer", "consumer"}, "Retained cross-link")
-        _expect(row, {"link": original.get("link"), "join": original.get("join"), "offset": join.get("offset")}, "Cross-link order/join")
+        row = _object(raw, {"link", "producer_endpoint", "consumer_endpoint", "producer", "consumer"}
+                      | ({"joins", "offsets"} if instanced else {"join", "offset"}), "Retained cross-link")
+        if instanced:
+            path = original.get("joins")
+            if type(path) is not list or not path:
+                raise CoreProtocolError("Instance cross-link lacks its original join path")
+            offsets: list[JsonValue] = [_unique(joins, "id", item, "Crossed original join").get("offset") for item in path]
+            _expect(row, {"link": original.get("link"), "joins": path, "offsets": offsets}, "Cross-link path/order")
+        else:
+            _expect(row, {"link": original.get("link"), "join": original.get("join"), "offset": join.get("offset")}, "Cross-link order/join")
         link = _unique(_rows(rule.get("links"), "Original links"), "id", original.get("link"), "Original link")
         for side in ("producer", "consumer"):
             boundary = _record(link.get(side), "Original boundary")
@@ -188,6 +221,7 @@ def _context_inventory(request: dict[str, JsonValue], report: dict[str, JsonValu
 def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue]) -> None:
     rule = _record(request["composition_rule"], "Original rule")
     body = _record(rule.get("body"), "Original rule body")
+    instanced = _instanced(request)
     assembly, context = report["assembly"], report["context"]
     if assembly is not None:
         leaf = _object(assembly, {"schema_version", "checker_version", "profile", "original_fingerprint", "components_fingerprint",
@@ -195,7 +229,8 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
             "claim_scope", "premise", "structure", "carrier_projections", "link_projections", "preservation_evidence_fingerprint",
             "catalog_authorization", "context", "resource_capacity", "input_compatibility", "source_obligation_discharge", "empirical", "artifact", "export"}, "Assembly evidence")
         _expect(leaf, {"schema_version": "biocompiler.policy_component_assembly_assessment.v0.1",
-            "checker_version": "biocompiler.ocaml.policy_component_assembly_check.v0.1", "profile": "biocompiler.policy_exact_component_assembly.v0.1",
+            "checker_version": "biocompiler.ocaml.policy_component_assembly_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_assembly_check.v0.1",
+            "profile": INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1",
             "claim_scope": "exact_supplied_component_graph_and_material_correspondence", "premise": "supplied_conditional_model_to_sequence_composition_rule",
             **{key: "unassessed" for key in ("catalog_authorization", "context", "resource_capacity", "input_compatibility", "source_obligation_discharge", "empirical")},
             "artifact": "withheld", "export": "withheld"}, "Assembly evidence")
@@ -207,13 +242,15 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
         _projections(request, candidate, leaf)
     if context is not None:
         context_profile = _record(request["context"], "Original component context").get("profile")
-        if context_profile not in (REQUEST_PROFILE, "biocompiler.policy_staged_component_mrna.v0.1"):
+        allowed_contexts = ((INSTANCE_REQUEST_PROFILE, "biocompiler.policy_instance_staged_component_mrna.v0.1") if instanced
+                            else (REQUEST_PROFILE, "biocompiler.policy_staged_component_mrna.v0.1"))
+        if context_profile not in allowed_contexts:
             raise CoreProtocolError("Original component context has an unsupported profile")
         leaf = _object(context, {"schema_version", "profile", "implementation_version", "request_fingerprint", "context_fingerprint", "assembly_fingerprint",
             "outcome", "claim_scope", "record_layout", "minimum_record_layout", "derived_demands", "resource_allocations", "source_obligations", "discharges",
             "diagnostics", "source_receipt_status", "biological_validity", "human_use", "artifact", "export"}, "Component context evidence")
         _expect(leaf, {"schema_version": "biocompiler.policy_component_context_assessment.v0.1", "profile": context_profile,
-            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.1", "claim_scope": "conditional_component_context_and_complete_record_capacity",
+            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_context_check.v0.1", "claim_scope": "conditional_component_context_and_complete_record_capacity",
             "source_receipt_status": "unchanged", "biological_validity": "unassessed", "human_use": "unassessed", "artifact": "withheld", "export": "withheld"}, "Context evidence")
         for key, original in (("request_fingerprint", request), ("context_fingerprint", request["context"]), ("assembly_fingerprint", assembly)):
             _pin(leaf[key], original, key)
@@ -241,19 +278,20 @@ class PolicyComponentMaterialResult(material.PolicyMaterialResult):
     """Immutable component evidence; only a fresh export returns paired native bytes."""
 
 
-def _candidate(value: JsonValue) -> dict[str, JsonValue]:
+def _candidate(value: JsonValue, *, instanced: bool = False) -> dict[str, JsonValue]:
     candidate = _object(value, _CANDIDATE_FIELDS, "Complete component candidate")
     if candidate["schema_version"] != CANDIDATE_SCHEMA:
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
     proposal = _object(candidate["assembly_proposal"], {"schema_version", "profile", "rule", "nodes"}, "Assembly proposal")
-    _expect(proposal, {"schema_version": "biocompiler.policy_component_assembly_proposal.v0.1", "profile": "biocompiler.policy_exact_component_assembly.v0.1"}, "Assembly proposal")
+    _expect(proposal, {"schema_version": "biocompiler.policy_component_assembly_proposal.v0.2" if instanced else "biocompiler.policy_component_assembly_proposal.v0.1",
+                      "profile": INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1"}, "Assembly proposal")
     return candidate
 
 
-def _report(value: JsonValue) -> dict[str, JsonValue]:
+def _report(value: JsonValue, *, instanced: bool = False) -> dict[str, JsonValue]:
     report = _object(value, _REPORT_FIELDS, "Complete component assessment")
-    _expect(report, {"schema_version": REPORT_SCHEMA, "profile": REQUEST_PROFILE,
-        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
+    _expect(report, {"schema_version": REPORT_SCHEMA, "profile": INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
+        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
         "claim_scope": CLAIM_SCOPE, "premise": PREMISE, "empirical": "unassessed", "artifact": "withheld", "export": "withheld"}, "Component report")
     return report
 
@@ -278,15 +316,16 @@ def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate
 
 
 def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComponentMaterialResult:
-    result = _object(response.result, material._RESULT_FIELDS, "Component material result")
-    _expect(result, {"schema_version": RESULT_SCHEMA, "implementation": IMPLEMENTATION,
-                    "resource_profile": RESOURCE_PROFILE, "validation_scope": VALIDATION_SCOPE}, "Negotiated component result")
     request = _original(payload["request"])
+    instanced = _instanced(request)
+    result = _object(response.result, material._RESULT_FIELDS, "Component material result")
+    _expect(result, {"schema_version": RESULT_SCHEMA, "implementation": INSTANCE_IMPLEMENTATION if instanced else IMPLEMENTATION,
+                    "resource_profile": RESOURCE_PROFILE, "validation_scope": INSTANCE_VALIDATION_SCOPE if instanced else VALIDATION_SCOPE}, "Negotiated component result")
     candidate = _object(result["candidate"], _CANDIDATE_FIELDS, "Complete component candidate")
     if candidate["schema_version"] != CANDIDATE_SCHEMA or "candidate" in payload and not _same(candidate, payload["candidate"]):
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
-    _candidate(candidate)
-    report = _report(result["report"])
+    _candidate(candidate, instanced=instanced)
+    report = _report(result["report"], instanced=instanced)
     invocation: JsonValue = {"request": request, "candidate": candidate, "limits": payload["limits"]}
     request_hash = _pin(result["request_fingerprint"], request, "Complete original component request")
     candidate_hash = _pin(result["candidate_fingerprint"], candidate, "Complete component candidate")
@@ -295,7 +334,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
     _assessment(response, request, candidate, report, payload["limits"])
     material._artifact(result["artifact"], operation=response.operation, request=request, candidate=candidate, report=report, limits=payload["limits"],
         export_operation="export-policy-component-material", accepted_status=ACCEPTED_STATUS, export_schema=EXPORT_SCHEMA,
-        manifest_schema=MANIFEST_SCHEMA, request_profile=REQUEST_PROFILE, claim_scope=CLAIM_SCOPE, premise=PREMISE)
+        manifest_schema=MANIFEST_SCHEMA, request_profile=INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE, claim_scope=CLAIM_SCOPE, premise=PREMISE)
     if response.operation == "replay-policy-component-material" and not _same(result, payload["report"]):
         raise CoreProtocolError("Fresh replay differs from the complete retained component wrapper")
     budgets = _record(request["budgets"], "Original component budgets")
@@ -312,13 +351,18 @@ class PolicyComponentMaterialClient:
 
     def _call(self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None) -> PolicyComponentMaterialResult:
         snapshot = cast(dict[str, JsonValue], decode_json(encode_json(payload)))
-        _original(snapshot["request"])
+        request = _original(snapshot["request"])
+        instanced = _instanced(request)
+        profile_key = "policy_instance_material" if instanced else "policy_component_material"
+        expected_profile = INSTANCE_PROFILE if instanced else PROFILE
+        expected_producer = INSTANCE_PRODUCER_PROFILE if instanced else PRODUCER_PROFILE
+        expected_scope = INSTANCE_VALIDATION_SCOPE if instanced else VALIDATION_SCOPE
         if operation == "compile-policy-component-material" and self.transport.role != "core":
             raise CoreProtocolError("Component production requires an explicitly selected Core producer")
         capabilities = self.transport.negotiate(operation, cancelled=cancelled)
-        if not _same(capabilities.profiles.get("policy_component_material"), PROFILE) or VALIDATION_SCOPE not in capabilities.validation_scopes:
+        if not _same(capabilities.profiles.get(profile_key), expected_profile) or expected_scope not in capabilities.validation_scopes:
             raise CoreProtocolError("Selected executable lacks the exact component material profile")
-        if operation == "compile-policy-component-material" and not _same(capabilities.profiles.get("policy_component_material_producer"), PRODUCER_PROFILE):
+        if operation == "compile-policy-component-material" and not _same(capabilities.profiles.get(profile_key + "_producer"), expected_producer):
             raise CoreProtocolError("Selected executable lacks the exact component producer profile")
         return _result(self.transport.call(operation, snapshot, cancelled=cancelled), snapshot)
 

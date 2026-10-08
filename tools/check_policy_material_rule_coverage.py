@@ -156,7 +156,16 @@ COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "compone
     "component.selection_request_codec", "component.material_candidate_codec",
     "component.selection_candidate_codec", "component.selection_common_authority", "component.checked_selection",
     "component.selection_publication_resources", "component.selection_scope", "component.selection_export", "component.selection_sdk",
-    "component.selection_generation", "component.staged_regimen")
+    "component.selection_generation", "component.staged_regimen", "component.instance_composition")
+COMPONENT_INSTANCE_WITNESSES = tuple(sorted([
+    "core/test/test_policy_instance_assembly_rule.ml",
+    "core/test/test_policy_instance_material_service.ml",
+    "core/test/policy_instance_support/literals.ml",
+    "core/test/policy_instance_support/requests.ml",
+    "core/test/instance_fixture_export/main.ml",
+    "tests/test_policy_instance_material.py",
+    "tools/check_policy_instance_material.py",
+]))
 COMPONENT_STAGED_WITNESSES = tuple(sorted([
     *[f"core/test/test_policy_staged_{name}.ml" for name in
       ("regimen_source", "primitives", "binding", "generation", "component_material")],
@@ -170,6 +179,7 @@ COMPONENT_STAGED_WITNESSES = tuple(sorted([
     "tools/check_policy_staged_regimen_source.py", "tools/check_policy_staged_component_material.py",
 ]))
 COMPONENT_WITNESSES = tuple(sorted([
+    *COMPONENT_INSTANCE_WITNESSES,
     *COMPONENT_STAGED_WITNESSES,
     *[f"core/test/test_policy_component_{name}.ml" for name in ("fragment", "material", "assembly_rule", "assembly_check", "material_request", "context_check", "material_service")],
     "core/test/test_policy_component_selection_request.ml", "core/test/test_policy_component_material_candidate.ml",
@@ -191,7 +201,7 @@ COMPONENT_WITNESSES = tuple(sorted([
 ]))
 # Fixed reviewed meaning/provenance projection, excluding source-body hashes and
 # lexical counts. Re-pinning changed files cannot reassign witness meaning.
-COMPONENT_METADATA_SHA256 = "12a428013a2c057327089930e6742ab24942c43010b3fffaa393d5295e6ec567"
+COMPONENT_METADATA_SHA256 = "66f317405442f70148ec76a5413a14c47da46bfa925124a830a176f4c6aeca4b"
 
 
 class CoverageError(ValueError):

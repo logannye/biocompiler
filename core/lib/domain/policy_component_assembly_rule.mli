@@ -1,4 +1,4 @@
-(** Original two-component composition declarations. Decoding checks bounded
+(** Original versioned component composition declarations. Decoding checks bounded
     shape, exact component membership, signal/order consistency and the supplied
     construction premise. It grants no source preservation, execution, material
     reconstruction, translation, context or export acceptance. No candidate
@@ -10,9 +10,12 @@ module L = Policy_component_library
 val schema_version : string
 val profile : string
 val staged_profile : string
+val instance_schema_version : string
+val instance_profile : string
+val max_instances : int
 val transport_profile : string
 
-type slot = Decision | Driver
+type slot = Decision | Driver | Instance of string
 type component_selection = private { slot:slot; identity:Pinned_identity.t }
 type node_ref = private { slot:slot; node_id:string }
 type endpoint_ref = private { node:node_ref; port_id:string }
@@ -20,6 +23,7 @@ type boundary_ref = private { slot:slot; boundary_id:string }
 type link_kind = Product | Request | Authorization
   | Stage_product of int | Stage_request of int | Stage_authorization of int
   | Stage_event of int * I.event_kind
+  | Named_link of string
 type scope_relation = Same_encounter_slot | Immutable_executor_broadcast
 type link = private {
   kind:link_kind; producer:boundary_ref; consumer:boundary_ref;
@@ -33,7 +37,7 @@ type join = private {
   join_id:string; step_id:string; port_id:string; left:slot; right:slot; offset:int;
 }
 type link_carrier = private {
-  kind:link_kind; producer_site:int; consumer_site:int; join_id:string;
+  kind:link_kind; producer_site:int; consumer_site:int; join_id:string; join_path:string list;
 }
 type t
 
@@ -47,6 +51,10 @@ val identity : t -> Pinned_identity.t
 val component_library_digest : t -> string
 val model_library_digest : t -> string
 val components : t -> component_selection list
+val slots : t -> slot list
+val slot_name : slot -> string
+val slot_of_json : ?instanced:bool -> Json.t -> slot
+val assembly_profile : t -> string
 val component : t -> slot -> C.t
 val layout : t -> Policy_component_fragment.slot_layout
 val links : t -> link list
@@ -57,8 +65,13 @@ val group_order : t -> group_ref list
 val export_order : t -> endpoint_ref list
 val root_bindings : t -> root_binding list
 val join : t -> join
+val joins : t -> join list
+val offset : t -> slot -> int
+val projected_feature_id : t -> slot -> string -> string
 val link_carriers : t -> link_carrier list
+val carrier_joins : link_carrier -> string list
 val material_authority : t -> Policy_mrna_structure.t
 
 val is_staged : t -> bool
+val is_instanced : t -> bool
 val link_name : link_kind -> string

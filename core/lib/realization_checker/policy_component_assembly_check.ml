@@ -23,11 +23,12 @@ module M = Bioc_domain.Molecular_record
 module Pin = Bioc_domain.Pinned_identity
 module W = Bioc_checker.Work_budget
 let implementation_version = "biocompiler.ocaml.policy_component_assembly_check.v0.1"
+let instance_implementation_version = "biocompiler.ocaml.policy_component_assembly_check.v0.2"
 let max_work = 100000000
 let str value = Json.String value
 let obj values = Json.Object values
 let arr values = Json.Array values
-let slot_name = function A.Decision -> "decision" | A.Driver -> "driver"
+let slot_name = A.slot_name
 let link_name = A.link_name
 let replace key replacement raw = obj (List.map (fun (name,value) ->
   name,(if name=key then replacement else value)) (Json.object_fields raw))
@@ -55,9 +56,11 @@ let evidence (value:checked_assembly) = value.evidence_value
 let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementation ~proposed ~candidate () =
   Diagnostic.require (maximum>=0 && maximum<=max_work) "policy_component_assembly_resource_limit"
     "Assembly checker work exceeds its fixed ceiling.";
+  let instanced = A.is_instanced rule in
+  let profile = if instanced then A.instance_profile else A.profile in
   let budget = match parent with
-    | None -> W.create ~profile:A.profile ~error_code:"policy_component_assembly_resource_limit" ~maximum ()
-    | Some parent -> W.nested ~parent ~profile:A.profile ~error_code:"policy_component_assembly_resource_limit" ~maximum () in
+    | None -> W.create ~profile ~error_code:"policy_component_assembly_resource_limit" ~maximum ()
+    | Some parent -> W.nested ~parent ~profile ~error_code:"policy_component_assembly_resource_limit" ~maximum () in
   let charge amount = W.charge budget amount in charge 1;
   let encoded raw = M.check_resources raw; let bytes = Canonical.encode raw in charge (String.length bytes); bytes in
   let equal left right = encoded left = encoded right in
@@ -79,6 +82,8 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
      source-bearing implementation or replacement v1 material request exists. *)
   let components = L.of_json ~library:(R.implementation_library original) library_raw in
   let rule = A.of_json ~components rule_raw and proposed = Q.of_json proposal_raw in
+  if instanced || Q.is_instanced proposed then
+    verify (instanced=Q.is_instanced proposed) "instance_proposal_profile";
   verify (equal (Pin.to_json (Q.rule proposed)) (Pin.to_json (A.identity rule))) "original_assembly_rule_pin";
   verify (A.model_library_digest rule = (I.authority actual).library_digest) "original_model_library";
   verify (A.component_library_digest rule = L.fingerprint components) "original_component_library";
@@ -129,7 +134,7 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   charge (List.length exports); verify (exports=I.semantic_exports actual) "complete_ordered_semantic_exports";
   let authority = A.material_authority rule in
   let structure_result = S.check ~parent:budget ~authority ~candidate () in
-  let template = PM.template authority and join = A.join rule in
+  let template = PM.template authority in
   let step = List.hd (PT.steps template) in
   let port = List.hd (CT.Transform_step.ports step) in
   let port_space = CT.Product_port.space_id port in
@@ -138,10 +143,39 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   let member_space = CT.Output_member.space_id output_member in
   let root slot = CT.Root_source.molecule (C.root (A.component rule slot)) in
   let source slot = (List.find (fun (row:A.root_binding) -> row.slot=slot) (A.root_bindings rule)).source_id in
-  let offset = function A.Decision -> 0 | A.Driver -> join.offset in
+  let slots = A.slots rule in
+  (* Derive instance positions independently from the complete original roots.
+     The domain decoder's offset helper is not the geometry oracle. *)
+  let offsets = if instanced then
+    let _, rows = List.fold_left (fun (cursor, rows) slot ->
+      charge 1;
+      cursor + String.length (N.sequence (root slot)), (slot, cursor) :: rows) (0, []) slots in
+    List.rev rows
+    else [A.Decision,0;A.Driver,(A.join rule).offset] in
+  let offset slot = List.assoc slot offsets in
+  let final_feature_id slot local = if instanced then
+    Canonical.encode (arr [str (slot_name slot);str local]) else local in
+  let projected_feature slot ~space feature =
+    match project_feature ~offset:(offset slot) ~space feature with
+    | Some raw when instanced -> Some (replace "id" (str (final_feature_id slot (N.Feature.id feature))) raw)
+    | result -> result in
+  let joins = A.joins rule in
+  if instanced then (
+    let rec adjacent = function
+      | left::(right::_ as rest) -> (left,right)::adjacent rest
+      | _ -> [] in
+    let expected = adjacent slots in
+    verify (List.length joins=List.length expected) "complete_adjacent_join_inventory";
+    List.iteri (fun index (left,right) ->
+      match List.nth_opt joins index with
+      | None -> verify false "original_adjacent_join_absent"
+      | Some (join:A.join) ->
+        verify (join.left=left && join.right=right && join.offset=offset right &&
+          join.step_id=CT.Transform_step.id step && join.port_id=CT.Product_port.id port)
+          "exact_original_adjacent_join") expected);
   let feature_transition = CT.Product_port.feature_transition port in
   let feature_dispositions = MT.Feature.dispositions feature_transition in
-  let local_features = List.concat_map (fun slot -> List.map (fun feature -> slot,feature) (N.features (root slot))) [A.Decision;A.Driver] in
+  let local_features = List.concat_map (fun slot -> List.map (fun feature -> slot,feature) (N.features (root slot))) slots in
   verify (List.length local_features=4 && List.length feature_dispositions=4 && MT.Feature.added feature_transition=[])
     "exact_four_original_feature_dispositions";
   List.iter (fun (slot,feature) ->
@@ -149,25 +183,29 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
     let row = find (fun row -> MT.Feature_disposition.source_id row=source slot &&
       MT.Feature_disposition.feature_id row=feature_id) feature_dispositions in
     let code = "exact_feature_projection:" ^ slot_name slot ^ "/" ^ feature_id in
-    match row,project_feature ~offset:(offset slot) ~space:port_space feature with
+    match row,projected_feature slot ~space:port_space feature with
     | Some row,Some expected -> verify (MT.Feature_disposition.decision row=MT.Feature_disposition.Exact &&
         equal (arr (List.map N.Feature.to_json (MT.Feature_disposition.outputs row))) (arr [expected])) code
     | _ -> verify false code) local_features;
   let chemistry_transition = CT.Product_port.chemistry_transition port in
   let chemical_dispositions = MT.Chemistry.dispositions chemistry_transition in
   let facets = ["cap";"start_end";"finish_end";"terminal_tail";"modification_inventory"] in
-  verify (MT.Chemistry.mode chemistry_transition=MT.Chemistry.Explicit_output && List.length chemical_dispositions=10)
-    "exact_ten_original_chemistry_dispositions";
-  let copied slot facet = match slot,facet with
-    | A.Decision,("cap"|"start_end"|"modification_inventory")
-    | A.Driver,("finish_end"|"terminal_tail"|"modification_inventory") -> true | _ -> false in
+  verify (MT.Chemistry.mode chemistry_transition=MT.Chemistry.Explicit_output &&
+    List.length chemical_dispositions=5*List.length slots)
+    (if instanced then "complete_original_chemistry_dispositions" else "exact_ten_original_chemistry_dispositions");
+  let first_slot=List.hd slots and last_slot=List.hd (List.rev slots) in
+  let copied slot facet = match facet with
+    | "cap"|"start_end" -> slot=first_slot
+    | "finish_end"|"terminal_tail" -> slot=last_slot
+    | "modification_inventory" -> true
+    | _ -> false in
   List.iter (fun slot -> List.iter (fun facet ->
     let row = find (fun row -> MT.Chemistry_disposition.source_id row=source slot &&
       MT.Component.to_string (MT.Chemistry_disposition.component row)=facet) chemical_dispositions in
     verify (match row with None -> false | Some row ->
       MT.Chemistry_disposition.decision row=(if copied slot facet then MT.Chemistry_disposition.Mapped_copy else MT.Chemistry_disposition.Not_carried) &&
       List.map MT.Component.to_string (MT.Chemistry_disposition.destination_components row)=
-        (if copied slot facet then [facet] else [])) ("exact_chemistry_disposition:" ^ slot_name slot ^ "/" ^ facet)) facets) [A.Decision;A.Driver];
+        (if copied slot facet then [facet] else [])) ("exact_chemistry_disposition:" ^ slot_name slot ^ "/" ^ facet)) facets) slots;
   let facet_json ~shift ~space chemistry facet = match facet with
     | "cap" -> H.Claim.nominal_json (H.cap chemistry)
     | "start_end" -> H.Claim.nominal_json (H.start_end chemistry)
@@ -182,7 +220,7 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
    | Some chemistry -> List.iter (fun slot -> List.iter (fun facet -> if copied slot facet then
        verify (equal (facet_json ~shift:(offset slot) ~space:port_space (N.chemistry (root slot)) facet)
          (facet_json ~shift:0 ~space:port_space chemistry facet))
-         ("exact_chemistry_projection:" ^ slot_name slot ^ "/" ^ facet)) facets) [A.Decision;A.Driver]);
+         ("exact_chemistry_projection:" ^ slot_name slot ^ "/" ^ facet)) facets) slots);
   let carrier_projections = ref [] and link_projections = ref [] in
   (match S.checked_structure structure_result with
    | None -> ()
@@ -194,19 +232,19 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
        | None -> verify false "original_material_member_absent"
        | Some molecule ->
          verify (List.length (N.features molecule)=4) "exact_four_final_features";
-         List.iter (fun (slot,feature) -> match project_feature ~offset:(offset slot) ~space:member_space feature with
+         List.iter (fun (slot,feature) -> match projected_feature slot ~space:member_space feature with
            | None -> verify false "original_feature_path_absent"
-           | Some expected -> match find (fun actual -> N.Feature.id actual=N.Feature.id feature) (N.features molecule) with
+           | Some expected -> match find (fun actual -> N.Feature.id actual=final_feature_id slot (N.Feature.id feature)) (N.features molecule) with
              | None -> verify false "projected_feature_absent"
              | Some actual -> verify (equal expected (N.Feature.to_json actual)) "complete_final_feature_projection") local_features;
          List.iter (fun slot -> List.iter (fun facet -> if copied slot facet then
            verify (equal (facet_json ~shift:(offset slot) ~space:member_space (N.chemistry (root slot)) facet)
              (facet_json ~shift:0 ~space:member_space (N.chemistry molecule) facet))
-             ("complete_final_chemistry_projection:" ^ slot_name slot ^ "/" ^ facet)) facets) [A.Decision;A.Driver];
+             ("complete_final_chemistry_projection:" ^ slot_name slot ^ "/" ^ facet)) facets) slots;
          let project_site slot (site:C.site) =
            charge 1;
            let expected_path = project_path ~offset:(offset slot) ~space:member_space site.path in
-           let feature = find (fun value -> N.Feature.id value=site.feature_id) (N.features molecule) in
+           let feature = find (fun value -> N.Feature.id value=final_feature_id slot site.feature_id) (N.features molecule) in
            let actual_path = match feature with None -> None | Some feature -> N.Feature.path feature in
            verify (match actual_path with Some path -> equal expected_path (G.Path.to_json path) | None -> false)
              "carrier_exact_final_feature_path";
@@ -220,13 +258,14 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
                final_start>=0 && final_start+length<=String.length final_sequence &&
                String.sub local_sequence start length=String.sub final_sequence final_start length)
                "carrier_exact_final_bases") (G.Path.spans site.path);
-           obj ["slot",str (slot_name slot);"root",str site.root_id;"source",str (source slot);
+           let fields = ["slot",str (slot_name slot);"root",str site.root_id;"source",str (source slot);
              "feature",str site.feature_id;"local_path",G.Path.to_json site.path;
              "member",str member_id;"path",expected_path] in
+           obj (if instanced then fields @ ["final_feature",str (final_feature_id slot site.feature_id)] else fields) in
          List.iter (fun slot -> List.iter (fun (carrier:C.carrier) ->
            let sites = List.map (project_site slot) carrier.sites in
            carrier_projections := obj ["slot",str (slot_name slot);"target",C.target_to_json carrier.target;
-             "sites",arr sites] :: !carrier_projections) (C.carriers (A.component rule slot))) [A.Decision;A.Driver];
+             "sites",arr sites] :: !carrier_projections) (C.carriers (A.component rule slot))) slots;
          List.iter (fun (carrier:A.link_carrier) ->
            let link = List.find (fun (value:A.link) -> value.kind=carrier.kind) (A.links rule) in
            let site (boundary:A.boundary_ref) index =
@@ -234,20 +273,47 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
                (C.carriers (A.component rule boundary.slot)) in
              List.nth row.sites index in
            let producer_site=site link.producer carrier.producer_site and consumer_site=site link.consumer carrier.consumer_site in
-           verify (carrier.join_id=join.join_id && link.producer.slot<>link.consumer.slot &&
-             String.length (N.sequence (root A.Decision))=join.offset &&
-             String.length (N.sequence molecule)=join.offset+String.length (N.sequence (root A.Driver)))
-             "cross_link_adjacent_original_join";
            let encode_endpoint (value:I.endpoint) = obj ["node",str value.node_id;"port",str value.port_id] in
-           link_projections := obj ["link",str (link_name carrier.kind);"join",str join.join_id;
-             "offset",Json.int join.offset;"producer_endpoint",encode_endpoint (boundary_endpoint link.producer);
-             "consumer_endpoint",encode_endpoint (boundary_endpoint link.consumer);
-             "producer",project_site link.producer.slot producer_site;
-             "consumer",project_site link.consumer.slot consumer_site] :: !link_projections) (A.link_carriers rule));
+           if instanced then (
+             (* A connection spanning an intermediate root must retain every
+                crossed original junction, regardless of signal direction. *)
+             charge (List.length slots+List.length joins);
+             let rec position index sought = function
+               | slot::_ when slot=sought -> index
+               | _::rest -> position (index+1) sought rest
+               | [] -> Diagnostic.fail "policy_component_assembly_instance"
+                   "Link endpoint has no original material instance." in
+             let producer_position=position 0 link.producer.slot slots
+             and consumer_position=position 0 link.consumer.slot slots in
+             let first=min producer_position consumer_position and last=max producer_position consumer_position in
+             let crossed=List.filteri (fun index _ -> first<=index && index<last) joins in
+             let total_length=List.fold_left (fun length slot -> length+String.length (N.sequence (root slot))) 0 slots in
+             verify (producer_position<>consumer_position &&
+               A.carrier_joins carrier=List.map (fun (join:A.join) -> join.join_id) crossed &&
+               String.length (N.sequence molecule)=total_length)
+               "cross_link_complete_original_join_path";
+             link_projections := obj ["link",str (link_name carrier.kind);
+               "joins",arr (List.map (fun (join:A.join) -> str join.join_id) crossed);
+               "offsets",arr (List.map (fun (join:A.join) -> Json.int join.offset) crossed);
+               "producer_endpoint",encode_endpoint (boundary_endpoint link.producer);
+               "consumer_endpoint",encode_endpoint (boundary_endpoint link.consumer);
+               "producer",project_site link.producer.slot producer_site;
+               "consumer",project_site link.consumer.slot consumer_site] :: !link_projections)
+           else (
+             let join=A.join rule in
+             verify (carrier.join_id=join.join_id && link.producer.slot<>link.consumer.slot &&
+               String.length (N.sequence (root A.Decision))=join.offset &&
+               String.length (N.sequence molecule)=join.offset+String.length (N.sequence (root A.Driver)))
+               "cross_link_adjacent_original_join";
+             link_projections := obj ["link",str (link_name carrier.kind);"join",str join.join_id;
+               "offset",Json.int join.offset;"producer_endpoint",encode_endpoint (boundary_endpoint link.producer);
+               "consumer_endpoint",encode_endpoint (boundary_endpoint link.consumer);
+               "producer",project_site link.producer.slot producer_site;
+               "consumer",project_site link.consumer.slot consumer_site] :: !link_projections)) (A.link_carriers rule));
   let findings = List.rev !findings in
   let outcome_value = if findings<>[] then E.Fail else S.outcome structure_result in
   let report_value = obj ["schema_version",str "biocompiler.policy_component_assembly_assessment.v0.1";
-    "checker_version",str implementation_version;"profile",str A.profile;
+    "checker_version",str (if instanced then instance_implementation_version else implementation_version);"profile",str profile;
     "original_fingerprint",str (R.fingerprint original);"components_fingerprint",str (L.fingerprint components);
     "rule_fingerprint",str (A.fingerprint rule);"implementation_fingerprint",str (I.fingerprint actual);
     "proposed_fingerprint",str (Q.fingerprint proposed);"candidate_fingerprint",str (K.fingerprint candidate);

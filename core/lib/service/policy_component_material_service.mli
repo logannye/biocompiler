@@ -4,6 +4,10 @@ open Bioc_wire
 val operations : string list
 val validation_scope : string
 val implementation : string
+val instance_implementation : string
+val instance_validation_scope : string
+val instance_profile : Json.t
+val instance_producer_profile : Json.t
 val schema_version : string
 val resource_profile : string
 val candidate_schema : string

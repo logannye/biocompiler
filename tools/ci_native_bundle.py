@@ -24,6 +24,8 @@ except ImportError:
 
 
 DEPENDENCY_FIXTURES = {
+    "test_policy_instance_assembly_rule": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_instance_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
     "test_policy_staged_generation": ["data/policy_staged_realization_request_v01.json"],
     "test_policy_staged_binding": ["data/policy_staged_realization_request_v01.json"],
     "test_policy_staged_component_material": ["data/policy_staged_material_v01.json"],
@@ -153,7 +155,8 @@ def expected_members(root):
     # The independent declaration emitter is needed by restored hosted jobs.
     # It has no producer/checker dependency and is not a native test suite.
     return {"core/_build/default/bin/core/main.exe", "core/_build/default/bin/verify/main.exe",
-            "core/_build/default/test/component_fixture_export/main.exe"} | {
+            "core/_build/default/test/component_fixture_export/main.exe",
+            "core/_build/default/test/instance_fixture_export/main.exe"} | {
         "core/_build/default/test/" + row["name"] + ".exe" for row in plan} | set(dependency_members(root))
 
 

@@ -13,6 +13,10 @@ module K = Bioc_domain.Construction_content
 module E = Bioc_domain.Construction_assessment
 module S = Bioc_checker.Policy_mrna_structure_check
 val implementation_version : string
+
+(** Version used only for the separately versioned named-instance profile.
+    Legacy two-slot reports retain [implementation_version]. *)
+val instance_implementation_version : string
 val max_work : int
 type result
 type checked_assembly

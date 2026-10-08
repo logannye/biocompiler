@@ -1,5 +1,11 @@
 # Development roadmap
 
+The [2026-10-08 core priorities](core-architecture-session-priorities-2026-10-08.md)
+order composition, executable prerequisites, source-family expansion,
+multi-member/helper closure and measured modular verification. Priority 1's
+[bounded instance profile](policy-instance-composition-v0.1.md) is implemented
+in the current working branch; native and integration validation are pending.
+
 The [product vision and integration roadmap](product-vision-and-integration-roadmap.md)
 sets the 2026-10-08 direction: useful standalone researcher workflows first,
 with one compiler and verification core that can later serve agents in closed-loop

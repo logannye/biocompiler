@@ -6,6 +6,9 @@ module X = Policy_material_context
 module A = Policy_component_assembly_rule
 val schema_version : string
 val profile : string
+val instance_profile : string
+val instance_staged_profile : string
+val instance_union_profile : string
 val staged_profile : string
 val staged_record_profile : string
 val staged_record_shapes : Json.t
@@ -26,6 +29,8 @@ val record_layout_to_json : record_layout -> Json.t
 val record_layout_fingerprint : record_layout -> string
 type t
 val of_json : Json.t -> t
+val is_instanced : t -> bool
+val context_profile : t -> string
 val to_json : t -> Json.t
 val fingerprint : t -> string
 val clock : t -> X.clock

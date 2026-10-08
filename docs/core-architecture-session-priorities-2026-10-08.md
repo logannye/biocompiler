@@ -9,6 +9,14 @@ This refines the [product vision](product-vision-and-integration-roadmap.md) and
 continues the SM tasks in the [semantic development plan](semantic-mrna-development-plan.md).
 It records proposed work, not implemented capabilities or new acceptance.
 
+Implementation checkpoint: the user authorized execution after this plan.
+Priority 1 now has a [versioned contract](policy-instance-composition-v0.1.md),
+domain/producer/checker/service changes and independent witnesses in
+`codex/dev-policy/instance-composition`. Focused Python/static feedback is
+available; hosted native, installed/cross-platform and actual-main validation
+remain pending. Priorities 2–5 remain open and must not inherit this slice's
+acceptance.
+
 ## Assessment and recommendation
 
 Biocompiler already has a substantial independently checked compilation path.

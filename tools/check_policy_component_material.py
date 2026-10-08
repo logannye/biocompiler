@@ -152,7 +152,7 @@ def checked_result(result: dict, case: dict) -> None:
         raise AssertionError("Complete declared cross-link projections changed")
 
 
-def exercise_cases(cases, core, verify_transport, verify, sdk, retain, artifacts, input_paths):
+def exercise_cases(cases, core, verify_transport, verify, sdk, retain, artifacts, input_paths, *, validate_result=checked_result):
     """One unchanged 26-observation A/B witness for both explicit environments."""
     from biocompiler.core_client import CoreRejected
     def rejected(case, name, codes, action):
@@ -170,7 +170,7 @@ def exercise_cases(cases, core, verify_transport, verify, sdk, retain, artifacts
     for case, request in cases:
         label, limits = case["id"], case["limits"]
         compiled = sdk.compile(request, limits=limits, client=core)
-        checked_result(compiled.result, case)
+        validate_result(compiled.result, case)
         if compiled.artifact is not None:
             raise AssertionError("Compilation exported without a fresh export request")
         retain(label, "compile", compiled.result)
@@ -186,7 +186,7 @@ def exercise_cases(cases, core, verify_transport, verify, sdk, retain, artifacts
             input_paths=input_paths)
         if exported.report != checked.report or exported.candidate != candidate:
             raise AssertionError("Fresh atomic export changed checked source-to-material evidence")
-        checked_result(exported.result, case)
+        validate_result(exported.result, case)
         retain(label, "export-verify", exported.result)
         retain(label, "paired-publication", archive_receipt(exported.result, paired))
         for kind in ("guard", "state", "feedback", "configuration"):

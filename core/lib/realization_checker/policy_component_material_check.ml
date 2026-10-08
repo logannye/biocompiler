@@ -57,11 +57,13 @@ let catalog_check budget request checked =
     "Composition bridge changes the original operation or realization DefinitionRef.";
   let rule=R.composition_rule request in
   require (Json.equal (Pin.to_json bridge.rule) (Pin.to_json (Rule.identity rule))) "Composition bridge does not pin the complete original rule.";
-  require (List.length bridge.components=2 && List.length (Rule.components rule)=2 &&
+  let count=if R.is_instanced request then List.length (Rule.slots rule) else 2 in
+  require (List.length bridge.components=count && List.length (Rule.components rule)=count &&
     List.for_all2 (fun (left:R.component_binding) (right:Rule.component_selection) ->
       W.charge budget 1;left.slot=right.slot && Json.equal (Pin.to_json left.component) (Pin.to_json right.identity) &&
       Json.equal (Pin.to_json left.component) (Pin.to_json (LC.identity (Rule.component rule right.slot)))) bridge.components (Rule.components rule))
-    "Composition bridge does not pin both complete selected component bodies in order.";
+    (if R.is_instanced request then "Composition bridge does not pin all complete selected instances in order."
+     else "Composition bridge does not pin both complete selected component bodies in order.");
   obj ["status",str "pass";"original_binding",get "catalog_binding" (R.to_json request);"selected_catalog_entry",str entry;
     "component_library_fingerprint",str (fingerprint budget (L.to_json (R.component_library request)));
     "rule_fingerprint",str (fingerprint budget (Rule.to_json rule));
@@ -181,7 +183,7 @@ let check ~request ~behavior ~implementation ~proposed ~assembly_proposal ~candi
   let stage value=if value=Json.Null then str "unassessed" else get "outcome" value in
   let status=if complete then "checked_component_material" else "not_accepted" in
   let report_base=["schema_version",str "biocompiler.policy_component_material_assessment.v0.1";
-    "profile",str profile;"implementation",str implementation_version;"resource_profile",str R.resource_profile;
+    "profile",str (R.request_profile request);"implementation",str (if R.is_instanced request then "biocompiler.ocaml.policy_component_material_check.v0.2" else implementation_version);"resource_profile",str R.resource_profile;
     "request_fingerprint",str request_pin;"candidate_fingerprint",str candidate_pin;"invocation_fingerprint",str invocation_pin;
     "status",str status;"claim_scope",str "bounded_conditional_policy_via_reusable_components_to_exact_mrna";
     "premise",str "supplied_component_composition_and_provider_contracts";

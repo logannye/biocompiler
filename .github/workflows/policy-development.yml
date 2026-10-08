@@ -35,7 +35,7 @@ jobs:
             default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
       - name: Install ordinary dependencies, build once and run the fixed native suite inventory
         run: python -B tools/check_policy_development.py run
-      - name: Exercise all five complete SDK campaigns in two bounded lanes
+      - name: Exercise all six complete SDK campaigns in two bounded lanes
         env:
           PYTHONPATH: src
         run: python -B tools/check_policy_development.py sdk-all

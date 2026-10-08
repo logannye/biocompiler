@@ -74,6 +74,8 @@ let of_json ?(charge=fun _ -> ()) raw =
     seen := Names.add id !seen;
     let rank = bounded_integer ~minimum:0 ~maximum:max_rank (get "rank" row) in
     let request = R.of_json ~charge:spend (get "request" row) in
+    require (not (R.is_instanced request))
+      "The original leader-selection profile does not admit instance compositions.";
     {id; rank; request}) rows in
   let predicate_raw = get "predicate" raw in
   exact ["max_total_nt"] predicate_raw;

@@ -17,8 +17,11 @@ module MT = Molecular_transition
 let schema_version = "biocompiler.policy_component_assembly_rule.v0.1"
 let profile = "biocompiler.policy_exact_component_assembly.v0.1"
 let staged_profile = "biocompiler.policy_staged_component_assembly.v0.1"
+let instance_schema_version = "biocompiler.policy_component_assembly_rule.v0.2"
+let instance_profile = "biocompiler.policy_instance_component_assembly.v0.1"
+let max_instances = 8
 let transport_profile = "biocompiler.policy_identity_transport.v0.1"
-type slot = Decision | Driver
+type slot = Decision | Driver | Instance of string
 type component_selection = { slot:slot; identity:P.t }
 type node_ref = { slot:slot; node_id:string }
 type endpoint_ref = { node:node_ref; port_id:string }
@@ -26,6 +29,7 @@ type boundary_ref = { slot:slot; boundary_id:string }
 type link_kind = Product | Request | Authorization
   | Stage_product of int | Stage_request of int | Stage_authorization of int
   | Stage_event of int * I.event_kind
+  | Named_link of string
 type scope_relation = Same_encounter_slot | Immutable_executor_broadcast
 type link = { kind:link_kind; producer:boundary_ref; consumer:boundary_ref;
   signal_type:I.signal_type; scope:scope_relation }
@@ -34,13 +38,13 @@ type input_ref = { slot:slot; external_slot:string; input_id:string }
 type group_ref = { slot:slot; group_id:string }
 type root_binding = { slot:slot; source_id:string }
 type join = { join_id:string; step_id:string; port_id:string; left:slot; right:slot; offset:int }
-type link_carrier = { kind:link_kind; producer_site:int; consumer_site:int; join_id:string }
+type link_carrier = { kind:link_kind; producer_site:int; consumer_site:int; join_id:string; join_path:string list }
 type t = {
-  staged:bool; identity_value:P.t; selections:component_selection list; selected:(slot * C.t) list;
+  staged:bool; instanced:bool; identity_value:P.t; selections:component_selection list; selected:(slot * C.t) list;
   library_digest:string; model_digest:string; layout_value:F.slot_layout;
   link_values:link list; node_values:node_ref list; wire_values:wire_ref list;
   input_values:input_ref list; group_values:group_ref list; export_values:endpoint_ref list;
-  root_values:root_binding list; join_value:join; carrier_values:link_carrier list;
+  root_values:root_binding list; join_values:join list; carrier_values:link_carrier list;
   material_value:PM.t;
 }
 let str value = Json.String value
@@ -66,8 +70,13 @@ let preflight raw =
     | Json.Object fields -> List.iter (fun (_,value) -> no_float value) fields
     | _ -> () in
   no_float raw
-let slot_name = function Decision -> "decision" | Driver -> "driver"
-let slot_of_json raw = match Json.string raw with
+let slot_name = function Decision -> "decision" | Driver -> "driver" | Instance value -> value
+let slot_of_json ?(instanced=false) raw =
+  let value=if instanced then name raw else Json.string raw in
+  if instanced then (
+    require (value<>"decision" && value<>"driver") "Named instances cannot use reserved legacy slot identities.";
+    Instance value)
+  else match value with
   | "decision" -> Decision | "driver" -> Driver | _ -> fail "Unknown component slot."
 let kind_name = function
   | Product -> "product" | Request -> "request" | Authorization -> "authorization"
@@ -75,14 +84,19 @@ let kind_name = function
   | Stage_request index -> "stage"^string_of_int index^".request"
   | Stage_authorization index -> "stage"^string_of_int index^".authorization"
   | Stage_event (index,event) -> "stage"^string_of_int index^"."^(match event with I.Completed->"completed"|I.Failed->"failed"|I.Timed_out->"timed_out"|_->fail "Unsupported staged event link.")
+  | Named_link value -> value
 let staged_links = List.concat_map (fun index ->
   [Stage_product index;Stage_request index;Stage_authorization index;
    Stage_event(index,I.Completed);Stage_event(index,I.Failed);Stage_event(index,I.Timed_out)]) [0;1]
-let kind_of_json raw =
-  let name=Json.string raw in
-  match List.find_opt (fun value -> kind_name value=name) ([Product;Request;Authorization]@staged_links) with
+let kind_of_json ?(instanced=false) raw =
+  let id=if instanced then name raw else Json.string raw in
+  if instanced then Named_link id else
+  match List.find_opt (fun value -> kind_name value=id) ([Product;Request;Authorization]@staged_links) with
   | Some value -> value | None -> fail "Unknown assembly link kind."
-let expected_links value = if value.staged then staged_links else [Product;Request;Authorization]
+let expected_links value = if value.instanced then List.map (fun (row:link) -> row.kind) value.link_values
+  else if value.staged then staged_links else [Product;Request;Authorization]
+let slots value = List.map (fun (row:component_selection) -> row.slot) value.selections
+let assembly_profile value = if value.instanced then instance_profile else if value.staged then staged_profile else profile
 let scope_name = function Same_encounter_slot -> "same_encounter_slot" | Immutable_executor_broadcast -> "immutable_executor_broadcast"
 let scope_of_json raw = match Json.string raw with
   | "same_encounter_slot" -> Same_encounter_slot | "immutable_executor_broadcast" -> Immutable_executor_broadcast
@@ -117,42 +131,46 @@ let link value kind = List.find (fun (row:link) -> row.kind = kind) value.link_v
 
 let selection_json (value:component_selection) = obj ["slot",str (slot_name value.slot);"component",P.to_json value.identity]
 let node_json (value:node_ref) = obj ["slot",str (slot_name value.slot);"node",str value.node_id]
-let node_of_json raw = exact ["slot";"node"] raw; {slot=slot_of_json (get "slot" raw);node_id=name (get "node" raw)}
+let node_of_json ?(instanced=false) raw = exact ["slot";"node"] raw; {slot=slot_of_json ~instanced (get "slot" raw);node_id=name (get "node" raw)}
 let boundary_json (value:boundary_ref) = obj ["slot",str (slot_name value.slot);"boundary",str value.boundary_id]
-let boundary_of_json raw = exact ["slot";"boundary"] raw;
-  {slot=slot_of_json (get "slot" raw);boundary_id=name (get "boundary" raw)}
+let boundary_of_json ?(instanced=false) raw = exact ["slot";"boundary"] raw;
+  {slot=slot_of_json ~instanced (get "slot" raw);boundary_id=name (get "boundary" raw)}
 let link_json (value:link) = obj ["id",str (kind_name value.kind);"producer",boundary_json value.producer;
   "consumer",boundary_json value.consumer;"signal_type",str (signal_name value.signal_type);"scope",str (scope_name value.scope)]
-let link_of_json raw = exact ["id";"producer";"consumer";"signal_type";"scope"] raw;
-  {kind=kind_of_json (get "id" raw);producer=boundary_of_json (get "producer" raw);
-   consumer=boundary_of_json (get "consumer" raw);signal_type=signal_of_json (get "signal_type" raw);scope=scope_of_json (get "scope" raw)}
+let link_of_json ?(instanced=false) raw = exact ["id";"producer";"consumer";"signal_type";"scope"] raw;
+  {kind=kind_of_json ~instanced (get "id" raw);producer=boundary_of_json ~instanced (get "producer" raw);
+   consumer=boundary_of_json ~instanced (get "consumer" raw);signal_type=signal_of_json (get "signal_type" raw);scope=scope_of_json (get "scope" raw)}
 let wire_json = function
   | Local_wire {slot;index} -> obj ["kind",str "local";"slot",str (slot_name slot);"index",Json.int index]
   | Cross_link kind -> obj ["kind",str "link";"id",str (kind_name kind)]
-let wire_of_json raw = match Json.string (get "kind" raw) with
-  | "local" -> exact ["kind";"slot";"index"] raw; Local_wire {slot=slot_of_json (get "slot" raw);index=index 2047 (get "index" raw)}
-  | "link" -> exact ["kind";"id"] raw; Cross_link (kind_of_json (get "id" raw))
+let wire_of_json ?(instanced=false) raw = match Json.string (get "kind" raw) with
+  | "local" -> exact ["kind";"slot";"index"] raw; Local_wire {slot=slot_of_json ~instanced (get "slot" raw);index=index 2047 (get "index" raw)}
+  | "link" -> exact ["kind";"id"] raw; Cross_link (kind_of_json ~instanced (get "id" raw))
   | _ -> fail "Unknown global wire reference."
 let input_json (value:input_ref) = obj ["slot",str (slot_name value.slot);"external_slot",str value.external_slot;"id",str value.input_id]
-let input_of_json raw = exact ["slot";"external_slot";"id"] raw;
-  {slot=slot_of_json (get "slot" raw);external_slot=name (get "external_slot" raw);input_id=name (get "id" raw)}
+let input_of_json ?(instanced=false) raw = exact ["slot";"external_slot";"id"] raw;
+  {slot=slot_of_json ~instanced (get "slot" raw);external_slot=name (get "external_slot" raw);input_id=name (get "id" raw)}
 let group_json (value:group_ref) = obj ["slot",str (slot_name value.slot);"group",str value.group_id]
-let group_of_json raw = exact ["slot";"group"] raw; {slot=slot_of_json (get "slot" raw);group_id=name (get "group" raw)}
+let group_of_json ?(instanced=false) raw = exact ["slot";"group"] raw; {slot=slot_of_json ~instanced (get "slot" raw);group_id=name (get "group" raw)}
 let endpoint_json (value:endpoint_ref) = obj ["slot",str (slot_name value.node.slot);"node",str value.node.node_id;"port",str value.port_id]
-let endpoint_of_json raw = exact ["slot";"node";"port"] raw;
-  {node={slot=slot_of_json (get "slot" raw);node_id=name (get "node" raw)};port_id=name (get "port" raw)}
+let endpoint_of_json ?(instanced=false) raw = exact ["slot";"node";"port"] raw;
+  {node={slot=slot_of_json ~instanced (get "slot" raw);node_id=name (get "node" raw)};port_id=name (get "port" raw)}
 let root_json (value:root_binding) = obj ["slot",str (slot_name value.slot);"source",str value.source_id]
-let root_of_json raw = exact ["slot";"source"] raw; {slot=slot_of_json (get "slot" raw);source_id=name (get "source" raw)}
+let root_of_json ?(instanced=false) raw = exact ["slot";"source"] raw; {slot=slot_of_json ~instanced (get "slot" raw);source_id=name (get "source" raw)}
 let join_json (value:join) = obj ["id",str value.join_id;"step",str value.step_id;"port",str value.port_id;
   "left",str (slot_name value.left);"right",str (slot_name value.right);"offset",Json.int value.offset]
-let join_of_json raw = exact ["id";"step";"port";"left";"right";"offset"] raw;
+let join_of_json ?(instanced=false) raw = exact ["id";"step";"port";"left";"right";"offset"] raw;
   {join_id=name (get "id" raw);step_id=name (get "step" raw);port_id=name (get "port" raw);
-   left=slot_of_json (get "left" raw);right=slot_of_json (get "right" raw);offset=index M.max_residues (get "offset" raw)}
-let carrier_json (value:link_carrier) = obj ["link",str (kind_name value.kind);"producer_site",Json.int value.producer_site;
-  "consumer_site",Json.int value.consumer_site;"join",str value.join_id]
-let carrier_of_json raw = exact ["link";"producer_site";"consumer_site";"join"] raw;
-  {kind=kind_of_json (get "link" raw);producer_site=index 3 (get "producer_site" raw);
-   consumer_site=index 3 (get "consumer_site" raw);join_id=name (get "join" raw)}
+   left=slot_of_json ~instanced (get "left" raw);right=slot_of_json ~instanced (get "right" raw);offset=index M.max_residues (get "offset" raw)}
+let carrier_json ~instanced (value:link_carrier) = obj (["link",str (kind_name value.kind);"producer_site",Json.int value.producer_site;
+  "consumer_site",Json.int value.consumer_site] @
+  [if instanced then "joins",arr str value.join_path else "join",str value.join_id])
+let carrier_of_json ?(instanced=false) raw =
+  exact ["link";"producer_site";"consumer_site";(if instanced then "joins" else "join")] raw;
+  let join_path=if instanced then List.map name (rows (max_instances-1) (get "joins" raw)) else [name (get "join" raw)] in
+  require (join_path<>[]) "An inter-instance carrier requires a nonempty original join path.";
+  {kind=kind_of_json ~instanced (get "link" raw);producer_site=index 3 (get "producer_site" raw);
+   consumer_site=index 3 (get "consumer_site" raw);join_id=List.hd join_path;join_path}
 let body_json value = obj ["primitive_profile",str (if value.staged then I.staged_profile else I.profile);
   "observable_profile",str (if value.staged then I.staged_observable_profile else I.observable_profile);
   "phase_profile",str (if value.staged then F.staged_phase_profile else F.phase_profile);"transport_profile",str transport_profile;
@@ -161,14 +179,15 @@ let body_json value = obj ["primitive_profile",str (if value.staged then I.stage
   "node_order",arr node_json value.node_values;"wire_order",arr wire_json value.wire_values;
   "input_order",arr input_json value.input_values;"group_order",arr group_json value.group_values;
   "export_order",arr endpoint_json value.export_values;"root_bindings",arr root_json value.root_values;
-  "join",join_json value.join_value;"link_carriers",arr carrier_json value.carrier_values;
+  (if value.instanced then "joins",arr join_json value.join_values else "join",join_json (List.hd value.join_values));
+  "link_carriers",arr (carrier_json ~instanced:value.instanced) value.carrier_values;
   "material_authority",PM.to_json value.material_value]
-let to_json value = obj ["schema_version",str schema_version;"profile",str (if value.staged then staged_profile else profile);
+let to_json value = obj ["schema_version",str (if value.instanced then instance_schema_version else schema_version);"profile",str (assembly_profile value);
   "identity",P.to_json value.identity_value;"body",body_json value]
 
 let check_orders value =
   let expected_nodes = List.concat_map (fun slot -> List.map (fun (node:F.node) ->
-    {slot;node_id=node.node_id}) (F.nodes (fragment value slot))) [Decision;Driver] in
+    {slot;node_id=node.node_id}) (F.nodes (fragment value slot))) (slots value) in
   require (same_inventory value.node_values expected_nodes) "Global node order must own every selected local node exactly once.";
   List.iter (fun slot ->
     require (List.filter (fun (node:node_ref) -> node.slot=slot) value.node_values =
@@ -182,7 +201,7 @@ let check_orders value =
       "Global input order must preserve every local external slot once.";
     let groups = List.filter_map (fun (row:group_ref) -> if row.slot=slot then Some row.group_id else None) value.group_values in
     require (groups = List.map (fun (row:I.atomic_group) -> row.group_id) (F.atomic_groups (fragment value slot)))
-      "Global group order must preserve every complete local group once.") [Decision;Driver];
+      "Global group order must preserve every complete local group once.") (slots value);
   require (List.filter_map (function Cross_link kind -> Some kind | _ -> None) value.wire_values = expected_links value)
     "Global wire order must preserve each original link once in link order.";
   unique "Global external input identities are duplicated." (List.map (fun (row:input_ref) -> row.input_id) value.input_values);
@@ -193,12 +212,19 @@ let check_orders value =
   require (value.export_values=exports) "Global exports must preserve every output in global node and primitive port order."
 
 let check_links value =
+  if value.instanced then unique "Assembly link identities are duplicated." (List.map (fun (row:link) -> row.kind) value.link_values);
   require (List.map (fun (row:link) -> row.kind) value.link_values = expected_links value)
     "Assembly requires exactly product, request and authorization links in order.";
   let boundaries = List.concat_map (fun slot -> List.map (fun (port:F.boundary_port) ->
-    {slot;boundary_id=port.boundary_id}) (F.boundary_ports (fragment value slot))) [Decision;Driver] in
+    {slot;boundary_id=port.boundary_id}) (F.boundary_ports (fragment value slot))) (slots value) in
   let used=List.concat_map (fun (row:link) -> [row.producer;row.consumer]) value.link_values in
-  if value.staged then (
+  if value.instanced then (
+    require (same_inventory (List.sort_uniq compare used) boundaries)
+      "Named-instance links must cover every original boundary without orphan endpoints.";
+    unique "Named-instance links drive an input boundary more than once." (List.map (fun (row:link) -> row.consumer) value.link_values);
+    List.iter (fun (row:link) -> require (row.producer.slot<>row.consumer.slot)
+      "An inter-instance link cannot replace a component-local wire.") value.link_values
+  ) else if value.staged then (
     require (same_inventory (List.sort_uniq compare used) boundaries)
       "Staged links must cover every original boundary without orphan endpoints.";
     unique "Staged links drive an input boundary more than once." (List.map (fun (row:link) -> row.consumer) value.link_values);
@@ -213,13 +239,16 @@ let check_links value =
     let output=boundary value row.producer and input=boundary value row.consumer in
     require (output.direction=I.Output && input.direction=I.Input && output.signal_type=row.signal_type && input.signal_type=row.signal_type)
       "Assembly link direction or full signal type differs from its actual ports.";
+    (match row.kind with Named_link _ -> require value.instanced "Named links require the versioned instance profile."
+    | _ ->
     let wanted_producer,wanted_consumer,wanted_signal,wanted_scope = match row.kind with
       | Product | Stage_product _ -> Driver,Decision,I.Product_symbol,Immutable_executor_broadcast
       | Request | Stage_request _ -> Decision,Driver,I.Effect_request,Same_encounter_slot
       | Authorization | Stage_authorization _ -> Decision,Driver,I.Truth_value,Same_encounter_slot
-      | Stage_event _ -> Driver,Decision,I.Event_batch,Same_encounter_slot in
+      | Stage_event _ -> Driver,Decision,I.Event_batch,Same_encounter_slot
+      | Named_link _ -> assert false in
     require (row.producer.slot=wanted_producer && row.consumer.slot=wanted_consumer &&
-      row.signal_type=wanted_signal && row.scope=wanted_scope) "Assembly link kind has the wrong component ownership or scope relation.";
+      row.signal_type=wanted_signal && row.scope=wanted_scope) "Assembly link kind has the wrong component ownership or scope relation.");
     match row.scope with
     | Same_encounter_slot -> require (match output.replication,input.replication with
         | I.Encounter_slots left,I.Encounter_slots right -> left.layout_id=right.layout_id && left.slots=right.slots
@@ -227,7 +256,7 @@ let check_links value =
     | Immutable_executor_broadcast ->
         let producer=node value (boundary_endpoint value row.producer).node in
         require (output.replication=I.Executor && (match input.replication with I.Encounter_slots _ -> true | _ -> false) &&
-          (match producer.model.primitive with I.Product_constant _ -> true | _ -> false))
+          (match producer.model.primitive with I.Product_constant _ -> true | I.Truth_constant _ -> value.instanced | _ -> false))
           "Assembly product broadcast requires its actual immutable executor product constant.") value.link_values
 
 let check_driver_and_authorization value =
@@ -337,9 +366,18 @@ let expected_product_json (value:PM.product) = obj ["identity",P.to_json value.i
 let renamed_root source root = match K.Root_source.to_json root with
   | Json.Object fields -> obj (List.map (fun (key,value) -> key,if key="id" then str source else value) fields)
   | _ -> assert false
+let projected_feature_id value slot local =
+  if value.instanced then M.text (str (Canonical.encode (arr str [slot_name slot;local]))) else local
+let offset value slot =
+  let rec find amount = function
+    | [] -> fail "Material offset names an unselected instance."
+    | actual::_ when actual=slot -> amount
+    | actual::rest -> find (amount+String.length (N.sequence (K.Root_source.molecule (selected_root value actual)))) rest in
+  find 0 (slots value)
 let check_material value =
-  require (List.map (fun (row:root_binding) -> row.slot) value.root_values=[Decision;Driver])
-    "Assembly root bindings must contain decision then driver exactly once.";
+  require (List.map (fun (row:root_binding) -> row.slot) value.root_values=slots value)
+    (if value.instanced then "Assembly root bindings must contain every selected instance exactly once in material order."
+     else "Assembly root bindings must contain decision then driver exactly once.");
   unique "Assembly template root identities are duplicated." (List.map (fun (row:root_binding) -> row.source_id) value.root_values);
   let template=PM.template value.material_value in
   let sources=T.sources template in
@@ -349,9 +387,19 @@ let check_material value =
     let actual=List.find (fun source -> K.Root_source.id source=row.source_id) sources in
     require (equal (K.Root_source.to_json actual) (renamed_root row.source_id (selected_root value row.slot)))
       "Assembly template root differs from the exact selected component root beyond its declared source-ID rename.") value.root_values;
-  let join=value.join_value in
-  require (join.left=Decision && join.right=Driver && join.offset=String.length (N.sequence (K.Root_source.molecule (selected_root value Decision))))
-    "Assembly join must place the complete decision root before the complete driver at their adjacent offset.";
+  let join=List.hd value.join_values in
+  if value.instanced then (
+    let rec adjacent = function left::(right::_ as rest) -> (left,right)::adjacent rest | _ -> [] in
+    let pairs=adjacent (slots value) in
+    require (List.length value.join_values=List.length pairs)
+      "Assembly requires exactly one join between each adjacent pair of complete roots.";
+    unique "Assembly join identities are duplicated." (List.map (fun (row:join) -> row.join_id) value.join_values);
+    List.iter2 (fun (row:join) (left,right) ->
+      require (row.left=left && row.right=right && row.offset=offset value right &&
+        row.step_id=join.step_id && row.port_id=join.port_id)
+        "Assembly joins must preserve root order, exact prefix offsets and one declared construction product.") value.join_values pairs
+  ) else require (join.left=Decision && join.right=Driver && join.offset=String.length (N.sequence (K.Root_source.molecule (selected_root value Decision))))
+      "Assembly join must place the complete decision root before the complete driver at their adjacent offset.";
   let step,port=match T.steps template with
     | [step] when K.Transform_step.id step=join.step_id ->
         (match K.Transform_step.ports step with [port] when K.Product_port.id port=join.port_id -> step,port
@@ -361,8 +409,10 @@ let check_material value =
     K.Value_ref.kind (K.Selection.value selection)=K.Value_ref.Root &&
     K.Value_ref.id (K.Selection.value selection)=(root_binding value slot).source_id in
   require (match K.Operation.specification (K.Transform_step.operation step) with
-    | K.Operation.Concatenate [left;right] -> selected left Decision && selected right Driver | _ -> false)
-    "Assembly construction must concatenate the two complete bound roots in declared order without slicing.";
+    | K.Operation.Concatenate choices -> List.length choices=List.length (slots value) &&
+        List.for_all2 selected choices (slots value) | _ -> false)
+    (if value.instanced then "Assembly construction must concatenate all complete bound roots in declared order without slicing."
+     else "Assembly construction must concatenate the two complete bound roots in declared order without slicing.");
   require (K.Product_port.alphabet port=G.Rna && K.Product_port.topology port=G.Linear &&
     T.complex_members template=[] && T.amounts template=[])
     "Assembly supports one linear RNA product without complexes or amount declarations.";
@@ -376,10 +426,17 @@ let check_material value =
     | [requirement] -> K.Member_requirement.category requirement=K.Member_requirement.Payload &&
         K.Member_requirement.member_id requirement=Some (K.Output_member.id member)
     | _ -> false) "Assembly must retain one payload member requirement without a helper or concrete provider.";
-  (match C.products (component value Driver),C.products (component value Decision) with
+  (if value.instanced then (match List.concat_map (fun slot -> C.products (component value slot)) (slots value) with
+   | [product] -> require (equal (expected_product_json product.expected) (expected_product_json expected.product))
+       "Assembly expected product differs from the complete selected product."
+   | _ -> fail "Assembly requires exactly one complete selected product.")
+   else (match C.products (component value Driver),C.products (component value Decision) with
    | [product],[] -> require (equal (expected_product_json product.expected) (expected_product_json expected.product))
        "Assembly expected product differs from the complete selected driver product."
-   | _ -> fail "Assembly requires exactly one driver product and no decision product.");
+   | _ -> fail "Assembly requires exactly one driver product and no decision product."));
+  if value.instanced then List.iter (fun slot -> List.iter (fun feature ->
+    ignore (projected_feature_id value slot (N.Feature.id feature)))
+    (N.features (K.Root_source.molecule (selected_root value slot)))) (slots value);
   let features=K.Product_port.feature_transition port in
   let expected_features=List.concat_map (fun source -> List.map (fun feature -> K.Root_source.id source,N.Feature.id feature)
     (N.features (K.Root_source.molecule source))) sources in
@@ -396,14 +453,22 @@ let check_material value =
   let expected_facets=List.concat_map (fun source -> List.map (fun facet -> K.Root_source.id source,facet) facets) sources in
   require (same_inventory (List.map (fun row -> MT.Chemistry_disposition.source_id row,
     MT.Component.to_string (MT.Chemistry_disposition.component row)) (MT.Chemistry.dispositions chemistry)) expected_facets)
-    "Assembly chemistry transition must account for all ten original root facets exactly once."
+    (if value.instanced then "Assembly chemistry transition must account for all five facets of every original root exactly once."
+     else "Assembly chemistry transition must account for all ten original root facets exactly once.")
 
 let check_carriers value =
   require (List.map (fun (row:link_carrier) -> row.kind) value.carrier_values=expected_links value)
     "Assembly requires an original carrier premise for every link exactly once in order.";
   List.iter (fun (row:link_carrier) ->
-    require (row.join_id=value.join_value.join_id) "Assembly link carrier names a different authorized join.";
     let relation=link value row.kind in
+    if value.instanced then (
+      let positions=List.mapi (fun index slot -> slot,index) (slots value) in
+      let left=List.assoc relation.producer.slot positions and right=List.assoc relation.consumer.slot positions in
+      let first=min left right and last=max left right in
+      let wanted=List.mapi (fun index (join:join) -> index,join.join_id) value.join_values
+        |> List.filter_map (fun (index,id) -> if index>=first && index<last then Some id else None) in
+      require (row.join_path=wanted) "Assembly link carrier must retain the complete ordered adjacent-join path between its original roots."
+    ) else require (row.join_id=(List.hd value.join_values).join_id) "Assembly link carrier names a different authorized join.";
     let site (reference:boundary_ref) position =
       match List.find_opt (fun (carrier:C.carrier) -> carrier.target=C.Boundary_port reference.boundary_id)
         (C.carriers (component value reference.slot)) with
@@ -414,12 +479,15 @@ let check_carriers value =
 let of_json ~components raw =
   preflight raw;
   exact ["schema_version";"profile";"identity";"body"] raw;
-  let staged=get "profile" raw=str staged_profile in
-  require (get "schema_version" raw=str schema_version && (get "profile" raw=str profile || staged))
+  let instanced=get "profile" raw=str instance_profile in
+  let legacy_staged=get "profile" raw=str staged_profile in
+  require ((instanced && get "schema_version" raw=str instance_schema_version) ||
+    (not instanced && get "schema_version" raw=str schema_version && (get "profile" raw=str profile || legacy_staged)))
     "Unsupported original assembly rule profile.";
   let identity_value=P.of_json (get "identity" raw) and body=get "body" raw in
   exact ["primitive_profile";"observable_profile";"phase_profile";"transport_profile";"slot_layout";"components";"links";
-    "node_order";"wire_order";"input_order";"group_order";"export_order";"root_bindings";"join";"link_carriers";"material_authority"] body;
+    "node_order";"wire_order";"input_order";"group_order";"export_order";"root_bindings";(if instanced then "joins" else "join");"link_carriers";"material_authority"] body;
+  let staged=if instanced then get "primitive_profile" body=str I.staged_profile else legacy_staged in
   require (P.kind identity_value=P.Model && P.content_fingerprint identity_value=Canonical.fingerprint body)
     "Original assembly identity must pin its complete supplied body.";
   require (get "primitive_profile" body=str (if staged then I.staged_profile else I.profile) &&
@@ -427,9 +495,13 @@ let of_json ~components raw =
     get "phase_profile" body=str (if staged then F.staged_phase_profile else F.phase_profile) && get "transport_profile" body=str transport_profile)
     "Assembly requires the fixed primitive, observable, phase and identity-transport profiles.";
   let selections=List.map (fun raw -> exact ["slot";"component"] raw;
-    {slot=slot_of_json (get "slot" raw);identity=P.of_json (get "component" raw)}) (rows 2 (get "components" body)) in
-  require (List.map (fun (row:component_selection) -> row.slot) selections=[Decision;Driver])
-    "Assembly requires exactly the decision and driver component slots in order.";
+    {slot=slot_of_json ~instanced (get "slot" raw);identity=P.of_json (get "component" raw)})
+    (rows (if instanced then max_instances else 2) (get "components" body)) in
+  if instanced then (
+    require (List.length selections>=2) "Named assembly requires two to eight original component instances.";
+    unique "Named component instance identities are duplicated." (List.map (fun (row:component_selection) -> row.slot) selections)
+  ) else require (List.map (fun (row:component_selection) -> row.slot) selections=[Decision;Driver])
+      "Assembly requires exactly the decision and driver component slots in order.";
   let selected=List.map (fun (row:component_selection) -> match L.find components row.identity with
     | Some component -> row.slot,component | None -> fail "Assembly component is absent from the exact original component library.") selections in
   let layout=get "slot_layout" body in exact ["id";"slots"] layout;
@@ -439,14 +511,28 @@ let of_json ~components raw =
   require (List.for_all (fun (_,component) ->
     get "profile" (F.to_json (C.fragment component))=str (if staged then F.staged_profile else F.profile)) selected)
     "Every selected component must use the exact assembly fragment profile.";
-  let value={staged;identity_value;selections;selected;library_digest=L.fingerprint components;model_digest=L.model_library_digest components;layout_value;
-    link_values=List.map link_of_json (rows (if staged then 12 else 3) (get "links" body));node_values=List.map node_of_json (rows 256 (get "node_order" body));
-    wire_values=List.map wire_of_json (rows 2048 (get "wire_order" body));input_values=List.map input_of_json (rows 64 (get "input_order" body));
-    group_values=List.map group_of_json (rows 64 (get "group_order" body));export_values=List.map endpoint_of_json (rows 2048 (get "export_order" body));
-    root_values=List.map root_of_json (rows 2 (get "root_bindings" body));join_value=join_of_json (get "join" body);
-    carrier_values=List.map carrier_of_json (rows (if staged then 12 else 3) (get "link_carriers" body));material_value=PM.of_json (get "material_authority" body)} in
+  let maximum_links=if instanced then 2048 else if staged then 12 else 3 in
+  let join_values=if instanced then List.map (join_of_json ~instanced) (rows (max_instances-1) (get "joins" body))
+    else [join_of_json (get "join" body)] in
+  require (join_values<>[]) "Original assembly requires a bounded nonempty join inventory.";
+  let value={staged;instanced;identity_value;selections;selected;library_digest=L.fingerprint components;model_digest=L.model_library_digest components;layout_value;
+    link_values=List.map (link_of_json ~instanced) (rows maximum_links (get "links" body));node_values=List.map (node_of_json ~instanced) (rows 256 (get "node_order" body));
+    wire_values=List.map (wire_of_json ~instanced) (rows 2048 (get "wire_order" body));input_values=List.map (input_of_json ~instanced) (rows 64 (get "input_order" body));
+    group_values=List.map (group_of_json ~instanced) (rows 64 (get "group_order" body));export_values=List.map (endpoint_of_json ~instanced) (rows 2048 (get "export_order" body));
+    root_values=List.map (root_of_json ~instanced) (rows (if instanced then max_instances else 2) (get "root_bindings" body));join_values;
+    carrier_values=List.map (carrier_of_json ~instanced) (rows maximum_links (get "link_carriers" body));material_value=PM.of_json (get "material_authority" body)} in
+  let selected_slot slot=require (List.mem_assoc slot selected) "Assembly reference names an unselected component instance." in
+  List.iter (fun (row:node_ref) -> selected_slot row.slot) value.node_values;
+  List.iter (function Local_wire row -> selected_slot row.slot | Cross_link _ -> ()) value.wire_values;
+  List.iter (fun (row:input_ref) -> selected_slot row.slot) value.input_values;
+  List.iter (fun (row:group_ref) -> selected_slot row.slot) value.group_values;
+  List.iter (fun (row:endpoint_ref) -> selected_slot row.node.slot) value.export_values;
+  List.iter (fun (row:root_binding) -> selected_slot row.slot) value.root_values;
+  List.iter (fun (row:link) -> selected_slot row.producer.slot;selected_slot row.consumer.slot) value.link_values;
+  List.iter (fun (row:join) -> selected_slot row.left;selected_slot row.right) value.join_values;
   check_orders value;check_links value;
-  (if staged then check_staged_driver value else check_driver_and_authorization value);check_material value;check_carriers value;
+  (if not instanced then (if staged then check_staged_driver value else check_driver_and_authorization value));
+  check_material value;check_carriers value;
   require (equal raw (to_json value)) "Original assembly rule must preserve its complete canonical typed body without normalization.";
   preflight (to_json value);value
 let fingerprint value = Canonical.fingerprint (to_json value)
@@ -462,9 +548,12 @@ let input_order value = value.input_values
 let group_order value = value.group_values
 let export_order value = value.export_values
 let root_bindings value = value.root_values
-let join value = value.join_value
+let join value = require (not value.instanced) "Named assemblies require the complete joins inventory.";List.hd value.join_values
+let joins value = value.join_values
+let carrier_joins value = value.join_path
 let link_carriers value = value.carrier_values
 let material_authority value = value.material_value
 
 let is_staged value = value.staged
+let is_instanced value = value.instanced
 let link_name = kind_name
