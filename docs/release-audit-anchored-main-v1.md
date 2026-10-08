@@ -67,6 +67,12 @@ result does not assert that it remains the latest branch tip indefinitely.
 A comparison outside the stated bounds requires separate reviewed support,
 not silent truncation or a generic ancestry fallback.
 
+The release auditor caps cumulative extracted member bytes at 2.5 GiB. The
+acquisition helper must reserve that same amount plus its separate 1 GiB disk
+cushion. This tightens the previous 4 GiB extraction limit; it does not remove
+any required member or check. Exceeding the cap rejects before writing the next
+member. Compressed and declared-expanded archive limits remain unchanged.
+
 ## Result and retained evidence
 
 The result uses `biocompiler.anchored_main_identity_result.v1` and scope

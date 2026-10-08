@@ -80,10 +80,33 @@ class ReleaseAuditArtifactTests(unittest.TestCase):
                 with self.assertRaises(AssertionError):
                     self.store(metadata, paths)
 
+    def test_extraction_budget_is_cumulative_and_checked_before_new_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); metadata, paths = self.fixture(root, ('first', 'second'))
+            store = self.store(metadata, paths)
+            try:
+                member_bytes = len(b'exact literal bytes')
+                store.extracted = 2560 * 1024**2 - 2 * member_bytes
+                target = root / 'extracted'
+                store.extract('one', target, names=['first'])
+                self.assertEqual(store.extracted, 2560 * 1024**2 - member_bytes)
+                store.extract('one', target, names=['second'])
+                self.assertEqual(store.extracted, 2560 * 1024**2)
+                store.extract('one', target, allow_identical_existing=True)
+                self.assertEqual(store.extracted, 2560 * 1024**2)
+                store.extracted = 2560 * 1024**2 - member_bytes + 1
+                rejected = root / 'rejected'
+                with self.assertRaisesRegex(AssertionError, 'Prepared extraction budget exceeded'):
+                    store.extract('one', rejected, names=['first'])
+                self.assertEqual(store.extracted, 2560 * 1024**2 + 1)
+                self.assertFalse((rejected / 'first').exists())
+            finally:
+                store.close()
+
     def test_large_bounds_at_limit_and_one_over_without_large_files(self):
         limits = {'MAX_ARCHIVE': 640 * 1024**2, 'MAX_EXPANDED': 4 * 1024**3,
                   'MAX_MEMBER': 512 * 1024**2, 'MAX_ALL_COMPRESSED': 4 * 1024**3,
-                  'MAX_ALL_EXPANDED': 20 * 1024**3, 'MAX_EXTRACTED': 4 * 1024**3}
+                  'MAX_ALL_EXPANDED': 20 * 1024**3, 'MAX_EXTRACTED': 2560 * 1024**2}
         self.assertEqual({name: getattr(artifacts, name) for name in limits}, limits)
         trees = {name: ast.parse((ROOT / ('tools/' + name + '.py')).read_text())
                  for name in ('release_audit_artifacts', 'release_audit_native')}
@@ -115,7 +138,7 @@ class ReleaseAuditArtifactTests(unittest.TestCase):
             self.assertIs(evaluate('release_audit_artifacts', 'Duplicate or oversized ZIP census',
                                   {'entries': range(count), 'all_names': range(count)}), accepted)
             self.assertIs(evaluate('release_audit_artifacts', 'Prepared extraction budget exceeded',
-                                  {'self': SimpleNamespace(extracted=4 * 1024**3 + offset)}), accepted)
+                                  {'self': SimpleNamespace(extracted=2560 * 1024**2 + offset)}), accepted)
             entry = SimpleNamespace(filename='safe', file_size=512 * 1024**2 + offset,
                                     external_attr=stat.S_IFREG << 16, flag_bits=0)
             self.assertIs(evaluate('release_audit_artifacts', 'Unsafe ZIP member',
