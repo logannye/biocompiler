@@ -73,7 +73,7 @@ let literals () =
   require(List.sort String.compare(List.map fst(Json.object_fields profiles))=
     List.sort String.compare(List.map fst checker_profiles @ ["architecture_producer";
       "policy_operational_producer";"policy_implementation_producer";"policy_material_producer";"policy_component_material_producer";
-      "policy_component_selection_producer";"policy_instance_material_producer";"policy_prerequisite_material_producer";"policy_two_observation_material_producer"] @
+      "policy_component_selection_producer";"policy_instance_material_producer";"policy_prerequisite_material_producer";"policy_two_observation_material_producer";"policy_multi_member_material_producer"] @
       List.map fst (Bioc_producer_service.Synthetic_producer_service.profiles @
         Bioc_producer_service.Synthetic_producer_public_service.profiles @
         Bioc_producer_service.Synthetic_inspection_service.profiles)))
@@ -90,6 +90,7 @@ let literals () =
      "policy_instance_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.instance_producer_profile;
      "policy_prerequisite_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.prerequisite_producer_profile;
      "policy_two_observation_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.two_observation_producer_profile;
+     "policy_multi_member_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.multi_member_producer_profile;
      "policy_component_selection_producer","compile-policy-component-selection",Bioc_service.Policy_component_selection_service.producer_profile];
   require (Json.equal (field "architecture" profiles) (field "architecture" (field "profiles" base)) &&
     Json.equal (field "architecture_producer" profiles) Service.profile) "Producer capability changed existing checker profile";

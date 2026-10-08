@@ -189,7 +189,16 @@ let negatives fixture request candidate limits produced=
     |Json.Array values->arr(List.map rename values)|Json.Object fields->obj(List.map(fun(key,value)->key,rename value)fields)|value->value in
   let renamed=rename candidate in
   phase "harmless complete actual-node renaming";
-  let result=check request renamed in
+  (* Longer identifiers increase charged serialization/execution work. Preserve
+     the original ceiling as an explicit exhaustion control, then give this
+     independent alpha-renaming check its own larger invocation budget. *)
+  let exhausted=check request renamed in
+  require(at["report";"preservation";"status"]exhausted=str "incomplete" &&
+    at["report";"preservation";"stopped";"diagnostic";"code"]exhausted=str "policy_primitives_work_limit" &&
+    get "artifact" exhausted=Json.Null)"Renaming work exhaustion bypassed the original budget";
+  incr rejected_count;
+  let renamed_limits=put["candidate";"max_work"](Json.int 2_000_000)limits in
+  let result=call Service.handle Protocol.Verify "check-policy-component-material"(invocation request renamed renamed_limits)in
   let report=checked result in
   let _,union=request_literal fixture false in
   check_graph union renamed;check_projections fixture false request renamed report

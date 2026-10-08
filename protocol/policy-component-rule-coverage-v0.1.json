@@ -1548,7 +1548,7 @@
     },
     {
       "path": "core/test/test_policy_multi_member_material_service.ml",
-      "sha256": "476468dd231de173d0852902022fc309112cdb1732751238cfa00b502eddecde"
+      "sha256": "34dffc56c9d51c5675f9d6d601b96db55446030a84427cf8d4eed8fef01d3e91"
     },
     {
       "path": "core/test/test_policy_prerequisite_material_service.ml",
