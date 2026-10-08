@@ -19,6 +19,7 @@ val request : admitted_inputs -> R.t
 val behavior : admitted_inputs -> O.behavior
 val operating_domain : admitted_inputs -> F.validated
 val authorized_models : admitted_inputs -> P.t list
+
 (** Present only in the separate prerequisite input profile. These are exact
     original catalog obligations retained as pending, never discharged by
     source admission or finite behavior preservation. *)

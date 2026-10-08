@@ -34,6 +34,26 @@ def without_selection(capabilities):
     return result
 
 
+def without_instance(capabilities):
+    """Project the instance profile out; it shares the existing operation routes."""
+    result = deepcopy(capabilities)
+    result["validation_scopes"] = [scope for scope in result["validation_scopes"]
+                                   if scope != "policy-instance-component-mrna-v0.1"]
+    for key in ("policy_instance_material", "policy_instance_material_producer"):
+        result["profiles"].pop(key, None)
+    return result
+
+
+def without_prerequisites(capabilities):
+    """Remove only the reviewed prerequisite addition from historical hashes."""
+    result = deepcopy(capabilities)
+    result["validation_scopes"] = [scope for scope in result["validation_scopes"]
+                                   if scope != "policy-instance-prerequisite-mrna-v0.1"]
+    for key in ("policy_prerequisite_material", "policy_prerequisite_material_producer"):
+        result["profiles"].pop(key, None)
+    return result
+
+
 class CoreConformanceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -291,7 +311,7 @@ class ComponentCapabilityConformanceTests(unittest.TestCase):
         for role in ("verify", "core"):
             actual = self.capabilities(role)
             campaign.check_capabilities(actual, role)
-            actual = without_selection(actual)
+            actual = without_prerequisites(without_instance(without_selection(actual)))
             self.assertEqual([name for name in actual["operations"] if "policy-component-material" in name],
                              component + (["compile-policy-component-material"] if role == "core" else []))
             reduced = {"operations": [name for name in actual["operations"] if name not in component + ["compile-policy-component-material"]],
@@ -359,7 +379,7 @@ class SelectionCapabilityConformanceTests(unittest.TestCase):
                              _SELECTION_OPERATIONS if role == "core" else _SELECTION_OPERATIONS[:3])
             self.assertEqual(actual["validation_scopes"].count("policy-component-selection-mrna-v0.1"), 1)
             self.assertEqual("policy_component_selection_producer" in actual["profiles"], role == "core")
-            reduced = without_selection(actual)
+            reduced = without_prerequisites(without_instance(without_selection(actual)))
             old = {"operations": reduced["operations"], "scopes": reduced["validation_scopes"],
                    "profiles": reduced["profiles"], "claim": reduced["claim_scope"]}
             self.assertEqual(campaign.digest(campaign.canonical(old)), previous[role])
@@ -450,6 +470,162 @@ class SelectionCapabilityConformanceTests(unittest.TestCase):
                         campaign.Campaign(receipt).component_selection_routes(
                             SimpleNamespace(role=role, executable=role, timeout_seconds=60))
                     self.assertEqual(len(receipt["checks"]), _SELECTION_OPERATIONS.index(failed_operation))
+
+
+class InstanceCapabilityConformanceTests(unittest.TestCase):
+    """Compare the additive expectation with reviewed native source declarations."""
+
+    capabilities = staticmethod(ComponentCapabilityConformanceTests.capabilities)
+
+    def test_instance_profile_is_exact_and_preserves_shared_operation_routes(self):
+        expected = {**campaign.COMPONENT_MATERIAL_PROFILE,
+                    "request_schema": "biocompiler.policy_component_material_request.v0.2",
+                    "implementation": "biocompiler.ocaml.policy_instance_component_material.v0.1",
+                    "validation_scope": "policy-instance-component-mrna-v0.1"}
+        producer = {"operations": ["compile-policy-component-material"],
+                    "implementation": expected["implementation"],
+                    "validation_scope": expected["validation_scope"]}
+        for role in ("core", "verify"):
+            actual = self.capabilities(role)
+            campaign.check_capabilities(actual, role)
+            self.assertEqual(actual["profiles"]["policy_instance_material"], expected)
+            if role == "core":
+                self.assertEqual(actual["profiles"]["policy_instance_material_producer"], producer)
+            else:
+                self.assertNotIn("policy_instance_material_producer", actual["profiles"])
+            start = actual["validation_scopes"].index("policy-component-mrna-v0.1")
+            self.assertEqual(actual["validation_scopes"][start:start + 4], [
+                "policy-component-mrna-v0.1", "policy-instance-component-mrna-v0.1",
+                "policy-instance-prerequisite-mrna-v0.1", "policy-component-selection-mrna-v0.1"])
+            self.assertEqual(actual["validation_scopes"].count(expected["validation_scope"]), 1)
+            self.assertEqual(actual["operations"], without_instance(actual)["operations"])
+            self.assertEqual(actual["operations"].count("check-policy-component-material"), 1)
+            self.assertEqual(actual["operations"].count("compile-policy-component-material"), role == "core")
+
+    def test_reviewed_native_component_advertisement_matches_campaign_census(self):
+        # This is a closed source-shape check, not an OCaml evaluator. Any new
+        # component scope/profile must update this independently reviewed set.
+        service = (campaign.ROOT / "core/lib/service/service.ml").read_text().split("type scoped_reply", 1)[0]
+        producer = (campaign.ROOT / "core/lib/producer_service/producer_service.ml").read_text()
+        producer = producer.split("let capabilities executable request =", 1)[1].split("let handle executable", 1)[0]
+        material = (campaign.ROOT / "core/lib/service/policy_component_material_service.ml").read_text()
+        request = (campaign.ROOT / "core/lib/domain/policy_component_material_request.ml").read_text()
+        scopes = service.split('"validation_scopes",', 1)[1].split('"profiles",', 1)[0]
+        scope_refs = re.findall(r"Policy_component_(?:material|selection)_service\.\w+", scopes)
+        self.assertEqual(scope_refs, [
+            "Policy_component_material_service.validation_scope",
+            "Policy_component_material_service.instance_validation_scope",
+            "Policy_component_material_service.prerequisite_validation_scope",
+            "Policy_component_selection_service.validation_scope"])
+        pattern = r'"(policy_[a-z_]+)",\s*(?:Bioc_service\.)?(Policy_component_(?:material|selection)_service)\.(\w+)'
+        base = re.findall(pattern, service)
+        additions = re.findall(pattern, producer)
+        self.assertEqual(dict((name, (module, value)) for name, module, value in base), {
+            "policy_component_material": ("Policy_component_material_service", "profile"),
+            "policy_instance_material": ("Policy_component_material_service", "instance_profile"),
+            "policy_prerequisite_material": ("Policy_component_material_service", "prerequisite_profile"),
+            "policy_component_selection": ("Policy_component_selection_service", "profile")})
+        self.assertEqual(dict((name, (module, value)) for name, module, value in additions), {
+            "policy_component_material_producer": ("Policy_component_material_service", "producer_profile"),
+            "policy_instance_material_producer": ("Policy_component_material_service", "instance_producer_profile"),
+            "policy_prerequisite_material_producer": ("Policy_component_material_service", "prerequisite_producer_profile"),
+            "policy_component_selection_producer": ("Policy_component_selection_service", "producer_profile")})
+        self.assertEqual(len(base), 4)
+        self.assertEqual(len(additions), 4)
+        for role in ("core", "verify"):
+            expected_keys = {name for name, _, _ in base + (additions if role == "core" else [])}
+            actual = self.capabilities(role)
+            actual_keys = {name for name in actual["profiles"]
+                           if name.startswith(("policy_component_", "policy_instance_", "policy_prerequisite_"))}
+            self.assertEqual(actual_keys, expected_keys)
+            start = actual["validation_scopes"].index(campaign.COMPONENT_MATERIAL_SCOPE)
+            self.assertEqual(actual["validation_scopes"][start:start + len(scope_refs)], [
+                "policy-component-mrna-v0.1", "policy-instance-component-mrna-v0.1",
+                "policy-instance-prerequisite-mrna-v0.1", "policy-component-selection-mrna-v0.1"])
+        for name, expected in (("instance_implementation", campaign.INSTANCE_MATERIAL_PROFILE["implementation"]),
+                               ("instance_validation_scope", campaign.INSTANCE_MATERIAL_PROFILE["validation_scope"]),
+                               ("prerequisite_implementation", campaign.PREREQUISITE_MATERIAL_PROFILE["implementation"]),
+                               ("prerequisite_validation_scope", campaign.PREREQUISITE_MATERIAL_PROFILE["validation_scope"])):
+            self.assertEqual(re.findall(r"let " + name + r'\s*=\s*"([^"]+)"', material), [expected])
+        self.assertEqual(re.findall(r'let instance_schema_version\s*=\s*"([^"]+)"', request),
+                         [campaign.INSTANCE_MATERIAL_PROFILE["request_schema"]])
+        self.assertEqual(re.findall(r'let prerequisite_schema_version\s*=\s*"([^"]+)"', request),
+                         [campaign.PREREQUISITE_MATERIAL_PROFILE["request_schema"]])
+
+    def test_instance_omissions_wrong_roles_and_scope_order_reject(self):
+        for role in ("core", "verify"):
+            changes = [
+                lambda row: row["profiles"].pop("policy_instance_material"),
+                lambda row: row["profiles"]["policy_instance_material"].update(request_schema=campaign.COMPONENT_MATERIAL_PROFILE["request_schema"]),
+                lambda row: row["profiles"]["policy_instance_material"].update(empirical="assessed"),
+                lambda row: row["validation_scopes"].remove("policy-instance-component-mrna-v0.1"),
+                lambda row: row["validation_scopes"].append("policy-instance-component-mrna-v0.1"),
+            ]
+            def move_scope(row):
+                row["validation_scopes"].remove("policy-instance-component-mrna-v0.1")
+                row["validation_scopes"].append("policy-instance-component-mrna-v0.1")
+            changes.append(move_scope)
+            if role == "core":
+                changes += [lambda row: row["profiles"].pop("policy_instance_material_producer"),
+                            lambda row: row["profiles"]["policy_instance_material_producer"].update(
+                                operations=["check-policy-component-material"])]
+            else:
+                changes.append(lambda row: row["profiles"].update(policy_instance_material_producer=
+                               deepcopy(campaign.INSTANCE_MATERIAL_PRODUCER_PROFILE)))
+            for index, change in enumerate(changes):
+                actual = deepcopy(self.capabilities(role))
+                change(actual)
+                with self.subTest(role=role, mutation=index), self.assertRaisesRegex(AssertionError, "Capability contract differs:"):
+                    campaign.check_capabilities(actual, role)
+
+
+class PrerequisiteCapabilityConformanceTests(unittest.TestCase):
+    capabilities = staticmethod(ComponentCapabilityConformanceTests.capabilities)
+
+    def test_prerequisite_profile_is_exact_and_keeps_the_shared_routes(self):
+        expected = {**campaign.COMPONENT_MATERIAL_PROFILE,
+                    "request_schema": "biocompiler.policy_component_material_request.v0.3",
+                    "implementation": "biocompiler.ocaml.policy_instance_prerequisite_material.v0.1",
+                    "validation_scope": "policy-instance-prerequisite-mrna-v0.1"}
+        producer = {"operations": ["compile-policy-component-material"],
+                    "implementation": expected["implementation"],
+                    "validation_scope": expected["validation_scope"]}
+        for role in ("core", "verify"):
+            actual = self.capabilities(role)
+            campaign.check_capabilities(actual, role)
+            self.assertEqual(actual["profiles"]["policy_prerequisite_material"], expected)
+            if role == "core":
+                self.assertEqual(actual["profiles"]["policy_prerequisite_material_producer"], producer)
+            else:
+                self.assertNotIn("policy_prerequisite_material_producer", actual["profiles"])
+            self.assertEqual(actual["operations"], without_prerequisites(actual)["operations"])
+            self.assertEqual(actual["validation_scopes"].count(expected["validation_scope"]), 1)
+
+    def test_prerequisite_omissions_wrong_roles_and_scope_order_reject(self):
+        for role in ("core", "verify"):
+            changes = [
+                lambda row: row["profiles"].pop("policy_prerequisite_material"),
+                lambda row: row["profiles"].update(policy_prerequisite_material=deepcopy(campaign.INSTANCE_MATERIAL_PROFILE)),
+                lambda row: row["profiles"]["policy_prerequisite_material"].update(empirical="assessed"),
+                lambda row: row["validation_scopes"].remove("policy-instance-prerequisite-mrna-v0.1"),
+                lambda row: row["validation_scopes"].append("policy-instance-prerequisite-mrna-v0.1"),
+            ]
+            def move_scope(row):
+                row["validation_scopes"].remove("policy-instance-prerequisite-mrna-v0.1")
+                row["validation_scopes"].append("policy-instance-prerequisite-mrna-v0.1")
+            changes.append(move_scope)
+            if role == "core":
+                changes += [lambda row: row["profiles"].pop("policy_prerequisite_material_producer"),
+                            lambda row: row["profiles"]["policy_prerequisite_material_producer"].update(
+                                operations=["check-policy-component-material"])]
+            else:
+                changes.append(lambda row: row["profiles"].update(policy_prerequisite_material_producer=
+                               deepcopy(campaign.PREREQUISITE_MATERIAL_PRODUCER_PROFILE)))
+            for index, change in enumerate(changes):
+                actual = deepcopy(self.capabilities(role))
+                change(actual)
+                with self.subTest(role=role, mutation=index), self.assertRaisesRegex(AssertionError, "Capability contract differs:"):
+                    campaign.check_capabilities(actual, role)
 
 
 if __name__ == "__main__":

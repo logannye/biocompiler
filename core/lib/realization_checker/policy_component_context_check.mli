@@ -12,6 +12,7 @@ val max_work : int
 type discharge = {obligation:string; evidence:Json.t}
 type result
 type checked_context
+
 (** Minted only after complete fresh prerequisite, deployment, input, resource
     and availability checking. Serialized reports cannot construct this value. *)
 type checked_prerequisite_closure

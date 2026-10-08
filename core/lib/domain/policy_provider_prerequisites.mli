@@ -15,6 +15,7 @@ type pending_dependency = private {
   entry_id:string; entry_digest:string; dependency_index:int; definition:C.provider_ref;
 }
 val pending_dependency_to_json : pending_dependency -> Json.t
+
 (** Resolve exact original catalog and definition pins, retaining every original
     dependency occurrence in bridge/index order. Evidence remains unsupported. *)
 val pending_dependencies : ?charge:(int -> unit) -> R.t -> pending_dependency list
@@ -25,6 +26,7 @@ type edge = private {source:C.provider_ref; target:C.provider_ref; relation:rela
 type issue_kind = Missing | Cycle | Extra | Unsupported
 type issue = private {kind:issue_kind; code:string; references:C.provider_ref list}
 type t
+
 (** Source roots precede catalog roots. Nodes and edges preserve deterministic
     first-encounter DFS order. A missing body is a finding, not a new premise.
     The chassis operational_model checks identity and is never a graph edge. *)

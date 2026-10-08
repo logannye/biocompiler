@@ -26,6 +26,7 @@ type catalog_binding = private {
 type t
 
 val of_json : Json.t -> t
+
 (** Separate opt-in constructor for a component-material caller that must close
     every original catalog prerequisite before accepted material or export.
     The legacy [of_json] deliberately rejects this new input profile. *)
