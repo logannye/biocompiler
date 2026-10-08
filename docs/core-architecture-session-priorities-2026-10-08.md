@@ -11,11 +11,12 @@ It records proposed work, not implemented capabilities or new acceptance.
 
 Implementation checkpoint: the user authorized execution after this plan.
 Priority 1 now has a [versioned contract](policy-instance-composition-v0.1.md),
-domain/producer/checker/service changes and independent witnesses in
-`codex/dev-policy/instance-composition`. Focused Python/static feedback is
-available; hosted native, installed/cross-platform and actual-main validation
-remain pending. Priorities 2–5 remain open and must not inherit this slice's
-acceptance.
+domain/producer/checker/service changes and independent witnesses. The development
+revision `c0366fc92` passed its hosted native build and all 33 focused native suites;
+SDK campaigns were running at the 2026-10-08 14:04 UTC checkpoint. Integration is
+on `codex/core-instance-composition`; complete installed/cross-platform and
+actual-main validation remain pending. Priorities 2–5 remain open and must not
+inherit this slice's acceptance.
 
 ## Assessment and recommendation
 

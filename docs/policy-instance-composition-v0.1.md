@@ -106,6 +106,14 @@ successful execution is still pending.
   canonical original-rule check during instance renaming. This is incomplete
   validation; no SDK campaigns ran. Installed integration source work follows
   this commit and must be tested on its own final revision.
+- `c0366fc92`: includes the installed integration, the producer-profile census
+  correction, canonical renamed authorities and the corrected shared-capacity
+  witness. At the 2026-10-08 14:04 UTC checkpoint,
+  [hosted run 37788462656](https://github.com/logannye/biocompiler/actions/runs/37788462656)
+  passed native compilation and all 33 development suites; the six SDK campaigns
+  were still running. Complete installed/cross-platform and actual-main gates
+  remain outstanding. The integration branch adds this documentation checkpoint
+  and must establish its own exact-revision acceptance.
 
 ## Deliberate limits and subsequent work
 
@@ -115,8 +123,8 @@ successful execution is still pending.
 - Complete-root ordered concatenation only; no slicing, rearrangement, new
   transforms or molecular-mechanism discovery.
 - The witness exercises repeated stateful graph-fragment ownership. Its native
-  execution remains pending. Repeating the same complete material definition
-  twice in an accepted RNA is outside the demonstrated scope.
+  execution passed in the development scope above. Repeating the same complete
+  material definition twice in an accepted RNA is outside the demonstrated scope.
 - The positive witness uses adjacent-root links. Longer crossed paths have
   structural and mutation controls, not a separate end-to-end positive witness.
 - The versioned domain supports existing truth or staged primitive profiles;
