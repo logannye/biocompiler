@@ -12,9 +12,9 @@ checkouts; unrelated researcher-authoring/encoding work remains separate.
 | Increment | Checkout under `work/` | State at this checkpoint |
 | --- | --- | --- |
 | Named component instances | `core-instance-composition` | PR99 at `a38174303f0806a84c4800df0040041c96190e5e`; complete integration run `37799164508` pending. |
-| Provider prerequisite closure | `core-prerequisite-closure` | Development revision `a34ebd6bc557b52e9e253e8fe7e4fbce8ae1f9a4`; run `37798264346` completed successfully; independent artifact audit pending. |
-| Two independent observations | `core-two-observation-composition` | Current coherent source batch, local checks complete, first hosted development push pending. |
-| Multiple products/members/helpers | Not yet created | Bounded design review only; no implementation or acceptance. |
+| Provider prerequisite closure | `core-prerequisite-closure` | Development revision `a34ebd6bc557b52e9e253e8fe7e4fbce8ae1f9a4`; run `37798264346` and independent inert artifact audit passed (35 native suites, 182 SDK observations). |
+| Two independent observations | `core-two-observation-composition` | First development run `37801697083` at `22e1f0ed1` compiled and passed 35 of 36 native suites. One new negative control expected the wrong rejection stage; its correction awaits a fresh run. |
+| Multiple products/members/helpers | `core-multi-member-composition` | Two-product/two-member implementation underway in a separate checkout; no native validation or acceptance. Helpers follow this subincrement. |
 | Modular assurance | Not yet created | Measurement and checked proof-rule design remain outstanding. |
 
 The earlier instance development revision `c0366fc92` passed run `37788462656`:
@@ -44,8 +44,12 @@ original input/provider mapping, independent freshness and uncertainty, and the
 unchanged whole-program/private-closure/material acceptance chain. Its domain-only
 fixture retains all nine source inputs. A/B declarations independently specify
 36 histories, 42 transitions, 43 prefixes, 24 obligations and the exact artificial
-17-base RNA. The 36-cell uncertainty table, timing, binding mutations and complete
-nonvacuous rejection case are native tests awaiting execution.
+17-base RNA. The 36-cell uncertainty table, timing and initial binding mutations passed in
+run `37801697083`. The same-coherence negative control was correctly rejected by
+`policy_operational_unsupported` before lowering; its expected diagnostic is
+corrected without changing production semantics. Later controls and SDK campaigns
+remain unexecuted until the corrected native suite passes. The original failure
+log and digest-verified inert archive are retained.
 
 Local feedback includes both CI-pinned strict typing gates (34 core and 31 policy
 modules); 58 new SDK/transport/evidence mock tests and 14 capability controls;

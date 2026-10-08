@@ -1494,7 +1494,7 @@
     },
     {
       "path": "core/test/test_policy_two_observation_material_service.ml",
-      "sha256": "e6bb11643a1c4b292309c3d7c39b54787fc6e8fa18ca91e4b13fe61a34c4d844"
+      "sha256": "55a12c7040630290ead15dd984a3e61446daece8a145e17b759e2370716e47f4"
     },
     {
       "path": "core/test/two_observation_fixture_export/main.ml",
