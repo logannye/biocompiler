@@ -174,3 +174,15 @@ and CI wiring found no correctness blocker. The five-original-input description
 and early capability test registration were corrected during that review.
 This coherent source checkpoint is ready for its first hosted development run;
 no helper native, installed, integration or actual-main acceptance is claimed.
+
+## Grounded-helper first hosted correction
+
+Source `cb7bc7037abf42f9a6b997ec7f119d93b61bfdc6` was submitted to development
+run `37811166797`, attempt 1. Compilation stopped before any native suite or SDK
+campaign executed: the new helper literal module needed its own `open Bioc_wire`
+namespace import. The independently reviewed correction adds that import and
+refreshes only its witness source hash; all rule meanings remain unchanged.
+Authenticated inert artifact `11565461025` retains the failure; its build log
+has SHA-256 `eb18600f7be8c9d7c6e297e10bb371b4aa16d4324b63e17fcd50a7c11aa6b667`.
+A fresh corrected-source run is required. Development documentation now matches
+the registered 38 native suites and ten SDK campaigns (260 observations).

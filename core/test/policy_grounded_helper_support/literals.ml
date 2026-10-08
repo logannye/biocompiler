@@ -1,5 +1,6 @@
 (* Complete supplied helper originals. Reuse only the independent P4 literal
    authority for the unchanged therapeutic graph, products and finite domain. *)
+open Bioc_wire
 include Bioc_policy_multi_member_test_support.Literals
 module Previous = Bioc_policy_multi_member_test_support.Requests
 let material_profile="biocompiler.policy_grounded_helper_prerequisite_mrna.v0.1"
