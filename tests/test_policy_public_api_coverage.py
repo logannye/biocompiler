@@ -13,6 +13,13 @@ from unittest.mock import patch
 from tools import check_policy_public_api_coverage as c
 
 
+INSTANCE_DEPENDENCIES = frozenset('biocompiler.core_policy_component_material.' + name for name in (
+    'INSTANCE_ASSEMBLY_PROFILE', 'INSTANCE_IMPLEMENTATION', 'INSTANCE_PRODUCER_PROFILE',
+    'INSTANCE_PROFILE', 'INSTANCE_REQUEST_PROFILE', 'INSTANCE_REQUEST_SCHEMA',
+    'INSTANCE_VALIDATION_SCOPE', '_instanced',
+))
+
+
 class PolicyPublicApiCoverageTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -99,6 +106,27 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
                              separators=(',', ':'), allow_nan=False).encode('utf-8')
         self.assertEqual(c.digest(encoded), '5cc11771578db41f60eca0aca124269cdf66cb4db3034f093151c91ebfd44b09')
+
+    def test_instance_dependencies_remain_private_in_the_combined_inventory(self):
+        # The combined ledger uses the same dependency-only scope wording for
+        # all composition profiles. The original 845 rows and all witnesses
+        # are separately pinned above; none of these eight additions has a
+        # runtime witness or an acceptance claim.
+        self.assertEqual(len(INSTANCE_DEPENDENCIES), 8)
+        self.assertTrue(INSTANCE_DEPENDENCIES <= set(c.COMPOSITION_DEPENDENCIES))
+        for identity in INSTANCE_DEPENDENCIES:
+            with self.subTest(identity=identity):
+                self.assertEqual(self.ledger['coverage'][identity], {
+                    'status': 'dependency', 'witnesses': [],
+                    'scope': 'Private implementation dependency or versioned protocol constant; '
+                             'no independent public API or executed semantic coverage claimed.',
+                })
+
+    def test_instance_dependency_cannot_gain_runtime_evidence(self):
+        row = self.ledger['coverage']['biocompiler.core_policy_component_material._instanced']
+        row.update(status='shared_invariant', witnesses=['component.routes'], scope='Native acceptance.')
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Private dependency classification changed'):
+            c.validate(self.root, self.ledger)
 
     def test_grounded_helper_dependency_cannot_become_public_or_semantic_acceptance(self):
         for identity in c.GROUNDED_HELPER_DEPENDENCIES:

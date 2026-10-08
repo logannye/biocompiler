@@ -62,6 +62,7 @@ class SchedulingTests(unittest.TestCase):
         preflight = jobs['ci-preflight']
         self.assertIn('tests.test_archive_authority', preflight)
         self.assertIn('python -B tools/migration_inventory.py --check', preflight)
+        self.assertIn('python -B tools/check_policy_public_api_coverage.py', preflight)
 
     def test_every_hosted_python_consumer_selects_the_supported_source_profile(self):
         text = (ROOT / '.github/workflows/ci.yml').read_text()
@@ -77,6 +78,7 @@ class SchedulingTests(unittest.TestCase):
             text.replace('uses: actions/setup-python@v5', 'uses: actions/setup-python@v6', 1),
             text.replace(' tests.test_archive_authority', ''),
             text.replace('          python -B tools/migration_inventory.py --check\n', ''),
+            text.replace('          python -B tools/check_policy_public_api_coverage.py\n', ''),
         ]
         for index, changed in enumerate(changes):
             with self.subTest(mutation=index), self.assertRaises(AssertionError):
