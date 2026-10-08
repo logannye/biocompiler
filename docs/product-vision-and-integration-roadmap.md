@@ -251,26 +251,32 @@ Adding authoring vocabulary alone does not complete a profile.
 
 ## Immediate planning priorities
 
-For the next coherent development batch, refresh the actual branch, release,
-handoff, and outstanding work first. Audit existing implementations before
-creating replacements. Then select a small set of deliverables from these
-priorities:
+User clarification, 2026-10-08: the current implementation priority is the core
+compiler architecture for correctness and compositionality. Standalone usefulness
+and eventual laboratory integration remain the product direction; they do not
+make interface polish or orchestration the next engineering objective. The
+[core architecture session plan](core-architecture-session-priorities-2026-10-08.md)
+records the reviewed source baseline, ranked gaps and bounded next deliverable.
 
-1. Continue the existing researcher authoring and usability work. Reduce the
-   burden of producing complete legitimate inputs and make rejected or partial
-   results understandable. Retain artifact inspection and exact change reporting.
-2. Maintain a supported-operation/profile inventory across the public workflow.
-   Reconcile authoring, execution, material construction, verification, and export
-   coverage instead of using a single broad capability label.
-3. Extend a clean-install example into a headless caller rehearsal using the same
-   interfaces. Identify missing stable diagnostics or discovery behavior before
-   designing a new transport or agent plugin.
-4. Continue useful real-project qualification and the existing evidence plan.
-   Choose one bounded claim and its measurement mapping; keep artifact identity,
-   predictive quality, and applicability separately testable.
-5. Record the minimal experiment/result boundary needed by that case. Begin with
-   local versioned records and a fake or recorded-data adapter; defer a hosted
-   service and physical automation until they solve an observed integration need.
+1. Extend checked component composition beyond the current fixed assembly shape,
+   preserving independent reconstruction, source meaning, ownership, resources
+   and exact material correspondence.
+2. Add executable prerequisite/contract closure and expand supported semantics
+   through complete, separately versioned source-to-material profiles. Preserve
+   explicit assumptions and fail closed on unresolved obligations.
+3. Extend multiple-product/member and helper support through the same checked
+   path, reusing existing architecture predicates with explicit policy mappings.
+4. Advance authoring, inspection, diagnostics and headless use alongside those
+   core increments when needed to exercise them. Reuse existing work and keep
+   supported-operation/profile coverage explicit.
+5. Continue real-project qualification and evidence work as a distinct track.
+   Let a concrete case guide later model and laboratory contracts; keep artifact
+   identity, prediction quality and empirical applicability separately testable.
+
+Refresh the actual branch, release, handoff and outstanding work before each
+coherent batch. Audit existing implementations before creating replacements.
+Compositional construction can initially retain whole-program bounded checking;
+modular proof reuse requires its own justified assurance rules.
 
 Do not make this direction a prerequisite for completing the current feature
 batch. Preserve ownership of active worktrees and frozen validation candidates.
