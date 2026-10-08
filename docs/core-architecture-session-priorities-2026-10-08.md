@@ -13,10 +13,13 @@ Implementation checkpoint: the user authorized execution after this plan.
 Priority 1 now has a [versioned contract](policy-instance-composition-v0.1.md),
 domain/producer/checker/service changes and independent witnesses. The development
 revision `c0366fc92` passed its hosted native build and all 33 focused native suites;
-SDK campaigns were running at the 2026-10-08 14:04 UTC checkpoint. Integration is
-on `codex/core-instance-composition`; complete installed/cross-platform and
-actual-main validation remain pending. Priorities 2–5 remain open and must not
-inherit this slice's acceptance.
+all six SDK campaigns also passed in run `37788462656` (156 retained observations).
+Integration is on `codex/core-instance-composition`; complete installed/cross-platform
+and actual-main validation remain pending. Priority 2 was explicitly selected as
+a separate bounded increment while those gates run, in
+`codex/dev-policy/prerequisite-closure`; its [contract](policy-prerequisite-closure-v0.1.md)
+and implementation are in progress. Priorities 2–5 must not inherit priority 1's
+acceptance. Priorities 3–5 remain unimplemented follow-on work.
 
 ## Assessment and recommendation
 

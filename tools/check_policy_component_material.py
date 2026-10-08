@@ -152,7 +152,8 @@ def checked_result(result: dict, case: dict) -> None:
         raise AssertionError("Complete declared cross-link projections changed")
 
 
-def exercise_cases(cases, core, verify_transport, verify, sdk, retain, artifacts, input_paths, *, validate_result=checked_result):
+def exercise_cases(cases, core, verify_transport, verify, sdk, retain, artifacts, input_paths, *,
+                   validate_result=checked_result, expected_obligations=OBLIGATIONS):
     """One unchanged 26-observation A/B witness for both explicit environments."""
     from biocompiler.core_client import CoreRejected
     def rejected(case, name, codes, action):
@@ -198,7 +199,7 @@ def exercise_cases(cases, core, verify_transport, verify, sdk, retain, artifacts
         if (failed.status != "not_accepted" or failed.artifact is not None or failed.report["assembly_status"] != "fail"
                 or failed.report["context_status"] != "unassessed"
                 or failed.report["assembly"]["structure"]["content_outcome"] != "fail"
-                or [row["obligation"] for row in failed.report["obligations"]] != OBLIGATIONS
+                or [row["obligation"] for row in failed.report["obligations"]] != expected_obligations
                 or any(row["status"] != "unresolved" for row in failed.report["obligations"])):
             raise AssertionError("Changed material did not fail fresh exact-content checking")
         retain(label, "changed-material", failed.result)
@@ -384,7 +385,7 @@ def fixture_authority_pins(fixture_path, provenance_path):
                for name in ("stdout.log", "stderr.log")}}
 
 
-def check_observations(observations, fixture, *, validate_result=None):
+def check_observations(observations, fixture, *, validate_result=None, expected_obligations=OBLIGATIONS):
     """Check complete retained protocol values against independent originals."""
     if validate_result is None:
         validate_result = checked_result
@@ -419,7 +420,7 @@ def check_observations(observations, fixture, *, validate_result=None):
         _require(failed["report"]["status"] == "not_accepted" and failed["artifact"] is None
                  and failed["report"]["assembly_status"] == "fail" and failed["report"]["context_status"] == "unassessed"
                  and failed["report"]["assembly"]["structure"]["content_outcome"] == "fail"
-                 and [row["obligation"] for row in failed["report"]["obligations"]] == OBLIGATIONS
+                 and [row["obligation"] for row in failed["report"]["obligations"]] == expected_obligations
                  and all(row["status"] == "unresolved" for row in failed["report"]["obligations"]),
                  "Changed component material gained or lost original authority")
         for name, code in (("changed-guard", "policy_implementation_source_binding"), ("changed-state", "policy_implementation_source_binding"),

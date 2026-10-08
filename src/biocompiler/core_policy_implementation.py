@@ -21,6 +21,8 @@ RESULT_SCHEMA = "biocompiler.core.policy_implementation.v1"
 CANDIDATE_SCHEMA = "biocompiler.policy_implementation_candidate.v0.1"
 REQUEST_SCHEMA = "biocompiler.policy_realization_request.v0.1"
 REQUEST_PROFILE = "biocompiler.policy_realization_inputs.v0.1"
+PREREQUISITE_REQUEST_SCHEMA = "biocompiler.policy_realization_request.v0.2"
+PREREQUISITE_REQUEST_PROFILE = "biocompiler.policy_prerequisite_realization_inputs.v0.1"
 PRESERVATION_PROFILE = "biocompiler.policy_bounded_preservation.v0.1"
 # Frozen negotiated publication profile; the protocol-budget regression test
 # checks these literal values against the wire envelope reserves.
@@ -103,26 +105,61 @@ def _original(request: JsonValue) -> dict[str, JsonValue]:
     return raw
 
 
+def _prerequisite_original(request: JsonValue) -> dict[str, JsonValue]:
+    """Nested authority for the explicit prerequisite material profile only."""
+    raw = _object(request, _REQUEST_FIELDS, "Original prerequisite implementation request")
+    if (raw["schema_version"] != PREREQUISITE_REQUEST_SCHEMA
+            or raw["profile"] != PREREQUISITE_REQUEST_PROFILE):
+        raise CoreProtocolError("Prerequisite material requires its closed nested source profile")
+    if _record(raw["document"], "Original BuildRequest").get("$type") != "BuildRequest":
+        raise CoreProtocolError("Prerequisite checking requires a complete original BuildRequest")
+    return raw
+
+
+def _pending_dependencies(request: dict[str, JsonValue]) -> list[JsonValue]:
+    """Retain the original catalog membership and order; interpret no predicate."""
+    document = _record(request["document"], "Original BuildRequest")
+    catalog = _record(document.get("implementations"), "Original implementation catalog")
+    entries = _rows(catalog.get("implementations"), "Original catalog entries")
+    result: list[JsonValue] = []
+    for bridge in _rows(request["catalog_bindings"], "Original catalog bridges"):
+        selected = [entry for entry in entries if entry.get("id") == bridge.get("entry_id")]
+        if len(selected) != 1:
+            raise CoreProtocolError("Pending dependency has ambiguous original catalog ownership")
+        entry = selected[0]
+        _pin(bridge.get("entry_digest"), entry, "Pending dependency catalog")
+        for index, definition in enumerate(_rows(entry.get("dependencies"), "Original catalog dependencies")):
+            result.append({"entry_id": bridge.get("entry_id"), "entry_digest": bridge.get("entry_digest"),
+                           "dependency_index": index, "definition": definition})
+    return result
+
+
 def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
-               report: dict[str, JsonValue]) -> None:
+               report: dict[str, JsonValue], *, prerequisites: bool = False) -> None:
     raw_binding = _record(report["binding"], "Source graph binding")
     staged = raw_binding.get("schema_version") == "biocompiler.policy_implementation_binding_report.v0.2"
     binding_profile = "biocompiler.policy_staged_source_graph.v0.1" if staged else "biocompiler.policy_exclusive_source_graph.v0.1"
     observable_profile = "biocompiler.policy_staged_observables.v0.1" if staged else "biocompiler.policy_truth_observables.v0.1"
     binding = _object(raw_binding, _BINDING_FIELDS | ({"state_encoding"} if staged else set()), "Source graph binding")
-    admission = _object(binding["source_admission"], _ADMISSION_FIELDS, "Original input admission")
+    admission = _object(binding["source_admission"], _ADMISSION_FIELDS
+                        | ({"pending_dependencies"} if prerequisites else set()), "Original input admission")
     _claim(binding)
     _claim(admission)
     if (binding["schema_version"] != ("biocompiler.policy_implementation_binding_report.v0.2" if staged else "biocompiler.policy_implementation_binding_report.v0.1")
             or binding["profile"] != binding_profile or binding["observable_profile"] != observable_profile
             or staged and binding["state_encoding"] != "exact_ordered_source_labels"
             or binding["status"] != "source_graph_bound" or binding["execution"] != "not_performed"
-            or admission["schema_version"] != "biocompiler.policy_realization_admission.v0.1"
-            or admission["profile"] != REQUEST_PROFILE
+            or admission["schema_version"] != ("biocompiler.policy_realization_admission.v0.2" if prerequisites
+                                                else "biocompiler.policy_realization_admission.v0.1")
+            or admission["profile"] != (PREREQUISITE_REQUEST_PROFILE if prerequisites else REQUEST_PROFILE)
             or admission["resource_profile"] != "biocompiler.policy_realization_inputs.resources.v0.1"
             or admission["status"] != "admitted_inputs" or admission["exploration"] != "not_performed"
             or any(stage[key] != "unassessed" for stage in (binding, admission) for key in ("preservation", "requirements"))):
         raise CoreProtocolError("Implementation report changed a subordinate admission claim")
+    if prerequisites:
+        _prerequisite_original(request)
+        if staged or not _same(admission["pending_dependencies"], _pending_dependencies(request)):
+            raise CoreProtocolError("Prerequisite admission changed its truth-only scope or original pending inventory")
     document = _record(request["document"], "Original BuildRequest")
     original_program = _record(document["program"], "Original program")
     original_declarations = _rows(original_program["declarations"], "Original declarations")

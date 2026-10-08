@@ -26,6 +26,7 @@ module AC = Bioc_domain.Architecture_contract
 module Id = Bioc_domain.Identity
 module Pin = Bioc_domain.Pinned_identity
 module M = Bioc_domain.Molecular_record
+module H = Bioc_domain.Policy_provider_prerequisites
 module W = Bioc_checker.Work_budget
 let implementation_version = "biocompiler.ocaml.policy_component_context_check.v0.1"
 let max_work = 100000000
@@ -44,14 +45,18 @@ let demand_json (value:demand) = obj ["owner",R.resource_owner_to_json value.key
   "unit",str (MC.resource_unit_name value.key.unit);"scope",str (MC.resource_scope_name value.key.scope);
   "quantity",Json.int value.quantity]
 type discharge = {obligation:string;evidence:Json.t}
+type checked_prerequisite_closure = {prerequisite_evidence_value:Json.t}
 type checked_context = {request_value:R.t;context_value:X.t;assembly_value:A.checked_assembly;
-  discharge_values:discharge list;evidence_value:Json.t}
+  discharge_values:discharge list;evidence_value:Json.t;
+  prerequisite_value:checked_prerequisite_closure option}
 type result = {outcome_value:E.outcome;report_value:Json.t;accepted_value:checked_context option}
 let request (value:checked_context) = value.request_value
 let context (value:checked_context) = value.context_value
 let assembly (value:checked_context) = value.assembly_value
 let discharges (value:checked_context) = value.discharge_values
 let evidence (value:checked_context) = value.evidence_value
+let prerequisite_closure (value:checked_context) = value.prerequisite_value
+let prerequisite_evidence (value:checked_prerequisite_closure) = value.prerequisite_evidence_value
 let report (value:result) = value.report_value
 let outcome (value:result) = value.outcome_value
 let accepted (value:result) = value.accepted_value
@@ -179,7 +184,9 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
   let original=Admission.request admitted and behavior=Admission.behavior admitted and domain=F.specification (Admission.operating_domain admitted) in
   let document=D.to_json (S.document original) in
   let providers=X.providers context and recipient=X.recipient context and clock=X.clock context in
-  let derived=ref [] and resource_rows=ref [] and discharged=ref [] and minimum_layout=ref Json.Null in
+  let prerequisites=if R.requires_prerequisite_closure request then
+      Some(H.derive ~charge ~original:(R.implementation_request request) ~context ()) else None in
+  let derived=ref [] and resource_rows=ref [] and input_rows=ref [] and discharged=ref [] and minimum_layout=ref Json.Null in
   let equal left right = M.check_resources left;M.check_resources right;
     let left=Canonical.encode left and right=Canonical.encode right in charge (String.length left+String.length right);left=right in
   let attempt () =
@@ -188,6 +195,24 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     fail (equal (L.to_json (R.component_library request)) (L.to_json (A.components assembly))) "unchanged_original_component_library";
     fail (equal (Rule.to_json rule) (Rule.to_json (A.rule assembly))) "unchanged_original_assembly_rule";
     fail (text "catalog_entry" (IB.report source)=(R.catalog_binding request).entry_id) "original_selected_catalog_entry";
+    Option.iter (fun closure ->
+      (* A graph is an inventory of the original obligations, never a supplied
+         PASS. A known cycle fails, but a missing body can hide edges to supplied
+         providers: an extra finding is conclusive only after reachability is
+         complete. Unsupported source meaning still needs its own interpreter. *)
+      let issues=H.issues closure in
+      let first predicate=List.find_opt (fun (issue:H.issue) -> charge 1;predicate issue.kind) issues in
+      (match first (function H.Cycle -> true | _ -> false) with
+       |Some issue->fail false issue.code|None->());
+      (match first (function H.Unsupported -> true | _ -> false) with
+       |Some issue->supported false issue.code|None->());
+      (match first (function H.Missing -> true | _ -> false) with
+       |Some issue->Diagnostic.fail "policy_component_context_unknown" issue.code|None->());
+      (match first (function H.Extra -> true | _ -> false) with
+       |Some issue->fail false issue.code|None->());
+      charge(List.length providers+List.length(H.reachable closure));
+      fail(List.sort compare(List.map(fun(value:C.provider)->value.definition)providers)=
+        List.sort compare(H.reachable closure))"complete_transitive_provider_closure") prerequisites;
     supported (if Rule.is_staged rule then
       behavior.rules=[] && behavior.stores=[] && List.length behavior.machines=1 &&
       List.length behavior.transitions=7 && List.length behavior.effects=2
@@ -250,9 +275,11 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     let references=get "operational_model" chassis::items "capabilities" chassis@items "interfaces" chassis@items "environment" chassis@
       items "environment" deployment@items "requires" role@List.map(fun key->get key delivery)["arrival";"expression";"activation";"contract"]in
     let refs=List.sort_uniq compare(List.map MC.provider_ref_of_json references)in
-    fail(List.sort compare(List.map(fun(value:C.provider)->value.definition)providers)=refs)"complete_original_provider_closure";
+    if Option.is_none prerequisites then
+      fail(List.sort compare(List.map(fun(value:C.provider)->value.definition)providers)=refs)"complete_original_provider_closure";
     let resolve reference=charge(List.length providers);match List.find_opt(fun(value:C.provider)->ref_equal value.definition reference)providers with
-      |Some value->value|None->Diagnostic.fail "policy_component_context_fail" "original_provider_absent"in
+      |Some value->value|None->Diagnostic.fail
+        (if Option.is_some prerequisites then "policy_component_context_unknown" else "policy_component_context_fail") "original_provider_absent"in
     let definitions=items "definitions"(get "semantics"(D.program(S.document original)))in
     let original_definition (reference:MC.provider_ref)=match List.find_opt(fun raw->text "id" raw=reference.definition_id)definitions with
       |Some raw->fail(text "version" raw=reference.definition_version && D.document_digest raw=reference.definition_digest)"original_definition_pin";raw
@@ -308,7 +335,13 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       fail(witness.source=declaration && channel.kind=kind && channel.source=declaration && channel.observer=observer && channel.subject=subject)"complete_input_source_binding";
       available channel.channel_id channel.available;
       let key=Canonical.encode(MC.provider_ref_to_json provider.definition),channel.channel_id in
-      fail(not(List.mem key !used_channels))"input_channel_alias";used_channels:=key:: !used_channels)(R.input_bindings request);
+      fail(not(List.mem key !used_channels))"input_channel_alias";used_channels:=key:: !used_channels;
+      if Option.is_some prerequisites then (
+        charge 1;
+        input_rows:= !input_rows@[obj ["input",str witness.input_id;"source",str witness.source;
+          "provider",MC.provider_ref_to_json witness.provider;"channel",str witness.channel;
+          "kind",str(match kind with C.Observation->"observation"|C.Feedback->"feedback");
+          "observer",str observer;"subject",str subject;"available",C.availability_to_json channel.available]])) (R.input_bindings request);
     let all_channels=List.concat_map(fun(provider:C.provider)->match provider.body with
       |C.Interface value->List.map(fun(channel:C.channel)->Canonical.encode(MC.provider_ref_to_json provider.definition),channel.channel_id)value.channels|_->[])providers in
     fail(List.sort compare all_channels=List.sort compare !used_channels)"unused_original_input_channel";
@@ -350,9 +383,36 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
   in
   let outcome_value,diagnostics=match attempt () with () -> E.Pass,[]
     | exception Diagnostic.Error error when error.code="policy_component_context_fail" -> E.Fail,[error.message]
+    | exception Diagnostic.Error error when error.code="policy_component_context_unknown" -> E.Unknown,[error.message]
     | exception Diagnostic.Error error when error.code="policy_component_context_unsupported" -> E.Unsupported,[error.message] in
-  let report_value=obj ["schema_version",str "biocompiler.policy_component_context_assessment.v0.1";
-    "profile",str context_profile;"implementation_version",str (if R.is_instanced request then "biocompiler.ocaml.policy_component_context_check.v0.2" else implementation_version);
+  let closure_evidence=Option.map (fun closure ->
+    let fingerprint raw=M.check_resources raw;let encoded=Canonical.encode raw in
+      charge(2*String.length encoded);Canonical.sha256 encoded in
+    let selections=Rule.components rule in
+    let instances=List.map(fun(value:Rule.component_selection)->charge 1;
+      obj["slot",str(Rule.slot_name value.slot);"component",Pin.to_json value.identity])selections in
+    let requirements=List.map(fun(value:Rule.component_selection)->charge 1;
+      let body=get "body"(LC.to_json(Rule.component rule value.slot))in
+      obj["slot",str(Rule.slot_name value.slot);"component",Pin.to_json value.identity;
+        "requirements",get "provider_requirements" body])selections in
+    let provider_pins=List.map(fun(value:C.provider)->charge 1;
+      obj["definition",MC.provider_ref_to_json value.definition;"identity",Pin.to_json value.identity;
+        "body_fingerprint",str(fingerprint(C.provider_body_to_json value))])providers in
+    let requested=R.implementation_request request in
+    obj["schema_version",str "biocompiler.policy_provider_prerequisite_closure.v0.1";
+      "profile",str context_profile;"status",str(E.outcome_name outcome_value);"complete",Json.Bool(outcome_value=E.Pass);
+      "original_request_fingerprint",str(R.fingerprint request);"assembly_fingerprint",str(fingerprint(A.evidence assembly));
+      "source_catalog",get "implementations"(D.to_json(S.document requested));
+      "pending_dependencies",arr(List.map H.pending_dependency_to_json(H.dependencies closure));
+      "instances",arr instances;"local_requirements",arr requirements;"providers",arr provider_pins;
+      "graph",H.to_json closure;"operating_domain_fingerprint",str(F.digest(S.operating_domain requested));
+      "clock",get "clock"(X.to_json context);"recipient",C.recipient_to_json recipient;
+      "input_allocations",arr !input_rows;"resource_allocations",arr !resource_rows;
+      "diagnostics",arr(List.map str diagnostics);"empirical",str "unassessed"]) prerequisites in
+  let report_value=obj (["schema_version",str "biocompiler.policy_component_context_assessment.v0.1";
+    "profile",str context_profile;"implementation_version",str (if Option.is_some prerequisites then
+      "biocompiler.ocaml.policy_component_context_check.v0.3" else if R.is_instanced request then
+      "biocompiler.ocaml.policy_component_context_check.v0.2" else implementation_version);
     "request_fingerprint",str (R.fingerprint request);"context_fingerprint",str (X.fingerprint context);
     "assembly_fingerprint",str (Canonical.fingerprint (A.evidence assembly));
     "outcome",str (E.outcome_name outcome_value);"claim_scope",str "conditional_component_context_and_complete_record_capacity";
@@ -362,12 +422,14 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       "context_status",str (if List.exists (fun (value:discharge) -> value.obligation=obligation) !discharged then "discharged" else "outside_stage")]) behavior.unresolved_obligations);
     "discharges",arr (List.map (fun (value:discharge) -> obj ["id",str value.obligation;"evidence",value.evidence]) !discharged);
     "diagnostics",arr (List.map str diagnostics);"source_receipt_status",str "unchanged";
-    "biological_validity",str "unassessed";"human_use",str "unassessed";"artifact",str "withheld";"export",str "withheld"] in
+    "biological_validity",str "unassessed";"human_use",str "unassessed";"artifact",str "withheld";"export",str "withheld"] @
+    (match closure_evidence with None->[]|Some value->["prerequisite_closure",value])) in
   let output=W.create_output ~profile:context_profile ~error_code:"policy_component_context_resource_limit" ~max_bytes:M.max_json_bytes ~max_nodes:M.max_items () in
   W.reserve_json output report_value;charge (2*String.length (Canonical.encode report_value));
   Diagnostic.require (not (W.exhausted budget)) "policy_component_context_resource_limit" "Context work was exhausted.";
   {outcome_value;report_value;accepted_value=(if outcome_value=E.Pass then Some {request_value=request;context_value=context;
-    assembly_value=assembly;discharge_values= !discharged;evidence_value=report_value} else None)}
+    assembly_value=assembly;discharge_values= !discharged;evidence_value=report_value;
+    prerequisite_value=Option.map(fun prerequisite_evidence_value->{prerequisite_evidence_value})closure_evidence} else None)}
 let replay ?parent ?maximum ~request ~assembly saved =
   M.check_resources saved;
   let fresh=check ?parent ?maximum ~request ~assembly () in

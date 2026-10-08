@@ -73,7 +73,8 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   let original_raw = R.to_json original and library_raw = L.to_json components
   and rule_raw = A.to_json rule and proposal_raw = Q.to_json proposed in
   List.iter (fun raw -> ignore (encoded raw)) [original_raw;library_raw;rule_raw;proposal_raw];
-  let original = R.of_json original_raw in
+  let original = (if R.requires_prerequisite_closure original then R.of_prerequisite_json
+    else R.of_json) original_raw in
   let checked_binding = P.binding implementation in
   let actual = B.implementation checked_binding in
   let bound_original = RA.request (B.admitted_inputs checked_binding) in

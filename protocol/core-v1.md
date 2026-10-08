@@ -601,3 +601,24 @@ assessment, exact molecule records and paired FASTA/manifest hashes.
 Python transports and the same atomic, independently read-back ZIP publication
 used by the conditional material route. This increment adds no component CLI
 command or top-level Python re-export.
+
+
+## Instance provider prerequisites
+
+The separately negotiated `policy_prerequisite_material` profile uses the
+existing component check/replay/export operations with outer request v0.3 and
+`biocompiler.policy_instance_prerequisite_mrna.v0.1`. Core alone advertises
+`policy_prerequisite_material_producer`. The exact service implementation is
+`biocompiler.ocaml.policy_instance_prerequisite_material.v0.1`; validation scope
+is `policy-instance-prerequisite-mrna-v0.1`. The nested realization request v0.2
+uses `biocompiler.policy_prerequisite_realization_inputs.v0.1` and is reachable
+only through this outer route, not standalone realization admission.
+
+Material assessment v0.2 adds `prerequisites` and `prerequisite_status`. Context
+assessment retains its v0.1 schema with the separately negotiated profile and
+checker implementation v0.3, adding `prerequisite_closure`. The closure binds
+complete original catalog dependencies, instances, local requirements, provider
+bodies, graph, domain, clock, recipient and checked allocations. Only native
+private checked values authorize discharge; imported reports do not. Old profile
+field sets remain unchanged. See the [closed contract](../docs/policy-prerequisite-closure-v0.1.md)
+for supported relations, negative outcomes, limits and pending validation.

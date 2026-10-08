@@ -11,6 +11,7 @@ let schema_version = "biocompiler.policy_component_context.v0.1"
 let profile = "biocompiler.policy_component_mrna.v0.1"
 let instance_profile = "biocompiler.policy_instance_component_mrna.v0.1"
 let instance_staged_profile = "biocompiler.policy_instance_staged_component_mrna.v0.1"
+let prerequisite_profile = "biocompiler.policy_instance_prerequisite_mrna.v0.1"
 let instance_union_profile = "biocompiler.policy_instance_ordered_union.v0.1"
 let record_profile = "biocompiler.policy_component_complete_records.v0.1"
 let staged_profile = "biocompiler.policy_staged_component_mrna.v0.1"
@@ -105,9 +106,9 @@ let record_layout_of_json raw =
   require (Json.equal raw (record_layout_to_json value)) "Composition layout must preserve its complete supplied spelling.";
   value
 let record_layout_fingerprint value = Canonical.fingerprint (record_layout_to_json value)
-type t = {instanced:bool;clock_value:X.clock;recipient_value:X.recipient;layout_value:record_layout;
+type t = {instanced:bool;prerequisite_closure:bool;clock_value:X.clock;recipient_value:X.recipient;layout_value:record_layout;
   placement_value:AC.Placement.t;delivery_value:X.delivery_group;provider_values:X.provider list}
-let to_json value = obj ["schema_version",str schema_version;"profile",str (if value.instanced then (if value.layout_value.staged then instance_staged_profile else instance_profile)
+let to_json value = obj ["schema_version",str schema_version;"profile",str (if value.prerequisite_closure then prerequisite_profile else if value.instanced then (if value.layout_value.staged then instance_staged_profile else instance_profile)
     else if value.layout_value.staged then staged_profile else profile);
   "clock",X.clock_to_json value.clock_value;"recipient",X.recipient_to_json value.recipient_value;
   "record_layout",record_layout_to_json value.layout_value;"placement",AC.Placement.to_json value.placement_value;
@@ -116,14 +117,17 @@ let to_json value = obj ["schema_version",str schema_version;"profile",str (if v
 let of_json raw =
   M.check_resources raw;
   exact ["schema_version";"profile";"clock";"recipient";"record_layout";"placement";"delivery_group";"helpers";"providers"] raw;
-  require (get "schema_version" raw=str schema_version && List.mem (get "profile" raw) [str profile;str staged_profile;str instance_profile;str instance_staged_profile])
+  require (get "schema_version" raw=str schema_version && List.mem (get "profile" raw) [str profile;str staged_profile;str instance_profile;str instance_staged_profile;str prerequisite_profile])
     "Unsupported original composition context profile.";
   require (get "helpers" raw=Json.Array []) "Composition context does not support executable or delivered helpers.";
-  let instanced=List.mem (get "profile" raw) [str instance_profile;str instance_staged_profile] in
-  let value = {instanced;clock_value=X.clock_of_json (get "clock" raw);recipient_value=X.recipient_of_json (get "recipient" raw);
+  let instanced=List.mem (get "profile" raw) [str instance_profile;str instance_staged_profile;str prerequisite_profile] in
+  let prerequisite_closure=get "profile" raw=str prerequisite_profile in
+  let value = {instanced;prerequisite_closure;clock_value=X.clock_of_json (get "clock" raw);recipient_value=X.recipient_of_json (get "recipient" raw);
     layout_value=record_layout_of_json (get "record_layout" raw);placement_value=AC.Placement.of_json (get "placement" raw);
     delivery_value=X.delivery_group_of_json (get "delivery_group" raw);
     provider_values=List.map X.provider_of_json (M.array ~maximum:128 (get "providers" raw))} in
+  require (not prerequisite_closure || not value.layout_value.staged)
+    "Prerequisite closure requires the unchanged truth record profile.";
   let unique label values = require (List.length values=List.length (List.sort_uniq String.compare values))
     ("Duplicate composition " ^ label ^ " identity.") in
   unique "provider definition" (List.map (fun (provider:X.provider) -> Canonical.encode (Policy_material_contract.provider_ref_to_json provider.definition)) value.provider_values);
@@ -143,5 +147,6 @@ let delivery_group value = value.delivery_value
 let providers value = value.provider_values
 
 let is_instanced value = value.instanced
-let context_profile value = if value.instanced then (if value.layout_value.staged then instance_staged_profile else instance_profile)
+let requires_prerequisite_closure value = value.prerequisite_closure
+let context_profile value = if value.prerequisite_closure then prerequisite_profile else if value.instanced then (if value.layout_value.staged then instance_staged_profile else instance_profile)
   else if value.layout_value.staged then staged_profile else profile

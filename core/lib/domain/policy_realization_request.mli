@@ -5,6 +5,8 @@ open Bioc_wire
 
 val schema_version : string
 val profile : string
+val prerequisite_schema_version : string
+val prerequisite_profile : string
 val resource_profile : string
 
 type budgets = private {
@@ -24,6 +26,12 @@ type catalog_binding = private {
 type t
 
 val of_json : Json.t -> t
+(** Separate opt-in constructor for a component-material caller that must close
+    every original catalog prerequisite before accepted material or export.
+    The legacy [of_json] deliberately rejects this new input profile. *)
+val of_prerequisite_json : Json.t -> t
+val requires_prerequisite_closure : t -> bool
+val request_profile : t -> string
 val to_json : t -> Json.t
 
 (** Exact full-envelope identity, including source maps, bindings and budgets. *)

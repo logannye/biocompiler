@@ -23,9 +23,9 @@ REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py", "examples/rese
 REVIEWED_ADDITIONS = {
     # Research-project authoring and the installed example stay excluded from
     # the immutable original workflow cohort and confer no historical authority.
-    'src/biocompiler/policy/research_project.py': '46c00188849ff2688c3b5b822489c4a0248c87684e1cfaac74af44debb9c0896',
+    'src/biocompiler/policy/research_project.py': '6d0582ffaa0f622df0fed1b7460fe260d9126e86cfd10163a6d0874f6b5dd890',
     'examples/researcher_alpha.py': '63d862d55e22de38ba633f901d37c28c7a6fab3cb77ed8604d7fc07df0aac313',
-    'src/biocompiler/core_policy_component_selection.py': '3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2',
+    'src/biocompiler/core_policy_component_selection.py': '20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9',
     'src/biocompiler/policy/component_selection.py': '10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80',
     "src/biocompiler/core_distribution.py": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459",
     "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
@@ -49,13 +49,13 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/workflow_backend.py": "81958a4fc1147b2ea10eae7c7bac15a68338b1cb21b738805ae04538c7bdc1db",
     "src/biocompiler/core_workflow_authority.py": "ded29c7cd4c16241812bd7f677b0c962d185a724fef1cd7294c7e899c7c32d66",
     "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5",
-    # Reviewed named-instance transports stay excluded from original authority.
-    'src/biocompiler/policy/component_material.py': 'd35297c9fa06cc8fdcf5db27f80070a2fe9a5580b17e913619e1f7c75bc37690',
-    'src/biocompiler/core_policy_component_material.py': 'ce3fa2862b83d2745021395460a1a50636a109e5b540a052b9d897cc81739073',
+    # Reviewed versioned instance/prerequisite transports remain outside historical authority.
+    'src/biocompiler/policy/component_material.py': '74e6733097d9f3d039671fa264362248a990dac25307c2a6aa942b1da636b1d1',
+    'src/biocompiler/core_policy_component_material.py': 'f0b2e369aae053386b0e714e0ae002f5adc2e105474ac494dcf5e48297aa4fd1',
     'src/biocompiler/policy/material.py': '5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79',
-    'src/biocompiler/core_policy_material.py': 'bc8d44be6b6aa7a6d56d4352c85d6a2f8c9201ab626e6ebe1bcc265487b46704',
-    'src/biocompiler/policy/implementation.py': '4e1de0535cf852885169328aaae035caff9178b367b84f204c1e68eaae478515',
-    'src/biocompiler/core_policy_implementation.py': 'ca0815363676dd8fd112b91b8d1adf303bedabb0f543ef2305d5f59c433906cd',
+    'src/biocompiler/core_policy_material.py': 'd656caf6b45a81930859521ef4857a34b70983949b75d4ede297cfbb0ca6db07',
+    'src/biocompiler/policy/implementation.py': '79b594f07a7b9d8ec80a4779a19639631ef0084de85965f91a1ef5662eae84a6',
+    'src/biocompiler/core_policy_implementation.py': 'fb35d2f0f9712bf28fb59bf5262f411b81066b7a09d014e139404809d6f3aa48',
     # Explicit operational-policy transport and CLI stay excluded from the
     # original workflow cohort; these pins do not broaden historical authority.
     'src/biocompiler/core_policy_operational.py': '089805c81bf6f84e5cf5e264b6ed89babedc3d692e2a7605429aa388e6d5ed02',

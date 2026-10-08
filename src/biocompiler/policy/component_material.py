@@ -7,6 +7,7 @@ from typing import Callable, Iterable
 from biocompiler.core_client import JsonValue, decode_json, encode_json
 from biocompiler.core_policy_component_material import (
     ACCEPTED_STATUS, REQUEST_PROFILE, REQUEST_SCHEMA, INSTANCE_REQUEST_PROFILE, INSTANCE_REQUEST_SCHEMA, PolicyComponentMaterialClient, PolicyComponentMaterialResult, _original,
+    PREREQUISITE_REQUEST_PROFILE, PREREQUISITE_REQUEST_SCHEMA,
 )
 from .material import _publish_fresh
 
@@ -14,10 +15,12 @@ from .material import _publish_fresh
 def prepare_request(*, implementation_request: JsonValue, component_library: JsonValue,
                     composition_rule: JsonValue, catalog_binding: JsonValue, input_bindings: JsonValue,
                     resource_bindings: JsonValue, context: JsonValue, budgets: JsonValue,
-                    instanced: bool = False) -> dict[str, JsonValue]:
+                    instanced: bool = False, prerequisites: bool = False) -> dict[str, JsonValue]:
     """Snapshot all original authority unchanged; perform no semantic admission."""
-    request: JsonValue = {"schema_version": INSTANCE_REQUEST_SCHEMA if instanced else REQUEST_SCHEMA,
-        "profile": INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
+    if prerequisites and not instanced:
+        raise ValueError("Prerequisite closure requires the explicit named-instance profile")
+    request: JsonValue = {"schema_version": PREREQUISITE_REQUEST_SCHEMA if prerequisites else INSTANCE_REQUEST_SCHEMA if instanced else REQUEST_SCHEMA,
+        "profile": PREREQUISITE_REQUEST_PROFILE if prerequisites else INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
         "implementation_request": implementation_request, "component_library": component_library,
         "composition_rule": composition_rule, "catalog_binding": catalog_binding, "input_bindings": input_bindings,
         "resource_bindings": resource_bindings, "context": context, "budgets": budgets}

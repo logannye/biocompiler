@@ -11,6 +11,8 @@ val schema_version : string
 val profile : string
 val instance_schema_version : string
 val instance_profile : string
+val prerequisite_schema_version : string
+val prerequisite_profile : string
 val resource_profile : string
 type component_binding = private { slot:A.slot; component:Pinned_identity.t }
 type catalog_binding = private {
@@ -35,6 +37,7 @@ type budgets = private {max_work:int; max_report_bytes:int; max_report_nodes:int
 type t
 val of_json : ?charge:(int -> unit) -> Json.t -> t
 val is_instanced : t -> bool
+val requires_prerequisite_closure : t -> bool
 val request_profile : t -> string
 val to_json : t -> Json.t
 val fingerprint : t -> string

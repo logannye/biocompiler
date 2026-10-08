@@ -18,6 +18,8 @@ let validation_scope="policy-component-mrna-v0.1"
 let implementation="biocompiler.ocaml.policy_component_material.v0.1"
 let instance_implementation="biocompiler.ocaml.policy_instance_component_material.v0.1"
 let instance_validation_scope="policy-instance-component-mrna-v0.1"
+let prerequisite_implementation="biocompiler.ocaml.policy_instance_prerequisite_material.v0.1"
+let prerequisite_validation_scope="policy-instance-prerequisite-mrna-v0.1"
 let schema_version="biocompiler.core.policy_component_material.v1"
 let resource_profile=R.resource_profile
 let candidate_schema="biocompiler.policy_component_material_candidate.v0.1"
@@ -38,6 +40,13 @@ let instance_profile=obj (List.map (fun (key,value) -> key,match key with
   | _ -> value) (Json.object_fields profile))
 let instance_producer_profile=obj["operations",arr[str "compile-policy-component-material"];
   "implementation",str instance_implementation;"validation_scope",str instance_validation_scope]
+let prerequisite_profile=obj (List.map (fun (key,value) -> key,match key with
+  | "request_schema" -> str R.prerequisite_schema_version
+  | "implementation" -> str prerequisite_implementation
+  | "validation_scope" -> str prerequisite_validation_scope
+  | _ -> value) (Json.object_fields profile))
+let prerequisite_producer_profile=obj["operations",arr[str "compile-policy-component-material"];
+  "implementation",str prerequisite_implementation;"validation_scope",str prerequisite_validation_scope]
 let validate_publication raw=
   let framed=obj["result",raw]in
   let output=W.create_output ~profile:validation_scope ~error_code:"policy_component_material_service_publication_limit"
@@ -92,9 +101,11 @@ let check ~export ~request:raw_request ~candidate:raw_candidate ~limits:raw_limi
     |None->Diagnostic.fail "policy_component_material_export_not_accepted"
       "Fresh original-source, implementation, material, context or obligation checking withheld accepted export."in
   let result=obj["schema_version",str schema_version;
-    "implementation",str (if R.is_instanced request then instance_implementation else implementation);
+    "implementation",str (if R.requires_prerequisite_closure request then prerequisite_implementation
+      else if R.is_instanced request then instance_implementation else implementation);
     "resource_profile",str resource_profile;
-    "validation_scope",str (if R.is_instanced request then instance_validation_scope else validation_scope);
+    "validation_scope",str (if R.requires_prerequisite_closure request then prerequisite_validation_scope
+      else if R.is_instanced request then instance_validation_scope else validation_scope);
     "request_fingerprint",str(R.fingerprint request);"candidate_fingerprint",str(Canonical.fingerprint raw_candidate);
     "invocation_fingerprint",str(Canonical.fingerprint(obj["request",raw_request;"candidate",raw_candidate;"limits",raw_limits]));
     "report_fingerprint",str(Canonical.fingerprint report);"candidate",raw_candidate;"report",report;"artifact",artifact]in

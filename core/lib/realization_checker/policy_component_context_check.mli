@@ -12,6 +12,9 @@ val max_work : int
 type discharge = {obligation:string; evidence:Json.t}
 type result
 type checked_context
+(** Minted only after complete fresh prerequisite, deployment, input, resource
+    and availability checking. Serialized reports cannot construct this value. *)
+type checked_prerequisite_closure
 val check : ?parent:Bioc_checker.Work_budget.t -> ?maximum:int ->
   request:R.t -> assembly:A.checked_assembly -> unit -> result
 val report : result -> Json.t
@@ -22,5 +25,7 @@ val context : checked_context -> X.t
 val assembly : checked_context -> A.checked_assembly
 val discharges : checked_context -> discharge list
 val evidence : checked_context -> Json.t
+val prerequisite_closure : checked_context -> checked_prerequisite_closure option
+val prerequisite_evidence : checked_prerequisite_closure -> Json.t
 val replay : ?parent:Bioc_checker.Work_budget.t -> ?maximum:int ->
   request:R.t -> assembly:A.checked_assembly -> Json.t -> result

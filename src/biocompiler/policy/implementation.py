@@ -5,7 +5,8 @@ from typing import Callable, cast
 
 from biocompiler.core_client import JsonValue, decode_json, encode_json
 from biocompiler.core_policy_implementation import (
-    REQUEST_PROFILE, REQUEST_SCHEMA, PolicyImplementationClient, PolicyImplementationResult,
+    REQUEST_PROFILE, REQUEST_SCHEMA, PREREQUISITE_REQUEST_PROFILE, PREREQUISITE_REQUEST_SCHEMA,
+    PolicyImplementationClient, PolicyImplementationResult,
 )
 from .model import BuildRequest
 from .serialization import to_data
@@ -13,12 +14,13 @@ from .serialization import to_data
 
 def prepare_request(document: BuildRequest, *, definitions: JsonValue, operating_domain: JsonValue,
                     implementation_library: JsonValue, catalog_bindings: JsonValue,
-                    budgets: JsonValue) -> dict[str, JsonValue]:
+                    budgets: JsonValue, prerequisites: bool = False) -> dict[str, JsonValue]:
     """Freeze complete caller-supplied authority; this performs no admission."""
     if type(document) is not BuildRequest:
         raise TypeError("Implementation authority requires an original frozen BuildRequest")
     raw: JsonValue = {
-        "schema_version": REQUEST_SCHEMA, "profile": REQUEST_PROFILE,
+        "schema_version": PREREQUISITE_REQUEST_SCHEMA if prerequisites else REQUEST_SCHEMA,
+        "profile": PREREQUISITE_REQUEST_PROFILE if prerequisites else REQUEST_PROFILE,
         "document": cast(JsonValue, to_data(document)), "definitions": definitions,
         "operating_domain": operating_domain, "implementation_library": implementation_library,
         "catalog_bindings": catalog_bindings, "budgets": budgets,

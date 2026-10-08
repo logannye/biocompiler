@@ -8,6 +8,10 @@ val instance_implementation : string
 val instance_validation_scope : string
 val instance_profile : Json.t
 val instance_producer_profile : Json.t
+val prerequisite_implementation : string
+val prerequisite_validation_scope : string
+val prerequisite_profile : Json.t
+val prerequisite_producer_profile : Json.t
 val schema_version : string
 val resource_profile : string
 val candidate_schema : string

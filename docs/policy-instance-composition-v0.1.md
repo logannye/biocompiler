@@ -1,7 +1,7 @@
 # Bounded policy instance composition
 
-Status: implementation checkpoint, 2026-10-08. Hosted native and integration
-validation are pending. This is priority 1 of the
+Status: implementation checkpoint, 2026-10-08. Hosted development validation
+passed at the revision below; integration and actual-main validation are pending. This is priority 1 of the
 [core architecture plan](core-architecture-session-priorities-2026-10-08.md),
 covering SM-05/SM-06/SM-09 and their SM-01/SM-08 witnesses.
 
@@ -108,12 +108,18 @@ successful execution is still pending.
   this commit and must be tested on its own final revision.
 - `c0366fc92`: includes the installed integration, the producer-profile census
   correction, canonical renamed authorities and the corrected shared-capacity
-  witness. At the 2026-10-08 14:04 UTC checkpoint,
-  [hosted run 37788462656](https://github.com/logannye/biocompiler/actions/runs/37788462656)
-  passed native compilation and all 33 development suites; the six SDK campaigns
-  were still running. Complete installed/cross-platform and actual-main gates
-  remain outstanding. The integration branch adds this documentation checkpoint
-  and must establish its own exact-revision acceptance.
+  witness. [Hosted run 37788462656](https://github.com/logannye/biocompiler/actions/runs/37788462656)
+  completed successfully: native compilation, all 33 development suites and all
+  six SDK campaigns with156 retained observations. The instance campaign retained
+  all26 observations and both paired ZIPs. These exact development receipts do
+  not transfer to later source revisions.
+- `b1559859b`: full PR run37789500614 failed two historical-source preflight
+  cases on each Python version because three reviewed SDK exclusion hashes were
+  stale. Frozen historical corpus and original source mapping were unchanged.
+- `4b5d0b535`: updates only those three exclusion pins and their comment.
+  Local historical workflow/source mapping and four focused scope controls passed.
+  [Full PR run37792192989](https://github.com/logannye/biocompiler/actions/runs/37792192989)
+  is pending. Installed/cross-platform and actual-main acceptance remain open.
 
 ## Deliberate limits and subsequent work
 

@@ -30,6 +30,8 @@ POLICY_FIXTURES = ["data/policy_frontend_request.json", "data/policy_frontend_su
 
 # Literal union inventory, independent of the runner's closed allowlist.
 POLICY_OPERATIONAL_FIXTURES = {
+    "test_policy_provider_prerequisites": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_prerequisite_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
     "test_policy_instance_assembly_rule": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
     "test_policy_instance_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
     "test_policy_staged_generation": ["data/policy_staged_realization_request_v01.json"],
@@ -107,7 +109,7 @@ class NativeBundleTests(unittest.TestCase):
 
     def test_actual_dune_suite_census_and_argument_order_are_preserved(self):
         plan = bundle.test_plan((ROOT/'core/test/dune').read_text())
-        self.assertEqual(len(plan),173)
+        self.assertEqual(len(plan),175)
         manager = next(row for row in plan if row['name']=='test_pipeline_callback_manager')
         self.assertEqual(manager['environment'], ['BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION',
             'BIOCOMPILER_PIPELINE_CONTRACT_LITERALS','BIOCOMPILER_FIXED_PIPELINE_CORPUS'])
@@ -125,11 +127,11 @@ class NativeBundleTests(unittest.TestCase):
             'test_policy_check':POLICY_FIXTURES,
             'test_policy_document':['data/policy_documents_v01.json'],
             'test_policy_service':['data/policy_documents_v01.json']})
-        self.assertEqual(len(POLICY_OPERATIONAL_FIXTURES),52)
-        self.assertEqual(len(observed),55)
+        self.assertEqual(len(POLICY_OPERATIONAL_FIXTURES),54)
+        self.assertEqual(len(observed),57)
         self.assertEqual(len(bundle.dependency_members(ROOT)),26)
-        self.assertEqual(len(bundle.expected_members(ROOT)),203)
-        self.assertEqual(sum(path.endswith('.exe') for path in bundle.expected_members(ROOT)),177)
+        self.assertEqual(len(bundle.expected_members(ROOT)),206)
+        self.assertEqual(sum(path.endswith('.exe') for path in bundle.expected_members(ROOT)),180)
         for name, relatives in POLICY_OPERATIONAL_FIXTURES.items():
             declaration = '(test (name '+name+') (modules '+name+') (libraries example) (action (run %{test} '
             arguments = ['%{dep:'+relative+'}' for relative in relatives]

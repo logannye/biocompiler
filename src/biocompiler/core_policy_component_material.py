@@ -24,6 +24,10 @@ INSTANCE_REQUEST_PROFILE = "biocompiler.policy_instance_component_mrna.v0.1"
 INSTANCE_ASSEMBLY_PROFILE = "biocompiler.policy_instance_component_assembly.v0.1"
 INSTANCE_IMPLEMENTATION = "biocompiler.ocaml.policy_instance_component_material.v0.1"
 INSTANCE_VALIDATION_SCOPE = "policy-instance-component-mrna-v0.1"
+PREREQUISITE_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.3"
+PREREQUISITE_REQUEST_PROFILE = "biocompiler.policy_instance_prerequisite_mrna.v0.1"
+PREREQUISITE_IMPLEMENTATION = "biocompiler.ocaml.policy_instance_prerequisite_material.v0.1"
+PREREQUISITE_VALIDATION_SCOPE = "policy-instance-prerequisite-mrna-v0.1"
 REPORT_SCHEMA = "biocompiler.policy_component_material_assessment.v0.1"
 EXPORT_SCHEMA = "biocompiler.policy_component_mrna_export.v0.1"
 MANIFEST_SCHEMA = "biocompiler.policy_component_mrna_manifest.v0.1"
@@ -50,6 +54,13 @@ INSTANCE_PROFILE: dict[str, JsonValue] = {
 INSTANCE_PRODUCER_PROFILE: dict[str, JsonValue] = {
     **PRODUCER_PROFILE, "implementation": INSTANCE_IMPLEMENTATION, "validation_scope": INSTANCE_VALIDATION_SCOPE,
 }
+PREREQUISITE_PROFILE: dict[str, JsonValue] = {
+    **PROFILE, "request_schema": PREREQUISITE_REQUEST_SCHEMA, "implementation": PREREQUISITE_IMPLEMENTATION,
+    "validation_scope": PREREQUISITE_VALIDATION_SCOPE,
+}
+PREREQUISITE_PRODUCER_PROFILE: dict[str, JsonValue] = {
+    **PRODUCER_PROFILE, "implementation": PREREQUISITE_IMPLEMENTATION, "validation_scope": PREREQUISITE_VALIDATION_SCOPE,
+}
 _REQUEST_FIELDS = {"schema_version", "profile", "implementation_request", "component_library", "composition_rule",
                    "catalog_binding", "input_bindings", "resource_bindings", "context", "budgets"}
 _CANDIDATE_FIELDS = {"schema_version", "behavior", "implementation", "binding", "assembly_proposal", "construction"}
@@ -60,9 +71,10 @@ _same, _pin, _record, _rows, _count = material._same, material._pin, material._r
 def _original(value: JsonValue) -> dict[str, JsonValue]:
     request = _object(value, _REQUEST_FIELDS, "Original component material request")
     if (request["schema_version"], request["profile"]) not in ((REQUEST_SCHEMA, REQUEST_PROFILE),
-            (INSTANCE_REQUEST_SCHEMA, INSTANCE_REQUEST_PROFILE)):
+            (INSTANCE_REQUEST_SCHEMA, INSTANCE_REQUEST_PROFILE),
+            (PREREQUISITE_REQUEST_SCHEMA, PREREQUISITE_REQUEST_PROFILE)):
         raise CoreProtocolError("Component material request changed its closed original profile")
-    implementation._original(request["implementation_request"])
+    (implementation._prerequisite_original if _prerequisites(request) else implementation._original)(request["implementation_request"])
     for key in ("component_library", "composition_rule", "catalog_binding", "context", "budgets"):
         _record(request[key], "Original " + key)
     for key in ("input_bindings", "resource_bindings"):
@@ -71,7 +83,21 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
 
 
 def _instanced(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] == INSTANCE_REQUEST_PROFILE
+    return request["profile"] in (INSTANCE_REQUEST_PROFILE, PREREQUISITE_REQUEST_PROFILE)
+
+
+def _prerequisites(request: dict[str, JsonValue]) -> bool:
+    return request["profile"] == PREREQUISITE_REQUEST_PROFILE
+
+
+def _profile_settings(request: dict[str, JsonValue]) -> tuple[str, dict[str, JsonValue], dict[str, JsonValue], str, str]:
+    if _prerequisites(request):
+        return ("policy_prerequisite_material", PREREQUISITE_PROFILE, PREREQUISITE_PRODUCER_PROFILE,
+                PREREQUISITE_VALIDATION_SCOPE, PREREQUISITE_IMPLEMENTATION)
+    if _instanced(request):
+        return ("policy_instance_material", INSTANCE_PROFILE, INSTANCE_PRODUCER_PROFILE,
+                INSTANCE_VALIDATION_SCOPE, INSTANCE_IMPLEMENTATION)
+    return "policy_component_material", PROFILE, PRODUCER_PROFILE, VALIDATION_SCOPE, IMPLEMENTATION
 
 
 def _expect(row: dict[str, JsonValue], expected: dict[str, JsonValue], label: str) -> None:
@@ -218,10 +244,173 @@ def _context_inventory(request: dict[str, JsonValue], report: dict[str, JsonValu
             raise CoreProtocolError("Context changed an original allocation reservation or its order")
 
 
+def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, JsonValue]) -> None:
+    """Bind native closure evidence to original inventories; prove no predicates."""
+    from biocompiler.core_policy import _semantic
+
+    raw, contextual = report["prerequisites"], report["context"]
+    if contextual is None:
+        if raw is not None or report["prerequisite_status"] != "unassessed":
+            raise CoreProtocolError("Prerequisites bypassed the required context stage")
+        return
+    context_report = _record(contextual, "Prerequisite context")
+    if not _same(raw, context_report.get("prerequisite_closure")):
+        raise CoreProtocolError("Material and context retained different prerequisite closures")
+    closure = _object(raw, {"schema_version", "profile", "status", "complete", "original_request_fingerprint",
+        "assembly_fingerprint", "source_catalog", "pending_dependencies", "instances", "local_requirements", "providers",
+        "graph", "operating_domain_fingerprint", "clock", "recipient", "input_allocations", "resource_allocations",
+        "diagnostics", "empirical"}, "Complete prerequisite closure")
+    status = context_report["outcome"]
+    _expect(closure, {"schema_version": "biocompiler.policy_provider_prerequisite_closure.v0.1",
+        "profile": PREREQUISITE_REQUEST_PROFILE, "status": status, "complete": status == "pass",
+        "diagnostics": context_report["diagnostics"], "empirical": "unassessed"}, "Prerequisite scope")
+    if report["prerequisite_status"] != status:
+        raise CoreProtocolError("Prerequisite status contradicts the complete checked context")
+    original = implementation._prerequisite_original(request["implementation_request"])
+    document = _record(original["document"], "Original prerequisite source")
+    context = _record(request["context"], "Original prerequisite context")
+    rule = _record(_record(request["composition_rule"], "Original rule").get("body"), "Original rule body")
+    pending = implementation._pending_dependencies(original)
+    _expect(closure, {"source_catalog": document.get("implementations"), "pending_dependencies": pending,
+        "instances": rule.get("components"), "clock": context.get("clock"), "recipient": context.get("recipient"),
+        "resource_allocations": context_report["resource_allocations"]}, "Prerequisite original inventories")
+    _pin(closure["original_request_fingerprint"], request, "Prerequisite request")
+    _pin(closure["assembly_fingerprint"], report["assembly"], "Prerequisite assembly")
+    _pin(closure["operating_domain_fingerprint"], original["operating_domain"], "Prerequisite domain")
+    library = _rows(_record(request["component_library"], "Original component library").get("components"), "Original components")
+    expected_requirements: list[JsonValue] = []
+    for instance in _rows(rule.get("components"), "Original instances"):
+        component = _unique(library, "identity", instance.get("component"), "Original prerequisite component")
+        body = _record(component.get("body"), "Original component body")
+        expected_requirements.append({"slot": instance.get("slot"), "component": instance.get("component"),
+                                      "requirements": body.get("provider_requirements")})
+    if not _same(closure["local_requirements"], expected_requirements):
+        raise CoreProtocolError("Closure lost or aliased a qualified local prerequisite owner")
+    providers = _rows(context.get("providers"), "Original closure providers")
+    retained = _rows(closure["providers"], "Retained complete providers")
+    if len(providers) != len(retained):
+        raise CoreProtocolError("Closure changed the original provider census")
+    bodies = [_record(provider.get("body"), "Original provider body") for provider in providers]
+    for supplied, body, value in zip(providers, bodies, retained):
+        row = _object(value, {"definition", "identity", "body_fingerprint"}, "Pinned prerequisite provider")
+        _expect(row, {"definition": body.get("definition"), "identity": supplied.get("identity")}, "Original provider identity")
+        _pin(row["body_fingerprint"], body, "Complete original provider body")
+    bindings = _rows(request["input_bindings"], "Original input bindings")
+    allocations = _rows(closure["input_allocations"], "Checked prerequisite inputs")
+    if len(allocations) > len(bindings) or status == "pass" and len(allocations) != len(bindings):
+        raise CoreProtocolError("Closure changed the complete input allocation inventory")
+    for binding, value in zip(bindings, allocations):
+        provider = _unique(bodies, "definition", binding.get("provider"), "Input provider")
+        channel = _unique(_rows(provider.get("channels"), "Original interface channels"), "id", binding.get("channel"), "Input channel")
+        expected: JsonValue = {"input": binding.get("input"), "source": binding.get("source"),
+            "provider": binding.get("provider"), "channel": binding.get("channel"), "kind": channel.get("kind"),
+            "observer": channel.get("observer"), "subject": channel.get("subject"), "available": channel.get("availability")}
+        if not _same(value, expected):
+            raise CoreProtocolError("Closure changed an original input allocation")
+    graph = _object(closure["graph"], {"schema_version", "pending_dependencies", "roots", "nodes", "edges", "issues"}, "Original provider dependency graph")
+    _expect(graph, {"schema_version": "biocompiler.policy_provider_dependency_graph.v0.1", "pending_dependencies": pending}, "Provider graph authority")
+    program = _record(document.get("program"), "Original prerequisite program")
+    definitions = _rows(_record(program.get("semantics"), "Original semantics").get("definitions"), "Original definitions")
+
+    def reference(value: JsonValue) -> None:
+        row = _object(value, {"$type", "id", "version", "digest"}, "Original provider DefinitionRef")
+        definition = _unique(definitions, "id", row["id"], "Original provider definition")
+        _expect(row, {"$type": "DefinitionRef", "version": definition.get("version")}, "Provider definition identity")
+        # Match the source's identity convention: provenance and source maps are
+        # retained in the request but do not contribute to a DefinitionRef pin.
+        _pin(row["digest"], _semantic(definition), "Original provider definition body")
+
+    expected_roots: list[JsonValue] = []
+
+    def source_root(path: str, value: JsonValue) -> None:
+        reference(value)
+        expected_roots.append({"origin": {"kind": "source", "path": path}, "definition": value})
+
+    def source_rows(path: str, value: JsonValue) -> None:
+        for index, row in enumerate(_rows(value, "Original provider roots")):
+            source_root(path + "/" + str(index), row)
+
+    deployment = _record(document.get("deployment"), "Original prerequisite deployment")
+    for index, binding in enumerate(_rows(deployment.get("bindings"), "Original chassis bindings")):
+        chassis = _record(binding.get("chassis"), "Original chassis")
+        path = "/deployment/bindings/" + str(index) + "/chassis"
+        source_root(path + "/operational_model", chassis.get("operational_model"))
+        for key in ("capabilities", "interfaces", "environment"):
+            source_rows(path + "/" + key, chassis.get(key))
+    source_rows("/deployment/environment", deployment.get("environment"))
+    for index, declaration in enumerate(_rows(program.get("declarations"), "Original declarations")):
+        if declaration.get("$type") == "Role":
+            source_rows("/program/declarations/" + str(index) + "/requires", declaration.get("requires"))
+    delivery = _record(deployment.get("delivery"), "Original delivery")
+    for key in ("arrival", "expression", "activation", "contract"):
+        source_root("/deployment/delivery/" + key, delivery.get(key))
+    for value in _rows(pending, "Original pending dependencies"):
+        reference(value["definition"])
+        expected_roots.append({"origin": {"kind": "catalog_dependency", **{
+            key: value[key] for key in ("entry_id", "entry_digest", "dependency_index")}}, "definition": value["definition"]})
+    if not _same(graph["roots"], expected_roots):
+        raise CoreProtocolError("Provider graph changed an original source or catalog root occurrence")
+    for body in bodies:
+        reference(body.get("definition"))
+    nodes = [_object(row, {"definition", "provider"}, "Provider dependency node") for row in _rows(graph["nodes"], "Provider nodes")]
+    for node in nodes:
+        reference(node["definition"])
+    node_keys = [encode_json(row["definition"]) for row in nodes]
+    if len(set(node_keys)) != len(node_keys):
+        raise CoreProtocolError("Provider graph duplicated a definition identity")
+    if any(encode_json(_record(root, "Provider root")["definition"]) not in node_keys for root in expected_roots):
+        raise CoreProtocolError("Provider graph omitted an original root definition")
+    expected_edges: list[JsonValue] = []
+    for node in nodes:
+        matched = [(provider, body) for provider, body in zip(providers, bodies) if _same(body.get("definition"), node["definition"])]
+        if not matched:
+            if node["provider"] is not None:
+                raise CoreProtocolError("Absent provider acquired a body identity")
+            continue
+        if len(matched) != 1 or not _same(node["provider"], matched[0][0].get("identity")):
+            raise CoreProtocolError("Provider graph changed an original body pin")
+        body = matched[0][1]
+        outgoing: list[tuple[str, list[JsonValue]]] = []
+        if body.get("kind") == "interface":
+            outgoing = [("interface_environment", [body.get("environment")])]
+        elif body.get("kind") == "chassis":
+            chassis = _record(body.get("chassis"), "Original chassis")
+            for key, relation in (("capabilities", "chassis_capability"), ("interfaces", "chassis_interface"), ("environment", "chassis_environment")):
+                refs = _rows(chassis.get(key), "Original chassis references")
+                outgoing.append((relation, list(refs)))
+        for relation, targets in outgoing:
+            for index, target in enumerate(targets):
+                reference(target)
+                if encode_json(target) not in node_keys:
+                    raise CoreProtocolError("Provider graph omitted an original dependency target")
+                expected_edges.append({"source": node["definition"], "relation": relation, "index": index, "target": target})
+    edges = _rows(graph["edges"], "Original provider edges")
+    # Bind every retained edge occurrence to its original field/index. Their DFS
+    # ordering and actual closure/cycle interpretation remain native authority.
+    if sorted(encode_json(row) for row in edges) != sorted(encode_json(row) for row in expected_edges):
+        raise CoreProtocolError("Provider graph changed an original dependency occurrence")
+    issues = _rows(graph["issues"], "Provider graph diagnostics")
+    issue_codes = {"missing": "prerequisite_provider_missing", "cycle": "prerequisite_cycle",
+                   "extra": "prerequisite_provider_extra", "unsupported": "prerequisite_definition_unsupported"}
+    for value in issues:
+        row = _object(value, {"kind", "code", "references"}, "Provider graph issue")
+        if type(row["kind"]) is not str or issue_codes.get(row["kind"]) != row["code"]:
+            raise CoreProtocolError("Unknown provider graph issue kind")
+        references = _rows(row["references"], "Provider issue references")
+        if not references:
+            raise CoreProtocolError("Provider graph issue omitted its original references")
+        for value in references:
+            reference(value)
+    if status == "pass" and (issues or any(row["provider"] is None for row in nodes)
+            or set(node_keys) != {encode_json(body.get("definition")) for body in bodies}):
+        raise CoreProtocolError("Complete closure omitted an original provider or retained an unresolved graph issue")
+
+
 def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue]) -> None:
     rule = _record(request["composition_rule"], "Original rule")
     body = _record(rule.get("body"), "Original rule body")
     instanced = _instanced(request)
+    prerequisites = _prerequisites(request)
     assembly, context = report["assembly"], report["context"]
     if assembly is not None:
         leaf = _object(assembly, {"schema_version", "checker_version", "profile", "original_fingerprint", "components_fingerprint",
@@ -242,15 +431,18 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
         _projections(request, candidate, leaf)
     if context is not None:
         context_profile = _record(request["context"], "Original component context").get("profile")
-        allowed_contexts = ((INSTANCE_REQUEST_PROFILE, "biocompiler.policy_instance_staged_component_mrna.v0.1") if instanced
+        allowed_contexts = ((PREREQUISITE_REQUEST_PROFILE,) if prerequisites else
+                            (INSTANCE_REQUEST_PROFILE, "biocompiler.policy_instance_staged_component_mrna.v0.1") if instanced
                             else (REQUEST_PROFILE, "biocompiler.policy_staged_component_mrna.v0.1"))
         if context_profile not in allowed_contexts:
             raise CoreProtocolError("Original component context has an unsupported profile")
         leaf = _object(context, {"schema_version", "profile", "implementation_version", "request_fingerprint", "context_fingerprint", "assembly_fingerprint",
             "outcome", "claim_scope", "record_layout", "minimum_record_layout", "derived_demands", "resource_allocations", "source_obligations", "discharges",
-            "diagnostics", "source_receipt_status", "biological_validity", "human_use", "artifact", "export"}, "Component context evidence")
+            "diagnostics", "source_receipt_status", "biological_validity", "human_use", "artifact", "export"}
+            | ({"prerequisite_closure"} if prerequisites else set()), "Component context evidence")
         _expect(leaf, {"schema_version": "biocompiler.policy_component_context_assessment.v0.1", "profile": context_profile,
-            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_context_check.v0.1", "claim_scope": "conditional_component_context_and_complete_record_capacity",
+            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.3" if prerequisites else
+            "biocompiler.ocaml.policy_component_context_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_context_check.v0.1", "claim_scope": "conditional_component_context_and_complete_record_capacity",
             "source_receipt_status": "unchanged", "biological_validity": "unassessed", "human_use": "unassessed", "artifact": "withheld", "export": "withheld"}, "Context evidence")
         for key, original in (("request_fingerprint", request), ("context_fingerprint", request["context"]), ("assembly_fingerprint", assembly)):
             _pin(leaf[key], original, key)
@@ -288,10 +480,12 @@ def _candidate(value: JsonValue, *, instanced: bool = False) -> dict[str, JsonVa
     return candidate
 
 
-def _report(value: JsonValue, *, instanced: bool = False) -> dict[str, JsonValue]:
-    report = _object(value, _REPORT_FIELDS, "Complete component assessment")
-    _expect(report, {"schema_version": REPORT_SCHEMA, "profile": INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
-        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
+def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = False) -> dict[str, JsonValue]:
+    report = _object(value, _REPORT_FIELDS | ({"prerequisites", "prerequisite_status"} if prerequisites else set()), "Complete component assessment")
+    _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
+        "profile": PREREQUISITE_REQUEST_PROFILE if prerequisites else INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
+        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.3" if prerequisites else
+        "biocompiler.ocaml.policy_component_material_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
         "claim_scope": CLAIM_SCOPE, "premise": PREMISE, "empirical": "unassessed", "artifact": "withheld", "export": "withheld"}, "Component report")
     return report
 
@@ -310,22 +504,29 @@ def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate
     if (usage["unit"] != "logical_data_visits_and_child_semantic_work" or charged < _count(usage["request_decoding_work"], "Request work")
             or charged > _count(budgets.get("max_work"), "Original maximum work")):
         raise CoreProtocolError("Component work accounting changed its unit or original bound")
-    material._preservation(response, request, candidate, report, limits)
+    prerequisites = _prerequisites(request)
+    material._preservation(response, request, candidate, report, limits, prerequisites=prerequisites)
     _leaves(request, candidate, report)
-    material._obligations(report, material_key="assembly", accepted_status=ACCEPTED_STATUS, conjunction_stage="conditional_component_context_conjunction")
+    if prerequisites:
+        _prerequisite_evidence(request, report)
+    material._obligations(report, material_key="assembly", accepted_status=ACCEPTED_STATUS,
+                          conjunction_stage="conditional_component_context_conjunction",
+                          prerequisite_key="prerequisites" if prerequisites else None)
 
 
 def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComponentMaterialResult:
     request = _original(payload["request"])
     instanced = _instanced(request)
+    prerequisites = _prerequisites(request)
+    _, _, _, expected_scope, expected_implementation = _profile_settings(request)
     result = _object(response.result, material._RESULT_FIELDS, "Component material result")
-    _expect(result, {"schema_version": RESULT_SCHEMA, "implementation": INSTANCE_IMPLEMENTATION if instanced else IMPLEMENTATION,
-                    "resource_profile": RESOURCE_PROFILE, "validation_scope": INSTANCE_VALIDATION_SCOPE if instanced else VALIDATION_SCOPE}, "Negotiated component result")
+    _expect(result, {"schema_version": RESULT_SCHEMA, "implementation": expected_implementation,
+                    "resource_profile": RESOURCE_PROFILE, "validation_scope": expected_scope}, "Negotiated component result")
     candidate = _object(result["candidate"], _CANDIDATE_FIELDS, "Complete component candidate")
     if candidate["schema_version"] != CANDIDATE_SCHEMA or "candidate" in payload and not _same(candidate, payload["candidate"]):
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
     _candidate(candidate, instanced=instanced)
-    report = _report(result["report"], instanced=instanced)
+    report = _report(result["report"], instanced=instanced, prerequisites=prerequisites)
     invocation: JsonValue = {"request": request, "candidate": candidate, "limits": payload["limits"]}
     request_hash = _pin(result["request_fingerprint"], request, "Complete original component request")
     candidate_hash = _pin(result["candidate_fingerprint"], candidate, "Complete component candidate")
@@ -334,7 +535,8 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
     _assessment(response, request, candidate, report, payload["limits"])
     material._artifact(result["artifact"], operation=response.operation, request=request, candidate=candidate, report=report, limits=payload["limits"],
         export_operation="export-policy-component-material", accepted_status=ACCEPTED_STATUS, export_schema=EXPORT_SCHEMA,
-        manifest_schema=MANIFEST_SCHEMA, request_profile=INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE, claim_scope=CLAIM_SCOPE, premise=PREMISE)
+        manifest_schema=MANIFEST_SCHEMA, request_profile=PREREQUISITE_REQUEST_PROFILE if prerequisites else
+        INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE, claim_scope=CLAIM_SCOPE, premise=PREMISE)
     if response.operation == "replay-policy-component-material" and not _same(result, payload["report"]):
         raise CoreProtocolError("Fresh replay differs from the complete retained component wrapper")
     budgets = _record(request["budgets"], "Original component budgets")
@@ -352,11 +554,7 @@ class PolicyComponentMaterialClient:
     def _call(self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None) -> PolicyComponentMaterialResult:
         snapshot = cast(dict[str, JsonValue], decode_json(encode_json(payload)))
         request = _original(snapshot["request"])
-        instanced = _instanced(request)
-        profile_key = "policy_instance_material" if instanced else "policy_component_material"
-        expected_profile = INSTANCE_PROFILE if instanced else PROFILE
-        expected_producer = INSTANCE_PRODUCER_PROFILE if instanced else PRODUCER_PROFILE
-        expected_scope = INSTANCE_VALIDATION_SCOPE if instanced else VALIDATION_SCOPE
+        profile_key, expected_profile, expected_producer, expected_scope, _ = _profile_settings(request)
         if operation == "compile-policy-component-material" and self.transport.role != "core":
             raise CoreProtocolError("Component production requires an explicitly selected Core producer")
         capabilities = self.transport.negotiate(operation, cancelled=cancelled)

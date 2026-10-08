@@ -61,15 +61,15 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
 
 
 def _preservation(response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
-                  report: dict[str, JsonValue], limits: JsonValue) -> None:
-    original = implementation._original(request["implementation_request"])
+                  report: dict[str, JsonValue], limits: JsonValue, *, prerequisites: bool = False) -> None:
+    original = (implementation._prerequisite_original if prerequisites else implementation._original)(request["implementation_request"])
     evidence = _object(report["preservation"], implementation._REPORT_FIELDS, "Complete preservation evidence")
     if (evidence["schema_version"] != "biocompiler.policy_preservation_report.v0.1"
             or evidence["profile"] != implementation.PRESERVATION_PROFILE or not _same(evidence["limits"], limits)):
         raise CoreProtocolError("Material checking changed original preservation profile or limits")
     _pin(evidence["request_fingerprint"], original, "Original implementation request")
     implementation._claim(evidence)
-    implementation._authority(response, original, candidate, evidence)
+    implementation._authority(response, original, candidate, evidence, prerequisites=prerequisites)
     implementation._evidence(original, evidence)
 
 
@@ -251,7 +251,8 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
 
 def _obligations(report: dict[str, JsonValue], *, material_key: str = "material",
                  accepted_status: str = "checked_material",
-                 conjunction_stage: str = "conditional_material_context_conjunction") -> None:
+                 conjunction_stage: str = "conditional_material_context_conjunction",
+                 prerequisite_key: str | None = None) -> None:
     preservation = _record(report["preservation"], "Preservation")
     binding = _record(preservation["binding"], "Binding")
     admission = _record(binding["source_admission"], "Admission")
@@ -283,8 +284,9 @@ def _obligations(report: dict[str, JsonValue], *, material_key: str = "material"
                 continue
             if row["obligation"] == "machine_reachability_termination_and_progress":
                 raise CoreProtocolError("Machine obligation requires its explicit bounded interpretation")
-            keys = {"bounded_implementation_preservation": ("preservation",), "declared_context": ("context",),
-                    conjunction_stage: ("preservation", material_key, "context")}
+            extra = (prerequisite_key,) if prerequisite_key is not None else ()
+            keys = {"bounded_implementation_preservation": ("preservation",), "declared_context": ("context",) + extra,
+                    conjunction_stage: ("preservation", material_key, "context") + extra}
             if type(stage) is not str or stage not in keys:
                 raise CoreProtocolError("Unknown original-obligation discharge stage")
             evidence = _object(row["evidence"], set(keys[stage]), "Obligation evidence pins")
@@ -298,6 +300,12 @@ def _obligations(report: dict[str, JsonValue], *, material_key: str = "material"
     checked = report["status"] == accepted_status
     stages = (preservation["status"] == "checked_implementation" and report["catalog"] is not None
               and report[material_key + "_status"] == "pass" and report["context_status"] == "pass")
+    if prerequisite_key is not None:
+        closure = report[prerequisite_key]
+        stages = (stages and closure is not None and _record(closure, "Required prerequisite closure").get("status") == "pass"
+                  and report.get("prerequisite_status") == "pass")
+        if not stages and any(row["status"] == "discharged" for row in rows):
+            raise CoreProtocolError("Prerequisite obligations require the complete checked context chain")
     if (type(complete) is not bool or report["status"] not in (accepted_status, "not_accepted")
             or checked != (stages and all(row["status"] == "discharged" for row in rows)) or complete != checked):
         raise CoreProtocolError("Material acceptance contradicts complete stage and obligation evidence")

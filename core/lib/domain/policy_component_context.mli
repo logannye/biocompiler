@@ -8,6 +8,7 @@ val schema_version : string
 val profile : string
 val instance_profile : string
 val instance_staged_profile : string
+val prerequisite_profile : string
 val instance_union_profile : string
 val staged_profile : string
 val staged_record_profile : string
@@ -30,6 +31,7 @@ val record_layout_fingerprint : record_layout -> string
 type t
 val of_json : Json.t -> t
 val is_instanced : t -> bool
+val requires_prerequisite_closure : t -> bool
 val context_profile : t -> string
 val to_json : t -> Json.t
 val fingerprint : t -> string

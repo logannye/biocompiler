@@ -4,10 +4,11 @@ module O = Bioc_domain.Policy_operational
 module F = Bioc_domain.Policy_operating_domain
 module I = Bioc_domain.Policy_implementation
 module P = Bioc_domain.Pinned_identity
+module H = Bioc_domain.Policy_provider_prerequisites
 
 type admitted_inputs = {
   request_value:R.t; behavior_value:O.behavior; domain_value:F.validated;
-  model_values:P.t list; report_value:Json.t; charge_value:int -> unit;
+  model_values:P.t list; dependency_values:H.pending_dependency list; report_value:Json.t; charge_value:int -> unit;
 }
 module Make (Charge : sig val charge : int -> unit end) = struct
 module Meter = Policy_generation_meter.Make(Charge)
@@ -111,8 +112,11 @@ let check_catalog request document =
       "policy_realization_chassis" "Catalog entry does not explicitly support the complete original chassis/RNA deployment.";
     List.iter(fun key->List.iter(fun reference->ignore(resolve_definition definitions reference))(items key entry))
       ["dependencies";"evidence"];
-    require(items "dependencies" entry=[] && items "evidence" entry=[])
-      "policy_realization_unsupported" "Implementation dependency/evidence closure is not executable in this profile; source pins cannot infer carriers or establish supporting claims.";
+    (if R.requires_prerequisite_closure request then
+      require(items "evidence" entry=[])
+        "policy_realization_unsupported" "Empirical evidence references cannot discharge executable provider prerequisites."
+    else require(items "dependencies" entry=[] && items "evidence" entry=[])
+      "policy_realization_unsupported" "Implementation dependency/evidence closure is not executable in this profile; source pins cannot infer carriers or establish supporting claims.");
     List.iter(fun pin->
       require(List.exists(fun(model:I.model)->pin_equal model.identity pin)models)
         "policy_realization_model" "Catalog bridge selects a model absent from the independently supplied library.";
@@ -134,9 +138,11 @@ let admit ~request ~(behavior:O.behavior) =
   let assessment=Policy_admission.source_assessment source in
   let requested=check_assurance document assessment behavior domain_value in
   let model_values,catalog_digest=check_catalog request document in
-  let report_value=obj[
-    "schema_version",str "biocompiler.policy_realization_admission.v0.1";
-    "profile",str R.profile;"resource_profile",str R.resource_profile;"status",str "admitted_inputs";
+  let prerequisite_closure=R.requires_prerequisite_closure request in
+  let dependency_values=if prerequisite_closure then H.pending_dependencies ~charge:Charge.charge request else [] in
+  let report_fields=[
+    "schema_version",str (if prerequisite_closure then "biocompiler.policy_realization_admission.v0.2" else "biocompiler.policy_realization_admission.v0.1");
+    "profile",str (R.request_profile request);"resource_profile",str R.resource_profile;"status",str "admitted_inputs";
     "request_fingerprint",str(R.fingerprint request);
     "source_artifact_digest",str(D.artifact_digest document);"document_digest",str(D.fingerprint document);
     "descriptors_digest",str(O.descriptors_digest descriptors);
@@ -155,8 +161,10 @@ let admit ~request ~(behavior:O.behavior) =
       "independent_implementation_execution";"source_implementation_preservation";
       "whole_domain_hard_requirements";"original_assurance_satisfaction";
       "deployment_and_material_carriers";"material_correspondence";"fresh_export_acceptance"])] in
+  let report_value=obj (if prerequisite_closure then report_fields @
+    ["pending_dependencies",arr(List.map H.pending_dependency_to_json dependency_values)] else report_fields) in
   Meter.preflight report_value;
-  {request_value=request;behavior_value=behavior;domain_value;model_values;report_value;charge_value=Charge.charge}
+  {request_value=request;behavior_value=behavior;domain_value;model_values;dependency_values;report_value;charge_value=Charge.charge}
 end
 let admit_metered ~charge ~request ~behavior =
   let module Admission = Make(struct let charge = charge end) in
@@ -166,6 +174,7 @@ let request value = value.request_value
 let behavior value = value.behavior_value
 let operating_domain value = value.domain_value
 let authorized_models value = value.model_values
+let pending_dependencies value = value.dependency_values
 let require_model value ~entry_id pin =
   let module Meter = Policy_generation_meter.Make(struct let charge = value.charge_value end) in
   let module List = Meter.List in

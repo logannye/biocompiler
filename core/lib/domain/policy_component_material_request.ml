@@ -17,6 +17,8 @@ let schema_version = "biocompiler.policy_component_material_request.v0.1"
 let profile = X.profile
 let instance_schema_version = "biocompiler.policy_component_material_request.v0.2"
 let instance_profile = "biocompiler.policy_instance_component_mrna.v0.1"
+let prerequisite_schema_version = "biocompiler.policy_component_material_request.v0.3"
+let prerequisite_profile = "biocompiler.policy_instance_prerequisite_mrna.v0.1"
 let resource_profile = "biocompiler.policy_component_material_resources.v0.1"
 let str value = Json.String value
 let obj values = Json.Object values
@@ -81,15 +83,21 @@ let of_json ?(charge=fun _ -> ()) raw =
   let raw_bytes = measure raw in M.check_resources raw;
   exact ["schema_version";"profile";"implementation_request";"component_library";"composition_rule";
     "catalog_binding";"input_bindings";"resource_bindings";"context";"budgets"] raw;
-  let instanced = get "schema_version" raw=str instance_schema_version && get "profile" raw=str instance_profile in
+  let prerequisite_closure = get "schema_version" raw=str prerequisite_schema_version && get "profile" raw=str prerequisite_profile in
+  let instanced = prerequisite_closure || (get "schema_version" raw=str instance_schema_version && get "profile" raw=str instance_profile) in
   require (instanced || (get "schema_version" raw=str schema_version && get "profile" raw=str profile))
     "Unsupported original component material request profile.";
-  let original = decode R.of_json (get "implementation_request" raw) in
+  let original = decode (if prerequisite_closure then R.of_prerequisite_json else R.of_json) (get "implementation_request" raw) in
   let library = decode (L.of_json ~library:(R.implementation_library original)) (get "component_library" raw) in
   let rule_value = decode (A.of_json ~components:library) (get "composition_rule" raw) in
   let context_value = decode X.of_json (get "context" raw) in
   require (A.is_instanced rule_value=instanced && X.is_instanced context_value=instanced)
     "Original request, rule and context instance profiles must agree.";
+  require (X.requires_prerequisite_closure context_value=prerequisite_closure &&
+    R.requires_prerequisite_closure original=prerequisite_closure)
+    "Original request, realization and context prerequisite profiles must agree.";
+  require (not prerequisite_closure || not (A.is_staged rule_value))
+    "Prerequisite closure is limited to the existing truth instance profile.";
   let bridge = get "catalog_binding" raw in
   exact ["entry_id";"entry_version";"entry_digest";"operation";"realization";"components";"rule"] bridge;
   let catalog = {entry_id=text 256 (get "entry_id" bridge);entry_version=text 256 (get "entry_version" bridge);
@@ -146,10 +154,15 @@ let of_json ?(charge=fun _ -> ()) raw =
   let provider reference =
     match List.find_opt (fun (value:PX.provider) -> equal (C.provider_ref_to_json value.definition) (C.provider_ref_to_json reference)) providers with
     | Some value -> value | None -> Diagnostic.fail "policy_component_material_request" "Composition binding names an absent complete original provider DefinitionRef." in
+  let missing_prerequisite reference = prerequisite_closure && not (List.exists
+    (fun (value:PX.provider) -> equal (C.provider_ref_to_json value.definition) (C.provider_ref_to_json reference)) providers) in
   List.iter (fun (value:PX.provider) ->
     resolve value.definition;
     match value.body with
-    | PX.Interface body -> resolve body.environment; ignore (provider body.environment)
+    | PX.Interface body -> resolve body.environment;
+      (* A missing supplied dependency body remains unresolved in the new
+         closure checker. Its source DefinitionRef must still resolve exactly. *)
+      if not prerequisite_closure then ignore (provider body.environment)
     | PX.Chassis body ->
       List.iter (fun key -> List.iter (fun raw -> resolve (C.provider_ref_of_json raw)) (Json.array (get key body))) ["capabilities";"interfaces";"environment"];
       resolve (C.provider_ref_of_json (get "operational_model" body))
@@ -166,11 +179,12 @@ let of_json ?(charge=fun _ -> ()) raw =
     let kind,channel_kind = match slot.input_kind with I.Evidence_input -> D.Observation,PX.Observation | I.Feedback_input -> D.Effect,PX.Feedback in
     require (List.exists (fun (declaration:D.declaration) -> declaration.id=binding.source && declaration.kind=kind) (D.declarations document))
       "Composition input must name an original source observation or effect of the matching kind.";
+    if not (missing_prerequisite binding.provider) then (
     let channel = match (provider binding.provider).body with
       | PX.Interface value -> List.find_opt (fun (channel:PX.channel) -> channel.channel_id=binding.channel) value.channels
       | _ -> None in
     require (match channel with Some channel -> channel.source=binding.source && channel.kind=channel_kind | None -> false)
-      "Composition input provider must retain the declared channel and exact source/kind relation.") inputs (A.input_order rule_value);
+      "Composition input provider must retain the declared channel and exact source/kind relation.")) inputs (A.input_order rule_value);
   let resources = List.map (fun row -> exact ["owner";"unit";"scope";"provider";"capacity"] row;
     {key={owner=owner_of_json ~instanced (get "owner" row);unit=C.resource_unit_of_json (get "unit" row);scope=C.resource_scope_of_json (get "scope" row)};
      provider=C.provider_ref_of_json (get "provider" row);capacity_id=text 4096 (get "capacity" row)})
@@ -179,9 +193,10 @@ let of_json ?(charge=fun _ -> ()) raw =
     "Composition resource bindings must retain every local prerequisite and global layout key exactly once in order.";
   List.iter (fun (binding:resource_binding) ->
     resolve binding.provider;
+    if not (missing_prerequisite binding.provider) then (
     let capacity = List.find_opt (fun (capacity:PX.capacity) -> capacity.capacity_id=binding.capacity_id) (provider binding.provider).capacities in
     require (match capacity with Some capacity -> capacity.unit=binding.key.unit && capacity.scope=binding.key.scope | None -> false)
-      "Composition resource binding must name an original capacity with the exact unit and scope.") resources;
+      "Composition resource binding must name an original capacity with the exact unit and scope.")) resources;
   let budget = get "budgets" raw in exact ["profile";"max_work";"max_report_bytes";"max_report_nodes"] budget;
   require (get "profile" budget=str resource_profile) "Unsupported composition resource profile.";
   let integer maximum key = let value=Json.integer (get key budget) in
@@ -207,4 +222,6 @@ let context value = value.context_value
 let budgets value = value.budget_values
 
 let is_instanced value = A.is_instanced value.rule_value
-let request_profile value = if is_instanced value then instance_profile else profile
+let requires_prerequisite_closure value = R.requires_prerequisite_closure value.original
+let request_profile value = if requires_prerequisite_closure value then prerequisite_profile
+  else if is_instanced value then instance_profile else profile

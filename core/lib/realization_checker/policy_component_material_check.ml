@@ -79,6 +79,16 @@ let obligation_ledger budget request (implementation:P.checked_implementation) (
   let implementation_pin=fingerprint budget (P.evidence implementation)
   and assembly_pin=fingerprint budget (A.evidence (X.assembly checked))
   and context_pin=fingerprint budget (X.evidence checked) in
+  let prerequisite_pins = if R.requires_prerequisite_closure request then
+    match X.prerequisite_closure checked with
+    | None -> Diagnostic.fail "policy_component_material_prerequisite_closure"
+        "The prerequisite profile requires a fresh private checked closure before any obligation discharge."
+    | Some closure ->
+      let evidence=X.prerequisite_evidence closure in
+      require (Json.equal (get "original_request_fingerprint" evidence) (str (R.fingerprint request)))
+        "Prerequisite closure belongs to a different original material request.";
+      ["prerequisites",str (fingerprint budget evidence)]
+    else [] in
   let origin=R.catalog_binding request and descriptors=O.descriptors (S.definitions original) in
   let contextual=X.discharges checked in
   let condition value=if value then Some "bounded_implementation_preservation" else None in
@@ -129,8 +139,8 @@ let obligation_ledger budget request (implementation:P.checked_implementation) (
           "state_and_terminal_semantics",str "exact_bounded_source_correspondence";
           "prefixes",str "complete_original_domain";"retained_attempt_identity",str "creation_fixed_injective";
           "universal_termination",str "not_claimed";"progress",str "declared_requirements_only"]
-      | "declared_context" -> ["context",str context_pin]
-      | _ -> ["preservation",str implementation_pin;"assembly",str assembly_pin;"context",str context_pin] in
+      | "declared_context" -> ["context",str context_pin] @ prerequisite_pins
+      | _ -> ["preservation",str implementation_pin;"assembly",str assembly_pin;"context",str context_pin] @ prerequisite_pins in
       obj ["obligation",str obligation;"status",str "discharged";"stage",str stage;"evidence",obj pins]) obligations in
   (* Preserve the exact source inventory, including unknown future obligations.
      A deferred definition needs its specific checked context or catalog stage;
@@ -181,9 +191,14 @@ let check ~request ~behavior ~implementation ~proposed ~assembly_proposal ~candi
   let request_pin=R.fingerprint request and candidate_pin=fingerprint budget candidate_raw in
   let invocation_pin=fingerprint budget (obj ["request",raw;"candidate",candidate_raw;"limits",limits_raw]) in
   let stage value=if value=Json.Null then str "unassessed" else get "outcome" value in
+  let prerequisite_profile=R.requires_prerequisite_closure request in
+  let prerequisites=if prerequisite_profile && context_result<>Json.Null
+    then get "prerequisite_closure" context_result else Json.Null in
   let status=if complete then "checked_component_material" else "not_accepted" in
-  let report_base=["schema_version",str "biocompiler.policy_component_material_assessment.v0.1";
-    "profile",str (R.request_profile request);"implementation",str (if R.is_instanced request then "biocompiler.ocaml.policy_component_material_check.v0.2" else implementation_version);"resource_profile",str R.resource_profile;
+  let report_base=["schema_version",str (if prerequisite_profile then "biocompiler.policy_component_material_assessment.v0.2"
+    else "biocompiler.policy_component_material_assessment.v0.1");
+    "profile",str (R.request_profile request);"implementation",str (if prerequisite_profile then "biocompiler.ocaml.policy_component_material_check.v0.3"
+      else if R.is_instanced request then "biocompiler.ocaml.policy_component_material_check.v0.2" else implementation_version);"resource_profile",str R.resource_profile;
     "request_fingerprint",str request_pin;"candidate_fingerprint",str candidate_pin;"invocation_fingerprint",str invocation_pin;
     "status",str status;"claim_scope",str "bounded_conditional_policy_via_reusable_components_to_exact_mrna";
     "premise",str "supplied_component_composition_and_provider_contracts";
@@ -191,7 +206,9 @@ let check ~request ~behavior ~implementation ~proposed ~assembly_proposal ~candi
     "assembly_status",stage assembly_result;"context_status",stage context_result;
     "obligations",arr ledger;"all_original_obligations_discharged",Json.Bool complete;
     "limits",limits_raw;"budgets",get "budgets" raw;
-    "empirical",str "unassessed";"artifact",str "withheld";"export",str "withheld"] in
+    "empirical",str "unassessed";"artifact",str "withheld";"export",str "withheld"] @
+    (if prerequisite_profile then ["prerequisites",prerequisites;
+      "prerequisite_status",(if prerequisites=Json.Null then str "unassessed" else get "status" prerequisites)] else []) in
   let before=allowances.max_work-W.remaining budget in
   let usage value=obj ["unit",str "logical_data_visits_and_child_semantic_work";"charged_work",Json.int value;
     "request_decoding_work",Json.int (R.decoding_work request)] in
