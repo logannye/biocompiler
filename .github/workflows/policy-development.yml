@@ -46,10 +46,6 @@ jobs:
             default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
       - name: Install ordinary dependencies, build once and run the fixed native suite inventory
         run: python -B tools/check_policy_development.py run
-      - name: Exercise all ten complete SDK campaigns in two bounded lanes
-        env:
-          PYTHONPATH: src
-        run: python -B tools/check_policy_development.py sdk-all
       - name: Exercise quantitative assurance through the same fresh native build
         env:
           PYTHONPATH: src
@@ -58,6 +54,10 @@ jobs:
             --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
             --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
             --output "$GITHUB_WORKSPACE/generated/development-feedback/quantitative-assurance.json"
+      - name: Exercise all ten complete SDK campaigns in two bounded lanes
+        env:
+          PYTHONPATH: src
+        run: python -B tools/check_policy_development.py sdk-all
       - name: Retain diagnostic evidence even when native work fails
         if: always()
         uses: actions/upload-artifact@v4

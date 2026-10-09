@@ -2056,7 +2056,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_material.py",
-      "sha256": "034ad00206989a7435b3ab85ba3e6d4e33918f0dc3ca993b896ec68a840c1e96",
+      "sha256": "152843138ccfa61f4b7dfd894eff697a919ac52964b77957c646f23b49589b51",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -3074,7 +3074,7 @@
     },
     {
       "path": "tests/test_policy_prerequisite_evidence.py",
-      "sha256": "4e9578becb7168a0234fff065d0420fc324bcfcb24a4f7ff059810d8667593ed"
+      "sha256": "a5c86e97c4c143b21b1e8bfd133df5be90b6ea0e7ef8fd23ebfb855e84dd9d90"
     },
     {
       "path": "tests/test_policy_prerequisite_fixture.py",
@@ -3102,7 +3102,7 @@
     },
     {
       "path": "tests/test_policy_quantitative_assurance_campaign.py",
-      "sha256": "ad0abedbdd4ca6fed3069fc6a9ea7eb6559082b5f1c6973e2f2670dcc4489873"
+      "sha256": "d0ebdf8d1e34be7acfdbad4fac9db9bed17fb21d7fbf44931d9fb1a1950051f5"
     },
     {
       "path": "tests/test_policy_quantitative_composition.py",

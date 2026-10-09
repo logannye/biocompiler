@@ -260,7 +260,8 @@ class QuantitativeAssuranceCampaignTests(unittest.TestCase):
         ci = (campaign.ROOT / ".github/workflows/ci.yml").read_text()
         installed = ci.split("  policy-prebuilt-installed:", 1)[1].split("  policy-prebuilt-reproducibility:", 1)[0]
         comparison = ci.split("  policy-prebuilt-reproducibility:", 1)[1].split("  ci-success:", 1)[0]
-        self.assertLess(development.index("check_policy_development.py sdk-all"), development.index("check_policy_quantitative_assurance.py"))
+        self.assertLess(development.index("check_policy_development.py run"), development.index("check_policy_quantitative_assurance.py"))
+        self.assertLess(development.index("check_policy_quantitative_assurance.py"), development.index("check_policy_development.py sdk-all"))
         self.assertEqual(installed.count("check_policy_quantitative_assurance_prebuilt.py run"), 1)
         self.assertEqual(comparison.count("check_policy_quantitative_assurance_prebuilt.py compare"), 1)
         self.assertIn("/quantitative-assurance-installed/", installed)

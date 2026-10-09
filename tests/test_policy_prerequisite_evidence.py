@@ -5,6 +5,8 @@ native compiler requests, and no generated receipt supplies their expectations.
 """
 from copy import deepcopy
 import hashlib
+import json
+from pathlib import Path
 import unittest
 
 from biocompiler import core_policy_component_material as api
@@ -112,6 +114,61 @@ def outcome(report, status, diagnostic):
 
 
 class PolicyPrerequisiteEvidenceTests(unittest.TestCase):
+    def quantitative_records(self, family):
+        # Only the real fixture's declared profile identities are reused. The
+        # hand-authored records remain decoder controls, not native acceptance.
+        path = Path(__file__).resolve().parents[1] / "core/test/data" / ("policy_quantitative" + family + "_v01.json")
+        declared = json.loads(path.read_text())["request"]
+        request, report = records()
+        for key in ("schema_version", "profile"):
+            request[key] = declared[key]
+            request["implementation_request"][key] = declared["implementation_request"][key]
+            request["context"][key] = declared["context"][key]
+        # Independent literal from the native context contract: every current
+        # quantitative family keeps this context and closure scope unchanged.
+        context_profile = "biocompiler.policy_finite_machine_component_mrna.v0.1"
+        self.assertEqual(request["context"]["profile"], context_profile)
+        self.assertNotEqual(request["profile"], context_profile)
+        report["context"]["profile"] = context_profile
+        report["prerequisites"].update(profile=context_profile, original_request_fingerprint=pin(request))
+        sync(report)
+        return request, report
+
+    def test_quantitative_closures_retain_native_context_scope_for_every_family(self):
+        for family in ("", "_step", "_transfer", "_network", "_composition"):
+            request, report = self.quantitative_records(family)
+            with self.subTest(family=family):
+                api._prerequisite_evidence(request, report)
+
+    def test_quantitative_closure_rejects_outer_law_and_other_scope_substitution(self):
+        for family in ("", "_step", "_transfer", "_network", "_composition"):
+            request, original = self.quantitative_records(family)
+            for profile in (request["profile"], api.PREREQUISITE_REQUEST_PROFILE,
+                            api.NETWORK_REQUEST_PROFILE, "invented.context.profile"):
+                report = deepcopy(original)
+                report["prerequisites"]["profile"] = profile
+                sync(report)
+                with self.subTest(family=family, profile=profile), self.assertRaisesRegex(CoreProtocolError, "Prerequisite scope"):
+                    api._prerequisite_evidence(request, report)
+
+    def test_quantitative_native_scope_does_not_relax_original_authority_or_status(self):
+        mutations = [lambda closure: closure.update(original_request_fingerprint="0" * 64),
+            lambda closure: closure.update(assembly_fingerprint="0" * 64),
+            lambda closure: closure.update(operating_domain_fingerprint="0" * 64),
+            lambda closure: closure["local_requirements"].pop(),
+            lambda closure: closure["providers"][0].update(body_fingerprint="0" * 64),
+            lambda closure: closure.update(status="unknown"), lambda closure: closure.update(complete=False),
+            lambda closure: closure.update(diagnostics=["invented"]),
+            lambda closure: closure.update(empirical="verified")]
+        for family in ("", "_step", "_transfer", "_network", "_composition"):
+            request, original = self.quantitative_records(family)
+            for mutation in mutations:
+                report = deepcopy(original)
+                mutation(report["prerequisites"])
+                sync(report)
+                with self.subTest(family=family, mutation=mutation), self.assertRaises(CoreProtocolError):
+                    api._prerequisite_evidence(request, report)
+
     def test_exact_inventory_preserves_repeated_roots_and_distinct_instance_owners(self):
         request, report = records()
         api._prerequisite_evidence(request, report)

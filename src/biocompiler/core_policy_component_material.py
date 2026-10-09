@@ -671,8 +671,10 @@ def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, Json
         "diagnostics", "empirical"} | ({"member_allocations", "transport_allocations"} if multi_member else set())
         | ({"helper_allocations"} if grounded_helper else set()), "Complete prerequisite closure")
     status = context_report["outcome"]
+    # Quantitative material shares the exact finite-machine context contract;
+    # native closure evidence carries that context profile, not the outer law.
     _expect(closure, {"schema_version": "biocompiler.policy_provider_prerequisite_closure.v0.3" if grounded_helper else "biocompiler.policy_provider_prerequisite_closure.v0.2" if multi_member else "biocompiler.policy_provider_prerequisite_closure.v0.1",
-        "profile": request["profile"], "status": status, "complete": status == "pass",
+        "profile": FINITE_MACHINE_REQUEST_PROFILE if _quantitative(request) else request["profile"], "status": status, "complete": status == "pass",
         "diagnostics": context_report["diagnostics"], "empirical": "unassessed"}, "Prerequisite scope")
     if report["prerequisite_status"] != status:
         raise CoreProtocolError("Prerequisite status contradicts the complete checked context")

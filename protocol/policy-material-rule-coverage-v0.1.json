@@ -3055,7 +3055,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_material.py",
-      "sha256": "034ad00206989a7435b3ab85ba3e6d4e33918f0dc3ca993b896ec68a840c1e96",
+      "sha256": "152843138ccfa61f4b7dfd894eff697a919ac52964b77957c646f23b49589b51",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {

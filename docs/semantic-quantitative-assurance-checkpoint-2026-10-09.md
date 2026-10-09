@@ -93,6 +93,25 @@ namespace imports. Historical semantic-execution guards and public export
 targets remain unchanged. This partial run is diagnostic evidence, not complete
 development or integration acceptance for the corrected source.
 
+Development run `38002757446`, attempt 1, at
+`73ef0fb9710ec6920500309a2229af503c2f5f7c` passed all 55 native suites and
+the ten complete SDK campaigns. The separate assurance campaign then exposed
+a Python transport mismatch: quantitative material families reuse the explicit
+finite-machine context profile, and native prerequisite closures retain that
+context profile. The Python closure check incorrectly expected the outer
+material profile. The correction preserves the original context authority and
+all existing exact profiles. The assurance campaign now runs immediately after
+the fresh native build/suites, before the unchanged ten SDK campaigns, so this
+kind of failure need not wait through their measured 26.5-minute step.
+
+The paired integration run `38002761090` reported four errors among 855
+preflight tests on each Python version. Three synthetic retention-fixture
+builders lacked the nonempty component list already required by native
+admission. Their inert component records are now explicit; the production
+quantitative-profile rejection and frozen native originals are unchanged.
+These partial runs remain diagnostic evidence. Both corrections require fresh
+development, integration, installed-package and actual-main acceptance.
+
 The remaining long-term extensions are richer reservoir grids, multiple clocks,
 delayed transport, continuous uncertainty, additional physical coordination
 contracts and authenticated experimental artifact ingestion. They are outside

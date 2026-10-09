@@ -69,7 +69,7 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5",
     # Reviewed versioned instance/prerequisite transports remain outside historical authority.
     'src/biocompiler/policy/component_material.py': 'e23f08b6113670c73363a0852b390e6d39d0d058fdd3a7a044f2ba1c04e61da1',
-    'src/biocompiler/core_policy_component_material.py': '034ad00206989a7435b3ab85ba3e6d4e33918f0dc3ca993b896ec68a840c1e96',
+    'src/biocompiler/core_policy_component_material.py': '152843138ccfa61f4b7dfd894eff697a919ac52964b77957c646f23b49589b51',
     'src/biocompiler/policy/material.py': '5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79',
     'src/biocompiler/core_policy_material.py': 'e3b990c93130fb7d0b74462e30bf87dc5cd5f42d582a0808163f1a6ba965b5cf',
     'src/biocompiler/policy/implementation.py': '452344e7e6681d04e0018bf0ad4cb3cacd47a5022c9a41883867e4fd62db4ee8',
