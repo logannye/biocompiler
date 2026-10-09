@@ -13875,7 +13875,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_leaves"
         },
-        "syntax_sha256": "9bfb2c57b269bf5205d8cb7f151157f4fe73ddd4eddbdc8ecfb3c8de8f9bdf4e"
+        "syntax_sha256": "5bada3a77b628f01a949e12fe7bababfe4ad752a581fa54f7c1d7750d37de6bc"
       },
       {
         "id": "biocompiler.core_policy_component_material._member_transport_inventory",
@@ -31076,7 +31076,7 @@
       "src/biocompiler/__main__.py": "d5b809722d6dfee6e4cb84d0b4a513239d99ae898defe55c1753ac85c21a9eb4",
       "src/biocompiler/core_client.py": "c8d65a42c1f92cbd75cb5edd176a9463657e03509be8ed487496d78b17be00fc",
       "src/biocompiler/core_policy.py": "9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e",
-      "src/biocompiler/core_policy_component_material.py": "5d317d091e9895556968aed3a2965d425733346ae4422b129986fa27fedd789d",
+      "src/biocompiler/core_policy_component_material.py": "5126ddde34b181bff15e8adac67cc306614d4b09981b6f471c6c074a2a0f71c5",
       "src/biocompiler/core_policy_component_selection.py": "20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9",
       "src/biocompiler/core_policy_implementation.py": "75abd92ee9ef28a34b0a9df5ad8ea133beb6d01f60bd2ae74f2d6f9cf064ab4f",
       "src/biocompiler/core_policy_material.py": "e3b990c93130fb7d0b74462e30bf87dc5cd5f42d582a0808163f1a6ba965b5cf",
@@ -33279,7 +33279,7 @@
     },
     "assurance.composition_grid": {
       "distinction": "Python source and selected-circuit evaluation match the complete independent finite grid; no native checker or empirical execution is inferred.",
-      "file_sha256": "632cf9ac6311241be7f0037f474badaeb7e576ba3358f044b0af0c4c56194e7e",
+      "file_sha256": "dc482398a47821be13db4fef9fbde42e3c900e2bdb8bbff97c3ea84686b95361",
       "path": "tests/test_policy_quantitative_composition.py",
       "role": "positive",
       "symbol": "CompositionQuantitativeTests.test_partitioned_source_and_selected_circuit_match_complete_independent_table",
@@ -33287,7 +33287,7 @@
     },
     "assurance.composition_ownership": {
       "distinction": "Typed explicit private owners reject aliasing and unsupported binary shapes; this is bounded authoring validation, not native preservation.",
-      "file_sha256": "632cf9ac6311241be7f0037f474badaeb7e576ba3358f044b0af0c4c56194e7e",
+      "file_sha256": "dc482398a47821be13db4fef9fbde42e3c900e2bdb8bbff97c3ea84686b95361",
       "path": "tests/test_policy_quantitative_composition.py",
       "role": "rejection",
       "symbol": "CompositionQuantitativeTests.test_explicit_private_ownership_and_binary_shape_reject_aliasing",
@@ -33295,7 +33295,7 @@
     },
     "assurance.composition_transport": {
       "distinction": "Inert transport rejects forged owners, edge allocations and original contract bindings; serialized reports grant no native capability.",
-      "file_sha256": "632cf9ac6311241be7f0037f474badaeb7e576ba3358f044b0af0c4c56194e7e",
+      "file_sha256": "dc482398a47821be13db4fef9fbde42e3c900e2bdb8bbff97c3ea84686b95361",
       "path": "tests/test_policy_quantitative_composition.py",
       "role": "rejection",
       "symbol": "CompositionQuantitativeTests.test_complete_owner_edge_and_original_contract_transport_rejects_forgery",

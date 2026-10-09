@@ -5,7 +5,9 @@ validation coverage and independent checks. The release workflow remains
 [Python checks](../.github/workflows/ci.yml). Development feedback has a separate
 [opt-in hosted workflow](../.github/workflows/policy-development.yml), triggered
 only by pushes to `codex/dev-policy/**`. It builds the native core once on Linux
-and runs 41 fixed admitted-IR, candidate-congruence, grounded-helper, multi-member, two-observation, prerequisite, instance-composition, staged-regimen, component, selection, generation-metering, protocol, preservation, material and construction suites.
+and runs 55 fixed suites covering admitted IR, candidate congruence, component
+composition, quantitative assurance, selection, generation metering, protocol,
+preservation, material and construction.
 The new instance-composition SDK retains 26 lifecycle observations against two
 independently supplied three-instance originals; its earlier development checkpoint passed in run `37788462656`, while complete
 integration remains pending. The prerequisite, two-observation, multi-member and grounded-helper companions each

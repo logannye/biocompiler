@@ -6,6 +6,7 @@ module E = Bioc_domain.Construction_assessment
 module C = Bioc_domain.Policy_material_context
 module MC = Bioc_domain.Policy_material_contract
 module LC = Bioc_domain.Policy_component_material
+module CC = Bioc_domain.Policy_quantitative_composition_contract
 module Rule = Bioc_domain.Policy_component_assembly_rule
 module L = Bioc_domain.Policy_component_library
 module PC = Policy_preservation_check
@@ -185,6 +186,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
   let grounded_helper=R.is_grounded_helper request in
   let finite_machine=R.is_finite_machine request in
   let network=R.is_network request in
+  let coupled=R.is_quantitative_composition request in
   let source=PC.binding (A.implementation assembly) in
   let admitted=IB.admitted_inputs source in
   let original=Admission.request admitted and behavior=Admission.behavior admitted and domain=F.specification (Admission.operating_domain admitted) in
@@ -209,6 +211,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
         "network_named_single_member_assembly";
     fail (finite_machine=S.is_finite_machine original && finite_machine=X.is_finite_machine context)
       "unchanged_finite_machine_source_context_family";
+    fail (coupled=S.is_coupled original) "unchanged_coupled_source_context_family";
     if finite_machine then
       fail (Rule.is_instanced rule && Rule.is_staged rule && not multi_member && not grounded_helper)
         "finite_machine_named_single_member_assembly";
@@ -238,6 +241,28 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       List.for_all(fun(machine:O.machine)->List.length machine.states>=2 && List.length machine.states<=16)behavior.machines &&
       List.length behavior.transitions>=1 && List.length behavior.transitions<=32 &&
       List.length behavior.effects>=1 && List.length behavior.effects<=8
+      else if coupled then
+      (* Partitioned storage is explicit in this family. Every selected owner
+         must retain its own encounter-scoped truth cell; the normal resource
+         derivation and provider allocation checks below still apply to each
+         actual register. Quantitative checking separately proves the law. *)
+      let selected=Option.get(R.composed_quantitative request) in
+      let owners=List.map(fun(owner:CC.owner)->charge 1;owner.state)selected.owners in
+      behavior.rules=[] && List.length owners>=2 && List.length owners<=4 &&
+      List.map(fun(store:O.state_store)->charge 1;store.state_id)behavior.stores=owners &&
+      List.length behavior.observations=1 && List.length behavior.effects=1 &&
+      (match behavior.machines with
+       |[machine]->List.length machine.states>=2 && List.length machine.states<=16 &&
+         machine.lifetime="encounter" && machine.terminal=[] &&
+         List.for_all(fun(store:O.state_store)->charge 1;
+           store.value_type=O.Truth_type && store.scope=machine.scope &&
+           store.lifetime="encounter" && store.reset=None &&
+           (match store.initial with O.Truth(O.True|O.False)->true|_->false))behavior.stores &&
+         List.length behavior.transitions>=1 && List.length behavior.transitions<=32 &&
+         List.for_all(fun(transition:O.transition)->charge 1;
+           transition.machine=machine.machine_id &&
+           List.map(fun(assignment:O.assignment)->charge 1;assignment.state)transition.assignments=owners)behavior.transitions
+       |_->false)
       else if finite_machine then
       behavior.rules=[] && behavior.stores=[] && List.length behavior.machines=1 &&
       List.for_all(fun(machine:O.machine)->List.length machine.states>=2 && List.length machine.states<=16)behavior.machines &&
@@ -675,7 +700,8 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
   let report_value=obj (["schema_version",str (if grounded_helper then "biocompiler.policy_component_context_assessment.v0.3"
     else if multi_member then "biocompiler.policy_component_context_assessment.v0.2"
     else "biocompiler.policy_component_context_assessment.v0.1");
-    "profile",str context_profile;"implementation_version",str (if R.is_multi_site request then
+    "profile",str context_profile;"implementation_version",str (if coupled then
+      "biocompiler.ocaml.policy_component_context_check.v0.10" else if R.is_multi_site request then
       "biocompiler.ocaml.policy_component_context_check.v0.9" else if network then
       "biocompiler.ocaml.policy_component_context_check.v0.8" else if finite_machine then
       "biocompiler.ocaml.policy_component_context_check.v0.7" else if grounded_helper then

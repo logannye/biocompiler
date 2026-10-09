@@ -57,6 +57,7 @@ let plan raw =
   let selected_models = ref [] and selected_components = ref [] and dependencies = ref Json.Null in
   let checked_material_identity = ref None in
   let checked_realization_identity = ref None in
+  let checked_document_identity = ref None in
   let declaration_id path = match path with
     | None -> Json.Null
     | Some path ->
@@ -119,7 +120,15 @@ let plan raw =
       "configuration_digest",s node.model.configuration_digest;"primitive",get "primitive" body]) (I.nodes implementation) in
   (try
     let document = attempt ~fallback:(Some "invalid_source") (fun () ->
-      Meter.preflight (P.document request); D.of_json ~path:"/document" (P.document request)) in
+      let raw_document=P.document request in
+      Meter.preflight raw_document;
+      if C.realization_schema target_id=R.coupled_schema_version then (
+        let bytes=Input.preflight ~charge raw_document in
+        charge(2*bytes);
+        let document=D.of_json ~path:"/document" raw_document in
+        checked_document_identity:=Some(D.to_json document,D.artifact_digest document);
+        document)
+      else D.of_json ~path:"/document" raw_document) in
     let continue assessed =
     assessment := (match assessed with
       |Some source->Bioc_checker.Policy_check.assessed_report source
@@ -233,7 +242,22 @@ let plan raw =
         Bioc_checker.Policy_check.with_assessment ~charge ~document(fun source->continue(Some source)))
     else continue None
    with Blocked -> ());
+  let final_phase operation action =
+    if C.realization_schema target_id<>R.coupled_schema_version then action()else
+    let entered=limits.max_work-W.remaining budget in
+    try action()with Diagnostic.Error error->
+      raise(Diagnostic.Error{error with message=error.message^
+        " Target-planning stage: final_report; operation: "^operation^
+        "; work before operation: "^string_of_int entered^
+        "; operation work: "^string_of_int(limits.max_work-W.remaining budget-entered)^"."})in
   let optional_fingerprint = function None->Json.Null|Some raw->s (Canonical.fingerprint raw) in
+  let document_fingerprint () = match !checked_document_identity with
+    |Some(original,identity) when P.document request==original->
+      (* Full artifact identity includes authored metadata. The normalized
+         document digest is intentionally never a substitute for these bytes.
+         Encoding/hash work was reserved before this invocation's decoder. *)
+      charge(1+Stdlib.String.length identity);s identity
+    |_->s(Canonical.fingerprint(P.document request))in
   let realization_fingerprint () = match P.realization_request request,!checked_realization_identity with
     |Some raw,Some(original,identity) when raw==original->
       (* The complete original encoding/hash was reserved before its fresh
@@ -248,9 +272,9 @@ let plan raw =
          Report hashing and every final publication charge below still run. *)
       charge(1+Stdlib.String.length identity);s identity
     |value,_->optional_fingerprint value in
-  let body = ["schema_version",s report_schema;"status",s !status;"target",target;
+  let body = final_phase "report_construction"(fun()->["schema_version",s report_schema;"status",s !status;"target",target;
     "catalog_fingerprint",s C.catalog_fingerprint;"request_fingerprint",s (P.fingerprint request);
-    "document_fingerprint",s (Canonical.fingerprint (P.document request));
+    "document_fingerprint",document_fingerprint ();
     "realization_request_fingerprint",realization_fingerprint ();
     "material_request_fingerprint",material_fingerprint ();
     "source_assessment",!assessment;"declarations",a !declarations;"requirements",a !requirements;
@@ -259,7 +283,7 @@ let plan raw =
     "missing_inputs",a (List.map s !missing_inputs);
     "stages",a (List.map (fun (stage,status)->o ["stage",s stage;"status",s status]) !states);
     "selected_models",a !selected_models;"selected_components",a !selected_components;
-    "provider_dependencies",!dependencies;"diagnostics",a !diagnostics;"claims",claims] in
+    "provider_dependencies",!dependencies;"diagnostics",a !diagnostics;"claims",claims]) in
   let report work = o (body @ ["usage",o ["work",n work;"max_work",n limits.max_work]]) in
   let wrap fingerprint report = o ["schema_version",s result_schema;"implementation",s implementation;
     "validation_scope",s validation_scope;"resource_profile",s resource_profile;
@@ -268,6 +292,7 @@ let plan raw =
      charge covers report hashing and final wrapper encoding as bounded passes.
      Actual publication is checked again against the caller's complete-wrapper
      bounds; no partial report survives either resource failure. *)
+  final_phase "report_publication"(fun()->
   let provisional = wrap (String.make 64 '0') (report limits.max_work) in
   let publication = W.create_output ~profile:resource_profile ~error_code:"policy_target_plan_publication_limit"
     ~max_bytes:limits.max_report_bytes ~max_nodes:limits.max_report_nodes () in
@@ -282,7 +307,7 @@ let plan raw =
     ~max_bytes:limits.max_report_bytes ~max_nodes:limits.max_report_nodes () in
   W.reserve_json actual result;
   ignore (Bioc_wire.Canonical.encode_bounded ~max_bytes:limits.max_report_bytes result);
-  result
+  result)
 
 let handle ~operation payload =
   (* Transport/replay framing has a separate fixed bound, independent of plan

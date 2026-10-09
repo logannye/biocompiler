@@ -28,7 +28,7 @@ Unknown export bindings, dynamic export mutations, unresolved schema/profile dec
 | `serializer` | 304 |
 | `studio_asset` | 8 |
 | `studio_endpoint` | 14 |
-| `version_literal` | 911 |
+| `version_literal` | 912 |
 | `version_profile` | 203 |
 
 ## CLI command index

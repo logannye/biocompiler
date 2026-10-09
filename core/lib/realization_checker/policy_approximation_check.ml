@@ -30,11 +30,28 @@ let evidence value=value.evidence_value
 let contract value=value.contract_value
 let material value=value.material_value
 
-module Make(Charge:sig val charge:int->unit end)=struct
+module Make(Charge:sig val charge:int->unit
+  val reusable_authorities:(Json.t * Json.t) option end)=struct
   module Meter=Bioc_checker.Policy_generation_meter.Make(Charge)
   module List=Meter.List
   let fail condition message=Diagnostic.require condition "policy_approximation_fail" message
-  let hash value=Meter.preflight value;Meter.Canonical.fingerprint value
+  let full_hash value=Meter.preflight value;Meter.Canonical.fingerprint value
+  (* Only the freshly accepted coupled material's two immutable authorities
+     recur in both the composition and enclosing report. This invocation owns
+     their identities; the first computation pays all original passes. No
+     supplied digest, previous result or unrelated JSON enters this index. *)
+  let request_identity=ref None and evidence_identity=ref None
+  let hash value=match Charge.reusable_authorities with
+    |None->full_hash value
+    |Some(request,evidence)->
+      let reuse stored=match !stored with
+        |Some identity->Charge.charge(1+String.length identity);identity
+        |None->let identity=full_hash value in
+          Charge.charge 1;stored:=Some identity;identity in
+      Charge.charge 1;
+      if value==request then reuse request_identity else (
+        Charge.charge 1;
+        if value==evidence then reuse evidence_identity else full_hash value)
   let get key value=Meter.Json.field key(Meter.Json.object_fields value)
   let qmax left right=if Q.compare left right>=0 then left else right
   let maximum values=List.fold_left qmax Q.zero values
@@ -187,7 +204,12 @@ let check ?parent ?(maximum=max_work) ~material ~contract ()=
   let budget=match parent with None->W.create ~profile ~error_code:"policy_approximation_resource_limit" ~maximum()
     |Some parent->W.nested ~parent ~profile ~error_code:"policy_approximation_resource_limit" ~maximum()in
   let before=W.remaining budget in
-  let module Check=Make(struct let charge=W.charge budget end)in
+  let reusable_authorities=
+    let request=Material.request material in
+    if M.is_quantitative_composition request then
+      Some(M.to_json request,Material.evidence material)else None in
+  let module Check=Make(struct let charge=W.charge budget
+    let reusable_authorities=reusable_authorities end)in
   let links,composition,issues,outcome_value=match Check.execute material contract with
     |links,composition->links,composition,[],E.Pass
     |exception Diagnostic.Error error when error.code="policy_approximation_fail"->[],Json.Null,[error.message],E.Fail in

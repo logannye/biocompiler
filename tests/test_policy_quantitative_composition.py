@@ -147,6 +147,27 @@ class CompositionQuantitativeTests(unittest.TestCase):
         self.assertEqual(control['export_diagnostic'], 'policy_quantitative_assurance_export_not_accepted')
         self.assertLessEqual(self.packet['limits']['monitor']['max_work'], 10_000_000)
 
+    def test_complete_reason_records_repin_every_capacity_and_retain_historical_identity(self):
+        context = self.request['context']
+        self.assertEqual(context['record_layout']['ordered_reason_slots'], 9)
+        for provider in context['providers']:
+            self.assertEqual(provider['identity']['content_fingerprint'], generator.shared.digest(provider['body']))
+            for capacity in provider['body']['capacities']:
+                self.assertEqual(capacity['record_layout_digest'], generator.shared.digest(context['record_layout']))
+        # Reconstruct the exact earlier request to keep the hosted 1M denial
+        # attributed to its own revision rather than the corrected record size.
+        previous = deepcopy(self.request)
+        previous_context = previous['context']
+        previous_context['record_layout']['ordered_reason_slots'] = 1
+        for provider in previous_context['providers']:
+            for capacity in provider['body']['capacities']:
+                capacity['record_layout_digest'] = generator.shared.digest(previous_context['record_layout'])
+            provider['identity']['content_fingerprint'] = generator.shared.digest(provider['body'])
+        control = self.packet['expected']['insufficient_monitor']
+        self.assertEqual(generator.shared.digest(previous), control['historical_request_fingerprint'])
+        self.assertEqual(control['historical_run'], '37992831548')
+        self.assertNotEqual(control['historical_request_fingerprint'], control['request_fingerprint'])
+
     def test_explicit_private_ownership_and_binary_shape_reject_aliasing(self):
         owners = self.law.owners
         for changed in (owners[::-1], owners[:2], (replace(owners[0], state=owners[1].state),)+owners[1:]):

@@ -16,9 +16,12 @@ val max_evidence_bytes : int
 val max_evidence_nodes : int
 
 (** Every factory/conjunction/chain owns a bounded work allowance. Complete
-    input preflight, repeated traversal, canonical encoding and hashing are
-    charged separately from legacy checking. Derived summaries have bounded
-    inventories, depth and publication size. Exhaustion returns no evidence. *)
+    input preflight, canonical encoding and hashing are charged separately
+    from legacy checking. The coupled material factory may reuse a fully paid
+    hash of the identical immutable input within that single invocation; its
+    bounded index lookups are charged and publication remains fully charged.
+    Derived summaries have bounded inventories, depth and publication size.
+    Exhaustion returns no evidence. *)
 val of_admission : ?maximum:int -> Bioc_checker.Policy_realization_admission.admitted_inputs -> t
 val of_binding : ?maximum:int -> Bioc_checker.Policy_implementation_binding_check.checked_binding -> t
 val of_preservation : ?maximum:int -> Policy_preservation_check.checked_implementation -> t

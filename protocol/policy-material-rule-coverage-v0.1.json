@@ -1906,7 +1906,7 @@
     },
     {
       "path": "core/lib/producer_service/policy_target_planning.ml",
-      "sha256": "8247b085b569a6a7615fec6a9bc6cec5577a43eb3133b23c935da493342bc311",
+      "sha256": "4541dddfecee0813c94b2d2a0956f8f07ed0ca07a8bdd5900c7024130d247a6f",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1960,7 +1960,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_approximation_check.ml",
-      "sha256": "2abfd7782c2bb802bd4605697418390647145d23a97739099e43691d90eee4eb",
+      "sha256": "781d868ef767a254b578e3fab11f5e9ac36cef0e48220d19a1078da0a4ff0a82",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -2022,17 +2022,18 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_context_check.ml",
-      "sha256": "99b0b4713efd07fdde65b56edb6e1e92f56b3336799b84f0a32b6cc573e94fb6",
+      "sha256": "ae76af9b9b6657cb1b5bf691d501774e7b29b3c8418c110ddc76bfaf5ad0015d",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 21,
           "Diagnostic.require": 5,
-          "fail": 93,
+          "fail": 94,
           "supported": 29
         },
         "profile_literals": {
           "biocompiler.ocaml.policy_component_context_check.v0.1": 1,
+          "biocompiler.ocaml.policy_component_context_check.v0.10": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.2": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.3": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.4": 1,
@@ -2437,7 +2438,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_refinement_check.ml",
-      "sha256": "97d17afeb08e6a0a16f9bc75e7d95e63b337b7035da74bf3c0a38fd650c3b902",
+      "sha256": "73d01a1c425ddb79acead063212a8a52c457f3275ab90b8317a5761ab5831d7e",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -2454,7 +2455,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_refinement_check.mli",
-      "sha256": "03ea675f9e18b4559c8bb5e2b665ba6d21e318264a25a68ed666503c66343aab",
+      "sha256": "ce76320e063e14bf928d2ce53e19aed924b8196600d6a2333ee0d108963956d3",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -3044,7 +3045,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_material.py",
-      "sha256": "5d317d091e9895556968aed3a2965d425733346ae4422b129986fa27fedd789d",
+      "sha256": "5126ddde34b181bff15e8adac67cc306614d4b09981b6f471c6c074a2a0f71c5",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -3060,6 +3061,7 @@
           "biocompiler.ocaml.policy_component_assembly_check.v0.4": 1,
           "biocompiler.ocaml.policy_component_assembly_check.v0.5": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.1": 1,
+          "biocompiler.ocaml.policy_component_context_check.v0.10": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.2": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.3": 1,
           "biocompiler.ocaml.policy_component_context_check.v0.4": 1,

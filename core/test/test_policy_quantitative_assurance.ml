@@ -22,7 +22,11 @@ let failure_summary result=
   let report=optional "report" result in
   let material=optional "material" report in
   let preservation=optional "preservation" material in
-  let brief value=selected["status";"outcome";"issues";"stop_reason";"diagnostic";"usage"]value in
+  let brief value=o["status",optional "status" value;"outcome",optional "outcome" value;
+    "diagnostics",optional "diagnostics" value;"issues",optional "issues" value;
+    "graph_issues",optional "issues"(optional "graph" value);
+    "stop_reason",optional "stop_reason" value;"diagnostic",optional "diagnostic" value;
+    "usage",optional "usage" value]in
   let rows names predicate=function
     |Json.Array values->Json.Array(List.map(selected names)(List.filter predicate values))|_->Json.Null in
   let stopped=optional "stopped" preservation in
@@ -73,6 +77,11 @@ let diagnostic_controls ()=
   let discharged=o["obligation",s "discharged";"status",s "discharged"]in
   let result=o["report",o["export_permitted",Json.Bool false;"approximation",Json.Null;
     "material",o["status",s "not_accepted";
+      "context",o["outcome",s "unsupported";
+        "diagnostics",Json.Array[s "closed_component_context_family_required"]];
+      "prerequisites",o["status",s "unsupported";
+        "diagnostics",Json.Array[s "closed_component_context_family_required"];
+        "graph",o["issues",Json.Array[o["kind",s "unsupported";"code",s "inert_prerequisite_reason"]]]];
       "obligations",Json.Array(List.init 5(fun _->discharged)@[o["obligation",s "late_unresolved";"status",s "unresolved"]]);
       "preservation",o["status",s "incomplete";"stopped",stopped;
         "requirements",Json.Array(List.init 5(fun _->satisfied)@[o["id",s "late_failed";"status",s "fail";"nonvacuous",Json.Bool false]])]]]]in
@@ -81,7 +90,8 @@ let diagnostic_controls ()=
   match require_optional "inert withheld material" "approximation" result with
   |_->failwith "Missing optional assurance was not diagnosed"
   |exception Failure message->require(has message "policy_execution_work_limit" && has message "source_exhausted" &&
-      has message "not_accepted" && has message "late_failed" && has message "late_unresolved" && String.length message<65536)
+      has message "not_accepted" && has message "late_failed" && has message "late_unresolved" &&
+      has message "closed_component_context_family_required" && has message "inert_prerequisite_reason" && String.length message<65536)
       "Withheld-material diagnostic lost its stage or original stop reason"
 let read path=let channel=open_in_bin path in Fun.protect ~finally:(fun()->close_in_noerr channel)(fun()->
   Json.parse_artifact ~max_bytes:8388608 ~max_nodes:250000(really_input_string channel(in_channel_length channel)))

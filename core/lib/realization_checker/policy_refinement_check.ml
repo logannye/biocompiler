@@ -46,7 +46,7 @@ let claims value = value.claims_value
 let premises value = value.premises_value
 let scope value = value.scope_value
 
-module Make (Charge:sig val charge:int -> unit end) = struct
+module Make (Charge:sig val charge:int -> unit val reuse_hashes:bool end) = struct
   module Meter = Bioc_checker.Policy_generation_meter.Make(Charge)
   module List = Meter.List
   module String = Meter.String
@@ -58,7 +58,31 @@ module Make (Charge:sig val charge:int -> unit end) = struct
       ~error_code:"policy_refinement_resource_limit"
       ~max_bytes:Limits.max_response_bytes ~max_nodes:Limits.max_json_nodes () in
     Meter.preflight raw; W.reserve_json output raw
-  let hash raw = bounded raw; Meter.Canonical.fingerprint raw
+  (* The complete coupled derivation revisits the same immutable artifacts
+     through several independently named relations. Own this small index only
+     for this factory invocation; no external digest or previous PASS enters
+     it. The first visit still pays every original bound/encoding/hash check.
+     Evidence construction and publication below never use this index. *)
+  let hash_entries = ref []
+  let hash_entry_count = ref 0
+  let hash raw =
+    if not Charge.reuse_hashes then (bounded raw; Meter.Canonical.fingerprint raw)
+    else (
+      let rec find = function
+        | [] -> Charge.charge 1; None
+        | (original,identity)::rest ->
+            Charge.charge 1;
+            if raw==original then Some identity else find rest in
+      match find !hash_entries with
+      | Some identity -> Charge.charge(1+Stdlib.String.length identity); identity
+      | None ->
+          bounded raw;
+          let identity=Meter.Canonical.fingerprint raw in
+          if !hash_entry_count<64 then (
+            Charge.charge 1;
+            hash_entries:=(raw,identity):: !hash_entries;
+            incr hash_entry_count);
+          identity)
   let endpoint stage raw : N.endpoint = {stage;fingerprint=hash raw}
   let premise kind fingerprint : N.premise = {kind;fingerprint}
   let claim relation source target scope : N.claim = {relation;source;target;scope}
@@ -259,25 +283,26 @@ let budget maximum =
   W.create ~profile:resource_profile ~error_code:"policy_refinement_resource_limit" ~maximum ()
 let of_admission ?(maximum=max_work) checked =
   let budget=budget maximum in
-  let module Builder=Make(struct let charge=W.charge budget end) in Builder.of_admission checked
+  let module Builder=Make(struct let charge=W.charge budget let reuse_hashes=false end) in Builder.of_admission checked
 let of_binding ?(maximum=max_work) checked =
   let budget=budget maximum in
-  let module Builder=Make(struct let charge=W.charge budget end) in Builder.of_binding checked
+  let module Builder=Make(struct let charge=W.charge budget let reuse_hashes=false end) in Builder.of_binding checked
 let of_preservation ?(maximum=max_work) checked =
   let budget=budget maximum in
-  let module Builder=Make(struct let charge=W.charge budget end) in Builder.of_preservation checked
+  let module Builder=Make(struct let charge=W.charge budget let reuse_hashes=false end) in Builder.of_preservation checked
 let of_assembly ?(maximum=max_work) checked =
   let budget=budget maximum in
-  let module Builder=Make(struct let charge=W.charge budget end) in Builder.of_assembly checked
+  let module Builder=Make(struct let charge=W.charge budget let reuse_hashes=false end) in Builder.of_assembly checked
 let of_context ?(maximum=max_work) checked =
   let budget=budget maximum in
-  let module Builder=Make(struct let charge=W.charge budget end) in Builder.of_context checked
+  let module Builder=Make(struct let charge=W.charge budget let reuse_hashes=false end) in Builder.of_context checked
 let of_material ?(maximum=max_work) checked =
   let budget=budget maximum in
-  let module Builder=Make(struct let charge=W.charge budget end) in Builder.of_material checked
+  let reuse_hashes=M.is_quantitative_composition(Material.request checked) in
+  let module Builder=Make(struct let charge=W.charge budget let reuse_hashes=reuse_hashes end) in Builder.of_material checked
 let conjoin ?(maximum=max_work) values =
   let budget=budget maximum in
-  let module Builder=Make(struct let charge=W.charge budget end) in Builder.conjoin values
+  let module Builder=Make(struct let charge=W.charge budget let reuse_hashes=false end) in Builder.conjoin values
 let compose ?(maximum=max_work) left right =
   let budget=budget maximum in
-  let module Builder=Make(struct let charge=W.charge budget end) in Builder.compose left right
+  let module Builder=Make(struct let charge=W.charge budget let reuse_hashes=false end) in Builder.compose left right

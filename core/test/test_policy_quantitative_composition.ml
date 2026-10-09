@@ -30,6 +30,10 @@ module Correspondence = Bioc_checker.Policy_correspondence
 module Source_check = Bioc_checker.Policy_check
 module Admission = Bioc_checker.Policy_admission
 module Monitor = Bioc_realization_checker.Policy_requirement_monitor
+module Refinement = Bioc_realization_checker.Policy_refinement_check
+module Named = Bioc_domain.Policy_refinement
+module Approximation = Bioc_realization_checker.Policy_approximation_check
+module Approximation_contract = Bioc_domain.Policy_approximation_contract
 
 let ()=Printexc.register_printer(function
   |Diagnostic.Error d->Some(Printf.sprintf "Diagnostic.Error(%s, %s)" d.code d.message)
@@ -464,18 +468,31 @@ let ()=
     at["report";"claims";"execution"]planned=s "not_performed" && at["report";"claims";"export"]planned=s "withheld")
     "Coupled planning omitted selected owners or promoted diagnostic planning into acceptance";
   require(at["report";"material_request_fingerprint"]planned=
-    s "bf572aa9614bb64b6b0d834fddaa538c5e353bc222385cef157e9bf72cd472e9" &&
+    s "6d09390250496a62a92ce75a46c05f4578d5614650102e03d461c8eb20839acf" &&
     at["report";"material_request_fingerprint"]planned=s(Canonical.fingerprint request) &&
     at["report";"realization_request_fingerprint"]planned=
       s "69c81b3e33e4237c24bf535dd02d30cbc82d6f3b2b6dd8c23f8d6315c7c0a6c8" &&
-    at["report";"realization_request_fingerprint"]planned=s(Canonical.fingerprint realization))
+    at["report";"realization_request_fingerprint"]planned=s(Canonical.fingerprint realization) &&
+    at["report";"document_fingerprint"]planned=
+      s "3e34345f6542091ab38f494b1567d487beec7d3fdc22f65003a2d67642b53048" &&
+    at["report";"document_fingerprint"]planned=s(Canonical.fingerprint(get "document" realization)))
     "Coupled planning reused an identity other than the complete original material body";
+  let publication_request:Protocol.request={request_id="coupled-plan-publication-limit";
+    operation="plan-policy-target";payload=o["request",edit["limits";"max_report_nodes"](fun _->Json.int 1)plan_request]}in
+  let publication_failure(diagnostic:Diagnostic.t)=
+    require(diagnostic.code="policy_target_plan_publication_limit" &&
+      List.mem " operation: report_publication"(String.split_on_char ';' diagnostic.message))
+      "Final report publication failure lost its exact resource code or phase context"in
+  (match Producer.handle Protocol.Core publication_request with
+   |Protocol.Error,None,diagnostic::_->publication_failure diagnostic
+   |exception Diagnostic.Error diagnostic->publication_failure diagnostic
+   |_->failwith "A coupled plan published beyond its original report inventory allowance");
   let changed_request=edit["budgets";"max_work"](fun _->Json.int 499999999)request in
   let changed_plan=call Producer.handle Protocol.Core "plan-policy-target"
     (o["request",set "material_request" changed_request plan_request])in
   require(at["report";"status"]changed_plan=s "planned" &&
     at["report";"material_request_fingerprint"]changed_plan=
-      s "4a64da7717569a11c2c901a3038df482b48bbc48f2deda68bcd48d5d831c7b73" &&
+      s "63b9d1e492cb4ae9affa9e5cc6a953f758415881d855ffdf4defdb202f42d60d" &&
     at["report";"material_request_fingerprint"]changed_plan=s(Canonical.fingerprint changed_request) &&
     at["report";"material_request_fingerprint"]changed_plan<>
       at["report";"material_request_fingerprint"]planned)
@@ -485,6 +502,78 @@ let ()=
   let _,result=Material.fresh_check ~request ~candidate ~limits in
   let checked=accepted "Complete partitioned quantitative material"(Check.accepted result)in
   let report=Check.report result and contextual=Check.context checked in
+  let unchanged=Canonical.encode(Check.evidence checked)in
+  let refinement=Refinement.of_material checked in
+  let repeated_refinement=Refinement.of_material checked in
+  require(Canonical.encode(Refinement.to_json refinement)=Canonical.encode(Refinement.to_json repeated_refinement) &&
+    Refinement.fingerprint refinement=Canonical.fingerprint(Refinement.to_json refinement) &&
+    List.length(Refinement.premises refinement)=18)
+    "Fresh coupled refinement changed complete evidence or original premise identities";
+  let endpoint stage=List.find_map(fun(row:Named.claim)->
+    if row.source.stage=stage then Some row.source.fingerprint else
+    if row.target.stage=stage then Some row.target.fingerprint else None)(Refinement.claims refinement)in
+  List.iter(fun(stage,raw)->require(endpoint stage=Some(Canonical.fingerprint raw))
+    "Coupled refinement lost a complete original endpoint")
+    [Named.Source_document,at["implementation_request";"document"]request;
+      Named.Operational_behavior,get "behavior" candidate;Named.Implementation_graph,get "implementation" candidate;
+      Named.Construction_content,get "construction" candidate;Named.Deployment_context,get "context" request];
+  (match Refinement.of_material ~maximum:0 checked with
+  |_->failwith "A new refinement invocation reused a prior invocation's paid identity"
+  |exception Diagnostic.Error error->require(error.code="policy_refinement_resource_limit")
+      "Fresh refinement zero-work rejection changed");
+  let mechanism=at["quantitative";"network";"mechanism"]request in
+  let coordinates=a(List.map(get "compartment")(rows "reservoirs" mechanism))in
+  let approximate_endpoint=o["mechanism",mechanism;"observation",coordinates]in
+  let zero=o["numerator",s "0";"denominator",s "1";"unit",get "unit" mechanism]in
+  let horizon=Z.to_int(Json.integer(at["implementation_request";"operating_domain";"horizon_ticks"]request))+1 in
+  let approximate_raw=o["schema_version",s Approximation_contract.schema_version;
+    "profile",s Approximation_contract.profile;"horizon_steps",Json.int horizon;
+    "metric",s "coordinatewise_absolute_prefix_error";"coordinates",coordinates;
+    "unit",get "unit" mechanism;"maximum_error",zero;
+    "links",a[o["id",s "coupled_identity";"source",approximate_endpoint;"target",approximate_endpoint;
+      "uncertainty",a[];"maximum_error",zero]]]in
+  let approximate_contract=Approximation_contract.of_json approximate_raw in
+  let approximation=Approximation.check ~material:checked ~contract:approximate_contract ()in
+  let repeated_approximation=Approximation.check ~material:checked ~contract:approximate_contract ()in
+  let approximate_report=Approximation.report approximation in
+  require(Option.is_some(Approximation.accepted approximation) &&
+    Canonical.encode approximate_report=Canonical.encode(Approximation.report repeated_approximation) &&
+    get "material_request_fingerprint" approximate_report=s(Canonical.fingerprint request) &&
+    get "material_report_fingerprint" approximate_report=s(Canonical.fingerprint report) &&
+    at["composition";"material_request_fingerprint"]approximate_report=get "material_request_fingerprint" approximate_report &&
+    at["composition";"material_report_fingerprint"]approximate_report=get "material_report_fingerprint" approximate_report)
+    "Coupled approximation lost fresh complete material identities";
+  (match Approximation.check ~maximum:0 ~material:checked ~contract:approximate_contract ()with
+  |_->failwith "A new approximation invocation reused a prior invocation's paid identity"
+  |exception Diagnostic.Error error->require(error.code="policy_approximation_resource_limit")
+      "Fresh approximation zero-work rejection changed");
+  let short_contract=Approximation_contract.of_json(set "horizon_steps"(Json.int(horizon-1))approximate_raw)in
+  let short=Approximation.check ~material:checked ~contract:short_contract ()in
+  require(Approximation.accepted short=None && Approximation.outcome short=Outcome.Fail &&
+    get "composition"(Approximation.report short)=Json.Null &&
+    Canonical.encode(Check.evidence checked)=unchanged)
+    "Fresh approximation reused semantic acceptance or altered its material evidence";
+  let context_report=C.evidence contextual in
+  let truth_demands=List.filter(fun row->text "unit" row="truth_cells")(rows "derived_demands" context_report)in
+  let expected_truth_demands=List.map(fun slot->o["owner",o["kind",s "node";"slot",s slot;"node",s "amount"];
+    "unit",s "truth_cells";"scope",s "per_encounter_slot";"quantity",Json.int 1])["owner_a";"owner_b";"owner_c"]in
+  require(text "implementation_version" context_report="biocompiler.ocaml.policy_component_context_check.v0.10" &&
+    Json.equal(a truth_demands)(a expected_truth_demands) &&
+    at["minimum_record_layout";"ordered_reason_slots"]context_report=Json.int 9)
+    "Coupled context omitted the three distinct private truth-storage owners";
+  let aliased_truth=edit["resource_bindings"](fun values->a(List.map(fun row->
+    if text "unit" row="truth_cells" && at["owner";"slot"]row=s "owner_b"then
+      set "capacity"(s "owner_a.amount.truth_cells.per_encounter_slot")row else row)(Json.array values)))request in
+  let exhausted_truth=C.check ~request:(M.of_json aliased_truth) ~assembly:(C.assembly contextual)()in
+  require(C.accepted exhausted_truth=None && C.outcome exhausted_truth=Outcome.Fail &&
+    get "diagnostics"(C.report exhausted_truth)=a[s "shared_capacity_sum_exceeded"])
+    "Two private truth stores incorrectly shared one unit of original capacity";
+  let narrow_reasons=request|>edit["context";"record_layout";"ordered_reason_slots"](fun _->Json.int 8)
+    |>refresh_context in
+  let exhausted_reasons=C.check ~request:(M.of_json narrow_reasons) ~assembly:(C.assembly contextual)()in
+  require(C.accepted exhausted_reasons=None && C.outcome exhausted_reasons=Outcome.Fail &&
+    get "diagnostics"(C.report exhausted_reasons)=a[s "finite_record_bound:ordered_reason_slots"])
+    "Coupled context admitted fewer reason slots than the original actual graph requires";
   let preservation=A.implementation(C.assembly contextual)in
   let bound=P.binding preservation in
   let monitor_limits=get "monitor" limits in

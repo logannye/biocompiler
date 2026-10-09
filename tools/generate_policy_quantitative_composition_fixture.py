@@ -248,7 +248,9 @@ def build():
         'inputs':[{'id':r['id'],'kind':r['kind'],'consumer':{'slot':slot,**r['consumer']}}for slot,f in fragments.items()for r in f['external_slots']],
         'atomic_groups':[{'slot':'control','id':'selection','arbiter':{'slot':'control','node':'arbiter'},'commits':[{'slot':'control','node':f'commit{i}'}for i in range(7)]}], 'semantic_exports':body['export_order']}
     context,inputs,resources=finite.context(network.SPEC,original,components,rule,union)
-    context['record_layout'].update(horizon_ticks=12,maximum_tick=14,attempts=6)
+    # The a-owner's complete next-value expression carries nine ordered
+    # occurrences of sample uncertainty; duplicate reasons remain distinct.
+    context['record_layout'].update(horizon_ticks=12,maximum_tick=14,attempts=6,ordered_reason_slots=9)
     def extend(value):
         if isinstance(value,dict):
             if 'duration_min'in value:value.update(duration_min='12',duration_max='12')
@@ -275,10 +277,13 @@ def build():
     expected.pop('molecule')
     # The hosted coupled check exhausted the inherited 1M monitor allowance
     # while hashing its complete checked binding, before the first transition.
-    # Retain that exact invocation as an incomplete/no-export control. Only
-    # this fixture's allowance changes, within the unchanged public 10M cap.
+    # Retain those complete limits for a fresh incomplete/no-export control,
+    # and identify the historical request before the reason-record correction.
+    # This fixture's allowance remains within the unchanged public 10M cap.
     limits=deepcopy(prior['limits'])
     expected['insufficient_monitor']={'request_fingerprint':shared.digest(request),
+        'historical_request_fingerprint':'bf572aa9614bb64b6b0d834fddaa538c5e353bc222385cef157e9bf72cd472e9',
+        'historical_run':'37992831548',
         'limits':deepcopy(limits),'status':'incomplete','transitions':0,
         'diagnostic':'policy_requirement_monitor_work_limit',
         'export_diagnostic':'policy_quantitative_assurance_export_not_accepted'}
