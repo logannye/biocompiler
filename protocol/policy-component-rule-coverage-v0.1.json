@@ -2994,7 +2994,7 @@
     },
     {
       "path": "tests/test_policy_grounded_helper_campaign.py",
-      "sha256": "ba7cc73e80fe32e7b49c97a69fb49fb9ab33d161634af64ab49cc245d4ae83e5"
+      "sha256": "8a74a11654cd05aba84450c49f5b24a7859e30ddbdc75c4f9d8c52c89f1af7c8"
     },
     {
       "path": "tests/test_policy_grounded_helper_fixture.py",
@@ -3046,7 +3046,7 @@
     },
     {
       "path": "tests/test_policy_multi_member_campaign.py",
-      "sha256": "e6786e22cef9493d82b92e7923b5843e94783e1093d9c7ba85c9448b969e8a42"
+      "sha256": "5a1b0ce578286695dbd57dd048ea50c50b6e9977b8a6b3b0921b45ee15f7d278"
     },
     {
       "path": "tests/test_policy_multi_member_fixture.py",
@@ -3150,7 +3150,7 @@
     },
     {
       "path": "tests/test_policy_two_observation_campaign.py",
-      "sha256": "ce6f5529b48d0074cab589e76bee6632c2ce00ae1c3164a73b312a011b184f99"
+      "sha256": "ac0b252b3496a87dd356f3218532f4aeb464df8860ef99bc5e5b3054c7ce0394"
     },
     {
       "path": "tests/test_policy_two_observation_fixture.py",

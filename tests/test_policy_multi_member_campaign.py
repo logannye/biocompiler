@@ -59,7 +59,12 @@ def outer(alternate=False):
     implementation, limits = original(alternate)
     return {"schema_version":transport.MULTI_MEMBER_REQUEST_SCHEMA, "profile":transport.MULTI_MEMBER_REQUEST_PROFILE,
         "implementation_request":implementation, "input_bindings":[], "resource_bindings":[],
-        **{key:{"inert":key} for key in ("component_library","composition_rule","catalog_binding","budgets")},
+        **{key:{"inert":key} for key in ("composition_rule","catalog_binding","budgets")},
+        # Nonempty legacy-shaped transport data only; no executable component claim.
+        "component_library":{"inert":"component_library", "components":[{
+            "schema_version":"biocompiler.policy_component_material.v0.1",
+            "profile":"biocompiler.policy_exact_local_material.v0.1",
+            "body":{"inert":"complete original local component", "alternate":alternate}}]},
         "context":{"profile":transport.MULTI_MEMBER_REQUEST_PROFILE}}, limits
 
 
