@@ -116,6 +116,47 @@ let original material approximation evidence=o[
 let payload request candidate limits=o["request",request;"candidate",candidate;"limits",limits]
 let check request candidate limits=call Service.handle Protocol.Verify "check-policy-quantitative-assurance"(payload request candidate limits)
 let export request candidate limits=call Service.handle Protocol.Verify "export-policy-quantitative-assurance"(payload request candidate limits)
+let export_census ~request ~limits ~checked ~material_export=
+  (* Diagnostic arithmetic over already accepted immutable child results. This
+     neither publishes a response nor replaces the real export call below. *)
+  let original=get "artifact" material_export in
+  let manifest=o["schema_version",s "biocompiler.policy_quantitative_assurance_manifest.v0.1";
+    "request",request;"limits",limits;"assessment",get "report" checked;
+    "assessment_fingerprint",get "report_fingerprint" checked;
+    "material_manifest",get "manifest" original;"material_manifest_sha256",get "manifest_sha256" original;
+    "fasta_sha256",get "fasta_sha256" original;
+    "claim_scope",s "exact_material_and_scoped_mathematical_assurance_with_separate_supplied_evidence";
+    "empirical_function",s "unassessed";"original_authority",s "retain_original_inputs_separately"]in
+  let artifact=o["schema_version",s "biocompiler.policy_quantitative_assurance_export.v0.1";
+    "fasta",get "fasta" original;"fasta_sha256",get "fasta_sha256" original;
+    "manifest",manifest;"manifest_sha256",s(String.make 64 '0')]in
+  (* Any lowercase SHA-256 has exactly the same JSON byte/node inventory. *)
+  let result=set "artifact" artifact checked in
+  let census raw=
+    let remaining=ref(4*Wire.max_expanded_nodes)in
+    let node()=require(!remaining>0)"Diagnostic census exceeded its independent visit bound";decr remaining in
+    let rec visit depth value=
+      require(depth<=128)"Diagnostic census exceeded its independent depth bound";node();
+      let fields values initial=List.fold_left(fun(count,bytes,deepest)(key,child)->
+        let child_count,child_bytes,child_depth=visit(depth+1)child in
+        let key_count,key_bytes=match key with None->0,0|Some key->node();
+          1,String.length(Canonical.encode(Json.String key))+1 in
+        count+key_count+child_count,bytes+key_bytes+child_bytes,max deepest child_depth)
+        initial values in
+      match value with
+      |Json.Array values->fields(List.map(fun value->None,value)values)
+          (1,2+max 0(List.length values-1),depth)
+      |Json.Object values->fields(List.map(fun(key,value)->Some key,value)values)
+          (1,2+max 0(List.length values-1),depth)
+      |scalar->1,String.length(Canonical.encode scalar),depth in
+    let nodes,bytes,depth=visit 0 raw in
+    o["nodes",Json.int nodes;"bytes",Json.int bytes;"depth",Json.int depth]in
+  let values=["request",request;"candidate",get "candidate" checked;
+    "material_assessment",at["report";"material"]checked;"assurance_assessment",get "report" checked;
+    "material_manifest",get "manifest" original;"assurance_manifest",manifest;"complete_export_result",result]in
+  Printf.printf "coupled assurance export exact census: %s\n%!"
+    (Canonical.encode(o(List.map(fun(name,value)->name,census value)values)));
+  result
 let ()=
   diagnostic_controls();
   scenario:="approximation";
@@ -238,11 +279,15 @@ let ()=
   let coupled_replayed=call Service.handle Protocol.Verify "replay-policy-quantitative-assurance"
     (o["request",coupled_request;"candidate",coupled_candidate;"limits",coupled_limits;"report",coupled_checked])in
   require(Json.equal coupled_checked coupled_replayed)"Packed coupled replay changed complete logical evidence";
+  let exact_material=call Service.handle Protocol.Verify "export-policy-component-material"
+    (payload coupled_material coupled_candidate coupled_limits)in
+  let counted=export_census ~request:coupled_request ~limits:coupled_limits
+    ~checked:coupled_checked ~material_export:exact_material in
   let coupled_exported=export coupled_request coupled_candidate coupled_limits in
   let coupled_artifact=get "artifact" coupled_exported in
   let coupled_manifest=get "manifest" coupled_artifact in
-  let exact_material=call Service.handle Protocol.Verify "export-policy-component-material"
-    (payload coupled_material coupled_candidate coupled_limits)in
+  require(Json.equal counted(edit["artifact";"manifest_sha256"](fun _->s(String.make 64 '0'))coupled_exported))
+    "Diagnostic export inventory differs from the complete production result";
   require(Json.equal(at["artifact";"manifest"]exact_material)(get "material_manifest" coupled_manifest) &&
     Json.equal(at["artifact";"fasta"]exact_material)(get "fasta" coupled_artifact) &&
     Canonical.fingerprint coupled_manifest=text "manifest_sha256" coupled_artifact &&

@@ -769,7 +769,7 @@
     },
     {
       "path": "core/lib/domain/policy_coupled_wire.ml",
-      "sha256": "c21a33eb15ea637f52a941380f61b708182aec9dd757119e7996fff8920ff04d",
+      "sha256": "8f3b5aa8271510baa9c14f91ff173ba4fee939ab5a503ff110eca7f546ad5bbf",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -2864,7 +2864,7 @@
     },
     {
       "path": "core/test/test_policy_quantitative_assurance.ml",
-      "sha256": "7fd07537fd93ef5c221b7b1e9dfba4586e392dfe7ba6d37e75d475c58ffc33f8"
+      "sha256": "5a789ea03b0fe518716c54607944985985722384a4d7209dc3cf51d5caf01492"
     },
     {
       "path": "core/test/test_policy_quantitative_composition.ml",

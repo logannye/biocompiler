@@ -63,8 +63,15 @@ let sort_fields ~charge fields=
     String.compare left right)fields
 let measure ~charge ~max_nodes raw=
   let nodes=ref 0 and bytes=ref 0 in
-  let node()=charge 1;nodes:=add max_nodes !nodes 1 in
-  let byte count=bytes:=add max_expanded_bytes !bytes count in
+  let node()=charge 1;
+    (if !nodes>=max_nodes then bounded false("Coupled JSON node bound exceeded: maximum "^
+      string_of_int max_nodes^"; next node "^string_of_int(!nodes+1)^"."));
+    nodes:= !nodes+1 in
+  let byte count=
+    (if count<0 || count>max_expanded_bytes- !bytes then bounded false
+      ("Coupled JSON byte bound exceeded: maximum "^string_of_int max_expanded_bytes^
+       "; consumed "^string_of_int !bytes^"; next bytes "^string_of_int count^"."));
+    bytes:= !bytes+count in
   let rec visit active depth value=
     bounded(depth<=max_depth)"Coupled JSON exceeds its depth bound.";node();
     match value with
