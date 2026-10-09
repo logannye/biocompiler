@@ -5,6 +5,10 @@ val validation_scope : string
 val candidate_schema : string
 val profile : Bioc_wire.Json.t
 val producer_profile : Bioc_wire.Json.t
+val finite_machine_validation_scope : string
+val finite_machine_profile : Bioc_wire.Json.t
+val finite_machine_producer_profile : Bioc_wire.Json.t
+val request_of_json : Bioc_wire.Json.t -> Bioc_domain.Policy_realization_request.t
 
 (** Checks the complete publication, including conservative protocol-envelope
     allowance. This is a resource check only and confers no semantic authority. *)

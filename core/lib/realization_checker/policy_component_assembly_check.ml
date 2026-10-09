@@ -78,7 +78,8 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   let original_raw = R.to_json original and library_raw = L.to_json components
   and rule_raw = A.to_json rule and proposal_raw = Q.to_json proposed in
   List.iter (fun raw -> ignore (encoded raw)) [original_raw;library_raw;rule_raw;proposal_raw];
-  let original = (if R.is_multi_product original then R.of_multi_product_json
+  let original = (if R.is_finite_machine original then R.of_finite_machine_json
+    else if R.is_multi_product original then R.of_multi_product_json
     else if R.is_two_observation original then R.of_two_observation_json
     else if R.requires_prerequisite_closure original then R.of_prerequisite_json
     else R.of_json) original_raw in
@@ -97,6 +98,9 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
     verify (multi_member=R.is_multi_product original) "multi_member_original_source_profile");
   if grounded_helper || Q.is_grounded_helper proposed then
     verify (grounded_helper=Q.is_grounded_helper proposed) "grounded_helper_proposal_profile";
+  if R.is_finite_machine original then
+    verify (instanced && A.is_staged rule && not multi_member && not grounded_helper)
+      "finite_machine_named_single_member_assembly";
   verify (equal (Pin.to_json (Q.rule proposed)) (Pin.to_json (A.identity rule))) "original_assembly_rule_pin";
   verify (A.model_library_digest rule = (I.authority actual).library_digest) "original_model_library";
   verify (A.component_library_digest rule = L.fingerprint components) "original_component_library";

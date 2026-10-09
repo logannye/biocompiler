@@ -24,6 +24,10 @@ val grounded_helper_implementation : string
 val grounded_helper_validation_scope : string
 val grounded_helper_profile : Json.t
 val grounded_helper_producer_profile : Json.t
+val finite_machine_implementation : string
+val finite_machine_validation_scope : string
+val finite_machine_profile : Json.t
+val finite_machine_producer_profile : Json.t
 val schema_version : string
 val resource_profile : string
 val candidate_schema : string

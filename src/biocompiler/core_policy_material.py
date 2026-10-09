@@ -62,8 +62,8 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
 
 def _preservation(response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
                   report: dict[str, JsonValue], limits: JsonValue, *, prerequisites: bool = False,
-                  two_observations: bool = False, multi_product: bool = False) -> None:
-    decoder = (implementation._multi_product_original if multi_product else implementation._two_observation_original if two_observations else
+                  two_observations: bool = False, multi_product: bool = False, finite_machine: bool = False) -> None:
+    decoder = (implementation._finite_machine_original if finite_machine else implementation._multi_product_original if multi_product else implementation._two_observation_original if two_observations else
                implementation._prerequisite_original if prerequisites else implementation._original)
     original = decoder(request["implementation_request"])
     evidence = _object(report["preservation"], implementation._REPORT_FIELDS, "Complete preservation evidence")
@@ -73,7 +73,7 @@ def _preservation(response: CoreResponse, request: dict[str, JsonValue], candida
     _pin(evidence["request_fingerprint"], original, "Original implementation request")
     implementation._claim(evidence)
     implementation._authority(response, original, candidate, evidence, prerequisites=prerequisites,
-                              two_observations=two_observations, multi_product=multi_product)
+                              two_observations=two_observations, multi_product=multi_product, finite_machine=finite_machine)
     implementation._evidence(original, evidence)
 
 
@@ -256,7 +256,8 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
 def _obligations(report: dict[str, JsonValue], *, material_key: str = "material",
                  accepted_status: str = "checked_material",
                  conjunction_stage: str = "conditional_material_context_conjunction",
-                 prerequisite_key: str | None = None, multi_product: bool = False) -> None:
+                 prerequisite_key: str | None = None, multi_product: bool = False,
+                 finite_machine: bool = False) -> None:
     preservation = _record(report["preservation"], "Preservation")
     binding = _record(preservation["binding"], "Binding")
     admission = _record(binding["source_admission"], "Admission")
@@ -275,8 +276,8 @@ def _obligations(report: dict[str, JsonValue], *, material_key: str = "material"
                 evidence = _object(row["evidence"], {"preservation", "machine_binding", "state_and_terminal_semantics", "prefixes",
                     "retained_attempt_identity", "universal_termination", "progress"}, "Bounded machine evidence")
                 if (material_key != "assembly" or row["obligation"] != "machine_reachability_termination_and_progress"
-                        or binding.get("schema_version") != (implementation.MULTI_PRODUCT_BINDING_REPORT_SCHEMA if multi_product else "biocompiler.policy_implementation_binding_report.v0.2")
-                        or binding.get("profile") != (implementation.MULTI_PRODUCT_BINDING_PROFILE if multi_product else "biocompiler.policy_staged_source_graph.v0.1")
+                        or binding.get("schema_version") != (implementation.FINITE_MACHINE_BINDING_REPORT_SCHEMA if finite_machine else implementation.MULTI_PRODUCT_BINDING_REPORT_SCHEMA if multi_product else "biocompiler.policy_implementation_binding_report.v0.2")
+                        or binding.get("profile") != (implementation.FINITE_MACHINE_BINDING_PROFILE if finite_machine else implementation.MULTI_PRODUCT_BINDING_PROFILE if multi_product else "biocompiler.policy_staged_source_graph.v0.1")
                         or preservation.get("status") != "checked_implementation"
                         or any(evidence[key] != expected for key, expected in (
                             ("state_and_terminal_semantics", "exact_bounded_source_correspondence"),

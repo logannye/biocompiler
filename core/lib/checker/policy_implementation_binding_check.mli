@@ -9,7 +9,13 @@
     and inputs, preserving each source observation and freshness bound.
     The separate staged profile binds one encounter machine, five exact ordered
     source state labels, seven transitions and two distinct same-product effects.
-    Alternate state encodings and unbounded/generic machines are not admitted.
+    The separate finite-machine profile binds one encounter machine with two
+    to sixteen ordered source states, one to thirty-two transitions and one to
+    eight same-product effects. Branches and retry cycles preserve exact source
+    edges, terminal non-reentry, exclusive lanes and retained attempt identity.
+    Each effect has one initiating transition, with at most one request per
+    transition; separate rules/stores and alternate state encodings remain
+    outside that profile. The original staged topology is unchanged.
 
     A result proves only [source_graph_bound]. It does not execute a timeline,
     prove preservation or hard requirements, or authorize material/export. *)

@@ -19,6 +19,8 @@ val multi_member_schema_version : string
 val multi_member_profile : string
 val grounded_helper_schema_version : string
 val grounded_helper_profile : string
+val finite_machine_schema_version : string
+val finite_machine_profile : string
 val resource_profile : string
 type component_binding = private { slot:A.slot; component:Pinned_identity.t }
 type catalog_binding = private {
@@ -47,6 +49,7 @@ val requires_prerequisite_closure : t -> bool
 val is_two_observation : t -> bool
 val is_multi_member : t -> bool
 val is_grounded_helper : t -> bool
+val is_finite_machine : t -> bool
 val request_profile : t -> string
 val to_json : t -> Json.t
 val fingerprint : t -> string

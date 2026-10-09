@@ -10,6 +10,8 @@ let obj fields=Json.Object fields
 let operations=["check-policy-implementation";"replay-policy-implementation"]
 let validation_scope="bounded-policy-implementation-v0.1"
 let implementation="biocompiler.ocaml.policy_implementation.v0.1"
+let finite_machine_validation_scope="bounded-policy-finite-machine-v0.1"
+let finite_machine_implementation="biocompiler.ocaml.policy_finite_machine_implementation.v0.1"
 let resource_profile="biocompiler.policy_preservation_resources.v0.1"
 let schema_version="biocompiler.core.policy_implementation.v1"
 let candidate_schema="biocompiler.policy_implementation_candidate.v0.1"
@@ -28,6 +30,18 @@ let profile=obj[
   "material",str "unassessed";"export",str "withheld"]
 let producer_profile=obj["operations",Json.Array[str "compile-policy-implementation"];
   "implementation",str implementation;"validation_scope",str validation_scope]
+let finite_machine_profile=obj (List.map (fun (key,value) -> key,match key with
+  | "request_schema" -> str R.finite_machine_schema_version
+  | "implementation" -> str finite_machine_implementation
+  | "validation_scope" -> str finite_machine_validation_scope
+  | _ -> value) (Json.object_fields profile))
+let finite_machine_producer_profile=obj["operations",Json.Array[str "compile-policy-implementation"];
+  "implementation",str finite_machine_implementation;"validation_scope",str finite_machine_validation_scope]
+let request_of_json raw =
+  let fields=Json.object_fields raw in
+  if List.assoc_opt "schema_version" fields=Some(str R.finite_machine_schema_version) &&
+     List.assoc_opt "profile" fields=Some(str R.finite_machine_profile)
+  then R.of_finite_machine_json raw else R.of_json raw
 let validate_publication value=
   let output=W.create_output ~profile:validation_scope ~error_code:"policy_implementation_publication_limit"
     ~max_bytes:max_result_bytes ~max_nodes:max_result_nodes ()in
@@ -37,7 +51,7 @@ let validate_publication value=
   let encoded=Canonical.encode_bounded ~max_bytes:max_result_bytes framed in
   ignore(Json.parse_artifact ~max_bytes:max_result_bytes ~max_nodes:max_result_nodes encoded)
 let check ~request:raw_request ~candidate:raw_candidate ~limits:raw_limits=
-  let request=R.of_json raw_request in
+  let request=request_of_json raw_request in
   let fields=Json.object_fields ~path:"/payload/candidate" raw_candidate in
   Json.exact_fields ~path:"/payload/candidate" ["schema_version";"behavior";"implementation";"binding"]fields;
   Diagnostic.require(Json.string(Json.field "schema_version" fields)=candidate_schema)
@@ -49,8 +63,10 @@ let check ~request:raw_request ~candidate:raw_candidate ~limits:raw_limits=
   let checked=C.check ~request ~behavior ~implementation:actual ~proposed ~limits in
   let report=C.report checked in
   let result=obj[
-    "schema_version",str schema_version;"implementation",str implementation;
-    "resource_profile",str resource_profile;"validation_scope",str validation_scope;
+    "schema_version",str schema_version;
+    "implementation",str (if R.is_finite_machine request then finite_machine_implementation else implementation);
+    "resource_profile",str resource_profile;
+    "validation_scope",str (if R.is_finite_machine request then finite_machine_validation_scope else validation_scope);
     "request_fingerprint",str(R.fingerprint request);
     "candidate_fingerprint",str(Canonical.fingerprint raw_candidate);
     "invocation_fingerprint",str(Canonical.fingerprint(obj[

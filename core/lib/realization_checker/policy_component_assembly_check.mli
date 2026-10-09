@@ -27,6 +27,9 @@ val grounded_helper_implementation_version : string
 val max_work : int
 type result
 type checked_assembly
+(** Finite-machine requests retain their separately decoded source family and
+    require a named-instance staged assembly with one RNA member. The existing
+    total node/wire/occurrence and exact material checks remain conjunctive. *)
 val check : ?parent:Bioc_checker.Work_budget.t -> ?maximum:int ->
   original:R.t -> components:L.t -> rule:A.t -> implementation:P.checked_implementation ->
   proposed:Q.t -> candidate:K.t -> unit -> result

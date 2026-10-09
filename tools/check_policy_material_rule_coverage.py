@@ -177,7 +177,7 @@ COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "compone
     "component.selection_publication_resources", "component.selection_scope", "component.selection_export", "component.selection_sdk",
     "component.selection_generation", "component.staged_regimen", "component.instance_composition", "component.prerequisite_closure", "component.two_observation_composition",
     "component.multi_member_composition", "component.grounded_helper_composition",
-    "component.candidate_transition_congruence")
+    "component.candidate_transition_congruence", "component.finite_machine_composition")
 COMPONENT_INSTANCE_WITNESSES = tuple(sorted([
     "core/test/test_policy_instance_assembly_rule.ml",
     "core/test/test_policy_instance_material_service.ml",
@@ -271,7 +271,14 @@ COMPONENT_CONGRUENCE_WITNESSES = (
     "core/test/test_policy_candidate_congruence_check.ml",
     "core/test/test_policy_candidate_transition_congruence.ml",
 )
+COMPONENT_FINITE_MACHINE_WITNESSES = (
+    'core/test/data/policy_finite_machine_v01.json',
+    'core/test/test_policy_finite_machine.ml',
+    'tests/test_policy_finite_machine.py',
+    'tools/generate_policy_finite_machine_fixture.py',
+)
 COMPONENT_WITNESSES = tuple(sorted([
+    *COMPONENT_FINITE_MACHINE_WITNESSES,
     *COMPONENT_CONGRUENCE_WITNESSES,
     *COMPONENT_INSTANCE_WITNESSES,
     *COMPONENT_PREREQUISITE_WITNESSES,
@@ -299,7 +306,9 @@ COMPONENT_WITNESSES = tuple(sorted([
 ]))
 # Fixed reviewed meaning/provenance projection, excluding source-body hashes and
 # lexical counts. Re-pinning changed files cannot reassign witness meaning.
-COMPONENT_METADATA_SHA256 = "394152e8ccbb347e9f272be773f44a1dab444895c6b4babd413d34c3c7a4db5b"
+FINITE_MACHINE_LIMITATION = "Finite-machine composition source controls cover three bounded artificial program shapes; this static gate performs no native execution and transfers no prior acceptance to changed source."
+BEFORE_FINITE_MACHINE_COMPONENT_METADATA_SHA256 = "394152e8ccbb347e9f272be773f44a1dab444895c6b4babd413d34c3c7a4db5b"
+COMPONENT_METADATA_SHA256 = "7b563303ab25cec0d9c394e9113914da079155d9ce73125225e9f9a2f9b61fdd"
 
 
 class CoverageError(ValueError):
@@ -423,6 +432,16 @@ def component_metadata(ledger: dict[str, Any]) -> dict[str, Any]:
             "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
 
 
+def component_metadata_before_finite_machine(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Project only the explicit new family out; preserve all 27 prior meanings."""
+    metadata = component_metadata(ledger)
+    return {**metadata,
+            "rules": [row for row in metadata["rules"] if row["id"] != "component.finite_machine_composition"],
+            "witness_paths": [path for path in metadata["witness_paths"]
+                              if path not in COMPONENT_FINITE_MACHINE_WITNESSES],
+            "limitations": [value for value in metadata["limitations"] if value != FINITE_MACHINE_LIMITATION]}
+
+
 def check_component(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
     if ledger is None:
         ledger = decode(read(root, COMPONENT_LEDGER))
@@ -462,6 +481,10 @@ def check_component(root: Path = ROOT, ledger: Any | None = None) -> dict[str, A
                 require(type(pointer["occurrence"]) is int and pointer["occurrence"] >= 1
                         and texts[pointer["path"]].count(pointer["anchor"]) >= pointer["occurrence"],
                         "Missing component source anchor")
+    previous = json.dumps(component_metadata_before_finite_machine(ledger), sort_keys=True,
+                          separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(previous) == BEFORE_FINITE_MACHINE_COMPONENT_METADATA_SHA256,
+            "Changed pre-finite-machine reviewed component meaning/witness/provenance metadata")
     metadata = json.dumps(component_metadata(ledger), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(metadata) == COMPONENT_METADATA_SHA256, "Changed reviewed component meaning/witness/provenance metadata")
     return {"rules": len(rules), "sources": len(COMPONENT_SOURCES), "witness_sources": len(COMPONENT_WITNESSES),

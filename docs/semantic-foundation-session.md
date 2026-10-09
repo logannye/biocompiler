@@ -24,7 +24,7 @@ integration. Development evidence is not release acceptance.
 | --- | --- | --- | --- |
 | 1 | Stable specification and strongly typed admitted IR | Versioned language authority independent of Python dataclass layout; SDK/schema conformance; closed, resolved semantic types actually consumed after admission; exact existing wire/source correspondence preserved. | Implemented and source-reviewed; native validation pending |
 | 2 | Typed Python facade and semantic modules | Distinct expression/reference categories, explicit module ports and private state/effects, hygienic instantiation, checked interfaces and conflicting-composition rejection through the public source path. | Implemented and source-reviewed; focused Python and typing checks pass |
-| 3 | Generic finite-machine lowering and composition | Multiple materially different finite-machine shapes use common lowering/checking and component composition; complete source, attempt identity, atomicity, requirements and material correspondence survive. | Pending |
+| 3 | Generic finite-machine lowering and composition | Multiple materially different finite-machine shapes use common lowering/checking and component composition; complete source, attempt identity, atomicity, requirements and material correspondence survive. | Implemented and source-reviewed; focused local checks pass; native validation pending |
 | 4 | Named refinement relations and composable evidence | Explicit relation kinds and source/target/assumption/bound identities; independently checked composition; old exact relations retain their original meaning and cannot be weakened by a producer. | Pending |
 | 5 | Quantitative mechanism-to-payload profile | Explicit quantitative dynamics, units, domain and observation map connected to selected supplied components, independent behavior/requirement checks and exact paired molecular export; mutations change output or reject. | Pending |
 
@@ -75,5 +75,22 @@ and 138 witness meanings; new entries distinguish focused shared controls from
 untested individual declarations. Module privacy and interface checks are an
 authoring guarantee: flattened source retains no native module provenance proof.
 
-Item 3 follows this implementation checkpoint. No native or release acceptance
-is claimed for this branch.
+Item 3 implements explicit finite-machine realization, binding and material
+profiles without changing legacy profile meanings. Three independently supplied
+artificial shapes exercise retry cycles, guarded branching and observation-update
+forks through named component composition and exact paired RNA export. The
+native suite includes four handwritten source/candidate traces and more than 30
+rejection controls; it has been source-reviewed but not compiled or executed.
+A combined 90-test Python 3.11.15 run passes across finite-machine controls,
+existing implementation/component/material transport and API coverage. The
+local Python tests use mock transport and independently retained source,
+fragment, identity and sequence expectations. Forty-nine focused material coverage controls and 31 inert native wiring/development-runner controls pass;
+these controls do not execute native tests. No CI was dispatched.
+
+The supported family has one machine (2-16 states, 1-32 transitions), 1-8 effects
+with unique initiating transitions, one truth observation, one fixed product and
+two encounter slots, subject to the existing 64-node graph bound. Original finite
+domain, requirements, provider closure and exact material remain independently
+checked. Universal termination and biological realization are not claimed.
+Item 4 follows this checkpoint. No native or release acceptance is claimed for
+this branch.

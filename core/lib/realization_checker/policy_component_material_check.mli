@@ -2,7 +2,10 @@
     Original source, catalog, component, composition and deployment authorities
     remain distinct. A saved report never reconstructs the private completion
     token. This bounded result is conditional on supplied models and contracts;
-    empirical validity and export remain separate obligations. *)
+    empirical validity and export remain separate obligations. Finite-machine
+    obligation discharge requires complete original-domain correspondence and
+    every original hard requirement; retry cycles imply no universal termination
+    or progress claim beyond those explicit requirements. *)
 open Bioc_wire
 module R = Bioc_domain.Policy_component_material_request
 module O = Bioc_domain.Policy_operational

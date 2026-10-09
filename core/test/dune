@@ -1010,3 +1010,9 @@
  (modules test_policy_admitted_ir)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
  (action (run %{test} %{dep:data/policy_operational_v01.json} %{dep:data/policy_staged_regimen_source_v01.json} %{dep:data/policy_implementation_binding_v01.json})))
+
+(test
+ (name test_policy_finite_machine)
+ (modules test_policy_finite_machine)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service)
+ (action (run %{test} %{dep:data/policy_finite_machine_v01.json})))

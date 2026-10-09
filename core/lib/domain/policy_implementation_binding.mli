@@ -10,6 +10,8 @@ val two_observation_schema_version : string
 val two_observation_profile : string
 val multi_product_schema_version : string
 val multi_product_profile : string
+val finite_machine_schema_version : string
+val finite_machine_profile : string
 type observation = { source : string; bank : string; input : string }
 type state = { source : string; register : string }
 type effect_binding = { source : string; bank : string; feedback : string }
@@ -31,3 +33,5 @@ val is_staged : t -> bool
 val is_two_observation : t -> bool
 
 val is_multi_product : t -> bool
+
+val is_finite_machine : t -> bool

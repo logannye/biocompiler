@@ -33,8 +33,31 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "d2f6e39a1a7078d9ca33bf1d0f7c03021b42d92a53db18e3f0fdfb6dec9f2834"
+REVIEWED_METADATA_SHA256 = "d717a4c1f9cd7d81a90e8c3a71311d445ff46fb79b13233671a7e44fb65c99a1"
 BEFORE_TYPED_MODULES_METADATA_SHA256 = "2a9ce2139ab87bd5b5288357249a2433bba232c5e1a9fceef6b248c1325aab68"
+BEFORE_FINITE_MACHINE_METADATA_SHA256 = "d2f6e39a1a7078d9ca33bf1d0f7c03021b42d92a53db18e3f0fdfb6dec9f2834"
+FINITE_MACHINE_DEPENDENCIES = (
+    'biocompiler.core_policy_component_material.FINITE_MACHINE_IMPLEMENTATION',
+    'biocompiler.core_policy_component_material.FINITE_MACHINE_PRODUCER_PROFILE',
+    'biocompiler.core_policy_component_material.FINITE_MACHINE_PROFILE',
+    'biocompiler.core_policy_component_material.FINITE_MACHINE_REQUEST_PROFILE',
+    'biocompiler.core_policy_component_material.FINITE_MACHINE_REQUEST_SCHEMA',
+    'biocompiler.core_policy_component_material.FINITE_MACHINE_VALIDATION_SCOPE',
+    'biocompiler.core_policy_component_material._finite_machine',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_BINDING_PROFILE',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_BINDING_REPORT_SCHEMA',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_BINDING_SCHEMA',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_IMPLEMENTATION',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_PRODUCER_PROFILE',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_PROFILE',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_REQUEST_PROFILE',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_REQUEST_SCHEMA',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_VALIDATION_SCOPE',
+    'biocompiler.core_policy_implementation._finite_machine_anchors',
+    'biocompiler.core_policy_implementation._finite_machine_original',
+    'biocompiler.core_policy_implementation._profile_settings',
+    'biocompiler.core_policy_implementation._request',
+)
 TYPED_MODULE_PREFIXES = ("biocompiler.policy.typed.", "biocompiler.policy.modules.")
 GROUNDED_HELPER_DEPENDENCIES = (
     "biocompiler.core_policy_component_material.GROUNDED_HELPER_ASSEMBLY_PROFILE",
@@ -605,11 +628,17 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
+    before_finite = {"witnesses": metadata["witnesses"],
+                     "coverage": {key: value for key, value in coverage.items()
+                                  if key not in FINITE_MACHINE_DEPENDENCIES}}
+    encoded_finite = json.dumps(before_finite, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(digest(encoded_finite) == BEFORE_FINITE_MACHINE_METADATA_SHA256,
+            "Finite-machine SDK must preserve every previous API evidence meaning")
     previous = {
         "witnesses": {key: value for key, value in metadata["witnesses"].items()
                       if not key.startswith(("typed.", "modules."))},
         "coverage": {key: value for key, value in coverage.items()
-                     if not key.startswith(TYPED_MODULE_PREFIXES)},
+                     if key not in FINITE_MACHINE_DEPENDENCIES and not key.startswith(TYPED_MODULE_PREFIXES)},
     }
     encoded_previous = json.dumps(previous, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(len(previous["coverage"]) == 905 and digest(encoded_previous) == BEFORE_TYPED_MODULES_METADATA_SHA256,

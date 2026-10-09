@@ -321,7 +321,7 @@ let lower_legacy_metered ~charge ~admitted ~library =
   choose layouts
 
 let lower_metered ~charge ~admitted ~library =
-  if (A.behavior admitted).machines=[] then lower_legacy_metered ~charge ~admitted ~library
+  if (A.behavior admitted).machines=[] && not(R.is_finite_machine(A.request admitted)) then lower_legacy_metered ~charge ~admitted ~library
   else let implementation,binding=Policy_staged_lowering.lower_metered ~charge ~admitted ~library in
     {implementation;binding}
 

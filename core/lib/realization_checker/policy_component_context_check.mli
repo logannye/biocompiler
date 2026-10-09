@@ -1,6 +1,9 @@
 (** Independent deployment, causal-provider and complete record-capacity checks
     for a private checked component assembly. No old kernel/context is created.
     The untouched request and all selected originals are rebound freshly.
+    Finite-machine source, request and context families must match; their actual
+    bounded graph determines the complete resource demands, without a fixed
+    two-stage transition/effect count.
     Conditional supplied contracts grant no empirical, human-use or export claim. *)
 open Bioc_wire
 module R = Bioc_domain.Policy_component_material_request

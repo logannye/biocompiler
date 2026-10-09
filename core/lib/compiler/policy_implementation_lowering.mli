@@ -5,6 +5,9 @@
     The separately versioned two-observation request produces two ordered
     evidence banks with independently pinned freshness and source input names;
     source expressions select banks by exact original observation identity.
+    The separately versioned finite-machine input family selects the staged
+    primitive route with source-derived counts; it never falls back to legacy
+    rule lowering when the required machine is absent.
 
     The caller retains complete original admitted authority. A proposal is
     untrusted: structural decoding here is not source correspondence,

@@ -376,6 +376,7 @@ let check_legacy ~admitted ~implementation ~proposed =
 let check_staged ~admitted ~implementation ~proposed =
   let request=A.request admitted and behavior=A.behavior admitted in
   let multi_product=R.is_multi_product request in
+  let finite_machine=R.is_finite_machine request in
   let document=R.document request and domain=F.specification(A.operating_domain admitted)in
   let implementation=I.of_json ~library:(R.implementation_library request)(I.to_json implementation)in
   require(I.implementation_profile implementation=I.staged_profile &&
@@ -391,9 +392,16 @@ let check_staged ~admitted ~implementation ~proposed =
   and observation_source=singleton "truth observation" behavior.observations
   and parameter=(if multi_product then None else Some(singleton "fixed product parameter" behavior.parameters))
   and source_machine=singleton "encounter machine" behavior.machines in
-  require(behavior.rules=[] && behavior.stores=[] && List.length behavior.effects=2 &&
-    List.length behavior.transitions=7 && List.length source_machine.states=5 && List.length source_machine.terminal=2)
-    "Staged source requires one five-state machine, two effects, seven transitions and no separate rules/stores.";
+  (if finite_machine then
+    require(behavior.rules=[] && behavior.stores=[] &&
+      List.length behavior.effects>=1 && List.length behavior.effects<=8 &&
+      List.length behavior.transitions>=1 && List.length behavior.transitions<=32 &&
+      List.length source_machine.states>=2 && List.length source_machine.states<=16)
+      "Finite-machine source requires two to sixteen states, one to thirty-two transitions, one to eight effects and no separate rules/stores."
+  else
+    require(behavior.rules=[] && behavior.stores=[] && List.length behavior.effects=2 &&
+      List.length behavior.transitions=7 && List.length source_machine.states=5 && List.length source_machine.terminal=2)
+      "Staged source requires one five-state machine, two effects, seven transitions and no separate rules/stores.");
   let declarations=D.declarations document in
   let declaration identity=match List.find_opt(fun(d:D.declaration)->d.id=identity)declarations with
     |Some value->value|None->Diagnostic.fail "policy_implementation_source_binding" "Original staged declaration is absent."in
@@ -426,6 +434,11 @@ let check_staged ~admitted ~implementation ~proposed =
     "Staged anchors must cover exact original declarations once and in declaration order.";
   let transition_anchor identity=List.find(fun(t:B.transition)->t.source=identity)anchors in
   let effect_anchor identity=List.find(fun(e:B.effect_binding)->e.source=identity)(B.effects proposed)in
+  (if finite_machine then
+    require(List.for_all(fun(t:O.transition)->t.machine=source_machine.machine_id && t.assignments=[] &&
+      List.length t.effects<=1 && not(List.mem t.source source_machine.terminal))behavior.transitions)
+      "Finite-machine transitions must retain their sole machine, have at most one effect request and no assignments or terminal reentry."
+  else (
   let event_is effect_id phase (t:O.transition)=t.on.op="effect_event" && t.on.reference=Some effect_id && t.on.phase=Some phase in
   let requesting=List.filter(fun(t:O.transition)->t.effects<>[])behavior.transitions in
   let first=singleton "rising-triggered first stage"(List.filter(fun(t:O.transition)->t.on.op="rising")requesting)in
@@ -449,7 +462,7 @@ let check_staged ~admitted ~implementation ~proposed =
       [source_machine.initial;first.destination;second.destination;finish.destination;failed] &&
     List.for_all(fun(t:O.transition)->t.machine=source_machine.machine_id && t.assignments=[] &&
       not(List.mem t.source source_machine.terminal))behavior.transitions)
-    "Staged topology, finite states, terminal non-reentry or assignment scope differs from the two-stage family.";
+    "Staged topology, finite states, terminal non-reentry or assignment scope differs from the two-stage family."));
   let nodes=I.nodes implementation and used_nodes=ref Names.empty and used_wires=ref Names.empty
   and used_inputs=ref Names.empty and occurrences=ref [] and expressions=ref [] in
   let node identity=match List.find_opt(fun(n:I.node)->n.node_id=identity)nodes with
@@ -523,6 +536,10 @@ let check_staged ~admitted ~implementation ~proposed =
         require(args=[] && get "value" source=Json.Null && ref_matches source "ref" "Observation" observation_source.observation_id &&
           ref_matches source "scope" "Subject" subject.subject_id && endpoint=ep observation_anchor.bank "value")
           "Staged observed expression changes its original subject/bank."
+    |"updated" when finite_machine->source_type "event"(get "value_type" source);
+        require(args=[] && get "value" source=Json.Null && ref_matches source "ref" "Observation" observation_source.observation_id &&
+          ref_matches source "scope" "Subject" subject.subject_id && endpoint=ep observation_anchor.bank "updated")
+          "Finite-machine update event must retain its exact observation, subject and evidence-bank update output."
     |"literal"->source_type "truth"(get "value_type" source);nulls ["ref";"scope"]source;require(args=[])"Literal has operands.";
         let value=match decoded.value with Some(O.Truth value)->truth value|_->Diagnostic.fail "policy_implementation_source_binding" "Staged literal must be truth."in
         output "out";require(actual=I.Truth_constant value)"Staged truth literal differs."
@@ -570,7 +587,8 @@ let check_staged ~admitted ~implementation ~proposed =
     record ~disposition role source_path [endpoint];
     expressions:=({source_path;source_expression=source;endpoint}:expression)::!expressions in
   let arbiter=(List.hd anchors).arbiter in
-  require(List.for_all(fun(t:B.transition)->t.arbiter=arbiter)anchors && primitive arbiter=I.Exclusive_arbiter 7)
+  let lane_count=if finite_machine then List.length behavior.transitions else 7 in
+  require(List.for_all(fun(t:B.transition)->t.arbiter=arbiter)anchors && primitive arbiter=I.Exclusive_arbiter lane_count)
     "Staged machine requires one exact exclusive lane per source transition.";
   record I.Declaration(path source_machine.machine_id^"/arbitration")
     (List.mapi(fun index _->ep arbiter("out"^string_of_int index))anchors);
@@ -656,8 +674,9 @@ let check_staged ~admitted ~implementation ~proposed =
     ({source=t.transition_id;machine=t.machine;gate=anchor.gate;arbiter=anchor.arbiter;lane=anchor.lane;commit=anchor.commit;
       trigger=incoming(ep anchor.gate "on");source_trigger=t.on}:transition))behavior.transitions in
   let expression_values=List.sort(fun(a:expression)(b:expression)->String.compare a.source_path b.source_path)!expressions in
-  let report_value=obj["schema_version",str(if multi_product then "biocompiler.policy_implementation_binding_report.v0.4" else "biocompiler.policy_implementation_binding_report.v0.2");
-    "profile",str(if multi_product then B.multi_product_profile else B.staged_profile);
+  let report_value=obj["schema_version",str(if finite_machine then "biocompiler.policy_implementation_binding_report.v0.5"
+      else if multi_product then "biocompiler.policy_implementation_binding_report.v0.4" else "biocompiler.policy_implementation_binding_report.v0.2");
+    "profile",str(if finite_machine then B.finite_machine_profile else if multi_product then B.multi_product_profile else B.staged_profile);
     "observable_profile",str I.staged_observable_profile;"status",str "source_graph_bound";
     "request_fingerprint",str(R.fingerprint request);"catalog_bindings_digest",str(R.catalog_bindings_digest request);
     "catalog_entry",str bridge.entry_id;"catalog_entry_digest",str bridge.entry_digest;
@@ -675,6 +694,8 @@ let check_staged ~admitted ~implementation ~proposed =
    state_values=[];effect_values;rule_values=[];machine_values;transition_values;expression_values;report_value}
 
 let check ~admitted ~implementation ~proposed =
+  require(R.is_finite_machine(A.request admitted)=B.is_finite_machine proposed)
+    "Original realization and proposed binding must use the same explicit finite-machine family.";
   require(R.is_multi_product(A.request admitted)=B.is_multi_product proposed)
     "Original realization and proposed binding must use the same explicit multi-product staged family.";
   require(R.is_two_observation(A.request admitted)=B.is_two_observation proposed)

@@ -72,11 +72,12 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
      channels constrain this search; matching primitive shapes alone cannot
      decide which original observation feeds which supplied component input. *)
   let required_inputs=match source_inputs with
-    |None->supported(not(U.is_two_observation lowered.binding || U.is_multi_product lowered.binding))
-        (if U.is_multi_product lowered.binding then "Multi-product arrangement requires the original source-to-input inventory."
+    |None->supported(not(U.is_finite_machine lowered.binding || U.is_two_observation lowered.binding || U.is_multi_product lowered.binding))
+        (if U.is_finite_machine lowered.binding then "Finite-machine arrangement requires the original source-to-input inventory."
+         else if U.is_multi_product lowered.binding then "Multi-product arrangement requires the original source-to-input inventory."
          else "Two-observation arrangement requires the original source-to-input inventory.");None
     |Some requested->
-      supported(U.is_two_observation lowered.binding || U.is_multi_product lowered.binding)
+      supported(U.is_finite_machine lowered.binding || U.is_two_observation lowered.binding || U.is_multi_product lowered.binding)
         "Original source-to-input arrangement requires an explicit observation-composition or multi-product family.";
       let originals=List.map(fun(value:U.observation)->value.source,value.input)(U.observations lowered.binding) @
         List.map(fun(value:U.effect_binding)->value.source,value.feedback)(U.effects lowered.binding) in

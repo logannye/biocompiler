@@ -8,6 +8,7 @@ from pathlib import Path
 import shutil
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from tools import check_policy_material_rule_coverage as coverage
 
@@ -48,7 +49,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 27, "sources": 107, "witness_sources": 127,
+        self.assertEqual(result["component_route"], {"rules": 28, "sources": 107, "witness_sources": 131,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -246,8 +247,61 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_typed_admission(self):
+    def before_finite_machine(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        added = ledger["rules"].pop()
+        self.assertEqual(added["id"], "component.finite_machine_composition")
+        self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in added[kind]},
+                         set(coverage.COMPONENT_FINITE_MACHINE_WITNESSES))
+        ledger["witness_sources"] = [row for row in ledger["witness_sources"]
+                                     if row["path"] not in coverage.COMPONENT_FINITE_MACHINE_WITNESSES]
+        self.assertEqual(ledger["limitations"].pop(), coverage.FINITE_MACHINE_LIMITATION)
+        return ledger
+
+    def test_finite_machine_preserves_all_twenty_seven_prior_families(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        projected = self.before_finite_machine()
+        self.assertEqual((len(projected["rules"]), len(projected["sources"]), len(projected["witness_sources"])),
+                         (27, 107, 127))
+        self.assertEqual(coverage.component_metadata_before_finite_machine(original), coverage.component_metadata(projected))
+        encoded = json.dumps(coverage.component_metadata(projected), sort_keys=True,
+                             separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "394152e8ccbb347e9f272be773f44a1dab444895c6b4babd413d34c3c7a4db5b")
+
+    def test_finite_machine_keeps_four_witnesses_and_conditional_scope(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        added = original["rules"][-1]
+        self.assertEqual(len(coverage.COMPONENT_FINITE_MACHINE_WITNESSES), 4)
+        for phrase in ("2-16-state machine", "1-32 ordered transitions", "1-8 uniquely initiated effects",
+                       "actual 64-node graph bound", "complete prerequisite closure", "exact paired RNA export"):
+            self.assertIn(phrase, added["scope"])
+        self.assertIn("source witnesses only until executed", added["limits"])
+        self.assertIn("No universal termination", added["limits"])
+        for path in coverage.COMPONENT_FINITE_MACHINE_WITNESSES:
+            ledger = deepcopy(original)
+            ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] != path]
+            with self.subTest(omitted=path), self.assertRaisesRegex(coverage.CoverageError, "census"):
+                coverage.check_component(coverage.ROOT, ledger)
+        for key, value in (("evidence_scope", "native_validation_complete"),
+                           ("limits", "Arbitrary machines and biological efficacy established."),
+                           ("negative", deepcopy(added["positive"]))):
+            ledger = deepcopy(original)
+            ledger["rules"][-1][key] = value
+            with self.subTest(changed=key), self.assertRaises(coverage.CoverageError):
+                coverage.check_component(coverage.ROOT, ledger)
+
+    def test_current_metadata_repin_cannot_reassign_pre_finite_meaning(self):
+        ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        ledger["rules"][0]["scope"] += " Unreviewed claim widening."
+        encoded = json.dumps(coverage.component_metadata(ledger), sort_keys=True,
+                             separators=(",", ":"), ensure_ascii=False).encode()
+        with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-finite-machine reviewed component meaning"):
+                coverage.check_component(coverage.ROOT, ledger)
+
+    def before_typed_admission(self):
+        ledger = self.before_finite_machine()
         added = {"core/lib/domain/policy_admitted_ir.ml", "core/lib/domain/policy_admitted_ir.mli"}
         self.assertEqual({row["path"] for row in ledger["sources"] if row["path"] in added}, added)
         ledger["sources"] = [row for row in ledger["sources"] if row["path"] not in added]

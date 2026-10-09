@@ -42,6 +42,10 @@ GROUNDED_HELPER_REQUEST_PROFILE = "biocompiler.policy_grounded_helper_prerequisi
 GROUNDED_HELPER_ASSEMBLY_PROFILE = "biocompiler.policy_grounded_helper_component_assembly.v0.1"
 GROUNDED_HELPER_IMPLEMENTATION = "biocompiler.ocaml.policy_grounded_helper_prerequisite_material.v0.1"
 GROUNDED_HELPER_VALIDATION_SCOPE = "policy-grounded-helper-prerequisite-mrna-v0.1"
+FINITE_MACHINE_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.7"
+FINITE_MACHINE_REQUEST_PROFILE = "biocompiler.policy_finite_machine_component_mrna.v0.1"
+FINITE_MACHINE_IMPLEMENTATION = "biocompiler.ocaml.policy_finite_machine_component_material.v0.1"
+FINITE_MACHINE_VALIDATION_SCOPE = "policy-finite-machine-component-mrna-v0.1"
 REPORT_SCHEMA = "biocompiler.policy_component_material_assessment.v0.1"
 EXPORT_SCHEMA = "biocompiler.policy_component_mrna_export.v0.1"
 MANIFEST_SCHEMA = "biocompiler.policy_component_mrna_manifest.v0.1"
@@ -96,6 +100,13 @@ GROUNDED_HELPER_PROFILE: dict[str, JsonValue] = {
 GROUNDED_HELPER_PRODUCER_PROFILE: dict[str, JsonValue] = {
     **PRODUCER_PROFILE, "implementation": GROUNDED_HELPER_IMPLEMENTATION, "validation_scope": GROUNDED_HELPER_VALIDATION_SCOPE,
 }
+FINITE_MACHINE_PROFILE: dict[str, JsonValue] = {
+    **PROFILE, "request_schema": FINITE_MACHINE_REQUEST_SCHEMA, "implementation": FINITE_MACHINE_IMPLEMENTATION,
+    "validation_scope": FINITE_MACHINE_VALIDATION_SCOPE,
+}
+FINITE_MACHINE_PRODUCER_PROFILE: dict[str, JsonValue] = {
+    **PRODUCER_PROFILE, "implementation": FINITE_MACHINE_IMPLEMENTATION, "validation_scope": FINITE_MACHINE_VALIDATION_SCOPE,
+}
 _REQUEST_FIELDS = {"schema_version", "profile", "implementation_request", "component_library", "composition_rule",
                    "catalog_binding", "input_bindings", "resource_bindings", "context", "budgets"}
 _CANDIDATE_FIELDS = {"schema_version", "behavior", "implementation", "binding", "assembly_proposal", "construction"}
@@ -110,9 +121,10 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
             (PREREQUISITE_REQUEST_SCHEMA, PREREQUISITE_REQUEST_PROFILE),
             (TWO_OBSERVATION_REQUEST_SCHEMA, TWO_OBSERVATION_REQUEST_PROFILE),
             (MULTI_MEMBER_REQUEST_SCHEMA, MULTI_MEMBER_REQUEST_PROFILE),
-            (GROUNDED_HELPER_REQUEST_SCHEMA, GROUNDED_HELPER_REQUEST_PROFILE)):
+            (GROUNDED_HELPER_REQUEST_SCHEMA, GROUNDED_HELPER_REQUEST_PROFILE),
+            (FINITE_MACHINE_REQUEST_SCHEMA, FINITE_MACHINE_REQUEST_PROFILE)):
         raise CoreProtocolError("Component material request changed its closed original profile")
-    decoder = (implementation._multi_product_original if _multi_member(request) else
+    decoder = (implementation._finite_machine_original if _finite_machine(request) else implementation._multi_product_original if _multi_member(request) else
                implementation._two_observation_original if _two_observations(request) else
                implementation._prerequisite_original if _prerequisites(request) else implementation._original)
     decoder(request["implementation_request"])
@@ -125,12 +137,12 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
 
 def _instanced(request: dict[str, JsonValue]) -> bool:
     return request["profile"] in (INSTANCE_REQUEST_PROFILE, PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE,
-                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE)
+                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE)
 
 
 def _prerequisites(request: dict[str, JsonValue]) -> bool:
     return request["profile"] in (PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE,
-                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE)
+                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE)
 
 
 def _two_observations(request: dict[str, JsonValue]) -> bool:
@@ -145,7 +157,14 @@ def _grounded_helper(request: dict[str, JsonValue]) -> bool:
     return request["profile"] == GROUNDED_HELPER_REQUEST_PROFILE
 
 
+def _finite_machine(request: dict[str, JsonValue]) -> bool:
+    return request["profile"] == FINITE_MACHINE_REQUEST_PROFILE
+
+
 def _profile_settings(request: dict[str, JsonValue]) -> tuple[str, dict[str, JsonValue], dict[str, JsonValue], str, str]:
+    if _finite_machine(request):
+        return ("policy_finite_machine_material", FINITE_MACHINE_PROFILE, FINITE_MACHINE_PRODUCER_PROFILE,
+                FINITE_MACHINE_VALIDATION_SCOPE, FINITE_MACHINE_IMPLEMENTATION)
     if _grounded_helper(request):
         return ("policy_grounded_helper_material", GROUNDED_HELPER_PROFILE, GROUNDED_HELPER_PRODUCER_PROFILE,
                 GROUNDED_HELPER_VALIDATION_SCOPE, GROUNDED_HELPER_IMPLEMENTATION)
@@ -465,7 +484,7 @@ def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, Json
         "diagnostics": context_report["diagnostics"], "empirical": "unassessed"}, "Prerequisite scope")
     if report["prerequisite_status"] != status:
         raise CoreProtocolError("Prerequisite status contradicts the complete checked context")
-    original = (implementation._multi_product_original if multi_member else implementation._two_observation_original if _two_observations(request) else
+    original = (implementation._finite_machine_original if _finite_machine(request) else implementation._multi_product_original if multi_member else implementation._two_observation_original if _two_observations(request) else
                 implementation._prerequisite_original)(request["implementation_request"])
     document = _record(original["document"], "Original prerequisite source")
     context = _record(request["context"], "Original prerequisite context")
@@ -655,7 +674,7 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
             | ({"member_allocations", "transport_allocations"} if multi_member else set())
             | ({"helper_allocations"} if grounded_helper else set()), "Component context evidence")
         _expect(leaf, {"schema_version": "biocompiler.policy_component_context_assessment.v0.3" if grounded_helper else "biocompiler.policy_component_context_assessment.v0.2" if multi_member else "biocompiler.policy_component_context_assessment.v0.1", "profile": context_profile,
-            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_context_check.v0.5" if multi_member else
+            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.7" if _finite_machine(request) else "biocompiler.ocaml.policy_component_context_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_context_check.v0.5" if multi_member else
             "biocompiler.ocaml.policy_component_context_check.v0.4" if _two_observations(request) else
             "biocompiler.ocaml.policy_component_context_check.v0.3" if prerequisites else
             "biocompiler.ocaml.policy_component_context_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_context_check.v0.1", "claim_scope": "conditional_component_context_and_complete_record_capacity",
@@ -705,7 +724,9 @@ def _candidate(value: JsonValue, *, instanced: bool = False, multi_member: bool 
 
 def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = False,
             two_observations: bool = False, multi_member: bool = False,
-            grounded_helper: bool = False) -> dict[str, JsonValue]:
+            grounded_helper: bool = False, finite_machine: bool = False) -> dict[str, JsonValue]:
+    if finite_machine and (not (instanced and prerequisites) or two_observations or multi_member or grounded_helper):
+        raise CoreProtocolError("Finite-machine assessment requires its distinct prerequisite route")
     if grounded_helper and not multi_member:
         raise CoreProtocolError("Grounded helper assessment requires its explicit multi-member route")
     if multi_member and (not (instanced and prerequisites) or two_observations):
@@ -714,9 +735,9 @@ def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = 
         raise CoreProtocolError("Two-observation assessment requires the named-instance prerequisite route")
     report = _object(value, _REPORT_FIELDS | ({"prerequisites", "prerequisite_status"} if prerequisites else set()), "Complete component assessment")
     _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.4" if grounded_helper else "biocompiler.policy_component_material_assessment.v0.3" if multi_member else "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
-        "profile": GROUNDED_HELPER_REQUEST_PROFILE if grounded_helper else MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
+        "profile": FINITE_MACHINE_REQUEST_PROFILE if finite_machine else GROUNDED_HELPER_REQUEST_PROFILE if grounded_helper else MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
         PREREQUISITE_REQUEST_PROFILE if prerequisites else INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
-        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_material_check.v0.5" if multi_member else "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
+        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.7" if finite_machine else "biocompiler.ocaml.policy_component_material_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_material_check.v0.5" if multi_member else "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
         "biocompiler.ocaml.policy_component_material_check.v0.3" if prerequisites else
         "biocompiler.ocaml.policy_component_material_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
         "claim_scope": CLAIM_SCOPE, "premise": PREMISE, "empirical": "unassessed", "artifact": "withheld", "export": "withheld"}, "Component report")
@@ -739,13 +760,14 @@ def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate
         raise CoreProtocolError("Component work accounting changed its unit or original bound")
     prerequisites = _prerequisites(request)
     material._preservation(response, request, candidate, report, limits, prerequisites=prerequisites,
-                           two_observations=_two_observations(request), multi_product=_multi_member(request))
+                           two_observations=_two_observations(request), multi_product=_multi_member(request), finite_machine=_finite_machine(request))
     _leaves(request, candidate, report)
     if prerequisites:
         _prerequisite_evidence(request, report)
     material._obligations(report, material_key="assembly", accepted_status=ACCEPTED_STATUS,
                           conjunction_stage="conditional_component_context_conjunction",
-                          prerequisite_key="prerequisites" if prerequisites else None, multi_product=_multi_member(request))
+                          prerequisite_key="prerequisites" if prerequisites else None, multi_product=_multi_member(request),
+                          finite_machine=_finite_machine(request))
 
 
 def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComponentMaterialResult:
@@ -761,7 +783,8 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
     _candidate(candidate, instanced=instanced, multi_member=_multi_member(request), grounded_helper=_grounded_helper(request))
     report = _report(result["report"], instanced=instanced, prerequisites=prerequisites,
-                     two_observations=_two_observations(request), multi_member=_multi_member(request), grounded_helper=_grounded_helper(request))
+                     two_observations=_two_observations(request), multi_member=_multi_member(request), grounded_helper=_grounded_helper(request),
+                     finite_machine=_finite_machine(request))
     invocation: JsonValue = {"request": request, "candidate": candidate, "limits": payload["limits"]}
     request_hash = _pin(result["request_fingerprint"], request, "Complete original component request")
     candidate_hash = _pin(result["candidate_fingerprint"], candidate, "Complete component candidate")

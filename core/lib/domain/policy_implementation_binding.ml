@@ -7,6 +7,8 @@ let two_observation_schema_version = "biocompiler.policy_implementation_binding.
 let two_observation_profile = "biocompiler.policy_two_observation_source_graph.v0.1"
 let multi_product_schema_version = "biocompiler.policy_implementation_binding.v0.4"
 let multi_product_profile = "biocompiler.policy_multi_product_staged_source_graph.v0.1"
+let finite_machine_schema_version = "biocompiler.policy_implementation_binding.v0.5"
+let finite_machine_profile = "biocompiler.policy_finite_machine_source_graph.v0.1"
 type observation = { source:string; bank:string; input:string }
 type state = { source:string; register:string }
 type effect_binding = { source:string; bank:string; feedback:string }
@@ -15,7 +17,7 @@ type machine = { source:string; bank:string }
 type transition = rule
 type t = { raw:Json.t; entry:string; observation_values:observation list;
   state_values:state list; effect_values:effect_binding list; rule_values:rule list;
-  machine_values:machine list; transition_values:transition list; staged:bool; two_observation:bool; multi_product:bool }
+  machine_values:machine list; transition_values:transition list; staged:bool; two_observation:bool; multi_product:bool; finite_machine:bool }
 let get key value = Json.field key(Json.object_fields value)
 let text key value = Json.string(get key value)
 let require condition message = Diagnostic.require condition "policy_implementation_binding" message
@@ -33,7 +35,9 @@ let of_json raw =
   let fields=Json.object_fields raw in
   let multi_product=List.assoc_opt "schema_version" fields=Some(Json.String multi_product_schema_version) &&
     List.assoc_opt "profile" fields=Some(Json.String multi_product_profile) in
-  let staged=multi_product || (List.assoc_opt "schema_version" fields=Some(Json.String staged_schema_version) &&
+  let finite_machine=List.assoc_opt "schema_version" fields=Some(Json.String finite_machine_schema_version) &&
+    List.assoc_opt "profile" fields=Some(Json.String finite_machine_profile) in
+  let staged=finite_machine || multi_product || (List.assoc_opt "schema_version" fields=Some(Json.String staged_schema_version) &&
     List.assoc_opt "profile" fields=Some(Json.String staged_profile)) in
   let two_observation=List.assoc_opt "schema_version" fields=Some(Json.String two_observation_schema_version) &&
     List.assoc_opt "profile" fields=Some(Json.String two_observation_profile) in
@@ -45,7 +49,7 @@ let of_json raw =
     ({source=name "source" v;bank=name "bank" v;input=name "input" v}:observation))(get "observations" raw)
   and state_values=decode 2 ["source";"register"](fun v->
     ({source=name "source" v;register=name "register" v}:state))(get "states" raw)
-  and effect_values=decode (if staged then 2 else 1) ["source";"bank";"feedback"](fun v->
+  and effect_values=decode (if finite_machine then 8 else if staged then 2 else 1) ["source";"bank";"feedback"](fun v->
     ({source=name "source" v;bank=name "bank" v;feedback=name "feedback" v}:effect_binding))(get "effects" raw)
   and rule_values=decode 2 ["source";"gate";"arbiter";"lane";"commit"](fun v->
     let lane=Json.integer(get "lane" v)in
@@ -54,9 +58,9 @@ let of_json raw =
       commit=name "commit" v}:rule))(get "rules" raw)in
   let machine_values=if staged then decode 1 ["source";"bank"]
       (fun v->({source=name "source" v;bank=name "bank" v}:machine))(get "machines" raw) else [] in
-  let transition_values=if staged then decode 7 ["source";"gate";"arbiter";"lane";"commit"](fun v->
+  let transition_values=if staged then decode (if finite_machine then 32 else 7) ["source";"gate";"arbiter";"lane";"commit"](fun v->
       let lane=Json.integer(get "lane" v)in
-      require(Z.sign lane>=0 && Z.compare lane (Z.of_int 6)<=0)"Staged arbiter lane exceeds this profile.";
+      require(Z.sign lane>=0 && Z.compare lane (Z.of_int(if finite_machine then 31 else 6))<=0)"Staged arbiter lane exceeds this profile.";
       ({source=name "source" v;gate=name "gate" v;arbiter=name "arbiter" v;lane=Z.to_int lane;
         commit=name "commit" v}:transition))(get "transitions" raw) else [] in
   unique "observation" (List.map(fun(v:observation)->v.source)observation_values);
@@ -80,7 +84,7 @@ let of_json raw =
     unique "effect bank" (List.map(fun(v:effect_binding)->v.bank)effect_values);
     unique "effect feedback" (List.map(fun(v:effect_binding)->v.feedback)effect_values));
   {raw;entry=name "catalog_entry" raw;observation_values;state_values;effect_values;rule_values;
-   machine_values;transition_values;staged;two_observation;multi_product}
+   machine_values;transition_values;staged;two_observation;multi_product;finite_machine}
 let to_json value=value.raw
 let fingerprint value=Canonical.fingerprint value.raw
 let catalog_entry value=value.entry
@@ -94,3 +98,5 @@ let is_staged value=value.staged
 let is_two_observation value=value.two_observation
 
 let is_multi_product value=value.multi_product
+
+let is_finite_machine value=value.finite_machine

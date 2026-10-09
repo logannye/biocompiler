@@ -150,9 +150,34 @@ let admit ~request ~(behavior:O.behavior) =
       List.length behavior.transitions=7 && behavior.rules=[] && behavior.stores=[])
       "policy_realization_multi_product"
       "Multi-product inputs require two original fixed products and two effects in the bounded staged machine family.");
+  (if R.is_finite_machine request then (
+    let finite condition message=require condition "policy_realization_finite_machine" message in
+    finite (List.length behavior.roles=1 && List.length behavior.encounters=1 &&
+      List.length behavior.subjects=1 && List.length behavior.clocks=1 &&
+      List.length behavior.parameters=1 && List.length behavior.observations=1 &&
+      List.length behavior.machines=1 && behavior.rules=[] && behavior.stores=[] &&
+      List.length behavior.effects>=1 && List.length behavior.effects<=8 &&
+      List.length behavior.transitions>=1 && List.length behavior.transitions<=32)
+      "Finite-machine inputs require one executor, encounter, clock, truth observation, fixed product and machine, one to eight effects and one to thirty-two transitions without separate rules/stores.";
+    let machine=List.hd behavior.machines in
+    finite (List.length machine.states>=2 && List.length machine.states<=16 &&
+      (List.hd behavior.observations).value_type=O.Truth_type &&
+      (match (List.hd behavior.parameters).value with O.Text _->true|_->false))
+      "Finite-machine inputs require two to sixteen ordered states, truth evidence and a fixed text product.";
+    finite (List.for_all(fun(transition:O.transition)->
+      String.equal transition.machine machine.machine_id && transition.assignments=[] &&
+      List.length transition.effects<=1 && not(List.mem transition.source machine.terminal) &&
+      List.mem transition.on.op ["rising";"updated";"effect_event"])behavior.transitions &&
+      List.for_all(fun(effect:O.effect_spec)->
+        List.length(List.filter(fun(transition:O.transition)->List.mem effect.effect_id transition.effects)behavior.transitions)=1)
+        behavior.effects)
+      "Finite-machine transitions retain their sole machine and event triggers, forbid terminal reentry and assignments, and give every effect exactly one initiating transition."));
   (* Only externally checked source behavior reaches environment compatibility.
      Neither decoder nor caller-supplied candidate claims can replace this step. *)
   let domain_value=F.validate_for ~charge:Charge.charge ~behavior (R.operating_domain request) in
+  (if R.is_finite_machine request then
+    require (List.length (F.specification domain_value).encounters=2)
+      "policy_realization_finite_machine" "Finite-machine inputs require exactly two original encounter slots.");
   let assessment=Policy_admission.source_assessment source in
   let requested=check_assurance document assessment behavior domain_value in
   let model_values,catalog_digest=check_catalog request document in

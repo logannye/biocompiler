@@ -56,7 +56,7 @@
     },
     {
       "path": "core/lib/checker/policy_implementation_binding_check.ml",
-      "sha256": "44198ef32ff5190d0b63d16b6d83d5674ee4490eaab77582ac68a43a222ede3f",
+      "sha256": "3ef7df801f1da057fe3e1d2596ba6e8368a7162f82212afb20c4e61a962a446a",
       "disposition": "deferred_boundary",
       "ast": null
     },

@@ -71,6 +71,7 @@ let capabilities executable request =
           | "profiles" -> obj (Json.object_fields value @ ["architecture_producer", profile;
               "policy_operational_producer", Bioc_service.Policy_operational_service.producer_profile;
               "policy_implementation_producer", Bioc_service.Policy_implementation_service.producer_profile;
+              "policy_finite_machine_implementation_producer", Bioc_service.Policy_implementation_service.finite_machine_producer_profile;
               "policy_material_producer", Bioc_service.Policy_material_service.producer_profile;
               "policy_component_material_producer", Bioc_service.Policy_component_material_service.producer_profile;
               "policy_instance_material_producer", Bioc_service.Policy_component_material_service.instance_producer_profile;
@@ -78,6 +79,7 @@ let capabilities executable request =
               "policy_two_observation_material_producer", Bioc_service.Policy_component_material_service.two_observation_producer_profile;
               "policy_multi_member_material_producer", Bioc_service.Policy_component_material_service.multi_member_producer_profile;
               "policy_grounded_helper_material_producer", Bioc_service.Policy_component_material_service.grounded_helper_producer_profile;
+              "policy_finite_machine_material_producer", Bioc_service.Policy_component_material_service.finite_machine_producer_profile;
               "policy_component_selection_producer", Bioc_service.Policy_component_selection_service.producer_profile] @ Synthetic_producer_service.profiles @ Synthetic_producer_public_service.profiles @ Synthetic_inspection_service.profiles)
           | "claim_scope" -> str "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
           | _ -> value) in

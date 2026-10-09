@@ -99,8 +99,12 @@ let obligation_ledger budget request (implementation:P.checked_implementation) (
        Discharge only its exact bounded operational interpretation: every
        permitted prefix preserves finite states, terminal behavior and retained
        attempts, and every explicit original hard requirement is satisfied. *)
-    text "profile"(B.report binding)=(if R.is_multi_member request then U.multi_product_profile else U.staged_profile) && List.length(B.machines binding)=1 &&
-    List.length(B.transitions binding)=7 && text "preservation" report="pass" &&
+    text "profile"(B.report binding)=(if R.is_finite_machine request then U.finite_machine_profile
+      else if R.is_multi_member request then U.multi_product_profile else U.staged_profile) && List.length(B.machines binding)=1 &&
+    (if R.is_finite_machine request then
+      S.is_finite_machine original && List.length(B.transitions binding)>=1 && List.length(B.transitions binding)<=32 &&
+      List.map(fun(value:B.transition)->value.source)(B.transitions binding)=List.map(fun(value:O.transition)->value.transition_id)behavior.transitions
+      else List.length(B.transitions binding)=7) && text "preservation" report="pass" &&
     get "complete" coverage=Json.Bool true &&
     Json.equal(get "prefixes_started" coverage)(get "matched_prefixes" coverage) &&
     Z.sign(Json.integer(get "histories" coverage))>0 &&
@@ -199,7 +203,8 @@ let check ~request ~behavior ~implementation ~proposed ~assembly_proposal ~candi
     else if R.is_multi_member request then "biocompiler.policy_component_material_assessment.v0.3"
     else if prerequisite_profile then "biocompiler.policy_component_material_assessment.v0.2"
     else "biocompiler.policy_component_material_assessment.v0.1");
-    "profile",str (R.request_profile request);"implementation",str (if R.is_grounded_helper request then "biocompiler.ocaml.policy_component_material_check.v0.6"
+    "profile",str (R.request_profile request);"implementation",str (if R.is_finite_machine request then "biocompiler.ocaml.policy_component_material_check.v0.7"
+      else if R.is_grounded_helper request then "biocompiler.ocaml.policy_component_material_check.v0.6"
       else if R.is_multi_member request then "biocompiler.ocaml.policy_component_material_check.v0.5"
       else if R.is_two_observation request then "biocompiler.ocaml.policy_component_material_check.v0.4"
       else if prerequisite_profile then "biocompiler.ocaml.policy_component_material_check.v0.3"

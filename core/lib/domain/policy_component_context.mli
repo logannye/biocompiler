@@ -14,6 +14,7 @@ val instance_profile : string
 val instance_staged_profile : string
 val prerequisite_profile : string
 val two_observation_profile : string
+val finite_machine_profile : string
 val instance_union_profile : string
 val staged_profile : string
 val staged_record_profile : string
@@ -40,6 +41,7 @@ val requires_prerequisite_closure : t -> bool
 val is_two_observation : t -> bool
 val is_multi_member : t -> bool
 val is_grounded_helper : t -> bool
+val is_finite_machine : t -> bool
 val context_profile : t -> string
 val to_json : t -> Json.t
 val fingerprint : t -> string

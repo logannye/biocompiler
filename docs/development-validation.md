@@ -63,7 +63,7 @@ two SDK lanes overlap: component then selection, and instance composition, prere
 staged source, staged material then the 20-observation researcher-project workflow. Each lane preserves
 its dependencies and existing campaign receipts.
 There are at most two workers in either phase, and no SDK calls are moved into
-unguarded worker threads inside a campaign. All 41 suites and 260 observations
+unguarded worker threads inside a campaign. All 42 suites and 260 observations
 remain mandatory.
 
 At the baseline command durations, this scheduling can remove roughly six
@@ -102,7 +102,7 @@ Choose early feedback from the affected dependency surface. A staged-regimen
 change should get staged feedback promptly; edits to shared semantics, transport,
 authority, packaging or receipt accounting need broader regression coverage.
 **Automatic profile-specific hosted routing is not implemented.** The current
-`policy-development.yml` still requires all 41 native suites and all 260 SDK
+`policy-development.yml` still requires all 42 native suites and all 260 SDK
 observations. Individual witnesses or future scoped runners must report their
 own scope and cannot satisfy that complete census. Until explicit scoped routing
 exists, use the supported complete workflow for hosted development acceptance.
@@ -174,7 +174,7 @@ remain distinct revision boundaries.
 | `studio-browser` | Installed Python 3.11 package, Node 22 and the pinned Playwright/Chromium setup run guided workspace, construction inspection and review suites. |
 | `studio-typescript` | Pinned strict TypeScript checks, unchanged generated release assets, runtime response decoding and current migration inventory. |
 | `ocaml-build` | Build once per native platform, check library boundaries, generated policy schema/operational/material fixtures, rule coverage and both strict transport/policy type gates. Emit the independent component A/B original packet once with source/build provenance; retain the private emitter only as a test tool outside wheel contents. Retain locked inputs and exact compiled suite/role/fixture bytes, assemble candidate platform wheels and stamp their policy source authority. No test result is inferred from building a wheel. |
-| `ocaml-native-tests` | Restore the current run/platform-bound bundle, run the 22 focused policy/producer/construction checks with separately retained diagnostics, then all 181 Dune-declared suites with their original arguments and two bounded workers. The bundle binds 189 executable entries and 26 original JSON fixtures; 63 suites have explicit ordered fixture dependencies (60 operational plus three non-operational suites). The component suites retain the original A/B model fixtures. Assembly-rule and assembly-check tests share independently authored literals through a domain-only test library outside both production executable closures; expected material is declared without the construction producer. These leaf checks do not establish full composition acceptance. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
+| `ocaml-native-tests` | Restore the current run/platform-bound bundle, run the 22 focused policy/producer/construction checks with separately retained diagnostics, then all 182 Dune-declared suites with their original arguments and two bounded workers. The bundle binds 190 executable entries and 27 original JSON fixtures; 64 suites have explicit ordered fixture dependencies (61 operational plus three non-operational suites). The component suites retain the original A/B model fixtures. Assembly-rule and assembly-check tests share independently authored literals through a domain-only test library outside both production executable closures; expected material is declared without the construction producer. These leaf checks do not establish full composition acceptance. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
 | `ocaml-core` | Two workers execute all 67 original direct corpus, protocol, resource-bound and Python/OCaml conformance command groups against the same restored binaries. Commands within each group keep their original order and output paths; complete current-run group/log accounting is required before success. |
 | `architecture-sdk` | Four platform/Python jobs run concurrently. Each checks installed policy source assessment, operational execution, implementation preservation, material compilation/fresh export and Verify-only offline consumption against original fixtures and exact restored Core/Verify binaries. The selected interpreter's real console runs outside the checkout; policy reports and logs remain distinct. It then uses two isolated Python workers for all 16 architecture scenarios. Case B retains all its rejection/publication controls. The coordinator applies the unchanged independent 175-check/219-artifact architecture census before reporting success. |
 | `executable-rna-reproducibility` | Depends only on `installed-executable`; compares complete relative-file SHA-256 inventories from both Python versions. |

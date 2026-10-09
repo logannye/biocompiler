@@ -29,6 +29,7 @@ SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "data/researcher_
                 "examples/researcher_alpha.py", "pyproject.toml")
 SUITES = (
     ("test_policy_admitted_ir", ('data/policy_operational_v01.json', 'data/policy_staged_regimen_source_v01.json', 'data/policy_implementation_binding_v01.json')),
+    ("test_policy_finite_machine", ('data/policy_finite_machine_v01.json',)),
     ("test_policy_provider_prerequisites", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_prerequisite_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_two_observation_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),

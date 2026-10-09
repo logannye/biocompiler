@@ -13,12 +13,16 @@ let two_observation_schema_version = "biocompiler.policy_realization_request.v0.
 let two_observation_profile = "biocompiler.policy_two_observation_prerequisite_inputs.v0.1"
 let multi_product_schema_version = "biocompiler.policy_realization_request.v0.4"
 let multi_product_profile = "biocompiler.policy_multi_product_prerequisite_inputs.v0.1"
+let finite_machine_schema_version = "biocompiler.policy_realization_request.v0.5"
+let finite_machine_profile = "biocompiler.policy_finite_machine_inputs.v0.1"
 let resource_profile = "biocompiler.policy_realization_inputs.resources.v0.1"
-type family = Legacy | Prerequisites | Two_observation | Multi_product
+type family = Legacy | Prerequisites | Two_observation | Multi_product | Finite_machine
 let family_schema = function Legacy -> schema_version | Prerequisites -> prerequisite_schema_version
   | Two_observation -> two_observation_schema_version | Multi_product -> multi_product_schema_version
+  | Finite_machine -> finite_machine_schema_version
 let family_profile = function Legacy -> profile | Prerequisites -> prerequisite_profile
   | Two_observation -> two_observation_profile | Multi_product -> multi_product_profile
+  | Finite_machine -> finite_machine_profile
 type budgets = { max_prefixes:int; max_transitions:int; max_work:int; max_trace_items:int }
 type catalog_binding = {
   entry_id:string; entry_version:string; entry_digest:string;
@@ -97,9 +101,11 @@ let of_json raw = decode ~family:Legacy raw
 let of_prerequisite_json raw = decode ~family:Prerequisites raw
 let of_two_observation_json raw = decode ~family:Two_observation raw
 let of_multi_product_json raw = decode ~family:Multi_product raw
+let of_finite_machine_json raw = decode ~family:Finite_machine raw
 let requires_prerequisite_closure value = value.family<>Legacy
 let is_two_observation value = value.family=Two_observation
 let is_multi_product value = value.family=Multi_product
+let is_finite_machine value = value.family=Finite_machine
 let request_profile value = family_profile value.family
 let to_json value = value.raw
 let fingerprint value = value.identity
