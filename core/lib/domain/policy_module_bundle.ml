@@ -84,7 +84,7 @@ let pin meter path raw=
     "Template fingerprint must be complete lowercase SHA-256.";
   {id=name meter(path^"/id")(get meter path "id" raw);
    version=version meter(path^"/version")(get meter path "version" raw);content_fingerprint=digest}
-let of_json raw : t =
+let of_json raw=
   let budget:meter={limits_value=ceilings;work_value=0;bytes_value=0}in
   scan budget raw;
   let get path key raw=get budget path key raw and exact path keys raw=exact budget path keys raw in

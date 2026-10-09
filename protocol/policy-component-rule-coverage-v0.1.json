@@ -927,7 +927,7 @@
     },
     {
       "path": "core/lib/domain/policy_module_bundle.ml",
-      "sha256": "586a4e5cf9e6a809919b5ede26dd80074681315b700c58610557bf200c6934a3",
+      "sha256": "0ec418da7919b9d0e2234297e9b66112b1bd2e529c8011c083798ccc610a51ea",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
