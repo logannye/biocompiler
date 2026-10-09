@@ -262,6 +262,35 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/checker/policy_module_linking_check.ml",
+      "sha256": "ae6e16c589b178c615639e4c87742b1d1ebb7ac68c1abba881b4e57965025c79",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 2,
+          "fail": 36
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_module_linking_check.v0.1": 1,
+          "biocompiler.policy_module_linkage.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate complete module-source elaboration and linked component material route; no original whole-kernel authority. Exact interface, ownership, source lineage and fresh linked material claims are indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/checker/policy_module_linking_check.mli",
+      "sha256": "2eb17bd4e230fd0ed7a00c055522ef09f4b6953c3d4b296355a53cc033d2c878",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate complete module-source elaboration and linked component material route; no original whole-kernel authority. Exact interface, ownership, source lineage and fresh linked material claims are indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/checker/policy_mrna_structure_check.ml",
       "sha256": "14a340af4a2a4e46628ad80a239790b6b23ac32f94a3a42ee54343680214c213",
       "census": {
@@ -1135,6 +1164,35 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/domain/policy_module_bundle.ml",
+      "sha256": "4842560761134c052f85ac5a3acf1e5e509a5265f22af83518e63d916e4d6494",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 2,
+          "require": 8
+        },
+        "profile_literals": {
+          "biocompiler.policy_module_bundle.v0.1": 1,
+          "biocompiler.policy_module_linking.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate complete module-source elaboration and linked component material route; no original whole-kernel authority. Exact interface, ownership, source lineage and fresh linked material claims are indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_module_bundle.mli",
+      "sha256": "f3bbc58430b02cbb064300528c0b3cf0d4de3480c61010ea4ca169eacebd8019",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate complete module-source elaboration and linked component material route; no original whole-kernel authority. Exact interface, ownership, source lineage and fresh linked material claims are indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/domain/policy_mrna_structure.ml",
       "sha256": "3aeb028bed4d1902d7dfced0c72963816c4d7e1a929898929a36c6df476c6191",
       "census": {
@@ -1459,6 +1517,28 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/producer_service/policy_module_material_producer.ml",
+      "sha256": "c761bbc12620de2ed1eb6190c9fba1c766135aa09de306184f89f002128041b2",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate complete module-source elaboration and linked component material route; no original whole-kernel authority. Exact interface, ownership, source lineage and fresh linked material claims are indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/producer_service/policy_module_material_producer.mli",
+      "sha256": "c16c1023eff081f8c61c88f5c7f70997815d8fb68096dbd73628929cc05deaa2",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate complete module-source elaboration and linked component material route; no original whole-kernel authority. Exact interface, ownership, source lineage and fresh linked material claims are indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/producer_service/policy_operational_producer.ml",
       "sha256": "b1df07294cc3f3e4267d677590cd3d667063a8a7dd11d94d1591aeabe852536b",
       "census": {
@@ -1482,7 +1562,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "e1272f4502e15aad7eddb54f089b5f177727d2c4e48e2c0a4d7f2d1dd7915666",
+      "sha256": "6a4c2f9dbfe7183b7ada8faad9df582bc7966308ba74eb5c137ba61d7da4d437",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -2127,6 +2207,38 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/service/policy_module_linking_service.ml",
+      "sha256": "349df8695b68067b050fa83d9904824a757e7f5da29eb84d91ee998550ca7525",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 5
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_module_linking.v1": 1,
+          "biocompiler.core.policy_module_material.v1": 1,
+          "biocompiler.ocaml.policy_module_linking.v0.1": 1,
+          "biocompiler.ocaml.policy_module_material.v0.1": 1,
+          "biocompiler.policy_module_bundle.v0.1": 1,
+          "biocompiler.policy_module_mrna_export.v0.1": 1,
+          "biocompiler.policy_module_mrna_manifest.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate complete module-source elaboration and linked component material route; no original whole-kernel authority. Exact interface, ownership, source lineage and fresh linked material claims are indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_module_linking_service.mli",
+      "sha256": "9ddcc6ecb2b847d51f90c3eeff1875282dabe43373c9aaf8f72336b55b47f964",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate complete module-source elaboration and linked component material route; no original whole-kernel authority. Exact interface, ownership, source lineage and fresh linked material claims are indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/service/policy_operational_service.ml",
       "sha256": "1f07e35003c54da390ea9dd1b1cf5275ddb1a7cd607f8613e041f7d710b064fb",
       "census": {
@@ -2216,7 +2328,7 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "0ebef3ff6a5ea106afbb12d089ac4a21b8979c115d59fab0fcd7644fb524fa91",
+      "sha256": "f0caf2650f8ffa7c72b28e7844a330fd0c01b9024b595308676e504d246d4427",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -2566,6 +2678,30 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "src/biocompiler/core_policy_module_linking.py",
+      "sha256": "8c6cb783a929dc4e4bd7f191af8d228905ef314d1c0ff3e7c9fa584f9e4fd165",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 4,
+          "FunctionDef": 26,
+          "Raise": 1
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_module_linking.v1": 1,
+          "biocompiler.core.policy_module_material.v1": 1,
+          "biocompiler.ocaml.policy_module_linking.v0.1": 1,
+          "biocompiler.ocaml.policy_module_linking_check.v0.1": 1,
+          "biocompiler.ocaml.policy_module_material.v0.1": 1,
+          "biocompiler.policy_module_linkage.v0.1": 1,
+          "biocompiler.policy_module_mrna_export.v0.1": 1,
+          "biocompiler.policy_module_mrna_manifest.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate complete module-source elaboration and linked component material route; no original whole-kernel authority. Exact interface, ownership, source lineage and fresh linked material claims are indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "src/biocompiler/core_policy_refinement.py",
       "sha256": "053abd644e401fef08dc53538c436fac7c4b6ec0a9e115a3af019643865fec08",
       "census": {
@@ -2665,6 +2801,39 @@
       },
       "disposition": "rule_owner",
       "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "src/biocompiler/policy/module_linking.py",
+      "sha256": "87dd2eb7ffd36ff3bc76d2de4957eb3806e0da29cd58bc3c029c3f25a7a3efe2",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 3,
+          "FunctionDef": 26,
+          "Raise": 2
+        },
+        "profile_literals": {
+          "biocompiler.policy_module_bundle.v0.1": 1,
+          "biocompiler.policy_module_linking.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate complete module-source elaboration and linked component material route; no original whole-kernel authority. Exact interface, ownership, source lineage and fresh linked material claims are indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/policy/modules.py",
+      "sha256": "07060e46cac6551e77c7b2f97e3956539ba39ee3a1ec009d17429ea63a7e508f",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 11,
+          "FunctionDef": 30,
+          "Raise": 4
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate complete module-source elaboration and linked component material route; no original whole-kernel authority. Exact interface, ownership, source lineage and fresh linked material claims are indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
       "path": "src/biocompiler/policy/patterns.py",

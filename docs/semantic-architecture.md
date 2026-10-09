@@ -19,9 +19,13 @@ including unsuccessful attempts and missing information.
 Semantic modules add reusable interfaces to this vocabulary. Their inputs and
 outputs carry complete nominal types and access rights. Private state and effects
 are declared explicitly. Instantiation renames private identities hygienically;
-composition checks bindings, ownership and conflicting writes. This is presently
-an authoring guarantee. The flattened source has no native module provenance
-theorem, and module guarantees are still original requirements to check.
+composition checks bindings, ownership and conflicting writes. The opt-in
+[native module-linking profile](policy-module-linking-v0.1.md) independently
+reconstructs the proposed flattened source from the complete original module
+bundle. Its checked relation is exact elaboration; module guarantees remain
+original requirements to check. Linked material export preserves provenance
+while freshly checking the complete program. Native execution of this addition
+remains pending.
 
 OCaml's role is to make the admitted language and checking boundaries explicit:
 closed variants enumerate permitted operations, and abstract module interfaces
@@ -108,11 +112,13 @@ profile now have explicit boundaries. Native execution of this implementation
 batch is still pending; the session record distinguishes implemented controls
 from executed checks.
 
-Further expressiveness should add checked meanings in this order: native module
-provenance for separate compilation; richer multi-machine and multi-observation
-composition with explicit interference checks; additional refinement relations
-for approximation and nondeterminism; and calibrated quantitative profiles with
-declared uncertainty, tolerances and experimental provenance. Each needs an
+The approved [next four milestones](semantic-next-roadmap-2026-10-09.md) begin
+with the implemented native module-elaboration route, whose validation remains
+pending. Next come bounded networks of machines and observations, explicit
+target capabilities and obligation planning, and broader quantitative semantics
+with experimental provenance. Separate behavioral verification of modules and
+additional refinement relations for approximation still require explicit
+justification. Each extension needs an
 independent checker and rejection controls before its claim can reach export.
 Avoid expanding the trusted core merely to accommodate frontend ergonomics or
 producer search strategies. OCaml's private types support that boundary, while

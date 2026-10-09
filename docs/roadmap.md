@@ -3,8 +3,8 @@
 The user-approved [2026-10-09 semantic compiler milestones](semantic-next-roadmap-2026-10-09.md)
 record the next four items: native checked module linking, interacting machine
 and observation networks, target capability/obligation planning, and broader
-quantitative semantics with realization evidence. Module linking is in progress
-in the owned semantic-foundation checkout; validation status remains explicit.
+quantitative semantics with realization evidence. Module linking is implemented
+locally in the owned semantic-foundation checkout; native validation remains pending.
 
 The [2026-10-08 core priorities](core-architecture-session-priorities-2026-10-08.md)
 order composition, executable prerequisites, source-family expansion,

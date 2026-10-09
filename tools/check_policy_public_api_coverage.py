@@ -33,7 +33,9 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "4505ad72eaddb74c56cb7587ebbf2b719cd9b78b2e6c673b76c8820e19335bef"
+REVIEWED_METADATA_SHA256 = "fb0cae52848ceef5f8d9ee9743846a23647175dc70e8144741aee087f5ca4a40"
+BEFORE_MODULE_LINKING_METADATA_SHA256 = "4505ad72eaddb74c56cb7587ebbf2b719cd9b78b2e6c673b76c8820e19335bef"
+MODULE_LINKING_PREFIXES = ("biocompiler.policy.module_linking.", "biocompiler.core_policy_module_linking.")
 BEFORE_QUANTITATIVE_METADATA_SHA256 = "5bf67512edb43be299929b44a147cec8951867fc52bd7fffa169ef2aa10615ad"
 QUANTITATIVE_PREFIX = "biocompiler.policy.quantitative."
 QUANTITATIVE_DEPENDENCIES = tuple("biocompiler.core_policy_component_material." + name for name in (
@@ -132,8 +134,8 @@ COMPOSITION_DEPENDENCIES = (
     'biocompiler.core_policy_implementation._two_observation_original',
 )
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model modules native observations operational patterns programs quantitative refinement requirements research_project serialization space state time typed validation values".split())
-CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement")
+MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model module_linking modules native observations operational patterns programs quantitative refinement requirements research_project serialization space state time typed validation values".split())
+CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py")
 # These names remain compatible support surfaces, not cellular runtime APIs.
@@ -163,13 +165,19 @@ OPERATIONS = {
     "core_policy_component_selection.PolicyComponentSelectionClient.check": ("check-policy-component-selection", ("request", "candidate", "limits")),
     "core_policy_component_selection.PolicyComponentSelectionClient.replay": ("replay-policy-component-selection", ("request", "candidate", "limits", "report")),
     "core_policy_component_selection.PolicyComponentSelectionClient.export": ("export-policy-component-selection", ("request", "candidate", "limits")),
+    "core_policy_module_linking.PolicyModuleLinkingClient.check": ("check-policy-module-linking", ("modules", "program")),
+    "core_policy_module_linking.PolicyModuleLinkingClient.replay": ("replay-policy-module-linking", ("modules", "program", "report")),
+    "core_policy_module_linking.PolicyModuleMaterialClient.compile": ("compile-policy-module-material", ("modules", "request", "limits")),
+    "core_policy_module_linking.PolicyModuleMaterialClient.check": ("check-policy-module-material", ("modules", "request", "candidate", "limits")),
+    "core_policy_module_linking.PolicyModuleMaterialClient.replay": ("replay-policy-module-material", ("modules", "request", "candidate", "limits", "report")),
+    "core_policy_module_linking.PolicyModuleMaterialClient.export": ("export-policy-module-material", ("modules", "request", "candidate", "limits")),
     "core_policy_refinement.PolicyRefinementClient.check": ("check-policy-refinement", ("request", "candidate", "limits")),
     "core_policy_refinement.PolicyRefinementClient.replay": ("replay-policy-refinement", ("request", "candidate", "limits", "report")),
 }
 # Reviewed access names and canonical owners, independent of the ledger file pins.
 REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
   'biocompiler.policy',
-  'behavior catalog chassis coordination deployment effects entities logic modules observations patterns quantitative refinement requirements '
+  'behavior catalog chassis coordination deployment effects entities logic module_linking modules observations patterns quantitative refinement requirements '
   'space state time typed values'),
  ('biocompiler.policy', 'biocompiler.policy.handoff', 'SubmissionError assess_capabilities prepare_submission'),
  ('biocompiler.policy', 'biocompiler.policy.inspection', 'diff graph inspect'),
@@ -218,6 +226,10 @@ REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
  ('biocompiler.policy.refinement', 'biocompiler.core_policy_refinement',
   'Stage Relation PremiseKind DerivationRule StageIdentity RefinementScope RefinementClaim RefinementPremise RefinementDerivation RefinementEvidence PolicyRefinementResult PolicyRefinementClient'),
  ('biocompiler.policy.refinement', 'biocompiler.policy.refinement', 'check replay'),
+ ('biocompiler.policy.module_linking', 'biocompiler.policy.module_linking',
+  'ModuleLinkingLimits ModuleBundle ModuleProposal bundle_from_data prepare check replay compile_material check_material replay_material export_material'),
+ ('biocompiler.core_policy_module_linking', 'biocompiler.core_policy_module_linking',
+  'PolicyModuleLinkingResult PolicyModuleMaterialResult PolicyModuleLinkingClient PolicyModuleMaterialClient'),
  ('biocompiler.policy.quantitative', 'biocompiler.policy.quantitative', 'QuantitativeAuthoringError SampledReservoir'),
  ('biocompiler.policy.values',
   'biocompiler.policy.model',
@@ -503,7 +515,7 @@ def discover(root: Path) -> dict[str, Any]:
     reviewed_access = {module + "." + name: owner + "." + name
                        for module, owner, names in REVIEWED_EXPORT_GROUPS for name in names.split()}
     require(access == reviewed_access, "Reviewed export target/alias census differs")
-    require(len(exports.get("biocompiler.policy", [])) == 116 and len(access) == 246,
+    require(len(exports.get("biocompiler.policy", [])) == 117 and len(access) == 262,
             "Reviewed explicit export census differs")
     require(aliases == {"biocompiler.policy.inspection.summary": "biocompiler.policy.inspection.inspect",
                         "biocompiler.policy.inspection.render_html": "biocompiler.policy.inspection.to_html"}, "Reviewed compatibility/display aliases differ")
@@ -643,9 +655,17 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
+    before_module_linking = {
+        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("module_linking.")},
+        "coverage": {key: value for key, value in coverage.items() if not key.startswith(MODULE_LINKING_PREFIXES)},
+    }
+    encoded_module_linking = json.dumps(before_module_linking, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_module_linking["coverage"]) == 1187 and len(before_module_linking["witnesses"]) == 164
+            and digest(encoded_module_linking) == BEFORE_MODULE_LINKING_METADATA_SHA256,
+            "Module linking must preserve every previous API evidence meaning")
     before_quantitative = {
-        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("quantitative.")},
-        "coverage": {key: value for key, value in coverage.items()
+        "witnesses": {key: value for key, value in before_module_linking["witnesses"].items() if not key.startswith("quantitative.")},
+        "coverage": {key: value for key, value in before_module_linking["coverage"].items()
                      if not key.startswith(QUANTITATIVE_PREFIX) and key not in QUANTITATIVE_DEPENDENCIES},
     }
     encoded_quantitative = json.dumps(before_quantitative, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")

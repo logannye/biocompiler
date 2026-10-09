@@ -151,12 +151,15 @@ scans consume work and bytes. The existing closed source codec imposes its own
 per-document limits as well. These authoring limits are not native compiler
 budget receipts. Failure returns no partial program.
 
-Module privacy is enforced by this authoring expansion. Flattened source does
-not carry a native module-interface proof or a versioned module provenance
-receipt. Preserve original templates and instance bindings separately when
-reproducible module composition matters. The complete flattened source is the
-native authority; a caller who subsequently edits it must obtain fresh native
-assessment, and cannot claim that such edits were checked by this composition.
+Module privacy is enforced by this authoring expansion. `compose_modules` alone
+produces ordinary source and grants no native module-interface claim. The opt-in
+[native module-linking profile](policy-module-linking-v0.1.md) retains the complete
+original bundle and asks an independent OCaml checker to reconstruct the proposed
+source. Its linked material route preserves that provenance through fresh
+whole-program checking and exact paired export. Editing the proposed source
+invalidates the checked elaboration unless it still exactly matches the original
+bundle. The native implementation and regression controls require hosted native
+validation; Python composition alone does not establish their execution.
 
 The pure Python regression suite is `tests/test_policy_modules.py`. It compares
 expansion against independently authored source examples and covers repeated

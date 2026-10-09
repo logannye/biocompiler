@@ -5,7 +5,7 @@ five implementation increments at `0c0b79d151718b7efc6508dc35ea93dc4d023443` on
 `codex/dev-policy/semantic-foundation-v2`. Those increments passed their recorded
 local checks; native execution and installed-package acceptance remain pending.
 
-1. **Native module representation and independently checked linking — in progress.**
+1. **Native module representation and independently checked linking — implemented locally; native validation pending.**
    Preserve complete templates, typed ports, instance bindings, private state and
    effects, requirements and semantic definitions in versioned source data. An
    independent OCaml checker reconstructs the flattened source, verifies interface
@@ -45,5 +45,6 @@ validation at coherent checkpoints; do not dispatch CI for each edit. No local
 OCaml/Rust compilation or native execution is authorized. Preserve the existing
 full integration and fresh actual-main gates and all unrelated worktrees/runs.
 
-Item 1 implementation and its precise validation status are recorded in
-[the module-linking contract](policy-module-linking-v0.1.md) as work progresses.
+Item 1's interface is recorded in [the module-linking contract](policy-module-linking-v0.1.md).
+Its [implementation checkpoint](semantic-module-linking-checkpoint-2026-10-09.md)
+separates passed local checks from the pending native and installed gates.

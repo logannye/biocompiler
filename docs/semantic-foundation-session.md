@@ -1,5 +1,10 @@
 # Ordered semantic foundation implementation
 
+This record covers the original five increments. Subsequent work is tracked in
+the [next four milestones](semantic-next-roadmap-2026-10-09.md), beginning with
+the [native module-linking checkpoint](semantic-module-linking-checkpoint-2026-10-09.md).
+Statements below describe the earlier checkpoints at their recorded revisions.
+
 This session implements the five user-requested architecture increments in order.
 The working branch is `codex/dev-policy/semantic-foundation-v2`, initially based on
 `6e4067f17820c472e0ee54f7a96215fbb084b5d2`. That source belongs to the independently

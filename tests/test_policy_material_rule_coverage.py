@@ -43,13 +43,13 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 172)
+        self.assertEqual(result["sources"], 183)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 30, "sources": 120, "witness_sources": 137,
+        self.assertEqual(result["component_route"], {"rules": 31, "sources": 131, "witness_sources": 142,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -247,8 +247,60 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_quantitative(self):
+    def before_module_linking(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        added = ledger["rules"].pop()
+        self.assertEqual(added["id"], "component.checked_module_linking")
+        self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in added[kind]},
+                         set(coverage.COMPONENT_MODULE_LINKING_WITNESSES))
+        ledger["sources"] = [row for row in ledger["sources"] if row["path"] not in coverage.COMPONENT_MODULE_LINKING_SOURCES]
+        ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] not in coverage.COMPONENT_MODULE_LINKING_WITNESSES]
+        self.assertEqual(ledger["limitations"].pop(), coverage.MODULE_LINKING_LIMITATION)
+        return ledger
+
+    def test_module_linking_preserves_all_thirty_prior_families(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        projected = self.before_module_linking()
+        self.assertEqual((len(projected["rules"]), len(projected["sources"]), len(projected["witness_sources"])), (30, 120, 137))
+        self.assertEqual(coverage.component_metadata_before_module_linking(original), coverage.component_metadata(projected))
+        encoded = json.dumps(coverage.component_metadata(projected), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), "5da8ac899aadbf0ef49b36e053971a92fbcead0aa475d319834c3fe2104fdfee")
+        changed = deepcopy(original)
+        changed["rules"][-2]["scope"] += " Unreviewed module claim widening."
+        encoded = json.dumps(coverage.component_metadata(changed), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-module-linking component meaning"):
+                coverage.check_component(coverage.ROOT, changed)
+
+    def test_module_linking_preserves_original_whole_kernel_classifications(self):
+        self.assertEqual(len(coverage.COMPONENT_MODULE_LINKING_SOURCES), 11)
+        for path in coverage.COMPONENT_MODULE_LINKING_SOURCES:
+            row = next(row for row in self.original["sources"] if row["path"] == path)
+            self.assertEqual((row["disposition"], row["reason"]), ("outside_route", coverage.MODULE_LINKING_REASON))
+        encoded = json.dumps(coverage.metadata_before_module_linking(self.original), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), "cfc4f5b0ec01efc7625ee61602eefaa92c2fc32f6a1b088165537dec15a293f3")
+
+    def test_module_linking_witnesses_remain_source_only_and_conditional(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        row = original["rules"][-1]
+        self.assertEqual(row["evidence_scope"], "source_only_not_executed_by_this_gate")
+        for phrase in ("exact module elaboration", "complete original", "fresh whole-program", "paired export"):
+            self.assertIn(phrase, row["scope"])
+        self.assertIn("does not discharge", row["limits"])
+        self.assertIn("no native execution", row["limits"])
+        for path in (*coverage.COMPONENT_MODULE_LINKING_SOURCES, *coverage.COMPONENT_MODULE_LINKING_WITNESSES):
+            changed = deepcopy(original)
+            key = "sources" if path in coverage.COMPONENT_MODULE_LINKING_SOURCES else "witness_sources"
+            changed[key] = [item for item in changed[key] if item["path"] != path]
+            with self.subTest(omitted=path), self.assertRaisesRegex(coverage.CoverageError, "census"):
+                coverage.check_component(coverage.ROOT, changed)
+        for key, value in (("evidence_scope", "native_execution_passed"), ("limits", "Module assumptions discharged.")):
+            changed = deepcopy(original); changed["rules"][-1][key] = value
+            with self.assertRaises(coverage.CoverageError):
+                coverage.check_component(coverage.ROOT, changed)
+
+    def before_quantitative(self):
+        ledger = self.before_module_linking()
         added = ledger["rules"].pop()
         self.assertEqual(added["id"], "component.sampled_quantitative_material")
         self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in added[kind]},
@@ -269,7 +321,7 @@ let check x = Diagnostic.require x "code" "message"
         ledger["rules"][0]["scope"] += " Unreviewed quantitative weakening."
         encoded = json.dumps(coverage.component_metadata(ledger), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
-            with self.assertRaisesRegex(coverage.CoverageError, "pre-quantitative component meaning"):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-module-linking component meaning"):
                 coverage.check_component(coverage.ROOT, ledger)
 
     def test_quantitative_preserves_original_whole_kernel_classifications(self):
@@ -282,7 +334,7 @@ let check x = Diagnostic.require x "code" "message"
 
     def test_quantitative_witnesses_remain_source_only_and_conditional(self):
         original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
-        row = original["rules"][-1]
+        row = next(item for item in original["rules"] if item["id"] == "component.sampled_quantitative_material")
         self.assertEqual(row["evidence_scope"], "source_only_not_executed_by_this_gate")
         self.assertIn("exact sampled", row["scope"])
         self.assertIn("selected component", row["scope"])
@@ -294,7 +346,8 @@ let check x = Diagnostic.require x "code" "message"
             with self.subTest(omitted=path), self.assertRaisesRegex(coverage.CoverageError, "census"):
                 coverage.check_component(coverage.ROOT, changed)
         for key, value in (("evidence_scope", "native_execution_passed"), ("limits", "Physical kinetic calibration proven.")):
-            changed = deepcopy(original); changed["rules"][-1][key] = value
+            changed = deepcopy(original)
+            next(item for item in changed["rules"] if item["id"] == "component.sampled_quantitative_material")[key] = value
             with self.assertRaises(coverage.CoverageError):
                 coverage.check_component(coverage.ROOT, changed)
 
@@ -332,7 +385,7 @@ let check x = Diagnostic.require x "code" "message"
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "7f2f1b2ae98833e27d959117dfbc2d83de612e670216412a34e9fcd1ba7464f5")
         self.rejected(lambda value: value["rules"][0].update(admitted_context="Unreviewed semantic expansion."),
-                      "pre-quantitative original whole-kernel meaning")
+                      "pre-module-linking original whole-kernel meaning")
 
     def test_refinement_keeps_source_only_witnesses_and_closed_scope(self):
         original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
@@ -362,7 +415,7 @@ let check x = Diagnostic.require x "code" "message"
         encoded = json.dumps(coverage.component_metadata(ledger), sort_keys=True,
                              separators=(",", ":"), ensure_ascii=False).encode()
         with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
-            with self.assertRaisesRegex(coverage.CoverageError, "pre-quantitative component meaning"):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-module-linking component meaning"):
                 coverage.check_component(coverage.ROOT, ledger)
 
     def before_finite_machine(self):
@@ -415,7 +468,7 @@ let check x = Diagnostic.require x "code" "message"
         encoded = json.dumps(coverage.component_metadata(ledger), sort_keys=True,
                              separators=(",", ":"), ensure_ascii=False).encode()
         with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
-            with self.assertRaisesRegex(coverage.CoverageError, "pre-quantitative component meaning"):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-module-linking component meaning"):
                 coverage.check_component(coverage.ROOT, ledger)
 
     def before_typed_admission(self):
@@ -443,6 +496,7 @@ let check x = Diagnostic.require x "code" "message"
         projected["source_classifications"] = [{key: row[key] for key in ("path", "disposition", "reason")}
             for row in self.original["sources"] if row["path"] not in added
             and row["path"] not in coverage.COMPONENT_REFINEMENT_SOURCES
+            and row["path"] not in coverage.COMPONENT_MODULE_LINKING_SOURCES
             and row["path"] not in coverage.COMPONENT_QUANTITATIVE_SOURCES]
         projected["witness_paths"] = [row["path"] for row in self.original["witness_sources"]]
         encoded = json.dumps(projected, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
