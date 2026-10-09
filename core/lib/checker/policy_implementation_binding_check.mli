@@ -43,6 +43,12 @@ type expression = { source_path : string; source_expression : Json.t; endpoint :
 type checked_binding
 
 val check : admitted:A.admitted_inputs -> implementation:I.t -> proposed:B.t -> checked_binding
+
+(** Independent bounded network reconstruction. Preserves complete source policy
+    grouping, ordered machine/store writers and all source occurrences; the
+    local work ceiling remains enforced when [charge] is a no-op. *)
+val check_network_metered : charge:(int -> unit) -> admitted:A.admitted_inputs ->
+  implementation:I.t -> proposed:B.t -> checked_binding
 val admitted_inputs : checked_binding -> A.admitted_inputs
 val implementation : checked_binding -> I.t
 val environment : checked_binding -> environment

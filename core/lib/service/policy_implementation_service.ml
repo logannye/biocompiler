@@ -10,6 +10,8 @@ let obj fields=Json.Object fields
 let operations=["check-policy-implementation";"replay-policy-implementation"]
 let validation_scope="bounded-policy-implementation-v0.1"
 let implementation="biocompiler.ocaml.policy_implementation.v0.1"
+let network_validation_scope="bounded-policy-network-v0.1"
+let network_implementation="biocompiler.ocaml.policy_network_implementation.v0.1"
 let finite_machine_validation_scope="bounded-policy-finite-machine-v0.1"
 let finite_machine_implementation="biocompiler.ocaml.policy_finite_machine_implementation.v0.1"
 let resource_profile="biocompiler.policy_preservation_resources.v0.1"
@@ -30,6 +32,13 @@ let profile=obj[
   "material",str "unassessed";"export",str "withheld"]
 let producer_profile=obj["operations",Json.Array[str "compile-policy-implementation"];
   "implementation",str implementation;"validation_scope",str validation_scope]
+let network_profile=obj (List.map (fun (key,value) -> key,match key with
+  | "request_schema" -> str R.network_schema_version
+  | "implementation" -> str network_implementation
+  | "validation_scope" -> str network_validation_scope
+  | _ -> value) (Json.object_fields profile))
+let network_producer_profile=obj["operations",Json.Array[str "compile-policy-implementation"];
+  "implementation",str network_implementation;"validation_scope",str network_validation_scope]
 let finite_machine_profile=obj (List.map (fun (key,value) -> key,match key with
   | "request_schema" -> str R.finite_machine_schema_version
   | "implementation" -> str finite_machine_implementation
@@ -39,7 +48,9 @@ let finite_machine_producer_profile=obj["operations",Json.Array[str "compile-pol
   "implementation",str finite_machine_implementation;"validation_scope",str finite_machine_validation_scope]
 let request_of_json raw =
   let fields=Json.object_fields raw in
-  if List.assoc_opt "schema_version" fields=Some(str R.finite_machine_schema_version) &&
+  if List.assoc_opt "schema_version" fields=Some(str R.network_schema_version) &&
+     List.assoc_opt "profile" fields=Some(str R.network_profile) then R.of_network_json raw
+  else if List.assoc_opt "schema_version" fields=Some(str R.finite_machine_schema_version) &&
      List.assoc_opt "profile" fields=Some(str R.finite_machine_profile)
   then R.of_finite_machine_json raw else R.of_json raw
 let validate_publication value=
@@ -64,9 +75,9 @@ let check ~request:raw_request ~candidate:raw_candidate ~limits:raw_limits=
   let report=C.report checked in
   let result=obj[
     "schema_version",str schema_version;
-    "implementation",str (if R.is_finite_machine request then finite_machine_implementation else implementation);
+    "implementation",str (if R.is_network request then network_implementation else if R.is_finite_machine request then finite_machine_implementation else implementation);
     "resource_profile",str resource_profile;
-    "validation_scope",str (if R.is_finite_machine request then finite_machine_validation_scope else validation_scope);
+    "validation_scope",str (if R.is_network request then network_validation_scope else if R.is_finite_machine request then finite_machine_validation_scope else validation_scope);
     "request_fingerprint",str(R.fingerprint request);
     "candidate_fingerprint",str(Canonical.fingerprint raw_candidate);
     "invocation_fingerprint",str(Canonical.fingerprint(obj[

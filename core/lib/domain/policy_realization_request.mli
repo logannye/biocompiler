@@ -13,6 +13,8 @@ val multi_product_schema_version : string
 val multi_product_profile : string
 val finite_machine_schema_version : string
 val finite_machine_profile : string
+val network_schema_version : string
+val network_profile : string
 val resource_profile : string
 
 type budgets = private {
@@ -40,10 +42,12 @@ val of_prerequisite_json : Json.t -> t
 val of_two_observation_json : Json.t -> t
 val of_multi_product_json : Json.t -> t
 val of_finite_machine_json : Json.t -> t
+val of_network_json : Json.t -> t
 val requires_prerequisite_closure : t -> bool
 val is_two_observation : t -> bool
 val is_multi_product : t -> bool
 val is_finite_machine : t -> bool
+val is_network : t -> bool
 val request_profile : t -> string
 val to_json : t -> Json.t
 

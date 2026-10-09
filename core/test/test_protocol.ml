@@ -40,6 +40,8 @@ let () =
       "policy_refinement",Bioc_service.Policy_refinement_service.profile;
       "policy_module_linking",Bioc_service.Policy_module_linking_service.profile;
       "policy_module_material",Bioc_service.Policy_module_linking_service.material_profile;
+      "policy_network_material",Bioc_service.Policy_component_material_service.network_profile;
+      "policy_network_implementation",Bioc_service.Policy_implementation_service.network_profile;
       "policy_finite_machine_material",Bioc_service.Policy_component_material_service.finite_machine_profile;
       "policy_finite_machine_implementation",Bioc_service.Policy_implementation_service.finite_machine_profile;
       "policy_quantitative_material",Bioc_service.Policy_component_material_service.quantitative_profile;

@@ -28,6 +28,8 @@ let grounded_helper_schema_version = "biocompiler.policy_component_material_requ
 let grounded_helper_profile = "biocompiler.policy_grounded_helper_prerequisite_mrna.v0.1"
 let finite_machine_schema_version = "biocompiler.policy_component_material_request.v0.7"
 let finite_machine_profile = "biocompiler.policy_finite_machine_component_mrna.v0.1"
+let network_schema_version = "biocompiler.policy_component_material_request.v0.9"
+let network_profile = "biocompiler.policy_network_component_mrna.v0.1"
 let quantitative_schema_version = "biocompiler.policy_component_material_request.v0.8"
 let quantitative_profile = "biocompiler.policy_sampled_reservoir_component_mrna.v0.1"
 let resource_profile = "biocompiler.policy_component_material_resources.v0.1"
@@ -93,6 +95,7 @@ let of_json ?(charge=fun _ -> ()) raw =
   let decode parser raw = ignore (measure raw); parser raw in
   let equal left right = let a=measure left and b=measure right in spend (a+b); Json.equal left right in
   let raw_bytes = measure raw in M.check_resources raw;
+  let network = get "schema_version" raw=str network_schema_version && get "profile" raw=str network_profile in
   let quantitative = get "schema_version" raw=str quantitative_schema_version && get "profile" raw=str quantitative_profile in
   let fields=["schema_version";"profile";"implementation_request";"component_library";"composition_rule";
     "catalog_binding";"input_bindings";"resource_bindings";"context";"budgets"] in
@@ -101,11 +104,11 @@ let of_json ?(charge=fun _ -> ()) raw =
   let finite_machine = quantitative || (get "schema_version" raw=str finite_machine_schema_version && get "profile" raw=str finite_machine_profile) in
   let multi_member = grounded_helper || (get "schema_version" raw=str multi_member_schema_version && get "profile" raw=str multi_member_profile) in
   let two_observation = get "schema_version" raw=str two_observation_schema_version && get "profile" raw=str two_observation_profile in
-  let prerequisite_closure = finite_machine || multi_member || two_observation || (get "schema_version" raw=str prerequisite_schema_version && get "profile" raw=str prerequisite_profile) in
+  let prerequisite_closure = network || finite_machine || multi_member || two_observation || (get "schema_version" raw=str prerequisite_schema_version && get "profile" raw=str prerequisite_profile) in
   let instanced = prerequisite_closure || (get "schema_version" raw=str instance_schema_version && get "profile" raw=str instance_profile) in
   require (instanced || (get "schema_version" raw=str schema_version && get "profile" raw=str profile))
     "Unsupported original component material request profile.";
-  let original = decode (if finite_machine then R.of_finite_machine_json else if multi_member then R.of_multi_product_json
+  let original = decode (if network then R.of_network_json else if finite_machine then R.of_finite_machine_json else if multi_member then R.of_multi_product_json
     else if two_observation then R.of_two_observation_json
     else if prerequisite_closure then R.of_prerequisite_json else R.of_json) (get "implementation_request" raw) in
   let library = decode (L.of_json ~library:(R.implementation_library original)) (get "component_library" raw) in
@@ -132,6 +135,8 @@ let of_json ?(charge=fun _ -> ()) raw =
     "Original request, realization and context prerequisite profiles must agree.";
   require (X.is_two_observation context_value=two_observation && R.is_two_observation original=two_observation)
     "Original request, realization and context observation families must agree.";
+  require (X.is_network context_value=network && R.is_network original=network)
+    "Original request, realization and context network profiles must agree.";
   require (X.is_finite_machine context_value=finite_machine && R.is_finite_machine original=finite_machine)
     "Original request, realization and context finite-machine profiles must agree.";
   require (A.is_multi_member rule_value=multi_member && X.is_multi_member context_value=multi_member &&
@@ -139,9 +144,10 @@ let of_json ?(charge=fun _ -> ()) raw =
     "Original request, realization, assembly and context multi-member profiles must agree.";
   require (A.is_grounded_helper rule_value=grounded_helper && X.is_grounded_helper context_value=grounded_helper)
     "Original request, assembly and context grounded-helper profiles must agree.";
-  require (if finite_machine then A.is_instanced rule_value && A.is_staged rule_value && not (A.is_multi_member rule_value)
+  require (if network || finite_machine then A.is_instanced rule_value && A.is_staged rule_value && not (A.is_multi_member rule_value)
     else if multi_member then A.is_staged rule_value else not prerequisite_closure || not (A.is_staged rule_value))
-    (if finite_machine then "Finite-machine material requires named staged components and one assembled RNA member."
+    (if network then "Network material requires named staged components and one assembled RNA member."
+     else if finite_machine then "Finite-machine material requires named staged components and one assembled RNA member."
      else if multi_member then "Multi-member prerequisite closure requires the explicit multi-product staged family."
      else "Prerequisite closure is limited to the existing truth instance profile.");
   let bridge = get "catalog_binding" raw in
@@ -283,10 +289,12 @@ let requires_prerequisite_closure value = R.requires_prerequisite_closure value.
 let is_two_observation value = R.is_two_observation value.original
 let is_multi_member value = R.is_multi_product value.original
 let is_grounded_helper value = A.is_grounded_helper value.rule_value
+let is_network value = R.is_network value.original
 let is_finite_machine value = R.is_finite_machine value.original
 let quantitative value = value.quantitative_value
 let is_quantitative value = Option.is_some value.quantitative_value
 let request_profile value = if is_quantitative value then quantitative_profile
+  else if is_network value then network_profile
   else if is_finite_machine value then finite_machine_profile
   else if is_grounded_helper value then grounded_helper_profile
   else if is_multi_member value then multi_member_profile

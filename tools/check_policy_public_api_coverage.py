@@ -33,7 +33,28 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "fb0cae52848ceef5f8d9ee9743846a23647175dc70e8144741aee087f5ca4a40"
+REVIEWED_METADATA_SHA256 = "67e9eff1bc5a45833bfa0ab2034d2b64f30d36b51e3f278ccb1c0e993bbc58ec"
+BEFORE_NETWORK_METADATA_SHA256 = "fb0cae52848ceef5f8d9ee9743846a23647175dc70e8144741aee087f5ca4a40"
+NETWORK_DEPENDENCIES = (
+    'biocompiler.core_policy_component_material.NETWORK_IMPLEMENTATION',
+    'biocompiler.core_policy_component_material.NETWORK_PRODUCER_PROFILE',
+    'biocompiler.core_policy_component_material.NETWORK_PROFILE',
+    'biocompiler.core_policy_component_material.NETWORK_REQUEST_PROFILE',
+    'biocompiler.core_policy_component_material.NETWORK_REQUEST_SCHEMA',
+    'biocompiler.core_policy_component_material.NETWORK_VALIDATION_SCOPE',
+    'biocompiler.core_policy_component_material._network',
+    'biocompiler.core_policy_implementation.NETWORK_BINDING_PROFILE',
+    'biocompiler.core_policy_implementation.NETWORK_BINDING_REPORT_SCHEMA',
+    'biocompiler.core_policy_implementation.NETWORK_BINDING_SCHEMA',
+    'biocompiler.core_policy_implementation.NETWORK_IMPLEMENTATION',
+    'biocompiler.core_policy_implementation.NETWORK_PRODUCER_PROFILE',
+    'biocompiler.core_policy_implementation.NETWORK_PROFILE',
+    'biocompiler.core_policy_implementation.NETWORK_REQUEST_PROFILE',
+    'biocompiler.core_policy_implementation.NETWORK_REQUEST_SCHEMA',
+    'biocompiler.core_policy_implementation.NETWORK_VALIDATION_SCOPE',
+    'biocompiler.core_policy_implementation._network_anchors',
+    'biocompiler.core_policy_implementation._network_original',
+)
 BEFORE_MODULE_LINKING_METADATA_SHA256 = "4505ad72eaddb74c56cb7587ebbf2b719cd9b78b2e6c673b76c8820e19335bef"
 MODULE_LINKING_PREFIXES = ("biocompiler.policy.module_linking.", "biocompiler.core_policy_module_linking.")
 BEFORE_QUANTITATIVE_METADATA_SHA256 = "5bf67512edb43be299929b44a147cec8951867fc52bd7fffa169ef2aa10615ad"
@@ -655,9 +676,15 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
+    before_network = {"witnesses": metadata["witnesses"],
+                      "coverage": {key: value for key, value in coverage.items() if key not in NETWORK_DEPENDENCIES}}
+    encoded_network = json.dumps(before_network, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_network["coverage"]) == 1279 and len(before_network["witnesses"]) == 174
+            and digest(encoded_network) == BEFORE_NETWORK_METADATA_SHA256,
+            "Network routing must preserve every previous API evidence meaning")
     before_module_linking = {
-        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("module_linking.")},
-        "coverage": {key: value for key, value in coverage.items() if not key.startswith(MODULE_LINKING_PREFIXES)},
+        "witnesses": {key: value for key, value in before_network["witnesses"].items() if not key.startswith("module_linking.")},
+        "coverage": {key: value for key, value in before_network["coverage"].items() if not key.startswith(MODULE_LINKING_PREFIXES)},
     }
     encoded_module_linking = json.dumps(before_module_linking, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(len(before_module_linking["coverage"]) == 1187 and len(before_module_linking["witnesses"]) == 164

@@ -25,6 +25,10 @@ val grounded_helper_validation_scope : string
 val grounded_helper_profile : Json.t
 val grounded_helper_producer_profile : Json.t
 val finite_machine_implementation : string
+val network_implementation : string
+val network_validation_scope : string
+val network_profile : Bioc_wire.Json.t
+val network_producer_profile : Bioc_wire.Json.t
 val finite_machine_validation_scope : string
 val finite_machine_profile : Json.t
 val finite_machine_producer_profile : Json.t

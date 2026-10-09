@@ -47,8 +47,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (50, 1279, 262, 17, 29))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 413,
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (50, 1297, 262, 17, 29))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 431,
             'independent_expansion': 28, 'shared_invariant': 603, 'source_only': 229})
         self.assertEqual(len(self.ledger['syntax_links']), 359)
         self.assertEqual(len(self.ledger['witnesses']), 174)
@@ -66,7 +66,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 1279)
+        self.assertEqual(len(found['entries']), 1297)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
 
@@ -187,8 +187,28 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
             c.validate(self.root, self.ledger)
 
-    def before_module_linking(self):
+    def before_network(self):
         projected = copy.deepcopy(self.ledger)
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items() if key not in c.NETWORK_DEPENDENCIES}
+        return projected
+
+    def test_network_preserves_all_1279_previous_api_meanings(self):
+        previous = self.before_network()
+        self.assertEqual((len(previous['coverage']), len(previous['witnesses'])), (1279, 174))
+        self.assertEqual(len(c.NETWORK_DEPENDENCIES), 18)
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in previous['witnesses'].items()}, 'coverage': previous['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), c.BEFORE_NETWORK_METADATA_SHA256)
+        self.assertEqual(c.BEFORE_NETWORK_METADATA_SHA256, 'fb0cae52848ceef5f8d9ee9743846a23647175dc70e8144741aee087f5ca4a40')
+
+    def test_network_dependency_cannot_upgrade_transport_to_native_acceptance(self):
+        self.ledger['coverage']['biocompiler.core_policy_implementation._network_anchors']['scope'] = 'Proves native network acceptance.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+
+    def before_module_linking(self):
+        projected = self.before_network()
         projected['coverage'] = {key: row for key, row in projected['coverage'].items()
                                  if not key.startswith(c.MODULE_LINKING_PREFIXES)}
         projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()

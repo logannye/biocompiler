@@ -19,6 +19,8 @@ val multi_member_schema_version : string
 val multi_member_profile : string
 val grounded_helper_schema_version : string
 val grounded_helper_profile : string
+val network_schema_version : string
+val network_profile : string
 val finite_machine_schema_version : string
 val finite_machine_profile : string
 val quantitative_schema_version : string
@@ -45,6 +47,7 @@ val resource_keys : A.t -> resource_key list
 val resource_owner_to_json : resource_owner -> Json.t
 type budgets = private {max_work:int; max_report_bytes:int; max_report_nodes:int}
 type t
+val is_network : t -> bool
 val of_json : ?charge:(int -> unit) -> Json.t -> t
 val is_instanced : t -> bool
 val requires_prerequisite_closure : t -> bool

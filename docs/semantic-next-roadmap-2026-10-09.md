@@ -16,7 +16,7 @@ local checks; native execution and installed-package acceptance remain pending.
    private references, units, lifecycles, requirements and flattened declarations
    must reject. This establishes exact elaboration, not separate behavioral
    verification or discharge of acknowledged assumptions.
-2. **Bounded networks of interacting machines and observations — to do.**
+2. **Bounded networks of interacting machines and observations — implemented locally; native validation pending.**
    Support independently owned controllers, asynchronous observations, explicit
    communication and shared resource constraints. First exercise two controllers
    and two observation streams sharing a bounded resource, including simultaneous
@@ -48,3 +48,8 @@ full integration and fresh actual-main gates and all unrelated worktrees/runs.
 Item 1's interface is recorded in [the module-linking contract](policy-module-linking-v0.1.md).
 Its [implementation checkpoint](semantic-module-linking-checkpoint-2026-10-09.md)
 separates passed local checks from the pending native and installed gates.
+
+Item 2's explicit network profile is recorded in [the machine-network contract](policy-machine-network-v0.1.md).
+Its [implementation checkpoint](semantic-machine-network-checkpoint-2026-10-09.md)
+records bounded interaction, shared-resource and exact material scope, passed local
+checks and the pending native and installed gates. Items 3–4 remain queued.

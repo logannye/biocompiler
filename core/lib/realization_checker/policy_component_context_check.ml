@@ -142,7 +142,8 @@ let derive ~charge (binding:IB.checked_binding) rule (domain:F.t) =
     | I.Activation_gate | I.Transition_gate _ -> incr gates
     | I.Atomic_commit {writes;requests} -> commits:= !commits+writes+requests
     | I.Transition_commit {writes;requests;_} -> commits:= !commits+1+writes+requests
-    | I.Priority_arbiter _ -> supported false "priority_material_context_unimplemented"
+    | I.Priority_arbiter _ -> supported
+        (S.is_network (Admission.request (IB.admitted_inputs binding))) "priority_material_context_unimplemented"
     | _ -> ()) nodes;
   add MC.Generation_counters MC.Per_encounter_slot R.Layout 1;
   add MC.Timer_cells MC.Per_executor R.Layout 1;
@@ -183,6 +184,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
   let multi_member=R.is_multi_member request in
   let grounded_helper=R.is_grounded_helper request in
   let finite_machine=R.is_finite_machine request in
+  let network=R.is_network request in
   let source=PC.binding (A.implementation assembly) in
   let admitted=IB.admitted_inputs source in
   let original=Admission.request admitted and behavior=Admission.behavior admitted and domain=F.specification (Admission.operating_domain admitted) in
@@ -200,6 +202,11 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       equal (S.to_json (A.original assembly)) (S.to_json original)) "unchanged_original_realization_request";
     fail (equal (L.to_json (R.component_library request)) (L.to_json (A.components assembly))) "unchanged_original_component_library";
     fail (equal (Rule.to_json rule) (Rule.to_json (A.rule assembly))) "unchanged_original_assembly_rule";
+    fail (network=S.is_network original && network=X.is_network context)
+      "unchanged_network_source_context_family";
+    if network then
+      fail (Rule.is_instanced rule && Rule.is_staged rule && not multi_member && not grounded_helper)
+        "network_named_single_member_assembly";
     fail (finite_machine=S.is_finite_machine original && finite_machine=X.is_finite_machine context)
       "unchanged_finite_machine_source_context_family";
     if finite_machine then
@@ -224,7 +231,14 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
       charge(List.length providers+List.length(H.reachable closure));
       fail(List.sort compare(List.map(fun(value:C.provider)->value.definition)providers)=
         List.sort compare(H.reachable closure))"complete_transitive_provider_closure") prerequisites;
-    supported (if finite_machine then
+    supported (if network then
+      behavior.rules=[] && List.length behavior.stores<=4 &&
+      List.length behavior.observations>=2 && List.length behavior.observations<=4 &&
+      List.length behavior.machines>=2 && List.length behavior.machines<=4 &&
+      List.for_all(fun(machine:O.machine)->List.length machine.states>=2 && List.length machine.states<=16)behavior.machines &&
+      List.length behavior.transitions>=1 && List.length behavior.transitions<=32 &&
+      List.length behavior.effects>=1 && List.length behavior.effects<=8
+      else if finite_machine then
       behavior.rules=[] && behavior.stores=[] && List.length behavior.machines=1 &&
       List.for_all(fun(machine:O.machine)->List.length machine.states>=2 && List.length machine.states<=16)behavior.machines &&
       List.length behavior.transitions>=1 && List.length behavior.transitions<=32 &&
@@ -661,7 +675,8 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
   let report_value=obj (["schema_version",str (if grounded_helper then "biocompiler.policy_component_context_assessment.v0.3"
     else if multi_member then "biocompiler.policy_component_context_assessment.v0.2"
     else "biocompiler.policy_component_context_assessment.v0.1");
-    "profile",str context_profile;"implementation_version",str (if finite_machine then
+    "profile",str context_profile;"implementation_version",str (if network then
+      "biocompiler.ocaml.policy_component_context_check.v0.8" else if finite_machine then
       "biocompiler.ocaml.policy_component_context_check.v0.7" else if grounded_helper then
       "biocompiler.ocaml.policy_component_context_check.v0.6" else if multi_member then
       "biocompiler.ocaml.policy_component_context_check.v0.5" else if R.is_two_observation request then

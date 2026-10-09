@@ -43,13 +43,13 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 183)
+        self.assertEqual(result["sources"], 185)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 31, "sources": 131, "witness_sources": 142,
+        self.assertEqual(result["component_route"], {"rules": 32, "sources": 133, "witness_sources": 146,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -247,8 +247,56 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_module_linking(self):
+    def before_network(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        added = ledger["rules"].pop()
+        self.assertEqual(added["id"], "component.machine_network")
+        self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in added[kind]},
+                         set(coverage.COMPONENT_NETWORK_WITNESSES))
+        ledger["sources"] = [row for row in ledger["sources"] if row["path"] not in coverage.COMPONENT_NETWORK_SOURCES]
+        ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] not in coverage.COMPONENT_NETWORK_WITNESSES]
+        self.assertEqual(ledger["limitations"].pop(), coverage.NETWORK_LIMITATION)
+        return ledger
+
+    def test_network_preserves_all_thirty_one_previous_families(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        projected = self.before_network()
+        self.assertEqual((len(projected["rules"]), len(projected["sources"]), len(projected["witness_sources"])), (31, 131, 142))
+        self.assertEqual(coverage.component_metadata_before_network(original), coverage.component_metadata(projected))
+        encoded = json.dumps(coverage.component_metadata(projected), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), "80394724a9b5ff8088beb0acb5c98760ea090095df7db116425f8e6d5bfdcb25")
+        changed = deepcopy(original)
+        changed["rules"][-2]["scope"] += " Unreviewed network claim widening."
+        encoded = json.dumps(coverage.component_metadata(changed), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-network component meaning"):
+                coverage.check_component(coverage.ROOT, changed)
+
+    def test_network_preserves_original_whole_kernel_classifications(self):
+        self.assertEqual(len(coverage.COMPONENT_NETWORK_SOURCES), 2)
+        for path in coverage.COMPONENT_NETWORK_SOURCES:
+            row = next(row for row in self.original["sources"] if row["path"] == path)
+            self.assertEqual((row["disposition"], row["reason"]), ("outside_route", coverage.NETWORK_REASON))
+        projected = coverage.metadata_before_network(self.original)
+        self.assertEqual(len(projected["source_classifications"]), 183)
+        encoded = json.dumps(projected, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), coverage.BEFORE_NETWORK_METADATA_SHA256)
+
+    def test_network_witnesses_remain_conditional_source_evidence(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        row = next(row for row in original["rules"] if row["id"] == "component.machine_network")
+        self.assertEqual(row["evidence_scope"], "source_only_not_executed_by_this_gate")
+        for phrase in ("precommit", "whole-program", "priority", "exact"):
+            self.assertIn(phrase, row["scope"])
+        for phrase in ("no native execution", "physical", "logical", "empirical"):
+            self.assertIn(phrase, row["limits"])
+        changed = deepcopy(original)
+        changed["rules"][-1]["evidence_scope"] = "native_execution_passed"
+        with self.assertRaises(coverage.CoverageError):
+            coverage.check_component(coverage.ROOT, changed)
+
+    def before_module_linking(self):
+        ledger = self.before_network()
         added = ledger["rules"].pop()
         self.assertEqual(added["id"], "component.checked_module_linking")
         self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in added[kind]},
@@ -269,7 +317,7 @@ let check x = Diagnostic.require x "code" "message"
         changed["rules"][-2]["scope"] += " Unreviewed module claim widening."
         encoded = json.dumps(coverage.component_metadata(changed), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
-            with self.assertRaisesRegex(coverage.CoverageError, "pre-module-linking component meaning"):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-(network|module-linking) component meaning"):
                 coverage.check_component(coverage.ROOT, changed)
 
     def test_module_linking_preserves_original_whole_kernel_classifications(self):
@@ -282,7 +330,7 @@ let check x = Diagnostic.require x "code" "message"
 
     def test_module_linking_witnesses_remain_source_only_and_conditional(self):
         original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
-        row = original["rules"][-1]
+        row = next(row for row in original["rules"] if row["id"] == "component.checked_module_linking")
         self.assertEqual(row["evidence_scope"], "source_only_not_executed_by_this_gate")
         for phrase in ("exact module elaboration", "complete original", "fresh whole-program", "paired export"):
             self.assertIn(phrase, row["scope"])
@@ -295,7 +343,8 @@ let check x = Diagnostic.require x "code" "message"
             with self.subTest(omitted=path), self.assertRaisesRegex(coverage.CoverageError, "census"):
                 coverage.check_component(coverage.ROOT, changed)
         for key, value in (("evidence_scope", "native_execution_passed"), ("limits", "Module assumptions discharged.")):
-            changed = deepcopy(original); changed["rules"][-1][key] = value
+            changed = deepcopy(original)
+            next(row for row in changed["rules"] if row["id"] == "component.checked_module_linking")[key] = value
             with self.assertRaises(coverage.CoverageError):
                 coverage.check_component(coverage.ROOT, changed)
 
@@ -321,7 +370,7 @@ let check x = Diagnostic.require x "code" "message"
         ledger["rules"][0]["scope"] += " Unreviewed quantitative weakening."
         encoded = json.dumps(coverage.component_metadata(ledger), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
-            with self.assertRaisesRegex(coverage.CoverageError, "pre-module-linking component meaning"):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-(network|module-linking) component meaning"):
                 coverage.check_component(coverage.ROOT, ledger)
 
     def test_quantitative_preserves_original_whole_kernel_classifications(self):
@@ -385,7 +434,7 @@ let check x = Diagnostic.require x "code" "message"
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "7f2f1b2ae98833e27d959117dfbc2d83de612e670216412a34e9fcd1ba7464f5")
         self.rejected(lambda value: value["rules"][0].update(admitted_context="Unreviewed semantic expansion."),
-                      "pre-module-linking original whole-kernel meaning")
+                      "pre-(network|module-linking) original whole-kernel meaning")
 
     def test_refinement_keeps_source_only_witnesses_and_closed_scope(self):
         original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
@@ -415,7 +464,7 @@ let check x = Diagnostic.require x "code" "message"
         encoded = json.dumps(coverage.component_metadata(ledger), sort_keys=True,
                              separators=(",", ":"), ensure_ascii=False).encode()
         with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
-            with self.assertRaisesRegex(coverage.CoverageError, "pre-module-linking component meaning"):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-(network|module-linking) component meaning"):
                 coverage.check_component(coverage.ROOT, ledger)
 
     def before_finite_machine(self):
@@ -468,7 +517,7 @@ let check x = Diagnostic.require x "code" "message"
         encoded = json.dumps(coverage.component_metadata(ledger), sort_keys=True,
                              separators=(",", ":"), ensure_ascii=False).encode()
         with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
-            with self.assertRaisesRegex(coverage.CoverageError, "pre-module-linking component meaning"):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-(network|module-linking) component meaning"):
                 coverage.check_component(coverage.ROOT, ledger)
 
     def before_typed_admission(self):
@@ -497,7 +546,8 @@ let check x = Diagnostic.require x "code" "message"
             for row in self.original["sources"] if row["path"] not in added
             and row["path"] not in coverage.COMPONENT_REFINEMENT_SOURCES
             and row["path"] not in coverage.COMPONENT_MODULE_LINKING_SOURCES
-            and row["path"] not in coverage.COMPONENT_QUANTITATIVE_SOURCES]
+            and row["path"] not in coverage.COMPONENT_QUANTITATIVE_SOURCES
+            and row["path"] not in coverage.COMPONENT_NETWORK_SOURCES]
         projected["witness_paths"] = [row["path"] for row in self.original["witness_sources"]]
         encoded = json.dumps(projected, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),

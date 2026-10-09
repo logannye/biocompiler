@@ -27,6 +27,8 @@ let multi_member_validation_scope="policy-multi-member-prerequisite-mrna-v0.1"
 let grounded_helper_implementation="biocompiler.ocaml.policy_grounded_helper_prerequisite_material.v0.1"
 let grounded_helper_validation_scope="policy-grounded-helper-prerequisite-mrna-v0.1"
 let finite_machine_implementation="biocompiler.ocaml.policy_finite_machine_component_material.v0.1"
+let network_validation_scope="policy-network-component-mrna-v0.1"
+let network_implementation="biocompiler.ocaml.policy_network_component_material.v0.1"
 let finite_machine_validation_scope="policy-finite-machine-component-mrna-v0.1"
 let quantitative_implementation="biocompiler.ocaml.policy_sampled_reservoir_component_material.v0.1"
 let quantitative_validation_scope="policy-sampled-reservoir-component-mrna-v0.1"
@@ -78,6 +80,13 @@ let grounded_helper_profile=obj (List.map (fun (key,value) -> key,match key with
   | _ -> value) (Json.object_fields profile))
 let grounded_helper_producer_profile=obj["operations",arr[str "compile-policy-component-material"];
   "implementation",str grounded_helper_implementation;"validation_scope",str grounded_helper_validation_scope]
+let network_profile=obj (List.map (fun (key,value) -> key,match key with
+  | "request_schema" -> str R.network_schema_version
+  | "implementation" -> str network_implementation
+  | "validation_scope" -> str network_validation_scope
+  | _ -> value) (Json.object_fields profile))
+let network_producer_profile=obj["operations",arr[str "compile-policy-component-material"];
+  "implementation",str network_implementation;"validation_scope",str network_validation_scope]
 let finite_machine_profile=obj (List.map (fun (key,value) -> key,match key with
   | "request_schema" -> str R.finite_machine_schema_version
   | "implementation" -> str finite_machine_implementation
@@ -149,7 +158,8 @@ let check ~export ~request:raw_request ~candidate:raw_candidate ~limits:raw_limi
     |None->Diagnostic.fail "policy_component_material_export_not_accepted"
       "Fresh original-source, implementation, material, context or obligation checking withheld accepted export."in
   let result=obj["schema_version",str schema_version;
-    "implementation",str (if R.is_quantitative request then quantitative_implementation
+    "implementation",str (if R.is_network request then network_implementation
+      else if R.is_quantitative request then quantitative_implementation
       else if R.is_finite_machine request then finite_machine_implementation
       else if R.is_grounded_helper request then grounded_helper_implementation
       else if R.is_multi_member request then multi_member_implementation
@@ -157,7 +167,8 @@ let check ~export ~request:raw_request ~candidate:raw_candidate ~limits:raw_limi
       else if R.requires_prerequisite_closure request then prerequisite_implementation
       else if R.is_instanced request then instance_implementation else implementation);
     "resource_profile",str resource_profile;
-    "validation_scope",str (if R.is_quantitative request then quantitative_validation_scope
+    "validation_scope",str (if R.is_network request then network_validation_scope
+      else if R.is_quantitative request then quantitative_validation_scope
       else if R.is_finite_machine request then finite_machine_validation_scope
       else if R.is_grounded_helper request then grounded_helper_validation_scope
       else if R.is_multi_member request then multi_member_validation_scope

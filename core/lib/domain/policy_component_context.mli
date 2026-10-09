@@ -14,6 +14,7 @@ val instance_profile : string
 val instance_staged_profile : string
 val prerequisite_profile : string
 val two_observation_profile : string
+val network_profile : string
 val finite_machine_profile : string
 val instance_union_profile : string
 val staged_profile : string
@@ -35,6 +36,7 @@ val record_layout_of_json : Json.t -> record_layout
 val record_layout_to_json : record_layout -> Json.t
 val record_layout_fingerprint : record_layout -> string
 type t
+val is_network : t -> bool
 val of_json : Json.t -> t
 val is_instanced : t -> bool
 val requires_prerequisite_closure : t -> bool

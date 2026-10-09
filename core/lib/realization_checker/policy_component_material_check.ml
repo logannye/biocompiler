@@ -104,10 +104,14 @@ let obligation_ledger budget request (implementation:P.checked_implementation) (
        Discharge only its exact bounded operational interpretation: every
        permitted prefix preserves finite states, terminal behavior and retained
        attempts, and every explicit original hard requirement is satisfied. *)
-    text "profile"(B.report binding)=(if R.is_finite_machine request then U.finite_machine_profile
-      else if R.is_multi_member request then U.multi_product_profile else U.staged_profile) && List.length(B.machines binding)=1 &&
-    (if R.is_finite_machine request then
-      S.is_finite_machine original && List.length(B.transitions binding)>=1 && List.length(B.transitions binding)<=32 &&
+    text "profile"(B.report binding)=(if R.is_network request then U.network_profile
+      else if R.is_finite_machine request then U.finite_machine_profile
+      else if R.is_multi_member request then U.multi_product_profile else U.staged_profile) &&
+    (if R.is_network request then List.length(B.machines binding)>=2 && List.length(B.machines binding)<=4 &&
+      List.map(fun(value:B.machine)->value.source)(B.machines binding)=List.map(fun(value:O.machine)->value.machine_id)behavior.machines
+      else List.length(B.machines binding)=1) &&
+    (if R.is_network request || R.is_finite_machine request then
+      (if R.is_network request then S.is_network original else S.is_finite_machine original) && List.length(B.transitions binding)>=1 && List.length(B.transitions binding)<=32 &&
       List.map(fun(value:B.transition)->value.source)(B.transitions binding)=List.map(fun(value:O.transition)->value.transition_id)behavior.transitions
       else List.length(B.transitions binding)=7) && text "preservation" report="pass" &&
     get "complete" coverage=Json.Bool true &&
@@ -214,7 +218,8 @@ let check ~request ~behavior ~implementation ~proposed ~assembly_proposal ~candi
     else if R.is_multi_member request then "biocompiler.policy_component_material_assessment.v0.3"
     else if prerequisite_profile then "biocompiler.policy_component_material_assessment.v0.2"
     else "biocompiler.policy_component_material_assessment.v0.1");
-    "profile",str (R.request_profile request);"implementation",str (if R.is_quantitative request then "biocompiler.ocaml.policy_component_material_check.v0.8"
+    "profile",str (R.request_profile request);"implementation",str (if R.is_network request then "biocompiler.ocaml.policy_component_material_check.v0.9"
+      else if R.is_quantitative request then "biocompiler.ocaml.policy_component_material_check.v0.8"
       else if R.is_finite_machine request then "biocompiler.ocaml.policy_component_material_check.v0.7"
       else if R.is_grounded_helper request then "biocompiler.ocaml.policy_component_material_check.v0.6"
       else if R.is_multi_member request then "biocompiler.ocaml.policy_component_material_check.v0.5"

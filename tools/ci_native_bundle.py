@@ -29,6 +29,7 @@ DEPENDENCY_FIXTURES = {
     "test_policy_refinement": ["data/policy_finite_machine_v01.json"],
     "test_policy_quantitative": ["data/policy_quantitative_v01.json"],
     "test_policy_module_linking": ["data/policy_module_linking_v01.json"],
+    "test_policy_network": ["data/policy_machine_network_v01.json"],
     "test_policy_provider_prerequisites": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
     "test_policy_prerequisite_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
     "test_policy_two_observation_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],

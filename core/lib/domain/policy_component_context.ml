@@ -17,6 +17,7 @@ let instance_profile = "biocompiler.policy_instance_component_mrna.v0.1"
 let instance_staged_profile = "biocompiler.policy_instance_staged_component_mrna.v0.1"
 let prerequisite_profile = "biocompiler.policy_instance_prerequisite_mrna.v0.1"
 let two_observation_profile = "biocompiler.policy_instance_two_observation_prerequisite_mrna.v0.1"
+let network_profile = "biocompiler.policy_network_component_mrna.v0.1"
 let finite_machine_profile = "biocompiler.policy_finite_machine_component_mrna.v0.1"
 let instance_union_profile = "biocompiler.policy_instance_ordered_union.v0.1"
 let record_profile = "biocompiler.policy_component_complete_records.v0.1"
@@ -112,11 +113,11 @@ let record_layout_of_json raw =
   require (Json.equal raw (record_layout_to_json value)) "Composition layout must preserve its complete supplied spelling.";
   value
 let record_layout_fingerprint value = Canonical.fingerprint (record_layout_to_json value)
-type t = {instanced:bool;prerequisite_closure:bool;two_observation:bool;multi_member:bool;grounded_helper:bool;finite_machine:bool;
+type t = {instanced:bool;prerequisite_closure:bool;two_observation:bool;multi_member:bool;grounded_helper:bool;finite_machine:bool;network:bool;
   clock_value:X.clock;recipient_value:X.recipient;layout_value:record_layout;
   placement_values:AC.Placement.t list;helper_values:AC.Helper.t list;
   delivery_value:X.delivery_group;provider_values:X.provider list}
-let context_profile value = if value.finite_machine then finite_machine_profile
+let context_profile value = if value.network then network_profile else if value.finite_machine then finite_machine_profile
   else if value.grounded_helper then grounded_helper_profile else if value.multi_member then multi_member_profile
   else if value.two_observation then two_observation_profile else if value.prerequisite_closure then prerequisite_profile
   else if value.instanced then (if value.layout_value.staged then instance_staged_profile else instance_profile)
@@ -139,29 +140,31 @@ let of_json raw =
   exact ["schema_version";"profile";"clock";"recipient";"record_layout";
     (if multi_member then "placements" else "placement");"delivery_group";"helpers";"providers"] raw;
   require (multi_member || (get "schema_version" raw=str schema_version &&
-    List.mem (get "profile" raw) [str profile;str staged_profile;str instance_profile;str instance_staged_profile;str prerequisite_profile;str two_observation_profile;str finite_machine_profile]))
+    List.mem (get "profile" raw) [str profile;str staged_profile;str instance_profile;str instance_staged_profile;str prerequisite_profile;str two_observation_profile;str finite_machine_profile;str network_profile]))
     "Unsupported original composition context profile.";
   let helper_values=if grounded_helper then
     let values=List.map AC.Helper.of_grounded_json (M.array ~maximum:1 (get "helpers" raw))in
     require(List.length values=1)"Grounded helper context requires exactly one original helper declaration.";values
     else (require (get "helpers" raw=Json.Array []) "Composition context does not support executable or delivered helpers.";[])in
   let two_observation=get "profile" raw=str two_observation_profile in
+  let network=get "profile" raw=str network_profile in
   let finite_machine=get "profile" raw=str finite_machine_profile in
-  let instanced=finite_machine || multi_member || two_observation || List.mem (get "profile" raw) [str instance_profile;str instance_staged_profile;str prerequisite_profile] in
-  let prerequisite_closure=finite_machine || multi_member || two_observation || get "profile" raw=str prerequisite_profile in
+  let instanced=network || finite_machine || multi_member || two_observation || List.mem (get "profile" raw) [str instance_profile;str instance_staged_profile;str prerequisite_profile] in
+  let prerequisite_closure=network || finite_machine || multi_member || two_observation || get "profile" raw=str prerequisite_profile in
   let placement_values=if multi_member then
     let count=if grounded_helper then 3 else 2 in
     let values=List.map AC.Placement.of_json (M.array ~maximum:count (get "placements" raw)) in
     require (List.length values=count) (if grounded_helper then "Grounded helper context requires exactly three original placements."
       else "Multi-member context requires exactly two original placements."); values
     else [AC.Placement.of_json (get "placement" raw)] in
-  let value = {instanced;prerequisite_closure;two_observation;multi_member;grounded_helper;finite_machine;helper_values;
+  let value = {instanced;prerequisite_closure;two_observation;multi_member;grounded_helper;finite_machine;network;helper_values;
     clock_value=X.clock_of_json (get "clock" raw);recipient_value=X.recipient_of_json (get "recipient" raw);
     layout_value=record_layout_of_json (get "record_layout" raw);placement_values;
     delivery_value=X.delivery_group_of_json (get "delivery_group" raw);
     provider_values=List.map (if grounded_helper then X.provider_with_helper_of_json else if multi_member then X.provider_with_transport_of_json else X.provider_of_json)
       (M.array ~maximum:128 (get "providers" raw))} in
-  if finite_machine then require value.layout_value.staged "Finite-machine context requires the complete staged record profile."
+  if network then require value.layout_value.staged "Network context requires the complete staged record profile."
+  else if finite_machine then require value.layout_value.staged "Finite-machine context requires the complete staged record profile."
   else if multi_member then require value.layout_value.staged "Multi-member context requires the complete staged record profile."
   else require (not prerequisite_closure || not value.layout_value.staged)
     "Prerequisite closure requires the unchanged truth record profile.";
@@ -196,4 +199,5 @@ let requires_prerequisite_closure value = value.prerequisite_closure
 let is_two_observation value = value.two_observation
 let is_multi_member value = value.multi_member
 let is_grounded_helper value = value.grounded_helper
+let is_network value = value.network
 let is_finite_machine value = value.finite_machine

@@ -71,6 +71,7 @@ let capabilities executable request =
           | "profiles" -> obj (Json.object_fields value @ ["architecture_producer", profile;
               "policy_operational_producer", Bioc_service.Policy_operational_service.producer_profile;
               "policy_implementation_producer", Bioc_service.Policy_implementation_service.producer_profile;
+              "policy_network_implementation_producer", Bioc_service.Policy_implementation_service.network_producer_profile;
               "policy_finite_machine_implementation_producer", Bioc_service.Policy_implementation_service.finite_machine_producer_profile;
               "policy_material_producer", Bioc_service.Policy_material_service.producer_profile;
               "policy_component_material_producer", Bioc_service.Policy_component_material_service.producer_profile;
@@ -79,6 +80,7 @@ let capabilities executable request =
               "policy_two_observation_material_producer", Bioc_service.Policy_component_material_service.two_observation_producer_profile;
               "policy_multi_member_material_producer", Bioc_service.Policy_component_material_service.multi_member_producer_profile;
               "policy_grounded_helper_material_producer", Bioc_service.Policy_component_material_service.grounded_helper_producer_profile;
+              "policy_network_material_producer", Bioc_service.Policy_component_material_service.network_producer_profile;
               "policy_finite_machine_material_producer", Bioc_service.Policy_component_material_service.finite_machine_producer_profile;
               "policy_quantitative_material_producer", Bioc_service.Policy_component_material_service.quantitative_producer_profile;
               "policy_module_material_producer", Bioc_service.Policy_module_linking_service.producer_profile;

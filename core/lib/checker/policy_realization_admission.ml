@@ -128,6 +128,139 @@ let check_catalog request document =
     "Every supplied library model must be explicitly authorized by the original catalog bridge in this initial profile.";
   !authorized,Canonical.fingerprint catalog
 
+let check_network_source request document (behavior:O.behavior) =
+  let network ?path condition message=require ?path condition "policy_realization_network" message in
+  let bounded low high values=let count=List.length values in count>=low && count<=high in
+  network(List.length behavior.roles=1 && List.length behavior.encounters=1 &&
+    List.length behavior.subjects=1 && List.length behavior.clocks=1 && List.length behavior.parameters=1 &&
+    bounded 2 4 behavior.observations && bounded 2 4 behavior.machines && bounded 0 4 behavior.stores &&
+    bounded 1 32 behavior.transitions && bounded 1 8 behavior.effects && behavior.rules=[] &&
+    List.length(R.catalog_bindings request)=1)
+    "Network inputs require one executor/encounter/subject/clock/product/catalog bridge, 2-4 observations/machines, up to four stores, 1-32 transitions and 1-8 effects.";
+  let declarations=D.declarations document in
+  let declaration id=List.find(fun(value:D.declaration)->String.equal value.id id)declarations in
+  let raw id=(declaration id).value and path id=(declaration id).path in
+  let role=List.hd behavior.roles and encounter=List.hd behavior.encounters
+  and subject=List.hd behavior.subjects and clock=List.hd behavior.clocks and product=List.hd behavior.parameters in
+  let absent p fields value=List.iter(fun key->network ~path:p (get key value=Json.Null)
+    "Network source field requires another executable interpretation.")fields in
+  let value_type p kind value=network ~path:p
+    (text "kind" value=kind && get "unit" value=Json.Null && get "entity_kind" value=Json.Null)
+    "Network expressions require exact truth/event/fixed-product types." in
+  let reference kind id=Json.Object["$type",str "Ref";"kind",str kind;"id",str id]in
+  let ref_equal value field kind id=Json.equal(get field value)(reference kind id)in
+  let positive_ticks p duration=let ticks=Q.div duration clock.resolution in
+    network ~path:p (Q.sign ticks>0 && Z.equal(Q.den ticks)Z.one && Z.compare(Q.num ticks)(Z.of_int 10000)<=0)
+      "Network freshness and timeout durations require bounded positive integral original-clock ticks."in
+  network(encounter.executor=role.role_id && encounter.target=subject.subject_id && encounter.termination="explicit_event" &&
+    subject.executor=Some role.role_id && subject.encounter=Some encounter.encounter_id)
+    "Network declarations must retain the same original executor, encounter and subject.";
+  absent(path subject.subject_id)["domain"](raw subject.subject_id);
+  network ~path:(path clock.clock_id) (text "simultaneous"(raw clock.clock_id)="atomic_batch" &&
+    List.mem(text "basis"(raw clock.clock_id))["logical";"availability"])
+    "Network inputs require one logical/availability clock with atomic batches.";
+  List.iter(fun(observation:O.observation)->let p=path observation.observation_id in
+    network ~path:p (observation.value_type=O.Truth_type && observation.observer=role.role_id &&
+      observation.subject=subject.subject_id && observation.clock=clock.clock_id && observation.coverage="event")
+      "Network observations must retain independent encounter-local truth evidence on the original clock.";
+    value_type p "truth"(get "value_type"(raw observation.observation_id));positive_ticks p observation.freshness)behavior.observations;
+  network(unique(List.map(fun(observation:O.observation)->observation.coherence)behavior.observations))
+    "Network observations require distinct original coherence groups.";
+  let own_transitions id=List.filter(fun(transition:O.transition)->String.equal transition.machine id)behavior.transitions in
+  List.iter(fun(machine:O.machine)->network ~path:(path machine.machine_id)
+    (bounded 2 16 machine.states && own_transitions machine.machine_id<>[] && machine.executor=role.role_id &&
+      machine.scope=O.Encounter encounter.encounter_id && machine.lifetime="encounter" &&
+      machine.arbitration.mode="priority" && machine.arbitration.tie="declared_order" && machine.arbitration.write_conflict="reject")
+    "Network machines need bounded states, owned transitions and explicit priority with rejected conflicting writes.")behavior.machines;
+  let policies=List.map(fun(machine:O.machine)->machine.machine_id,
+    Canonical.encode(get "arbitration"(raw machine.machine_id)))behavior.machines in
+  List.iter(fun(machine:O.machine)->let key=List.assoc machine.machine_id policies in
+    let governed=List.filter(fun(transition:O.transition)->String.equal(List.assoc transition.machine policies)key)behavior.transitions in
+    network ~path:(path machine.machine_id)
+      (List.equal String.equal (List.sort String.compare machine.arbitration.order)
+        (List.sort String.compare(List.map(fun(transition:O.transition)->transition.transition_id)governed)))
+      "A network priority order must name exactly the complete transition group sharing that policy.")behavior.machines;
+  List.iter(fun(store:O.state_store)->let p=path store.state_id and source=raw store.state_id in
+    let owners=List.filter_map(fun(transition:O.transition)->
+      if List.exists(fun(assignment:O.assignment)->String.equal assignment.state store.state_id)transition.assignments
+      then Some transition.machine else None)behavior.transitions|>sorted in
+    network ~path:p (List.length owners=1 && store.value_type=O.Truth_type &&
+      store.scope=O.Encounter encounter.encounter_id && store.lifetime="encounter" && store.reset=None && store.capacity>=2 &&
+      text "overflow" source="reject" && text "inheritance" source="not_applicable" &&
+      (match store.initial with O.Truth(O.True|O.False)->true|_->false))
+      "Network stores require a known initial Boolean, one writer machine and bounded encounter lifetime without predicate resets.";
+    value_type p "truth"(get "value_type" source);absent p ["duration";"coordination";"contract"]source)behavior.stores;
+  let product_raw=raw product.parameter_id in
+  network ~path:(path product.parameter_id) (text "selection" product_raw="fixed" && (match product.value with O.Text _->true|_->false))
+    "Network effects require one original fixed text product.";
+  value_type(path product.parameter_id)"text"(get "value_type" product_raw);
+  absent(path product.parameter_id)["lower";"upper"]product_raw;
+  let common p value=absent p ["contract";"duration";"clock";"coverage";"binding"]value in
+  let pure p value=absent p ["ref";"scope";"value"]value in
+  let observed p value=let id=O.ref_id(get "ref" value)in
+    network ~path:p (List.exists(fun(observation:O.observation)->String.equal observation.observation_id id)behavior.observations &&
+      items "args" value=[] && get "value" value=Json.Null && ref_equal value "ref" "Observation" id &&
+      ref_equal value "scope" "Subject" subject.subject_id)"Network evidence reference must preserve its original observation and subject." in
+  let rec truth_expression p observations_only value=
+    Charge.charge 1;common p value;value_type p "truth"(get "value_type" value);
+    let args=items "args" value in
+    match text "op" value with
+    |"literal"->absent p ["ref";"scope"]value;
+      network ~path:p (args=[] && (match (O.expression_of_json value).value with Some(O.Truth _)->true|_->false))
+        "Network literal must be a truth value without operands."
+    |"observe"->observed p value
+    |"state"->let id=O.ref_id(get "ref" value)in
+      network ~path:p (not observations_only && args=[] && get "value" value=Json.Null &&
+        List.exists(fun(store:O.state_store)->String.equal store.state_id id)behavior.stores &&
+        ref_equal value "ref" "StateStore" id && ref_equal value "scope" "Encounter" encounter.encounter_id)
+        "Network state reads require original encounter truth storage and cannot supply observed-edge memory."
+    |"not"|"all"|"any" as operator->pure p value;
+      network ~path:p (if operator="not"then List.length args=1 else bounded 1 64 args)
+        "Network truth operation has unsupported arity.";
+      List.iteri(fun index value->truth_expression(Meter.append_string p ("/args/"^string_of_int index)) observations_only value)args
+    |_->network ~path:p false "Expression has no interpretation in the network truth profile."in
+  let initiators=List.map(fun(effect:O.effect_spec)->
+    let values=List.filter(fun(transition:O.transition)->List.mem effect.effect_id transition.effects)behavior.transitions in
+    network ~path:(path effect.effect_id) (List.length values=1 && (List.hd values).effects=[effect.effect_id])
+      "Each network effect must have exactly one single-effect initiating transition.";
+    effect.effect_id,(List.hd values).machine)behavior.effects in
+  List.iter(fun(effect:O.effect_spec)->let p=path effect.effect_id and source=raw effect.effect_id in
+    network ~path:p (effect.executor=role.role_id && effect.subject=subject.subject_id && effect.lifecycle.on_loss="continue" &&
+      Json.equal(get "contract" source)(List.hd(R.catalog_bindings request)).operation)
+      "Network effects must retain the original operation, executor and subject.";
+    (match effect.lifecycle.timeout with Some timeout->positive_ticks p timeout|None->network ~path:p false "Network effects need explicit finite timeouts.");
+    network ~path:p (List.length(items "parameters" source)=1)"Network effects require exactly one fixed-product argument.";
+    let argument=List.hd(items "parameters" source)in let value=get "value" argument in
+    common p value;value_type p "text"(get "value_type" value);
+    network ~path:p (text "name" argument="product" && text "op" value="parameter" && items "args" value=[] &&
+      get "scope" value=Json.Null && get "value" value=Json.Null && ref_equal value "ref" "Parameter" product.parameter_id)
+      "Network effect argument must retain the original fixed-product parameter.")behavior.effects;
+  List.iter(fun(transition:O.transition)->let p=path transition.transition_id and source=raw transition.transition_id in
+    let machine=List.find(fun(machine:O.machine)->String.equal machine.machine_id transition.machine)behavior.machines in
+    network ~path:p (not(List.mem transition.source machine.terminal) && List.length transition.effects<=1 &&
+      bounded 0 4 transition.assignments && unique(List.map(fun(assignment:O.assignment)->assignment.state)transition.assignments))
+      "Network transitions forbid terminal departures and duplicate or unbounded atomic actions.";
+    truth_expression(Meter.append_string p "/when")false(get "when" source);
+    List.iteri(fun index value->truth_expression(Meter.append_string p ("/assignments/"^string_of_int index^"/value"))false(get "value" value))
+      (items "assignments" source);
+    let event=get "on" source and event_path=Meter.append_string p "/on"in
+    common event_path event;value_type event_path "event"(get "value_type" event);
+    match text "op" event with
+    |"updated"->observed event_path event
+    |"rising"->pure event_path event;network ~path:event_path (List.length(items "args" event)=1)"Network rising needs one observed truth predicate.";
+      let predicate=List.hd(items "args" event)in truth_expression(Meter.append_string event_path "/args/0")true predicate;
+      let rec has_observation value=Charge.charge 1;text "op" value="observe" || List.exists has_observation(items "args" value)in
+      network ~path:event_path (has_observation predicate)"Network rising must contain an original observation."
+    |"effect_event"->let id=O.ref_id(get "ref" event)in
+      network ~path:event_path (items "args" event=[] && List.mem_assoc id initiators &&
+        String.equal(List.assoc id initiators)transition.machine && ref_equal event "ref" "Effect" id &&
+        ref_equal event "scope" "Subject" subject.subject_id && List.mem(text "value" event)["completed";"failed";"timed_out"])
+        "Network feedback requires a supported outcome from the same machine's retained effect attempt."
+    |_->network ~path:event_path false "Network transition event requires an observation update/edge or correlated effect outcome.")behavior.transitions;
+  List.iter(fun(declaration:D.declaration)->network ~path:declaration.path
+    (List.mem declaration.kind[D.Role;D.Subject;D.Encounter;D.Clock;D.Observation;D.State_store;D.Parameter;D.Effect;D.Machine;D.Transition;D.Requirement])
+    "Declaration is outside the network source profile.")declarations
+
 let admit ~request ~(behavior:O.behavior) =
   let document=R.document request and descriptors=R.definitions request in
   let source=Policy_admission.admit_metered ~charge:Charge.charge ~document ~descriptors in
@@ -172,12 +305,16 @@ let admit ~request ~(behavior:O.behavior) =
         List.length(List.filter(fun(transition:O.transition)->List.mem effect.effect_id transition.effects)behavior.transitions)=1)
         behavior.effects)
       "Finite-machine transitions retain their sole machine and event triggers, forbid terminal reentry and assignments, and give every effect exactly one initiating transition."));
+  (if R.is_network request then check_network_source request document behavior);
   (* Only externally checked source behavior reaches environment compatibility.
      Neither decoder nor caller-supplied candidate claims can replace this step. *)
   let domain_value=F.validate_for ~charge:Charge.charge ~behavior (R.operating_domain request) in
   (if R.is_finite_machine request then
     require (List.length (F.specification domain_value).encounters=2)
       "policy_realization_finite_machine" "Finite-machine inputs require exactly two original encounter slots.");
+  (if R.is_network request then
+    require (List.length (F.specification domain_value).encounters=2)
+      "policy_realization_network" "Network inputs require exactly two original encounter slots.");
   let assessment=Policy_admission.source_assessment source in
   let requested=check_assurance document assessment behavior domain_value in
   let model_values,catalog_digest=check_catalog request document in

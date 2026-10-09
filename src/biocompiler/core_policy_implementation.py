@@ -40,6 +40,13 @@ FINITE_MACHINE_BINDING_PROFILE = "biocompiler.policy_finite_machine_source_graph
 FINITE_MACHINE_BINDING_REPORT_SCHEMA = "biocompiler.policy_implementation_binding_report.v0.5"
 FINITE_MACHINE_IMPLEMENTATION = "biocompiler.ocaml.policy_finite_machine_implementation.v0.1"
 FINITE_MACHINE_VALIDATION_SCOPE = "bounded-policy-finite-machine-v0.1"
+NETWORK_REQUEST_SCHEMA = "biocompiler.policy_realization_request.v0.6"
+NETWORK_REQUEST_PROFILE = "biocompiler.policy_network_inputs.v0.1"
+NETWORK_BINDING_SCHEMA = "biocompiler.policy_implementation_binding.v0.6"
+NETWORK_BINDING_PROFILE = "biocompiler.policy_network_source_graph.v0.1"
+NETWORK_BINDING_REPORT_SCHEMA = "biocompiler.policy_implementation_binding_report.v0.6"
+NETWORK_IMPLEMENTATION = "biocompiler.ocaml.policy_network_implementation.v0.1"
+NETWORK_VALIDATION_SCOPE = "bounded-policy-network-v0.1"
 PRESERVATION_PROFILE = "biocompiler.policy_bounded_preservation.v0.1"
 # Frozen negotiated publication profile; the protocol-budget regression test
 # checks these literal values against the wire envelope reserves.
@@ -64,6 +71,13 @@ FINITE_MACHINE_PROFILE: dict[str, JsonValue] = {
 FINITE_MACHINE_PRODUCER_PROFILE: dict[str, JsonValue] = {
     **PRODUCER_PROFILE, "implementation": FINITE_MACHINE_IMPLEMENTATION,
     "validation_scope": FINITE_MACHINE_VALIDATION_SCOPE,
+}
+NETWORK_PROFILE: dict[str, JsonValue] = {
+    **PROFILE, "request_schema": NETWORK_REQUEST_SCHEMA,
+    "implementation": NETWORK_IMPLEMENTATION, "validation_scope": NETWORK_VALIDATION_SCOPE,
+}
+NETWORK_PRODUCER_PROFILE: dict[str, JsonValue] = {
+    **PRODUCER_PROFILE, "implementation": NETWORK_IMPLEMENTATION, "validation_scope": NETWORK_VALIDATION_SCOPE,
 }
 _RESULT_FIELDS = {
     "schema_version", "implementation", "resource_profile", "validation_scope", "request_fingerprint",
@@ -174,14 +188,29 @@ def _finite_machine_original(request: JsonValue) -> dict[str, JsonValue]:
     return raw
 
 
+def _network_original(request: JsonValue) -> dict[str, JsonValue]:
+    """Explicit network authority; it cannot broaden a previous source profile."""
+    raw = _object(request, _REQUEST_FIELDS, "Original network implementation request")
+    if raw["schema_version"] != NETWORK_REQUEST_SCHEMA or raw["profile"] != NETWORK_REQUEST_PROFILE:
+        raise CoreProtocolError("Network compilation requires its closed source profile")
+    if _record(raw["document"], "Original BuildRequest").get("$type") != "BuildRequest":
+        raise CoreProtocolError("Network checking requires a complete original BuildRequest")
+    return raw
+
+
 def _request(request: JsonValue) -> dict[str, JsonValue]:
     raw = _record(request, "Original implementation request")
+    if raw.get("profile") == NETWORK_REQUEST_PROFILE or raw.get("schema_version") == NETWORK_REQUEST_SCHEMA:
+        return _network_original(raw)
     if raw.get("profile") == FINITE_MACHINE_REQUEST_PROFILE or raw.get("schema_version") == FINITE_MACHINE_REQUEST_SCHEMA:
         return _finite_machine_original(raw)
     return _original(raw)
 
 
 def _profile_settings(request: dict[str, JsonValue]) -> tuple[str, dict[str, JsonValue], dict[str, JsonValue], str, str]:
+    if request["profile"] == NETWORK_REQUEST_PROFILE:
+        return ("policy_network_implementation", NETWORK_PROFILE, NETWORK_PRODUCER_PROFILE,
+                NETWORK_VALIDATION_SCOPE, NETWORK_IMPLEMENTATION)
     if request["profile"] == FINITE_MACHINE_REQUEST_PROFILE:
         return ("policy_finite_machine_implementation", FINITE_MACHINE_PROFILE, FINITE_MACHINE_PRODUCER_PROFILE,
                 FINITE_MACHINE_VALIDATION_SCOPE, FINITE_MACHINE_IMPLEMENTATION)
@@ -208,7 +237,9 @@ def _pending_dependencies(request: dict[str, JsonValue]) -> list[JsonValue]:
 
 def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
                report: dict[str, JsonValue], *, prerequisites: bool = False, two_observations: bool = False,
-               multi_product: bool = False, finite_machine: bool = False) -> None:
+               multi_product: bool = False, finite_machine: bool = False, network: bool = False) -> None:
+    if network and (not prerequisites or finite_machine or multi_product or two_observations):
+        raise CoreProtocolError("Network evidence requires its distinct prerequisite route")
     if finite_machine and (not prerequisites or multi_product or two_observations):
         raise CoreProtocolError("Finite-machine evidence requires its distinct prerequisite route")
     if multi_product and (not prerequisites or two_observations):
@@ -216,8 +247,8 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
     if two_observations and not prerequisites:
         raise CoreProtocolError("Two-observation evidence requires prerequisite closure")
     raw_binding = _record(report["binding"], "Source graph binding")
-    staged = finite_machine or multi_product or raw_binding.get("schema_version") == "biocompiler.policy_implementation_binding_report.v0.2"
-    binding_profile = (FINITE_MACHINE_BINDING_PROFILE if finite_machine else MULTI_PRODUCT_BINDING_PROFILE if multi_product else TWO_OBSERVATION_BINDING_PROFILE if two_observations else
+    staged = network or finite_machine or multi_product or raw_binding.get("schema_version") == "biocompiler.policy_implementation_binding_report.v0.2"
+    binding_profile = (NETWORK_BINDING_PROFILE if network else FINITE_MACHINE_BINDING_PROFILE if finite_machine else MULTI_PRODUCT_BINDING_PROFILE if multi_product else TWO_OBSERVATION_BINDING_PROFILE if two_observations else
                        "biocompiler.policy_staged_source_graph.v0.1" if staged else "biocompiler.policy_exclusive_source_graph.v0.1")
     observable_profile = "biocompiler.policy_staged_observables.v0.1" if staged else "biocompiler.policy_truth_observables.v0.1"
     binding = _object(raw_binding, _BINDING_FIELDS | ({"state_encoding"} if staged else set()), "Source graph binding")
@@ -225,22 +256,22 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
                         | ({"pending_dependencies"} if prerequisites else set()), "Original input admission")
     _claim(binding)
     _claim(admission)
-    if (binding["schema_version"] != (FINITE_MACHINE_BINDING_REPORT_SCHEMA if finite_machine else MULTI_PRODUCT_BINDING_REPORT_SCHEMA if multi_product else TWO_OBSERVATION_BINDING_REPORT_SCHEMA if two_observations else
+    if (binding["schema_version"] != (NETWORK_BINDING_REPORT_SCHEMA if network else FINITE_MACHINE_BINDING_REPORT_SCHEMA if finite_machine else MULTI_PRODUCT_BINDING_REPORT_SCHEMA if multi_product else TWO_OBSERVATION_BINDING_REPORT_SCHEMA if two_observations else
                                      "biocompiler.policy_implementation_binding_report.v0.2" if staged else "biocompiler.policy_implementation_binding_report.v0.1")
             or binding["profile"] != binding_profile or binding["observable_profile"] != observable_profile
             or staged and binding["state_encoding"] != "exact_ordered_source_labels"
             or binding["status"] != "source_graph_bound" or binding["execution"] != "not_performed"
             or admission["schema_version"] != ("biocompiler.policy_realization_admission.v0.2" if prerequisites
                                                 else "biocompiler.policy_realization_admission.v0.1")
-            or admission["profile"] != (FINITE_MACHINE_REQUEST_PROFILE if finite_machine else MULTI_PRODUCT_REQUEST_PROFILE if multi_product else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
+            or admission["profile"] != (NETWORK_REQUEST_PROFILE if network else FINITE_MACHINE_REQUEST_PROFILE if finite_machine else MULTI_PRODUCT_REQUEST_PROFILE if multi_product else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
                                         PREREQUISITE_REQUEST_PROFILE if prerequisites else REQUEST_PROFILE)
             or admission["resource_profile"] != "biocompiler.policy_realization_inputs.resources.v0.1"
             or admission["status"] != "admitted_inputs" or admission["exploration"] != "not_performed"
             or any(stage[key] != "unassessed" for stage in (binding, admission) for key in ("preservation", "requirements"))):
         raise CoreProtocolError("Implementation report changed a subordinate admission claim")
     if prerequisites:
-        (_finite_machine_original if finite_machine else _multi_product_original if multi_product else _two_observation_original if two_observations else _prerequisite_original)(request)
-        if staged and not (multi_product or finite_machine) or not _same(admission["pending_dependencies"], _pending_dependencies(request)):
+        (_network_original if network else _finite_machine_original if finite_machine else _multi_product_original if multi_product else _two_observation_original if two_observations else _prerequisite_original)(request)
+        if staged and not (multi_product or finite_machine or network) or not _same(admission["pending_dependencies"], _pending_dependencies(request)):
             raise CoreProtocolError("Prerequisite admission changed its truth-only scope or original pending inventory")
     document = _record(request["document"], "Original BuildRequest")
     original_program = _record(document["program"], "Original program")
@@ -285,16 +316,16 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
     } | ({"machines", "transitions"} if staged else set()), "Proposed binding")
     if (len(matches) != 1 or binding["catalog_entry_digest"] != matches[0].get("entry_digest")
             or proposed["catalog_entry"] != binding["catalog_entry"]
-            or proposed["schema_version"] != (FINITE_MACHINE_BINDING_SCHEMA if finite_machine else MULTI_PRODUCT_BINDING_SCHEMA if multi_product else TWO_OBSERVATION_BINDING_SCHEMA if two_observations else
+            or proposed["schema_version"] != (NETWORK_BINDING_SCHEMA if network else FINITE_MACHINE_BINDING_SCHEMA if finite_machine else MULTI_PRODUCT_BINDING_SCHEMA if multi_product else TWO_OBSERVATION_BINDING_SCHEMA if two_observations else
                                               "biocompiler.policy_implementation_binding.v0.2" if staged else "biocompiler.policy_implementation_binding.v0.1")
             or proposed["profile"] != binding["profile"]):
         raise CoreProtocolError("Source binding changed its original catalog entry")
     if staged:
-        transition_count = sum(row.get("$type") == "Transition" for row in original_declarations) if finite_machine else 7
-        if finite_machine and not 1 <= transition_count <= 32:
+        transition_count = sum(row.get("$type") == "Transition" for row in original_declarations) if finite_machine or network else 7
+        if (finite_machine or network) and not 1 <= transition_count <= 32:
             raise CoreProtocolError("Finite-machine transition census exceeds its source bound")
         for key, kind, fields, count in (
-            ("machines", "Machine", {"source", "bank"}, 1),
+            ("machines", "Machine", {"source", "bank"}, sum(row.get("$type") == "Machine" for row in original_declarations) if network else 1),
             ("transitions", "Transition", {"source", "gate", "arbiter", "lane", "commit"}, transition_count),
         ):
             anchors = [_object(row, fields, "Staged source anchor") for row in _rows(proposed[key], "Staged anchors")]
@@ -309,7 +340,7 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
                     raise CoreProtocolError("Staged source anchor identity must be nonempty text")
                 if key == "transitions" and (type(anchor["lane"]) is not int or not 0 <= anchor["lane"] < transition_count):
                     raise CoreProtocolError("Staged transition lane must be a bounded integer")
-        if proposed["states"] != [] or proposed["rules"] != []:
+        if (not network and proposed["states"] != []) or proposed["rules"] != []:
             raise CoreProtocolError("Staged source binding cannot invent separate state or rule anchors")
     pins: list[JsonValue] = []
     for bridge in bridges:
@@ -322,6 +353,8 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
     graph_nodes = _rows(graph["nodes"], "Actual graph nodes")
     if not _same([row.get("node") for row in outputs], [row.get("id") for row in graph_nodes]):
         raise CoreProtocolError("Binding omitted or reordered an actual graph node")
+    if network:
+        _network_anchors(proposed, graph, original_declarations)
     if finite_machine:
         _finite_machine_anchors(proposed, graph, original_declarations)
     if multi_product:
@@ -338,6 +371,80 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
     if (not _same(admission["assurance"], assurance) or not _same(admission["budgets"], request["budgets"])
             or not _same(admission["requested_requirements"], assurance["requirements"])):
         raise CoreProtocolError("Input admission changed original assurance or budgets")
+
+
+def _network_anchors(proposed: dict[str, JsonValue], graph: dict[str, JsonValue],
+                     declarations: list[dict[str, JsonValue]]) -> None:
+    """Validate retained network inventories and policy grouping, not semantics."""
+    banks: list[str] = []
+    for key, kind, fields, minimum, maximum in (
+        ("observations", "Observation", {"source", "bank", "input"}, 2, 4),
+        ("states", "StateStore", {"source", "register"}, 0, 4),
+        ("effects", "Effect", {"source", "bank", "feedback"}, 1, 8),
+        ("machines", "Machine", {"source", "bank"}, 2, 4),
+    ):
+        anchors = [_object(row, fields, "Network source anchor") for row in _rows(proposed[key], "Network anchors")]
+        sources = [row.get("id") for row in declarations if row.get("$type") == kind]
+        if not minimum <= len(anchors) <= maximum or not _same([row["source"] for row in anchors], sources):
+            raise CoreProtocolError("Network binding changed its complete ordered source census")
+        for field in fields:
+            values = [row[field] for row in anchors]
+            if any(type(value) is not str or not value for value in values) or len(set(cast(list[str], values))) != len(values):
+                raise CoreProtocolError("Network binding aliased its source, bank or input identities")
+        banks.extend(cast(str, row["register" if key == "states" else "bank"]) for row in anchors)
+        if key not in ("observations", "effects"):
+            continue
+        input_kind, field, port = ("evidence", "input", "samples") if key == "observations" else ("feedback", "feedback", "feedback")
+        actual = [row for row in _rows(graph["inputs"], "Network graph inputs") if row.get("kind") == input_kind]
+        expected: list[JsonValue] = [{"id": row[field], "kind": input_kind, "consumer": {"node": row["bank"], "port": port}} for row in anchors]
+        if len(actual) != len(expected) or any(sum(_same(row, value) for row in actual) != 1 for value in expected):
+            raise CoreProtocolError("Network graph lost complete source-bound input endpoints")
+    if len(set(banks)) != len(banks):
+        raise CoreProtocolError("Network source categories alias one storage bank")
+    machines = [row for row in declarations if row.get("$type") == "Machine"]
+    for machine in machines:
+        states = machine.get("states")
+        if type(states) is not list or not 2 <= len(states) <= 16:
+            raise CoreProtocolError("Network machine state census exceeds its negotiated bound")
+    transitions = _rows(proposed["transitions"], "Network transition anchors")
+    transition_sources = [row for row in declarations if row.get("$type") == "Transition"]
+    if not _same([row["source"] for row in transitions], [row.get("id") for row in transition_sources]):
+        raise CoreProtocolError("Network binding changed ordered source transitions")
+    groups: dict[bytes, list[int]] = {}
+    policies: dict[bytes, dict[str, JsonValue]] = {}
+    for index, transition in enumerate(transition_sources):
+        owner = _object(transition.get("machine"), {"$type", "id", "kind"}, "Original transition owner")
+        selected = [row for row in machines if row.get("id") == owner["id"]]
+        if len(selected) != 1 or owner["$type"] != "Ref" or owner["kind"] != "Machine":
+            raise CoreProtocolError("Network transition has ambiguous original machine ownership")
+        policy = _record(selected[0].get("arbitration"), "Original network arbitration")
+        policy_key = encode_json(policy)
+        groups.setdefault(policy_key, []).append(index)
+        policies[policy_key] = policy
+    arbiters: list[str] = []
+    for policy_key, indices in groups.items():
+        policy = policies[policy_key]
+        order = policy.get("order")
+        ids = [transition_sources[index].get("id") for index in indices]
+        if (type(order) is not list or any(type(value) is not str for value in order)
+                or len(order) != len(ids) or set(cast(list[str], order)) != set(cast(list[str], ids))
+                or policy.get("mode") != "priority" or policy.get("tie") != "declared_order"
+                or policy.get("write_conflict") != "reject"):
+            raise CoreProtocolError("Network policy lost its exact complete transition order")
+        rows = [transitions[index] for index in indices]
+        arbiter = cast(str, rows[0]["arbiter"])
+        if [row["lane"] for row in rows] != list(range(len(rows))) or any(row["arbiter"] != arbiter for row in rows):
+            raise CoreProtocolError("Network binding changed lanes within one complete policy group")
+        arbiters.append(arbiter)
+    if len(set(arbiters)) != len(arbiters):
+        raise CoreProtocolError("Network binding merged distinct original policy groups")
+    nodes = _rows(graph["nodes"], "Network graph nodes")
+    node_ids = [row.get("id") for row in nodes]
+    endpoints = banks + arbiters + [cast(str, row[key]) for row in transitions for key in ("gate", "commit")]
+    if (not 1 <= len(nodes) <= 64 or any(type(value) is not str or not value for value in node_ids)
+            or len(set(cast(list[str], node_ids))) != len(nodes)
+            or len(set(endpoints)) != len(endpoints) or any(value not in node_ids for value in endpoints)):
+        raise CoreProtocolError("Network graph aliased, omitted or exceeded its bounded source anchors")
 
 
 def _finite_machine_anchors(proposed: dict[str, JsonValue], graph: dict[str, JsonValue],
@@ -533,6 +640,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyImpl
     request = _request(payload["request"])
     _, _, _, expected_scope, expected_implementation = _profile_settings(request)
     finite_machine = request["profile"] == FINITE_MACHINE_REQUEST_PROFILE
+    network = request["profile"] == NETWORK_REQUEST_PROFILE
     result = _object(response.result, _RESULT_FIELDS, "Implementation result")
     if any(result[key] != expected for key, expected in (
         ("schema_version", RESULT_SCHEMA), ("implementation", expected_implementation),
@@ -554,7 +662,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyImpl
     report_hash = _pin(result["report_fingerprint"], report, "Complete report")
     if report["request_fingerprint"] != request_hash or not _same(report["limits"], payload["limits"]):
         raise CoreProtocolError("Preservation changed its original request or execution limits")
-    _authority(response, request, candidate, report, prerequisites=finite_machine, finite_machine=finite_machine)
+    _authority(response, request, candidate, report, prerequisites=finite_machine or network, finite_machine=finite_machine, network=network)
     _evidence(request, report)
     if response.operation == "replay-policy-implementation" and not _same(result, payload["report"]):
         raise CoreProtocolError("Fresh replay differs from the full saved implementation wrapper")
