@@ -243,7 +243,7 @@ let interleaved_controls raw=
       let _,frame=P.step runtime(T.input correspondence batch)in
       let original=match S.step original.next batch with S.Advanced value->value|S.Stopped _->failwith "Interleaved activation stopped"in
       ignore(advance correspondence batch original frame);
-      let bank id=(List.find(fun(effect:B.effect_binding)->effect.source=id)(B.effects bound)).bank in
+      let bank id=(List.find(fun(effect_value:B.effect_binding)->effect_value.source=id)(B.effects bound)).bank in
       require(List.map(fun(attempt:P.attempt)->attempt.bank)frame.creations=[bank "beta/response_b";bank "alpha/response_a"])
         "Interleaved source group order changed exact attempt creation ordinals";
       require(List.map(fun(attempt:P.attempt)->attempt.ordinal)frame.creations=[1;2])"Interleaved attempt identities were normalized away")in

@@ -3,6 +3,8 @@
     realization or export permission. No implementation candidate is embedded. *)
 open Bioc_wire
 
+val coupled_schema_version : string
+val coupled_profile : string
 val schema_version : string
 val profile : string
 val prerequisite_schema_version : string
@@ -34,6 +36,8 @@ type catalog_binding = private {
   models : Pinned_identity.t list;
 }
 type t
+val of_coupled_json : Json.t -> t
+val is_coupled : t -> bool
 val of_multi_site_json : Json.t -> t
 val is_multi_site : t -> bool
 

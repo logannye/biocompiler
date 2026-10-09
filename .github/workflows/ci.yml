@@ -46,7 +46,7 @@ jobs:
           python -B tools/check_policy_material_rule_coverage.py
           python -B tools/check_policy_public_api_coverage.py
           python -B -m unittest tests.test_core_conformance.ComponentCapabilityConformanceTests tests.test_core_conformance.SelectionCapabilityConformanceTests tests.test_core_conformance.InstanceCapabilityConformanceTests tests.test_core_conformance.PrerequisiteCapabilityConformanceTests tests.test_core_conformance.TwoObservationCapabilityConformanceTests tests.test_core_conformance.MultiMemberCapabilityConformanceTests tests.test_core_conformance.GroundedHelperCapabilityConformanceTests
-          python -B -m unittest tests.test_ci_validation tests.test_prebuilt_ci_plan tests.test_prebuilt_release_chain tests.test_prebuilt_sdk_matrix tests.test_ci_scheduling tests.test_bootstrap_hosted_python tests.test_test_shards tests.test_ci_native_bundle tests.test_ci_core_groups tests.test_realization_protocol_parallel tests.test_native_fixture_wiring tests.test_pipeline_reference_runtime tests.test_architecture_routing_parallel tests.test_architecture_routing_reproducibility tests.test_architecture_routing_corpus tests.test_pipeline_authoring_sources tests.test_prebuilt_command_diagnostics tests.test_pipeline_fixed_continuation_identity tests.test_pipeline_occurrence_source tests.test_pipeline_fixed_continuation_workers tests.test_pipeline_fixed_direct_controls.DirectRecordObservationTests tests.test_installed_campaign_parallel tests.test_core_pipeline_callback_session.CallbackExitedPipeTests tests.test_ci_preflight tests.test_callback_source_lineage tests.test_synthetic_inspection_boundaries tests.test_pipeline_fixed_registration_locations tests.test_pipeline_fixed_registration_records tests.test_synthetic_inspection_workers tests.test_pipeline_capture_overlap tests.test_pipeline_policy_counterpart tests.test_pipeline_historical_source_integrity tests.test_checked_pipeline_corpus.CheckedPipelineCorpusTests.test_every_complete_document_source_and_generator_has_its_original_identity tests.test_fixed_pipeline_literals.FixedPipelineLiteralsTests.test_every_complete_input_return_error_source_and_document_is_preserved tests.test_policy_operational_campaign tests.test_policy_implementation_campaign tests.test_callback_unsolicited_ordering tests.test_core_pipeline_callback_session.CallbackSessionTests.test_truncated_malformed_multiple_and_unsolicited_frames_are_terminal tests.test_reference_attempt_import_modes tests.test_core_pipeline_view_fields tests.test_pipeline_reference_parallel tests.test_core_reference_contract_targets tests.test_reference_view_source_lineage tests.test_reference_target_source_lineage tests.test_pipeline_session_exit_drain tests.test_reference_observer_dispatch tests.test_reference_campaign_diagnostics tests.test_reference_session_source_lineage tests.test_reference_guard_scheduling tests.test_reference_guard_failure_evidence tests.test_archive_authority tests.test_policy_component_fixture tests.test_policy_instance_fixture tests.test_policy_instance_material_installed tests.test_policy_instance_prebuilt tests.test_policy_prerequisite_fixture tests.test_policy_prerequisite_material_installed tests.test_policy_prerequisite_prebuilt tests.test_policy_two_observation_fixture tests.test_policy_two_observation_material_installed tests.test_policy_two_observation_prebuilt tests.test_policy_two_observation_campaign tests.test_policy_two_observation_material tests.test_policy_multi_member_fixture tests.test_policy_multi_member_material_installed tests.test_policy_multi_member_prebuilt tests.test_policy_multi_member_campaign tests.test_policy_multi_member_material tests.test_policy_grounded_helper_fixture tests.test_policy_grounded_helper_material_installed tests.test_policy_grounded_helper_prebuilt tests.test_policy_grounded_helper_campaign tests.test_policy_grounded_helper_material tests.test_policy_component_install tests.test_policy_component_material_campaign tests.test_policy_material_consumer tests.test_policy_material_prebuilt tests.test_policy_staged_material_installed tests.test_researcher_alpha_installed tests.test_researcher_alpha_starter
+          python -B -m unittest tests.test_ci_validation tests.test_prebuilt_ci_plan tests.test_prebuilt_release_chain tests.test_prebuilt_sdk_matrix tests.test_ci_scheduling tests.test_bootstrap_hosted_python tests.test_test_shards tests.test_ci_native_bundle tests.test_ci_core_groups tests.test_realization_protocol_parallel tests.test_native_fixture_wiring tests.test_pipeline_reference_runtime tests.test_architecture_routing_parallel tests.test_architecture_routing_reproducibility tests.test_architecture_routing_corpus tests.test_pipeline_authoring_sources tests.test_prebuilt_command_diagnostics tests.test_pipeline_fixed_continuation_identity tests.test_pipeline_occurrence_source tests.test_pipeline_fixed_continuation_workers tests.test_pipeline_fixed_direct_controls.DirectRecordObservationTests tests.test_installed_campaign_parallel tests.test_core_pipeline_callback_session.CallbackExitedPipeTests tests.test_ci_preflight tests.test_callback_source_lineage tests.test_synthetic_inspection_boundaries tests.test_pipeline_fixed_registration_locations tests.test_pipeline_fixed_registration_records tests.test_synthetic_inspection_workers tests.test_pipeline_capture_overlap tests.test_pipeline_policy_counterpart tests.test_pipeline_historical_source_integrity tests.test_checked_pipeline_corpus.CheckedPipelineCorpusTests.test_every_complete_document_source_and_generator_has_its_original_identity tests.test_fixed_pipeline_literals.FixedPipelineLiteralsTests.test_every_complete_input_return_error_source_and_document_is_preserved tests.test_policy_operational_campaign tests.test_policy_implementation_campaign tests.test_callback_unsolicited_ordering tests.test_core_pipeline_callback_session.CallbackSessionTests.test_truncated_malformed_multiple_and_unsolicited_frames_are_terminal tests.test_reference_attempt_import_modes tests.test_core_pipeline_view_fields tests.test_pipeline_reference_parallel tests.test_core_reference_contract_targets tests.test_reference_view_source_lineage tests.test_reference_target_source_lineage tests.test_pipeline_session_exit_drain tests.test_reference_observer_dispatch tests.test_reference_campaign_diagnostics tests.test_reference_session_source_lineage tests.test_reference_guard_scheduling tests.test_reference_guard_failure_evidence tests.test_archive_authority tests.test_policy_component_fixture tests.test_policy_instance_fixture tests.test_policy_instance_material_installed tests.test_policy_instance_prebuilt tests.test_policy_prerequisite_fixture tests.test_policy_prerequisite_material_installed tests.test_policy_prerequisite_prebuilt tests.test_policy_two_observation_fixture tests.test_policy_two_observation_material_installed tests.test_policy_two_observation_prebuilt tests.test_policy_two_observation_campaign tests.test_policy_two_observation_material tests.test_policy_multi_member_fixture tests.test_policy_multi_member_material_installed tests.test_policy_multi_member_prebuilt tests.test_policy_multi_member_campaign tests.test_policy_multi_member_material tests.test_policy_grounded_helper_fixture tests.test_policy_grounded_helper_material_installed tests.test_policy_grounded_helper_prebuilt tests.test_policy_grounded_helper_campaign tests.test_policy_grounded_helper_material tests.test_policy_component_install tests.test_policy_component_material_campaign tests.test_policy_material_consumer tests.test_policy_material_prebuilt tests.test_policy_staged_material_installed tests.test_researcher_alpha_installed tests.test_researcher_alpha_starter tests.test_policy_quantitative_assurance_campaign
           python -B tools/migration_inventory.py --check
           python -B tools/check_ci_preflight.py --output generated/preflight/campaigns.json
       - uses: actions/upload-artifact@v4
@@ -976,6 +976,9 @@ jobs:
           python tools/generate_policy_material_closure_fixture.py --check
           python tools/generate_policy_material_timing_fixture.py --check
           python tools/generate_policy_material_state_fixture.py --check
+          python -m tools.generate_policy_quantitative_composition_fixture --check
+          python -m tools.generate_policy_approximation_fixture --check
+          python -m tools.generate_policy_realization_evidence_fixture --check
           python tools/check_policy_material_rule_coverage.py
           python tools/check_core_boundaries.py --output generated/core/boundaries.json
       - name: Strictly type-check the migrated Python transport boundary
@@ -2180,6 +2183,17 @@ jobs:
             --grounded-helper-fixture "$GITHUB_WORKSPACE/artifacts/core-${{ matrix.platform }}/grounded-helper-originals/originals.json" \
             --grounded-helper-provenance "$GITHUB_WORKSPACE/artifacts/core-${{ matrix.platform }}/grounded-helper-originals/provenance.json" \
             --slot "$RUNNER_TEMP/policy-prebuilt/${{ matrix.platform }}-py${{ matrix.python-version }}"
+      - name: Check quantitative assurance in the same exact installed environment
+        env:
+          PYTHONPATH: src
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_policy_quantitative_assurance_prebuilt.py run \
+            --sdk "$GITHUB_WORKSPACE/artifacts/policy-prebuilt-sdk/biocompiler-0.1.0.dev29-py3-none-any.whl" \
+            --release-candidate "$GITHUB_WORKSPACE/artifacts/policy-prebuilt-sdk/candidate.json" \
+            --platform-root "$GITHUB_WORKSPACE/artifacts/prebuilt-${{ matrix.platform }}" \
+            --material-authority "$GITHUB_WORKSPACE/artifacts/prebuilt-${{ matrix.platform }}/material-authority.json" \
+            --slot "$RUNNER_TEMP/policy-prebuilt/${{ matrix.platform }}-py${{ matrix.python-version }}"
       - name: Retain bounded installed evidence and failure logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -2195,6 +2209,7 @@ jobs:
             ${{ runner.temp }}/policy-prebuilt/${{ matrix.platform }}-py${{ matrix.python-version }}/two-observation-installed/
             ${{ runner.temp }}/policy-prebuilt/${{ matrix.platform }}-py${{ matrix.python-version }}/multi-member-installed/
             ${{ runner.temp }}/policy-prebuilt/${{ matrix.platform }}-py${{ matrix.python-version }}/grounded-helper-installed/
+            ${{ runner.temp }}/policy-prebuilt/${{ matrix.platform }}-py${{ matrix.python-version }}/quantitative-assurance-installed/
           if-no-files-found: error
           overwrite: true
           retention-days: 7
@@ -2361,6 +2376,23 @@ jobs:
             --grounded-helper-fixture artifacts/component-originals/core-macos-arm64/grounded-helper-originals/originals.json \
             --grounded-helper-provenance artifacts/component-originals/core-macos-arm64/grounded-helper-originals/provenance.json \
             --output generated/policy-prebuilt-reproducibility/grounded-helper-comparison.json
+      - name: Compare complete quantitative assurance across four installed runtimes
+        env:
+          PYTHONPATH: src
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_policy_quantitative_assurance_prebuilt.py compare \
+            --slot artifacts/installed/policy-prebuilt-linux-x86_64-py3.11 \
+            --slot artifacts/installed/policy-prebuilt-linux-x86_64-py3.14 \
+            --slot artifacts/installed/policy-prebuilt-macos-arm64-py3.11 \
+            --slot artifacts/installed/policy-prebuilt-macos-arm64-py3.14 \
+            --sdk artifacts/installed/policy-prebuilt-sdk/biocompiler-0.1.0.dev29-py3-none-any.whl \
+            --release-candidate artifacts/installed/policy-prebuilt-sdk/candidate.json \
+            --platform-root artifacts/native/prebuilt-linux-x86_64 \
+            --platform-root artifacts/native/prebuilt-macos-arm64 \
+            --material-authority artifacts/native/prebuilt-linux-x86_64/material-authority.json \
+            --material-authority artifacts/native/prebuilt-macos-arm64/material-authority.json \
+            --output generated/policy-prebuilt-reproducibility/quantitative-assurance-comparison.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:

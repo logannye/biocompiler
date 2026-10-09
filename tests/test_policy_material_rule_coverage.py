@@ -43,13 +43,13 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 201)
+        self.assertEqual(result["sources"], 224)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 36, "sources": 149, "witness_sources": 162,
+        self.assertEqual(result["component_route"], {"rules": 40, "sources": 172, "witness_sources": 179,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -247,8 +247,49 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_transfer_network(self):
+    def before_assured(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        self.assertEqual([row["id"] for row in ledger["rules"][-4:]], list(coverage.COMPONENT_RULE_IDS[-4:]))
+        ledger["rules"] = ledger["rules"][:-4]
+        ledger["sources"] = [row for row in ledger["sources"] if row["path"] not in coverage.COMPONENT_ASSURED_SOURCES]
+        ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] not in coverage.COMPONENT_ASSURED_WITNESSES]
+        self.assertEqual(ledger["limitations"].pop(), coverage.ASSURED_LIMITATION)
+        return ledger
+
+    def test_assured_profiles_preserve_all_prior_source_meaning_and_provenance(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        projected = self.before_assured()
+        self.assertEqual((len(projected["rules"]), len(projected["sources"]), len(projected["witness_sources"])), (36, 149, 162))
+        self.assertEqual(coverage.component_metadata_before_assured(original), coverage.component_metadata(projected))
+        encoded = json.dumps(coverage.component_metadata(projected), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), coverage.BEFORE_ASSURED_COMPONENT_METADATA_SHA256)
+        previous = coverage.metadata_before_assured(self.original)
+        encoded = json.dumps(previous, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), coverage.BEFORE_ASSURED_METADATA_SHA256)
+        self.assertEqual(len(previous["source_classifications"]), 201)
+        for path in coverage.COMPONENT_ASSURED_SOURCES:
+            row = next(row for row in self.original["sources"] if row["path"] == path)
+            self.assertEqual((row["disposition"], row["reason"]), ("outside_route", coverage.ASSURED_REASON))
+
+    def test_assured_profiles_keep_formal_numerical_and_measurement_claims_distinct(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        rules = {row["id"]: row for row in original["rules"]}
+        self.assertIn("binary private", rules["component.atomic_quantitative_composition"]["scope"])
+        self.assertIn("finite", rules["component.finite_approximation"]["scope"])
+        self.assertIn("unassessed", rules["component.parameter_measurement_evidence"]["scope"])
+        self.assertIn("fresh", rules["component.quantitative_assurance"]["scope"])
+        for identity in coverage.COMPONENT_RULE_IDS[-4:]:
+            self.assertEqual(rules[identity]["evidence_scope"], "source_only_not_executed_by_this_gate")
+            self.assertIn("no native execution", rules[identity]["limits"])
+        for path in (*coverage.COMPONENT_ASSURED_SOURCES, *coverage.COMPONENT_ASSURED_WITNESSES):
+            changed = deepcopy(original)
+            key = "sources" if path in coverage.COMPONENT_ASSURED_SOURCES else "witness_sources"
+            changed[key] = [row for row in changed[key] if row["path"] != path]
+            with self.subTest(path=path), self.assertRaisesRegex(coverage.CoverageError, key + " census"):
+                coverage.check_component(coverage.ROOT, changed)
+
+    def before_transfer_network(self):
+        ledger = self.before_assured()
         added = ledger["rules"].pop()
         self.assertEqual(added["id"], "component.reserved_transfer_network_material")
         self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in added[kind]},
@@ -743,7 +784,8 @@ let check x = Diagnostic.require x "code" "message"
             and row["path"] not in coverage.COMPONENT_NETWORK_SOURCES
             and row["path"] not in coverage.COMPONENT_TARGET_PLANNING_SOURCES
             and row["path"] not in coverage.COMPONENT_TRANSFER_SOURCES
-            and row["path"] not in coverage.COMPONENT_TRANSFER_NETWORK_SOURCES]
+            and row["path"] not in coverage.COMPONENT_TRANSFER_NETWORK_SOURCES
+            and row["path"] not in coverage.COMPONENT_ASSURED_SOURCES]
         projected["witness_paths"] = [row["path"] for row in self.original["witness_sources"]]
         encoded = json.dumps(projected, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),

@@ -264,9 +264,9 @@ let ()=
     List.map(text "attempt_port")sites=["request0";"request1";"request2"] &&
     List.for_all(fun row->get "input" row=Json.Bool true && at["request_endpoint";"port"]row=s "request0")sites)
     "Joint transfer checking pruned an unreachable crossing or detached its request lane";
-  let effect=List.hd(B.effects bound)in
-  require(List.length(B.effects bound)=1 && List.map(fun(value:B.effect_site)->value.initiating_rule)effect.request_sites=
-    ["forward4";"forward6";"forward7"] && at["bindings";"attempt_bank"]summary=s effect.bank &&
+  let effect_value=List.hd(B.effects bound)in
+  require(List.length(B.effects bound)=1 && List.map(fun(value:B.effect_site)->value.initiating_rule)effect_value.request_sites=
+    ["forward4";"forward6";"forward7"] && at["bindings";"attempt_bank"]summary=s effect_value.bank &&
     List.length(B.transitions bound)=8)
     "The sparse product-state machine lost its shared bank or acquired invented stutter gates";
   selected_trace bound false;

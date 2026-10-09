@@ -79,7 +79,7 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   let original_raw = R.to_json original and library_raw = L.to_json components
   and rule_raw = A.to_json rule and proposal_raw = Q.to_json proposed in
   List.iter (fun raw -> ignore (encoded raw)) [original_raw;library_raw;rule_raw;proposal_raw];
-  let original = (if R.is_multi_site original then R.of_multi_site_json else if R.is_network original then R.of_network_json else if R.is_finite_machine original then R.of_finite_machine_json
+  let original = (if R.is_coupled original then R.of_coupled_json else if R.is_multi_site original then R.of_multi_site_json else if R.is_network original then R.of_network_json else if R.is_finite_machine original then R.of_finite_machine_json
     else if R.is_multi_product original then R.of_multi_product_json
     else if R.is_two_observation original then R.of_two_observation_json
     else if R.requires_prerequisite_closure original then R.of_prerequisite_json

@@ -182,7 +182,7 @@ let elaborate document =
   let role=symbol Role.make D.Role and subject=symbol Subject.make D.Subject
   and encounter=symbol Encounter.make D.Encounter and clock=symbol Clock.make D.Clock
   and observation=symbol Observation.make D.Observation and state=symbol State.make D.State_store
-  and effect=symbol Effect.make D.Effect and machine=symbol Machine.make D.Machine in
+  and effect_value=symbol Effect.make D.Effect and machine=symbol Machine.make D.Machine in
   let entity path value =
     match Names.find_opt (ref_id value) index with
     | Some (position,d) -> (match d.D.kind with
@@ -264,7 +264,7 @@ let elaborate document =
     let term=match text "op" value with
       | "updated" -> arity path 0 args; Updated (observation path (get "ref" value))
       | "rising" -> arity path 1 args; Rising (truth path (List.hd args))
-      | "effect_event" -> arity path 0 args; Effect_event (effect path (get "ref" value),phase path (text "value" value))
+      | "effect_event" -> arity path 0 args; Effect_event (effect_value path (get "ref" value),phase path (text "value" value))
       | _ -> fail path "Unsupported executable event operation." in
     {event_term=term;event_source=value} in
   let assignments path value = map (fun value ->
@@ -322,13 +322,13 @@ let elaborate document =
         Effect_declaration {id=Effect.make d.id position;executor=role p (get "executor" v);subject=entity p (get "subject" v);lifecycle;
           parameters=map (fun value -> text "name" value,scalar p (get "value" value)) (list "parameters" v)}
     | D.Rule -> Rule_declaration {id=Rule.make d.id position;executor=role p (get "executor" v);
-        on=event p (get "on" v);guard=truth p (get "when" v);effects=map (effect p) (list "effects" v);
+        on=event p (get "on" v);guard=truth p (get "when" v);effects=map (effect_value p) (list "effects" v);
         assignments=assignments p v;arbitration=arbitration p (get "arbitration" v)}
     | D.Machine -> Machine_declaration {id=Machine.make d.id position;executor=role p (get "executor" v);scope=scope p (get "scope" v);
         states=values "states" v;initial=text "initial" v;terminal=values "terminal" v;arbitration=arbitration p (get "arbitration" v)}
     | D.Transition -> Transition_declaration {id=Transition.make d.id position;machine=machine p (get "machine" v);
         source=text "source" v;destination=text "destination" v;on=event p (get "on" v);guard=truth p (get "when" v);
-        effects=map (effect p) (list "effects" v);assignments=assignments p v}
+        effects=map (effect_value p) (list "effects" v);assignments=assignments p v}
     | D.Parameter -> let value_type=O.value_type (get "value_type" v) in
         Parameter_declaration {id=Parameter.make d.id position;value_type;value=O.value_of_json value_type (get "value" v)}
     | D.Requirement -> Retained_requirement (Requirement.make d.id position)

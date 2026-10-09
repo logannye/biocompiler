@@ -54,7 +54,7 @@ let roundtrip document descriptors=
          | T.Rising predicate -> ignore (T.truth_term predicate)
          | T.Updated observation -> require ((List.nth original (T.Observation.index observation)).kind=D.Observation)
              "Updated event resolved a non-observation"
-         | T.Effect_event (effect,_) -> require ((List.nth original (T.Effect.index effect)).kind=D.Effect)
+         | T.Effect_event (effect_value,_) -> require ((List.nth original (T.Effect.index effect_value)).kind=D.Effect)
              "Lifecycle event resolved a non-effect")
     | T.Transition_declaration transition ->
         require ((List.nth original (T.Machine.index transition.machine)).kind=D.Machine)
@@ -123,7 +123,7 @@ let event_value_rejections document descriptors =
   let raw=D.to_json document in
   let declarations=items "declarations" (source_program raw) in
   let rule=List.find (fun value -> text "$type" value="Rule") declarations in
-  let effect=List.find (fun value -> text "$type" value="Effect") declarations in
+  let effect_value=List.find (fun value -> text "$type" value="Effect") declarations in
   let check label raw definitions expected_path expected_message =
     let document=D.of_json raw in
     require (text "status" (Bioc_checker.Policy_check.check document)="valid")
@@ -143,7 +143,7 @@ let event_value_rejections document descriptors =
   (* Change both the explicit formal signature and actual argument, and freshly
      pin that complete supplied definition. Thus source validity cannot be
      satisfied by an earlier type/signature mismatch. *)
-  let definition_id=text "id" (get "contract" effect) in
+  let definition_id=text "id" (get "contract" effect_value) in
   let semantics=get "semantics" (source_program raw) in
   let definitions=items "definitions" semantics in
   let definition=List.find (fun value -> text "id" value=definition_id) definitions in
@@ -163,10 +163,10 @@ let event_value_rejections document descriptors =
     if text "id" value=definition_id then definition else value) definitions)) semantics in
   let updated=replace "semantics" semantics raw in
   let argument=Json.Object ["$type",str "Argument";"name",str "event_argument";"value",event] in
-  let updated=change_declaration (text "id" effect)
+  let updated=change_declaration (text "id" effect_value)
     (replace "parameters" (Json.Array [argument])) updated |> repin in
   check "event effect argument" updated (repin (O.descriptors_to_json descriptors))
-    (path_of (text "id" effect)^"/parameters/0/value")
+    (path_of (text "id" effect_value)^"/parameters/0/value")
     "Operational effect arguments require scalar values; event-valued arguments have no execution semantics."
 let ()=
   require (Array.length Sys.argv=4) "Supply operational, staged and binding fixture authorities";

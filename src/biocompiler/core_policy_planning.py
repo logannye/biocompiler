@@ -30,10 +30,13 @@ CLAIMS: dict[str, JsonValue] = {
     "preservation": "unassessed", "requirements": "unassessed", "resource_feasibility": "unassessed",
     "material": "unassessed", "empirical": "unassessed", "artifact": "withheld", "export": "withheld",
 }
-CATALOG_FINGERPRINT = "a963318c8eb9ae742b4c8d6d21b860dbb2fd58066f1a3144c760178bb0db2c7a"
+CATALOG_FINGERPRINT = "fe414a3f60668dd1466f4a6b1999067f196936aa85df4c2b6747f7190e20d765"
 # Reviewed descriptor pins are embedded so installed clients need no source-tree
 # protocol file. They bind vocabulary, bounds and caveats, never source support.
 TARGET_FINGERPRINTS = {
+    'coupled_implementation': '4f7936948cc72e42c67b9c4e4b6e95bd5e8131cf182d5157b0314f6bc47dfed1',
+    'coupled_quantitative_material': '61e2006ea03309aba3efa7ad7880655f6de4ff33c2cdb2d36bf11c526fed7024',
+
     'transfer_network_material': '524d289fde18fc53d2d6f00f8a26a92e168fce12c5535fc551790629fe922d9c',
     'transfer_pair_material': '38f10bf725d465a9120d2531039032134d061c2bcc7ea492e6cab28c6878e5ae',
     'multi_site_implementation': '5c995cfb805919e18eda1fb1a0a07ca71f581e4aad04e1f7c7908e42be420003',
@@ -51,7 +54,7 @@ TARGET_FINGERPRINTS = {
     'quantitative_material': 'f46a1069f20f5fc6c5128eae814810e5907271765b87f7c0fc3b7e40a2891699',
     'network_material': '4f86d03bbee8353efa5e838f9986246c67852ee5b8f433f8abf52dab3a4492ca',
 }
-TargetId = Literal['implementation', 'finite_machine_implementation', 'network_implementation', 'component_material', 'instance_material', 'prerequisite_material', 'two_observation_material', 'multi_member_material', 'grounded_helper_material', 'finite_machine_material', 'quantitative_material', 'network_material', 'multi_site_implementation', 'step_quantitative_material', 'transfer_pair_material', 'transfer_network_material']
+TargetId = Literal['implementation', 'finite_machine_implementation', 'network_implementation', 'component_material', 'instance_material', 'prerequisite_material', 'two_observation_material', 'multi_member_material', 'grounded_helper_material', 'finite_machine_material', 'quantitative_material', 'network_material', 'multi_site_implementation', 'step_quantitative_material', 'transfer_pair_material', 'transfer_network_material', 'coupled_implementation', 'coupled_quantitative_material']
 PROFILE: dict[str, JsonValue] = {
     "operations": ["plan-policy-target", "replay-policy-target-plan"],
     "request_schema": REQUEST_SCHEMA, "report_schema": REPORT_SCHEMA,

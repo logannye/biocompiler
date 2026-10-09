@@ -47,6 +47,13 @@ NETWORK_BINDING_PROFILE = "biocompiler.policy_network_source_graph.v0.1"
 NETWORK_BINDING_REPORT_SCHEMA = "biocompiler.policy_implementation_binding_report.v0.6"
 NETWORK_IMPLEMENTATION = "biocompiler.ocaml.policy_network_implementation.v0.1"
 NETWORK_VALIDATION_SCOPE = "bounded-policy-network-v0.1"
+COUPLED_REQUEST_SCHEMA = "biocompiler.policy_realization_request.v0.8"
+COUPLED_REQUEST_PROFILE = "biocompiler.policy_coupled_state_inputs.v0.1"
+COUPLED_BINDING_SCHEMA = "biocompiler.policy_implementation_binding.v0.8"
+COUPLED_BINDING_PROFILE = "biocompiler.policy_coupled_state_source_graph.v0.1"
+COUPLED_BINDING_REPORT_SCHEMA = "biocompiler.policy_implementation_binding_report.v0.8"
+COUPLED_IMPLEMENTATION = "biocompiler.ocaml.policy_coupled_implementation.v0.1"
+COUPLED_VALIDATION_SCOPE = "bounded-policy-coupled-state-v0.1"
 MULTI_SITE_REQUEST_SCHEMA = "biocompiler.policy_realization_request.v0.7"
 MULTI_SITE_REQUEST_PROFILE = "biocompiler.policy_multi_site_inputs.v0.1"
 MULTI_SITE_BINDING_SCHEMA = "biocompiler.policy_implementation_binding.v0.7"
@@ -72,6 +79,10 @@ PRODUCER_PROFILE: dict[str, JsonValue] = {
     "operations": ["compile-policy-implementation"],
     "implementation": IMPLEMENTATION, "validation_scope": VALIDATION_SCOPE,
 }
+COUPLED_PROFILE: dict[str, JsonValue] = {**PROFILE, "request_schema": COUPLED_REQUEST_SCHEMA,
+    "implementation": COUPLED_IMPLEMENTATION, "validation_scope": COUPLED_VALIDATION_SCOPE}
+COUPLED_PRODUCER_PROFILE: dict[str, JsonValue] = {**PRODUCER_PROFILE, "implementation": COUPLED_IMPLEMENTATION,
+    "validation_scope": COUPLED_VALIDATION_SCOPE}
 FINITE_MACHINE_PROFILE: dict[str, JsonValue] = {
     **PROFILE, "request_schema": FINITE_MACHINE_REQUEST_SCHEMA,
     "implementation": FINITE_MACHINE_IMPLEMENTATION, "validation_scope": FINITE_MACHINE_VALIDATION_SCOPE,
@@ -213,6 +224,15 @@ def _multi_site_original(request: JsonValue) -> dict[str, JsonValue]:
     return raw
 
 
+def _coupled_original(request: JsonValue) -> dict[str, JsonValue]:
+    raw = _object(request, _REQUEST_FIELDS, "Original coupled state request")
+    if raw["schema_version"] != COUPLED_REQUEST_SCHEMA or raw["profile"] != COUPLED_REQUEST_PROFILE:
+        raise CoreProtocolError("Coupled state requires its explicit original source family")
+    if _record(raw["document"], "Original BuildRequest").get("$type") != "BuildRequest":
+        raise CoreProtocolError("Coupled state checking requires the full original source")
+    return raw
+
+
 def _network_original(request: JsonValue) -> dict[str, JsonValue]:
     """Explicit network authority; it cannot broaden a previous source profile."""
     raw = _object(request, _REQUEST_FIELDS, "Original network implementation request")
@@ -225,6 +245,8 @@ def _network_original(request: JsonValue) -> dict[str, JsonValue]:
 
 def _request(request: JsonValue) -> dict[str, JsonValue]:
     raw = _record(request, "Original implementation request")
+    if raw.get("profile") == COUPLED_REQUEST_PROFILE or raw.get("schema_version") == COUPLED_REQUEST_SCHEMA:
+        return _coupled_original(raw)
     if raw.get("profile") == MULTI_SITE_REQUEST_PROFILE or raw.get("schema_version") == MULTI_SITE_REQUEST_SCHEMA:
         return _multi_site_original(raw)
     if raw.get("profile") == NETWORK_REQUEST_PROFILE or raw.get("schema_version") == NETWORK_REQUEST_SCHEMA:
@@ -235,6 +257,8 @@ def _request(request: JsonValue) -> dict[str, JsonValue]:
 
 
 def _profile_settings(request: dict[str, JsonValue]) -> tuple[str, dict[str, JsonValue], dict[str, JsonValue], str, str]:
+    if request["profile"] == COUPLED_REQUEST_PROFILE:
+        return ("policy_coupled_implementation", COUPLED_PROFILE, COUPLED_PRODUCER_PROFILE, COUPLED_VALIDATION_SCOPE, COUPLED_IMPLEMENTATION)
     if request["profile"] == MULTI_SITE_REQUEST_PROFILE:
         return ("policy_multi_site_implementation", MULTI_SITE_PROFILE, MULTI_SITE_PRODUCER_PROFILE,
                 MULTI_SITE_VALIDATION_SCOPE, MULTI_SITE_IMPLEMENTATION)
@@ -267,7 +291,9 @@ def _pending_dependencies(request: dict[str, JsonValue]) -> list[JsonValue]:
 
 def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
                report: dict[str, JsonValue], *, prerequisites: bool = False, two_observations: bool = False,
-               multi_product: bool = False, finite_machine: bool = False, network: bool = False, multi_site: bool = False) -> None:
+               multi_product: bool = False, finite_machine: bool = False, network: bool = False, multi_site: bool = False, coupled: bool = False) -> None:
+    if coupled and not multi_site:
+        raise CoreProtocolError("Coupled state requires the explicit multiple-site route")
     if multi_site and (not finite_machine or network):
         raise CoreProtocolError("Multiple-site evidence requires its explicit finite-machine route")
     if network and (not prerequisites or finite_machine or multi_product or two_observations):
@@ -280,7 +306,7 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
         raise CoreProtocolError("Two-observation evidence requires prerequisite closure")
     raw_binding = _record(report["binding"], "Source graph binding")
     staged = network or finite_machine or multi_product or raw_binding.get("schema_version") == "biocompiler.policy_implementation_binding_report.v0.2"
-    binding_profile = (MULTI_SITE_BINDING_PROFILE if multi_site else NETWORK_BINDING_PROFILE if network else FINITE_MACHINE_BINDING_PROFILE if finite_machine else MULTI_PRODUCT_BINDING_PROFILE if multi_product else TWO_OBSERVATION_BINDING_PROFILE if two_observations else
+    binding_profile = (COUPLED_BINDING_PROFILE if coupled else MULTI_SITE_BINDING_PROFILE if multi_site else NETWORK_BINDING_PROFILE if network else FINITE_MACHINE_BINDING_PROFILE if finite_machine else MULTI_PRODUCT_BINDING_PROFILE if multi_product else TWO_OBSERVATION_BINDING_PROFILE if two_observations else
                        "biocompiler.policy_staged_source_graph.v0.1" if staged else "biocompiler.policy_exclusive_source_graph.v0.1")
     observable_profile = "biocompiler.policy_multi_site_observables.v0.1" if multi_site else "biocompiler.policy_staged_observables.v0.1" if staged else "biocompiler.policy_truth_observables.v0.1"
     binding = _object(raw_binding, _BINDING_FIELDS | ({"state_encoding"} if staged else set()), "Source graph binding")
@@ -288,21 +314,21 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
                         | ({"pending_dependencies"} if prerequisites else set()), "Original input admission")
     _claim(binding)
     _claim(admission)
-    if (binding["schema_version"] != (MULTI_SITE_BINDING_REPORT_SCHEMA if multi_site else NETWORK_BINDING_REPORT_SCHEMA if network else FINITE_MACHINE_BINDING_REPORT_SCHEMA if finite_machine else MULTI_PRODUCT_BINDING_REPORT_SCHEMA if multi_product else TWO_OBSERVATION_BINDING_REPORT_SCHEMA if two_observations else
+    if (binding["schema_version"] != (COUPLED_BINDING_REPORT_SCHEMA if coupled else MULTI_SITE_BINDING_REPORT_SCHEMA if multi_site else NETWORK_BINDING_REPORT_SCHEMA if network else FINITE_MACHINE_BINDING_REPORT_SCHEMA if finite_machine else MULTI_PRODUCT_BINDING_REPORT_SCHEMA if multi_product else TWO_OBSERVATION_BINDING_REPORT_SCHEMA if two_observations else
                                      "biocompiler.policy_implementation_binding_report.v0.2" if staged else "biocompiler.policy_implementation_binding_report.v0.1")
             or binding["profile"] != binding_profile or binding["observable_profile"] != observable_profile
             or staged and binding["state_encoding"] != "exact_ordered_source_labels"
             or binding["status"] != "source_graph_bound" or binding["execution"] != "not_performed"
             or admission["schema_version"] != ("biocompiler.policy_realization_admission.v0.2" if prerequisites
                                                 else "biocompiler.policy_realization_admission.v0.1")
-            or admission["profile"] != (MULTI_SITE_REQUEST_PROFILE if multi_site else NETWORK_REQUEST_PROFILE if network else FINITE_MACHINE_REQUEST_PROFILE if finite_machine else MULTI_PRODUCT_REQUEST_PROFILE if multi_product else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
+            or admission["profile"] != (COUPLED_REQUEST_PROFILE if coupled else MULTI_SITE_REQUEST_PROFILE if multi_site else NETWORK_REQUEST_PROFILE if network else FINITE_MACHINE_REQUEST_PROFILE if finite_machine else MULTI_PRODUCT_REQUEST_PROFILE if multi_product else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
                                         PREREQUISITE_REQUEST_PROFILE if prerequisites else REQUEST_PROFILE)
             or admission["resource_profile"] != "biocompiler.policy_realization_inputs.resources.v0.1"
             or admission["status"] != "admitted_inputs" or admission["exploration"] != "not_performed"
             or any(stage[key] != "unassessed" for stage in (binding, admission) for key in ("preservation", "requirements"))):
         raise CoreProtocolError("Implementation report changed a subordinate admission claim")
     if prerequisites:
-        (_multi_site_original if multi_site else _network_original if network else _finite_machine_original if finite_machine else _multi_product_original if multi_product else _two_observation_original if two_observations else _prerequisite_original)(request)
+        (_coupled_original if coupled else _multi_site_original if multi_site else _network_original if network else _finite_machine_original if finite_machine else _multi_product_original if multi_product else _two_observation_original if two_observations else _prerequisite_original)(request)
         if staged and not (multi_product or finite_machine or network) or not _same(admission["pending_dependencies"], _pending_dependencies(request)):
             raise CoreProtocolError("Prerequisite admission changed its truth-only scope or original pending inventory")
     document = _record(request["document"], "Original BuildRequest")
@@ -348,7 +374,7 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
     } | ({"machines", "transitions"} if staged else set()), "Proposed binding")
     if (len(matches) != 1 or binding["catalog_entry_digest"] != matches[0].get("entry_digest")
             or proposed["catalog_entry"] != binding["catalog_entry"]
-            or proposed["schema_version"] != (MULTI_SITE_BINDING_SCHEMA if multi_site else NETWORK_BINDING_SCHEMA if network else FINITE_MACHINE_BINDING_SCHEMA if finite_machine else MULTI_PRODUCT_BINDING_SCHEMA if multi_product else TWO_OBSERVATION_BINDING_SCHEMA if two_observations else
+            or proposed["schema_version"] != (COUPLED_BINDING_SCHEMA if coupled else MULTI_SITE_BINDING_SCHEMA if multi_site else NETWORK_BINDING_SCHEMA if network else FINITE_MACHINE_BINDING_SCHEMA if finite_machine else MULTI_PRODUCT_BINDING_SCHEMA if multi_product else TWO_OBSERVATION_BINDING_SCHEMA if two_observations else
                                               "biocompiler.policy_implementation_binding.v0.2" if staged else "biocompiler.policy_implementation_binding.v0.1")
             or proposed["profile"] != binding["profile"]):
         raise CoreProtocolError("Source binding changed its original catalog entry")
@@ -372,7 +398,7 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
                     raise CoreProtocolError("Staged source anchor identity must be nonempty text")
                 if key == "transitions" and (type(anchor["lane"]) is not int or not 0 <= anchor["lane"] < transition_count):
                     raise CoreProtocolError("Staged transition lane must be a bounded integer")
-        if (not network and proposed["states"] != []) or proposed["rules"] != []:
+        if (not (network or coupled) and proposed["states"] != []) or proposed["rules"] != []:
             raise CoreProtocolError("Staged source binding cannot invent separate state or rule anchors")
     pins: list[JsonValue] = []
     for bridge in bridges:
@@ -389,6 +415,13 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
         _network_anchors(proposed, graph, original_declarations)
     if finite_machine:
         _finite_machine_anchors(proposed, graph, original_declarations)
+    if coupled:
+        anchors = [_object(row, {"source", "register"}, "Coupled private state anchor") for row in _rows(proposed["states"], "Coupled state anchors")]
+        stores = [row for row in original_declarations if row.get("$type") == "StateStore"]
+        if not 2 <= len(stores) <= 4 or not _same([row["source"] for row in anchors], [row["id"] for row in stores]):
+            raise CoreProtocolError("Coupled binding lost its complete ordered private state inventory")
+        if len({str(row["register"]) for row in anchors}) != len(anchors):
+            raise CoreProtocolError("Coupled private states alias one register")
     if multi_product:
         _multi_product_anchors(proposed, graph, original_declarations)
     if two_observations:
@@ -671,7 +704,8 @@ class PolicyImplementationResult:
 def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyImplementationResult:
     request = _request(payload["request"])
     _, _, _, expected_scope, expected_implementation = _profile_settings(request)
-    multi_site = request["profile"] == MULTI_SITE_REQUEST_PROFILE
+    coupled = request["profile"] == COUPLED_REQUEST_PROFILE
+    multi_site = coupled or request["profile"] == MULTI_SITE_REQUEST_PROFILE
     finite_machine = multi_site or request["profile"] == FINITE_MACHINE_REQUEST_PROFILE
     network = request["profile"] == NETWORK_REQUEST_PROFILE
     result = _object(response.result, _RESULT_FIELDS, "Implementation result")
@@ -695,7 +729,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyImpl
     report_hash = _pin(result["report_fingerprint"], report, "Complete report")
     if report["request_fingerprint"] != request_hash or not _same(report["limits"], payload["limits"]):
         raise CoreProtocolError("Preservation changed its original request or execution limits")
-    _authority(response, request, candidate, report, prerequisites=finite_machine or network, finite_machine=finite_machine, network=network, multi_site=multi_site)
+    _authority(response, request, candidate, report, prerequisites=finite_machine or network, finite_machine=finite_machine, network=network, multi_site=multi_site, coupled=coupled)
     _evidence(request, report)
     if response.operation == "replay-policy-implementation" and not _same(result, payload["report"]):
         raise CoreProtocolError("Fresh replay differs from the full saved implementation wrapper")

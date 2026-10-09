@@ -378,7 +378,7 @@ let check_legacy ~admitted ~implementation ~proposed =
 let check_staged ~admitted ~implementation ~proposed =
   let request=A.request admitted and behavior=A.behavior admitted in
   let multi_product=R.is_multi_product request in
-  let finite_machine=R.is_finite_machine request and multi_site=R.is_multi_site request in
+  let finite_machine=R.is_finite_machine request and multi_site=R.is_multi_site request and coupled=R.is_coupled request in
   let document=R.document request and domain=F.specification(A.operating_domain admitted)in
   let implementation=I.of_json ~library:(R.implementation_library request)(I.to_json implementation)in
   require(I.implementation_profile implementation=(if multi_site then I.multi_site_profile else I.staged_profile) &&
@@ -395,7 +395,7 @@ let check_staged ~admitted ~implementation ~proposed =
   and parameter=(if multi_product then None else Some(singleton "fixed product parameter" behavior.parameters))
   and source_machine=singleton "encounter machine" behavior.machines in
   (if finite_machine then
-    require(behavior.rules=[] && behavior.stores=[] &&
+    require(behavior.rules=[] && (if coupled then List.length behavior.stores>=2 && List.length behavior.stores<=4 else behavior.stores=[]) &&
       List.length behavior.effects>=1 && List.length behavior.effects<=8 &&
       List.length behavior.transitions>=1 && List.length behavior.transitions<=32 &&
       List.length source_machine.states>=2 && List.length source_machine.states<=16)
@@ -430,14 +430,17 @@ let check_staged ~admitted ~implementation ~proposed =
   and observation_anchor=singleton "observation anchor"(B.observations proposed)in
   let anchors=B.transitions proposed in
   require(machine_anchor.source=source_machine.machine_id && observation_anchor.source=observation_source.observation_id &&
-    B.rules proposed=[] && B.states proposed=[] &&
+    B.rules proposed=[] &&
+    List.map(fun(s:B.state)->s.source)(B.states proposed)=List.map(fun(s:O.state_store)->s.state_id)behavior.stores &&
     List.map(fun(t:B.transition)->t.source)anchors=List.map(fun(t:O.transition)->t.transition_id)behavior.transitions &&
     List.map(fun(e:B.effect_binding)->e.source)(B.effects proposed)=List.map(fun(e:O.effect_spec)->e.effect_id)behavior.effects)
     "Staged anchors must cover exact original declarations once and in declaration order.";
+  let state_anchor identity=List.find(fun(s:B.state)->s.source=identity)(B.states proposed)in
   let transition_anchor identity=List.find(fun(t:B.transition)->t.source=identity)anchors in
   let effect_anchor identity=List.find(fun(e:B.effect_binding)->e.source=identity)(B.effects proposed)in
   (if finite_machine then
-    require(List.for_all(fun(t:O.transition)->t.machine=source_machine.machine_id && t.assignments=[] &&
+    require(List.for_all(fun(t:O.transition)->t.machine=source_machine.machine_id &&
+      (if coupled then List.map(fun(a:O.assignment)->a.state)t.assignments=List.map(fun(s:O.state_store)->s.state_id)behavior.stores else t.assignments=[]) &&
       List.length t.effects<=1 && not(List.mem t.source source_machine.terminal))behavior.transitions)
       "Finite-machine transitions must retain their sole machine, have at most one effect request and no assignments or terminal reentry."
   else (
@@ -503,6 +506,17 @@ let check_staged ~admitted ~implementation ~proposed =
     value.writers=List.length behavior.transitions && value.retained_capacity>=1|_->false)
     "Machine bank must retain exact ordered state labels, initial/terminal states, writers and attempt capacity.";
   record I.Declaration(path source_machine.machine_id)[ep machine_anchor.bank "snapshot"];
+  if coupled then List.iter2(fun(store:O.state_store)(anchor:B.state)->
+    require(store.value_type=O.Truth_type && store.scope=O.Encounter encounter.encounter_id &&
+      store.lifetime="encounter" && store.reset=None && store.capacity>=2 &&
+      text "overflow"(raw store.state_id)="reject" && text "inheritance"(raw store.state_id)="not_applicable")
+      "Coupled truth stores require encounter ownership, bounded capacity and encounter reset only.";
+    nulls ["duration";"coordination";"contract"](raw store.state_id);source_type "truth"(get "value_type"(raw store.state_id));
+    let initial=match store.initial with O.Truth O.True->I.True|O.Truth O.False->I.False
+      |_->Diagnostic.fail "policy_implementation_source_binding" "Coupled stores require known initial Boolean state."in
+    require(primitive anchor.register=I.Truth_register{initial;writers=List.length behavior.transitions})
+      "Coupled actual register changes source initial state or complete writer inventory.";
+    record I.Declaration(path store.state_id)(outputs(node anchor.register)))behavior.stores(B.states proposed);
   let fixed_product (parameter:O.parameter) =
     let parameter_raw=raw parameter.parameter_id in
     require(text "selection" parameter_raw="fixed")"Staged product must be fixed.";
@@ -542,6 +556,11 @@ let check_staged ~admitted ~implementation ~proposed =
         require(args=[] && get "value" source=Json.Null && ref_matches source "ref" "Observation" observation_source.observation_id &&
           ref_matches source "scope" "Subject" subject.subject_id && endpoint=ep observation_anchor.bank "updated")
           "Finite-machine update event must retain its exact observation, subject and evidence-bank update output."
+    |"state" when coupled->source_type "truth"(get "value_type" source);
+        let identity=O.ref_id(get "ref" source)in
+        require(args=[] && get "value" source=Json.Null && List.exists(fun(s:O.state_store)->s.state_id=identity)behavior.stores &&
+          ref_matches source "ref" "StateStore" identity && ref_matches source "scope" "Encounter" encounter.encounter_id &&
+          endpoint=ep(state_anchor identity).register "value")"Coupled expression changes exact original reservoir ownership."
     |"literal"->source_type "truth"(get "value_type" source);nulls ["ref";"scope"]source;require(args=[])"Literal has operands.";
         let value=match decoded.value with Some(O.Truth value)->truth value|_->Diagnostic.fail "policy_implementation_source_binding" "Staged literal must be truth."in
         output "out";require(actual=I.Truth_constant value)"Staged truth literal differs."
@@ -599,7 +618,7 @@ let check_staged ~admitted ~implementation ~proposed =
     let anchor=List.nth anchors index and source=raw t.transition_id and source_path=path t.transition_id in
     let correlation=if t.on.op="effect_event"then I.Retained_attempt else I.Unbound in
     require(anchor.lane=index && primitive anchor.gate=I.Transition_gate{source=t.source;correlation} &&
-      primitive anchor.commit=I.Transition_commit{destination=t.destination;writes=0;requests=List.length t.effects})
+      primitive anchor.commit=I.Transition_commit{destination=t.destination;writes=List.length t.assignments;requests=List.length t.effects})
       "Staged gate/commit changes source state, correlation, destination or effect count.";
     wire(ep machine_anchor.bank "snapshot")(ep anchor.gate "machine");
     wire(ep anchor.gate "candidate")(ep arbiter("in"^string_of_int index));
@@ -608,6 +627,12 @@ let check_staged ~admitted ~implementation ~proposed =
     expression I.Predicate(source_path^"/on")(get "on" source)(incoming(ep anchor.gate "on"));
     let guard=incoming(ep anchor.gate "guard")in
     expression I.Predicate(source_path^"/when")(get "when" source)guard;guards:= !guards@[t.transition_id,guard];
+    List.iteri(fun ordinal(assignment:O.assignment)->
+      let assignment_path=source_path^"/assignments/"^string_of_int ordinal in
+      wire(ep anchor.commit("write"^string_of_int ordinal))(ep(state_anchor assignment.state).register("write"^string_of_int index));
+      record I.State_write assignment_path [ep anchor.commit("write"^string_of_int ordinal)];
+      expression I.State_write(assignment_path^"/value")
+        (get "value"(List.nth(items "assignments" source)ordinal))(incoming(ep anchor.commit("value"^string_of_int ordinal))))t.assignments;
     record I.Declaration source_path ([ep anchor.gate "candidate";ep arbiter("out"^string_of_int index)]@outputs(node anchor.commit)))behavior.transitions;
   let effect_values=List.map(fun(source_effect:O.effect_spec)->
     let anchor=effect_anchor source_effect.effect_id and source=raw source_effect.effect_id in
@@ -677,6 +702,7 @@ let check_staged ~admitted ~implementation ~proposed =
     |D.Role|D.Subject|D.Encounter->record ~disposition:I.Retained_metadata I.Declaration d.path []
     |D.Clock->record ~disposition:I.Retained_metadata I.Clock d.path []
     |D.Requirement->record ~disposition:I.Obligation I.Requirement d.path [];requirement_expressions d.path d.value
+    |D.State_store when coupled->()
     |D.Observation|D.Effect|D.Machine|D.Transition|D.Parameter->()
     |_->Diagnostic.fail "policy_implementation_source_binding" "Original declaration lacks a staged interpretation.")declarations;
   require(Names.cardinal !used_nodes=List.length nodes && Names.cardinal !used_wires=List.length(I.wires implementation) &&
@@ -693,10 +719,10 @@ let check_staged ~admitted ~implementation ~proposed =
     ({source=t.transition_id;machine=t.machine;gate=anchor.gate;arbiter=anchor.arbiter;lane=anchor.lane;commit=anchor.commit;
       trigger=incoming(ep anchor.gate "on");source_trigger=t.on}:transition))behavior.transitions in
   let expression_values=List.sort(fun(a:expression)(b:expression)->String.compare a.source_path b.source_path)!expressions in
-  let report_value=obj["schema_version",str(if multi_site then "biocompiler.policy_implementation_binding_report.v0.7"
+  let report_value=obj["schema_version",str(if coupled then "biocompiler.policy_implementation_binding_report.v0.8" else if multi_site then "biocompiler.policy_implementation_binding_report.v0.7"
       else if finite_machine then "biocompiler.policy_implementation_binding_report.v0.5"
       else if multi_product then "biocompiler.policy_implementation_binding_report.v0.4" else "biocompiler.policy_implementation_binding_report.v0.2");
-    "profile",str(if multi_site then B.multi_site_profile else if finite_machine then B.finite_machine_profile else if multi_product then B.multi_product_profile else B.staged_profile);
+    "profile",str(if coupled then B.coupled_profile else if multi_site then B.multi_site_profile else if finite_machine then B.finite_machine_profile else if multi_product then B.multi_product_profile else B.staged_profile);
     "observable_profile",str(if multi_site then I.multi_site_observable_profile else I.staged_observable_profile);"status",str "source_graph_bound";
     "request_fingerprint",str(R.fingerprint request);"catalog_bindings_digest",str(R.catalog_bindings_digest request);
     "catalog_entry",str bridge.entry_id;"catalog_entry_digest",str bridge.entry_digest;
@@ -711,7 +737,7 @@ let check_staged ~admitted ~implementation ~proposed =
     "requirements",str "unassessed";"material",str "unassessed";"target_status",str "unassessed";
     "artifact",str "withheld";"export",str "withheld"]in
   {admitted_value=admitted;implementation_value=implementation;environment_value;observation_values;
-   state_values=[];effect_values;rule_values=[];machine_values;transition_values;expression_values;report_value}
+   state_values=List.map(fun(s:B.state)->({source=s.source;register=s.register}:state))(B.states proposed);effect_values;rule_values=[];machine_values;transition_values;expression_values;report_value}
 
 let check_network_metered ~charge:parent_charge ~admitted ~implementation ~proposed =
   (* This independent reconstruction has its own finite work ceiling even when
@@ -1053,6 +1079,8 @@ let check_network_metered ~charge:parent_charge ~admitted ~implementation ~propo
 let check ~admitted ~implementation ~proposed =
   require(R.is_network(A.request admitted)=B.is_network proposed)
     "Original realization and proposed binding must use the same explicit network family.";
+  require(R.is_coupled(A.request admitted)=B.is_coupled proposed)
+    "Original realization and proposed binding must preserve the explicit coupled-state family.";
   require(R.is_multi_site(A.request admitted)=B.is_multi_site proposed)
     "Original realization and proposed binding must use the same explicit multi-site family.";
   require(R.is_finite_machine(A.request admitted)=B.is_finite_machine proposed)

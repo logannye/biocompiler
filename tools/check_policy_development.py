@@ -28,6 +28,11 @@ WORKFLOW = ".github/workflows/policy-development.yml"
 SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "data/researcher_alpha",
                 "examples/researcher_alpha.py", "pyproject.toml")
 SUITES = (
+    ('test_policy_quantitative_composition', ('data/policy_quantitative_composition_v01.json',)),
+    ('test_policy_approximation', ('data/policy_approximation_v01.json',)),
+    ('test_policy_realization_evidence', ('data/policy_realization_evidence_v01.json', 'data/policy_quantitative_network_v01.json')),
+    ('test_policy_quantitative_assurance', ('data/policy_approximation_v01.json', 'data/policy_realization_evidence_v01.json', 'data/policy_quantitative_network_v01.json', 'data/policy_quantitative_composition_v01.json')),
+
     ("test_policy_admitted_ir", ('data/policy_operational_v01.json', 'data/policy_staged_regimen_source_v01.json', 'data/policy_implementation_binding_v01.json')),
     ("test_policy_finite_machine", ('data/policy_finite_machine_v01.json',)),
     ("test_policy_refinement", ('data/policy_finite_machine_v01.json',)),

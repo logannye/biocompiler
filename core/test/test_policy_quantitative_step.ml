@@ -223,9 +223,9 @@ let ()=
     List.map(text "attempt_port")sites=["request0";"request1"] &&
     List.for_all(fun row->get "input" row=Json.Bool true && at["request_endpoint";"port"]row=s "request0")sites)
     "Sampled-step evidence omitted, reordered or misbound a crossing request site";
-  let effect=List.hd(B.effects bound)in
-  require(List.length(B.effects bound)=1 && List.map(fun(value:B.effect_site)->value.initiating_rule)effect.request_sites=["up1";"up2"] &&
-    at["bindings";"attempt_bank"]summary=s effect.bank)
+  let effect_value=List.hd(B.effects bound)in
+  require(List.length(B.effects bound)=1 && List.map(fun(value:B.effect_site)->value.initiating_rule)effect_value.request_sites=["up1";"up2"] &&
+    at["bindings";"attempt_bank"]summary=s effect_value.bank)
     "Repeated crossings were split into independent effects or attempt banks";
   selected_trace bound false;
   selected_trace bound true;
@@ -233,7 +233,7 @@ let ()=
   let check_graph raw=B.check ~admitted:(B.admitted_inputs bound)
     ~implementation:(I.of_json ~library:(R.implementation_library(M.implementation_request original))raw)
     ~proposed:(Binding.of_json(get "binding" candidate))in
-  let bank_port name endpoint=text "node" endpoint=effect.bank && text "port" endpoint=name in
+  let bank_port name endpoint=text "node" endpoint=effect_value.bank && text "port" endpoint=name in
   rejects "crossing commits swapped between actual request ports"(fun()->check_graph
     (edit["wires"](fun wires->a(List.map(fun wire->let consumer=get "consumer" wire in
       if bank_port "request0" consumer then set "consumer"(set "port"(s "request1")consumer)wire

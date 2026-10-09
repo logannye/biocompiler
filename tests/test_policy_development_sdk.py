@@ -417,14 +417,20 @@ class PolicyDevelopmentSelectionSDKTests(unittest.TestCase):
                 commands.append(line.strip())
         self.assertEqual(commands, [
             "python -B tools/check_policy_development.py prepare",
+            "python -B tools/generate_policy_wire_schema.py --check",
+            "python -B tools/check_policy_source_context_coverage.py",
             "python -B tools/check_policy_material_rule_coverage.py",
             "python -B tools/check_policy_public_api_coverage.py",
             "python -B tools/migration_inventory.py --check",
+            "python -B -m tools.generate_policy_quantitative_composition_fixture --check",
+            "python -B -m tools.generate_policy_approximation_fixture --check",
+            "python -B -m tools.generate_policy_realization_evidence_fixture --check",
             "python -B tools/check_policy_development.py run",
             "python -B tools/check_policy_development.py sdk-all",
+            "python -B tools/check_policy_quantitative_assurance.py \\",
         ])
         self.assertLess(text.index("tools/migration_inventory.py --check"), text.index("uses: ocaml/setup-ocaml@"))
-        self.assertEqual(text.count("PYTHONPATH: src"), 1)
+        self.assertEqual(text.count("PYTHONPATH: src"), 3)
         self.assertIn("path: generated/development-feedback/", text)
         self.assertIn("timeout-minutes: 45", text)
 

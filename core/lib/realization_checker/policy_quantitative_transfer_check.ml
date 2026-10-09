@@ -62,9 +62,9 @@ module Make(Charge:sig val charge:int->unit end)=struct
     let law=selected.mechanism in
     let machine=one "one_source_machine" behavior.machines
     and observation=one "one_source_observation" behavior.observations
-    and effect=one "one_source_effect" behavior.effects in
+    and effect_value=one "one_source_effect" behavior.effects in
     fail(String.equal machine.machine_id selected.machine && String.equal observation.observation_id selected.observation &&
-      String.equal effect.effect_id selected.effect)"complete_nominal_source_bindings";
+      String.equal effect_value.effect_id selected.effect_value)"complete_nominal_source_bindings";
     fail(machine.states=List.map(fun(value:Qc.state_value)->value.state)local.values && machine.terminal=[] &&
       machine.lifetime="encounter" && behavior.stores=[] && behavior.rules=[])
       "complete_nonterminal_encounter_grid";
@@ -168,7 +168,7 @@ module Make(Charge:sig val charge:int->unit end)=struct
         else (
           incr moving;
           let transition=one "one_transition_for_each_moving_sample" transitions in
-          fail(transition.destination=destination.state && transition.effects=(if request then[selected.effect]else[]))
+          fail(transition.destination=destination.state && transition.effects=(if request then[selected.effect_value]else[]))
             "exact_conservative_transfer_and_crossing_request";
           if request then crossings:=(transition,truth):: !crossings));
       obj["source",str value.state;"input",str(match input_value with None->"unknown"|Some true->"true"|Some false->"false");
@@ -177,7 +177,7 @@ module Make(Charge:sig val charge:int->unit end)=struct
         "transfer_quanta",Json.int(quanta amount)]) [Some true;Some false;None])local.values in
     fail(List.length behavior.transitions= !moving)"complete_sparse_transfer_transition_inventory";
     let effect_binding=one "one_bound_effect"(B.effects binding)in
-    fail(effect_binding.source=selected.effect)"crossing_request_original_effect_identity";
+    fail(effect_binding.source=selected.effect_value)"crossing_request_original_effect_identity";
     let crossings=List.rev !crossings in
     fail(crossings<>[] && List.length crossings=List.length local.outputs &&
       List.length crossings=List.length effect_binding.request_sites)

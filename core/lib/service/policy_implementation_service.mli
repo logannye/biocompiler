@@ -5,6 +5,10 @@ val validation_scope : string
 val candidate_schema : string
 val profile : Bioc_wire.Json.t
 val producer_profile : Bioc_wire.Json.t
+val coupled_implementation : string
+val coupled_validation_scope : string
+val coupled_profile : Bioc_wire.Json.t
+val coupled_producer_profile : Bioc_wire.Json.t
 val multi_site_implementation : string
 val multi_site_validation_scope : string
 val multi_site_profile : Bioc_wire.Json.t

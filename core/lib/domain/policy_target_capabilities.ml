@@ -29,6 +29,12 @@ let transfer_network_shape = source_shape "bounded_reserved_transfer_network"
 let transfer_pair_shape = source_shape "bounded_conservative_transfer_pair"
   (bound 1 1) (bound 1 1) (bound 4 16) (bound 0 0) (bound 0 0)
   (bound 2 18) (bound 1 1) (bound 1 1) (bound 2 2)
+let coupled_shape = source_shape "bounded_atomic_private_state_machine"
+  (bound 1 1) (bound 1 1) (bound 2 16) (bound 2 4) (bound 0 0)
+  (bound 1 32) (bound 1 8) (bound 1 1) (bound 2 2)
+let composition_shape = source_shape "bounded_component_reserved_transfer_network"
+  (bound 1 1) (bound 1 1) (bound 4 16) (bound 2 4) (bound 0 0)
+  (bound 1 32) (bound 1 1) (bound 1 1) (bound 2 2)
 let network_shape = source_shape "bounded_machine_network"
   (bound 2 4) (bound 2 4) (bound 2 16) (bound 0 4) (bound 0 0)
   (bound 1 32) (bound 1 8) (bound 1 1) (bound 2 2)
@@ -101,6 +107,7 @@ let multi_product = R.multi_product_schema_version,R.multi_product_profile
 let finite = R.finite_machine_schema_version,R.finite_machine_profile
 let network = R.network_schema_version,R.network_profile
 let multi_site = R.multi_site_schema_version,R.multi_site_profile
+let coupled = R.coupled_schema_version,R.coupled_profile
 let specifications = [
   make "implementation" false legacy legacy [truth_shape 1;staged_shape 1]
     (truth_features@staged_features) (truth_limitations@staged_limitations) 256;
@@ -160,7 +167,20 @@ let specifications = [
       "One selected atomic state owner commits all reserved transfers; the complete table retains every edge allocation and exact conservation within each encounter generation.";
       "Reset restores every initial amount; nonzero flows with zero net state change still require a source transition. All-zero allocations use implicit holds.";
       "Graph and model ceilings remain conjunctive; a representable quantity grid alone does not establish backend admission.";
-      "Distributed molecular coordination, continuous kinetics, stochastic uncertainty and empirical transport remain unassessed."]) 64]
+      "Distributed molecular coordination, continuous kinetics, stochastic uncertainty and empirical transport remain unassessed."]) 64;
+  make "coupled_implementation" false coupled coupled [coupled_shape]
+    (finite_features@["multiple_effect_request_sites";"shared_attempt_capacity";"encounter_truth_state";"complete_atomic_state_assignments"])
+    ["Two to four known Boolean encounter stores have one writer machine; every transition assigns the complete ordered store inventory.";
+      "Assignments read one immutable prestate and commit atomically with the machine transition and optional request.";
+      "This implementation target does not establish quantitative meaning, selected component ownership or physical coordination."] 64;
+  make "coupled_quantitative_material" true (M.composition_schema_version,M.composition_profile) coupled [composition_shape]
+    (finite_features@["multiple_effect_request_sites";"shared_attempt_capacity";"encounter_truth_state";"complete_atomic_state_assignments";
+      "named_component_instances";"provider_prerequisite_closure";"exact_sampled_reserved_transfer_network";
+      "complete_cartesian_state_mapping";"declared_order_prestate_reservation";"partitioned_reservoir_storage";"selected_boolean_allocation_signals"])
+    ["Two to four binary reservoirs have separately selected component instances and private truth registers under one supplied atomic coordinator.";
+      "Every selected edge allocation and owner next-value circuit is checked on the complete original Cartesian grid; all writes share one immutable prestate and atomic commit.";
+      "The sixty-four-node graph ceiling and exact single-RNA material-region constraints remain conjunctive; authorable state dimensions alone do not establish material admission.";
+      "Signals establish model-conditional allocation under supplied contracts; physical intercomponent transport, distributed synchronization and experimental function remain unassessed."] 64]
 let unique values = List.fold_left (fun result value -> if List.mem value result then result else result@[value]) [] values
 let descriptor spec = obj [
   "target",str spec.id;"kind",str (if spec.material then "component_material" else "implementation");
@@ -168,7 +188,7 @@ let descriptor spec = obj [
   "realization_schema",str spec.realization_schema_value;"realization_profile",str spec.realization_profile_value;
   "required_inputs",strings (["document";"definitions";"operating_domain";"implementation_library";"catalog_bindings"]@
     (if spec.material then ["component_library";"composition_rule";"catalog_binding";"input_bindings";"resource_bindings";"context"] else [])@
-    (if (spec.id="quantitative_material" || spec.id="step_quantitative_material" || spec.id="transfer_pair_material" || spec.id="transfer_network_material") then ["quantitative"] else []));
+    (if (spec.id="quantitative_material" || spec.id="step_quantitative_material" || spec.id="transfer_pair_material" || spec.id="transfer_network_material" || spec.id="coupled_quantitative_material") then ["quantitative"] else []));
   "source_shapes",Json.Array spec.shapes;
   "features",strings (unique (common_features@spec.features@(if spec.material then material_features else [])));
   "limits",obj (["primitive_models",Json.int 64;"implementation_nodes",Json.int spec.graph_nodes;
@@ -179,7 +199,7 @@ let descriptor spec = obj [
       ["Legacy realization rejects nonempty catalog dependencies and evidence; provider prerequisite closure is not applicable to this family."] else []));
   "deferred_stages",strings (deferred_behavior_stages@
     (if spec.material then deferred_material_stages else [])@
-    (if (spec.id="quantitative_material" || spec.id="step_quantitative_material" || spec.id="transfer_pair_material" || spec.id="transfer_network_material") then ["quantitative_refinement_checking"] else []))]
+    (if (spec.id="quantitative_material" || spec.id="step_quantitative_material" || spec.id="transfer_pair_material" || spec.id="transfer_network_material" || spec.id="coupled_quantitative_material") then ["quantitative_refinement_checking"] else []))]
 let target_ids = List.map (fun spec -> spec.id) specifications
 let find id = match List.find_opt (fun spec -> String.equal spec.id id) specifications with
   | Some spec -> spec

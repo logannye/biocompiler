@@ -47,7 +47,7 @@ let literal_request = {|{"schema_version":"biocompiler.payload_architecture_requ
 let literals () =
   let producer_operations=["compile-architecture";"export-architecture";"compile-policy";
     "compile-policy-implementation";"compile-policy-material";"compile-policy-component-material";
-    "compile-policy-component-selection";"compile-policy-module-material";
+    "compile-policy-component-selection";"compile-policy-module-material";"compile-policy-quantitative-assurance";
     "plan-policy-target";"replay-policy-target-plan"] in
   let base=match Base.handle Protocol.Verify (request "capabilities" (obj [])) with
     | Protocol.Ok,Some value,[] -> value | _ -> failwith "Base capabilities failed" in
@@ -75,7 +75,7 @@ let literals () =
     List.sort String.compare(List.map fst checker_profiles @ ["architecture_producer";
       "policy_operational_producer";"policy_implementation_producer";"policy_material_producer";"policy_component_material_producer";
       "policy_component_selection_producer";"policy_instance_material_producer";"policy_prerequisite_material_producer";"policy_two_observation_material_producer";"policy_multi_member_material_producer";"policy_grounded_helper_material_producer";
-      "policy_network_implementation_producer";"policy_network_material_producer";"policy_finite_machine_implementation_producer";"policy_finite_machine_material_producer";"policy_quantitative_material_producer";"policy_multi_site_implementation_producer";"policy_step_quantitative_material_producer";"policy_transfer_pair_material_producer";"policy_transfer_network_material_producer";"policy_module_material_producer";"policy_target_planning"] @
+      "policy_network_implementation_producer";"policy_network_material_producer";"policy_finite_machine_implementation_producer";"policy_finite_machine_material_producer";"policy_quantitative_material_producer";"policy_multi_site_implementation_producer";"policy_step_quantitative_material_producer";"policy_transfer_pair_material_producer";"policy_transfer_network_material_producer";"policy_module_material_producer";"policy_target_planning";"policy_coupled_implementation_producer";"policy_coupled_quantitative_material_producer";"policy_quantitative_assurance_producer"] @
       List.map fst (Bioc_producer_service.Synthetic_producer_service.profiles @
         Bioc_producer_service.Synthetic_producer_public_service.profiles @
         Bioc_producer_service.Synthetic_inspection_service.profiles)))
@@ -88,7 +88,10 @@ let literals () =
   List.iter(fun(name,operation,profile)->
     require(Json.equal(field name profiles)profile && field "operations" profile=arr[str operation])
       ("Producer profile lost its exact operation: "^name))
-    ["policy_operational_producer","compile-policy",Bioc_service.Policy_operational_service.producer_profile;
+    ["policy_coupled_implementation_producer","compile-policy-implementation",Bioc_service.Policy_implementation_service.coupled_producer_profile;
+     "policy_coupled_quantitative_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.composition_producer_profile;
+     "policy_quantitative_assurance_producer","compile-policy-quantitative-assurance",Bioc_service.Policy_quantitative_assurance_service.producer_profile;
+     "policy_operational_producer","compile-policy",Bioc_service.Policy_operational_service.producer_profile;
      "policy_implementation_producer","compile-policy-implementation",Bioc_service.Policy_implementation_service.producer_profile;
      "policy_network_implementation_producer","compile-policy-implementation",Bioc_service.Policy_implementation_service.network_producer_profile;
      "policy_network_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.network_producer_profile;

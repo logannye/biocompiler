@@ -36,12 +36,12 @@ let initialize bound implementation=
     ~limits:{P.max_work=40_000_000;max_events=400000;max_attempts=32;max_microsteps=30}
 let machine (frame:P.frame)=List.find(fun(value:P.machine_snapshot)->value.binding.slot=Some "e1")frame.machines
 let input bound tick evidence reset feedback=
-  let observation=List.hd(B.observations bound)and effect=List.hd(B.effects bound)in
+  let observation=List.hd(B.observations bound)and effect_value=List.hd(B.effects bound)in
   ({P.tick=tick; lifecycle=(if reset then ["e1",P.Reset]else []);
     observations=(match evidence with None->[]|Some evidence->
       [{P.observation_id="literal/"^string_of_int tick;input_id=observation.input;slot_id="e1";
         observed_tick=tick;observer="cell-1";subject="target-1";evidence}]);
-    feedback=List.map(fun attempt_id->{P.feedback_id="feedback/"^string_of_int tick;input_id=effect.feedback;
+    feedback=List.map(fun attempt_id->{P.feedback_id="feedback/"^string_of_int tick;input_id=effect_value.feedback;
       attempt_id;executor="cell-1";subject="target-1";slot_id="e1";outcome=P.Complete})feedback}:P.input_batch)
 let step bound runtime tick evidence=P.step runtime(input bound tick evidence false [])
 
@@ -75,17 +75,17 @@ let ()=
   let admitted=A.admit ~request ~behavior:(source request)in
   let proposal=G.lower ~admitted ~library:(R.implementation_library request)in
   let bound=B.check ~admitted ~implementation:proposal.implementation ~proposed:proposal.binding in
-  let effect=List.hd(B.effects bound)in
-  require(List.map(fun(site:B.effect_site)->site.initiating_rule)effect.request_sites=["up1";"up2"])
+  let effect_value=List.hd(B.effects bound)in
+  require(List.map(fun(site:B.effect_site)->site.initiating_rule)effect_value.request_sites=["up1";"up2"])
     "Request sites do not retain original transition declaration order";
-  require(effect.initiating_rule="up1" && effect.machine=Some "machine" &&
+  require(effect_value.initiating_rule="up1" && effect_value.machine=Some "machine" &&
     I.implementation_profile proposal.implementation=I.multi_site_profile &&
     P.execution_profile proposal.implementation=P.multi_site_execution_profile)
     "Multi-site profiles or retained machine owner differ";
   let graph=I.to_json proposal.implementation in
   let decode graph=I.of_json ~library:(R.implementation_library request)graph in
   let check graph=bind request(decode graph)proposal.binding in
-  let bank=effect.bank in
+  let bank=effect_value.bank in
   let wire consumer=List.find(fun wire->Json.equal(get "consumer" wire)consumer)(rows "wires" graph)in
   let mutate_wire consumer producer=edit["wires"](fun values->a(List.map(fun wire->
     if Json.equal(get "consumer" wire)consumer then set "producer" producer wire else wire)(Json.array values)))graph in
@@ -130,7 +130,7 @@ let ()=
   let runtime,frame0=step bound runtime 0(Some(P.Known true))in
   require((machine frame0).state="q2" && frame0.creations=[])"First two-quantum increment requested below threshold";
   let runtime,frame1=step bound runtime 1(Some(P.Known true))in
-  let first=List.hd frame1.creations and site1=List.nth effect.request_sites 1 in
+  let first=List.hd frame1.creations and site1=List.nth effect_value.request_sites 1 in
   require(List.length frame1.creations=1 && first.bank=bank && first.gate=site1.gate &&
     first.guard=site1.guard && first.attempt_id="primitive/attempt/1" && (machine frame1).state="q4")
     "Second crossing site did not retain its own exact attempt identity and guard";
@@ -139,7 +139,7 @@ let ()=
   let runtime,frame4=step bound runtime 4(Some(P.Known false))in
   require((machine frame4).state="q1")"Literal decay trace differs from q4 to q1";
   let runtime,frame5=step bound runtime 5(Some(P.Known true))in
-  let second=List.hd frame5.creations and site0=List.hd effect.request_sites in
+  let second=List.hd frame5.creations and site0=List.hd effect_value.request_sites in
   require(List.length frame5.creations=1 && second.bank=first.bank && second.gate=site0.gate &&
     second.guard=site0.guard && second.attempt_id="primitive/attempt/2" && second.attempt_id<>first.attempt_id &&
     (machine frame5).retained_attempts=[second.attempt_id])"Repeated effect sites coalesced attempts or retained the old request";

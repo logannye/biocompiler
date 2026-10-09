@@ -65,6 +65,11 @@ PRIVATE_TEST_TOOLS = {
         {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support"}, "test_support"),
 }
 TESTS = {
+    'test_policy_quantitative_composition': {'bioc_semantics', 'bioc_service', 'bioc_candidate_runtime', 'bioc_wire', 'bioc_compiler', 'bioc_realization_checker', 'zarith', 'bioc_domain', 'bioc_checker', 'bioc_producer_service'},
+    'test_policy_approximation': {'bioc_semantics', 'bioc_service', 'bioc_candidate_runtime', 'bioc_wire', 'bioc_compiler', 'bioc_realization_checker', 'zarith', 'bioc_domain', 'bioc_checker', 'bioc_producer_service'},
+    'test_policy_realization_evidence': {'bioc_semantics', 'bioc_service', 'bioc_candidate_runtime', 'bioc_wire', 'bioc_compiler', 'bioc_realization_checker', 'zarith', 'bioc_domain', 'bioc_checker', 'bioc_producer_service'},
+    'test_policy_quantitative_assurance': {'bioc_semantics', 'bioc_service', 'bioc_candidate_runtime', 'bioc_wire', 'bioc_compiler', 'bioc_realization_checker', 'zarith', 'bioc_domain', 'bioc_checker', 'bioc_producer_service'},
+
     "test_policy_two_observation_material_service": {"bioc_candidate_runtime", "bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_two_observation_test_support"},
     "test_policy_multi_member_material_service": {"bioc_candidate_runtime", "bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_multi_member_test_support"},
     "test_policy_grounded_helper_material_service": {"bioc_candidate_runtime", "bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_grounded_helper_test_support"},
@@ -630,6 +635,10 @@ def check_boundaries(root: Path):
                     "test_policy_staged_generation": ["policy_staged_realization_request_v01.json"],
                     "test_policy_admitted_ir": ["policy_operational_v01.json", "policy_staged_regimen_source_v01.json", "policy_implementation_binding_v01.json"],
                     "test_policy_finite_machine": ["policy_finite_machine_v01.json"],
+                    'test_policy_quantitative_composition': ['policy_quantitative_composition_v01.json'],
+                    'test_policy_approximation': ['policy_approximation_v01.json'],
+                    'test_policy_realization_evidence': ['policy_realization_evidence_v01.json', 'policy_quantitative_network_v01.json'],
+                    'test_policy_quantitative_assurance': ['policy_approximation_v01.json', 'policy_realization_evidence_v01.json', 'policy_quantitative_network_v01.json', 'policy_quantitative_composition_v01.json'],
                     "test_policy_refinement": ["policy_finite_machine_v01.json"],
                     "test_policy_quantitative_network": ["policy_quantitative_network_v01.json", "policy_quantitative_transfer_v01.json"],
                     "test_policy_quantitative_transfer": ["policy_quantitative_transfer_v01.json", "policy_quantitative_step_v01.json"],

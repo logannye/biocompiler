@@ -273,9 +273,9 @@ let ()=
     List.map(text "attempt_port")sites=["request0";"request1"] &&
     List.for_all(fun row->get "input" row=Json.Bool true && at["request_endpoint";"port"]row=s "request0")sites)
     "Network checking pruned an unreachable crossing or detached its request lane";
-  let effect=List.hd(B.effects bound)in
-  require(List.length(B.effects bound)=1 && List.map(fun(value:B.effect_site)->value.initiating_rule)effect.request_sites=
-    ["forward4";"forward5"] && at["bindings";"attempt_bank"]summary=s effect.bank &&
+  let effect_value=List.hd(B.effects bound)in
+  require(List.length(B.effects bound)=1 && List.map(fun(value:B.effect_site)->value.initiating_rule)effect_value.request_sites=
+    ["forward4";"forward5"] && at["bindings";"attempt_bank"]summary=s effect_value.bank &&
     List.length(B.transitions bound)=7 && List.length(I.nodes(B.implementation bound))=21)
     "Joint transfer ownership or sparse source/graph inventory changed";
   selected_trace bound false;

@@ -194,11 +194,24 @@ COMPONENT_TRANSFER_NETWORK_SOURCES = tuple(sorted(
     for directory, name in (("domain", "policy_quantitative_network_contract"),
                             ("realization_checker", "policy_quantitative_network_check"))
     for suffix in ("ml", "mli")))
+COMPONENT_ASSURED_SOURCES = tuple(sorted([
+    *[f"core/lib/{directory}/{name}.{suffix}" for directory, name in (
+        ("domain", "policy_quantitative_composition_contract"), ("realization_checker", "policy_quantitative_composition_check"),
+        ("domain", "policy_approximation_contract"), ("realization_checker", "policy_approximation_check"),
+        ("domain", "policy_realization_evidence_contract"), ("realization_checker", "policy_realization_evidence_check"),
+        ("domain", "policy_quantitative_assurance_request"), ("service", "policy_quantitative_assurance_service"),
+        ("producer_service", "policy_quantitative_assurance_producer"),
+    ) for suffix in ("ml", "mli")],
+    "src/biocompiler/policy/quantitative_composition.py", "src/biocompiler/policy/approximation.py",
+    "src/biocompiler/policy/realization_evidence.py", "src/biocompiler/policy/quantitative_assurance.py",
+    "src/biocompiler/core_policy_quantitative_assurance.py",
+]))
 COMPONENT_SOURCES = tuple(sorted((*COMPONENT_ROUTE_SOURCES, *COMPONENT_SHARED_SOURCES,
                                   *COMPONENT_STAGED_SOURCES, *COMPONENT_MULTI_MEMBER_SOURCES,
                                   *COMPONENT_GROUNDED_HELPER_SOURCES, *COMPONENT_CONGRUENCE_SOURCES,
                                   *COMPONENT_REFINEMENT_SOURCES, *COMPONENT_QUANTITATIVE_SOURCES, *COMPONENT_MODULE_LINKING_SOURCES, *COMPONENT_NETWORK_SOURCES,
-                                  *COMPONENT_TARGET_PLANNING_SOURCES, *COMPONENT_TRANSFER_SOURCES, *COMPONENT_TRANSFER_NETWORK_SOURCES)))
+                                  *COMPONENT_TARGET_PLANNING_SOURCES, *COMPONENT_TRANSFER_SOURCES, *COMPONENT_TRANSFER_NETWORK_SOURCES,
+                                  *COMPONENT_ASSURED_SOURCES)))
 COMPONENT_REASON = "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
 REFINEMENT_REASON = "Separate named summaries of fresh component-route checker capabilities; no original whole-kernel admission or export authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
 ROUTE_EXCEPTIONS.update({path: COMPONENT_REASON for path in COMPONENT_ROUTE_SOURCES})
@@ -209,6 +222,8 @@ TRANSFER_REASON = "Separate conservative transfer-pair component profile; no ori
 ROUTE_EXCEPTIONS.update({path: TRANSFER_REASON for path in COMPONENT_TRANSFER_SOURCES})
 TRANSFER_NETWORK_REASON = "Separate bounded reserved-transfer network component profile; no original whole-kernel authority. Declared-order prestate reservations, one atomic owner and law-derived flow summaries are indexed independently in policy-component-rule-coverage-v0.1.json."
 ROUTE_EXCEPTIONS.update({path: TRANSFER_NETWORK_REASON for path in COMPONENT_TRANSFER_NETWORK_SOURCES})
+ASSURED_REASON = "Separate quantitative component composition, finite approximation and supplied-measurement assurance routes; no original whole-kernel authority. Fresh formal, numerical and measurement-compatibility claims remain distinct in policy-component-rule-coverage-v0.1.json."
+ROUTE_EXCEPTIONS.update({path: ASSURED_REASON for path in COMPONENT_ASSURED_SOURCES})
 MODULE_LINKING_REASON = "Separate complete module-source elaboration and linked component material route; no original whole-kernel authority. Exact interface, ownership, source lineage and fresh linked material claims are indexed independently in policy-component-rule-coverage-v0.1.json."
 ROUTE_EXCEPTIONS.update({path: MODULE_LINKING_REASON for path in COMPONENT_MODULE_LINKING_SOURCES})
 NETWORK_REASON = "Separate bounded interacting-machine component route; no original whole-kernel authority. Explicit store ownership, complete-policy arbitration groups and whole-program checking are indexed in policy-component-rule-coverage-v0.1.json."
@@ -224,8 +239,10 @@ EXTRA_SOURCES += ("core/lib/domain/architecture_contract.ml", "core/lib/domain/a
                   "src/biocompiler/core_policy_component_selection.py", "src/biocompiler/policy/component_selection.py",
                   "src/biocompiler/core_policy_implementation.py", "src/biocompiler/policy/patterns.py",
                   "src/biocompiler/policy/implementation.py")
-EXTRA_SOURCES += tuple(path for path in (*COMPONENT_REFINEMENT_SOURCES, *COMPONENT_QUANTITATIVE_SOURCES, *COMPONENT_MODULE_LINKING_SOURCES, *COMPONENT_TARGET_PLANNING_SOURCES) if path.endswith(".py"))
+EXTRA_SOURCES += tuple(path for path in (*COMPONENT_REFINEMENT_SOURCES, *COMPONENT_QUANTITATIVE_SOURCES, *COMPONENT_MODULE_LINKING_SOURCES, *COMPONENT_TARGET_PLANNING_SOURCES, *COMPONENT_ASSURED_SOURCES) if path.endswith(".py"))
 COMPONENT_LEDGER = "protocol/policy-component-rule-coverage-v0.1.json"
+COMPONENT_ASSURED_RULE_IDS = ("component.atomic_quantitative_composition", "component.finite_approximation",
+                              "component.parameter_measurement_evidence", "component.quantitative_assurance")
 COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "component.assembly_rule", "component.ordered_union",
     "component.original_request", "component.context", "component.conjunction", "component.production", "component.export", "component.sdk",
     "component.selection_request_codec", "component.material_candidate_codec",
@@ -235,7 +252,7 @@ COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "compone
     "component.multi_member_composition", "component.grounded_helper_composition",
     "component.candidate_transition_congruence", "component.finite_machine_composition",
     "component.named_refinement", "component.sampled_quantitative_material", "component.checked_module_linking", "component.machine_network",
-    "component.target_planning", "component.sampled_step_quantitative_material", "component.conservative_transfer_pair_material", "component.reserved_transfer_network_material")
+    "component.target_planning", "component.sampled_step_quantitative_material", "component.conservative_transfer_pair_material", "component.reserved_transfer_network_material") + COMPONENT_ASSURED_RULE_IDS
 COMPONENT_INSTANCE_WITNESSES = tuple(sorted([
     "core/test/test_policy_instance_assembly_rule.ml",
     "core/test/test_policy_instance_material_service.ml",
@@ -368,7 +385,19 @@ COMPONENT_TRANSFER_NETWORK_WITNESSES = (
     "core/test/data/policy_quantitative_network_v01.json", "core/test/test_policy_quantitative_network.ml",
     "tests/test_policy_quantitative_network.py", "tools/generate_policy_quantitative_network_fixture.py",
 )
+COMPONENT_ASSURED_WITNESSES = (
+    "core/test/data/policy_quantitative_composition_v01.json", "core/test/test_policy_quantitative_composition.ml",
+    "tests/test_policy_quantitative_composition.py", "tools/generate_policy_quantitative_composition_fixture.py",
+    "core/test/data/policy_approximation_v01.json", "core/test/test_policy_approximation.ml",
+    "tests/test_policy_approximation.py", "tools/generate_policy_approximation_fixture.py",
+    "core/test/data/policy_realization_evidence_v01.json", "core/test/test_policy_realization_evidence.ml",
+    "tests/test_policy_realization_evidence.py", "tools/generate_policy_realization_evidence_fixture.py",
+    "core/test/test_policy_quantitative_assurance.ml", "tests/test_policy_quantitative_assurance.py",
+    "tools/check_policy_quantitative_assurance.py", "tools/check_policy_quantitative_assurance_prebuilt.py",
+    "tests/test_policy_quantitative_assurance_campaign.py",
+)
 COMPONENT_WITNESSES = tuple(sorted([
+    *COMPONENT_ASSURED_WITNESSES,
     *COMPONENT_TRANSFER_NETWORK_WITNESSES,
     *COMPONENT_TRANSFER_WITNESSES,
     *COMPONENT_STEP_QUANTITATIVE_WITNESSES,
@@ -413,6 +442,9 @@ TARGET_PLANNING_LIMITATION = "Target planning performs bounded diagnostic prepar
 STEP_QUANTITATIVE_LIMITATION = "Exact sampled step laws use finite grids and separately pinned per-site request and authorization ports into one shared attempt bank. Complete source-domain preservation, selected component contracts, atomic resource capacity and exact material checks remain conjunctive. No approximation, continuous kinetics, calibrated mechanism or empirical function is established; this source inventory performs no native execution."
 TRANSFER_LIMITATION = "A conservative transfer pair uses one immutable prestate and one simultaneous donor/receiver update on the complete finite product grid. Conservation is conditional on accepted samples within one encounter generation; reset restores the declared pair. Exact selected-component, whole-domain, resource and material checks remain required. Physical transport, continuous kinetics and empirical function remain unassessed; this inventory performs no native execution."
 TRANSFER_NETWORK_LIMITATION = "Reserved transfer networks derive ordered edge allocations from a supplied joint law under one atomic owner. Source and candidate runtime expose matching net states and effect requests, not measured per-edge flux. Conservation excludes reset; incoming stock and outgoing freed room are unavailable within a sample. No independent physical transport, distributed atomicity or empirical function is established; this source inventory performs no native execution."
+ASSURED_LIMITATION = "Coupled components use supplied single-prestate atomic coordination with binary private reservoir stores. Finite approximation bounds concern the explicitly bounded numerical relation only; supplied interval evidence establishes compatibility with declared criteria, not authenticity, statistical coverage or biological function. Fresh exact material checking remains separate, and only an explicit compatibility requirement gates export. These source inventories perform no native execution and preserve all historical evidence boundaries."
+BEFORE_ASSURED_COMPONENT_METADATA_SHA256 = "a2d26a5dfa167989898f3953c431a2feb841779453a5199a66dcaa50a360c5f7"
+BEFORE_ASSURED_METADATA_SHA256 = "6c621d54364f41fa6f5b041145ec7bc144859cbdf5066176b32758cad9d7c5da"
 BEFORE_TRANSFER_NETWORK_COMPONENT_METADATA_SHA256 = "2f9ff3a35351630b7d0f6e93e536d226e82902ef86b540470afd92c326ac0b00"
 BEFORE_TRANSFER_NETWORK_METADATA_SHA256 = "6a1bb4b715c668bccc6197617758eea37ea66a75d263e9e0b3d53596c8b116a6"
 BEFORE_TRANSFER_COMPONENT_METADATA_SHA256 = "9aa04a4372f754fcc7ff3947f25a8bbc773dcf13c3cf06ef49df0ae4d36384ed"
@@ -430,7 +462,7 @@ BEFORE_QUANTITATIVE_COMPONENT_METADATA_SHA256 = "339870f87976d93e774e4d9ac29d741
 BEFORE_REFINEMENT_METADATA_SHA256 = "7f2f1b2ae98833e27d959117dfbc2d83de612e670216412a34e9fcd1ba7464f5"
 BEFORE_REFINEMENT_COMPONENT_METADATA_SHA256 = "7b563303ab25cec0d9c394e9113914da079155d9ce73125225e9f9a2f9b61fdd"
 BEFORE_FINITE_MACHINE_COMPONENT_METADATA_SHA256 = "394152e8ccbb347e9f272be773f44a1dab444895c6b4babd413d34c3c7a4db5b"
-COMPONENT_METADATA_SHA256 = "a2d26a5dfa167989898f3953c431a2feb841779453a5199a66dcaa50a360c5f7"
+COMPONENT_METADATA_SHA256 = "56656deef53d9b82a49860dd68b6eaa0f9a075610e7b8c46ea88ba9cd7796474"
 
 
 class CoverageError(ValueError):
@@ -563,8 +595,17 @@ def component_metadata_before_target_planning(ledger: dict[str, Any]) -> dict[st
             "limitations": [value for value in metadata["limitations"] if value != TARGET_PLANNING_LIMITATION]}
 
 
-def component_metadata_before_transfer_network(ledger: dict[str, Any]) -> dict[str, Any]:
+def component_metadata_before_assured(ledger: dict[str, Any]) -> dict[str, Any]:
     metadata = component_metadata(ledger)
+    return {**metadata,
+            "rules": [row for row in metadata["rules"] if row["id"] not in COMPONENT_ASSURED_RULE_IDS],
+            "source_paths": [path for path in metadata["source_paths"] if path not in COMPONENT_ASSURED_SOURCES],
+            "witness_paths": [path for path in metadata["witness_paths"] if path not in COMPONENT_ASSURED_WITNESSES],
+            "limitations": [value for value in metadata["limitations"] if value != ASSURED_LIMITATION]}
+
+
+def component_metadata_before_transfer_network(ledger: dict[str, Any]) -> dict[str, Any]:
+    metadata = component_metadata_before_assured(ledger)
     return {**metadata,
             "rules": [row for row in metadata["rules"] if row["id"] != "component.reserved_transfer_network_material"],
             "source_paths": [path for path in metadata["source_paths"] if path not in COMPONENT_TRANSFER_NETWORK_SOURCES],
@@ -589,11 +630,17 @@ def component_metadata_before_step_quantitative(ledger: dict[str, Any]) -> dict[
             "limitations": [value for value in metadata["limitations"] if value != STEP_QUANTITATIVE_LIMITATION]}
 
 
-def metadata_before_transfer_network(ledger: dict[str, Any]) -> dict[str, Any]:
+def metadata_before_assured(ledger: dict[str, Any]) -> dict[str, Any]:
     return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
             "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
-                                       for row in ledger["sources"] if row["path"] not in COMPONENT_TRANSFER_NETWORK_SOURCES],
+                                       for row in ledger["sources"] if row["path"] not in COMPONENT_ASSURED_SOURCES],
             "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+
+
+def metadata_before_transfer_network(ledger: dict[str, Any]) -> dict[str, Any]:
+    metadata = metadata_before_assured(ledger)
+    return {**metadata, "source_classifications": [row for row in metadata["source_classifications"]
+                                                  if row["path"] not in COMPONENT_TRANSFER_NETWORK_SOURCES]}
 
 
 def metadata_before_transfer(ledger: dict[str, Any]) -> dict[str, Any]:
@@ -756,6 +803,10 @@ def check_component(root: Path = ROOT, ledger: Any | None = None) -> dict[str, A
                           separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(transfer_network_previous) == BEFORE_TRANSFER_NETWORK_COMPONENT_METADATA_SHA256,
             "Changed pre-transfer-network component meaning/witness/provenance metadata")
+    assured_previous = json.dumps(component_metadata_before_assured(ledger), sort_keys=True,
+                          separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(assured_previous) == BEFORE_ASSURED_COMPONENT_METADATA_SHA256,
+            "Changed pre-assured quantitative component meaning/witness/provenance metadata")
     metadata = json.dumps(component_metadata(ledger), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(metadata) == COMPONENT_METADATA_SHA256, "Changed reviewed component meaning/witness/provenance metadata")
     return {"rules": len(rules), "sources": len(COMPONENT_SOURCES), "witness_sources": len(COMPONENT_WITNESSES),
@@ -882,6 +933,10 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
                           separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(transfer_network_previous) == BEFORE_TRANSFER_NETWORK_METADATA_SHA256,
             "Changed pre-transfer-network original whole-kernel meaning/classification metadata")
+    assured_previous = json.dumps(metadata_before_assured(ledger), sort_keys=True,
+                          separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(assured_previous) == BEFORE_ASSURED_METADATA_SHA256,
+            "Changed pre-assured quantitative whole-kernel meaning/witness/provenance metadata")
     return {"schema_version": SCHEMA, "status": "source_inventory_current", "claim_scope": CLAIM,
             "rules": len(rules), "sources": len(sources), "witness_sources": len(witnesses),
             "rules_with_pending_witnesses": pending, "semantic_proof": "not_established", "test_execution": "not_performed",

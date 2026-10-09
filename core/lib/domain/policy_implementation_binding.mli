@@ -2,6 +2,8 @@
     they carry no correspondence, execution, material or export authority. *)
 open Bioc_wire
 
+val coupled_schema_version : string
+val coupled_profile : string
 val schema_version : string
 val profile : string
 val staged_schema_version : string
@@ -40,4 +42,5 @@ val is_multi_product : t -> bool
 
 val is_finite_machine : t -> bool
 val is_network : t -> bool
+val is_coupled : t -> bool
 val is_multi_site : t -> bool

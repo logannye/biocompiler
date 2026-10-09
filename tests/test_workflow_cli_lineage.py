@@ -96,11 +96,17 @@ class WorkflowCliLineageTests(unittest.TestCase):
             "src/biocompiler/core_policy_operational.py", "src/biocompiler/core_policy_implementation.py",
             "src/biocompiler/core_policy_material.py", "src/biocompiler/core_policy_component_material.py",
             "src/biocompiler/core_policy_component_selection.py",
+            'src/biocompiler/core_policy_module_linking.py',
+            'src/biocompiler/core_policy_planning.py',
+            'src/biocompiler/core_policy_quantitative_assurance.py',
+            'src/biocompiler/core_policy_refinement.py',
+
             *["src/biocompiler/policy/" + name + ".py" for name in (
                 "__init__", "behavior", "catalog", "chassis", "cli", "coordination", "deployment",
                 "effects", "entities", "examples", "handoff", "inspection", "logic", "model", "native",
                 "observations", "patterns", "programs", "requirements", "serialization", "space",
-                "state", "time", "validation", "values", "operational", "implementation", "material", "component_material", "component_selection", "research_project")]]))
+                "state", "time", "validation", "values", "operational", "implementation", "material", "component_material", "component_selection", "research_project", "approximation", "module_linking", "modules",
+                "planning", "quantitative", "quantitative_assurance", "quantitative_composition", "realization_evidence", "refinement", "typed")]]))
         self.assertEqual(receipt["schema_version"], "biocompiler.workflow_cli_source_lineage.v4")
         self.assertEqual(receipt["packaging_metadata_counterpart"], lineage.packaging.counterpart()[1])
         self.assertEqual(receipt["actual_capture"], before)

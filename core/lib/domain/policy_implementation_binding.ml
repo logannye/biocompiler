@@ -13,6 +13,8 @@ let network_schema_version = "biocompiler.policy_implementation_binding.v0.6"
 let network_profile = "biocompiler.policy_network_source_graph.v0.1"
 let multi_site_schema_version = "biocompiler.policy_implementation_binding.v0.7"
 let multi_site_profile = "biocompiler.policy_multi_site_source_graph.v0.1"
+let coupled_schema_version="biocompiler.policy_implementation_binding.v0.8"
+let coupled_profile="biocompiler.policy_coupled_state_source_graph.v0.1"
 type observation = { source:string; bank:string; input:string }
 type state = { source:string; register:string }
 type effect_binding = { source:string; bank:string; feedback:string }
@@ -21,7 +23,7 @@ type machine = { source:string; bank:string }
 type transition = rule
 type t = { raw:Json.t; entry:string; observation_values:observation list;
   state_values:state list; effect_values:effect_binding list; rule_values:rule list;
-  machine_values:machine list; transition_values:transition list; staged:bool; two_observation:bool; multi_product:bool; finite_machine:bool; network:bool; multi_site:bool }
+  machine_values:machine list; transition_values:transition list; staged:bool; two_observation:bool; multi_product:bool; finite_machine:bool; network:bool; multi_site:bool; coupled:bool }
 let get key value = Json.field key(Json.object_fields value)
 let text key value = Json.string(get key value)
 let require condition message = Diagnostic.require condition "policy_implementation_binding" message
@@ -39,8 +41,10 @@ let of_json raw =
   let fields=Json.object_fields raw in
   let multi_product=List.assoc_opt "schema_version" fields=Some(Json.String multi_product_schema_version) &&
     List.assoc_opt "profile" fields=Some(Json.String multi_product_profile) in
-  let multi_site=List.assoc_opt "schema_version" fields=Some(Json.String multi_site_schema_version) &&
-    List.assoc_opt "profile" fields=Some(Json.String multi_site_profile) in
+  let coupled=List.assoc_opt "schema_version" fields=Some(Json.String coupled_schema_version) &&
+    List.assoc_opt "profile" fields=Some(Json.String coupled_profile)in
+  let multi_site=coupled || (List.assoc_opt "schema_version" fields=Some(Json.String multi_site_schema_version) &&
+    List.assoc_opt "profile" fields=Some(Json.String multi_site_profile)) in
   let finite_machine=multi_site || (List.assoc_opt "schema_version" fields=Some(Json.String finite_machine_schema_version) &&
     List.assoc_opt "profile" fields=Some(Json.String finite_machine_profile)) in
   let network=List.assoc_opt "schema_version" fields=Some(Json.String network_schema_version) &&
@@ -55,7 +59,7 @@ let of_json raw =
     "Unsupported source/graph binding schema/profile.";
   let observation_values=decode (if network then 4 else if two_observation then 2 else 1) ["source";"bank";"input"](fun v->
     ({source=name "source" v;bank=name "bank" v;input=name "input" v}:observation))(get "observations" raw)
-  and state_values=decode (if network then 4 else 2) ["source";"register"](fun v->
+  and state_values=decode (if network || coupled then 4 else 2) ["source";"register"](fun v->
     ({source=name "source" v;register=name "register" v}:state))(get "states" raw)
   and effect_values=decode (if network || finite_machine then 8 else if staged then 2 else 1) ["source";"bank";"feedback"](fun v->
     ({source=name "source" v;bank=name "bank" v;feedback=name "feedback" v}:effect_binding))(get "effects" raw)
@@ -93,12 +97,12 @@ let of_json raw =
   unique "activation gate" (List.map(fun(v:rule)->v.gate)(rule_values@transition_values));
   unique "activation commit" (List.map(fun(v:rule)->v.commit)(rule_values@transition_values));
   if staged then (
-    (if network then require(rule_values=[]) "Network binding has no separate rules."
+    (if network || coupled then require(rule_values=[]) "Network binding has no separate rules."
      else require(state_values=[] && rule_values=[]) "Staged binding has no separate rules or truth stores.");
     unique "effect bank" (List.map(fun(v:effect_binding)->v.bank)effect_values);
     unique "effect feedback" (List.map(fun(v:effect_binding)->v.feedback)effect_values));
   {raw;entry=name "catalog_entry" raw;observation_values;state_values;effect_values;rule_values;
-   machine_values;transition_values;staged;two_observation;multi_product;finite_machine;network;multi_site}
+   machine_values;transition_values;staged;two_observation;multi_product;finite_machine;network;multi_site;coupled}
 let to_json value=value.raw
 let fingerprint value=Canonical.fingerprint value.raw
 let catalog_entry value=value.entry
@@ -116,4 +120,5 @@ let is_multi_product value=value.multi_product
 let is_finite_machine value=value.finite_machine
 let is_network value=value.network
 
+let is_coupled value=value.coupled
 let is_multi_site value=value.multi_site

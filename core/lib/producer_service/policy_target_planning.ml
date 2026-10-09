@@ -146,7 +146,8 @@ let plan raw =
         get "profile" raw_original=s (C.realization_profile target_id))
         "Realization request schema/profile differs from the selected installed target.";
       Meter.preflight raw_original;
-      if C.realization_schema target_id=R.multi_site_schema_version then R.of_multi_site_json raw_original
+      if C.realization_schema target_id=R.coupled_schema_version then R.of_coupled_json raw_original
+      else if C.realization_schema target_id=R.multi_site_schema_version then R.of_multi_site_json raw_original
       else if C.realization_schema target_id=R.network_schema_version then R.of_network_json raw_original
       else if C.realization_schema target_id=R.finite_machine_schema_version then R.of_finite_machine_json raw_original
       else if C.realization_schema target_id=R.multi_product_schema_version then R.of_multi_product_json raw_original

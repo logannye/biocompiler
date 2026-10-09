@@ -18,6 +18,7 @@ module Admission = Bioc_checker.Policy_realization_admission
 module W = Bioc_checker.Work_budget
 module E = Bioc_domain.Construction_assessment
 module Transfer = Policy_quantitative_transfer_check
+module Composition = Policy_quantitative_composition_check
 module Network = Policy_quantitative_network_check
 let schema_version="biocompiler.policy_quantitative_assessment.v0.1"
 let profile=Qc.profile
@@ -67,9 +68,9 @@ module Make(Charge:sig val charge:int->unit end)=struct
     fail(R.is_multi_site request=law.multi_site)"explicit_quantitative_request_site_family";
     let machine=one "one_source_machine" behavior.machines
     and observation=one "one_source_observation" behavior.observations
-    and effect=one "one_source_effect" behavior.effects in
+    and effect_value=one "one_source_effect" behavior.effects in
     fail(String.equal machine.machine_id selected.machine && String.equal observation.observation_id selected.observation &&
-      String.equal effect.effect_id selected.effect)"complete_nominal_source_bindings";
+      String.equal effect_value.effect_id selected.effect_value)"complete_nominal_source_bindings";
     fail(machine.states=List.map(fun(value:Qc.state_value)->value.state)local.values && machine.terminal=[] &&
       machine.lifetime="encounter" && behavior.stores=[] && behavior.rules=[])
       "complete_nonterminal_encounter_grid";
@@ -155,13 +156,13 @@ module Make(Charge:sig val charge:int->unit end)=struct
         let transitions=List.filter(fun(transition:O.transition)->transition.source=value.state && polarity transition.guard=Some truth)
           behavior.transitions in
         let transition=one "one_transition_for_each_known_sample" transitions in
-        fail(transition.destination=destination.state && transition.effects=(if request then[selected.effect]else[]))
+        fail(transition.destination=destination.state && transition.effects=(if request then[selected.effect_value]else[]))
           "exact_saturating_law_and_unique_crossing_request";
         if request then crossings:=(transition,truth):: !crossings);
       obj["source",str value.state;"input",str(match input_value with None->"unknown"|Some true->"true"|Some false->"false");
         "destination",str destination.state;"request",Json.Bool request]) [Some true;Some false;None])local.values in
     let effect_binding=one "one_bound_effect"(B.effects binding) in
-    fail(effect_binding.source=selected.effect)"crossing_request_original_effect_identity";
+    fail(effect_binding.source=selected.effect_value)"crossing_request_original_effect_identity";
     let check_output boundary model (transition_binding:B.transition)=
       let output=find "quantitative_request_boundary_absent"
         (fun(value:F.boundary_port)->value.boundary_id=boundary)(F.boundary_ports fragment) in
@@ -206,7 +207,7 @@ module Make(Charge:sig val charge:int->unit end)=struct
     let crossing,_=one "exactly_one_upward_threshold_initiator" !crossings in
     let transition_binding=find "crossing_transition_binding_absent"
       (fun(value:B.transition)->value.source=crossing.transition_id)(B.transitions binding) in
-    fail(effect_binding.source=selected.effect && effect_binding.initiating_rule=crossing.transition_id)
+    fail(effect_binding.source=selected.effect_value && effect_binding.initiating_rule=crossing.transition_id)
       "crossing_request_original_effect_identity";
     let actual_output,port=check_output local.output_boundary local.output_model transition_binding in
     obj["machine_bank",str actual_bank.node_id;"observation_bank",str actual_input.node_id;
@@ -215,7 +216,12 @@ module Make(Charge:sig val charge:int->unit end)=struct
 end
 
 let check ?parent ?(maximum=max_work) ~request ~context ()=
-  if R.is_transfer_network request then (
+  if R.is_quantitative_composition request then (
+    let result=Composition.check ?parent ~maximum ~request ~context ()in
+    let report_value=Composition.report result and outcome_value=Composition.outcome result in
+    let accepted_value=Option.map(fun checked->{request_value=Composition.request checked;evidence_value=Composition.evidence checked})(Composition.accepted result)in
+    {report_value;outcome_value;accepted_value})
+  else if R.is_transfer_network request then (
     let result=Network.check ?parent ~maximum ~request ~context ()in
     let report_value=Network.report result and outcome_value=Network.outcome result in
     let accepted_value=Option.map(fun checked->

@@ -167,10 +167,10 @@ let ()=
   let catalog=Bioc_domain.Policy_target_capabilities.catalog in
   let expected_targets=["implementation";"finite_machine_implementation";"network_implementation";
     "component_material";"instance_material";"prerequisite_material";"two_observation_material";
-    "multi_member_material";"grounded_helper_material";"finite_machine_material";"quantitative_material";"network_material";"multi_site_implementation";"step_quantitative_material";"transfer_pair_material";"transfer_network_material"]in
+    "multi_member_material";"grounded_helper_material";"finite_machine_material";"quantitative_material";"network_material";"multi_site_implementation";"step_quantitative_material";"transfer_pair_material";"transfer_network_material";"coupled_implementation";"coupled_quantitative_material"]in
   require(List.map(text "target")(rows "targets" catalog)=expected_targets &&
     Bioc_domain.Policy_target_capabilities.catalog_fingerprint=Canonical.fingerprint catalog &&
-    Canonical.fingerprint catalog="a963318c8eb9ae742b4c8d6d21b860dbb2fd58066f1a3144c760178bb0db2c7a")
+    Canonical.fingerprint catalog="fe414a3f60668dd1466f4a6b1999067f196936aa85df4c2b6747f7190e20d765")
     "Installed planning catalog omitted or relabeled an existing exact target";
   let partial=envelope "network_implementation" document in
   let partial_wrapper,partial_report=expect_status "missing_inputs" "operational_admission" partial in

@@ -219,16 +219,16 @@ let check_network_source request document (behavior:O.behavior) =
         "Network truth operation has unsupported arity.";
       List.iteri(fun index value->truth_expression(Meter.append_string p ("/args/"^string_of_int index)) observations_only value)args
     |_->network ~path:p false "Expression has no interpretation in the network truth profile."in
-  let initiators=List.map(fun(effect:O.effect_spec)->
-    let values=List.filter(fun(transition:O.transition)->List.mem effect.effect_id transition.effects)behavior.transitions in
-    network ~path:(path effect.effect_id) (List.length values=1 && (List.hd values).effects=[effect.effect_id])
+  let initiators=List.map(fun(effect_value:O.effect_spec)->
+    let values=List.filter(fun(transition:O.transition)->List.mem effect_value.effect_id transition.effects)behavior.transitions in
+    network ~path:(path effect_value.effect_id) (List.length values=1 && (List.hd values).effects=[effect_value.effect_id])
       "Each network effect must have exactly one single-effect initiating transition.";
-    effect.effect_id,(List.hd values).machine)behavior.effects in
-  List.iter(fun(effect:O.effect_spec)->let p=path effect.effect_id and source=raw effect.effect_id in
-    network ~path:p (effect.executor=role.role_id && effect.subject=subject.subject_id && effect.lifecycle.on_loss="continue" &&
+    effect_value.effect_id,(List.hd values).machine)behavior.effects in
+  List.iter(fun(effect_value:O.effect_spec)->let p=path effect_value.effect_id and source=raw effect_value.effect_id in
+    network ~path:p (effect_value.executor=role.role_id && effect_value.subject=subject.subject_id && effect_value.lifecycle.on_loss="continue" &&
       Json.equal(get "contract" source)(List.hd(R.catalog_bindings request)).operation)
       "Network effects must retain the original operation, executor and subject.";
-    (match effect.lifecycle.timeout with Some timeout->positive_ticks p timeout|None->network ~path:p false "Network effects need explicit finite timeouts.");
+    (match effect_value.lifecycle.timeout with Some timeout->positive_ticks p timeout|None->network ~path:p false "Network effects need explicit finite timeouts.");
     network ~path:p (List.length(items "parameters" source)=1)"Network effects require exactly one fixed-product argument.";
     let argument=List.hd(items "parameters" source)in let value=get "value" argument in
     common p value;value_type p "text"(get "value_type" value);
@@ -288,7 +288,8 @@ let admit ~request ~(behavior:O.behavior) =
     finite (List.length behavior.roles=1 && List.length behavior.encounters=1 &&
       List.length behavior.subjects=1 && List.length behavior.clocks=1 &&
       List.length behavior.parameters=1 && List.length behavior.observations=1 &&
-      List.length behavior.machines=1 && behavior.rules=[] && behavior.stores=[] &&
+      List.length behavior.machines=1 && behavior.rules=[] &&
+      (if R.is_coupled request then List.length behavior.stores>=2 && List.length behavior.stores<=4 else behavior.stores=[]) &&
       List.length behavior.effects>=1 && List.length behavior.effects<=8 &&
       List.length behavior.transitions>=1 && List.length behavior.transitions<=32)
       "Finite-machine inputs require one executor, encounter, clock, truth observation, fixed product and machine, one to eight effects and one to thirty-two transitions without separate rules/stores.";
@@ -298,11 +299,13 @@ let admit ~request ~(behavior:O.behavior) =
       (match (List.hd behavior.parameters).value with O.Text _->true|_->false))
       "Finite-machine inputs require two to sixteen ordered states, truth evidence and a fixed text product.";
     finite (List.for_all(fun(transition:O.transition)->
-      String.equal transition.machine machine.machine_id && transition.assignments=[] &&
+      String.equal transition.machine machine.machine_id &&
+      (if R.is_coupled request then List.map(fun(a:O.assignment)->a.state)transition.assignments=
+        List.map(fun(s:O.state_store)->s.state_id)behavior.stores else transition.assignments=[]) &&
       List.length transition.effects<=1 && not(List.mem transition.source machine.terminal) &&
       List.mem transition.on.op ["rising";"updated";"effect_event"])behavior.transitions &&
-      List.for_all(fun(effect:O.effect_spec)->
-        let count=List.length(List.filter(fun(transition:O.transition)->List.mem effect.effect_id transition.effects)behavior.transitions)in
+      List.for_all(fun(effect_value:O.effect_spec)->
+        let count=List.length(List.filter(fun(transition:O.transition)->List.mem effect_value.effect_id transition.effects)behavior.transitions)in
         if R.is_multi_site request then count>=1 else count=1)
         behavior.effects)
       (if R.is_multi_site request then

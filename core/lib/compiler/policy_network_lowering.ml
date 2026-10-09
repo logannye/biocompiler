@@ -101,7 +101,7 @@ let lower_metered ~charge ~admitted ~library =
     let on_unknown=match operation.lifecycle.on_unknown with "defer"->I.Defer|"continue"->I.Continue
       |_->Diagnostic.fail "policy_network_lowering_unsupported" "Unsupported unknown authorization behavior."in
     I.Attempt_bank{capacity=domain.logical_limits.max_source_attempts;timeout_ticks;authorization;on_unknown}in
-  let initiator effect=one "effect initiator"(List.filter(fun(value:O.transition)->List.mem effect value.effects)behavior.transitions)in
+  let initiator effect_value=one "effect initiator"(List.filter(fun(value:O.transition)->List.mem effect_value value.effects)behavior.transitions)in
   List.iter(fun(operation:O.effect_spec)->
     supported(operation.executor=executor.role_id && operation.subject=subject.subject_id && operation.lifecycle.on_loss="continue" &&
       Json.equal bridge.operation(get "contract"(source operation.effect_id)))"Effect changed original operation or recipient.";
@@ -130,8 +130,8 @@ let lower_metered ~charge ~admitted ~library =
     let destinations=List.map(fun(assignment:O.assignment)->assignment.state)value.assignments in
     supported(List.length destinations=List.length(List.sort_uniq String.compare destinations))"A transition repeats a state assignment.";
     if value.on.op="effect_event" then (
-      let effect=O.ref_id(get "ref"(get "on"(source value.transition_id)))in
-      supported((initiator effect).machine=value.machine)"Feedback must retain the effect's own initiating machine."))behavior.transitions;
+      let effect_value=O.ref_id(get "ref"(get "on"(source value.transition_id)))in
+      supported((initiator effect_value).machine=value.machine)"Feedback must retain the effect's own initiating machine."))behavior.transitions;
   let layouts=I.models library|>List.filter_map(fun(model:I.model)->match model.replication with
     |I.Encounter_slots value when value.slots=2->Some value.layout_id|_->None)|>List.sort_uniq String.compare in
   let build layout_id=

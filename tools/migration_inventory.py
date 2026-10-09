@@ -414,6 +414,8 @@ def ownership(module, category):
         return "Python", ["LM-11", "LM-12", "LM-25"], "retain_opt_in_owned_prebuilt_resolution_without_semantic_or_default_routing_authority"
     if module == "biocompiler.policy.research_project":
         return "Python", ["LM-11", "LM-12", "LM-25", "LM-26"], "retain_public_project_authoring_and_supplied_inputs_with_fresh_native_verification_before_export"
+    if module in {"biocompiler.core_policy_quantitative_assurance", "biocompiler.policy.quantitative_assurance"}:
+        return "Python", ["LM-12", "LM-20", "LM-21", "LM-24", "LM-25", "LM-26"], "retain_typed_original_assurance_and_fresh_native_exact_material_approximation_and_separate_supplied_evidence"
     if module in {"biocompiler.core_policy_planning", "biocompiler.policy.planning"}:
         return "Python", ["LM-12", "LM-20", "LM-21", "LM-24", "LM-25"], "retain_inert_target_planning_authoring_and_fresh_native_diagnostics_without_acceptance_or_export_authority"
     if module in {"biocompiler.core_policy_module_linking", "biocompiler.policy.module_linking"}:
@@ -457,6 +459,8 @@ def authority(module, category):
         return "installed_sdk_release_pins_and_owned_wheel_RECORD_with_fresh_explicit_native_role_and_operation_negotiation"
     if module == "biocompiler.policy.research_project":
         return "explicit_original_project_and_supplied_component_authority_only_fresh_native_checks_authorize_conditional_paired_export"
+    if module in {"biocompiler.core_policy_quantitative_assurance", "biocompiler.policy.quantitative_assurance"}:
+        return "complete_original_material_and_optional_contracts_with_fresh_native_conjunction_and_separate_experimental_compatibility"
     if module in {"biocompiler.core_policy_planning", "biocompiler.policy.planning"}:
         return "complete_original_source_and_supplied_inputs_with_fresh_native_first_blocker_diagnostics_without_execution_requirement_or_material_acceptance"
     if module in {"biocompiler.core_policy_module_linking", "biocompiler.policy.module_linking"}:

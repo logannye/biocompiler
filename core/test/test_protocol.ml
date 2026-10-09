@@ -15,7 +15,7 @@ let () =
   require (Json.string (Json.field "schema_version" fields) = "biocompiler.core_capabilities.v1") "Capability schema missing";
   require (Json.array (Json.field "operations" fields) |> List.map Json.string =
     (["capabilities";"canonicalize";"validate-intent";"verify-lowering";"verify-architecture";"replay-architecture"] @
-     Bioc_service.Policy_service.operations @ Bioc_service.Policy_operational_service.operations @ Bioc_service.Policy_implementation_service.operations @ Bioc_service.Policy_material_service.operations @ Bioc_service.Policy_component_material_service.operations @ Bioc_service.Policy_refinement_service.operations @ Bioc_service.Policy_module_linking_service.operations @
+     Bioc_service.Policy_service.operations @ Bioc_service.Policy_operational_service.operations @ Bioc_service.Policy_implementation_service.operations @ Bioc_service.Policy_material_service.operations @ Bioc_service.Policy_component_material_service.operations @ Bioc_service.Policy_quantitative_assurance_service.operations @ Bioc_service.Policy_refinement_service.operations @ Bioc_service.Policy_module_linking_service.operations @
      ["check-policy-component-selection";"replay-policy-component-selection";"export-policy-component-selection"] @
      Bioc_service.Realization_service.operations @ Bioc_service.Verification_workflow_service.operations @
      Bioc_service.Verification_workflow_authority.operations))
@@ -38,6 +38,7 @@ let () =
       "policy_material",Bioc_service.Policy_material_service.profile;
       "policy_component_material",Bioc_service.Policy_component_material_service.profile;
       "policy_refinement",Bioc_service.Policy_refinement_service.profile;
+      "policy_quantitative_assurance",Bioc_service.Policy_quantitative_assurance_service.profile;
       "policy_module_linking",Bioc_service.Policy_module_linking_service.profile;
       "policy_module_material",Bioc_service.Policy_module_linking_service.material_profile;
       "policy_network_material",Bioc_service.Policy_component_material_service.network_profile;
@@ -47,6 +48,8 @@ let () =
       "policy_quantitative_material",Bioc_service.Policy_component_material_service.quantitative_profile;
       "policy_multi_site_implementation",Bioc_service.Policy_implementation_service.multi_site_profile;
       "policy_step_quantitative_material",Bioc_service.Policy_component_material_service.step_quantitative_profile;
+      "policy_coupled_implementation",Bioc_service.Policy_implementation_service.coupled_profile;
+      "policy_coupled_quantitative_material",Bioc_service.Policy_component_material_service.composition_profile;
       "policy_transfer_network_material",Bioc_service.Policy_component_material_service.transfer_network_profile;
       "policy_transfer_pair_material",Bioc_service.Policy_component_material_service.transfer_pair_profile;
       "policy_component_selection",Bioc_service.Policy_component_selection_service.profile;

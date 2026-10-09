@@ -13,7 +13,7 @@ type local_contract={raw:Json.t;id:string;mechanism:mechanism;
   state_node:string;state_model:Pin.t;values:state_value list;
   input_node:string;input_model:Pin.t;value_port:string;updated_port:string;outputs:output_site list}
 type selection={raw:Json.t;mechanism:mechanism;instance:string;component:Pin.t;
-  contract:string;machine:string;observation:string;effect:string}
+  contract:string;machine:string;observation:string;effect_value:string}
 let get key raw=Json.field key(Json.object_fields raw)
 let exact keys raw=Json.exact_fields keys(Json.object_fields raw)
 let str value=Json.String value
@@ -110,7 +110,7 @@ let selection_of_json ?(charge=fun _->()) raw=
   exact["instance";"component";"contract"]selected;exact["machine";"observation";"effect"]source;
   {raw;mechanism=mechanism(get "mechanism" raw);instance=name(get "instance" selected);
     component=model(get "component" selected);contract=name(get "contract" selected);
-    machine=name(get "machine" source);observation=name(get "observation" source);effect=name(get "effect" source)}
+    machine=name(get "machine" source);observation=name(get "observation" source);effect_value=name(get "effect" source)}
 let to_json(value:mechanism)=value.raw
 let local_to_json(value:local_contract)=value.raw
 let selection_to_json(value:selection)=value.raw

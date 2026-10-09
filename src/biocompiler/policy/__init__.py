@@ -60,7 +60,7 @@ from .inspection import inspect, diff, graph
 from .model import CompilationSubmission, BackendCapabilities, CapabilityAssessment
 from .handoff import prepare_submission, assess_capabilities, SubmissionError
 from .serialization import PolicySerializationError, SerializationLimits
-from . import logic, time, values, entities, chassis, observations, space, state, effects, behavior, coordination, requirements, deployment, catalog, patterns, typed, modules, refinement, quantitative, module_linking
+from . import logic, time, values, entities, chassis, observations, space, state, effects, behavior, coordination, requirements, deployment, catalog, patterns, typed, modules, refinement, quantitative, quantitative_composition, module_linking, approximation, realization_evidence, quantitative_assurance
 
 __all__ = [
     'Record',
@@ -179,5 +179,9 @@ __all__ = [
     'modules',
     'refinement',
     'quantitative',
+    'quantitative_composition',
     'module_linking',
+    'approximation',
+    'realization_evidence',
+    'quantitative_assurance',
 ]

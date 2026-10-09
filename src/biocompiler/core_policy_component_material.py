@@ -64,6 +64,10 @@ TRANSFER_PAIR_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0
 TRANSFER_PAIR_REQUEST_PROFILE = "biocompiler.policy_sampled_transfer_pair_component_mrna.v0.1"
 TRANSFER_PAIR_IMPLEMENTATION = "biocompiler.ocaml.policy_sampled_transfer_pair_component_material.v0.1"
 TRANSFER_PAIR_VALIDATION_SCOPE = "policy-sampled-transfer-pair-component-mrna-v0.1"
+COMPOSITION_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.13"
+COMPOSITION_REQUEST_PROFILE = "biocompiler.policy_coupled_transfer_network_component_mrna.v0.1"
+COMPOSITION_IMPLEMENTATION = "biocompiler.ocaml.policy_coupled_quantitative_component_material.v0.1"
+COMPOSITION_VALIDATION_SCOPE = "policy-coupled-quantitative-component-mrna-v0.1"
 TRANSFER_NETWORK_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.12"
 TRANSFER_NETWORK_REQUEST_PROFILE = "biocompiler.policy_sampled_transfer_network_component_mrna.v0.1"
 TRANSFER_NETWORK_IMPLEMENTATION = "biocompiler.ocaml.policy_sampled_transfer_network_component_material.v0.1"
@@ -160,6 +164,10 @@ TRANSFER_PAIR_PRODUCER_PROFILE: dict[str, JsonValue] = {
     **PRODUCER_PROFILE, "implementation": TRANSFER_PAIR_IMPLEMENTATION,
     "validation_scope": TRANSFER_PAIR_VALIDATION_SCOPE,
 }
+COMPOSITION_PROFILE: dict[str, JsonValue] = {**PROFILE, "request_schema": COMPOSITION_REQUEST_SCHEMA,
+    "implementation": COMPOSITION_IMPLEMENTATION, "validation_scope": COMPOSITION_VALIDATION_SCOPE}
+COMPOSITION_PRODUCER_PROFILE: dict[str, JsonValue] = {**PRODUCER_PROFILE, "implementation": COMPOSITION_IMPLEMENTATION,
+    "validation_scope": COMPOSITION_VALIDATION_SCOPE}
 TRANSFER_NETWORK_PROFILE: dict[str, JsonValue] = {
     **PROFILE, "request_schema": TRANSFER_NETWORK_REQUEST_SCHEMA, "implementation": TRANSFER_NETWORK_IMPLEMENTATION,
     "validation_scope": TRANSFER_NETWORK_VALIDATION_SCOPE,
@@ -176,7 +184,7 @@ _same, _pin, _record, _rows, _count = material._same, material._pin, material._r
 
 
 def _original(value: JsonValue) -> dict[str, JsonValue]:
-    quantitative = _record(value, "Original component material request").get("profile") in (QUANTITATIVE_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE)
+    quantitative = _record(value, "Original component material request").get("profile") in (QUANTITATIVE_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE, COMPOSITION_REQUEST_PROFILE)
     request = _object(value, _REQUEST_FIELDS | ({"quantitative"} if quantitative else set()), "Original component material request")
     if (request["schema_version"], request["profile"]) not in ((REQUEST_SCHEMA, REQUEST_PROFILE),
             (INSTANCE_REQUEST_SCHEMA, INSTANCE_REQUEST_PROFILE),
@@ -189,9 +197,10 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
             (QUANTITATIVE_REQUEST_SCHEMA, QUANTITATIVE_REQUEST_PROFILE),
             (STEP_QUANTITATIVE_REQUEST_SCHEMA, STEP_QUANTITATIVE_REQUEST_PROFILE),
             (TRANSFER_PAIR_REQUEST_SCHEMA, TRANSFER_PAIR_REQUEST_PROFILE),
-            (TRANSFER_NETWORK_REQUEST_SCHEMA, TRANSFER_NETWORK_REQUEST_PROFILE)):
+            (TRANSFER_NETWORK_REQUEST_SCHEMA, TRANSFER_NETWORK_REQUEST_PROFILE),
+            (COMPOSITION_REQUEST_SCHEMA, COMPOSITION_REQUEST_PROFILE)):
         raise CoreProtocolError("Component material request changed its closed original profile")
-    decoder = (implementation._multi_site_original if _multi_site(request) else implementation._network_original if _network(request) else implementation._finite_machine_original if _finite_machine(request) else implementation._multi_product_original if _multi_member(request) else
+    decoder = (implementation._coupled_original if _composition(request) else implementation._multi_site_original if _multi_site(request) else implementation._network_original if _network(request) else implementation._finite_machine_original if _finite_machine(request) else implementation._multi_product_original if _multi_member(request) else
                implementation._two_observation_original if _two_observations(request) else
                implementation._prerequisite_original if _prerequisites(request) else implementation._original)
     decoder(request["implementation_request"])
@@ -200,10 +209,21 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
     for key in ("input_bindings", "resource_bindings"):
         _rows(request[key], "Original " + key)
     if quantitative:
-        contract = _object(request["quantitative"], {"mechanism", "selection", "source"}, "Original quantitative contract")
+        raw_contract = request["quantitative"]
+        if _composition(request):
+            composed = _object(raw_contract, {"network", "owners", "synchronization"}, "Coupled original contract")
+            if composed["synchronization"] != "one_prestate_one_atomic_commit":
+                raise CoreProtocolError("Coupled original lost its atomic coordination premise")
+            owners = _rows(composed["owners"], "Complete original reservoir owners")
+            if not 2 <= len(owners) <= 4:
+                raise CoreProtocolError("Coupled original needs two to four explicit private owners")
+            for owner in owners:
+                _object(owner, {"instance", "component", "contract", "compartment", "state"}, "Reservoir owner")
+            raw_contract = composed["network"]
+        contract = _object(raw_contract, {"mechanism", "selection", "source"}, "Original quantitative contract")
         mechanism = _record(contract["mechanism"], "Independent original reservoir law")
-        _expect(mechanism, {"schema_version": "biocompiler.policy_sampled_transfer_network.v0.1" if _transfer_network(request) else "biocompiler.policy_sampled_transfer_pair.v0.1" if _transfer_pair(request) else "biocompiler.policy_sampled_reservoir.v0.2" if _multi_site(request) else "biocompiler.policy_sampled_reservoir.v0.1",
-            "profile": "biocompiler.policy_sampled_reserved_transfer_network.v0.1" if _transfer_network(request) else "biocompiler.policy_sampled_conservative_transfer_pair.v0.1" if _transfer_pair(request) else "biocompiler.policy_sampled_saturating_step_reservoir.v0.1" if _multi_site(request) else "biocompiler.policy_sampled_saturating_reservoir.v0.1"}, "Original quantitative family")
+        _expect(mechanism, {"schema_version": "biocompiler.policy_sampled_transfer_network.v0.1" if (_transfer_network(request) or _composition(request)) else "biocompiler.policy_sampled_transfer_pair.v0.1" if _transfer_pair(request) else "biocompiler.policy_sampled_reservoir.v0.2" if _multi_site(request) else "biocompiler.policy_sampled_reservoir.v0.1",
+            "profile": "biocompiler.policy_sampled_reserved_transfer_network.v0.1" if (_transfer_network(request) or _composition(request)) else "biocompiler.policy_sampled_conservative_transfer_pair.v0.1" if _transfer_pair(request) else "biocompiler.policy_sampled_saturating_step_reservoir.v0.1" if _multi_site(request) else "biocompiler.policy_sampled_saturating_reservoir.v0.1"}, "Original quantitative family")
         _object(contract["selection"], {"instance", "component", "contract"}, "Original quantitative selection")
         _object(contract["source"], {"machine", "observation", "effect"}, "Original quantitative source")
     else:
@@ -218,12 +238,12 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
 
 def _instanced(request: dict[str, JsonValue]) -> bool:
     return request["profile"] in (INSTANCE_REQUEST_PROFILE, PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE,
-                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE, NETWORK_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE)
+                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE, NETWORK_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE, COMPOSITION_REQUEST_PROFILE)
 
 
 def _prerequisites(request: dict[str, JsonValue]) -> bool:
     return request["profile"] in (PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE,
-                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE, NETWORK_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE)
+                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE, NETWORK_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE, COMPOSITION_REQUEST_PROFILE)
 
 
 def _two_observations(request: dict[str, JsonValue]) -> bool:
@@ -239,11 +259,15 @@ def _grounded_helper(request: dict[str, JsonValue]) -> bool:
 
 
 def _finite_machine(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] in (FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE)
+    return request["profile"] in (FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE, COMPOSITION_REQUEST_PROFILE)
 
 
 def _network(request: dict[str, JsonValue]) -> bool:
     return request["profile"] == NETWORK_REQUEST_PROFILE
+
+
+def _composition(request: dict[str, JsonValue]) -> bool:
+    return request["profile"] == COMPOSITION_REQUEST_PROFILE
 
 
 def _transfer_network(request: dict[str, JsonValue]) -> bool:
@@ -255,14 +279,17 @@ def _transfer_pair(request: dict[str, JsonValue]) -> bool:
 
 
 def _multi_site(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] in (STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE)
+    return request["profile"] in (STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE, COMPOSITION_REQUEST_PROFILE)
 
 
 def _quantitative(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] in (QUANTITATIVE_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE)
+    return request["profile"] in (QUANTITATIVE_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE, COMPOSITION_REQUEST_PROFILE)
 
 
 def _profile_settings(request: dict[str, JsonValue]) -> tuple[str, dict[str, JsonValue], dict[str, JsonValue], str, str]:
+    if _composition(request):
+        return ("policy_coupled_quantitative_material", COMPOSITION_PROFILE, COMPOSITION_PRODUCER_PROFILE,
+                COMPOSITION_VALIDATION_SCOPE, COMPOSITION_IMPLEMENTATION)
     if _transfer_network(request):
         return ("policy_transfer_network_material", TRANSFER_NETWORK_PROFILE, TRANSFER_NETWORK_PRODUCER_PROFILE,
                 TRANSFER_NETWORK_VALIDATION_SCOPE, TRANSFER_NETWORK_IMPLEMENTATION)
@@ -600,7 +627,7 @@ def _prerequisite_evidence(request: dict[str, JsonValue], report: dict[str, Json
         "diagnostics": context_report["diagnostics"], "empirical": "unassessed"}, "Prerequisite scope")
     if report["prerequisite_status"] != status:
         raise CoreProtocolError("Prerequisite status contradicts the complete checked context")
-    original = (implementation._network_original if _network(request) else implementation._finite_machine_original if _finite_machine(request) else implementation._multi_product_original if multi_member else implementation._two_observation_original if _two_observations(request) else
+    original = (implementation._coupled_original if _composition(request) else implementation._multi_site_original if _multi_site(request) else implementation._network_original if _network(request) else implementation._finite_machine_original if _finite_machine(request) else implementation._multi_product_original if multi_member else implementation._two_observation_original if _two_observations(request) else
                 implementation._prerequisite_original)(request["implementation_request"])
     document = _record(original["document"], "Original prerequisite source")
     context = _record(request["context"], "Original prerequisite context")
@@ -843,7 +870,7 @@ def _candidate(value: JsonValue, *, instanced: bool = False, multi_member: bool 
 
 def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = False,
             two_observations: bool = False, multi_member: bool = False,
-            grounded_helper: bool = False, finite_machine: bool = False, quantitative: bool = False, network: bool = False, multi_site: bool = False, transfer_pair: bool = False, transfer_network: bool = False) -> dict[str, JsonValue]:
+            grounded_helper: bool = False, finite_machine: bool = False, quantitative: bool = False, network: bool = False, multi_site: bool = False, transfer_pair: bool = False, transfer_network: bool = False, composition: bool = False) -> dict[str, JsonValue]:
     if transfer_network and (not multi_site or transfer_pair):
         raise CoreProtocolError("Transfer network assessment requires its distinct multiple-site route")
     if transfer_pair and not multi_site:
@@ -864,10 +891,10 @@ def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = 
         raise CoreProtocolError("Two-observation assessment requires the named-instance prerequisite route")
     report = _object(value, _REPORT_FIELDS | ({"prerequisites", "prerequisite_status"} if prerequisites else set())
                      | ({"quantitative", "quantitative_status"} if quantitative else set()), "Complete component assessment")
-    _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.8" if transfer_network else "biocompiler.policy_component_material_assessment.v0.7" if transfer_pair else "biocompiler.policy_component_material_assessment.v0.6" if multi_site else "biocompiler.policy_component_material_assessment.v0.5" if quantitative else "biocompiler.policy_component_material_assessment.v0.4" if grounded_helper else "biocompiler.policy_component_material_assessment.v0.3" if multi_member else "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
-        "profile": TRANSFER_NETWORK_REQUEST_PROFILE if transfer_network else TRANSFER_PAIR_REQUEST_PROFILE if transfer_pair else STEP_QUANTITATIVE_REQUEST_PROFILE if multi_site else NETWORK_REQUEST_PROFILE if network else QUANTITATIVE_REQUEST_PROFILE if quantitative else FINITE_MACHINE_REQUEST_PROFILE if finite_machine else GROUNDED_HELPER_REQUEST_PROFILE if grounded_helper else MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
+    _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.9" if composition else "biocompiler.policy_component_material_assessment.v0.8" if transfer_network else "biocompiler.policy_component_material_assessment.v0.7" if transfer_pair else "biocompiler.policy_component_material_assessment.v0.6" if multi_site else "biocompiler.policy_component_material_assessment.v0.5" if quantitative else "biocompiler.policy_component_material_assessment.v0.4" if grounded_helper else "biocompiler.policy_component_material_assessment.v0.3" if multi_member else "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
+        "profile": COMPOSITION_REQUEST_PROFILE if composition else TRANSFER_NETWORK_REQUEST_PROFILE if transfer_network else TRANSFER_PAIR_REQUEST_PROFILE if transfer_pair else STEP_QUANTITATIVE_REQUEST_PROFILE if multi_site else NETWORK_REQUEST_PROFILE if network else QUANTITATIVE_REQUEST_PROFILE if quantitative else FINITE_MACHINE_REQUEST_PROFILE if finite_machine else GROUNDED_HELPER_REQUEST_PROFILE if grounded_helper else MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
         PREREQUISITE_REQUEST_PROFILE if prerequisites else INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
-        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.12" if transfer_network else "biocompiler.ocaml.policy_component_material_check.v0.11" if transfer_pair else "biocompiler.ocaml.policy_component_material_check.v0.10" if multi_site else "biocompiler.ocaml.policy_component_material_check.v0.9" if network else "biocompiler.ocaml.policy_component_material_check.v0.8" if quantitative else "biocompiler.ocaml.policy_component_material_check.v0.7" if finite_machine else "biocompiler.ocaml.policy_component_material_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_material_check.v0.5" if multi_member else "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
+        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.13" if composition else "biocompiler.ocaml.policy_component_material_check.v0.12" if transfer_network else "biocompiler.ocaml.policy_component_material_check.v0.11" if transfer_pair else "biocompiler.ocaml.policy_component_material_check.v0.10" if multi_site else "biocompiler.ocaml.policy_component_material_check.v0.9" if network else "biocompiler.ocaml.policy_component_material_check.v0.8" if quantitative else "biocompiler.ocaml.policy_component_material_check.v0.7" if finite_machine else "biocompiler.ocaml.policy_component_material_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_material_check.v0.5" if multi_member else "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
         "biocompiler.ocaml.policy_component_material_check.v0.3" if prerequisites else
         "biocompiler.ocaml.policy_component_material_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
         "claim_scope": CLAIM_SCOPE, "premise": PREMISE, "empirical": "unassessed", "artifact": "withheld", "export": "withheld"}, "Component report")
@@ -877,7 +904,8 @@ def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = 
 def _quantitative_evidence(request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue]) -> None:
     """Retain quantitative report identities and source table; native checks the law."""
     step = _multi_site(request)
-    transfer_network = _transfer_network(request)
+    composition = _composition(request)
+    transfer_network = _transfer_network(request) or composition
     transfer = _transfer_pair(request) or transfer_network
     raw = report["quantitative"]
     status = report["quantitative_status"]
@@ -886,16 +914,23 @@ def _quantitative_evidence(request: dict[str, JsonValue], candidate: dict[str, J
             raise CoreProtocolError("Quantitative acceptance requires its fresh checked report")
         return
     leaf = _object(raw, {"schema_version", "profile", "implementation", "outcome", "claim_scope", "request_fingerprint",
-        "mechanism_fingerprint", "selection", "source", "bindings", "table", "sampling", "issues", "usage", "empirical"} | ({"conservation"} if transfer else set()) | ({"arbitration", "ownership"} if transfer_network else set()), "Quantitative evidence")
-    _expect(leaf, {"schema_version": "biocompiler.policy_quantitative_assessment.v0.4" if transfer_network else "biocompiler.policy_quantitative_assessment.v0.3" if transfer else "biocompiler.policy_quantitative_assessment.v0.2" if step else "biocompiler.policy_quantitative_assessment.v0.1",
-        "profile": "biocompiler.policy_sampled_reserved_transfer_network.v0.1" if transfer_network else "biocompiler.policy_sampled_conservative_transfer_pair.v0.1" if transfer else "biocompiler.policy_sampled_saturating_step_reservoir.v0.1" if step else "biocompiler.policy_sampled_saturating_reservoir.v0.1",
-        "implementation": "biocompiler.ocaml.policy_quantitative_check.v0.4" if transfer_network else "biocompiler.ocaml.policy_quantitative_check.v0.3" if transfer else "biocompiler.ocaml.policy_quantitative_check.v0.2" if step else "biocompiler.ocaml.policy_quantitative_check.v0.1",
-        "claim_scope": "exact_sampled_reserved_transfer_network_under_supplied_contract" if transfer_network else "exact_sampled_conservative_transfer_pair_under_supplied_contract" if transfer else "exact_sampled_step_reservoir_under_supplied_contract" if step else "exact_sampled_reservoir_under_supplied_contract", "empirical": "unassessed"}, "Quantitative evidence")
+        "mechanism_fingerprint", "selection", "source", "bindings", "table", "sampling", "issues", "usage", "empirical"} | ({"conservation"} if transfer else set()) | ({"arbitration", "ownership"} if transfer_network else set()) | ({"composition", "synchronization", "transport_scope"} if composition else set()), "Quantitative evidence")
+    _expect(leaf, {"schema_version": "biocompiler.policy_quantitative_assessment.v0.5" if composition else "biocompiler.policy_quantitative_assessment.v0.4" if transfer_network else "biocompiler.policy_quantitative_assessment.v0.3" if transfer else "biocompiler.policy_quantitative_assessment.v0.2" if step else "biocompiler.policy_quantitative_assessment.v0.1",
+        "profile": "biocompiler.policy_atomic_component_transfer_network.v0.1" if composition else "biocompiler.policy_sampled_reserved_transfer_network.v0.1" if transfer_network else "biocompiler.policy_sampled_conservative_transfer_pair.v0.1" if transfer else "biocompiler.policy_sampled_saturating_step_reservoir.v0.1" if step else "biocompiler.policy_sampled_saturating_reservoir.v0.1",
+        "implementation": "biocompiler.ocaml.policy_quantitative_check.v0.5" if composition else "biocompiler.ocaml.policy_quantitative_check.v0.4" if transfer_network else "biocompiler.ocaml.policy_quantitative_check.v0.3" if transfer else "biocompiler.ocaml.policy_quantitative_check.v0.2" if step else "biocompiler.ocaml.policy_quantitative_check.v0.1",
+        "claim_scope": "exact_atomic_component_transfer_network_under_supplied_coordination_contract" if composition else "exact_sampled_reserved_transfer_network_under_supplied_contract" if transfer_network else "exact_sampled_conservative_transfer_pair_under_supplied_contract" if transfer else "exact_sampled_step_reservoir_under_supplied_contract" if step else "exact_sampled_reservoir_under_supplied_contract", "empirical": "unassessed"}, "Quantitative evidence")
     if transfer_network:
-        _expect(leaf, {"arbitration": "declared_order_prestate_reservation", "ownership": "single_atomic_state_owner"}, "Network quantitative evidence")
+        _expect(leaf, {"arbitration": "declared_order_prestate_reservation", "ownership": "partitioned_reservoir_storage_single_atomic_writer" if composition else "single_atomic_state_owner"}, "Network quantitative evidence")
     if leaf["outcome"] not in ("pass", "fail") or status != leaf["outcome"] or report["status"] == ACCEPTED_STATUS and status != "pass":
         raise CoreProtocolError("Quantitative stage contradicts material acceptance")
     original = _record(request["quantitative"], "Original quantitative contract")
+    composed = original
+    if composition:
+        if not _same(leaf["composition"], original):
+            raise CoreProtocolError("Composed quantitative evidence changed its complete owner authority")
+        _expect(leaf, {"synchronization": "one_prestate_one_atomic_commit",
+                      "transport_scope": "selected_boolean_allocation_signals_under_supplied_component_contracts"}, "Coupled evidence scope")
+        original = _record(original["network"], "Original coupled network")
     mechanism = _record(original["mechanism"], "Original reservoir law")
     _pin(leaf["request_fingerprint"], request, "Quantitative complete request")
     _pin(leaf["mechanism_fingerprint"], mechanism, "Independent original quantitative law")
@@ -963,6 +998,50 @@ def _quantitative_evidence(request: dict[str, JsonValue], candidate: dict[str, J
         expected_bindings = {"machine_bank": machine["bank"], "observation_bank": observation["bank"],
             "observation_input": observation["input"], "crossing_transition": crossing[0]["id"],
             "request_endpoint": {"node": commit["commit"], "port": "request0"}}
+    if composition:
+        graph = _record(candidate["implementation"], "Actual coupled implementation")
+        actual_nodes = _rows(graph["nodes"], "Actual coupled nodes")
+        rule_body = _record(_record(request["composition_rule"], "Coupled rule")["body"], "Coupled rule body")
+        order = _rows(rule_body["node_order"], "Original coupled node order")
+        if len(order) != len(actual_nodes):
+            raise CoreProtocolError("Coupled relocation lost its complete node bijection")
+        def relocate(instance: JsonValue, identity: JsonValue) -> dict[str, JsonValue]:
+            matches = [node for node, local in zip(actual_nodes, order) if local["slot"] == instance and local["node"] == identity]
+            if len(matches) != 1:
+                raise CoreProtocolError("Coupled local endpoint does not relocate uniquely")
+            return matches[0]
+        components = _rows(_record(request["component_library"], "Original component library")["components"], "Components")
+        def local_contract(selected: dict[str, JsonValue], role: str) -> tuple[dict[str, JsonValue], dict[str, JsonValue]]:
+            matches = [component for component in components if _same(component["identity"], selected["component"])]
+            if len(matches) != 1:
+                raise CoreProtocolError("Coupled component pin is absent or ambiguous")
+            body = _record(matches[0]["body"], "Selected component body")
+            contract = _unique(_rows(body["quantitative_contracts"], "Selected contracts"), "id", selected["contract"], "Selected coupled contract")
+            if contract.get("role") != role:
+                raise CoreProtocolError("Coupled component role changed")
+            return contract, _record(body["fragment"], "Selected local fragment")
+        def boundary_endpoint(instance: JsonValue, fragment: dict[str, JsonValue], boundary: JsonValue) -> dict[str, JsonValue]:
+            port = _unique(_rows(fragment["boundary_ports"], "Boundaries"), "id", boundary, "Local boundary")
+            endpoint = _record(port["endpoint"], "Local endpoint")
+            return {"node": relocate(instance, endpoint["node"])["id"], "port": endpoint["port"]}
+        owners: list[JsonValue] = []
+        for selected_owner in _rows(composed["owners"], "Original reservoir owners"):
+            contract, fragment = local_contract(selected_owner, "owner")
+            state = _record(contract["state"], "Owner state")
+            register = relocate(selected_owner["instance"], state["node"])
+            bound = _unique(_rows(binding["states"], "Original state bindings"), "source", selected_owner["state"], "Private store")
+            if bound["register"] != register["id"] or not _same(register["model"], state["model"]):
+                raise CoreProtocolError("Coupled owner lost its source/register/model correspondence")
+            next_signal = _record(contract["next"], "Owner next signal")
+            owners.append({"instance": selected_owner["instance"], "component": selected_owner["component"],
+                "contract": selected_owner["contract"], "compartment": selected_owner["compartment"],
+                "source_state": selected_owner["state"], "register": register["id"],
+                "next": boundary_endpoint(selected_owner["instance"], fragment, next_signal["boundary"])})
+        coordinator = _record(original["selection"], "Original coordinator")
+        contract, fragment = local_contract(coordinator, "coordinator")
+        transfers: list[JsonValue] = [{"transfer": flow["transfer"], "endpoint": boundary_endpoint(coordinator["instance"], fragment, flow["boundary"])}
+            for flow in _rows(contract["flows"], "Ordered original transfer signals")]
+        _record(expected_bindings, "Expected coupled bindings").update(owners=owners, transfers=transfers)
     if not _same(leaf["bindings"], expected_bindings):
         raise CoreProtocolError("Quantitative binding identities differ from the complete source-to-graph binding")
     expected_rows: list[JsonValue] = []
@@ -983,6 +1062,8 @@ def _quantitative_evidence(request: dict[str, JsonValue], candidate: dict[str, J
             raise CoreProtocolError("Transfer table lost its selected component")
         contracts = _rows(_record(matched[0]["body"], "Selected component body")["quantitative_contracts"], "Quantitative contracts")
         contract = _unique(contracts, "id", selected_component["contract"], "Selected quantitative contract")
+        if composition:
+            contract = _record(contract["network"], "Selected coordinator network")
         vectors = _rows(_record(contract["state"], "Selected local state")["values"], "Complete Cartesian map")
         if not _same([value["state"] for value in vectors], states):
             raise CoreProtocolError("Transfer table lost the complete original state order")
@@ -1098,7 +1179,7 @@ def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate
         raise CoreProtocolError("Component work accounting changed its unit or original bound")
     prerequisites = _prerequisites(request)
     material._preservation(response, request, candidate, report, limits, prerequisites=prerequisites,
-                           two_observations=_two_observations(request), multi_product=_multi_member(request), finite_machine=_finite_machine(request), network=_network(request), multi_site=_multi_site(request))
+                           two_observations=_two_observations(request), multi_product=_multi_member(request), finite_machine=_finite_machine(request), network=_network(request), multi_site=_multi_site(request), coupled=_composition(request))
     _leaves(request, candidate, report)
     if prerequisites:
         _prerequisite_evidence(request, report)
@@ -1107,7 +1188,7 @@ def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate
     material._obligations(report, material_key="assembly", accepted_status=ACCEPTED_STATUS,
                           conjunction_stage="conditional_component_context_conjunction",
                           prerequisite_key="prerequisites" if prerequisites else None, multi_product=_multi_member(request),
-                          finite_machine=_finite_machine(request), network=_network(request), multi_site=_multi_site(request), quantitative_key="quantitative" if _quantitative(request) else None)
+                          finite_machine=_finite_machine(request), network=_network(request), multi_site=_multi_site(request), coupled=_composition(request), quantitative_key="quantitative" if _quantitative(request) else None)
 
 
 def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComponentMaterialResult:
@@ -1124,7 +1205,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
     _candidate(candidate, instanced=instanced, multi_member=_multi_member(request), grounded_helper=_grounded_helper(request), multi_site=_multi_site(request))
     report = _report(result["report"], instanced=instanced, prerequisites=prerequisites,
                      two_observations=_two_observations(request), multi_member=_multi_member(request), grounded_helper=_grounded_helper(request),
-                     finite_machine=_finite_machine(request), quantitative=_quantitative(request), network=_network(request), multi_site=_multi_site(request), transfer_pair=_transfer_pair(request), transfer_network=_transfer_network(request))
+                     finite_machine=_finite_machine(request), quantitative=_quantitative(request), network=_network(request), multi_site=_multi_site(request), transfer_pair=_transfer_pair(request), transfer_network=_transfer_network(request), composition=_composition(request))
     invocation: JsonValue = {"request": request, "candidate": candidate, "limits": payload["limits"]}
     request_hash = _pin(result["request_fingerprint"], request, "Complete original component request")
     candidate_hash = _pin(result["candidate_fingerprint"], candidate, "Complete component candidate")

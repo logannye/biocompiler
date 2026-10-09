@@ -8,6 +8,7 @@ module O = Policy_operational
 module type Symbol = sig
   type t
   val name : t -> string
+
   (** Zero-based position in the complete original declaration ledger. *)
   val index : t -> int
 end
@@ -87,6 +88,7 @@ type declaration = private
 
 type instruction
 type t
+
 (** Structural typed elaboration only. Callers must first bound the complete
     source document. The callback charges traversals, resolutions and output
     reconstruction; exceptions propagate without returning a partial value. *)
@@ -103,6 +105,7 @@ val text_term : text_expression -> text_term
 val quantity_term : quantity_expression -> quantity_term
 val quantity_unit : quantity_expression -> Json.t
 val event_term : event_expression -> event_term
+
 (** Reconstruct executable fields from closed typed terms and resolved symbols,
     retaining exact source metadata and literal quantity spelling. This codec
     grants no source correspondence or candidate acceptance. *)

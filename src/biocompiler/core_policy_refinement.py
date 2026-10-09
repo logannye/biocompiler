@@ -279,7 +279,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyRefi
     report = component._report(result["material_report"], instanced=component._instanced(request),
         prerequisites=component._prerequisites(request), two_observations=component._two_observations(request),
         multi_member=component._multi_member(request), grounded_helper=component._grounded_helper(request),
-        finite_machine=component._finite_machine(request), quantitative=component._quantitative(request), network=component._network(request), multi_site=component._multi_site(request), transfer_pair=component._transfer_pair(request), transfer_network=component._transfer_network(request))
+        finite_machine=component._finite_machine(request), quantitative=component._quantitative(request), network=component._network(request), multi_site=component._multi_site(request), transfer_pair=component._transfer_pair(request), transfer_network=component._transfer_network(request), composition=component._composition(request))
     report_pin = operational._pin(result["material_report_fingerprint"], report, "Fresh complete material report")
     component._assessment(response, request, candidate, report, payload["limits"])
     evidence = None if result["evidence"] is None else _evidence(result["evidence"])

@@ -26,6 +26,7 @@ val fingerprint : t -> string
 val decoding_work : t -> int
 val decoding_bytes : t -> int
 val pin_to_json : pin -> Json.t
+
 (** Invocation-local accounting shared by decoding and independent checking.
     No accounting operation creates a checked linkage capability. *)
 type meter

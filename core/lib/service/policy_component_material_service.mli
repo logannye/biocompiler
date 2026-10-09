@@ -32,6 +32,10 @@ val network_producer_profile : Bioc_wire.Json.t
 val finite_machine_validation_scope : string
 val finite_machine_profile : Json.t
 val finite_machine_producer_profile : Json.t
+val composition_implementation : string
+val composition_validation_scope : string
+val composition_profile : Bioc_wire.Json.t
+val composition_producer_profile : Bioc_wire.Json.t
 val transfer_network_implementation : string
 val transfer_network_validation_scope : string
 val transfer_network_profile : Json.t
@@ -56,6 +60,10 @@ val max_result_nodes : int
 val profile : Json.t
 val producer_profile : Json.t
 val validate_publication : Json.t -> unit
+
+(** Reuse only a fresh, opaque accepted material capability. *)
+val export_artifact : Bioc_realization_checker.Policy_component_material_check.checked_material -> Json.t -> Json.t -> Json.t
+
 (** Decode the complete originals and candidate, then repeat all checking.
     This helper never reconstructs acceptance from serialized evidence. *)
 val fresh_check : request:Json.t -> candidate:Json.t -> limits:Json.t ->

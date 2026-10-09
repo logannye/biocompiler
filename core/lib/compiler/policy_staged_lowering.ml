@@ -33,7 +33,7 @@ let lower_metered ~charge ~admitted ~library =
   charge 1;
   let request=A.request admitted and behavior=A.behavior admitted in
   let multi_product=R.is_multi_product request and finite_machine=R.is_finite_machine request
-  and multi_site=R.is_multi_site request in
+  and multi_site=R.is_multi_site request and coupled=R.is_coupled request in
   let library_pin=Canonical.fingerprint(I.library_to_json library) in
   let original_library_pin=Canonical.fingerprint(I.library_to_json(R.implementation_library request)) in
   supported(library_pin=original_library_pin)"Original supplied library changed.";
@@ -46,7 +46,7 @@ let lower_metered ~charge ~admitted ~library =
   let transition_count=List.length behavior.transitions in
   (if finite_machine then (
     let states=List.length machine.states and effects=List.length behavior.effects in
-    supported(behavior.rules=[] && behavior.stores=[] && states>=2 && states<=16 &&
+    supported(behavior.rules=[] && (if coupled then List.length behavior.stores>=2 && List.length behavior.stores<=4 else behavior.stores=[]) && states>=2 && states<=16 &&
       transition_count>=1 && transition_count<=32 && effects>=1 && effects<=8)
       "Finite-machine lowering requires 2-16 states, 1-32 transitions and 1-8 effects without rules or independent stores.")
   else supported(behavior.rules=[] && behavior.stores=[] && List.length behavior.effects=2 &&
@@ -117,7 +117,17 @@ let lower_metered ~charge ~admitted ~library =
       O.ref_id(get "ref"(get "value" argument)))behavior.effects in
     supported(List.sort String.compare used=List.sort String.compare(List.map fst product_symbols))
       "Each original staged effect must use its own distinct original fixed product exactly once."));
-  List.iter(fun(value:O.transition)->supported(value.machine=machine.machine_id && value.assignments=[] &&
+  if coupled then List.iter(fun(store:O.state_store)->let raw=source store.state_id in
+    supported(store.value_type=O.Truth_type && store.scope=O.Encounter encounter.encounter_id &&
+      store.lifetime="encounter" && store.reset=None && store.capacity>=2 &&
+      text "overflow" raw="reject" && text "inheritance" raw="not_applicable")
+      "Coupled stores require bounded encounter-local truth state and encounter reset only.";
+    absent["duration";"contract";"coordination"]raw;type_is "truth"(get "value_type" raw);
+    supported((match store.initial with O.Truth(O.True|O.False)->true|_->false))
+      "Coupled stores require a known boolean initial value.")behavior.stores;
+  List.iter(fun(value:O.transition)->supported(value.machine=machine.machine_id &&
+    (if coupled then List.map(fun(a:O.assignment)->a.state)value.assignments=List.map(fun(s:O.state_store)->s.state_id)behavior.stores
+     else value.assignments=[]) &&
     (not finite_machine || not(List.mem value.source machine.terminal)) &&
     List.length value.effects<=1 && List.mem value.on.op
       (if finite_machine then ["rising";"updated";"effect_event"] else ["rising";"effect_event"]))
@@ -176,6 +186,9 @@ let lower_metered ~charge ~admitted ~library =
       supported(List.length !occurrences<2048)"Staged occurrence bound exceeded.";
       occurrences:=o["source_path",s location;"role",s role;"disposition",s disposition;"targets",a targets]:: !occurrences in
     let evidence=allocate "observation/0"(I.Evidence_bank{freshness_ticks=ticks observation.freshness})in
+    let states=List.mapi(fun index(store:O.state_store)->
+      let initial=match store.initial with O.Truth value->truth value|_->assert false in
+      store.state_id,allocate("state/"^string_of_int index)(I.Truth_register{initial;writers=transition_count}))behavior.stores in
     let machine_bank=allocate "machine/0"(I.Machine_bank{states=machine.states;initial=machine.initial;terminal=machine.terminal;
       writers=transition_count;retained_capacity})in
     let attempts=List.mapi(fun index(operation:O.effect_spec)->operation.effect_id,allocate("attempt/"^string_of_int index)(attempt_primitive operation))behavior.effects in
@@ -201,6 +214,12 @@ let lower_metered ~charge ~admitted ~library =
             Json.equal(get "scope" raw)(reference "Subject" subject.subject_id))
             "Observation updates require the finite-machine profile and exact original observation/subject.";
           out evidence "updated"
+        |"state" when coupled->type_is "truth"(get "value_type" raw);
+          let identity=O.ref_id(get "ref" raw)in
+          supported(args=[] && get "value" raw=Json.Null && List.mem_assoc identity states &&
+            Json.equal(get "ref" raw)(reference "StateStore" identity) &&
+            Json.equal(get "scope" raw)(reference "Encounter" encounter.encounter_id))"Coupled state changes its original owner.";
+          out(List.assoc identity states)"value"
         |"literal"->type_is "truth"(get "value_type" raw);absent["ref";"scope"]raw;supported(args=[])"Literal operands.";
           let value=match expression.value with Some(O.Truth value)->truth value|_->Diagnostic.fail "policy_staged_lowering_unsupported" "Expected truth literal."in
           new_output(I.Truth_constant value)"out"[]
@@ -243,10 +262,17 @@ let lower_metered ~charge ~admitted ~library =
       let on=emit "predicate"(location^"/on")(get "on" raw)and guard=emit "predicate"(location^"/when")(get "when" raw)in
       let gate=allocate(prefix^"/gate")(I.Transition_gate{source=transition.source;
         correlation=(if transition.on.op="effect_event"then I.Retained_attempt else I.Unbound)})in
-      let commit=allocate(prefix^"/commit")(I.Transition_commit{destination=transition.destination;writes=0;requests=List.length transition.effects})in
+      let commit=allocate(prefix^"/commit")(I.Transition_commit{destination=transition.destination;writes=List.length transition.assignments;requests=List.length transition.effects})in
       connect(out machine_bank "snapshot")(out gate "machine");connect on(out gate "on");connect guard(out gate "guard");
       connect(out gate "candidate")(out arbiter("in"^string_of_int index));connect(out arbiter("out"^string_of_int index))(out commit "grant");
       connect(out commit "machine_write")(out machine_bank("write"^string_of_int index));
+      List.iteri(fun ordinal(assignment:O.assignment)->
+        let assignment_path=location^"/assignments/"^string_of_int ordinal in
+        let value=emit "state_write"(assignment_path^"/value")
+          (get "value"(List.nth(rows "assignments" raw)ordinal))in
+        connect value(out commit("value"^string_of_int ordinal));
+        connect(out commit("write"^string_of_int ordinal))(out(List.assoc assignment.state states)("write"^string_of_int index));
+        occurrence assignment_path "state_write" "executable"[out commit("write"^string_of_int ordinal)])transition.assignments;
       List.iter(fun effect_id->let effect_raw=source effect_id in let argument=one "stage argument"(rows "parameters" effect_raw)in
         let output=product_output effect_id argument in
         (if multi_product then (
@@ -275,6 +301,7 @@ let lower_metered ~charge ~admitted ~library =
     List.iter(fun(value:D.declaration)->let location=value.path in match value.kind with
       |D.Role|D.Subject|D.Encounter->occurrence location "declaration" "retained_metadata"[]
       |D.Clock->occurrence location "clock" "retained_metadata"[]
+      |D.State_store when coupled->occurrence location "declaration" "executable"(outputs(List.assoc value.id states))
       |D.Observation->occurrence location "declaration" "executable"(outputs evidence)
       |D.Parameter->
         if multi_product then (
@@ -301,9 +328,9 @@ let lower_metered ~charge ~admitted ~library =
       "wires",a !wires;"inputs",a inputs;"atomic_groups",a[o["id",s "exclusive/0";"arbiter",s arbiter;"commits",a(List.map s commits)]];
       "semantic_exports",a(List.concat_map(fun(id,_)->outputs id)!nodes);
       "occurrences",a(List.sort(fun left right->String.compare(text "source_path" left)(text "source_path" right))!occurrences)]in
-    let binding=o["schema_version",s(if multi_site then B.multi_site_schema_version else if finite_machine then B.finite_machine_schema_version else if multi_product then B.multi_product_schema_version else B.staged_schema_version);
-      "profile",s(if multi_site then B.multi_site_profile else if finite_machine then B.finite_machine_profile else if multi_product then B.multi_product_profile else B.staged_profile);"catalog_entry",s bridge.entry_id;
-      "observations",a[o["source",s observation.observation_id;"bank",s evidence;"input",s "evidence/0"]];"states",a[];"rules",a[];
+    let binding=o["schema_version",s(if coupled then B.coupled_schema_version else if multi_site then B.multi_site_schema_version else if finite_machine then B.finite_machine_schema_version else if multi_product then B.multi_product_schema_version else B.staged_schema_version);
+      "profile",s(if coupled then B.coupled_profile else if multi_site then B.multi_site_profile else if finite_machine then B.finite_machine_profile else if multi_product then B.multi_product_profile else B.staged_profile);"catalog_entry",s bridge.entry_id;
+      "observations",a[o["source",s observation.observation_id;"bank",s evidence;"input",s "evidence/0"]];"states",a(List.map(fun(source,register)->o["source",s source;"register",s register])states);"rules",a[];
       "effects",a(List.mapi(fun index(source,bank)->o["source",s source;"bank",s bank;"feedback",s("feedback/"^string_of_int index)])attempts);
       "machines",a[o["source",s machine.machine_id;"bank",s machine_bank]];"transitions",a !anchors]in
     Meter.serialization graph;Meter.serialization binding;Meter.serialization(I.library_to_json library);

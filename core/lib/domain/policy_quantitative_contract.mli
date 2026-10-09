@@ -22,7 +22,7 @@ type local_contract = private {
 }
 type selection = private {
   raw:Json.t; mechanism:mechanism; instance:string; component:Pinned_identity.t;
-  contract:string; machine:string; observation:string; effect:string;
+  contract:string; machine:string; observation:string; effect_value:string;
 }
 val of_json : ?charge:(int -> unit) -> Json.t -> mechanism
 val local_of_json : ?charge:(int -> unit) -> Json.t -> local_contract

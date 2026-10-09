@@ -1,130 +1,14 @@
 {
-  "schema_version": "biocompiler.policy_target_capabilities.v0.1",
   "claim_scope": "Installed profile vocabulary and advisory planning only; no compilation, export or biological acceptance.",
+  "schema_version": "biocompiler.policy_target_capabilities.v0.1",
   "targets": [
     {
-      "target": "implementation",
-      "kind": "implementation",
-      "request_schema": "biocompiler.policy_realization_request.v0.1",
-      "request_profile": "biocompiler.policy_realization_inputs.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.1",
-      "realization_profile": "biocompiler.policy_realization_inputs.v0.1",
-      "required_inputs": [
-        "document",
-        "definitions",
-        "operating_domain",
-        "implementation_library",
-        "catalog_bindings"
-      ],
-      "source_shapes": [
-        {
-          "id": "exclusive_truth_rules",
-          "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "states_per_machine": null,
-            "truth_stores": {
-              "minimum": 1,
-              "maximum": 2
-            },
-            "rules": {
-              "minimum": 1,
-              "maximum": 2
-            },
-            "transitions": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "effects": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_slots": null
-          }
-        },
-        {
-          "id": "fixed_staged_machine",
-          "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "states_per_machine": {
-              "minimum": 5,
-              "maximum": 5
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 7,
-              "maximum": 7
-            },
-            "effects": {
-              "minimum": 2,
-              "maximum": 2
-            },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
-            }
-          }
-        }
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction"
       ],
       "features": [
         "three_valued_truth",
@@ -142,12 +26,7 @@
         "finite_machine_state",
         "correlated_terminal_feedback"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 256,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048
-      },
+      "kind": "implementation",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -162,21 +41,16 @@
         "Staged source lowering is limited to sixty-four selected primitive nodes.",
         "Legacy realization rejects nonempty catalog dependencies and evidence; provider prerequisite closure is not applicable to this family."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction"
-      ]
-    },
-    {
-      "target": "finite_machine_implementation",
-      "kind": "implementation",
-      "request_schema": "biocompiler.policy_realization_request.v0.5",
-      "request_profile": "biocompiler.policy_finite_machine_inputs.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.5",
-      "realization_profile": "biocompiler.policy_finite_machine_inputs.v0.1",
+      "limits": {
+        "implementation_nodes": 256,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
+      "realization_profile": "biocompiler.policy_realization_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.1",
+      "request_profile": "biocompiler.policy_realization_inputs.v0.1",
+      "request_schema": "biocompiler.policy_realization_request.v0.1",
       "required_inputs": [
         "document",
         "definitions",
@@ -186,62 +60,123 @@
       ],
       "source_shapes": [
         {
-          "id": "bounded_finite_machine",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "states_per_machine": {
-              "minimum": 2,
-              "maximum": 16
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 1,
-              "maximum": 32
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 1,
-              "maximum": 8
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_slots": null,
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
             },
             "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 2,
+              "minimum": 1
+            },
+            "states_per_machine": null,
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "truth_stores": {
+              "maximum": 2,
+              "minimum": 1
+            }
+          },
+          "id": "exclusive_truth_rules"
+        },
+        {
+          "counts": {
+            "clocks": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "effects": {
+              "maximum": 2,
+              "minimum": 2
+            },
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 5,
+              "minimum": 5
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 7,
+              "minimum": 7
+            },
+            "truth_stores": {
+              "maximum": 0,
+              "minimum": 0
             }
-          }
+          },
+          "id": "fixed_staged_machine"
         }
+      ],
+      "target": "implementation"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction"
       ],
       "features": [
         "three_valued_truth",
@@ -260,12 +195,7 @@
         "observation_updated",
         "source_derived_machine_shape"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048
-      },
+      "kind": "implementation",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -276,21 +206,16 @@
         "Finite-machine realization uses exclusive arbitration, no independent rules or stores, and at most one request per transition.",
         "Each effect has exactly one initiating transition; terminal states have no outgoing transitions."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction"
-      ]
-    },
-    {
-      "target": "network_implementation",
-      "kind": "implementation",
-      "request_schema": "biocompiler.policy_realization_request.v0.6",
-      "request_profile": "biocompiler.policy_network_inputs.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.6",
-      "realization_profile": "biocompiler.policy_network_inputs.v0.1",
+      "limits": {
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
+      "realization_profile": "biocompiler.policy_finite_machine_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.5",
+      "request_profile": "biocompiler.policy_finite_machine_inputs.v0.1",
+      "request_schema": "biocompiler.policy_realization_request.v0.5",
       "required_inputs": [
         "document",
         "definitions",
@@ -300,62 +225,72 @@
       ],
       "source_shapes": [
         {
-          "id": "bounded_machine_network",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 2,
-              "maximum": 4
-            },
-            "machines": {
-              "minimum": 2,
-              "maximum": 4
-            },
-            "states_per_machine": {
-              "minimum": 2,
-              "maximum": 16
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 4
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 1,
-              "maximum": 32
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 1,
-              "maximum": 8
+              "maximum": 8,
+              "minimum": 1
             },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 16,
+              "minimum": 2
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 32,
+              "minimum": 1
+            },
+            "truth_stores": {
+              "maximum": 0,
+              "minimum": 0
             }
-          }
+          },
+          "id": "bounded_finite_machine"
         }
+      ],
+      "target": "finite_machine_implementation"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction"
       ],
       "features": [
         "three_valued_truth",
@@ -377,12 +312,7 @@
         "simultaneous_independent_groups",
         "source_derived_machine_shape"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048
-      },
+      "kind": "implementation",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -396,143 +326,95 @@
         "Channels, messages, effect resource contracts, fairness, preemption and explicit predicate resets are unsupported.",
         "Logical shared-resource protocols remain separate from summed physical provider-capacity obligations."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction"
-      ]
-    },
-    {
-      "target": "component_material",
-      "kind": "component_material",
-      "request_schema": "biocompiler.policy_component_material_request.v0.1",
-      "request_profile": "biocompiler.policy_component_mrna.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.1",
-      "realization_profile": "biocompiler.policy_realization_inputs.v0.1",
+      "limits": {
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
+      "realization_profile": "biocompiler.policy_network_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.6",
+      "request_profile": "biocompiler.policy_network_inputs.v0.1",
+      "request_schema": "biocompiler.policy_realization_request.v0.6",
       "required_inputs": [
         "document",
         "definitions",
         "operating_domain",
         "implementation_library",
-        "catalog_bindings",
-        "component_library",
-        "composition_rule",
-        "catalog_binding",
-        "input_bindings",
-        "resource_bindings",
-        "context"
+        "catalog_bindings"
       ],
       "source_shapes": [
         {
-          "id": "exclusive_truth_rules",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "states_per_machine": null,
-            "truth_stores": {
-              "minimum": 1,
-              "maximum": 2
-            },
-            "rules": {
-              "minimum": 1,
-              "maximum": 2
-            },
-            "transitions": {
-              "minimum": 0,
-              "maximum": 0
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_slots": null
-          }
-        },
-        {
-          "id": "fixed_staged_machine",
-          "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
+              "maximum": 8,
+              "minimum": 1
             },
             "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "states_per_machine": {
-              "minimum": 5,
-              "maximum": 5
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 7,
-              "maximum": 7
-            },
-            "effects": {
-              "minimum": 2,
-              "maximum": 2
-            },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 4,
+              "minimum": 2
+            },
+            "observations": {
+              "maximum": 4,
+              "minimum": 2
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 16,
+              "minimum": 2
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 32,
+              "minimum": 1
+            },
+            "truth_stores": {
+              "maximum": 4,
+              "minimum": 0
             }
-          }
+          },
+          "id": "bounded_machine_network"
         }
+      ],
+      "target": "network_implementation"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction",
+        "source_derived_context_resource_checking",
+        "component_material_correspondence",
+        "fresh_exact_payload_construction",
+        "fresh_export_acceptance"
       ],
       "features": [
         "three_valued_truth",
@@ -556,14 +438,7 @@
         "source_derived_resource_demand",
         "exact_rna_and_manifest"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048,
-        "component_definitions": 16,
-        "component_instances": 2
-      },
+      "kind": "component_material",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -582,25 +457,18 @@
         "Fresh complete material checking and export remain mandatory after planning.",
         "Legacy realization rejects nonempty catalog dependencies and evidence; provider prerequisite closure is not applicable to this family."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction",
-        "source_derived_context_resource_checking",
-        "component_material_correspondence",
-        "fresh_exact_payload_construction",
-        "fresh_export_acceptance"
-      ]
-    },
-    {
-      "target": "instance_material",
-      "kind": "component_material",
-      "request_schema": "biocompiler.policy_component_material_request.v0.2",
-      "request_profile": "biocompiler.policy_instance_component_mrna.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.1",
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 2,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
       "realization_profile": "biocompiler.policy_realization_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.1",
+      "request_profile": "biocompiler.policy_component_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.1",
       "required_inputs": [
         "document",
         "definitions",
@@ -616,113 +484,127 @@
       ],
       "source_shapes": [
         {
-          "id": "exclusive_truth_rules",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
+            "clocks": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "effects": {
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
+              "maximum": 1,
+              "minimum": 1
             },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
+            "encounter_slots": null,
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
             },
-            "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
             },
             "machines": {
-              "minimum": 0,
-              "maximum": 0
+              "maximum": 0,
+              "minimum": 0
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 2,
+              "minimum": 1
             },
             "states_per_machine": null,
-            "truth_stores": {
-              "minimum": 1,
-              "maximum": 2
-            },
-            "rules": {
-              "minimum": 1,
-              "maximum": 2
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
             },
             "transitions": {
-              "minimum": 0,
-              "maximum": 0
+              "maximum": 0,
+              "minimum": 0
             },
-            "effects": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_slots": null
-          }
+            "truth_stores": {
+              "maximum": 2,
+              "minimum": 1
+            }
+          },
+          "id": "exclusive_truth_rules"
         },
         {
-          "id": "fixed_staged_machine",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "states_per_machine": {
-              "minimum": 5,
-              "maximum": 5
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 7,
-              "maximum": 7
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
             },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 5,
+              "minimum": 5
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 7,
+              "minimum": 7
+            },
+            "truth_stores": {
+              "maximum": 0,
+              "minimum": 0
             }
-          }
+          },
+          "id": "fixed_staged_machine"
         }
+      ],
+      "target": "component_material"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction",
+        "source_derived_context_resource_checking",
+        "component_material_correspondence",
+        "fresh_exact_payload_construction",
+        "fresh_export_acceptance"
       ],
       "features": [
         "three_valued_truth",
@@ -747,14 +629,7 @@
         "source_derived_resource_demand",
         "exact_rna_and_manifest"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048,
-        "component_definitions": 16,
-        "component_instances": 8
-      },
+      "kind": "component_material",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -773,25 +648,18 @@
         "Fresh complete material checking and export remain mandatory after planning.",
         "Legacy realization rejects nonempty catalog dependencies and evidence; provider prerequisite closure is not applicable to this family."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction",
-        "source_derived_context_resource_checking",
-        "component_material_correspondence",
-        "fresh_exact_payload_construction",
-        "fresh_export_acceptance"
-      ]
-    },
-    {
-      "target": "prerequisite_material",
-      "kind": "component_material",
-      "request_schema": "biocompiler.policy_component_material_request.v0.3",
-      "request_profile": "biocompiler.policy_instance_prerequisite_mrna.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.2",
-      "realization_profile": "biocompiler.policy_prerequisite_realization_inputs.v0.1",
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 8,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
+      "realization_profile": "biocompiler.policy_realization_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.1",
+      "request_profile": "biocompiler.policy_instance_component_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.2",
       "required_inputs": [
         "document",
         "definitions",
@@ -807,56 +675,127 @@
       ],
       "source_shapes": [
         {
-          "id": "exclusive_truth_rules",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "states_per_machine": null,
-            "truth_stores": {
-              "minimum": 1,
-              "maximum": 2
-            },
-            "rules": {
-              "minimum": 1,
-              "maximum": 2
-            },
-            "transitions": {
-              "minimum": 0,
-              "maximum": 0
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 1,
-              "maximum": 1
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_slots": null,
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
             },
             "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+              "maximum": 1,
+              "minimum": 1
             },
-            "encounter_slots": null
-          }
+            "machines": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 2,
+              "minimum": 1
+            },
+            "states_per_machine": null,
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "truth_stores": {
+              "maximum": 2,
+              "minimum": 1
+            }
+          },
+          "id": "exclusive_truth_rules"
+        },
+        {
+          "counts": {
+            "clocks": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "effects": {
+              "maximum": 2,
+              "minimum": 2
+            },
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_slots": {
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 5,
+              "minimum": 5
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 7,
+              "minimum": 7
+            },
+            "truth_stores": {
+              "maximum": 0,
+              "minimum": 0
+            }
+          },
+          "id": "fixed_staged_machine"
         }
+      ],
+      "target": "instance_material"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction",
+        "source_derived_context_resource_checking",
+        "component_material_correspondence",
+        "fresh_exact_payload_construction",
+        "fresh_export_acceptance"
       ],
       "features": [
         "three_valued_truth",
@@ -880,14 +819,7 @@
         "source_derived_resource_demand",
         "exact_rna_and_manifest"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048,
-        "component_definitions": 16,
-        "component_instances": 8
-      },
+      "kind": "component_material",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -902,25 +834,18 @@
         "Component/context decoding and model-conditional agreement do not establish physical provider function.",
         "Fresh complete material checking and export remain mandatory after planning."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction",
-        "source_derived_context_resource_checking",
-        "component_material_correspondence",
-        "fresh_exact_payload_construction",
-        "fresh_export_acceptance"
-      ]
-    },
-    {
-      "target": "two_observation_material",
-      "kind": "component_material",
-      "request_schema": "biocompiler.policy_component_material_request.v0.4",
-      "request_profile": "biocompiler.policy_instance_two_observation_prerequisite_mrna.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.3",
-      "realization_profile": "biocompiler.policy_two_observation_prerequisite_inputs.v0.1",
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 8,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
+      "realization_profile": "biocompiler.policy_prerequisite_realization_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.2",
+      "request_profile": "biocompiler.policy_instance_prerequisite_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.3",
       "required_inputs": [
         "document",
         "definitions",
@@ -936,56 +861,70 @@
       ],
       "source_shapes": [
         {
-          "id": "exclusive_truth_rules",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 2,
-              "maximum": 2
-            },
-            "machines": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "states_per_machine": null,
-            "truth_stores": {
-              "minimum": 1,
-              "maximum": 2
-            },
-            "rules": {
-              "minimum": 1,
-              "maximum": 2
-            },
-            "transitions": {
-              "minimum": 0,
-              "maximum": 0
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 1,
-              "maximum": 1
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_slots": null,
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
             },
             "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+              "maximum": 1,
+              "minimum": 1
             },
-            "encounter_slots": null
-          }
+            "machines": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 2,
+              "minimum": 1
+            },
+            "states_per_machine": null,
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "truth_stores": {
+              "maximum": 2,
+              "minimum": 1
+            }
+          },
+          "id": "exclusive_truth_rules"
         }
+      ],
+      "target": "prerequisite_material"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction",
+        "source_derived_context_resource_checking",
+        "component_material_correspondence",
+        "fresh_exact_payload_construction",
+        "fresh_export_acceptance"
       ],
       "features": [
         "three_valued_truth",
@@ -1010,14 +949,7 @@
         "source_derived_resource_demand",
         "exact_rna_and_manifest"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048,
-        "component_definitions": 16,
-        "component_instances": 8
-      },
+      "kind": "component_material",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -1032,25 +964,18 @@
         "Component/context decoding and model-conditional agreement do not establish physical provider function.",
         "Fresh complete material checking and export remain mandatory after planning."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction",
-        "source_derived_context_resource_checking",
-        "component_material_correspondence",
-        "fresh_exact_payload_construction",
-        "fresh_export_acceptance"
-      ]
-    },
-    {
-      "target": "multi_member_material",
-      "kind": "component_material",
-      "request_schema": "biocompiler.policy_component_material_request.v0.5",
-      "request_profile": "biocompiler.policy_multi_member_prerequisite_mrna.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.4",
-      "realization_profile": "biocompiler.policy_multi_product_prerequisite_inputs.v0.1",
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 8,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
+      "realization_profile": "biocompiler.policy_two_observation_prerequisite_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.3",
+      "request_profile": "biocompiler.policy_instance_two_observation_prerequisite_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.4",
       "required_inputs": [
         "document",
         "definitions",
@@ -1066,62 +991,70 @@
       ],
       "source_shapes": [
         {
-          "id": "fixed_staged_machine",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "states_per_machine": {
-              "minimum": 5,
-              "maximum": 5
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 7,
-              "maximum": 7
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_slots": null,
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
             },
             "fixed_text_products": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 1,
+              "minimum": 1
             },
-            "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+            "machines": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "observations": {
+              "maximum": 2,
+              "minimum": 2
+            },
+            "rules": {
+              "maximum": 2,
+              "minimum": 1
+            },
+            "states_per_machine": null,
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "truth_stores": {
+              "maximum": 2,
+              "minimum": 1
             }
-          }
+          },
+          "id": "exclusive_truth_rules"
         }
+      ],
+      "target": "two_observation_material"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction",
+        "source_derived_context_resource_checking",
+        "component_material_correspondence",
+        "fresh_exact_payload_construction",
+        "fresh_export_acceptance"
       ],
       "features": [
         "three_valued_truth",
@@ -1148,14 +1081,7 @@
         "source_derived_resource_demand",
         "exact_rna_and_manifest"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048,
-        "component_definitions": 16,
-        "component_instances": 8
-      },
+      "kind": "component_material",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -1171,25 +1097,18 @@
         "Component/context decoding and model-conditional agreement do not establish physical provider function.",
         "Fresh complete material checking and export remain mandatory after planning."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction",
-        "source_derived_context_resource_checking",
-        "component_material_correspondence",
-        "fresh_exact_payload_construction",
-        "fresh_export_acceptance"
-      ]
-    },
-    {
-      "target": "grounded_helper_material",
-      "kind": "component_material",
-      "request_schema": "biocompiler.policy_component_material_request.v0.6",
-      "request_profile": "biocompiler.policy_grounded_helper_prerequisite_mrna.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.4",
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 8,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
       "realization_profile": "biocompiler.policy_multi_product_prerequisite_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.4",
+      "request_profile": "biocompiler.policy_multi_member_prerequisite_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.5",
       "required_inputs": [
         "document",
         "definitions",
@@ -1205,62 +1124,76 @@
       ],
       "source_shapes": [
         {
-          "id": "fixed_staged_machine",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "states_per_machine": {
-              "minimum": 5,
-              "maximum": 5
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 7,
-              "maximum": 7
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
             },
-            "fixed_text_products": {
-              "minimum": 2,
-              "maximum": 2
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 2,
+              "minimum": 2
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 5,
+              "minimum": 5
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 7,
+              "minimum": 7
+            },
+            "truth_stores": {
+              "maximum": 0,
+              "minimum": 0
             }
-          }
+          },
+          "id": "fixed_staged_machine"
         }
+      ],
+      "target": "multi_member_material"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction",
+        "source_derived_context_resource_checking",
+        "component_material_correspondence",
+        "fresh_exact_payload_construction",
+        "fresh_export_acceptance"
       ],
       "features": [
         "three_valued_truth",
@@ -1288,14 +1221,7 @@
         "source_derived_resource_demand",
         "exact_rna_and_manifest"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048,
-        "component_definitions": 16,
-        "component_instances": 8
-      },
+      "kind": "component_material",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -1311,25 +1237,18 @@
         "Component/context decoding and model-conditional agreement do not establish physical provider function.",
         "Fresh complete material checking and export remain mandatory after planning."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction",
-        "source_derived_context_resource_checking",
-        "component_material_correspondence",
-        "fresh_exact_payload_construction",
-        "fresh_export_acceptance"
-      ]
-    },
-    {
-      "target": "finite_machine_material",
-      "kind": "component_material",
-      "request_schema": "biocompiler.policy_component_material_request.v0.7",
-      "request_profile": "biocompiler.policy_finite_machine_component_mrna.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.5",
-      "realization_profile": "biocompiler.policy_finite_machine_inputs.v0.1",
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 8,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
+      "realization_profile": "biocompiler.policy_multi_product_prerequisite_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.4",
+      "request_profile": "biocompiler.policy_grounded_helper_prerequisite_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.6",
       "required_inputs": [
         "document",
         "definitions",
@@ -1345,62 +1264,76 @@
       ],
       "source_shapes": [
         {
-          "id": "bounded_finite_machine",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "states_per_machine": {
-              "minimum": 2,
-              "maximum": 16
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 1,
-              "maximum": 32
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 1,
-              "maximum": 8
+              "maximum": 2,
+              "minimum": 2
             },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 2,
+              "minimum": 2
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 5,
+              "minimum": 5
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 7,
+              "minimum": 7
+            },
+            "truth_stores": {
+              "maximum": 0,
+              "minimum": 0
             }
-          }
+          },
+          "id": "fixed_staged_machine"
         }
+      ],
+      "target": "grounded_helper_material"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction",
+        "source_derived_context_resource_checking",
+        "component_material_correspondence",
+        "fresh_exact_payload_construction",
+        "fresh_export_acceptance"
       ],
       "features": [
         "three_valued_truth",
@@ -1427,14 +1360,7 @@
         "source_derived_resource_demand",
         "exact_rna_and_manifest"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048,
-        "component_definitions": 16,
-        "component_instances": 8
-      },
+      "kind": "component_material",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -1449,25 +1375,18 @@
         "Component/context decoding and model-conditional agreement do not establish physical provider function.",
         "Fresh complete material checking and export remain mandatory after planning."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction",
-        "source_derived_context_resource_checking",
-        "component_material_correspondence",
-        "fresh_exact_payload_construction",
-        "fresh_export_acceptance"
-      ]
-    },
-    {
-      "target": "quantitative_material",
-      "kind": "component_material",
-      "request_schema": "biocompiler.policy_component_material_request.v0.8",
-      "request_profile": "biocompiler.policy_sampled_reservoir_component_mrna.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.5",
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 8,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
       "realization_profile": "biocompiler.policy_finite_machine_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.5",
+      "request_profile": "biocompiler.policy_finite_machine_component_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.7",
       "required_inputs": [
         "document",
         "definitions",
@@ -1479,67 +1398,81 @@
         "catalog_binding",
         "input_bindings",
         "resource_bindings",
-        "context",
-        "quantitative"
+        "context"
       ],
       "source_shapes": [
         {
-          "id": "bounded_finite_machine",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "states_per_machine": {
-              "minimum": 2,
-              "maximum": 16
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 1,
-              "maximum": 32
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 1,
-              "maximum": 8
+              "maximum": 8,
+              "minimum": 1
             },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 16,
+              "minimum": 2
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 32,
+              "minimum": 1
+            },
+            "truth_stores": {
+              "maximum": 0,
+              "minimum": 0
             }
-          }
+          },
+          "id": "bounded_finite_machine"
         }
+      ],
+      "target": "finite_machine_material"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction",
+        "source_derived_context_resource_checking",
+        "component_material_correspondence",
+        "fresh_exact_payload_construction",
+        "fresh_export_acceptance",
+        "quantitative_refinement_checking"
       ],
       "features": [
         "three_valued_truth",
@@ -1567,14 +1500,7 @@
         "source_derived_resource_demand",
         "exact_rna_and_manifest"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048,
-        "component_definitions": 16,
-        "component_instances": 8
-      },
+      "kind": "component_material",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -1590,26 +1516,18 @@
         "Component/context decoding and model-conditional agreement do not establish physical provider function.",
         "Fresh complete material checking and export remain mandatory after planning."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction",
-        "source_derived_context_resource_checking",
-        "component_material_correspondence",
-        "fresh_exact_payload_construction",
-        "fresh_export_acceptance",
-        "quantitative_refinement_checking"
-      ]
-    },
-    {
-      "target": "network_material",
-      "kind": "component_material",
-      "request_schema": "biocompiler.policy_component_material_request.v0.9",
-      "request_profile": "biocompiler.policy_network_component_mrna.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.6",
-      "realization_profile": "biocompiler.policy_network_inputs.v0.1",
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 8,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
+      "realization_profile": "biocompiler.policy_finite_machine_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.5",
+      "request_profile": "biocompiler.policy_sampled_reservoir_component_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.8",
       "required_inputs": [
         "document",
         "definitions",
@@ -1621,66 +1539,81 @@
         "catalog_binding",
         "input_bindings",
         "resource_bindings",
-        "context"
+        "context",
+        "quantitative"
       ],
       "source_shapes": [
         {
-          "id": "bounded_machine_network",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 2,
-              "maximum": 4
-            },
-            "machines": {
-              "minimum": 2,
-              "maximum": 4
-            },
-            "states_per_machine": {
-              "minimum": 2,
-              "maximum": 16
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 4
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 1,
-              "maximum": 32
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 1,
-              "maximum": 8
+              "maximum": 8,
+              "minimum": 1
             },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 16,
+              "minimum": 2
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 32,
+              "minimum": 1
+            },
+            "truth_stores": {
+              "maximum": 0,
+              "minimum": 0
             }
-          }
+          },
+          "id": "bounded_finite_machine"
         }
+      ],
+      "target": "quantitative_material"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction",
+        "source_derived_context_resource_checking",
+        "component_material_correspondence",
+        "fresh_exact_payload_construction",
+        "fresh_export_acceptance"
       ],
       "features": [
         "three_valued_truth",
@@ -1710,14 +1643,7 @@
         "source_derived_resource_demand",
         "exact_rna_and_manifest"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048,
-        "component_definitions": 16,
-        "component_instances": 8
-      },
+      "kind": "component_material",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -1735,90 +1661,99 @@
         "Component/context decoding and model-conditional agreement do not establish physical provider function.",
         "Fresh complete material checking and export remain mandatory after planning."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction",
-        "source_derived_context_resource_checking",
-        "component_material_correspondence",
-        "fresh_exact_payload_construction",
-        "fresh_export_acceptance"
-      ]
-    },
-    {
-      "target": "multi_site_implementation",
-      "kind": "implementation",
-      "request_schema": "biocompiler.policy_realization_request.v0.7",
-      "request_profile": "biocompiler.policy_multi_site_inputs.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.7",
-      "realization_profile": "biocompiler.policy_multi_site_inputs.v0.1",
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 8,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
+      "realization_profile": "biocompiler.policy_network_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.6",
+      "request_profile": "biocompiler.policy_network_component_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.9",
       "required_inputs": [
         "document",
         "definitions",
         "operating_domain",
         "implementation_library",
-        "catalog_bindings"
+        "catalog_bindings",
+        "component_library",
+        "composition_rule",
+        "catalog_binding",
+        "input_bindings",
+        "resource_bindings",
+        "context"
       ],
       "source_shapes": [
         {
-          "id": "bounded_finite_machine",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "states_per_machine": {
-              "minimum": 2,
-              "maximum": 16
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 1,
-              "maximum": 32
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 1,
-              "maximum": 8
+              "maximum": 8,
+              "minimum": 1
             },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 4,
+              "minimum": 2
+            },
+            "observations": {
+              "maximum": 4,
+              "minimum": 2
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 16,
+              "minimum": 2
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 32,
+              "minimum": 1
+            },
+            "truth_stores": {
+              "maximum": 4,
+              "minimum": 0
             }
-          }
+          },
+          "id": "bounded_machine_network"
         }
+      ],
+      "target": "network_material"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction"
       ],
       "features": [
         "three_valued_truth",
@@ -1839,12 +1774,7 @@
         "multiple_effect_request_sites",
         "shared_attempt_capacity"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048
-      },
+      "kind": "implementation",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -1857,93 +1787,96 @@
         "All sites share one attempt bank and capacity while retaining the actual initiating site and authorization guard.",
         "Terminal states have no outgoing transitions; multi-machine request sharing and request coalescing are unsupported."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction"
-      ]
-    },
-    {
-      "target": "step_quantitative_material",
-      "kind": "component_material",
-      "request_schema": "biocompiler.policy_component_material_request.v0.10",
-      "request_profile": "biocompiler.policy_sampled_step_reservoir_component_mrna.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.7",
+      "limits": {
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
       "realization_profile": "biocompiler.policy_multi_site_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.7",
+      "request_profile": "biocompiler.policy_multi_site_inputs.v0.1",
+      "request_schema": "biocompiler.policy_realization_request.v0.7",
       "required_inputs": [
         "document",
         "definitions",
         "operating_domain",
         "implementation_library",
-        "catalog_bindings",
-        "component_library",
-        "composition_rule",
-        "catalog_binding",
-        "input_bindings",
-        "resource_bindings",
-        "context",
-        "quantitative"
+        "catalog_bindings"
       ],
       "source_shapes": [
         {
-          "id": "bounded_finite_machine",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "states_per_machine": {
-              "minimum": 2,
-              "maximum": 16
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 1,
-              "maximum": 32
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 1,
-              "maximum": 8
+              "maximum": 8,
+              "minimum": 1
             },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 16,
+              "minimum": 2
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 32,
+              "minimum": 1
+            },
+            "truth_stores": {
+              "maximum": 0,
+              "minimum": 0
             }
-          }
+          },
+          "id": "bounded_finite_machine"
         }
+      ],
+      "target": "multi_site_implementation"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction",
+        "source_derived_context_resource_checking",
+        "component_material_correspondence",
+        "fresh_exact_payload_construction",
+        "fresh_export_acceptance",
+        "quantitative_refinement_checking"
       ],
       "features": [
         "three_valued_truth",
@@ -1973,14 +1906,7 @@
         "source_derived_resource_demand",
         "exact_rna_and_manifest"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048,
-        "component_definitions": 16,
-        "component_instances": 8
-      },
+      "kind": "component_material",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -1999,26 +1925,18 @@
         "Component/context decoding and model-conditional agreement do not establish physical provider function.",
         "Fresh complete material checking and export remain mandatory after planning."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction",
-        "source_derived_context_resource_checking",
-        "component_material_correspondence",
-        "fresh_exact_payload_construction",
-        "fresh_export_acceptance",
-        "quantitative_refinement_checking"
-      ]
-    },
-    {
-      "target": "transfer_pair_material",
-      "kind": "component_material",
-      "request_schema": "biocompiler.policy_component_material_request.v0.11",
-      "request_profile": "biocompiler.policy_sampled_transfer_pair_component_mrna.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.7",
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 8,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
       "realization_profile": "biocompiler.policy_multi_site_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.7",
+      "request_profile": "biocompiler.policy_sampled_step_reservoir_component_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.10",
       "required_inputs": [
         "document",
         "definitions",
@@ -2035,62 +1953,77 @@
       ],
       "source_shapes": [
         {
-          "id": "bounded_conservative_transfer_pair",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "states_per_machine": {
-              "minimum": 4,
-              "maximum": 16
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 2,
-              "maximum": 18
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 1,
-              "maximum": 1
+              "maximum": 8,
+              "minimum": 1
             },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 16,
+              "minimum": 2
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 32,
+              "minimum": 1
+            },
+            "truth_stores": {
+              "maximum": 0,
+              "minimum": 0
             }
-          }
+          },
+          "id": "bounded_finite_machine"
         }
+      ],
+      "target": "step_quantitative_material"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction",
+        "source_derived_context_resource_checking",
+        "component_material_correspondence",
+        "fresh_exact_payload_construction",
+        "fresh_export_acceptance",
+        "quantitative_refinement_checking"
       ],
       "features": [
         "three_valued_truth",
@@ -2122,14 +2055,7 @@
         "source_derived_resource_demand",
         "exact_rna_and_manifest"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048,
-        "component_definitions": 16,
-        "component_instances": 8
-      },
+      "kind": "component_material",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -2149,26 +2075,18 @@
         "Component/context decoding and model-conditional agreement do not establish physical provider function.",
         "Fresh complete material checking and export remain mandatory after planning."
       ],
-      "deferred_stages": [
-        "complete_finite_domain_exploration",
-        "independent_implementation_execution",
-        "source_implementation_preservation",
-        "whole_domain_hard_requirements",
-        "original_assurance_satisfaction",
-        "source_derived_context_resource_checking",
-        "component_material_correspondence",
-        "fresh_exact_payload_construction",
-        "fresh_export_acceptance",
-        "quantitative_refinement_checking"
-      ]
-    },
-    {
-      "target": "transfer_network_material",
-      "kind": "component_material",
-      "request_schema": "biocompiler.policy_component_material_request.v0.12",
-      "request_profile": "biocompiler.policy_sampled_transfer_network_component_mrna.v0.1",
-      "realization_schema": "biocompiler.policy_realization_request.v0.7",
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 8,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
       "realization_profile": "biocompiler.policy_multi_site_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.7",
+      "request_profile": "biocompiler.policy_sampled_transfer_pair_component_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.11",
       "required_inputs": [
         "document",
         "definitions",
@@ -2185,62 +2103,77 @@
       ],
       "source_shapes": [
         {
-          "id": "bounded_reserved_transfer_network",
           "counts": {
-            "executor_roles": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "encounter_declarations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "subjects": {
-              "minimum": 1,
-              "maximum": 1
-            },
             "clocks": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "observations": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "machines": {
-              "minimum": 1,
-              "maximum": 1
-            },
-            "states_per_machine": {
-              "minimum": 4,
-              "maximum": 16
-            },
-            "truth_stores": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "rules": {
-              "minimum": 0,
-              "maximum": 0
-            },
-            "transitions": {
-              "minimum": 1,
-              "maximum": 32
+              "maximum": 1,
+              "minimum": 1
             },
             "effects": {
-              "minimum": 1,
-              "maximum": 1
+              "maximum": 1,
+              "minimum": 1
             },
-            "fixed_text_products": {
-              "minimum": 1,
-              "maximum": 1
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
             },
             "encounter_slots": {
-              "minimum": 2,
-              "maximum": 2
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 16,
+              "minimum": 4
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 18,
+              "minimum": 2
+            },
+            "truth_stores": {
+              "maximum": 0,
+              "minimum": 0
             }
-          }
+          },
+          "id": "bounded_conservative_transfer_pair"
         }
+      ],
+      "target": "transfer_pair_material"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction",
+        "source_derived_context_resource_checking",
+        "component_material_correspondence",
+        "fresh_exact_payload_construction",
+        "fresh_export_acceptance",
+        "quantitative_refinement_checking"
       ],
       "features": [
         "three_valued_truth",
@@ -2274,14 +2207,7 @@
         "source_derived_resource_demand",
         "exact_rna_and_manifest"
       ],
-      "limits": {
-        "primitive_models": 64,
-        "implementation_nodes": 64,
-        "implementation_wires": 2048,
-        "source_occurrences": 2048,
-        "component_definitions": 16,
-        "component_instances": 8
-      },
+      "kind": "component_material",
       "limitations": [
         "Feature combinations and source counts are descriptive necessary conditions, not admission.",
         "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
@@ -2303,6 +2229,213 @@
         "Component/context decoding and model-conditional agreement do not establish physical provider function.",
         "Fresh complete material checking and export remain mandatory after planning."
       ],
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 8,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
+      "realization_profile": "biocompiler.policy_multi_site_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.7",
+      "request_profile": "biocompiler.policy_sampled_transfer_network_component_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.12",
+      "required_inputs": [
+        "document",
+        "definitions",
+        "operating_domain",
+        "implementation_library",
+        "catalog_bindings",
+        "component_library",
+        "composition_rule",
+        "catalog_binding",
+        "input_bindings",
+        "resource_bindings",
+        "context",
+        "quantitative"
+      ],
+      "source_shapes": [
+        {
+          "counts": {
+            "clocks": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "effects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_slots": {
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 16,
+              "minimum": 4
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 32,
+              "minimum": 1
+            },
+            "truth_stores": {
+              "maximum": 0,
+              "minimum": 0
+            }
+          },
+          "id": "bounded_reserved_transfer_network"
+        }
+      ],
+      "target": "transfer_network_material"
+    },
+    {
+      "deferred_stages": [
+        "complete_finite_domain_exploration",
+        "independent_implementation_execution",
+        "source_implementation_preservation",
+        "whole_domain_hard_requirements",
+        "original_assurance_satisfaction"
+      ],
+      "features": [
+        "three_valued_truth",
+        "independent_supplied_evidence",
+        "finite_clock_ticks",
+        "atomic_precommit_snapshot",
+        "encounter_generation_reset",
+        "retained_effect_attempt_identity",
+        "fixed_text_product",
+        "original_hard_requirement_inventory",
+        "supplied_exact_primitive_configurations",
+        "finite_machine_state",
+        "observed_rising",
+        "correlated_terminal_feedback",
+        "exclusive_arbitration",
+        "observation_updated",
+        "source_derived_machine_shape",
+        "multiple_effect_request_sites",
+        "shared_attempt_capacity",
+        "encounter_truth_state",
+        "complete_atomic_state_assignments"
+      ],
+      "kind": "implementation",
+      "limitations": [
+        "Feature combinations and source counts are descriptive necessary conditions, not admission.",
+        "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
+        "Missing supplied models do not establish biological infeasibility or an exhaustive mechanism search.",
+        "Hard requirements require complete bounded exploration and nonvacuous independent checking.",
+        "No planning result establishes empirical mechanism function, therapeutic benefit or human-use admission.",
+        "The planner performs no history exploration, execution, payload emission or export.",
+        "Two to four known Boolean encounter stores have one writer machine; every transition assigns the complete ordered store inventory.",
+        "Assignments read one immutable prestate and commit atomically with the machine transition and optional request.",
+        "This implementation target does not establish quantitative meaning, selected component ownership or physical coordination."
+      ],
+      "limits": {
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
+      "realization_profile": "biocompiler.policy_coupled_state_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.8",
+      "request_profile": "biocompiler.policy_coupled_state_inputs.v0.1",
+      "request_schema": "biocompiler.policy_realization_request.v0.8",
+      "required_inputs": [
+        "document",
+        "definitions",
+        "operating_domain",
+        "implementation_library",
+        "catalog_bindings"
+      ],
+      "source_shapes": [
+        {
+          "counts": {
+            "clocks": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "effects": {
+              "maximum": 8,
+              "minimum": 1
+            },
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_slots": {
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 16,
+              "minimum": 2
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 32,
+              "minimum": 1
+            },
+            "truth_stores": {
+              "maximum": 4,
+              "minimum": 2
+            }
+          },
+          "id": "bounded_atomic_private_state_machine"
+        }
+      ],
+      "target": "coupled_implementation"
+    },
+    {
       "deferred_stages": [
         "complete_finite_domain_exploration",
         "independent_implementation_execution",
@@ -2314,7 +2447,143 @@
         "fresh_exact_payload_construction",
         "fresh_export_acceptance",
         "quantitative_refinement_checking"
-      ]
+      ],
+      "features": [
+        "three_valued_truth",
+        "independent_supplied_evidence",
+        "finite_clock_ticks",
+        "atomic_precommit_snapshot",
+        "encounter_generation_reset",
+        "retained_effect_attempt_identity",
+        "fixed_text_product",
+        "original_hard_requirement_inventory",
+        "supplied_exact_primitive_configurations",
+        "finite_machine_state",
+        "observed_rising",
+        "correlated_terminal_feedback",
+        "exclusive_arbitration",
+        "observation_updated",
+        "source_derived_machine_shape",
+        "multiple_effect_request_sites",
+        "shared_attempt_capacity",
+        "encounter_truth_state",
+        "complete_atomic_state_assignments",
+        "named_component_instances",
+        "provider_prerequisite_closure",
+        "exact_sampled_reserved_transfer_network",
+        "complete_cartesian_state_mapping",
+        "declared_order_prestate_reservation",
+        "partitioned_reservoir_storage",
+        "selected_boolean_allocation_signals",
+        "supplied_component_fragments",
+        "exact_component_membership",
+        "explicit_input_providers",
+        "explicit_resource_providers",
+        "source_derived_resource_demand",
+        "exact_rna_and_manifest"
+      ],
+      "kind": "component_material",
+      "limitations": [
+        "Feature combinations and source counts are descriptive necessary conditions, not admission.",
+        "Exact source, descriptor, domain, model configuration, replication and catalog checks remain required.",
+        "Missing supplied models do not establish biological infeasibility or an exhaustive mechanism search.",
+        "Hard requirements require complete bounded exploration and nonvacuous independent checking.",
+        "No planning result establishes empirical mechanism function, therapeutic benefit or human-use admission.",
+        "The planner performs no history exploration, execution, payload emission or export.",
+        "Two to four binary reservoirs have separately selected component instances and private truth registers under one supplied atomic coordinator.",
+        "Every selected edge allocation and owner next-value circuit is checked on the complete original Cartesian grid; all writes share one immutable prestate and atomic commit.",
+        "The sixty-four-node graph ceiling and exact single-RNA material-region constraints remain conjunctive; authorable state dimensions alone do not establish material admission.",
+        "Signals establish model-conditional allocation under supplied contracts; physical intercomponent transport, distributed synchronization and experimental function remain unassessed.",
+        "Selected original components, assembly rules, providers and exact RNA references must be supplied explicitly.",
+        "Component/context decoding and model-conditional agreement do not establish physical provider function.",
+        "Fresh complete material checking and export remain mandatory after planning."
+      ],
+      "limits": {
+        "component_definitions": 16,
+        "component_instances": 8,
+        "implementation_nodes": 64,
+        "implementation_wires": 2048,
+        "primitive_models": 64,
+        "source_occurrences": 2048
+      },
+      "realization_profile": "biocompiler.policy_coupled_state_inputs.v0.1",
+      "realization_schema": "biocompiler.policy_realization_request.v0.8",
+      "request_profile": "biocompiler.policy_coupled_transfer_network_component_mrna.v0.1",
+      "request_schema": "biocompiler.policy_component_material_request.v0.13",
+      "required_inputs": [
+        "document",
+        "definitions",
+        "operating_domain",
+        "implementation_library",
+        "catalog_bindings",
+        "component_library",
+        "composition_rule",
+        "catalog_binding",
+        "input_bindings",
+        "resource_bindings",
+        "context",
+        "quantitative"
+      ],
+      "source_shapes": [
+        {
+          "counts": {
+            "clocks": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "effects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_declarations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "encounter_slots": {
+              "maximum": 2,
+              "minimum": 2
+            },
+            "executor_roles": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "fixed_text_products": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "machines": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "observations": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "rules": {
+              "maximum": 0,
+              "minimum": 0
+            },
+            "states_per_machine": {
+              "maximum": 16,
+              "minimum": 4
+            },
+            "subjects": {
+              "maximum": 1,
+              "minimum": 1
+            },
+            "transitions": {
+              "maximum": 32,
+              "minimum": 1
+            },
+            "truth_stores": {
+              "maximum": 4,
+              "minimum": 2
+            }
+          },
+          "id": "bounded_component_reserved_transfer_network"
+        }
+      ],
+      "target": "coupled_quantitative_material"
     }
   ]
 }

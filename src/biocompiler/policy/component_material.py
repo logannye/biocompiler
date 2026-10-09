@@ -16,6 +16,7 @@ from biocompiler.core_policy_component_material import (
     QUANTITATIVE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_SCHEMA, STEP_QUANTITATIVE_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_SCHEMA,
     TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_SCHEMA,
     TRANSFER_NETWORK_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_SCHEMA,
+    COMPOSITION_REQUEST_PROFILE, COMPOSITION_REQUEST_SCHEMA,
 )
 from .material import _publish_fresh
 
@@ -26,8 +27,10 @@ def prepare_request(*, implementation_request: JsonValue, component_library: Jso
                     instanced: bool = False, prerequisites: bool = False,
                     two_observations: bool = False, multi_member: bool = False,
                     grounded_helper: bool = False, finite_machine: bool = False,
-                    quantitative: JsonValue = None, network: bool = False, multi_site: bool = False, transfer_pair: bool = False, transfer_network: bool = False) -> dict[str, JsonValue]:
+                    quantitative: JsonValue = None, network: bool = False, multi_site: bool = False, transfer_pair: bool = False, transfer_network: bool = False, composition: bool = False) -> dict[str, JsonValue]:
     """Snapshot all original authority unchanged; perform no semantic admission."""
+    if composition and (not multi_site or transfer_network or transfer_pair):
+        raise ValueError("Coupled quantitative material requires its distinct explicit multiple-site route")
     if transfer_network and (not multi_site or transfer_pair):
         raise ValueError("Transfer network requires its distinct multiple-site route")
     if transfer_pair and not multi_site:
@@ -48,8 +51,8 @@ def prepare_request(*, implementation_request: JsonValue, component_library: Jso
         raise ValueError("Multi-member compilation requires its distinct explicit prerequisite route")
     if two_observations and not (prerequisites and instanced):
         raise ValueError("Two observations require explicit named instances and prerequisite closure")
-    request: dict[str, JsonValue] = {"schema_version": TRANSFER_NETWORK_REQUEST_SCHEMA if transfer_network else TRANSFER_PAIR_REQUEST_SCHEMA if transfer_pair else STEP_QUANTITATIVE_REQUEST_SCHEMA if multi_site else NETWORK_REQUEST_SCHEMA if network else QUANTITATIVE_REQUEST_SCHEMA if quantitative is not None else FINITE_MACHINE_REQUEST_SCHEMA if finite_machine else GROUNDED_HELPER_REQUEST_SCHEMA if grounded_helper else MULTI_MEMBER_REQUEST_SCHEMA if multi_member else TWO_OBSERVATION_REQUEST_SCHEMA if two_observations else PREREQUISITE_REQUEST_SCHEMA if prerequisites else INSTANCE_REQUEST_SCHEMA if instanced else REQUEST_SCHEMA,
-        "profile": TRANSFER_NETWORK_REQUEST_PROFILE if transfer_network else TRANSFER_PAIR_REQUEST_PROFILE if transfer_pair else STEP_QUANTITATIVE_REQUEST_PROFILE if multi_site else NETWORK_REQUEST_PROFILE if network else QUANTITATIVE_REQUEST_PROFILE if quantitative is not None else FINITE_MACHINE_REQUEST_PROFILE if finite_machine else GROUNDED_HELPER_REQUEST_PROFILE if grounded_helper else MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else PREREQUISITE_REQUEST_PROFILE if prerequisites else INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
+    request: dict[str, JsonValue] = {"schema_version": COMPOSITION_REQUEST_SCHEMA if composition else TRANSFER_NETWORK_REQUEST_SCHEMA if transfer_network else TRANSFER_PAIR_REQUEST_SCHEMA if transfer_pair else STEP_QUANTITATIVE_REQUEST_SCHEMA if multi_site else NETWORK_REQUEST_SCHEMA if network else QUANTITATIVE_REQUEST_SCHEMA if quantitative is not None else FINITE_MACHINE_REQUEST_SCHEMA if finite_machine else GROUNDED_HELPER_REQUEST_SCHEMA if grounded_helper else MULTI_MEMBER_REQUEST_SCHEMA if multi_member else TWO_OBSERVATION_REQUEST_SCHEMA if two_observations else PREREQUISITE_REQUEST_SCHEMA if prerequisites else INSTANCE_REQUEST_SCHEMA if instanced else REQUEST_SCHEMA,
+        "profile": COMPOSITION_REQUEST_PROFILE if composition else TRANSFER_NETWORK_REQUEST_PROFILE if transfer_network else TRANSFER_PAIR_REQUEST_PROFILE if transfer_pair else STEP_QUANTITATIVE_REQUEST_PROFILE if multi_site else NETWORK_REQUEST_PROFILE if network else QUANTITATIVE_REQUEST_PROFILE if quantitative is not None else FINITE_MACHINE_REQUEST_PROFILE if finite_machine else GROUNDED_HELPER_REQUEST_PROFILE if grounded_helper else MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else PREREQUISITE_REQUEST_PROFILE if prerequisites else INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
         "implementation_request": implementation_request, "component_library": component_library,
         "composition_rule": composition_rule, "catalog_binding": catalog_binding, "input_bindings": input_bindings,
         "resource_bindings": resource_bindings, "context": context, "budgets": budgets}

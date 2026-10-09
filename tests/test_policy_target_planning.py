@@ -119,7 +119,7 @@ class TargetPlanningTransportTests(unittest.TestCase):
         full = catalog()
         self.assertEqual(digest(full), planning.CATALOG_FINGERPRINT)
         self.assertEqual({row['target']: digest(row) for row in full['targets']}, planning.TARGET_FINGERPRINTS)
-        self.assertEqual(len(full['targets']), 16)
+        self.assertEqual(len(full['targets']), 18)
         self.assertEqual(set(planning.PROFILE['operations']), {'plan-policy-target', 'replay-policy-target-plan'})
 
     def test_multisite_and_sampled_step_targets_retain_explicit_nonaccepting_plans(self):

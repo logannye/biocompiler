@@ -7,6 +7,8 @@ module L = Policy_component_library
 module A = Policy_component_assembly_rule
 module X = Policy_component_context
 module C = Policy_material_contract
+val composition_schema_version : string
+val composition_profile : string
 val schema_version : string
 val profile : string
 val instance_schema_version : string
@@ -53,6 +55,8 @@ val resource_keys : A.t -> resource_key list
 val resource_owner_to_json : resource_owner -> Json.t
 type budgets = private {max_work:int; max_report_bytes:int; max_report_nodes:int}
 type t
+val is_quantitative_composition : t -> bool
+val composed_quantitative : t -> Policy_quantitative_composition_contract.selection option
 val is_transfer_network : t -> bool
 val is_transfer_pair : t -> bool
 val is_multi_site : t -> bool
