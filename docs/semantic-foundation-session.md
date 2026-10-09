@@ -23,7 +23,7 @@ integration. Development evidence is not release acceptance.
 | Order | Increment | Required observable result | Status |
 | --- | --- | --- | --- |
 | 1 | Stable specification and strongly typed admitted IR | Versioned language authority independent of Python dataclass layout; SDK/schema conformance; closed, resolved semantic types actually consumed after admission; exact existing wire/source correspondence preserved. | Implemented and source-reviewed; native validation pending |
-| 2 | Typed Python facade and semantic modules | Distinct expression/reference categories, explicit module ports and private state/effects, hygienic instantiation, checked interfaces and conflicting-composition rejection through the public source path. | Pending |
+| 2 | Typed Python facade and semantic modules | Distinct expression/reference categories, explicit module ports and private state/effects, hygienic instantiation, checked interfaces and conflicting-composition rejection through the public source path. | Implemented and source-reviewed; focused Python and typing checks pass |
 | 3 | Generic finite-machine lowering and composition | Multiple materially different finite-machine shapes use common lowering/checking and component composition; complete source, attempt identity, atomicity, requirements and material correspondence survive. | Pending |
 | 4 | Named refinement relations and composable evidence | Explicit relation kinds and source/target/assumption/bound identities; independently checked composition; old exact relations retain their original meaning and cannot be weakened by a producer. | Pending |
 | 5 | Quantitative mechanism-to-payload profile | Explicit quantitative dynamics, units, domain and observation map connected to selected supplied components, independent behavior/requirement checks and exact paired molecular export; mutations change output or reject. | Pending |
@@ -64,5 +64,16 @@ triggers remain retained. The correction is documented in the typed-IR contract.
 
 No CI was dispatched for this step following the user's iteration preference.
 Native compilation/execution and integration acceptance remain pending. Item 2
-now follows this implementation checkpoint. No acceptance is claimed for this
-branch.
+is implemented in `policy.typed` and `policy.modules`. A combined 121-test local
+run on Python 3.11.15 passes, including strict mypy on the facade and complete
+positive example, exactly 17 expected negative diagnostics, all 29 module tests,
+44 public API inventory controls and existing authoring compatibility controls.
+The module implementation separately passes strict mypy and its 29 tests on
+Python 3.14.6. Both documentation examples execute locally as source-only
+programs. The additive API inventory preserves all original 905 classifications
+and 138 witness meanings; new entries distinguish focused shared controls from
+untested individual declarations. Module privacy and interface checks are an
+authoring guarantee: flattened source retains no native module provenance proof.
+
+Item 3 follows this implementation checkpoint. No native or release acceptance
+is claimed for this branch.

@@ -20,10 +20,10 @@ Unknown export bindings, dynamic export mutations, unresolved schema/profile dec
 | `cli_command` | 67 |
 | `console_script` | 1 |
 | `example` | 38 |
-| `export` | 699 |
+| `export` | 752 |
 | `ir_operation` | 165 |
-| `module` | 234 |
-| `public_definition` | 1012 |
+| `module` | 236 |
+| `public_definition` | 1060 |
 | `schema` | 329 |
 | `serializer` | 303 |
 | `studio_asset` | 8 |

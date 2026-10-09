@@ -6566,6 +6566,391 @@
       "status": "compatibility_support",
       "witnesses": []
     },
+    "biocompiler.policy.modules.Access": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.Footprint": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "modules.footprint"
+      ]
+    },
+    "biocompiler.policy.modules.Footprint.reads": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.Footprint.requests": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.Footprint.writes": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.InputPort": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "modules.connect"
+      ]
+    },
+    "biocompiler.policy.modules.InputPort.__post_init__": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.InputPort.access": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.InputPort.declaration": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.InputPort.name": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleBinding": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "modules.connect"
+      ]
+    },
+    "biocompiler.policy.modules.ModuleBinding.__post_init__": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleBinding.port": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleBinding.target": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleError": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleInstance": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "modules.connect"
+      ]
+    },
+    "biocompiler.policy.modules.ModuleInstance.__post_init__": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleInstance.assumptions": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleInstance.bindings": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleInstance.name": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleInstance.output": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "modules.connect"
+      ]
+    },
+    "biocompiler.policy.modules.ModuleInstance.template": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleLimits": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "modules.limits"
+      ]
+    },
+    "biocompiler.policy.modules.ModuleLimits.__post_init__": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleLimits.max_bytes": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleLimits.max_declarations": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleLimits.max_depth": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleLimits.max_instances": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleLimits.max_ports": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleLimits.max_work": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleOutput": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "modules.connect"
+      ]
+    },
+    "biocompiler.policy.modules.ModuleOutput.__post_init__": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleOutput.instance": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleOutput.port": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleTemplate": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "modules.expand",
+        "modules.private",
+        "modules.assumptions"
+      ]
+    },
+    "biocompiler.policy.modules.ModuleTemplate.__post_init__": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleTemplate.assumptions": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleTemplate.declarations": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleTemplate.footprint": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "modules.footprint"
+      ]
+    },
+    "biocompiler.policy.modules.ModuleTemplate.guarantees": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleTemplate.id": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleTemplate.inputs": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleTemplate.outputs": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleTemplate.private": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleTemplate.semantics": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleTemplate.source_map": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.ModuleTemplate.version": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.OutputPort": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "modules.connect"
+      ]
+    },
+    "biocompiler.policy.modules.OutputPort.__post_init__": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.OutputPort.access": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.OutputPort.declaration": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.OutputPort.name": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.R": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._Budget": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._TemplateData": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._check_program": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._footprint": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._name": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._references": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._require": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._rewrite": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._same": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._sequence_field": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._snapshot": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._tuple": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._validate_instance": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._validate_port": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._validate_template": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules._walk": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.modules.compose_modules": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "modules.expand",
+        "modules.connect",
+        "modules.writes",
+        "modules.limits"
+      ]
+    },
+    "biocompiler.policy.modules.instantiate": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "modules.expand",
+        "modules.assumptions"
+      ]
+    },
     "biocompiler.policy.native.assess": {
       "scope": "Selected shared native_routing controls; scope is the witness distinction, not every entrypoint or combination.",
       "status": "shared_invariant",
@@ -7478,6 +7863,518 @@
       "scope": "Exact source body/signature/decorator and dependency inventory only; no per-body semantic completeness or runtime support claim.",
       "status": "source_only",
       "witnesses": []
+    },
+    "biocompiler.policy.typed.Assignment": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.references"
+      ]
+    },
+    "biocompiler.policy.typed.Assignment.__post_init__": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.Assignment._state": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.Assignment._value": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.Assignment.to_source": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.references"
+      ]
+    },
+    "biocompiler.policy.typed.Effect": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.lifecycle"
+      ]
+    },
+    "biocompiler.policy.typed.Effect.__post_init__": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.Effect._source": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.Effect.completed": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.lifecycle"
+      ]
+    },
+    "biocompiler.policy.typed.Effect.event": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.lifecycle"
+      ]
+    },
+    "biocompiler.policy.typed.Effect.failed": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.lifecycle"
+      ]
+    },
+    "biocompiler.policy.typed.Effect.initiated": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.lifecycle"
+      ]
+    },
+    "biocompiler.policy.typed.Effect.requested": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.lifecycle"
+      ]
+    },
+    "biocompiler.policy.typed.Effect.timed_out": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.lifecycle"
+      ]
+    },
+    "biocompiler.policy.typed.Effect.to_source": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.lifecycle"
+      ]
+    },
+    "biocompiler.policy.typed.EffectPhase": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.EventExpr": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.events"
+      ]
+    },
+    "biocompiler.policy.typed.IntegerExpr": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.literal"
+      ]
+    },
+    "biocompiler.policy.typed.Observation": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.references"
+      ]
+    },
+    "biocompiler.policy.typed.Observation.__post_init__": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.Observation._expression_type": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.Observation._source": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.Observation.to_source": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.references"
+      ]
+    },
+    "biocompiler.policy.typed.Observation.updated": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.references"
+      ]
+    },
+    "biocompiler.policy.typed.Observation.value": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.references"
+      ]
+    },
+    "biocompiler.policy.typed.Parameter": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.references"
+      ]
+    },
+    "biocompiler.policy.typed.Parameter.__post_init__": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.Parameter._expression_type": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.Parameter._source": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.Parameter.to_source": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.Parameter.value": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.references"
+      ]
+    },
+    "biocompiler.policy.typed.QuantityExpr": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.literal"
+      ]
+    },
+    "biocompiler.policy.typed.QuantityExpr.unit": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.S": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.ScalarExpression": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.State": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.references"
+      ]
+    },
+    "biocompiler.policy.typed.State.__post_init__": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.State._expression_type": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.State._source": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.State.assign": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.references"
+      ]
+    },
+    "biocompiler.policy.typed.State.to_source": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.references"
+      ]
+    },
+    "biocompiler.policy.typed.State.value": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.references"
+      ]
+    },
+    "biocompiler.policy.typed.State.with_reset": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.reset"
+      ]
+    },
+    "biocompiler.policy.typed.TextExpr": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.literal"
+      ]
+    },
+    "biocompiler.policy.typed.TruthExpr": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.literal"
+      ]
+    },
+    "biocompiler.policy.typed.TruthExpr.__and__": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.TruthExpr.__invert__": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.TruthExpr.__or__": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.TruthExpr.rising": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.TypedAuthoringError": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed._Expression": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed._NumericExpr": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed._ScalarExpr": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed._behavior": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed._expression": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed._owners": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed._require": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed._scalar": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed._subjects": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed._type": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed._wrapper": {
+      "scope": "Private authoring implementation dependency; no independent public API or native acceptance claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.all_of": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.events"
+      ]
+    },
+    "biocompiler.policy.typed.any_of": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.argument": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.events"
+      ]
+    },
+    "biocompiler.policy.typed.guard": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.events"
+      ]
+    },
+    "biocompiler.policy.typed.integer": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.literal"
+      ]
+    },
+    "biocompiler.policy.typed.integer_observation": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.integer_parameter": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.integer_state": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.not_": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.quantity": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.literal"
+      ]
+    },
+    "biocompiler.policy.typed.quantity_observation": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.quantity_parameter": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.quantity_state": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.rising": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.events"
+      ]
+    },
+    "biocompiler.policy.typed.rule": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.source",
+        "typed.events"
+      ]
+    },
+    "biocompiler.policy.typed.text": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.literal"
+      ]
+    },
+    "biocompiler.policy.typed.text_observation": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.text_parameter": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.text_state": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.transition": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.transition"
+      ]
+    },
+    "biocompiler.policy.typed.trigger": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.events"
+      ]
+    },
+    "biocompiler.policy.typed.truth": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.literal"
+      ]
+    },
+    "biocompiler.policy.typed.truth_observation": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.truth_parameter": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.truth_state": {
+      "scope": "Inventoried typed authoring surface; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.typed.unknown": {
+      "scope": "Reviewed focused Python authoring controls only; not every API combination, native admission, module guarantee proof or material acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "typed.literal"
+      ]
     },
     "biocompiler.policy.validation.CheckReport": {
       "scope": "Exact source body/signature/decorator and dependency inventory only; no per-body semantic completeness or runtime support claim.",
@@ -15745,6 +16642,787 @@
         "syntax_sha256": "ab3c6194334522492fa99b570d8185e690ba8986bbc6b661af3f73c64921d0cd"
       },
       {
+        "id": "biocompiler.policy.modules.Access",
+        "kind": "value",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "Access"
+        },
+        "syntax_sha256": "8bec385feee36ba931db2631bf58affc4852572f5656f9bf8f73d312126caa0e"
+      },
+      {
+        "id": "biocompiler.policy.modules.Footprint",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "Footprint"
+        },
+        "syntax_sha256": "4514bb9abc3191132c4bcfd6eda742a270636cc8dda023854b91fd7af94af763"
+      },
+      {
+        "id": "biocompiler.policy.modules.Footprint.reads",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[m.Ref, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "Footprint.reads"
+        },
+        "syntax_sha256": "cebb41abf986727c0345cef2411231e4d0fafcdc8103ad35bb7b566c41ffc5dc"
+      },
+      {
+        "id": "biocompiler.policy.modules.Footprint.requests",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[m.Ref, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "Footprint.requests"
+        },
+        "syntax_sha256": "2b959bc4ea1fbd384842e4cc51771f773214a722100b67ec448387f4e3492efe"
+      },
+      {
+        "id": "biocompiler.policy.modules.Footprint.writes",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[m.Ref, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "Footprint.writes"
+        },
+        "syntax_sha256": "bff9aa465418acdf3fef180b2e2cf6a491c80df5433ac7fd212a063cdf7ec57d"
+      },
+      {
+        "id": "biocompiler.policy.modules.InputPort",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "InputPort"
+        },
+        "syntax_sha256": "da2a031e2b6d6b51099babd67c125d9c13a9cf1c6658e0942841f850eec2a5c3"
+      },
+      {
+        "id": "biocompiler.policy.modules.InputPort.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "InputPort.__post_init__"
+        },
+        "syntax_sha256": "0d3be5319fe5dff08088cf3ffa5558df1e014688a2da05a3321ae893794e8d1f"
+      },
+      {
+        "id": "biocompiler.policy.modules.InputPort.access",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Access = 'read'",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "InputPort.access"
+        },
+        "syntax_sha256": "bdc8a78233a9edc5bb5782d67bbd5f354020630949333aab2bea8b86d51e4e2f"
+      },
+      {
+        "id": "biocompiler.policy.modules.InputPort.declaration",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Declaration",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "InputPort.declaration"
+        },
+        "syntax_sha256": "8dfb4a8483c2c47a8ecfc15e4e95225d102ce14d1808e4de5f5dc8641b5bfb68"
+      },
+      {
+        "id": "biocompiler.policy.modules.InputPort.name",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "InputPort.name"
+        },
+        "syntax_sha256": "4792411750772f59598a4a437baab75ea559ae5bee99b0c43ba1e5f0e2c6ab76"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleBinding",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleBinding"
+        },
+        "syntax_sha256": "04389a41b5e6078d730d4249f076bfa48ac0191c528b963225f6df9c23020c74"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleBinding.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleBinding.__post_init__"
+        },
+        "syntax_sha256": "9541f0cffad1c8abafac827dadfb7181a8b54c67f287398c303e2aa996720704"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleBinding.port",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleBinding.port"
+        },
+        "syntax_sha256": "6dcc768ef3b43537578ae12945021d99cb3681d46bc85671f334f117d8225fc4"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleBinding.target",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Ref | ModuleOutput",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleBinding.target"
+        },
+        "syntax_sha256": "5ad225ea5219ba5e46db079111985244d934aa8b8ba55afe1f7ff90b6e221e7e"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleError",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleError"
+        },
+        "syntax_sha256": "1624bcaafe8a64f5bf0fb6d8bfc2c20ee27a05dc411fad859c9b5228cce360ea"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleInstance",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleInstance"
+        },
+        "syntax_sha256": "16be88e95adc2f6c078508074d1cf712d8765974fd36d3c58db9066fa6fadb55"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleInstance.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleInstance.__post_init__"
+        },
+        "syntax_sha256": "6f197f8c2092b9dafef4d40bfc8181dd30d03c3be127b4bc1c9da9fc3559de8a"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleInstance.assumptions",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[m.Requirement, ...] = ()",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleInstance.assumptions"
+        },
+        "syntax_sha256": "f600b252c6eb07523b949b593ff637464b1e5625f06e9997092361b9c5ff5310"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleInstance.bindings",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[ModuleBinding, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleInstance.bindings"
+        },
+        "syntax_sha256": "c51c96bc984f6d886d708fbf017393873f6afe1b0205450ee68a99b7ef7cbe0c"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleInstance.name",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleInstance.name"
+        },
+        "syntax_sha256": "4792411750772f59598a4a437baab75ea559ae5bee99b0c43ba1e5f0e2c6ab76"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleInstance.output",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, name: str -> ModuleOutput",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleInstance.output"
+        },
+        "syntax_sha256": "ba03d9308fe56600ccb97f5388cb673319173e54a9baf4b0baa83eb8ab03e18f"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleInstance.template",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "ModuleTemplate",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleInstance.template"
+        },
+        "syntax_sha256": "2503c2affc547a50c743524a6b425c9de09caa34bc43c42c22e24b5276247a53"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleLimits",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleLimits"
+        },
+        "syntax_sha256": "844d5a06b2bd3455130bdf1086f7ad6c270ec64ae3d1c85bae4b27e0958e195e"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleLimits.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleLimits.__post_init__"
+        },
+        "syntax_sha256": "8af95e16f1ad0b1ea8c68451834040401d7fb40235539db16f269cd015a3e5c4"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleLimits.max_bytes",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int = 8 * 1024 * 1024",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleLimits.max_bytes"
+        },
+        "syntax_sha256": "34ba21209817ec92f1376b6986aef46a5cc9cb787aca7c29baead92a3b707da8"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleLimits.max_declarations",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int = 4096",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleLimits.max_declarations"
+        },
+        "syntax_sha256": "715853da76ddca315e5ccc2b084c58ca38858e81caac38cad002b5362a45755f"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleLimits.max_depth",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int = 64",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleLimits.max_depth"
+        },
+        "syntax_sha256": "a90633636e1e7e9a559a69c7b7ffed4b9cf13accaaf9ccffb599531757bfd793"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleLimits.max_instances",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int = 64",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleLimits.max_instances"
+        },
+        "syntax_sha256": "d372f445ad00a15e11841abfcc06b9a54db1ebbabfe1ce227ce0ee4ab9f65300"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleLimits.max_ports",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int = 256",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleLimits.max_ports"
+        },
+        "syntax_sha256": "779880fc400c273799843b592327498d88b5bc46240c4806acab803c326ec65d"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleLimits.max_work",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int = 1000000",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleLimits.max_work"
+        },
+        "syntax_sha256": "ffd28947a0659d908b4716472ebc15565b7d471b4752bd08415b5609454b6e87"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleOutput",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleOutput"
+        },
+        "syntax_sha256": "d106ec2aaf0b7434b876ab86210cf747de8bfec1faf54e518e089ceb0fe8e866"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleOutput.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleOutput.__post_init__"
+        },
+        "syntax_sha256": "d4bdd086807fef08a497b130d9281cc19785f406703f5fdf5eb31e2094f3d87d"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleOutput.instance",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleOutput.instance"
+        },
+        "syntax_sha256": "6f151d63b9ff8233acdea5d337f4bea64e1973921e05408407c72f72eb17d4b5"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleOutput.port",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleOutput.port"
+        },
+        "syntax_sha256": "6dcc768ef3b43537578ae12945021d99cb3681d46bc85671f334f117d8225fc4"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate"
+        },
+        "syntax_sha256": "bd34c1910d07814c8e13c00baab5dd3eee223559d53871d5d1029c64d368e77e"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate.__post_init__"
+        },
+        "syntax_sha256": "741061246a7a0a7ea4e309fb70a22d7a4d564a0ab401d449a98fab6f4135aa41"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate.assumptions",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[m.Requirement, ...] = ()",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate.assumptions"
+        },
+        "syntax_sha256": "f600b252c6eb07523b949b593ff637464b1e5625f06e9997092361b9c5ff5310"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate.declarations",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[m.Declaration, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate.declarations"
+        },
+        "syntax_sha256": "5d3f7f1e376ad3b83ab666e81f1fb6de4d32671d4b4a71e369063ec6ef7298b3"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate.footprint",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> Footprint",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate.footprint"
+        },
+        "syntax_sha256": "558c6f0282c02720db2535f20302bad17b80e9d64d120d1f29dc338ecfbb0b30"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate.guarantees",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[m.Requirement, ...] = ()",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate.guarantees"
+        },
+        "syntax_sha256": "7e134827e1948c6f3b6b6892c983f6a737999ba66dbf5a1b7743b66be8907131"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate.id",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate.id"
+        },
+        "syntax_sha256": "98027b84112a1c4a6e0e40fb916b7c84d3efbf4d18387b743c2011238a59d9f3"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate.inputs",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[InputPort, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate.inputs"
+        },
+        "syntax_sha256": "56c8bc0863cf9e211a18e70d76e7cde0bd7add53c2480e00be5c2ac0d9276079"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate.outputs",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[OutputPort, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate.outputs"
+        },
+        "syntax_sha256": "1d00d5dc29d2f29f114de569d5769f2ebb50184c3857664dc26b1d459d25ebf6"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate.private",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[m.Ref, ...] = ()",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate.private"
+        },
+        "syntax_sha256": "60ecbe6040b3d8de99858207a2442dd93957de614503cc803e02de97a30082c0"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate.semantics",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.SemanticBundle",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate.semantics"
+        },
+        "syntax_sha256": "5481e7859d9372e076aba1f70657f5240e35841a0ce28977af800e7a15b21f3d"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate.source_map",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[m.SourceSpan, ...] = ()",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate.source_map"
+        },
+        "syntax_sha256": "92e0a3f2c47a8fe17c56bb342f588ef682fba069466d1448b8c6ccff710b231e"
+      },
+      {
+        "id": "biocompiler.policy.modules.ModuleTemplate.version",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "ModuleTemplate.version"
+        },
+        "syntax_sha256": "84ff8ba58f6bddea9381a9abe570d379fafa5c8e903a6703b596adb161214d1a"
+      },
+      {
+        "id": "biocompiler.policy.modules.OutputPort",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "OutputPort"
+        },
+        "syntax_sha256": "160111ef74c6ac13d331efbec6fbfd07080515417c82308518ef02a64dddc422"
+      },
+      {
+        "id": "biocompiler.policy.modules.OutputPort.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "OutputPort.__post_init__"
+        },
+        "syntax_sha256": "0d3be5319fe5dff08088cf3ffa5558df1e014688a2da05a3321ae893794e8d1f"
+      },
+      {
+        "id": "biocompiler.policy.modules.OutputPort.access",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Access = 'read'",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "OutputPort.access"
+        },
+        "syntax_sha256": "bdc8a78233a9edc5bb5782d67bbd5f354020630949333aab2bea8b86d51e4e2f"
+      },
+      {
+        "id": "biocompiler.policy.modules.OutputPort.declaration",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Declaration",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "OutputPort.declaration"
+        },
+        "syntax_sha256": "8dfb4a8483c2c47a8ecfc15e4e95225d102ce14d1808e4de5f5dc8641b5bfb68"
+      },
+      {
+        "id": "biocompiler.policy.modules.OutputPort.name",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "OutputPort.name"
+        },
+        "syntax_sha256": "4792411750772f59598a4a437baab75ea559ae5bee99b0c43ba1e5f0e2c6ab76"
+      },
+      {
+        "id": "biocompiler.policy.modules.R",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "R"
+        },
+        "syntax_sha256": "6f5354718ba5810770a1c8e450d01bed48512a155b48ce9a72e93e1c7b50cd17"
+      },
+      {
+        "id": "biocompiler.policy.modules._Budget",
+        "kind": "class",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_Budget"
+        },
+        "syntax_sha256": "54177c57a41a5c0f2f0acfabd5426c2a7e34bbc1bfaaa4cb0df90928b7628157"
+      },
+      {
+        "id": "biocompiler.policy.modules._TemplateData",
+        "kind": "class",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_TemplateData"
+        },
+        "syntax_sha256": "2b513b7b72345695a5e3d8e6101ce95cd0e673dc8debd414c50682105beba3d5"
+      },
+      {
+        "id": "biocompiler.policy.modules._check_program",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "program: m.PolicyProgram -> None",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_check_program"
+        },
+        "syntax_sha256": "4c672215354ce461f1187cbc9c856372b6323a730891f9625a3fc23a537f7d86"
+      },
+      {
+        "id": "biocompiler.policy.modules._footprint",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "declarations: tuple[m.Declaration, ...], budget: _Budget -> Footprint",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_footprint"
+        },
+        "syntax_sha256": "4f18ba78d6403305f1655f6e2dcc8b4351eb711814d6114547861688870d85c0"
+      },
+      {
+        "id": "biocompiler.policy.modules._name",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: object, label: str -> str",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_name"
+        },
+        "syntax_sha256": "7d1c88e895772aae71fc86740a7b0df2352650722fcefc94d2ce0d422e248474"
+      },
+      {
+        "id": "biocompiler.policy.modules._references",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: object, budget: _Budget -> tuple[m.Ref, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_references"
+        },
+        "syntax_sha256": "1fb5d836e28b1036f17bf5e72b6009f0e924ac23ed35a66508c274e2ce64f1df"
+      },
+      {
+        "id": "biocompiler.policy.modules._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: bool, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "bef29927cc1331407371ad6ccd2bb5d7d19ec9bf97573f888892fbb43e77c907"
+      },
+      {
+        "id": "biocompiler.policy.modules._rewrite",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: object, mapping: dict[str, m.Ref], budget: _Budget, *, declaration: bool=False -> object",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_rewrite"
+        },
+        "syntax_sha256": "2d657a99a8a4652a817cd1db409dc59d69335e4e08358b18f9ab903cb54c234a"
+      },
+      {
+        "id": "biocompiler.policy.modules._same",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "left: m.Record, right: m.Record, budget: _Budget -> bool",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_same"
+        },
+        "syntax_sha256": "52c794c421fabb7f916428eb205d504c2c352d0244e860ef160d3906932d1f95"
+      },
+      {
+        "id": "biocompiler.policy.modules._sequence_field",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "owner: object, name: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_sequence_field"
+        },
+        "syntax_sha256": "04f6d2b90da36137f0e0e58c759b096ba45ed57acf9ced82b0073fe2f76c4206"
+      },
+      {
+        "id": "biocompiler.policy.modules._snapshot",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: R, budget: _Budget -> R",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_snapshot"
+        },
+        "syntax_sha256": "b780a2921a2af222027f8fbde0a67d11ad2fa99a1b5f457a61b77359a1c11ef2"
+      },
+      {
+        "id": "biocompiler.policy.modules._tuple",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: object, label: str -> tuple[object, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_tuple"
+        },
+        "syntax_sha256": "2250cf5993160012bc9d189ef58a888788a6c2fd66303a028099535260aa496c"
+      },
+      {
+        "id": "biocompiler.policy.modules._validate_instance",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "instance: ModuleInstance, budget: _Budget -> _TemplateData",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_validate_instance"
+        },
+        "syntax_sha256": "14876e4ffad42acdabe06e9cb5be2cf821378241f1a70d97147d883ea618c364"
+      },
+      {
+        "id": "biocompiler.policy.modules._validate_port",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "port: InputPort | OutputPort -> None",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_validate_port"
+        },
+        "syntax_sha256": "d5b15e033644e8e7e59b93b22b6a9d3bdb22ae61a519775752207298286a77a2"
+      },
+      {
+        "id": "biocompiler.policy.modules._validate_template",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "template: ModuleTemplate, budget: _Budget -> _TemplateData",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_validate_template"
+        },
+        "syntax_sha256": "45d5c11500817f9965ac0939d10c18a41a6be32bbbfd2f048b41b7fe8112d6e7"
+      },
+      {
+        "id": "biocompiler.policy.modules._walk",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: object, budget: _Budget -> Iterator[m.Record]",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "_walk"
+        },
+        "syntax_sha256": "8d91b9418d6b788f1f44067d019fa8a3586ad080dfa4e2824885b9fdaf0b79a8"
+      },
+      {
+        "id": "biocompiler.policy.modules.compose_modules",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "identity: str, *, semantics: m.SemanticBundle, declarations: tuple[m.Declaration, ...]=(), instances: tuple[ModuleInstance, ...], source_map: tuple[m.SourceSpan, ...]=(), limits: ModuleLimits=ModuleLimits() -> m.PolicyProgram",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "compose_modules"
+        },
+        "syntax_sha256": "af884b5cdcfd617cc0c9209008edf25e2fa38146973268ebc9e89eb33ea1981e"
+      },
+      {
+        "id": "biocompiler.policy.modules.instantiate",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "template: ModuleTemplate, name: str, *, bindings: tuple[ModuleBinding, ...], assumptions: tuple[m.Requirement, ...]=() -> ModuleInstance",
+        "source": {
+          "path": "src/biocompiler/policy/modules.py",
+          "symbol": "instantiate"
+        },
+        "syntax_sha256": "580dafa05efe93df3d4f9bd21a14a215fb1dd19c5450319f246f07ca022495ff"
+      },
+      {
         "id": "biocompiler.policy.native.assess",
         "kind": "function",
         "scope": "public_api",
@@ -17274,6 +18952,963 @@
         "syntax_sha256": "b0dd604ae2e2b01fc053daab03d7009ad269313eb7dc8ebc52146cebf67912b2"
       },
       {
+        "id": "biocompiler.policy.typed.Assignment",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Assignment"
+        },
+        "syntax_sha256": "857d6f2cbe7629ac2cb3458f1820c142c2c8de723a5b3006436b5a85653b0600"
+      },
+      {
+        "id": "biocompiler.policy.typed.Assignment.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Assignment.__post_init__"
+        },
+        "syntax_sha256": "f5f3bcda88ca2d8a63506a5ff38a23f0f6ee9dab1045c5dd85b3b142ab33f770"
+      },
+      {
+        "id": "biocompiler.policy.typed.Assignment._state",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "m.StateStore",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Assignment._state"
+        },
+        "syntax_sha256": "8c61262e93b3d672e184e22878c19ac0168413d12f07d12dacece3b5121750f8"
+      },
+      {
+        "id": "biocompiler.policy.typed.Assignment._value",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "ScalarExpression",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Assignment._value"
+        },
+        "syntax_sha256": "bc574c577db65657fd585d1693a664cbd1ace94d14805bdc7b06aaa0a8da74d8"
+      },
+      {
+        "id": "biocompiler.policy.typed.Assignment.to_source",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> m.Assignment",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Assignment.to_source"
+        },
+        "syntax_sha256": "0ac006ac6596119be213ec4438f130851142ea38bbaf37be322eb6edbf331411"
+      },
+      {
+        "id": "biocompiler.policy.typed.Effect",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Effect"
+        },
+        "syntax_sha256": "6104ec745d493d24b585acfd75618acf7980b674e49bc1498c396153bbae8c5f"
+      },
+      {
+        "id": "biocompiler.policy.typed.Effect.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Effect.__post_init__"
+        },
+        "syntax_sha256": "a996ccaa9769eff19aa32c4efa5e155354eda8aba96f13fee5267bb50623e96c"
+      },
+      {
+        "id": "biocompiler.policy.typed.Effect._source",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "m.Effect",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Effect._source"
+        },
+        "syntax_sha256": "f7f525810df17c0c6591745ddf01dfae75f77c8af50af509edd81a72c037c6cb"
+      },
+      {
+        "id": "biocompiler.policy.typed.Effect.completed",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> EventExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Effect.completed"
+        },
+        "syntax_sha256": "676a642158535cdcf48e2e378dd8d9d113d9e1816915a5267b241e09357f3d35"
+      },
+      {
+        "id": "biocompiler.policy.typed.Effect.event",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, phase: EffectPhase -> EventExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Effect.event"
+        },
+        "syntax_sha256": "b5dc5add2bc2ef836f08ff807cf5f1c69a20749d3085f77d0e9963443640dfeb"
+      },
+      {
+        "id": "biocompiler.policy.typed.Effect.failed",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> EventExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Effect.failed"
+        },
+        "syntax_sha256": "bff639af0c30f94f1c4f0a7ff797491332ced7d36e6b4fa85020a8f83e05a6f7"
+      },
+      {
+        "id": "biocompiler.policy.typed.Effect.initiated",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> EventExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Effect.initiated"
+        },
+        "syntax_sha256": "d8ff1f7590460a2c1cd72e17f25ece449eee31a713b7363039c94e8cc48606a7"
+      },
+      {
+        "id": "biocompiler.policy.typed.Effect.requested",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> EventExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Effect.requested"
+        },
+        "syntax_sha256": "b0a666c60bf684e3b3a3c258d2515c64679fe4c4e1f2967962ecf25fc4b13b2f"
+      },
+      {
+        "id": "biocompiler.policy.typed.Effect.timed_out",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> EventExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Effect.timed_out"
+        },
+        "syntax_sha256": "44b18ec5a5d21cecd37e9fe5c90b934d92b103bf9ce48fa7203a1356fdf31551"
+      },
+      {
+        "id": "biocompiler.policy.typed.Effect.to_source",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> m.Effect",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Effect.to_source"
+        },
+        "syntax_sha256": "8ead68c908e4946257b4f1ee7990d383c7bf97128d45eb7b2a672db3a4c270e0"
+      },
+      {
+        "id": "biocompiler.policy.typed.EffectPhase",
+        "kind": "value",
+        "scope": "public_api",
+        "signature": "TypeAlias = Literal['requested', 'initiated', 'completed', 'outcome', 'failed', 'timed_out', 'cancel_requested', 'cancel_acknowledged', 'ceased']",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "EffectPhase"
+        },
+        "syntax_sha256": "921986ff9a1099c3a53c8a901af4bbae97426c9c89ecfd7908d67e7d0ad299b3"
+      },
+      {
+        "id": "biocompiler.policy.typed.EventExpr",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "EventExpr"
+        },
+        "syntax_sha256": "2bafbace321118bb5b463707308471518f0b5cad8e0087e58d3227f4c338052e"
+      },
+      {
+        "id": "biocompiler.policy.typed.IntegerExpr",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "IntegerExpr"
+        },
+        "syntax_sha256": "a6d9c81f10219f03ad35f9f7fa8e55819681215bee2551daa0bc0b4bf1053146"
+      },
+      {
+        "id": "biocompiler.policy.typed.Observation",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Observation"
+        },
+        "syntax_sha256": "54432dd640389e93d8e96f076a6667f5c1b44a45958b74d02fe1bd27afb8c4b7"
+      },
+      {
+        "id": "biocompiler.policy.typed.Observation.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Observation.__post_init__"
+        },
+        "syntax_sha256": "c9ceebc99fc2e0c1130238eaf2b2a0095f6a32de5011e4dbd46d8fbb4169df36"
+      },
+      {
+        "id": "biocompiler.policy.typed.Observation._expression_type",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "type[S]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Observation._expression_type"
+        },
+        "syntax_sha256": "65282b925d44545a5fa3ddd9935d34e55d343c5335dc1ead40221b8518e0d6b1"
+      },
+      {
+        "id": "biocompiler.policy.typed.Observation._source",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "m.Observation",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Observation._source"
+        },
+        "syntax_sha256": "4aafa0e0a779ae649e99a4f9eb80a63c57d0e109ea7e47bda7226a67f9cbbb16"
+      },
+      {
+        "id": "biocompiler.policy.typed.Observation.to_source",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> m.Observation",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Observation.to_source"
+        },
+        "syntax_sha256": "22bb0cf866768870ff38925b0d8db4abead008e2076e862026e58ffa9f780374"
+      },
+      {
+        "id": "biocompiler.policy.typed.Observation.updated",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> EventExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Observation.updated"
+        },
+        "syntax_sha256": "1c48c872531b4e8c63feacc8103375cc4e74bb64e5df1751a8279286a4c8156e"
+      },
+      {
+        "id": "biocompiler.policy.typed.Observation.value",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> S",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Observation.value"
+        },
+        "syntax_sha256": "e37b1c32cc296778a2aca7d22b9d08d09b58de73b416f0a30fafa3f5e591531e"
+      },
+      {
+        "id": "biocompiler.policy.typed.Parameter",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Parameter"
+        },
+        "syntax_sha256": "7e483168ec2b125e692de8ace7bd0df33548317d118e311bc70f5d282aa77616"
+      },
+      {
+        "id": "biocompiler.policy.typed.Parameter.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Parameter.__post_init__"
+        },
+        "syntax_sha256": "c93fde8f87cced8147fbca40d1f6839967d00b682a0cd51b1d6e1248925335de"
+      },
+      {
+        "id": "biocompiler.policy.typed.Parameter._expression_type",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "type[S]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Parameter._expression_type"
+        },
+        "syntax_sha256": "65282b925d44545a5fa3ddd9935d34e55d343c5335dc1ead40221b8518e0d6b1"
+      },
+      {
+        "id": "biocompiler.policy.typed.Parameter._source",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "m.Parameter",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Parameter._source"
+        },
+        "syntax_sha256": "78e31f2347324654c85d9a6a750e9eef8b317fc4e5caf744ebb74a03fdc5fbb0"
+      },
+      {
+        "id": "biocompiler.policy.typed.Parameter.to_source",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> m.Parameter",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Parameter.to_source"
+        },
+        "syntax_sha256": "f6ad43369df1ee7889bda6cee167a8dadb86c157a34057cebe726bb9c002c30d"
+      },
+      {
+        "id": "biocompiler.policy.typed.Parameter.value",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> S",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "Parameter.value"
+        },
+        "syntax_sha256": "f295a07682a4049e93b638aab33085314453b05e5c3ddc5c3ac3ac99d37e81fc"
+      },
+      {
+        "id": "biocompiler.policy.typed.QuantityExpr",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "QuantityExpr"
+        },
+        "syntax_sha256": "11253c5c73e5076b45ef2263e97497277ef46c4732779569f3036d9704f8ebc8"
+      },
+      {
+        "id": "biocompiler.policy.typed.QuantityExpr.unit",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> m.Unit",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "QuantityExpr.unit"
+        },
+        "syntax_sha256": "dc5912106f4f6588255c603395bd3509de8da92f6c9efbb47a86bf0bfad3db23"
+      },
+      {
+        "id": "biocompiler.policy.typed.S",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "S"
+        },
+        "syntax_sha256": "95249ee16ea48ed07a8e33b848cdcac532af9f8e8914a188d053848de1875c86"
+      },
+      {
+        "id": "biocompiler.policy.typed.ScalarExpression",
+        "kind": "value",
+        "scope": "public_api",
+        "signature": "TypeAlias = TruthExpr | IntegerExpr | TextExpr | QuantityExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "ScalarExpression"
+        },
+        "syntax_sha256": "c8d67fba5029b3f26463e71f621c4df5bff4ffbfc755cf73bd97c730a4ea8cd3"
+      },
+      {
+        "id": "biocompiler.policy.typed.State",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "State"
+        },
+        "syntax_sha256": "6417a75d9dc1869c210806c384977dbedbc76cb8289d8c225e512e1f4736c02b"
+      },
+      {
+        "id": "biocompiler.policy.typed.State.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "State.__post_init__"
+        },
+        "syntax_sha256": "a1b6ac658d7be9deaae253f975ecfb9f8e68d0e8b834b9428e4c61d39fdcb820"
+      },
+      {
+        "id": "biocompiler.policy.typed.State._expression_type",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "type[S]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "State._expression_type"
+        },
+        "syntax_sha256": "65282b925d44545a5fa3ddd9935d34e55d343c5335dc1ead40221b8518e0d6b1"
+      },
+      {
+        "id": "biocompiler.policy.typed.State._source",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "m.StateStore",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "State._source"
+        },
+        "syntax_sha256": "ebcf5c2d1ce4c45faad4e67051490071e5bc20bd86a4c8e0a7b7349072bb1bfd"
+      },
+      {
+        "id": "biocompiler.policy.typed.State.assign",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, value: S -> Assignment",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "State.assign"
+        },
+        "syntax_sha256": "5a41bfb046c595fcefb3e8ce2d1deb2d381f786e4bf3fc812ca7f88945e3a158"
+      },
+      {
+        "id": "biocompiler.policy.typed.State.to_source",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> m.StateStore",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "State.to_source"
+        },
+        "syntax_sha256": "6e5f2082673fd29f2b60a28b32b5a733d15738cbf671aecca736f3a30269dc1a"
+      },
+      {
+        "id": "biocompiler.policy.typed.State.value",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> S",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "State.value"
+        },
+        "syntax_sha256": "e37b1c32cc296778a2aca7d22b9d08d09b58de73b416f0a30fafa3f5e591531e"
+      },
+      {
+        "id": "biocompiler.policy.typed.State.with_reset",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, condition: TruthExpr -> State[S]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "State.with_reset"
+        },
+        "syntax_sha256": "23e6f7ac006dcb2b13d112b704acc5bf1cead9dff763adca643a40213ccd278d"
+      },
+      {
+        "id": "biocompiler.policy.typed.TextExpr",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "TextExpr"
+        },
+        "syntax_sha256": "2a8013f03715165c04552fe8791a51043479df35dfaa2bf9f3a6a54080c6f328"
+      },
+      {
+        "id": "biocompiler.policy.typed.TruthExpr",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "TruthExpr"
+        },
+        "syntax_sha256": "f78634ed6fd81b1a3b4f6dac9de02464238fe9f429e62573a9c9d535cf8fc82a"
+      },
+      {
+        "id": "biocompiler.policy.typed.TruthExpr.__and__",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, other: TruthExpr -> TruthExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "TruthExpr.__and__"
+        },
+        "syntax_sha256": "465fd41c9d7a9bd483106daece347f8a762bc213249e1c6f456bba22e9c0f608"
+      },
+      {
+        "id": "biocompiler.policy.typed.TruthExpr.__invert__",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> TruthExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "TruthExpr.__invert__"
+        },
+        "syntax_sha256": "ead6c045d89e314d9fc8a14741c25bd7057a7e483537a7c6b899071fd994829b"
+      },
+      {
+        "id": "biocompiler.policy.typed.TruthExpr.__or__",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, other: TruthExpr -> TruthExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "TruthExpr.__or__"
+        },
+        "syntax_sha256": "3b6b5f444e2557c807b1a02febc6db137f8b8fa7f637eb9c6d858ba1d0338491"
+      },
+      {
+        "id": "biocompiler.policy.typed.TruthExpr.rising",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> EventExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "TruthExpr.rising"
+        },
+        "syntax_sha256": "45448b5bfc4eda16f192ce785bfbad4c89a37dd51f6e57a967d3348d435f7292"
+      },
+      {
+        "id": "biocompiler.policy.typed.TypedAuthoringError",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "TypedAuthoringError"
+        },
+        "syntax_sha256": "d85849d39bd180130243f2b31e3b1ff28b2aa67c873859725e6b0ec9080a6c7f"
+      },
+      {
+        "id": "biocompiler.policy.typed._Expression",
+        "kind": "class",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "_Expression"
+        },
+        "syntax_sha256": "54636c0d399891693001a90880ab6bc740c8a9cb67c92b4d4048a975b9b71cc7"
+      },
+      {
+        "id": "biocompiler.policy.typed._NumericExpr",
+        "kind": "class",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "_NumericExpr"
+        },
+        "syntax_sha256": "21395d83254581f1a8b9f155ed72ad65a5cc4db22d98461f2e3feca3d06400a9"
+      },
+      {
+        "id": "biocompiler.policy.typed._ScalarExpr",
+        "kind": "class",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "_ScalarExpr"
+        },
+        "syntax_sha256": "39ca728d5043d4951afc849ca820e7eb3e9d6f63ed855b68b6a679e02a8ed738"
+      },
+      {
+        "id": "biocompiler.policy.typed._behavior",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "executor: m.Role, on: EventExpr, when: TruthExpr, effects: tuple[Effect, ...], assignments: tuple[Assignment, ...] -> tuple[m.Expr, m.Expr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "_behavior"
+        },
+        "syntax_sha256": "087763545861e09bbb47c2520eea1a2d609080e4137403b0b1add7580cd816a1"
+      },
+      {
+        "id": "biocompiler.policy.typed._expression",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "source: m.Expr, expected: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "_expression"
+        },
+        "syntax_sha256": "680648dde6e946bfe3994d7b51f87e2c62b5aa8018a66c43402edb9edfbbba36"
+      },
+      {
+        "id": "biocompiler.policy.typed._owners",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "*records: m.Record -> None",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "_owners"
+        },
+        "syntax_sha256": "58ff1af0e3ed61f3df9e2e926166f65c6e0d6d30a3c65e54ddd7e8d4836d0ee1"
+      },
+      {
+        "id": "biocompiler.policy.typed._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: bool, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "230cb855270f5e70f1ecb25e51424d306bb8a1ee14ad85f61389e2ee17ac3c28"
+      },
+      {
+        "id": "biocompiler.policy.typed._scalar",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: ScalarExpression -> m.Expr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "_scalar"
+        },
+        "syntax_sha256": "22247227ba2c32b4b5912c26532339b6e2a9e51c99fd8a3c9a58c7904c2d0aff"
+      },
+      {
+        "id": "biocompiler.policy.typed._subjects",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "source: m.Expr -> set[m.Ref]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "_subjects"
+        },
+        "syntax_sha256": "37c165bad6c5deb4fedcf726b6227a279ecf68a4c163aae250411839565ac31b"
+      },
+      {
+        "id": "biocompiler.policy.typed._type",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: m.TypeSpec -> None",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "_type"
+        },
+        "syntax_sha256": "183bec034156c1c75643c0f4568350c4188d18181cb4decffa0d30f825531222"
+      },
+      {
+        "id": "biocompiler.policy.typed._wrapper",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "wrapper: type[S] -> None",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "_wrapper"
+        },
+        "syntax_sha256": "081083962bc78f3c62e186853479ee1247040d3fcc0dbc128135ecf9a8631b9f"
+      },
+      {
+        "id": "biocompiler.policy.typed.all_of",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "first: TruthExpr, *rest: TruthExpr -> TruthExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "all_of"
+        },
+        "syntax_sha256": "234913c320149eb4679e261decba8c8e7f1f6e6b970f0e43b5b06d9f65546c1c"
+      },
+      {
+        "id": "biocompiler.policy.typed.any_of",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "first: TruthExpr, *rest: TruthExpr -> TruthExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "any_of"
+        },
+        "syntax_sha256": "615b25e9e878a0b8d8e42d3751dd3e9201c600fc5e2af741d66c4983c6430def"
+      },
+      {
+        "id": "biocompiler.policy.typed.argument",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "name: str, value: ScalarExpression -> m.Argument",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "argument"
+        },
+        "syntax_sha256": "1d42a16065b9cf532305802eaed8260ea477e5e8ab43f44f00eaf9945d863949"
+      },
+      {
+        "id": "biocompiler.policy.typed.guard",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "value: TruthExpr -> m.Expr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "guard"
+        },
+        "syntax_sha256": "e400960bfedb7775c8bc2cdcbf9f16e2b441acf9ccf3f96de596beed5dedc79a"
+      },
+      {
+        "id": "biocompiler.policy.typed.integer",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "value: int -> IntegerExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "integer"
+        },
+        "syntax_sha256": "d8a6065d98a1e219b2049e359b6859d0490978a570583ced08a850525425c4ad"
+      },
+      {
+        "id": "biocompiler.policy.typed.integer_observation",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "source: m.Observation -> Observation[IntegerExpr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "integer_observation"
+        },
+        "syntax_sha256": "a4ff639e72e3fb80e86bc54fe9248a72483eb7b692202ac20b60a70e0e7c3b52"
+      },
+      {
+        "id": "biocompiler.policy.typed.integer_parameter",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "source: m.Parameter -> Parameter[IntegerExpr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "integer_parameter"
+        },
+        "syntax_sha256": "186662e6926fab9d797270817e06206c81e5ccc32fdf87c73381a1be0e25b30d"
+      },
+      {
+        "id": "biocompiler.policy.typed.integer_state",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "source: m.StateStore -> State[IntegerExpr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "integer_state"
+        },
+        "syntax_sha256": "7e25c64645fc994e0b9279827168a37f136b405f73b13b0baf37ea204049b776"
+      },
+      {
+        "id": "biocompiler.policy.typed.not_",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "value: TruthExpr -> TruthExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "not_"
+        },
+        "syntax_sha256": "330a0dd3186d335ad7e13e9320128f19cd364e283df9fdece8bd71964de9f77c"
+      },
+      {
+        "id": "biocompiler.policy.typed.quantity",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "value: str | int | Decimal, unit: m.Unit -> QuantityExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "quantity"
+        },
+        "syntax_sha256": "6ac789072f2d5d8b108b7f227436f4c484a43b6340e0f71003c1750d0b172647"
+      },
+      {
+        "id": "biocompiler.policy.typed.quantity_observation",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "source: m.Observation -> Observation[QuantityExpr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "quantity_observation"
+        },
+        "syntax_sha256": "12c582626b40b58ccd6d5a19424f7e2a6b6f0606a2663096930741638003ac42"
+      },
+      {
+        "id": "biocompiler.policy.typed.quantity_parameter",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "source: m.Parameter -> Parameter[QuantityExpr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "quantity_parameter"
+        },
+        "syntax_sha256": "dd67c3b622c0bcf85f2771bf77e3ea6f793811f20c948c50808897859899c5dd"
+      },
+      {
+        "id": "biocompiler.policy.typed.quantity_state",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "source: m.StateStore -> State[QuantityExpr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "quantity_state"
+        },
+        "syntax_sha256": "62d6ad4fd5b240bf95ffa9487043dc8c7b73e090b6adacb7689fb407b1323545"
+      },
+      {
+        "id": "biocompiler.policy.typed.rising",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "value: TruthExpr -> EventExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "rising"
+        },
+        "syntax_sha256": "df098e2eef7a33af0a1b5b42c1ce247d1ec74ab0d6eb94783ba796fad753e7c7"
+      },
+      {
+        "id": "biocompiler.policy.typed.rule",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "builder: ProgramBuilder, identity: str, *, executor: m.Role, on: EventExpr, when: TruthExpr, unknown: Literal['defer', 'request_stop'], effects: tuple[Effect, ...], arbitration: m.Arbitration, assignments: tuple[Assignment, ...]=(), emissions: tuple[m.Message, ...]=() -> m.Rule",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "rule"
+        },
+        "syntax_sha256": "b81013c8fceffb44d2a250f1545db8b99f76817f0e1b51da859f47a00b755223"
+      },
+      {
+        "id": "biocompiler.policy.typed.text",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "value: str -> TextExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "text"
+        },
+        "syntax_sha256": "4031c3342cdd33d6491a8876df8c2a64e557dfb8a3c73053a7c4964154b07e0a"
+      },
+      {
+        "id": "biocompiler.policy.typed.text_observation",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "source: m.Observation -> Observation[TextExpr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "text_observation"
+        },
+        "syntax_sha256": "be71b03764b7359e1aaf83c0262a69b77727d39e5f6d0a3262b522ea55758e28"
+      },
+      {
+        "id": "biocompiler.policy.typed.text_parameter",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "source: m.Parameter -> Parameter[TextExpr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "text_parameter"
+        },
+        "syntax_sha256": "ab8a42f0cca96f1793bc9d49576013484c1656cd0cac929a88d314cd209f5a20"
+      },
+      {
+        "id": "biocompiler.policy.typed.text_state",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "source: m.StateStore -> State[TextExpr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "text_state"
+        },
+        "syntax_sha256": "bbdf144829e80ac119fbb1f765c42f3862935ee5e9300222ad3ffe10043cdf69"
+      },
+      {
+        "id": "biocompiler.policy.typed.transition",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "builder: ProgramBuilder, identity: str, *, machine: m.Machine, source: str, destination: str, on: EventExpr, when: TruthExpr, unknown: Literal['defer', 'transition', 'request_stop'], effects: tuple[Effect, ...]=(), assignments: tuple[Assignment, ...]=(), unknown_target: str | None=None, emissions: tuple[m.Message, ...]=() -> m.Transition",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "transition"
+        },
+        "syntax_sha256": "ce968d71ba9676d9147388f9e0ac755ad032e68b61cf97a4366b58ca416541a2"
+      },
+      {
+        "id": "biocompiler.policy.typed.trigger",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "value: EventExpr -> m.Expr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "trigger"
+        },
+        "syntax_sha256": "a430a5fecc93178ee710e8dc41765897d62948075f2b5d5f50949b4e50fae68b"
+      },
+      {
+        "id": "biocompiler.policy.typed.truth",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "value: bool -> TruthExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "truth"
+        },
+        "syntax_sha256": "5d990688c5765154eb6fe8af88ca5dd8ae71f4071fa458b3e305b7903ecd9d7f"
+      },
+      {
+        "id": "biocompiler.policy.typed.truth_observation",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "source: m.Observation -> Observation[TruthExpr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "truth_observation"
+        },
+        "syntax_sha256": "d4007719d890447b79e7263b7b76c5c736a588b8bcd1410bc5619d22d29aa4f9"
+      },
+      {
+        "id": "biocompiler.policy.typed.truth_parameter",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "source: m.Parameter -> Parameter[TruthExpr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "truth_parameter"
+        },
+        "syntax_sha256": "0314904d8d1235ac6c321543c3337184f0e7b99295480f4ece8f2d9234f806f7"
+      },
+      {
+        "id": "biocompiler.policy.typed.truth_state",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "source: m.StateStore -> State[TruthExpr]",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "truth_state"
+        },
+        "syntax_sha256": "3cf0440bbd51e2eba0af06d310ea3364ef25ab2456a302d86563c3526bd024b3"
+      },
+      {
+        "id": "biocompiler.policy.typed.unknown",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": " -> TruthExpr",
+        "source": {
+          "path": "src/biocompiler/policy/typed.py",
+          "symbol": "unknown"
+        },
+        "syntax_sha256": "87c1a6a301d9778dcb8b48f4fdd18af89da1825ec17f1a47974d975f9df22bff"
+      },
+      {
         "id": "biocompiler.policy.validation.CheckReport",
         "kind": "class",
         "scope": "public_api",
@@ -17795,6 +20430,19 @@
       "biocompiler.policy.load": "biocompiler.policy.serialization.load",
       "biocompiler.policy.loads": "biocompiler.policy.serialization.loads",
       "biocompiler.policy.logic": "biocompiler.policy.logic",
+      "biocompiler.policy.modules": "biocompiler.policy.modules",
+      "biocompiler.policy.modules.Access": "biocompiler.policy.modules.Access",
+      "biocompiler.policy.modules.Footprint": "biocompiler.policy.modules.Footprint",
+      "biocompiler.policy.modules.InputPort": "biocompiler.policy.modules.InputPort",
+      "biocompiler.policy.modules.ModuleBinding": "biocompiler.policy.modules.ModuleBinding",
+      "biocompiler.policy.modules.ModuleError": "biocompiler.policy.modules.ModuleError",
+      "biocompiler.policy.modules.ModuleInstance": "biocompiler.policy.modules.ModuleInstance",
+      "biocompiler.policy.modules.ModuleLimits": "biocompiler.policy.modules.ModuleLimits",
+      "biocompiler.policy.modules.ModuleOutput": "biocompiler.policy.modules.ModuleOutput",
+      "biocompiler.policy.modules.ModuleTemplate": "biocompiler.policy.modules.ModuleTemplate",
+      "biocompiler.policy.modules.OutputPort": "biocompiler.policy.modules.OutputPort",
+      "biocompiler.policy.modules.compose_modules": "biocompiler.policy.modules.compose_modules",
+      "biocompiler.policy.modules.instantiate": "biocompiler.policy.modules.instantiate",
       "biocompiler.policy.not_": "biocompiler.policy.logic.not_",
       "biocompiler.policy.observations": "biocompiler.policy.observations",
       "biocompiler.policy.observations.Expr": "biocompiler.policy.model.Expr",
@@ -17818,6 +20466,46 @@
       "biocompiler.policy.state.StateStore": "biocompiler.policy.model.StateStore",
       "biocompiler.policy.time": "biocompiler.policy.time",
       "biocompiler.policy.to_data": "biocompiler.policy.serialization.to_data",
+      "biocompiler.policy.typed": "biocompiler.policy.typed",
+      "biocompiler.policy.typed.Assignment": "biocompiler.policy.typed.Assignment",
+      "biocompiler.policy.typed.Effect": "biocompiler.policy.typed.Effect",
+      "biocompiler.policy.typed.EffectPhase": "biocompiler.policy.typed.EffectPhase",
+      "biocompiler.policy.typed.EventExpr": "biocompiler.policy.typed.EventExpr",
+      "biocompiler.policy.typed.IntegerExpr": "biocompiler.policy.typed.IntegerExpr",
+      "biocompiler.policy.typed.Observation": "biocompiler.policy.typed.Observation",
+      "biocompiler.policy.typed.Parameter": "biocompiler.policy.typed.Parameter",
+      "biocompiler.policy.typed.QuantityExpr": "biocompiler.policy.typed.QuantityExpr",
+      "biocompiler.policy.typed.ScalarExpression": "biocompiler.policy.typed.ScalarExpression",
+      "biocompiler.policy.typed.State": "biocompiler.policy.typed.State",
+      "biocompiler.policy.typed.TextExpr": "biocompiler.policy.typed.TextExpr",
+      "biocompiler.policy.typed.TruthExpr": "biocompiler.policy.typed.TruthExpr",
+      "biocompiler.policy.typed.TypedAuthoringError": "biocompiler.policy.typed.TypedAuthoringError",
+      "biocompiler.policy.typed.all_of": "biocompiler.policy.typed.all_of",
+      "biocompiler.policy.typed.any_of": "biocompiler.policy.typed.any_of",
+      "biocompiler.policy.typed.argument": "biocompiler.policy.typed.argument",
+      "biocompiler.policy.typed.guard": "biocompiler.policy.typed.guard",
+      "biocompiler.policy.typed.integer": "biocompiler.policy.typed.integer",
+      "biocompiler.policy.typed.integer_observation": "biocompiler.policy.typed.integer_observation",
+      "biocompiler.policy.typed.integer_parameter": "biocompiler.policy.typed.integer_parameter",
+      "biocompiler.policy.typed.integer_state": "biocompiler.policy.typed.integer_state",
+      "biocompiler.policy.typed.not_": "biocompiler.policy.typed.not_",
+      "biocompiler.policy.typed.quantity": "biocompiler.policy.typed.quantity",
+      "biocompiler.policy.typed.quantity_observation": "biocompiler.policy.typed.quantity_observation",
+      "biocompiler.policy.typed.quantity_parameter": "biocompiler.policy.typed.quantity_parameter",
+      "biocompiler.policy.typed.quantity_state": "biocompiler.policy.typed.quantity_state",
+      "biocompiler.policy.typed.rising": "biocompiler.policy.typed.rising",
+      "biocompiler.policy.typed.rule": "biocompiler.policy.typed.rule",
+      "biocompiler.policy.typed.text": "biocompiler.policy.typed.text",
+      "biocompiler.policy.typed.text_observation": "biocompiler.policy.typed.text_observation",
+      "biocompiler.policy.typed.text_parameter": "biocompiler.policy.typed.text_parameter",
+      "biocompiler.policy.typed.text_state": "biocompiler.policy.typed.text_state",
+      "biocompiler.policy.typed.transition": "biocompiler.policy.typed.transition",
+      "biocompiler.policy.typed.trigger": "biocompiler.policy.typed.trigger",
+      "biocompiler.policy.typed.truth": "biocompiler.policy.typed.truth",
+      "biocompiler.policy.typed.truth_observation": "biocompiler.policy.typed.truth_observation",
+      "biocompiler.policy.typed.truth_parameter": "biocompiler.policy.typed.truth_parameter",
+      "biocompiler.policy.typed.truth_state": "biocompiler.policy.typed.truth_state",
+      "biocompiler.policy.typed.unknown": "biocompiler.policy.typed.unknown",
       "biocompiler.policy.values": "biocompiler.policy.values",
       "biocompiler.policy.values.COUNT": "biocompiler.policy.values.COUNT",
       "biocompiler.policy.values.DIMENSIONLESS": "biocompiler.policy.values.DIMENSIONLESS",
@@ -17847,7 +20535,7 @@
       "src/biocompiler/core_policy_material.py": "385611e0d10b6983a530334f470ad03d90d3a039dfb2a43a69f3abdc9447f1c2",
       "src/biocompiler/core_policy_operational.py": "089805c81bf6f84e5cf5e264b6ed89babedc3d692e2a7605429aa388e6d5ed02",
       "src/biocompiler/entrypoint.py": "7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8",
-      "src/biocompiler/policy/__init__.py": "d9dd6be96e54f316bd087c0953d4cfce8214d170112e674b4c58edf81d28697b",
+      "src/biocompiler/policy/__init__.py": "5be5cf72782ee9fbc0940da3c3ecddee69ba0cbaf13312b74a9cf20e46d01c8c",
       "src/biocompiler/policy/behavior.py": "691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf",
       "src/biocompiler/policy/catalog.py": "96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30",
       "src/biocompiler/policy/chassis.py": "21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1",
@@ -17865,6 +20553,7 @@
       "src/biocompiler/policy/logic.py": "cc0a0fe952f9c8aa16fb5714d0cd1972296154cf1e5e5deed4e7ea9ece3ddf4f",
       "src/biocompiler/policy/material.py": "5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79",
       "src/biocompiler/policy/model.py": "7197696399733e610b7a5c458aebf0ddc4b0df997f190cb53fa1659c419b6038",
+      "src/biocompiler/policy/modules.py": "07060e46cac6551e77c7b2f97e3956539ba39ee3a1ec009d17429ea63a7e508f",
       "src/biocompiler/policy/native.py": "956e33656d6b5ee332fae215a56d667d7b88019d7853426440aa5502777dc9f0",
       "src/biocompiler/policy/observations.py": "24400413e0b42fad132d02d0841cfdc3f9307c452e64ec1b2283be7f389f5a26",
       "src/biocompiler/policy/operational.py": "b3db654830b8477c29de9fc13a9fd05cf6337a512cfcd86dde9391146cf4efee",
@@ -17876,6 +20565,7 @@
       "src/biocompiler/policy/space.py": "c32bc67b86370f471fcabe54fdb61332f746130bc23e22d5a2ce7e08666b97c9",
       "src/biocompiler/policy/state.py": "94ef54313d4475428ca678258dfe59727c8dbbe8d327e26b79ba819dcc20d22d",
       "src/biocompiler/policy/time.py": "115fad72c39fa62587d1253e78a374162b0e1543ba146d8634773bab5d41b969",
+      "src/biocompiler/policy/typed.py": "8ed5ed1df21bbee620d0ba6244932282ce2a1e785b8e185baa9a205a544bd1eb",
       "src/biocompiler/policy/validation.py": "00be9fc170771f06ee7fae34c17ec9a47fcd1c1741efb34fd64044a114d7c5b8",
       "src/biocompiler/policy/values.py": "56b36e3e4cc8d2caad0bbd26e7ef626eed0b694a50731911e537f4454555bca5",
       "tools/check_policy_semantic_coverage.py": "5ba275b0d8aac9f70aa3b8d1f28c6a8cd1d7fba62afdb7e988f5ef1957f0ddef"
@@ -18075,7 +20765,7 @@
       },
       {
         "path": "src/biocompiler/policy/__init__.py",
-        "syntax_sha256": "542f6d44e60cba1f7ece23e90ce9da724cacc60422b2777302fe96417204065d"
+        "syntax_sha256": "8ff69be3002c733f24640c24c8532619d03c5b00dff7f8fa779f2a6dd04d37b1"
       },
       {
         "path": "src/biocompiler/policy/behavior.py",
@@ -18490,6 +21180,38 @@
         "syntax_sha256": "9a6e783b30400d1c2442a8d925d42d867c4bde8d75af6293f0f114f8594abefc"
       },
       {
+        "path": "src/biocompiler/policy/modules.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/modules.py",
+        "syntax_sha256": "e7ec4f279a76160da1f5833a417d92667a56f147b036573dce6175b6ae30ff9b"
+      },
+      {
+        "path": "src/biocompiler/policy/modules.py",
+        "syntax_sha256": "55b21d8defe1d94445857f7d73eca683397e0365a941d0fdab8187715e528186"
+      },
+      {
+        "path": "src/biocompiler/policy/modules.py",
+        "syntax_sha256": "1de34ad9695e7d4f275ce31577c64e4211c3dc0472b76977492e08238691b4db"
+      },
+      {
+        "path": "src/biocompiler/policy/modules.py",
+        "syntax_sha256": "050ec86a1f1a733f20bffe833a92c603336925cf7f59c63ba63fa2c5a8fb6426"
+      },
+      {
+        "path": "src/biocompiler/policy/modules.py",
+        "syntax_sha256": "0c8b9fb5d93b665d0385eda7d2f189ef9e018abb0f2ac6ef76425ccbdec8d61d"
+      },
+      {
+        "path": "src/biocompiler/policy/modules.py",
+        "syntax_sha256": "4eb5ae065a063ae931d48d70c829451340494bd722f90be0882b9222af335cea"
+      },
+      {
+        "path": "src/biocompiler/policy/modules.py",
+        "syntax_sha256": "628ce20be32563bd3325219d52eaf20f2b429aa45d2c1aed455889368798bd20"
+      },
+      {
         "path": "src/biocompiler/policy/native.py",
         "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
       },
@@ -18752,6 +21474,38 @@
       {
         "path": "src/biocompiler/policy/time.py",
         "syntax_sha256": "6da92118ad7d536df6268e8552f3c5e06602cc73064b9cbf21ac0ac349f9b079"
+      },
+      {
+        "path": "src/biocompiler/policy/typed.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/typed.py",
+        "syntax_sha256": "55b21d8defe1d94445857f7d73eca683397e0365a941d0fdab8187715e528186"
+      },
+      {
+        "path": "src/biocompiler/policy/typed.py",
+        "syntax_sha256": "43820d113007f30da906b5c2fd7e8b1b58cc066429c7afdba8f076ccc1cee837"
+      },
+      {
+        "path": "src/biocompiler/policy/typed.py",
+        "syntax_sha256": "703aea5b42ccb16dc01b9c04d459cbc8e1e8cbb90a372a02a74feda54708cf40"
+      },
+      {
+        "path": "src/biocompiler/policy/typed.py",
+        "syntax_sha256": "2c236c19fe0e7c7761fd8a8bcf5ea80f5272ec6d896362302be3584c73fec27e"
+      },
+      {
+        "path": "src/biocompiler/policy/typed.py",
+        "syntax_sha256": "e58563ca4d4c4431a7867dafa5e159d8e4cab1023a51a009fc5ad82229bf157d"
+      },
+      {
+        "path": "src/biocompiler/policy/typed.py",
+        "syntax_sha256": "b52436024228c41d3698f4ba71a6bc6f62b079f1f2582488cb30fd4d9487a93b"
+      },
+      {
+        "path": "src/biocompiler/policy/typed.py",
+        "syntax_sha256": "8928094bf45b3b1796fddd09857b464432d4ae36be740c439b134c4d5237249a"
       },
       {
         "path": "src/biocompiler/policy/validation.py",
@@ -19600,6 +22354,62 @@
       "role": "rejection",
       "symbol": "PolicyComponentMaterialTransportTests.test_whole_wrapper_budget_ledger_and_replay_mutations_reject",
       "syntax_sha256": "bcf163e57a795418270b89c79b53e74000edafc97a78974c52c8b7b6bc9be982"
+    },
+    "modules.assumptions": {
+      "distinction": "Assumptions require exact complete source acknowledgments and remain explicit premises rather than proven guarantees.",
+      "file_sha256": "d1c6ce7a33cd2b16ca5ea07912fcf4035d57cc07647743c0b7c1e3ae47aab061",
+      "path": "tests/test_policy_modules.py",
+      "role": "mixed",
+      "symbol": "PolicyModuleTests.test_exact_assumption_bodies_are_required_and_preserved",
+      "syntax_sha256": "78c005d8667ecd8b76087556a357e4c9bde3483756a5e5c31b791a33ef0f1db8"
+    },
+    "modules.connect": {
+      "distinction": "Declared output connection resolves through the complete input interface, including reversed instance declaration order.",
+      "file_sha256": "d1c6ce7a33cd2b16ca5ea07912fcf4035d57cc07647743c0b7c1e3ae47aab061",
+      "path": "tests/test_policy_modules.py",
+      "role": "positive",
+      "symbol": "PolicyModuleTests.test_exported_output_reconnects_through_full_declared_interface",
+      "syntax_sha256": "b131e5be59aeb7cd1d023172487a8eae4fc36dc4076b5dba30829266360f0e18"
+    },
+    "modules.expand": {
+      "distinction": "Two independent module instances preserve original declarations, lifecycle, scope, requirements and source spans under deterministic renaming.",
+      "file_sha256": "d1c6ce7a33cd2b16ca5ea07912fcf4035d57cc07647743c0b7c1e3ae47aab061",
+      "path": "tests/test_policy_modules.py",
+      "role": "positive",
+      "symbol": "PolicyModuleTests.test_two_instances_hygienically_preserve_original_source",
+      "syntax_sha256": "c61c4d531b5e8a380b22517030d9fce7008e84f598cd0acc0043a89e3bff0d46"
+    },
+    "modules.footprint": {
+      "distinction": "Read, write and effect request footprint is derived from the original module body, not supplied cached authority.",
+      "file_sha256": "d1c6ce7a33cd2b16ca5ea07912fcf4035d57cc07647743c0b7c1e3ae47aab061",
+      "path": "tests/test_policy_modules.py",
+      "role": "positive",
+      "symbol": "PolicyModuleTests.test_footprint_is_recomputed_from_body",
+      "syntax_sha256": "13a6cfe43f8770c68a102b47b0f5be76bc8686212ad712c0d173e4ed409a10bc"
+    },
+    "modules.limits": {
+      "distinction": "Composition enforces bounded work, bytes, depth and cycle rejection on original records.",
+      "file_sha256": "d1c6ce7a33cd2b16ca5ea07912fcf4035d57cc07647743c0b7c1e3ae47aab061",
+      "path": "tests/test_policy_modules.py",
+      "role": "rejection",
+      "symbol": "PolicyModuleTests.test_work_byte_depth_and_cyclic_data_bounds_fail_closed",
+      "syntax_sha256": "75fa6f944a0e8e7715c55ecd7fa4f3ed822898c2227967879b2644f0191c55b3"
+    },
+    "modules.private": {
+      "distinction": "Private state and effects must have explicit ownership and cannot also be exported.",
+      "file_sha256": "d1c6ce7a33cd2b16ca5ea07912fcf4035d57cc07647743c0b7c1e3ae47aab061",
+      "path": "tests/test_policy_modules.py",
+      "role": "rejection",
+      "symbol": "PolicyModuleTests.test_private_state_and_effect_require_explicit_ownership",
+      "syntax_sha256": "2ef41290530462cac6df7edada66b93cc9fb30f707c27eae999dae849153f4db"
+    },
+    "modules.writes": {
+      "distinction": "Multiple module instances cannot write the same shared state implicitly.",
+      "file_sha256": "d1c6ce7a33cd2b16ca5ea07912fcf4035d57cc07647743c0b7c1e3ae47aab061",
+      "path": "tests/test_policy_modules.py",
+      "role": "rejection",
+      "symbol": "PolicyModuleTests.test_shared_writes_are_rejected",
+      "syntax_sha256": "ab694462bfecb500b46b1a35bb7ce118cded502da1b68e768f21f073e399f327"
     },
     "pattern.bounded_response": {
       "distinction": "Independent literal bounded_response expansion, ordered fields/refs/source origins; no execution claim.",
@@ -20464,6 +23274,62 @@
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_event_and_guard_types_remain_separate",
       "syntax_sha256": "693fb927c99efb9624ed370f0c8e11b6b0de83c4f9f193aa6eed9427a3544c3d"
+    },
+    "typed.events": {
+      "distinction": "Event/scalar category separation in guards, arguments and state updates; no general operational-admission claim.",
+      "file_sha256": "b8485a40ec4071c8f09565d3500fa2ef3cf73293d20e610e14f53b19eaf4c1fa",
+      "path": "tests/test_policy_typed.py",
+      "role": "rejection",
+      "symbol": "PolicyTypedTests.test_events_never_enter_scalar_logic_assignment_or_effect_arguments",
+      "syntax_sha256": "f2cdc9f15ea57ef18073b4bcdd816e0dbcf8e918a603bbec19ff7927e6dee678"
+    },
+    "typed.lifecycle": {
+      "distinction": "Named lifecycle phases remain explicit events and undeclared phases reject.",
+      "file_sha256": "b8485a40ec4071c8f09565d3500fa2ef3cf73293d20e610e14f53b19eaf4c1fa",
+      "path": "tests/test_policy_typed.py",
+      "role": "mixed",
+      "symbol": "PolicyTypedTests.test_effect_lifecycle_phases_remain_explicit_events",
+      "syntax_sha256": "dcb648d3f7ab7c6508e3485da13b203d9ad80766f4d4a19c67aed5cf31e542b9"
+    },
+    "typed.literal": {
+      "distinction": "Distinct scalar wrapper categories and canonical decimal representation; runtime rejection of bool-as-integer and inexact float input.",
+      "file_sha256": "b8485a40ec4071c8f09565d3500fa2ef3cf73293d20e610e14f53b19eaf4c1fa",
+      "path": "tests/test_policy_typed.py",
+      "role": "mixed",
+      "symbol": "PolicyTypedTests.test_distinct_scalar_categories_and_exact_literals",
+      "syntax_sha256": "90045344d5d2aa49ea411a0095eb927e53d96414d5a25b57c46ce04bffbb3391"
+    },
+    "typed.references": {
+      "distinction": "Reviewed typed observation, state and parameter handles retain nominal source records and reject mismatched categories.",
+      "file_sha256": "b8485a40ec4071c8f09565d3500fa2ef3cf73293d20e610e14f53b19eaf4c1fa",
+      "path": "tests/test_policy_typed.py",
+      "role": "mixed",
+      "symbol": "PolicyTypedTests.test_observation_state_and_parameter_handles_preserve_nominal_records",
+      "syntax_sha256": "f0580416e85f6bf7fb7723e57a23b521c2202a6963c4ed0141e1bbc9c08ba843"
+    },
+    "typed.reset": {
+      "distinction": "Explicit state reset preserves the original, its builder ownership and immutable wrapper behavior.",
+      "file_sha256": "b8485a40ec4071c8f09565d3500fa2ef3cf73293d20e610e14f53b19eaf4c1fa",
+      "path": "tests/test_policy_typed.py",
+      "role": "mixed",
+      "symbol": "PolicyTypedTests.test_immutable_reset_copy_preserves_ownership_and_original",
+      "syntax_sha256": "49a2274c535b0c6fc27fde4c496af402b2971c5648f1ebfad12d6ad5b13e8049"
+    },
+    "typed.source": {
+      "distinction": "Independently constructed ordinary-source rule and unchanged canonical document digest for a complete typed program.",
+      "file_sha256": "b8485a40ec4071c8f09565d3500fa2ef3cf73293d20e610e14f53b19eaf4c1fa",
+      "path": "tests/test_policy_typed.py",
+      "role": "positive",
+      "symbol": "PolicyTypedTests.test_complete_example_is_ordinary_source_with_identical_rule",
+      "syntax_sha256": "216d5e8d98f529e624637473ea02b2853cda9ff01a610e48c87c5711d7ca91f9"
+    },
+    "typed.transition": {
+      "distinction": "Typed transition preserves independent source construction and checks machine endpoint membership.",
+      "file_sha256": "b8485a40ec4071c8f09565d3500fa2ef3cf73293d20e610e14f53b19eaf4c1fa",
+      "path": "tests/test_policy_typed.py",
+      "role": "mixed",
+      "symbol": "PolicyTypedTests.test_typed_transition_preserves_source_and_checks_endpoints",
+      "syntax_sha256": "1df35e4a06f8a671f7bc4763aae6b4d67ef9a1b5f3d66205c75bef50c95ef407"
     }
   }
 }

@@ -60,7 +60,7 @@ from .inspection import inspect, diff, graph
 from .model import CompilationSubmission, BackendCapabilities, CapabilityAssessment
 from .handoff import prepare_submission, assess_capabilities, SubmissionError
 from .serialization import PolicySerializationError, SerializationLimits
-from . import logic, time, values, entities, chassis, observations, space, state, effects, behavior, coordination, requirements, deployment, catalog, patterns
+from . import logic, time, values, entities, chassis, observations, space, state, effects, behavior, coordination, requirements, deployment, catalog, patterns, typed, modules
 
 __all__ = [
     'Record',
@@ -175,4 +175,6 @@ __all__ = [
     'deployment',
     'catalog',
     'patterns',
+    'typed',
+    'modules',
 ]

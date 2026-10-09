@@ -28,12 +28,14 @@ LEDGER = "protocol/policy-public-api-coverage-v0.1.json"
 SCHEMA = "biocompiler.policy_public_api_coverage.v0.1"
 CLAIM = "Static public-source inventory and reviewed witness links only; neither executed coverage nor semantic/native/material/release acceptance."
 RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Generated or inherited dataclass runtime protocols are represented by reviewed decorator/field/base contracts, not an exhaustive runtime-attribute census; Python record equality is not symbolic policy comparison."
-# Reviewed separately from source-body pins. This literal binds all138 witness
-# meanings/owners and all905 coverage classifications, so refreshing file/AST
+# Reviewed separately from source-body pins. This literal binds all witness
+# meanings/owners and coverage classifications, so refreshing file/AST
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "2a9ce2139ab87bd5b5288357249a2433bba232c5e1a9fceef6b248c1325aab68"
+REVIEWED_METADATA_SHA256 = "d2f6e39a1a7078d9ca33bf1d0f7c03021b42d92a53db18e3f0fdfb6dec9f2834"
+BEFORE_TYPED_MODULES_METADATA_SHA256 = "2a9ce2139ab87bd5b5288357249a2433bba232c5e1a9fceef6b248c1325aab68"
+TYPED_MODULE_PREFIXES = ("biocompiler.policy.typed.", "biocompiler.policy.modules.")
 GROUNDED_HELPER_DEPENDENCIES = (
     "biocompiler.core_policy_component_material.GROUNDED_HELPER_ASSEMBLY_PROFILE",
     "biocompiler.core_policy_component_material.GROUNDED_HELPER_IMPLEMENTATION",
@@ -100,7 +102,7 @@ COMPOSITION_DEPENDENCIES = (
     'biocompiler.core_policy_implementation._two_observation_original',
 )
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model native observations operational patterns programs requirements research_project serialization space state time validation values".split())
+MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model modules native observations operational patterns programs requirements research_project serialization space state time typed validation values".split())
 CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py")
@@ -135,8 +137,8 @@ OPERATIONS = {
 # Reviewed access names and canonical owners, independent of the ledger file pins.
 REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
   'biocompiler.policy',
-  'behavior catalog chassis coordination deployment effects entities logic observations patterns requirements '
-  'space state time values'),
+  'behavior catalog chassis coordination deployment effects entities logic modules observations patterns requirements '
+  'space state time typed values'),
  ('biocompiler.policy', 'biocompiler.policy.handoff', 'SubmissionError assess_capabilities prepare_submission'),
  ('biocompiler.policy', 'biocompiler.policy.inspection', 'diff graph inspect'),
  ('biocompiler.policy',
@@ -172,6 +174,13 @@ REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
  ('biocompiler.policy.requirements', 'biocompiler.policy.model', 'AssuranceRequest Requirement'),
  ('biocompiler.policy.space', 'biocompiler.policy.model', 'Scope SpatialScope'),
  ('biocompiler.policy.state', 'biocompiler.policy.model', 'Assignment Scope StateStore'),
+ ('biocompiler.policy.typed', 'biocompiler.policy.typed',
+  'TypedAuthoringError TruthExpr IntegerExpr TextExpr QuantityExpr EventExpr ScalarExpression EffectPhase '
+  'Observation State Parameter Assignment Effect truth unknown integer text quantity guard trigger '
+  'all_of any_of not_ rising argument truth_observation integer_observation text_observation quantity_observation '
+  'truth_state integer_state text_state quantity_state truth_parameter integer_parameter text_parameter quantity_parameter rule transition'),
+ ('biocompiler.policy.modules', 'biocompiler.policy.modules',
+  'Access ModuleError ModuleLimits InputPort OutputPort ModuleOutput ModuleBinding Footprint ModuleTemplate ModuleInstance instantiate compose_modules'),
  ('biocompiler.policy.values',
   'biocompiler.policy.model',
   'EVENT INTEGER Parameter Quantity TEXT TRUTH TypeSpec Unit'),
@@ -456,7 +465,7 @@ def discover(root: Path) -> dict[str, Any]:
     reviewed_access = {module + "." + name: owner + "." + name
                        for module, owner, names in REVIEWED_EXPORT_GROUPS for name in names.split()}
     require(access == reviewed_access, "Reviewed export target/alias census differs")
-    require(len(exports.get("biocompiler.policy", [])) == 112 and len(access) == 163,
+    require(len(exports.get("biocompiler.policy", [])) == 114 and len(access) == 216,
             "Reviewed explicit export census differs")
     require(aliases == {"biocompiler.policy.inspection.summary": "biocompiler.policy.inspection.inspect",
                         "biocompiler.policy.inspection.render_html": "biocompiler.policy.inspection.to_html"}, "Reviewed compatibility/display aliases differ")
@@ -596,6 +605,15 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
+    previous = {
+        "witnesses": {key: value for key, value in metadata["witnesses"].items()
+                      if not key.startswith(("typed.", "modules."))},
+        "coverage": {key: value for key, value in coverage.items()
+                     if not key.startswith(TYPED_MODULE_PREFIXES)},
+    }
+    encoded_previous = json.dumps(previous, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(previous["coverage"]) == 905 and digest(encoded_previous) == BEFORE_TYPED_MODULES_METADATA_SHA256,
+            "Typed facade and modules must preserve every previous API evidence meaning")
     return {"status": "source_inventory_checked", "claim_scope": CLAIM, "runtime_protocol_scope": RUNTIME_SCOPE, "files": len(expected["files"]),
             "entries": len(entries), "exports": len(expected["exports"]), "cli_commands": len(CLI),
             "native_operations": len(OPERATIONS), "compatibility_support": len(SUPPORT),
