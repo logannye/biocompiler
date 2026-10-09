@@ -169,9 +169,22 @@ class NetworkFixtureTests(unittest.TestCase):
             for row in provider['body'].get('capacities', []):
                 self.assertEqual(row['record_layout_digest'], peer.digest(layout))
                 if row['unit'] == 'active_attempt_records': capacities.append(row)
-        self.assertEqual(len(capacities), 2)
+        self.assertEqual(len(capacities), 1)
         self.assertEqual({row['pool_id'] for row in capacities}, {'network.shared_attempt_capacity'})
         self.assertEqual({row['quantity'] for row in capacities}, {24})
+        all_capacities = [row for provider in request['context']['providers'] for row in provider['body'].get('capacities', [])]
+        self.assertEqual(len(all_capacities), len({row['pool_id'] for row in all_capacities}))
+        attempt_allocations = [row for row in request['resource_bindings'] if row['unit'] == 'active_attempt_records']
+        self.assertEqual([row['owner'] for row in attempt_allocations], [
+            {'kind': 'node', 'slot': 'actuator', 'node': 'response_a'},
+            {'kind': 'node', 'slot': 'actuator', 'node': 'response_b'},
+        ])
+        self.assertEqual([row['capacity'] for row in attempt_allocations], [capacities[0]['id']] * 2)
+        self.assertEqual(attempt_allocations[0]['provider'], attempt_allocations[1]['provider'])
+        attempt_requirements = [row for component in request['component_library']['components']
+            for row in component['body']['provider_requirements'] if row.get('unit') == 'active_attempt_records']
+        self.assertEqual([row['minimum'] for row in attempt_requirements], [12, 12])
+        self.assertEqual(sum(row['minimum'] for row in attempt_requirements), capacities[0]['quantity'])
         self.assertEqual((len(expected['ordered_union']['nodes']), expected['node_count']), (35, 35))
         self.assertEqual(expected['sequence'], 'CCAUGGCUUAAGGAAAA')
         self.assertEqual(expected['molecule']['sequence'], expected['sequence'])
@@ -192,7 +205,7 @@ class NetworkFixtureTests(unittest.TestCase):
 
     def test_legacy_finite_fixture_bytes_are_unchanged(self):
         self.assertEqual(hashlib.sha256(generator.finite.PATH.read_bytes()).hexdigest(),
-            'cc83c1235403c6e5f4f2a98897e649a04a24212b26340f0a9f4c082d979e38eb')
+            'bdd3d516b36dd69ecf70e91ab81e006abc89f33b11c5639a68d1e2f08c9383b6')
 
 
 class NetworkTransportTests(unittest.TestCase):

@@ -248,7 +248,8 @@ let plan raw =
 let handle ~operation payload =
   (* Transport/replay framing has a separate fixed bound, independent of plan
      usage, so replay reproduces the complete deterministic original wrapper. *)
-  ignore (Input.preflight ~charge:(fun _->()) payload);
+  ignore (Input.preflight ~max_bytes:P.max_input_bytes ~max_nodes:P.max_input_nodes
+    ~max_depth:P.max_input_depth ~charge:(fun _->()) payload);
   let fields = Json.object_fields ~path:"/payload" payload in
   Diagnostic.require (List.mem operation operations) "policy_target_plan_operation" "Unknown target planning operation.";
   Json.exact_fields ~path:"/payload" (if operation="plan-policy-target" then ["request"] else ["request";"report"]) fields;

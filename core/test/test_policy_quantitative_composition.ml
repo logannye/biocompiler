@@ -22,6 +22,9 @@ module Outcome = Bioc_domain.Construction_assessment
 module Material = Bioc_service.Policy_component_material_service
 module Service = Bioc_service.Service
 module Producer = Bioc_producer_service.Producer_service
+module Arrange = Bioc_compiler.Policy_component_lowering
+module Lower = Bioc_compiler.Policy_implementation_lowering
+module Binding = Bioc_domain.Policy_implementation_binding
 
 let ()=Printexc.register_printer(function
   |Diagnostic.Error d->Some(Printf.sprintf "Diagnostic.Error(%s, %s)" d.code d.message)
@@ -248,6 +251,46 @@ let ()=
   let report=Check.report result and contextual=Check.context checked in
   let preservation=A.implementation(C.assembly contextual)in
   let bound=P.binding preservation in
+  (* Repeated identical configurations retain every distinct candidate node;
+     different register configurations remain separate. Independently bind
+     the complete result of repeated deterministic arrangement. *)
+  let library=R.implementation_library(M.implementation_request original)in
+  let input_pairs=List.map(fun(value:M.input_binding)->value.source,value.input_id)(M.input_bindings original)in
+  let binding=Binding.of_json(get "binding" candidate)in
+  let rearrange implementation=Arrange.arrange ~source_inputs:input_pairs ~library
+    ~rule:(M.composition_rule original)({Lower.implementation;binding}:Lower.proposal)in
+  let supplied=I.of_json ~library(get "implementation" candidate)in
+  require(List.length(List.filter(fun(value:I.node)->match value.model.primitive with
+    I.Truth_register{initial=I.True;_}->true|_->false)(I.nodes supplied))=2 &&
+    List.length(List.filter(fun(value:I.node)->match value.model.primitive with
+    I.Truth_register{initial=I.False;_}->true|_->false)(I.nodes supplied))=1)
+    "Arrangement witness omitted repeated or distinct full configurations";
+  let first=rearrange supplied and second=rearrange supplied in
+  require(Json.equal(I.to_json first.implementation)(I.to_json second.implementation) &&
+    Json.equal(Binding.to_json first.binding)(Binding.to_json second.binding) &&
+    Json.equal(U.to_json first.assembly)(U.to_json second.assembly))
+    "Exact-signature indexing changed deterministic complete arrangement";
+  ignore(B.check ~admitted:(B.admitted_inputs bound) ~implementation:first.implementation ~proposed:first.binding);
+  let raw_library=I.library_to_json library in
+  let old_model=List.find(fun row->text "primitive"(get "body" row)="evidence_bank")(rows "models" raw_library)in
+  let body=edit["configuration";"freshness_ticks"](fun _->Json.int 2)(get "body" old_model)in
+  let changed_model=old_model|>set "body" body
+    |>set "configuration_digest"(s(Canonical.fingerprint(get "configuration" body)))
+    |>edit["identity";"content_fingerprint"](fun _->s(Canonical.fingerprint body))in
+  let changed_library=I.library_of_json(edit["models"](fun values->a(List.map(fun row->
+    if Json.equal row old_model then changed_model else row)(Json.array values)))raw_library)in
+  let changed=I.of_json ~library:changed_library(get "implementation" candidate
+    |>edit["authority";"library_digest"](fun _->s(I.library_digest changed_library))
+    |>edit["nodes"](fun values->a(List.map(fun row->
+      if Json.equal(get "model" row)(get "identity" old_model)then row
+        |>set "model"(get "identity" changed_model)
+        |>set "configuration_digest"(get "configuration_digest" changed_model)else row)(Json.array values))))in
+  (match Arrange.arrange ~source_inputs:input_pairs ~library:changed_library
+    ~rule:(M.composition_rule original)({Lower.implementation=changed;binding}:Lower.proposal)with
+  |_->failwith "Arrangement accepted a repinned same-primitive configuration mismatch"
+  |exception Diagnostic.Error d->
+    require(d.code="policy_component_lowering_unsupported")"Signature mismatch did not fail closed before search exhaustion";
+    incr controls);
   let quantitative=Quant.check ~request:original ~context:contextual ()in
   let composition=Composition.check ~request:original ~context:contextual ()in
   let summary=Quant.report quantitative in
@@ -345,5 +388,5 @@ let ()=
   let saved=edit["report";"quantitative";"synchronization"](fun _->s "physical_distributed_guarantee")produced in
   rejected_service "saved report broadens atomic coordination premise" "replay-policy-component-material"
     (o["request",request;"candidate",candidate;"limits",limits;"report",saved]);
-  require(!controls=25)"Coupled quantitative rejection census is incomplete";
+  require(!controls=26)"Coupled quantitative rejection census is incomplete";
   Printf.printf "policy_quantitative_composition: independent 24-row actual-circuit law, three private material owners, atomic reset/state invariant, four-root exact RNA, %d rejection controls\n" !controls

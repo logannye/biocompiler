@@ -193,8 +193,23 @@ let case limits row=
   require(Json.equal(X.ordered_union_json(M.composition_rule original))(get "ordered_union" expected))
     "Independent supplied ordered union changed";
   let produced=call Producer.handle Protocol.Core "compile-policy-component-material"(o["request",request;"limits",limits])in
-  require(at["report";"status"]produced=s "checked_component_material" && get "artifact" produced=Json.Null)
-    (name^": complete finite material conjunction was not checked with export withheld");
+  let report=get "report" produced in
+  let failure_summary () =
+    let preservation=get "preservation" report in
+    let brief value=match value with Json.Null->Json.Null|_->o(List.filter
+      (fun(key,_)->List.mem key["status";"outcome";"issues"])(Json.object_fields value))in
+    let stopped=match get "stopped" preservation with Json.Null->Json.Null|value->
+      o["category",get "category" value;"diagnostic",get "diagnostic" value]in
+    Canonical.encode(o["status",get "status" report;
+      "preservation",o["status",get "status" preservation;"stopped",stopped;
+        "coverage",get "coverage" preservation;"usage",get "usage" preservation;
+        "requirements",a(List.map(fun value->o(List.filter(fun(key,_)->
+          List.mem key["id";"status";"nonvacuous"])(Json.object_fields value)))(rows "requirements" preservation))];
+      "assembly",brief(get "assembly" report);"context",brief(get "context" report);
+      "prerequisites",brief(get "prerequisites" report)])in
+  require(get "status" report=s "checked_component_material" && get "artifact" produced=Json.Null)
+    (if get "status" report=s "checked_component_material" && get "artifact" produced=Json.Null then "" else
+      name^": complete finite material conjunction was not checked with export withheld: "^failure_summary());
   let candidate=get "candidate" produced in
   let graph=get "implementation" candidate and binding=get "binding" candidate in
   require(get "schema_version" binding=s U.finite_machine_schema_version && get "profile" binding=s U.finite_machine_profile)

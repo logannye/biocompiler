@@ -284,6 +284,19 @@ def build():
         [("condition_" + name, "observation", "sense/condition_" + name) for name in ("a", "b")]
         + [("response_" + name + "_feedback", "feedback", RELOCATIONS["response_" + name]) for name in ("a", "b")]]
     inputs = [{"input": row["id"], "source": row["source"], "provider": interface["definition"], "channel": row["id"]} for row in interface["channels"]]
+    # One physical pool has one supplied capacity record. Both controllers
+    # reserve their own twelve records from that same twenty-four-record pool.
+    chassis = providers["chassis"]["body"]
+    attempt_capacities = [row for row in chassis["capacities"] if row["unit"] == "active_attempt_records"]
+    assert len(attempt_capacities) == 2
+    shared_attempt_capacity = attempt_capacities[0]["id"]
+    attempt_capacity_ids = {row["id"] for row in attempt_capacities}
+    for allocation in resources:
+        if allocation["unit"] == "active_attempt_records":
+            assert allocation["provider"] == chassis["definition"] and allocation["capacity"] in attempt_capacity_ids
+            allocation["capacity"] = shared_attempt_capacity
+    chassis["capacities"] = [row for row in chassis["capacities"]
+        if row["unit"] != "active_attempt_records" or row["id"] == shared_attempt_capacity]
     def extend(value):
         if type(value) is dict:
             if "duration_min" in value: value.update(availability)

@@ -193,6 +193,24 @@ class CompositionQuantitativeTests(unittest.TestCase):
         self.assertIn('selected_boolean_allocation_signals',rows['coupled_quantitative_material']['features'])
         self.assertNotIn('partitioned_reservoir_storage',rows['transfer_network_material']['features'])
 
+    def test_complete_planning_envelope_uses_declared_bound_without_trimming_originals(self):
+        from biocompiler import core_policy_planning as planning
+        from biocompiler.policy import planning as facade
+        realization = self.request['implementation_request']
+        raw = facade.prepare_request(self.document, target='coupled_quantitative_material',
+            definitions=realization['definitions'], material_request=self.request)
+        self.assertEqual(raw['document'], realization['document'])
+        self.assertEqual(raw['realization_request'], realization)
+        self.assertEqual(raw['material_request'], self.request)
+        self.assertEqual(planning._original(raw), raw)
+        # The complete duplicated authority exceeds the legacy material framing
+        # bound. Planning already declares a larger, still bounded envelope.
+        with self.assertRaises(CoreProtocolError):
+            planning._measure({'request': raw}, max_bytes=planning.MAX_INPUT_BYTES, max_nodes=100_000)
+        self.assertEqual(planning.MAX_INPUT_NODES, 250_000)
+        planning._measure({'request': raw}, max_bytes=planning.MAX_INPUT_BYTES,
+                          max_nodes=planning.MAX_INPUT_NODES)
+
     def test_standalone_coupled_source_route_is_explicit(self):
         raw=self.request['implementation_request']
         fields={key:value for key,value in raw.items() if key not in ('schema_version','profile','document')}

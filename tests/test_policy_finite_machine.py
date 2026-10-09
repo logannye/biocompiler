@@ -130,6 +130,7 @@ class FiniteFixtureTests(unittest.TestCase):
         self.assertTrue(all(row["unknown"] == "defer" for row in source_rows(updated_request, "Transition")))
 
     def test_component_material_originals_retain_all_pins_nodes_links_and_exact_sequence(self):
+        self.assertEqual(self.fixture["limits"]["candidate"]["max_work"], 10_000_000)
         for case in self.fixture["cases"]:
             request, expected = case["request"], case["expected"]
             rule = request["composition_rule"]

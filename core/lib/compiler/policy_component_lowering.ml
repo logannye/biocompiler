@@ -103,7 +103,57 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
     charge (String.length encoded); encoded in
   let actual_models = List.map (fun (value:I.node) -> value,signature value.model) actual in
   let local_models = List.map (fun value -> value,signature value.model) local in
+  (* Coupled circuits can have 49 nodes: repeatedly charging every complete
+     signature, including already-used nodes, exceeds the fixed search budget
+     even on a successful path without backtracking. Exact immutable keys
+     select candidates; collisions still compare every signature byte. *)
+  let module Exact_index = Hashtbl.Make(struct
+    type t = string
+    let hash value = charge (1+Stdlib.String.length value);Hashtbl.hash value
+    let equal left right = charge (1+Stdlib.String.length left+Stdlib.String.length right);
+      Stdlib.String.equal left right
+  end) in
+  let model_index = if U.is_coupled lowered.binding then (
+    charge 64;
+    let index = Exact_index.create 64 in
+    List.iter (fun ((_,encoded) as entry) -> charge 1;
+      let previous=Option.value (Exact_index.find_opt index encoded) ~default:[] in
+      Exact_index.replace index encoded (entry::previous)) actual_models;
+    Some index) else None in
+  let candidates_for wanted = match model_index with
+    | None -> actual_models
+    | Some index ->
+      let reversed=Option.value (Exact_index.find_opt index wanted) ~default:[] in
+      charge (1+List.length reversed);List.rev reversed in
   let original_wires = I.wires implementation in
+  (* Resolve immutable endpoint names once. Each index key still compares the
+     complete name or port; integer positions only name this invocation's
+     already-checked, ordered node inventories. *)
+  let module Wire_index = Hashtbl.Make(struct
+    type t = int * string * int * string
+    let hash ((_,producer_port,_,consumer_port) as value) =
+      charge (3+Stdlib.String.length producer_port+Stdlib.String.length consumer_port);
+      Hashtbl.hash value
+    let equal (a,ap,b,bp) (c,cp,d,dp) =
+      charge (4+Stdlib.String.length ap+Stdlib.String.length bp+
+        Stdlib.String.length cp+Stdlib.String.length dp);
+      a=c && b=d && Stdlib.String.equal ap cp && Stdlib.String.equal bp dp
+  end) in
+  let indexed_wires=match model_index with None->None|Some _->
+    charge (128+List.length wanted_wires);
+    let actual_positions=Exact_index.create 64 and local_positions=Exact_index.create 64 in
+    List.iteri(fun ordinal (value:I.node)->charge 1;Exact_index.add actual_positions value.node_id ordinal)actual;
+    List.iteri(fun ordinal value->charge 1;Exact_index.add local_positions value.key ordinal)local;
+    let position index id=match Exact_index.find_opt index id with Some value->value|None->assert false in
+    let actual_wires=List.map(fun(value:I.wire)->charge 1;
+      position actual_positions value.producer.node_id,value.producer.port_id,
+      position actual_positions value.consumer.node_id,value.consumer.port_id)original_wires in
+    let expected=Wire_index.create(List.length wanted_wires)in
+    List.iter(fun(value:I.wire)->charge 1;
+      Wire_index.replace expected
+        (position local_positions value.producer.node_id,value.producer.port_id,
+         position local_positions value.consumer.node_id,value.consumer.port_id)())wanted_wires;
+    Some(actual_positions,local_positions,actual_wires,expected)in
   let lookup pairs id = charge (List.length pairs);
     List.find_map (fun (candidate,value) -> if String.equal id candidate then Some value else None) pairs in
   let same_multiset inspect left right =
@@ -115,13 +165,22 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
   let inspect_endpoint value = Meter.preflight (endpoint_json value) in
   let inspect_text value = outer_charge (1+String.length value) in
   let inspect_group (arbiter,commits) = inspect_text arbiter; List.iter inspect_text commits in
-  let partial pairs = List.for_all (fun (value:I.wire) -> charge 1;
-    match lookup pairs value.producer.node_id,lookup pairs value.consumer.node_id with
-    | Some producer,Some consumer ->
-      let mapped:I.wire = {producer={node_id=producer;port_id=value.producer.port_id};
-        consumer={node_id=consumer;port_id=value.consumer.port_id}} in
-      charge (List.length wanted_wires); List.exists (fun expected -> inspect_wire mapped; inspect_wire expected; mapped=expected) wanted_wires
-    | _ -> true) original_wires in
+  let partial pairs coordinates = match indexed_wires with
+    |Some(_,_,wires,expected)->
+      let count=List.length actual in charge count;
+      let mapped=Array.make count None in
+      List.iter(fun(candidate,target)->charge 1;mapped.(candidate)<-Some target)coordinates;
+      List.for_all(fun(producer,producer_port,consumer,consumer_port)->charge 3;
+        match mapped.(producer),mapped.(consumer)with
+        |Some before,Some after->Wire_index.mem expected(before,producer_port,after,consumer_port)
+        |_->true)wires
+    |None->List.for_all (fun (value:I.wire) -> charge 1;
+      match lookup pairs value.producer.node_id,lookup pairs value.consumer.node_id with
+      | Some producer,Some consumer ->
+        let mapped:I.wire = {producer={node_id=producer;port_id=value.producer.port_id};
+          consumer={node_id=consumer;port_id=value.consumer.port_id}} in
+        charge (List.length wanted_wires); List.exists (fun expected -> inspect_wire mapped; inspect_wire expected; mapped=expected) wanted_wires
+      | _ -> true) original_wires in
   let finish pairs =
     let local_id id = match lookup pairs id with Some value -> value | None -> assert false in
     let endpoint (value:I.endpoint) : I.endpoint = {node_id=local_id value.node_id;port_id=value.port_id} in
@@ -140,7 +199,7 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
       (I.atomic_groups implementation) in
     if not (same_multiset inspect_group groups (List.map (fun (value:I.atomic_group) -> value.arbiter,value.commits) wanted_groups)) then None
     else Some (pairs,inputs) in
-  let rec search pairs used candidates = outer_charge 1;match candidates with
+  let rec search pairs coordinates used candidates = outer_charge 1;match candidates with
     | [] -> finish pairs
     | (target,wanted)::rest ->
       let rec choose candidates = outer_charge 1;match candidates with
@@ -149,10 +208,13 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
           charge (1+String.length wanted+String.length provided);
           if List.exists (String.equal candidate.node_id) used || wanted<>provided then choose remaining_candidates else
           let next = (candidate.node_id,target.key)::pairs in
-          if not (partial next) then choose remaining_candidates else
-          match search next (candidate.node_id::used) rest with Some _ as result -> result | None -> choose remaining_candidates in
-      choose actual_models in
-  let pairs,input_pairs = match search [] [] local_models with Some value -> value | None ->
+          let next_coordinates=match indexed_wires with None->[]|Some(actual_positions,local_positions,_,_)->
+            charge 1;
+            (Exact_index.find actual_positions candidate.node_id,Exact_index.find local_positions target.key)::coordinates in
+          if not (partial next next_coordinates) then choose remaining_candidates else
+          match search next next_coordinates (candidate.node_id::used) rest with Some _ as result -> result | None -> choose remaining_candidates in
+      choose (candidates_for wanted) in
+  let pairs,input_pairs = match search [] [] [] local_models with Some value -> value | None ->
     Diagnostic.fail "policy_component_lowering_unsupported"
       "No complete model, wiring, input, group and export bijection matches the original component composition." in
   let actual_id local = charge (List.length pairs);

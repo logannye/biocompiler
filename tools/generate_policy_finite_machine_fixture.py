@@ -330,9 +330,15 @@ def build():
             "sequence": "CCAUGGCUUAAGGAAAA", "ordered_union": union,
             "state_count": len(spec["states"]), "transition_count": len(spec["transitions"]), "effect_count": len(spec["effects"]),
             "node_count": len(union["nodes"]), "wire_count": len(union["wires"]), "link_count": len(links)}})
+    limits = shared.original()["limits"]
+    # The guarded two-effect history needs 14 complete port inventories and
+    # at least 60 retained attempt publications. Their mandatory output charges,
+    # other signal payloads and final inventories exceed one million work units
+    # before evaluator/retention work. Fund it within the existing finite ceiling.
+    limits["candidate"]["max_work"] = 10_000_000
     return {"schema_version": "biocompiler.policy_finite_machine_literals.v0.1",
         "notice": "Artificial supplied component-to-RNA premises. No native acceptance or biological evidence is asserted.",
-        "seed_sha256": shared.SEED_SHA256, "limits": shared.original()["limits"], "cases": cases}
+        "seed_sha256": shared.SEED_SHA256, "limits": limits, "cases": cases}
 
 
 def main():
