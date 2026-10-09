@@ -154,6 +154,9 @@ class NetworkFixtureTests(unittest.TestCase):
         for component in request['component_library']['components']:
             self.assertEqual(peer.digest(component['body']), component['identity']['content_fingerprint'])
             carriers = [row['target'] for row in component['body']['carriers']]
+            boundaries = component['body']['fragment']['boundary_ports']
+            endpoints = [(row['endpoint']['node'], row['endpoint']['port']) for row in boundaries]
+            self.assertEqual(len(endpoints), len(set(endpoints)))
             for node in component['body']['fragment']['nodes']:
                 self.assertEqual(peer.digest(node['model']['body']), node['model']['identity']['content_fingerprint'])
                 for kind in ('primitive', 'configuration', 'replication'): self.assertIn({'kind': kind, 'id': node['id']}, carriers)
@@ -173,10 +176,23 @@ class NetworkFixtureTests(unittest.TestCase):
         self.assertEqual(expected['sequence'], 'CCAUGGCUUAAGGAAAA')
         self.assertEqual(expected['molecule']['sequence'], expected['sequence'])
         self.assertEqual(len(expected['ordered_union']['atomic_groups']), 2)
+        product_links = [row for row in rule['body']['links'] if row['signal_type'] == 'product_symbol']
+        self.assertEqual([(row['id'], row['producer'], row['consumer']) for row in product_links], [
+            ('response_a.product', {'slot': 'actuator', 'boundary': 'response_a.product'},
+                {'slot': 'control', 'boundary': 'response_a.product'}),
+            ('response_b.product', {'slot': 'actuator', 'boundary': 'response_a.product'},
+                {'slot': 'control', 'boundary': 'response_b.product'}),
+        ])
+        product_wires = [row for row in expected['ordered_union']['wires']
+            if row['producer'] == {'slot': 'actuator', 'node': 'product', 'port': 'out'}]
+        self.assertEqual([row['consumer'] for row in product_wires], [
+            {'slot': 'control', 'node': 'commit0', 'port': 'product0'},
+            {'slot': 'control', 'node': 'commit4', 'port': 'product0'},
+        ])
 
     def test_legacy_finite_fixture_bytes_are_unchanged(self):
         self.assertEqual(hashlib.sha256(generator.finite.PATH.read_bytes()).hexdigest(),
-            '42cb98f72f1e99ce255475eca982cda6dd40ca2c9ac990c3bbcc0aec7c289024')
+            'cc83c1235403c6e5f4f2a98897e649a04a24212b26340f0a9f4c082d979e38eb')
 
 
 class NetworkTransportTests(unittest.TestCase):

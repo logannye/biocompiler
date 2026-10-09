@@ -172,6 +172,7 @@ def declared_fragments():
         [{"id": "selection_" + name, "arbiter": "arbiter_" + name, "commits": [f"commit{i*4+j}" for j in range(4)]} for i, name in enumerate(("a", "b"))]),
         "actuator": fragment("actuator", actuator, awires, aboundaries,
             [{"id": "response_" + name + "_feedback", "kind": "feedback", "consumer": shared.endpoint("response_" + name, "feedback")} for name in ("a", "b")], [])}
+    finite.coalesce_output_boundaries(fragments, links)
     return {"schema_version": "biocompiler.policy_implementation_library.v0.1", "profile": shared.PROFILE,
             "id": "network.library", "version": "1", "models": list(models.values())}, fragments, links
 

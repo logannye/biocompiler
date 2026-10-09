@@ -45,29 +45,7 @@ def law():
         "sample_period": p.to_data(p.quantity(1, p.SECOND))}
 
 
-def coalesce_output_boundaries(fragments, links):
-    """Keep one boundary per producer endpoint; retain every distinct link sink."""
-    renamed = {}
-    for slot, fragment in fragments.items():
-        endpoints = {}
-        boundaries = []
-        for boundary in fragment["boundary_ports"]:
-            endpoint = (boundary["endpoint"]["node"], boundary["endpoint"]["port"])
-            if endpoint in endpoints:
-                original = endpoints[endpoint]
-                assert boundary["direction"] == original["direction"] == "output"
-                assert boundary["signal_type"] == original["signal_type"]
-                assert {key: value for key, value in boundary.items() if key != "id"} == {
-                    key: value for key, value in original.items() if key != "id"}
-                renamed[slot, boundary["id"]] = original["id"]
-            else:
-                endpoints[endpoint] = boundary
-                boundaries.append(boundary)
-        fragment["boundary_ports"] = boundaries
-    for link in links:
-        producer = link["producer"]
-        producer["boundary"] = renamed.get((producer["slot"], producer["boundary"]), producer["boundary"])
-
+coalesce_output_boundaries = finite.coalesce_output_boundaries
 
 def declared_fragments():
     """Supply two distinct commit ports feeding one attempt store, with per-site guards."""

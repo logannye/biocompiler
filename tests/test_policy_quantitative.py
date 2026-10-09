@@ -94,7 +94,7 @@ class QuantitativeTests(unittest.TestCase):
         self.assertEqual(sum(row["model"]["body"]["primitive"] == "truth_not" for row in nodes), 1)
         self.assertEqual(self.packet["limits"]["candidate"]["max_work"], 10_000_000)
         self.assertEqual(hashlib.sha256((generator.ROOT / "core/test/data/policy_finite_machine_v01.json").read_bytes()).hexdigest(),
-                         "42cb98f72f1e99ce255475eca982cda6dd40ca2c9ac990c3bbcc0aec7c289024")
+                         "cc83c1235403c6e5f4f2a98897e649a04a24212b26340f0a9f4c082d979e38eb")
 
     def test_exact_law_and_grid_ignore_decimal_context_and_do_not_extend_source_records(self):
         value = law()

@@ -216,7 +216,7 @@ let selected_trace bound reset=
 let ()=
   require(Array.length Sys.argv=3)"Expected independent transfer and unchanged sampled-step originals";
   let fixture=read Sys.argv.(1) and previous=read Sys.argv.(2)in
-  require(Canonical.fingerprint previous="ec764d40276b64d06c57a985d7eeb48e11ec6414344e397ce483d116715f43b2")
+  require(Canonical.fingerprint previous="5446f4e2883c63b026193b3bb292ca3eb1047221e96235e3c788c7fdd15ec8ee")
     "Existing exact sampled-step fixture changed under the new transfer profile";
   let previous_request=M.of_json(get "request" previous)in
   require(M.is_quantitative previous_request && not(M.is_transfer_pair previous_request) &&

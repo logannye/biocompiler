@@ -222,7 +222,13 @@ let domain_failure request candidate limits domain expected_issue=
     ~implementation:(I.of_json ~library:(R.implementation_library original)(get "implementation" candidate))
     ~proposed:(Bioc_domain.Policy_implementation_binding.of_json(get "binding" candidate))
     ~limits:(P.limits_of_json limits)in
-  let checked=accepted "Fresh altered sampling domain"(P.accepted preservation)in
+  let checked=match P.accepted preservation with
+    |Some value->value
+    |None->let report=P.report preservation in
+      failwith("Fresh altered sampling domain ("^expected_issue^") withheld its checked capability: "^
+        Canonical.encode(o["status",get "status" report;"stopped",(match get "stopped" report with
+          |Json.Null->Json.Null|value->o["category",get "category" value;"diagnostic",get "diagnostic" value]);
+          "usage",get "usage" report]))in
   let quantitative=quant_check checked request candidate in
   require(Quant.outcome quantitative=Outcome.Fail && Quant.accepted quantitative=None &&
     List.mem(s expected_issue)(rows "issues"(Quant.report quantitative)))
@@ -331,12 +337,18 @@ let () =
   let domain=at["implementation_request";"operating_domain"]request in
   rejects "duplicate original input coordinate"(fun()->F.of_json(edit["fixed_observations"]
     (fun values->a(List.hd(Json.array values)::Json.array values))domain));
-  let factor=o["observation",s "condition";"slots",a[s "e1"];"ticks",a[Json.int 6];
+  let factor=o["observation",s "condition";"slots",a[s "e1"];"ticks",a[Json.int 15];
     "age_ticks",a[Json.int 0];"max_rows_per_slot_tick",Json.int 2;
     "alphabet",s "known_truth_and_evidence_status.v1"]in
   rejects "fixed and factored sample coordinates overlap"(fun()->F.of_json(set "observation_factors"
     (a[set "ticks"(a[Json.int 5])factor])domain));
-  domain_failure request candidate limits(set "observation_factors"(a[factor])domain)
+  (* Exercise all 1+5+25 row sequences at the final tick, after a keep-only
+     prefix has completed both request rounds. An early factor multiplies every
+     later lifecycle suffix and can exhaust traversal work before this separate
+     sampling-contract control is reached. Final-tick q3 has no upward crossing,
+     so none of these 31 histories changes the cumulative attempt bound. *)
+  let factored_domain=domain|>set "lifecycle_factors"(a[])|>set "observation_factors"(a[factor])in
+  domain_failure request candidate limits factored_domain
     "factored_sample_complete_identity_and_zero_age";
   let wide_freshness=freshness_request request in
   let widened=call Producer.handle Protocol.Core "compile-policy-component-material"

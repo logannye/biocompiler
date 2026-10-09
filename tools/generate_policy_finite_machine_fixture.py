@@ -103,6 +103,30 @@ def implementation_request(spec, library):
     return request
 
 
+def coalesce_output_boundaries(fragments, links):
+    """Keep one boundary per producer endpoint; retain every distinct link sink."""
+    renamed = {}
+    for slot, fragment in fragments.items():
+        endpoints = {}
+        boundaries = []
+        for boundary in fragment["boundary_ports"]:
+            endpoint = (boundary["endpoint"]["node"], boundary["endpoint"]["port"])
+            if endpoint in endpoints:
+                original = endpoints[endpoint]
+                assert boundary["direction"] == original["direction"] == "output"
+                assert boundary["signal_type"] == original["signal_type"]
+                assert {key: value for key, value in boundary.items() if key != "id"} == {
+                    key: value for key, value in original.items() if key != "id"}
+                renamed[slot, boundary["id"]] = original["id"]
+            else:
+                endpoints[endpoint] = boundary
+                boundaries.append(boundary)
+        fragment["boundary_ports"] = boundaries
+    for link in links:
+        producer = link["producer"]
+        producer["boundary"] = renamed.get((producer["slot"], producer["boundary"]), producer["boundary"])
+
+
 def declared_fragments(spec):
     models = {}
     def model(primitive, config, *, executor=False):
@@ -289,6 +313,7 @@ def build():
     cases = []
     for spec in SPECS:
         library, fragments, links = declared_fragments(spec)
+        coalesce_output_boundaries(fragments, links)
         original = implementation_request(spec, library)
         components, rule, union, molecule = composition(spec, fragments, links, seed)
         context_value, inputs, resources = context(spec, original, components, rule, union)

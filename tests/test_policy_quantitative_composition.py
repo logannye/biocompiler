@@ -123,6 +123,14 @@ class CompositionQuantitativeTests(unittest.TestCase):
         authority = self.request['composition_rule']['body']['material_authority']['template']
         self.assertEqual(len(authority['sources']), 4)
         self.assertEqual(len(authority['steps'][0]['operation']['inputs']), 4)
+        for port in authority['steps'][0]['ports']:
+            for field, identity in (('chemistry_transition', 'component'), ('feature_transition', 'feature_id')):
+                dispositions = port[field]['dispositions']
+                keys = [(row['source_id'], row[identity]) for row in dispositions]
+                self.assertEqual(keys, sorted(set(keys)))
+        for structure in authority['payload_structures']:
+            identities = [row['feature_id'] for row in structure['regions']]
+            self.assertEqual(identities, sorted(set(identities)))
         self.assertEqual(len(self.request['composition_rule']['body']['link_carriers']), 66)
 
     def test_explicit_private_ownership_and_binary_shape_reject_aliasing(self):

@@ -223,7 +223,7 @@ let first_transfer change=edit["transfers"](fun values->match Json.array values 
 let ()=
   require(Array.length Sys.argv=3)"Expected independent network and unchanged transfer-pair originals";
   let fixture=read Sys.argv.(1) and previous=read Sys.argv.(2)in
-  require(Canonical.fingerprint previous="62e7fd29a1fa3917a20b70149ae7fc57595badeee58655f63d004f70c512259d")
+  require(Canonical.fingerprint previous="dac62ea76b07c315377046e28b91155d5641406005e24493a1c264264f865a7c")
     "Existing exact transfer-pair fixture changed under the network profile";
   let previous_request=M.of_json(get "request" previous)in
   require(M.is_transfer_pair previous_request && not(M.is_transfer_network previous_request) &&

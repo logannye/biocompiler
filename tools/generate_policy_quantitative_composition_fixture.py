@@ -220,10 +220,13 @@ def build():
             d=deepcopy(next(d for d in old_chem if d['source_id']==wanted and d['component']==facet));d['source_id']=roots[slot]['id']
             carry=facet=='modification_inventory' or slot=='control' and facet in ('cap','start_end') or slot=='owner_c' and facet in ('finish_end','terminal_tail')
             d.update(decision='mapped_copy'if carry else 'not_carried',destination_components=[facet]if carry else []);chem.append(d)
-    port['feature_transition']['dispositions']=dispositions;port['chemistry_transition']['dispositions']=chem
+    port['feature_transition']['dispositions']=sorted(dispositions,key=lambda row:(row['source_id'],row['feature_id']))
+    # These inventories have canonical identity order in the typed material IR.
+    port['chemistry_transition']['dispositions']=sorted(chem,key=lambda row:(row['source_id'],row['component']))
     for member in authority['members']:member['regions']={key:qualified[value]for key,value in member['regions'].items()}
     for structure in template['payload_structures']:
         for region in structure['regions']:region['feature_id']=qualified[region['feature_id']]
+        structure['regions'].sort(key=lambda row:row['feature_id'])
     joins=[{'id':f'join{i}','step':'join','port':'joined','left':left,'right':right,'offset':sum(map(len,SEQUENCES[:i+1]))}
            for i,(left,right)in enumerate(zip(SLOTS,SLOTS[1:]))]
     body={'primitive_profile':network.PRIMITIVE,'observable_profile':network.OBSERVABLE,'phase_profile':network.PHASE,

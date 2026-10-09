@@ -140,6 +140,9 @@ class FiniteFixtureTests(unittest.TestCase):
                 self.assertEqual(request["context"]["record_layout"]["union_digest"], peer.digest(expected["ordered_union"]))
                 for component in request["component_library"]["components"]:
                     body = component["body"]
+                    boundaries = body["fragment"]["boundary_ports"]
+                    endpoints = [(row["endpoint"]["node"], row["endpoint"]["port"]) for row in boundaries]
+                    self.assertEqual(len(endpoints), len(set(endpoints)))
                     self.assertEqual(component["identity"]["content_fingerprint"], peer.digest(body))
                     for node in body["fragment"]["nodes"]:
                         self.assertEqual(node["model"]["identity"]["content_fingerprint"], peer.digest(node["model"]["body"]))
@@ -149,6 +152,13 @@ class FiniteFixtureTests(unittest.TestCase):
                 self.assertEqual(sum(row["model"]["body"]["primitive"] == "truth_constant"
                     for row in expected["ordered_union"]["nodes"]), 1)
                 self.assertEqual(len(rule["body"]["links"]), expected["link_count"])
+                consumers = [(row["consumer"]["slot"], row["consumer"]["boundary"]) for row in rule["body"]["links"]]
+                self.assertEqual(len(consumers), len(set(consumers)))
+                if case["id"] == "guarded_branch":
+                    # Both requests still consume the shared product and authorization;
+                    # accept/reject still consume the same completed event occurrence.
+                    producers = [(row["producer"]["slot"], row["producer"]["boundary"]) for row in rule["body"]["links"]]
+                    self.assertEqual(len(producers) - len(set(producers)), 3)
                 self.assertEqual(expected["molecule"]["sequence"], "CCAUGGCUUAAGGAAAA")
                 self.assertEqual(expected["sequence"], expected["molecule"]["sequence"])
                 self.assertEqual({row["id"] for row in expected["molecule"]["features"]},
