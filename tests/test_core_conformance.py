@@ -542,43 +542,76 @@ class InstanceCapabilityConformanceTests(unittest.TestCase):
         request = (campaign.ROOT / "core/lib/domain/policy_component_material_request.ml").read_text()
         scopes = service.split('"validation_scopes",', 1)[1].split('"profiles",', 1)[0]
         scope_refs = re.findall(r"Policy_component_(?:material|selection)_service\.\w+", scopes)
-        self.assertEqual(scope_refs, [
+        historical_scope_refs = [
             "Policy_component_material_service.validation_scope",
             "Policy_component_material_service.instance_validation_scope",
             "Policy_component_material_service.prerequisite_validation_scope",
             "Policy_component_material_service.two_observation_validation_scope",
             "Policy_component_material_service.multi_member_validation_scope",
             "Policy_component_material_service.grounded_helper_validation_scope",
-            "Policy_component_selection_service.validation_scope"])
+            "Policy_component_selection_service.validation_scope"]
+        new_scope_refs = [
+            "Policy_component_material_service.step_quantitative_validation_scope",
+            "Policy_component_material_service.transfer_pair_validation_scope",
+            "Policy_component_material_service.transfer_network_validation_scope",
+            "Policy_component_material_service.composition_validation_scope",
+            "Policy_component_material_service.network_validation_scope",
+            "Policy_component_material_service.finite_machine_validation_scope",
+            "Policy_component_material_service.quantitative_validation_scope"]
+        self.assertEqual(scope_refs, new_scope_refs[:4] + historical_scope_refs[:-1]
+                         + new_scope_refs[4:] + historical_scope_refs[-1:])
+        self.assertEqual([name for name in scope_refs if name not in new_scope_refs], historical_scope_refs)
         pattern = r'"(policy_[a-z_]+)",\s*(?:Bioc_service\.)?(Policy_component_(?:material|selection)_service)\.(\w+)'
         base = re.findall(pattern, service)
         additions = re.findall(pattern, producer)
-        self.assertEqual(dict((name, (module, value)) for name, module, value in base), {
+        historical_profiles = {
             "policy_component_material": ("Policy_component_material_service", "profile"),
             "policy_instance_material": ("Policy_component_material_service", "instance_profile"),
             "policy_prerequisite_material": ("Policy_component_material_service", "prerequisite_profile"),
             "policy_two_observation_material": ("Policy_component_material_service", "two_observation_profile"),
             "policy_multi_member_material": ("Policy_component_material_service", "multi_member_profile"),
             "policy_grounded_helper_material": ("Policy_component_material_service", "grounded_helper_profile"),
-            "policy_component_selection": ("Policy_component_selection_service", "profile")})
-        self.assertEqual(dict((name, (module, value)) for name, module, value in additions), {
+            "policy_component_selection": ("Policy_component_selection_service", "profile")}
+        new_profiles = {
+            "policy_finite_machine_material": ("Policy_component_material_service", "finite_machine_profile"),
+            "policy_network_material": ("Policy_component_material_service", "network_profile"),
+            "policy_quantitative_material": ("Policy_component_material_service", "quantitative_profile"),
+            "policy_step_quantitative_material": ("Policy_component_material_service", "step_quantitative_profile"),
+            "policy_transfer_pair_material": ("Policy_component_material_service", "transfer_pair_profile"),
+            "policy_transfer_network_material": ("Policy_component_material_service", "transfer_network_profile"),
+            "policy_coupled_quantitative_material": ("Policy_component_material_service", "composition_profile")}
+        historical_producers = {
             "policy_component_material_producer": ("Policy_component_material_service", "producer_profile"),
             "policy_instance_material_producer": ("Policy_component_material_service", "instance_producer_profile"),
             "policy_prerequisite_material_producer": ("Policy_component_material_service", "prerequisite_producer_profile"),
             "policy_two_observation_material_producer": ("Policy_component_material_service", "two_observation_producer_profile"),
             "policy_multi_member_material_producer": ("Policy_component_material_service", "multi_member_producer_profile"),
             "policy_grounded_helper_material_producer": ("Policy_component_material_service", "grounded_helper_producer_profile"),
-            "policy_component_selection_producer": ("Policy_component_selection_service", "producer_profile")})
-        self.assertEqual(len(base), 7)
-        self.assertEqual(len(additions), 7)
+            "policy_component_selection_producer": ("Policy_component_selection_service", "producer_profile")}
+        new_producers = {
+            "policy_finite_machine_material_producer": ("Policy_component_material_service", "finite_machine_producer_profile"),
+            "policy_network_material_producer": ("Policy_component_material_service", "network_producer_profile"),
+            "policy_quantitative_material_producer": ("Policy_component_material_service", "quantitative_producer_profile"),
+            "policy_step_quantitative_material_producer": ("Policy_component_material_service", "step_quantitative_producer_profile"),
+            "policy_transfer_pair_material_producer": ("Policy_component_material_service", "transfer_pair_producer_profile"),
+            "policy_transfer_network_material_producer": ("Policy_component_material_service", "transfer_network_producer_profile"),
+            "policy_coupled_quantitative_material_producer": ("Policy_component_material_service", "composition_producer_profile")}
+        self.assertEqual(dict((name, (module, value)) for name, module, value in base), historical_profiles | new_profiles)
+        self.assertEqual(dict((name, (module, value)) for name, module, value in additions), historical_producers | new_producers)
+        self.assertEqual((len(historical_profiles), len(historical_producers), len(new_profiles), len(new_producers)), (7, 7, 7, 7))
+        self.assertEqual(len(base), 14)
+        self.assertEqual(len(additions), 14)
         for role in ("core", "verify"):
-            expected_keys = {name for name, _, _ in base + (additions if role == "core" else [])}
+            # The independently retained old campaign still checks exactly its
+            # original seven families. The complete native inventory above also
+            # rejects missing, duplicated or unreviewed newer declarations.
+            expected_keys = set(historical_profiles) | (set(historical_producers) if role == "core" else set())
             actual = self.capabilities(role)
             actual_keys = {name for name in actual["profiles"]
                            if name.startswith(("policy_component_", "policy_instance_", "policy_prerequisite_", "policy_two_observation_", "policy_multi_member_", "policy_grounded_helper_"))}
             self.assertEqual(actual_keys, expected_keys)
             start = actual["validation_scopes"].index(campaign.COMPONENT_MATERIAL_SCOPE)
-            self.assertEqual(actual["validation_scopes"][start:start + len(scope_refs)], [
+            self.assertEqual(actual["validation_scopes"][start:start + len(historical_scope_refs)], [
                 "policy-component-mrna-v0.1", "policy-instance-component-mrna-v0.1",
                 "policy-instance-prerequisite-mrna-v0.1", "policy-instance-two-observation-prerequisite-mrna-v0.1", "policy-multi-member-prerequisite-mrna-v0.1", "policy-grounded-helper-prerequisite-mrna-v0.1", "policy-component-selection-mrna-v0.1"])
         for name, expected in (("instance_implementation", campaign.INSTANCE_MATERIAL_PROFILE["implementation"]),

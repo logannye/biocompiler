@@ -91,6 +91,7 @@ class WorkflowCliLineageTests(unittest.TestCase):
             "src/biocompiler/workflow_backend.py",
             "src/biocompiler/workflow_cli.py",
             "examples/expressive_policies.py", "examples/researcher_alpha.py",
+            "src/biocompiler/_policy_coupled_wire.py",
             "src/biocompiler/__init__.py", "src/biocompiler/__main__.py",
             "src/biocompiler/entrypoint.py", "src/biocompiler/core_policy.py",
             "src/biocompiler/core_policy_operational.py", "src/biocompiler/core_policy_implementation.py",
