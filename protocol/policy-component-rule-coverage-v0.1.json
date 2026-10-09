@@ -2866,7 +2866,7 @@
     },
     {
       "path": "core/test/test_policy_quantitative_composition.ml",
-      "sha256": "4d2fa02ca574f92da7fd70650d82ebe3f7938fa329e1d7956aeaa4d65db47592"
+      "sha256": "e289dff379d442cb945cc79982d4e679883ef31d57271026c74b70ead2feac0d"
     },
     {
       "path": "core/test/test_policy_quantitative_network.ml",

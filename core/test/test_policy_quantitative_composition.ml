@@ -361,7 +361,7 @@ let structural_lowering_controls original=
     let root=source changed.implementation "transition/0/commit"("value"^string_of_int ordinal)
     and original=source changed.implementation "transition/1/commit"("value"^string_of_int ordinal)in
     require(root<>original)"Near-matching expression incorrectly reused an original output";
-    let input endpoint port=source changed.implementation endpoint.I.node_id port in
+    let input (endpoint:I.endpoint) port=source changed.implementation endpoint.node_id port in
     (match ordinal with
     |0->require(input root "in0"=input original "in1" && input root "in1"=input original "in0" &&
       input root "in2"=input original "in2")"Ordered child identities were normalized away"
