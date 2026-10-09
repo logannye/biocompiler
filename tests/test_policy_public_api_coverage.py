@@ -47,8 +47,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (57, 1679, 305, 17, 35))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 586,
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (57, 1688, 305, 17, 35))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 595,
             'independent_expansion': 28, 'shared_invariant': 708, 'source_only': 351})
         self.assertEqual(len(self.ledger['syntax_links']), 359)
         self.assertEqual(len(self.ledger['witnesses']), 214)
@@ -61,14 +61,62 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
     def test_discovery_is_inert_even_for_source_with_executable_statements(self):
         before = {key for key in sys.modules if key.startswith('biocompiler')}
         marker = self.root / 'must_not_exist'
-        path = self.root / c.PACKAGE / '__init__.py'
+        path = self.root / c.PACKAGE / 'programs.py'
         with path.open('a') as stream:
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 1679)
+        self.assertEqual(len(found['entries']), 1688)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
+
+    def test_reviewed_lazy_facades_preserve_all_explicit_export_targets(self):
+        before = {key for key in sys.modules if key.startswith('biocompiler')}
+        found = c.discover(self.root)
+        self.assertEqual(found['exports'], self.original['inventory']['exports'])
+        self.assertEqual(len(found['exports']), 305)
+        self.assertEqual(found['exports']['biocompiler.policy.refinement.PolicyRefinementClient'],
+                         'biocompiler.core_policy_refinement.PolicyRefinementClient')
+        self.assertEqual(found['exports']['biocompiler.policy.quantitative_assurance.PolicyQuantitativeAssuranceResult'],
+                         'biocompiler.core_policy_quantitative_assurance.PolicyQuantitativeAssuranceResult')
+        self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
+
+    def test_lazy_export_discovery_rejects_changed_hooks_aliases_and_conditions(self):
+        path = self.root / c.PACKAGE / 'refinement.py'
+        original = path.read_text()
+        changes = (
+            original.replace('if TYPE_CHECKING:', 'if True:', 1),
+            original.replace('from biocompiler.core_policy_refinement import (',
+                             'from biocompiler.core_policy_material import (', 1),
+            original.replace('return getattr(core_policy_refinement, name)', 'return object()', 1),
+            original + '\nPolicyRefinementClient = object()\n',
+            original + '\nTYPE_CHECKING = True\n',
+            original + '\ngetattr = lambda *args: None\n',
+            original + '\n_TRANSPORT_EXPORTS.add("unchecked")\n',
+            original + '\nglobals()["__getattr__"] = lambda name: None\n',
+            original + '\nglobals().update({"RefinementClaim": 7})\n',
+            original + '\nlocals()["__getattr__"] = lambda name: None\n',
+            original + '\nexec("RefinementClaim = 7")\n',
+            original + '\nsetattr(module_alias, "RefinementClaim", 7)\n',
+            original + '\ndef sneaky(value=globals().update({"RefinementClaim": 7})):\n    pass\n',
+            original + '\nclass Sneaky:\n    globals().update({"RefinementClaim": 7})\n',
+            original.replace('def check(request: JsonValue,', 'def check(request: globals().update({"RefinementClaim": 7}),', 1),
+            original.replace('def __getattr__(name: str) -> Any:', 'def unchecked(name: str) -> Any:', 1),
+        )
+        for altered in changes:
+            with self.subTest(source=altered):
+                path.write_text(altered)
+                with self.assertRaises(c.ApiCoverageError):
+                    c.discover(self.root)
+        path.write_text(original)
+
+    def test_type_checking_imports_without_closed_runtime_shim_do_not_bind_exports(self):
+        path = self.root / c.PACKAGE / '__init__.py'
+        text = path.read_text()
+        start, end = text.index('def __getattr__'), text.index('__all__ =')
+        path.write_text(text[:start] + text[end:])
+        with self.assertRaises(c.ApiCoverageError):
+            c.discover(self.root)
 
     def test_composition_dependencies_preserve_all_previous_api_classifications_and_witness_meanings(self):
         self.assertEqual(len(c.COMPOSITION_DEPENDENCIES), 60)

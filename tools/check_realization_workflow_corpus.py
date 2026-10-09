@@ -34,10 +34,10 @@ REVIEWED_ADDITIONS = {
     'src/biocompiler/policy/modules.py': '07060e46cac6551e77c7b2f97e3956539ba39ee3a1ec009d17429ea63a7e508f',
     'src/biocompiler/policy/planning.py': '141b7236aca37e8a3bafafab87c91a1057f99e141fde9bd3c0ad9273245bc335',
     'src/biocompiler/policy/quantitative.py': 'd2e35a2ff2898f8e119f2b6eee0de931905e267717643d6548c1a645e90ec4d1',
-    'src/biocompiler/policy/quantitative_assurance.py': '991ab434e05ebbec6d6c7161976a9cc59318a4baf058d82dd1f339096e94900d',
+    'src/biocompiler/policy/quantitative_assurance.py': '88edebda0748cf23624b20d8efa0e9d70f0760e43e1b9b5f52447b9a17615068',
     'src/biocompiler/policy/quantitative_composition.py': '2b331a3342d41e94390157af44497cd0e54e1cbc59ca15cdc082eae90524ab3b',
     'src/biocompiler/policy/realization_evidence.py': '377a5180f9bb123bd30e3828ad0cd60f0b0466befdb5d9a3e2d9b7f6679f8850',
-    'src/biocompiler/policy/refinement.py': '84593e71a5041ee5e3011c1578839444b0ce6fe04668fd75af292d297473d28d',
+    'src/biocompiler/policy/refinement.py': 'b576b28aa2813c46be1a778fa355de9fd8eb147c8ae892f7bbdfba226b84d27e',
     'src/biocompiler/policy/typed.py': '8ed5ed1df21bbee620d0ba6244932282ce2a1e785b8e185baa9a205a544bd1eb',
     # Research-project authoring and the installed example stay excluded from
     # the immutable original workflow cohort and confer no historical authority.
@@ -82,7 +82,7 @@ REVIEWED_ADDITIONS = {
     'src/biocompiler/core_policy.py': '9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e',
     'examples/expressive_policies.py': 'face2b9c24b039da9931b4af4e4fc26ad4fcec94b9aa338196c2c7455d789bec',
     'src/biocompiler/entrypoint.py': '7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8',
-    'src/biocompiler/policy/__init__.py': '25b639b654e3f509b0a072c5e5e0f9132e5f68e6186acac54e64c00afd2303e8',
+    'src/biocompiler/policy/__init__.py': 'd9a49240172a4d9ad0bdac6f1ddce3a2c8295b51d19048e6a799279800743d3b',
     'src/biocompiler/policy/behavior.py': '691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf',
     'src/biocompiler/policy/catalog.py': '96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30',
     'src/biocompiler/policy/chassis.py': '21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1',

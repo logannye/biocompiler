@@ -3625,15 +3625,18 @@
     },
     {
       "path": "src/biocompiler/policy/quantitative_assurance.py",
-      "sha256": "991ab434e05ebbec6d6c7161976a9cc59318a4baf058d82dd1f339096e94900d",
+      "sha256": "88edebda0748cf23624b20d8efa0e9d70f0760e43e1b9b5f52447b9a17615068",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 1,
-          "FunctionDef": 6,
-          "Raise": 2
+          "FunctionDef": 8,
+          "Raise": 3
         },
-        "profile_literals": {}
+        "profile_literals": {
+          "biocompiler.policy_quantitative_assurance.v0.1": 1,
+          "biocompiler.policy_quantitative_assurance_request.v0.1": 1
+        }
       },
       "disposition": "outside_route",
       "reason": "Separate quantitative component composition, finite approximation and supplied-measurement assurance routes; no original whole-kernel authority. Fresh formal, numerical and measurement-compatibility claims remain distinct in policy-component-rule-coverage-v0.1.json."
@@ -3677,11 +3680,12 @@
     },
     {
       "path": "src/biocompiler/policy/refinement.py",
-      "sha256": "84593e71a5041ee5e3011c1578839444b0ce6fe04668fd75af292d297473d28d",
+      "sha256": "b576b28aa2813c46be1a778fa355de9fd8eb147c8ae892f7bbdfba226b84d27e",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
-          "FunctionDef": 2
+          "FunctionDef": 4,
+          "Raise": 1
         },
         "profile_literals": {}
       },

@@ -17,11 +17,13 @@ from typing import Any
 
 try:
     from tools.check_policy_semantic_coverage import syntax
+    from tools.migration_inventory import InventoryError, reviewed_policy_lazy_imports
 except ModuleNotFoundError as error:  # Also support isolated direct-script invocation.
     if error.name not in ("tools", "tools.check_policy_semantic_coverage"):
         raise
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from check_policy_semantic_coverage import syntax
+    from migration_inventory import InventoryError, reviewed_policy_lazy_imports
 
 ROOT = Path(__file__).resolve().parents[1]
 LEDGER = "protocol/policy-public-api-coverage-v0.1.json"
@@ -33,10 +35,10 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "53abf1c38594abbac5602b018e39ae7806c463e449311cf88f6daf43e1437e86"
+REVIEWED_METADATA_SHA256 = "bdcf13e67b4fc53276b8c2f1d9bece2290999dcabd9786aa22d3605b28a6b066"
 BEFORE_ASSURANCE_METADATA_SHA256 = "404ab87f1e9deb42ff3c117d84bc7c3da8926036a429beade5b5b933a58737ff"
 ASSURANCE_PREFIXES = ('biocompiler.policy.quantitative_composition.', 'biocompiler.policy.quantitative_assurance.', 'biocompiler.policy.approximation.', 'biocompiler.policy.realization_evidence.', 'biocompiler.core_policy_quantitative_assurance.')
-ASSURANCE_DEPENDENCIES = ('biocompiler.core_policy_component_material.COMPOSITION_IMPLEMENTATION', 'biocompiler.core_policy_component_material.COMPOSITION_PRODUCER_PROFILE', 'biocompiler.core_policy_component_material.COMPOSITION_PROFILE', 'biocompiler.core_policy_component_material.COMPOSITION_REQUEST_PROFILE', 'biocompiler.core_policy_component_material.COMPOSITION_REQUEST_SCHEMA', 'biocompiler.core_policy_component_material.COMPOSITION_VALIDATION_SCOPE', 'biocompiler.core_policy_component_material.PolicyComponentMaterialResult.result', 'biocompiler.core_policy_component_material._composition', 'biocompiler.core_policy_component_material._document_pin', 'biocompiler.core_policy_component_material._document_same', 'biocompiler.core_policy_component_material._result_bytes', 'biocompiler.core_policy_component_material._stored_result', 'biocompiler.core_policy_component_material._wire_capability', 'biocompiler.core_policy_component_material._wire_response', 'biocompiler.core_policy_implementation.COUPLED_BINDING_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_BINDING_REPORT_SCHEMA', 'biocompiler.core_policy_implementation.COUPLED_BINDING_SCHEMA', 'biocompiler.core_policy_implementation.COUPLED_IMPLEMENTATION', 'biocompiler.core_policy_implementation.COUPLED_PRODUCER_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_REQUEST_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_REQUEST_SCHEMA', 'biocompiler.core_policy_implementation.COUPLED_VALIDATION_SCOPE', 'biocompiler.core_policy_implementation._coupled_original')
+ASSURANCE_DEPENDENCIES = ('biocompiler.core_policy_component_material.COMPOSITION_IMPLEMENTATION', 'biocompiler.core_policy_component_material.COMPOSITION_PRODUCER_PROFILE', 'biocompiler.core_policy_component_material.COMPOSITION_PROFILE', 'biocompiler.core_policy_component_material.COMPOSITION_REQUEST_PROFILE', 'biocompiler.core_policy_component_material.COMPOSITION_REQUEST_SCHEMA', 'biocompiler.core_policy_component_material.COMPOSITION_VALIDATION_SCOPE', 'biocompiler.core_policy_component_material.PolicyComponentMaterialResult.result', 'biocompiler.core_policy_component_material._composition', 'biocompiler.core_policy_component_material._document_pin', 'biocompiler.core_policy_component_material._document_same', 'biocompiler.core_policy_component_material._result_bytes', 'biocompiler.core_policy_component_material._stored_result', 'biocompiler.core_policy_component_material._wire_capability', 'biocompiler.core_policy_component_material._wire_response', 'biocompiler.core_policy_implementation.COUPLED_BINDING_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_BINDING_REPORT_SCHEMA', 'biocompiler.core_policy_implementation.COUPLED_BINDING_SCHEMA', 'biocompiler.core_policy_implementation.COUPLED_IMPLEMENTATION', 'biocompiler.core_policy_implementation.COUPLED_PRODUCER_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_REQUEST_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_REQUEST_SCHEMA', 'biocompiler.core_policy_implementation.COUPLED_VALIDATION_SCOPE', 'biocompiler.core_policy_implementation._coupled_original', 'biocompiler.policy.__dir__', 'biocompiler.policy.__getattr__', 'biocompiler.policy.refinement.__dir__', 'biocompiler.policy.refinement.__getattr__')
 BEFORE_TRANSFER_NETWORK_METADATA_SHA256 = "de1b1202fcbfe2453c78be6fbe40828189fa28f32fc62eede742a0f4fe19225d"
 TRANSFER_NETWORK_PREFIXES = ('biocompiler.policy.quantitative.TransferEdge', 'biocompiler.policy.quantitative.SampledTransferNetwork')
 TRANSFER_NETWORK_DEPENDENCIES = ('biocompiler.core_policy_component_material.TRANSFER_NETWORK_IMPLEMENTATION', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_PRODUCER_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_REQUEST_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_REQUEST_SCHEMA', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_VALIDATION_SCOPE', 'biocompiler.core_policy_component_material._transfer_network')
@@ -471,7 +473,11 @@ def discover(root: Path) -> dict[str, Any]:
         bindings: dict[str, str] = {}
         local[module] = bindings
         overloads: Counter[str] = Counter()
-        for node in tree.body:
+        try:
+            lazy_imports = reviewed_policy_lazy_imports(module, tree)
+        except InventoryError as error:
+            raise ApiCoverageError(str(error)) from error
+        for node in [*tree.body, *lazy_imports]:
             if isinstance(node, ast.ImportFrom):
                 package = module if path.endswith("/__init__.py") else module.rsplit(".", 1)[0]
                 parts = package.split(".")[:len(package.split(".")) - node.level + 1] if node.level else []

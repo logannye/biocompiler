@@ -36,6 +36,162 @@ class InventoryError(ValueError):
     """The source cannot be inventoried completely by the supported static rules."""
 
 
+_POLICY_LAZY_SHIMS = {
+    "biocompiler.policy": '''
+from importlib import import_module as _import_module
+from types import ModuleType as _ModuleType
+from typing import TYPE_CHECKING as _TYPE_CHECKING
+if _TYPE_CHECKING:
+    from . import refinement, quantitative, quantitative_composition, module_linking, approximation, realization_evidence, quantitative_assurance
+_OPTIONAL_NAMESPACES = frozenset({"refinement", "quantitative", "quantitative_composition", "module_linking",
+                                 "approximation", "realization_evidence", "quantitative_assurance"})
+def __getattr__(name: str) -> _ModuleType:
+    if name not in _OPTIONAL_NAMESPACES:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    return _import_module(f"{__name__}.{name}")
+def __dir__() -> list[str]:
+    return sorted(set(globals()) | _OPTIONAL_NAMESPACES)
+''',
+    "biocompiler.policy.refinement": '''
+from typing import Any, Callable, TYPE_CHECKING
+if TYPE_CHECKING:
+    from biocompiler.core_client import JsonValue
+    from biocompiler.core_policy_refinement import (
+        Stage, Relation, PremiseKind, DerivationRule, StageIdentity, RefinementScope,
+        RefinementClaim, RefinementPremise, RefinementDerivation, RefinementEvidence,
+        PolicyRefinementResult, PolicyRefinementClient,
+    )
+_TRANSPORT_EXPORTS = frozenset({"Stage", "Relation", "PremiseKind", "DerivationRule", "StageIdentity",
+    "RefinementScope", "RefinementClaim", "RefinementPremise", "RefinementDerivation", "RefinementEvidence",
+    "PolicyRefinementResult", "PolicyRefinementClient"})
+def __getattr__(name: str) -> Any:
+    if name not in _TRANSPORT_EXPORTS:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    from biocompiler import core_policy_refinement
+    return getattr(core_policy_refinement, name)
+def __dir__() -> list[str]:
+    return sorted(set(globals()) | _TRANSPORT_EXPORTS)
+''',
+    "biocompiler.policy.quantitative_assurance": '''
+from dataclasses import dataclass
+from typing import Any, Callable, TYPE_CHECKING, cast
+if TYPE_CHECKING:
+    from biocompiler.core_client import JsonValue
+    from biocompiler.core_policy_quantitative_assurance import PolicyQuantitativeAssuranceClient, PolicyQuantitativeAssuranceResult
+    from .approximation import ApproximationContract
+    from .realization_evidence import EvidenceContract
+_TRANSPORT_EXPORTS = frozenset({"PolicyQuantitativeAssuranceClient", "PolicyQuantitativeAssuranceResult"})
+def __getattr__(name: str) -> Any:
+    if name not in _TRANSPORT_EXPORTS:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    from biocompiler import core_policy_quantitative_assurance
+    return getattr(core_policy_quantitative_assurance, name)
+def __dir__() -> list[str]:
+    return sorted(set(globals()) | _TRANSPORT_EXPORTS)
+''',
+}
+
+
+def reviewed_policy_lazy_imports(module: str, tree: ast.Module) -> list[ast.ImportFrom]:
+    """Resolve only the three closed, independently reviewed lazy policy shims.
+
+    Conditional imports alone never establish a runtime export. Exact hooks,
+    literal allowed names and unshadowed helper bindings are required together.
+    No product code is imported or evaluated by this source recognizer.
+    """
+    template = _POLICY_LAZY_SHIMS.get(module)
+    if template is None:
+        return []
+    markers = {"__getattr__", "__dir__", "_OPTIONAL_NAMESPACES", "_TRANSPORT_EXPORTS"}
+    lazy_shape = any(isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in markers
+                     or isinstance(node, ast.Name) and node.id in markers and isinstance(node.ctx, (ast.Store, ast.Del))
+                     for node in ast.walk(tree))
+    if not lazy_shape:
+        return []  # Preserve discovery of the earlier direct-import source shape.
+    expected = ast.parse(template)
+    key = lambda node: ast.dump(node, include_attributes=False)
+    actual_statements = Counter(key(node) for node in tree.body)
+    if any(actual_statements[key(node)] != 1 for node in expected.body):
+        raise InventoryError(f"Unreviewed lazy policy export shape: {module}")
+    condition_key = key(next(node for node in expected.body if isinstance(node, ast.If)))
+
+    def function_header(node):
+        headers = [node.args, *node.decorator_list, *([node.returns] if node.returns is not None else [])]
+        if node.decorator_list or any(isinstance(item, ast.Call) for header in headers for item in ast.walk(header)):
+            raise InventoryError(f"Executable lazy policy definition header: {module}")
+
+    declarations = {
+        "biocompiler.policy": {"__getattr__", "__dir__"},
+        "biocompiler.policy.refinement": {"__getattr__", "__dir__", "check", "replay"},
+        "biocompiler.policy.quantitative_assurance": {"__getattr__", "__dir__", "compile", "check", "replay", "export"},
+    }
+    for node in tree.body:
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            continue
+        if isinstance(node, ast.FunctionDef) and node.name in declarations[module]:
+            function_header(node)
+            continue
+        if isinstance(node, ast.ClassDef) and module == "biocompiler.policy.quantitative_assurance" and node.name == "QuantitativeAssuranceRequest":
+            decorator = ast.parse('@dataclass(frozen=True, slots=True, init=False)\nclass Request:\n    pass').body[0].decorator_list
+            if node.bases or node.keywords or [key(item) for item in node.decorator_list] != [key(item) for item in decorator]:
+                raise InventoryError(f"Unreviewed lazy policy class header: {module}")
+            for member in node.body:
+                if isinstance(member, ast.FunctionDef) and member.name in {"__init__", "to_data"}:
+                    function_header(member)
+                elif isinstance(member, ast.AnnAssign) and isinstance(member.target, ast.Name) and member.value is None:
+                    if any(isinstance(item, ast.Call) for item in ast.walk(member.annotation)):
+                        raise InventoryError(f"Executable lazy policy field annotation: {module}")
+                else:
+                    raise InventoryError(f"Unreviewed lazy policy class statement: {module}")
+            continue
+        if isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant) and type(node.value.value) is str:
+            continue
+        if isinstance(node, ast.If) and key(node) == condition_key:
+            continue
+        if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+            if key(node) in {key(item) for item in expected.body if isinstance(item, ast.Assign)}:
+                continue
+            if not any(isinstance(item, (ast.Call, ast.Attribute, ast.Subscript, ast.NamedExpr,
+                                         ast.Lambda, ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp))
+                       for item in ast.walk(node.value)):
+                continue
+        raise InventoryError(f"Unreviewed lazy policy module statement: {module}")
+    protected = {"__getattr__", "__dir__", "_OPTIONAL_NAMESPACES", "_TRANSPORT_EXPORTS",
+                 "TYPE_CHECKING", "_TYPE_CHECKING", "_import_module", "_ModuleType",
+                 "core_policy_refinement", "core_policy_quantitative_assurance",
+                 "AttributeError", "frozenset", "getattr", "globals", "sorted", "set", "__name__", "dataclass"}
+    table = next(node.value for node in expected.body if isinstance(node, ast.Assign))
+    protected.update(ast.literal_eval(table.args[0]))
+
+    def bindings(body):
+        found = Counter()
+        for node in ast.walk(body):
+            if isinstance(node, ast.Name) and isinstance(node.ctx, (ast.Store, ast.Del)) and node.id in protected:
+                found[("name", node.id)] += 1
+            elif isinstance(node, ast.arg) and node.arg in protected:
+                found[("argument", node.arg)] += 1
+            elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and node.name in protected:
+                found[("definition", node.name)] += 1
+            elif isinstance(node, (ast.Import, ast.ImportFrom)):
+                for alias in node.names:
+                    name = alias.asname or (alias.name.split(".")[0] if isinstance(node, ast.Import) else alias.name)
+                    if name in protected:
+                        found[("import", name, key(node))] += 1
+        return found
+
+    if bindings(tree) != bindings(expected):
+        raise InventoryError(f"Rebound lazy policy export authority: {module}")
+    tables = {"_OPTIONAL_NAMESPACES", "_TRANSPORT_EXPORTS"}
+    if any(isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+           and isinstance(node.func.value, ast.Name) and node.func.value.id in tables
+           or isinstance(node, ast.Subscript) and isinstance(node.value, ast.Name)
+           and node.value.id in tables and isinstance(node.ctx, (ast.Store, ast.Del))
+           for node in ast.walk(tree)):
+        raise InventoryError(f"Mutated lazy policy export authority: {module}")
+    condition = next(node for node in tree.body if isinstance(node, ast.If) and key(node) == condition_key)
+    return list(condition.body)
+
+
 def canonical(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2) + "\n"
 
@@ -182,7 +338,8 @@ class Sources:
             definitions = {item.name: item for item in tree.body
                            if isinstance(item, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))}
             imports = {}
-            for node in tree.body:
+            lazy_imports = reviewed_policy_lazy_imports(module, tree)
+            for node in [*tree.body, *lazy_imports]:
                 if isinstance(node, ast.ImportFrom):
                     if node.level:
                         package = module if path.name == "__init__.py" else module.rpartition(".")[0]
@@ -272,11 +429,14 @@ class Sources:
                         hook = package.definitions.get("__getattr__")
                         # The only supported dynamic package hook immediately
                         # rejects this absent name in the validated legacy map.
-                        if (owner != "biocompiler" or "_LEGACY_EXPORTS" not in package.bindings
+                        legacy = (owner == "biocompiler" and "_LEGACY_EXPORTS" in package.bindings
+                                  and isinstance(hook, ast.FunctionDef)
+                                  and ast.dump(hook, include_attributes=False) == _LAZY_ROOT_GETATTR)
+                        policy = owner == "biocompiler.policy" and bool(reviewed_policy_lazy_imports(owner, package.tree))
+                        if (not (legacy or policy)
                                 or "__getattr__" in package.bindings or "__getattr__" in package.imports
                                 or any("AttributeError" in names for names in namespace)
-                                or not isinstance(hook, ast.FunctionDef)
-                                or ast.dump(hook, include_attributes=False) != _LAZY_ROOT_GETATTR):
+                                or not isinstance(hook, ast.FunctionDef)):
                             raise InventoryError(f"Dynamic imported module constant: {owner}.{symbol}")
                     return self.value(owner + "." + symbol, rest, (*seen, key))
                 return self.value(owner, ".".join(filter(None, (symbol, rest))), (*seen, key))

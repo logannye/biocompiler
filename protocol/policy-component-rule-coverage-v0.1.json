@@ -2551,15 +2551,18 @@
     },
     {
       "path": "src/biocompiler/policy/quantitative_assurance.py",
-      "sha256": "991ab434e05ebbec6d6c7161976a9cc59318a4baf058d82dd1f339096e94900d",
+      "sha256": "88edebda0748cf23624b20d8efa0e9d70f0760e43e1b9b5f52447b9a17615068",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 1,
-          "FunctionDef": 6,
-          "Raise": 2
+          "FunctionDef": 8,
+          "Raise": 3
         },
-        "profile_literals": {}
+        "profile_literals": {
+          "biocompiler.policy_quantitative_assurance.v0.1": 1,
+          "biocompiler.policy_quantitative_assurance_request.v0.1": 1
+        }
       }
     },
     {
@@ -2597,11 +2600,12 @@
     },
     {
       "path": "src/biocompiler/policy/refinement.py",
-      "sha256": "84593e71a5041ee5e3011c1578839444b0ce6fe04668fd75af292d297473d28d",
+      "sha256": "b576b28aa2813c46be1a778fa355de9fd8eb147c8ae892f7bbdfba226b84d27e",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
-          "FunctionDef": 2
+          "FunctionDef": 4,
+          "Raise": 1
         },
         "profile_literals": {}
       }
@@ -2966,7 +2970,7 @@
     },
     {
       "path": "tests/test_policy_component_material_campaign.py",
-      "sha256": "acd82d16823f7f8c98b26ffc7ea22e455b41aa390fba16f62420d24035492230"
+      "sha256": "1315553259a690a67c5e5106bdc4dc5d7f373dfc968e3ea38252d6056d3a1a64"
     },
     {
       "path": "tests/test_policy_component_selection.py",
@@ -3030,7 +3034,7 @@
     },
     {
       "path": "tests/test_policy_material_consumer.py",
-      "sha256": "3308e5192595c797896f1f0f0d722f3941a1acb7be821391d8f66bec8989204f"
+      "sha256": "9ff86c3fcbf344a667b5519d0b9886372210b849e54437ee65ee974480d360d8"
     },
     {
       "path": "tests/test_policy_material_prebuilt.py",
@@ -3170,7 +3174,7 @@
     },
     {
       "path": "tools/check_policy_component_material.py",
-      "sha256": "cb5a2d4867e882dcd12cff3bbf61ec8b8ad7ceb73285616b1c3660e221461e31"
+      "sha256": "c84d5cb1b30ef2ee12fd55c9bf381f0dc126a8b11b372116ebccc3dd7e629f50"
     },
     {
       "path": "tools/check_policy_component_selection.py",
@@ -3210,7 +3214,7 @@
     },
     {
       "path": "tools/check_policy_material_consumer.py",
-      "sha256": "7ff2a18cbd8eef672f179f8eced77a7d5985720d0646da2263e8142e61694666"
+      "sha256": "1391a352a57286c061a48f35245b761f661f71077b4688506040cab01cd796f3"
     },
     {
       "path": "tools/check_policy_material_prebuilt.py",

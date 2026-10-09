@@ -84,6 +84,15 @@ described in the versioned contract. It preserves both independently bounded
 partitions, the complete logical evidence and the original physical packet
 limits. This diagnostic run does not validate the subsequent correction.
 
+Development run `38000357378`, attempt 1, at
+`d7804bdf329e7f471b75f8f8bfb7217a87abd800` passed all 55 native suites,
+including the complete paired export. Its SDK stage then rejected an unlisted
+pure transport dependency. The subsequent correction adds that exact module to
+the component campaign and consumer closures and defers optional authoring
+namespace imports. Historical semantic-execution guards and public export
+targets remain unchanged. This partial run is diagnostic evidence, not complete
+development or integration acceptance for the corrected source.
+
 The remaining long-term extensions are richer reservoir grids, multiple clocks,
 delayed transport, continuous uncertainty, additional physical coordination
 contracts and authenticated experimental artifact ingestion. They are outside

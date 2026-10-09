@@ -9,7 +9,10 @@ import ast
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -157,6 +160,10 @@ class InstalledComponentCampaignTests(unittest.TestCase):
                        lambda r:r["parent_imports"].update({"biocompiler.core_client": "/foreign/core_client.py"}),
                        lambda r:r["parent_imports"].pop("biocompiler.core_policy_component_material"),
                        lambda r:r["installed_modules"].pop("core_policy_component_material.py"),
+                       lambda r:r["parent_imports"].pop("biocompiler._policy_coupled_wire"),
+                       lambda r:r["parent_imports"].update({"biocompiler._policy_coupled_wire": "/checkout/src/biocompiler/_policy_coupled_wire.py"}),
+                       lambda r:r["installed_modules"].pop("_policy_coupled_wire.py"),
+                       lambda r:r["installed_modules"]["_policy_coupled_wire.py"].update(sha256="0" * 64),
                        lambda r:r["authoring"][0].update(state=True),
                        lambda r:r.update(shared_driver_fingerprint="0"*64)):
             changed = deepcopy(original); mutate(changed)
@@ -283,6 +290,80 @@ class InstalledComponentCampaignTests(unittest.TestCase):
 
 
 class InstalledSourceBoundaryTests(unittest.TestCase):
+    def test_fresh_component_facade_import_closure_stays_within_actual_guard(self):
+        root = Path(__file__).resolve().parents[1]
+        script = '''
+import json, subprocess, sys
+from pathlib import Path
+from tools.check_policy_component_material import ComponentBoundary, REQUIRED_MODULES
+import biocompiler
+boundary = ComponentBoundary(Path(biocompiler.__file__).resolve().parent)
+boundary.origins()
+sys.meta_path.insert(0, boundary)
+sys.setprofile(boundary.trace)
+def no_process(*args, **kwargs):
+    raise AssertionError("Pure import control attempted a subprocess")
+subprocess.Popen = no_process
+subprocess.run = no_process
+from biocompiler import policy
+from biocompiler.core_policy_component_material import PolicyComponentMaterialClient
+from biocompiler.policy import component_material, implementation, material
+origins = boundary.origins()
+assert REQUIRED_MODULES <= set(origins)
+assert "biocompiler._policy_coupled_wire" in origins
+assert "biocompiler.core_policy_refinement" not in origins
+assert "biocompiler.core_policy_quantitative_assurance" not in origins
+assert not biocompiler._legacy_loaded
+sys.setprofile(None)
+print(json.dumps(origins, sort_keys=True))
+'''
+        result = subprocess.run([sys.executable, "-B", "-c", script], cwd=root,
+            env={**os.environ, "PYTHONPATH": str(root / "src"), "PYTHONDONTWRITEBYTECODE": "1"},
+            capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        origins = json.loads(result.stdout)
+        self.assertEqual(origins["biocompiler._policy_coupled_wire"],
+                         str(root / "src/biocompiler/_policy_coupled_wire.py"))
+
+    def test_only_component_guards_admit_exact_private_transport_dependency(self):
+        from tools.check_policy_core import ImportBoundary
+        from tools.check_policy_implementation import ImplementationBoundary
+        from tools.check_policy_operational import OperationalBoundary
+        from tools.check_policy_component_selection import SelectionBoundary
+        from tools.check_researcher_alpha import ResearcherBoundary
+        codec = "biocompiler._policy_coupled_wire"
+        self.assertIn(codec, campaign.REQUIRED_MODULES)
+        for boundary in (campaign.ComponentBoundary, SelectionBoundary, ResearcherBoundary):
+            self.assertTrue(boundary.allowed(codec))
+            for name in (codec + ".producer", codec + "_other", "biocompiler._other_transport",
+                         "biocompiler.compiler", "biocompiler.runtime", "biocompiler.synthesis",
+                         "biocompiler.core_synthetic_producer", "_biocompiler_native", "biocompiler_core"):
+                self.assertFalse(boundary.allowed(name), name)
+                with self.assertRaises(ImportError): boundary(Path("/installed/biocompiler")).find_spec(name)
+        for boundary in (ImportBoundary, ImplementationBoundary, OperationalBoundary, campaign.MaterialBoundary):
+            self.assertFalse(boundary.allowed(codec))
+
+    def test_transport_origin_is_recorded_and_semantic_execution_stays_forbidden(self):
+        from biocompiler import _policy_coupled_wire as codec
+        package = Path(codec.__file__).resolve().parent
+        boundary = campaign.ComponentBoundary(package)
+        with patch.object(sys, "modules", {"biocompiler._policy_coupled_wire": codec}):
+            self.assertEqual(boundary.origins(), {"biocompiler._policy_coupled_wire": str(Path(codec.__file__).resolve())})
+        for module, function in (("biocompiler.policy.validation", "check"),
+                                 ("biocompiler.policy.programs", "freeze"),
+                                 ("biocompiler.policy.handoff", "prepare_submission"),
+                                 ("biocompiler.policy.handoff", "assess_capabilities")):
+            boundary = campaign.ComponentBoundary(package)
+            frame = SimpleNamespace(f_globals={"__name__": module}, f_code=SimpleNamespace(co_name=function))
+            with self.assertRaisesRegex(AssertionError, "authoring-check execution"):
+                boundary.trace(frame, "call", None)
+            with self.assertRaisesRegex(AssertionError, "Forbidden imports were attempted"): boundary.origins()
+        for name, filename, error in (("biocompiler._policy_coupled_wire", "/foreign/codec.py", "Foreign installation"),
+                                      ("biocompiler.compiler", str(package / "compiler/__init__.py"), "Forbidden Python")):
+            boundary = campaign.ComponentBoundary(package)
+            with patch.object(sys, "modules", {name: SimpleNamespace(__file__=filename)}):
+                with self.assertRaisesRegex(AssertionError, error): boundary.origins()
+
     def test_whole_installed_python_inventory_and_no_checkout_alias(self):
         with tempfile.TemporaryDirectory() as temporary:
             base=Path(temporary).resolve();root=base/"checkout";source=root/"src/biocompiler";source.mkdir(parents=True)

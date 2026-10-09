@@ -6,15 +6,29 @@ establishes separately scoped mathematical and supplied-evidence conclusions.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, cast
+from typing import Any, Callable, TYPE_CHECKING, cast
 
-from biocompiler.core_client import JsonValue, decode_json, encode_json
-from biocompiler.core_policy_quantitative_assurance import (
-    MAX_WORK, REQUEST_SCHEMA, REQUEST_PROFILE, PolicyQuantitativeAssuranceClient,
-    PolicyQuantitativeAssuranceResult, _request,
-)
-from .approximation import ApproximationContract
-from .realization_evidence import EvidenceContract
+if TYPE_CHECKING:
+    from biocompiler.core_client import JsonValue
+    from biocompiler.core_policy_quantitative_assurance import PolicyQuantitativeAssuranceClient, PolicyQuantitativeAssuranceResult
+    from .approximation import ApproximationContract
+    from .realization_evidence import EvidenceContract
+
+MAX_WORK = 128 * 1024 * 1024
+REQUEST_SCHEMA = "biocompiler.policy_quantitative_assurance_request.v0.1"
+REQUEST_PROFILE = "biocompiler.policy_quantitative_assurance.v0.1"
+_TRANSPORT_EXPORTS = frozenset({"PolicyQuantitativeAssuranceClient", "PolicyQuantitativeAssuranceResult"})
+
+
+def __getattr__(name: str) -> Any:
+    if name not in _TRANSPORT_EXPORTS:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    from biocompiler import core_policy_quantitative_assurance
+    return getattr(core_policy_quantitative_assurance, name)
+
+
+def __dir__() -> list[str]:
+    return sorted(set(globals()) | _TRANSPORT_EXPORTS)
 
 
 @dataclass(frozen=True, slots=True, init=False)
@@ -23,6 +37,11 @@ class QuantitativeAssuranceRequest:
 
     def __init__(self, material_request: JsonValue, *, approximation: ApproximationContract | None = None,
                  realization_evidence: EvidenceContract | None = None, max_work: int = MAX_WORK) -> None:
+        from biocompiler.core_client import decode_json, encode_json
+        from biocompiler.core_policy_quantitative_assurance import _request
+        from .approximation import ApproximationContract
+        from .realization_evidence import EvidenceContract
+
         if approximation is not None and type(approximation) is not ApproximationContract:
             raise TypeError("Approximation requires an explicit typed contract")
         if realization_evidence is not None and type(realization_evidence) is not EvidenceContract:
@@ -35,7 +54,9 @@ class QuantitativeAssuranceRequest:
         object.__setattr__(self, "_request_json", snapshot)
 
     def to_data(self) -> dict[str, JsonValue]:
-        return cast(dict[str, JsonValue], decode_json(self._request_json))
+        from biocompiler.core_client import decode_json
+
+        return cast("dict[str, JsonValue]", decode_json(self._request_json))
 
 
 def compile(request: QuantitativeAssuranceRequest, *, limits: JsonValue, client: PolicyQuantitativeAssuranceClient,

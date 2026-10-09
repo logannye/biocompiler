@@ -3804,6 +3804,16 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.policy.__dir__": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.__getattr__": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.policy.approximation.ApproximationChain": {
       "scope": "Focused Python authoring and inert transport controls only; no exhaustive API combination, native preservation, empirical or release acceptance.",
       "status": "shared_invariant",
@@ -10054,6 +10064,11 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.policy.quantitative_assurance.MAX_WORK": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.policy.quantitative_assurance.QuantitativeAssuranceRequest": {
       "scope": "Focused Python authoring and inert transport controls only; no exhaustive API combination, native preservation, empirical or release acceptance.",
       "status": "shared_invariant",
@@ -10091,6 +10106,26 @@
         "assurance.assurance_boundary",
         "assurance.assurance_role"
       ]
+    },
+    "biocompiler.policy.quantitative_assurance.REQUEST_PROFILE": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative_assurance.REQUEST_SCHEMA": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative_assurance.__dir__": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative_assurance.__getattr__": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
     },
     "biocompiler.policy.quantitative_assurance.check": {
       "scope": "Focused Python authoring and inert transport controls only; no exhaustive API combination, native preservation, empirical or release acceptance.",
@@ -10957,6 +10992,16 @@
         "assurance.evidence_intervals",
         "assurance.evidence_transport"
       ]
+    },
+    "biocompiler.policy.refinement.__dir__": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.refinement.__getattr__": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
     },
     "biocompiler.policy.refinement.check": {
       "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
@@ -18749,6 +18794,28 @@
           "symbol": "_scope"
         },
         "syntax_sha256": "32dd5c39d77e9197f46351ba9d0fabe44d5690f9c99f891272cbb2c2ea262583"
+      },
+      {
+        "id": "biocompiler.policy.__dir__",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": " -> list[str]",
+        "source": {
+          "path": "src/biocompiler/policy/__init__.py",
+          "symbol": "__dir__"
+        },
+        "syntax_sha256": "bc714280f62c54357766832cec9b4dd9de526ded1da9644d0073e4e52fd1e5a0"
+      },
+      {
+        "id": "biocompiler.policy.__getattr__",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "name: str -> _ModuleType",
+        "source": {
+          "path": "src/biocompiler/policy/__init__.py",
+          "symbol": "__getattr__"
+        },
+        "syntax_sha256": "8e5c23b2ec028f43231b86c20bad0ebbc197d9bb73715c3b516e1d14ae6006c7"
       },
       {
         "id": "biocompiler.policy.approximation.ApproximationChain",
@@ -26803,6 +26870,17 @@
         "syntax_sha256": "109b5491a5b5acb850b3765bd82a1b77a429d6a8a6191c64b2cdbe62667ad5e0"
       },
       {
+        "id": "biocompiler.policy.quantitative_assurance.MAX_WORK",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/quantitative_assurance.py",
+          "symbol": "MAX_WORK"
+        },
+        "syntax_sha256": "fbf1ce398be08117521745169249ba357c77e90984754448c5ab702c8f1e8e59"
+      },
+      {
         "id": "biocompiler.policy.quantitative_assurance.QuantitativeAssuranceRequest",
         "kind": "class",
         "scope": "public_api",
@@ -26811,7 +26889,7 @@
           "path": "src/biocompiler/policy/quantitative_assurance.py",
           "symbol": "QuantitativeAssuranceRequest"
         },
-        "syntax_sha256": "1bb0cef01bac93a88318ef72293f125392394456a18492de09f4034de305aba5"
+        "syntax_sha256": "4fcea8328d7157f813ed7820ffe347da4478b443cdea6ce9a837b61132c0601e"
       },
       {
         "id": "biocompiler.policy.quantitative_assurance.QuantitativeAssuranceRequest.__init__",
@@ -26822,7 +26900,7 @@
           "path": "src/biocompiler/policy/quantitative_assurance.py",
           "symbol": "QuantitativeAssuranceRequest.__init__"
         },
-        "syntax_sha256": "a9606214f931ba159c6f055dee2945b17f8f777290d878ba2702c029762981cb"
+        "syntax_sha256": "b6cfc097bb8f0eb6e62e4fa0c79a7ac115f125ac3ee68ba5c0432a4501f298d1"
       },
       {
         "id": "biocompiler.policy.quantitative_assurance.QuantitativeAssuranceRequest._request_json",
@@ -26844,7 +26922,51 @@
           "path": "src/biocompiler/policy/quantitative_assurance.py",
           "symbol": "QuantitativeAssuranceRequest.to_data"
         },
-        "syntax_sha256": "ad70d25b561c6a5fb9e9e94bc717584508744ca7f055b7d253bc79924f53b88d"
+        "syntax_sha256": "11512fb049e592cdceb7d080df8e70b3adeb24b79f801317f67587a6b4b9019c"
+      },
+      {
+        "id": "biocompiler.policy.quantitative_assurance.REQUEST_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/quantitative_assurance.py",
+          "symbol": "REQUEST_PROFILE"
+        },
+        "syntax_sha256": "8a5963da4735355df3cb562c7f1e7e5e67e841aa8ccd47750f11f5e29085e67a"
+      },
+      {
+        "id": "biocompiler.policy.quantitative_assurance.REQUEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/quantitative_assurance.py",
+          "symbol": "REQUEST_SCHEMA"
+        },
+        "syntax_sha256": "9f02fe54bb90decbc3d965bfbf5bd93a131c9a804b00e947d6f1b13b305a1878"
+      },
+      {
+        "id": "biocompiler.policy.quantitative_assurance.__dir__",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": " -> list[str]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative_assurance.py",
+          "symbol": "__dir__"
+        },
+        "syntax_sha256": "eaa80e46770f52056183189c04aba7a5fbeb8a03ba2278dc277acac3c8f93876"
+      },
+      {
+        "id": "biocompiler.policy.quantitative_assurance.__getattr__",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "name: str -> Any",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative_assurance.py",
+          "symbol": "__getattr__"
+        },
+        "syntax_sha256": "26b3de703084b8df56f1ba4dfd50623d7bee41530e1a5955f67364cf854d1011"
       },
       {
         "id": "biocompiler.policy.quantitative_assurance.check",
@@ -28319,6 +28441,28 @@
           "symbol": "validate_assessment"
         },
         "syntax_sha256": "800d482fb5e5de81fc8ea91325220a8d96b7d0bd3af4318bdf9084dda3cebe7d"
+      },
+      {
+        "id": "biocompiler.policy.refinement.__dir__",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": " -> list[str]",
+        "source": {
+          "path": "src/biocompiler/policy/refinement.py",
+          "symbol": "__dir__"
+        },
+        "syntax_sha256": "eaa80e46770f52056183189c04aba7a5fbeb8a03ba2278dc277acac3c8f93876"
+      },
+      {
+        "id": "biocompiler.policy.refinement.__getattr__",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "name: str -> Any",
+        "source": {
+          "path": "src/biocompiler/policy/refinement.py",
+          "symbol": "__getattr__"
+        },
+        "syntax_sha256": "1865016700926822a161f2029c46f7580924c522159e26e8927b258ac0bcbbcc"
       },
       {
         "id": "biocompiler.policy.refinement.check",
@@ -31086,7 +31230,7 @@
       "src/biocompiler/core_policy_quantitative_assurance.py": "19fbb1f6a1b3c7e90980757b9540abf88a53739822543d0df4b8dfc4319c350b",
       "src/biocompiler/core_policy_refinement.py": "ea059004962bc243a3dd12d30d89115ac192d303f2b79d6dc049eb049aca250b",
       "src/biocompiler/entrypoint.py": "7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8",
-      "src/biocompiler/policy/__init__.py": "25b639b654e3f509b0a072c5e5e0f9132e5f68e6186acac54e64c00afd2303e8",
+      "src/biocompiler/policy/__init__.py": "d9a49240172a4d9ad0bdac6f1ddce3a2c8295b51d19048e6a799279800743d3b",
       "src/biocompiler/policy/approximation.py": "df7ca7cd614cfd42b04bbd62c33174fdc3e823246825ee1b11af8ebd42fb20a8",
       "src/biocompiler/policy/behavior.py": "691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf",
       "src/biocompiler/policy/catalog.py": "96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30",
@@ -31114,10 +31258,10 @@
       "src/biocompiler/policy/planning.py": "141b7236aca37e8a3bafafab87c91a1057f99e141fde9bd3c0ad9273245bc335",
       "src/biocompiler/policy/programs.py": "ef2823520e47f29f666c8c6bec8f30d43a21195ab5379ae82e0a062563f686fd",
       "src/biocompiler/policy/quantitative.py": "d2e35a2ff2898f8e119f2b6eee0de931905e267717643d6548c1a645e90ec4d1",
-      "src/biocompiler/policy/quantitative_assurance.py": "991ab434e05ebbec6d6c7161976a9cc59318a4baf058d82dd1f339096e94900d",
+      "src/biocompiler/policy/quantitative_assurance.py": "88edebda0748cf23624b20d8efa0e9d70f0760e43e1b9b5f52447b9a17615068",
       "src/biocompiler/policy/quantitative_composition.py": "2b331a3342d41e94390157af44497cd0e54e1cbc59ca15cdc082eae90524ab3b",
       "src/biocompiler/policy/realization_evidence.py": "377a5180f9bb123bd30e3828ad0cd60f0b0466befdb5d9a3e2d9b7f6679f8850",
-      "src/biocompiler/policy/refinement.py": "84593e71a5041ee5e3011c1578839444b0ce6fe04668fd75af292d297473d28d",
+      "src/biocompiler/policy/refinement.py": "b576b28aa2813c46be1a778fa355de9fd8eb147c8ae892f7bbdfba226b84d27e",
       "src/biocompiler/policy/requirements.py": "80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b",
       "src/biocompiler/policy/research_project.py": "c2bf6d201d183c43594cfe92dd252f0ac25c95e25d1381f6aca079289faec0b0",
       "src/biocompiler/policy/serialization.py": "d0e2feb4e8dd3fe65a10793d20c06144ad6fec396d99e6107f3485682ee570bf",
@@ -31484,7 +31628,23 @@
       },
       {
         "path": "src/biocompiler/policy/__init__.py",
-        "syntax_sha256": "0e37de34239fff81c968f66e5b0d1605f6ebe4e7899f0edcf09983f57a3f3d6f"
+        "syntax_sha256": "8ff69be3002c733f24640c24c8532619d03c5b00dff7f8fa779f2a6dd04d37b1"
+      },
+      {
+        "path": "src/biocompiler/policy/__init__.py",
+        "syntax_sha256": "736f598309eaa21d978099410cd0adfdaf11698c3df3f31db124062d06ad467c"
+      },
+      {
+        "path": "src/biocompiler/policy/__init__.py",
+        "syntax_sha256": "7bbfade073083b9dbb0bf0e4f12446bdd2f8d7ba5e484973f129ecd0e0e2bcb9"
+      },
+      {
+        "path": "src/biocompiler/policy/__init__.py",
+        "syntax_sha256": "0ed99276e62b7aa35af1b04328ab4e3b3165eb84e76c0c6f691feb442e2b6881"
+      },
+      {
+        "path": "src/biocompiler/policy/__init__.py",
+        "syntax_sha256": "19c558c554ad8b97272d16e7f9c4adfb8991ab0641dc50454112bb87d8574928"
       },
       {
         "path": "src/biocompiler/policy/approximation.py",
@@ -32196,15 +32356,15 @@
       },
       {
         "path": "src/biocompiler/policy/quantitative_assurance.py",
-        "syntax_sha256": "67ee0f2195b5dd6d32007ab0636061358254666e071561ec389ec9c59836707c"
+        "syntax_sha256": "2d89edb6ad2a62074c09bdbb549d540be13d66e888c92b5881fb9c7504f4f7be"
       },
       {
         "path": "src/biocompiler/policy/quantitative_assurance.py",
-        "syntax_sha256": "f7ac139c8d303f3133275c9dde8aac7adc3d0f3c3088d16b0564bad7e3a59f9c"
+        "syntax_sha256": "a2b89c2bd5d3e26c25aa685525a4975e73ee1f9865b1a8df8b9c61b136063ceb"
       },
       {
         "path": "src/biocompiler/policy/quantitative_assurance.py",
-        "syntax_sha256": "b7f13e9f4042058897861735a8165aeaa21f3ab92ca7ad935bb85d29cbb28b2c"
+        "syntax_sha256": "390c1cc58af21028fff5957ecaf68f8f19c9eae36cb8e7c791dbf7e153e18108"
       },
       {
         "path": "src/biocompiler/policy/quantitative_assurance.py",
@@ -32213,6 +32373,30 @@
       {
         "path": "src/biocompiler/policy/quantitative_assurance.py",
         "syntax_sha256": "f288896fa24d29b8f8f689b3065e68aaf383aacacfe0f4a8d609a0304e3b5578"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative_assurance.py",
+        "syntax_sha256": "c57e51882bc13aa751175ce9a428f01622aba612181ba69eeb0635c00efeee44"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative_assurance.py",
+        "syntax_sha256": "d3c95aa9f4ecb32c243251046b982da33656a68f7f6d010d17b0fc928ba55ae2"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative_assurance.py",
+        "syntax_sha256": "26e42eec61f4c9a3111b3410719d2e7aef90aa9010bfe054d263c845e74b0dc5"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative_assurance.py",
+        "syntax_sha256": "4317d34a1d9e922a9432463134c75d9ee8c45e6dfe9f53499d12331b8c8dc091"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative_assurance.py",
+        "syntax_sha256": "f288896fa24d29b8f8f689b3065e68aaf383aacacfe0f4a8d609a0304e3b5578"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative_assurance.py",
+        "syntax_sha256": "cd81b94282cc139d5af2e352654f21c7a9fdacd72876ea08d2a95bc5610fd22b"
       },
       {
         "path": "src/biocompiler/policy/quantitative_composition.py",
@@ -32284,7 +32468,7 @@
       },
       {
         "path": "src/biocompiler/policy/refinement.py",
-        "syntax_sha256": "3b11f76d682fe33710b1a889ffb28a927e6d74923d208cf24378d703020a165f"
+        "syntax_sha256": "d8a618e0cd44157a5eac53f689f8b0be0e104398345b825c9850aed9870f0550"
       },
       {
         "path": "src/biocompiler/policy/refinement.py",
@@ -32293,6 +32477,10 @@
       {
         "path": "src/biocompiler/policy/refinement.py",
         "syntax_sha256": "632bf9d893107f0d50483f224acaf6b250ab1fdc8a3f9d5fddccb399065228d8"
+      },
+      {
+        "path": "src/biocompiler/policy/refinement.py",
+        "syntax_sha256": "847e4b9b41327b679051b0079ebc4a3764cfbdee3551ba792abc72b06e599307"
       },
       {
         "path": "src/biocompiler/policy/requirements.py",

@@ -47,7 +47,9 @@ MAX_EVIDENCE = 9 * 1024 * 1024
 class ComponentBoundary(MaterialBoundary):
     @staticmethod
     def allowed(name: str) -> bool:
-        return name == "biocompiler.core_policy_component_material" or MaterialBoundary.allowed(name)
+        # This exact private dependency only encodes bounded JSON transport.
+        # It grants no Python source, runtime, producer or checking authority.
+        return name in {"biocompiler.core_policy_component_material", "biocompiler._policy_coupled_wire"} or MaterialBoundary.allowed(name)
 
 
 def source_document(original: dict, state_reading: bool):
@@ -310,7 +312,8 @@ SLOTS = {(system, machine, minor) for system, machine in (("Linux", "x86_64"), (
          for minor in ("3.11", "3.14")}
 REQUIRED_MODULES = {"biocompiler", "biocompiler.core_client", "biocompiler.core_policy", "biocompiler.core_policy_operational",
                     "biocompiler.core_policy_implementation", "biocompiler.core_policy_material",
-                    "biocompiler.core_policy_component_material", "biocompiler.policy.component_material", "biocompiler.policy.material"}
+                    "biocompiler.core_policy_component_material", "biocompiler._policy_coupled_wire",
+                    "biocompiler.policy.component_material", "biocompiler.policy.material"}
 
 
 def _require(value, message):
