@@ -55,6 +55,7 @@ let plan raw =
   let assessment = ref Json.Null and declarations = ref [] and requirements = ref [] in
   let source_declarations = ref [] and diagnostics = ref [] and missing_inputs = ref [] in
   let selected_models = ref [] and selected_components = ref [] and dependencies = ref Json.Null in
+  let checked_material_identity = ref None in
   let declaration_id path = match path with
     | None -> Json.Null
     | Some path ->
@@ -79,10 +80,13 @@ let plan raw =
   (* Only explicit expected diagnostic codes become findings. Resource/search
      exhaustion and unexpected producer/checker failures escape without a plan. *)
   let attempt ~fallback action =
+    let entered=limits.max_work-W.remaining budget in
     try action () with Diagnostic.Error error ->
       if W.is_exhaustion budget error then
         raise(Diagnostic.Error(if C.realization_schema target_id=R.coupled_schema_version then
-          {error with message=error.message^" Target-planning stage: "^ !current^"."}else error))
+          {error with message=error.message^" Target-planning stage: "^ !current^
+            "; work before operation: "^string_of_int entered^
+            "; operation work: "^string_of_int(limits.max_work-W.remaining budget-entered)^"."}else error))
       else if List.mem error.code unsupported_codes then block "unsupported_target" error
       else if List.mem error.code missing_codes then
         block ~missing:["implementation_library:model_configuration"] "missing_inputs" error
@@ -182,7 +186,10 @@ let plan raw =
         compatible ~path:"/request/material_request/implementation_request"
           (same (get "implementation_request" raw_material) raw_original)
           "Material authority must retain the complete explicit realization request.";
-        M.of_json ~charge raw_material) in
+        let material=M.of_json ~charge raw_material in
+        if R.is_coupled original then
+          checked_material_identity:=Some(M.to_json material,M.fingerprint material);
+        material) in
       let source_inputs = if M.is_network material || M.is_finite_machine material ||
         M.is_two_observation material || M.is_multi_member material then
           Some (List.map (fun (row:M.input_binding) -> row.source,row.input_id) (M.input_bindings material)) else None in
@@ -211,11 +218,19 @@ let plan raw =
             path=None}]))
    with Blocked -> ());
   let optional_fingerprint = function None->Json.Null|Some raw->s (Canonical.fingerprint raw) in
+  let material_fingerprint () = match P.material_request request,!checked_material_identity with
+    |Some raw,Some(original,identity) when raw==original->
+      (* This invocation already paid the complete original preflight, encoding
+         and hash in M.of_json. Reuse that exact owned identity only; absent or
+         incomplete material decoding retains the ordinary raw fingerprint.
+         Report hashing and every final publication charge below still run. *)
+      charge(1+Stdlib.String.length identity);s identity
+    |value,_->optional_fingerprint value in
   let body = ["schema_version",s report_schema;"status",s !status;"target",target;
     "catalog_fingerprint",s C.catalog_fingerprint;"request_fingerprint",s (P.fingerprint request);
     "document_fingerprint",s (Canonical.fingerprint (P.document request));
     "realization_request_fingerprint",optional_fingerprint (P.realization_request request);
-    "material_request_fingerprint",optional_fingerprint (P.material_request request);
+    "material_request_fingerprint",material_fingerprint ();
     "source_assessment",!assessment;"declarations",a !declarations;"requirements",a !requirements;
     "obligations",a (List.map (fun id -> o ["id",id;"status",s "required";"stage",s "full_pipeline"])
       (Json.array (get "deferred_stages" target)));

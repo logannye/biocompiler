@@ -263,8 +263,18 @@ let check_network_source request document (behavior:O.behavior) =
 
 let admit ~request ~(behavior:O.behavior) =
   let document=R.document request and descriptors=R.definitions request in
-  let source=Policy_admission.admit_metered ~charge:Charge.charge ~document ~descriptors in
-  let correspondence=Policy_correspondence.check ~charge:Charge.charge ~expected_document:document ~descriptors behavior in
+  let assessment,correspondence=if R.is_coupled request then (
+    (* Correspondence independently admits this same immutable original source
+       before comparing every behavior field. Reuse only its freshly produced
+       assessment data within this invocation, avoiding a second identical
+       admission; callers cannot supply a saved report or an admitted source. *)
+    let fresh=Policy_correspondence.check_fresh ~charge:Charge.charge
+      ~expected_document:document ~descriptors behavior in
+    Policy_correspondence.source_assessment fresh,Policy_correspondence.report fresh)
+  else (
+    let source=Policy_admission.admit_metered ~charge:Charge.charge ~document ~descriptors in
+    let correspondence=Policy_correspondence.check ~charge:Charge.charge ~expected_document:document ~descriptors behavior in
+    Policy_admission.source_assessment source,correspondence)in
   (if R.is_two_observation request then
     match behavior.observations with
     | [left;right] ->
@@ -321,7 +331,6 @@ let admit ~request ~(behavior:O.behavior) =
   (if R.is_network request then
     require (List.length (F.specification domain_value).encounters=2)
       "policy_realization_network" "Network inputs require exactly two original encounter slots.");
-  let assessment=Policy_admission.source_assessment source in
   let requested=check_assurance document assessment behavior domain_value in
   let model_values,catalog_digest=check_catalog request document in
   let prerequisite_closure=R.requires_prerequisite_closure request in

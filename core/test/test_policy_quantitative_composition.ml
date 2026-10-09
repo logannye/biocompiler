@@ -26,6 +26,7 @@ module Arrange = Bioc_compiler.Policy_component_lowering
 module Lower = Bioc_compiler.Policy_implementation_lowering
 module Binding = Bioc_domain.Policy_implementation_binding
 module Wire = Bioc_domain.Policy_coupled_wire
+module Correspondence = Bioc_checker.Policy_correspondence
 
 let ()=Printexc.register_printer(function
   |Diagnostic.Error d->Some(Printf.sprintf "Diagnostic.Error(%s, %s)" d.code d.message)
@@ -300,6 +301,30 @@ let structural_lowering_controls original=
       "Coupled lowering repeated whole expression subtrees under its fixture work bound";
     work:= !work+amount)in
   let admitted=prepare ~charge raw in
+  (* The invocation-local correspondence result cannot be replaced by a saved
+     report. Its legacy report adapter retains exactly the same fresh checks,
+     charges and bytes; a changed ledger or denied first charge still fails. *)
+  let document=R.document(RA.request admitted) and descriptors=R.definitions(RA.request admitted)
+  and behavior=RA.behavior admitted in
+  let fresh_work=ref 0 and legacy_work=ref 0 in
+  let fresh=Correspondence.check_fresh ~charge:(fun amount->fresh_work:= !fresh_work+amount)
+    ~expected_document:document ~descriptors behavior in
+  let legacy=Correspondence.check ~charge:(fun amount->legacy_work:= !legacy_work+amount)
+    ~expected_document:document ~descriptors behavior in
+  require(!fresh_work= !legacy_work && Json.equal(Correspondence.report fresh)legacy &&
+    Json.equal(Correspondence.source_assessment fresh)(get "source_assessment" legacy))
+    "Fresh correspondence reuse changed independent checking, work or report bytes";
+  let changed_ledger=O.behavior_of_json(set "source_ledger"(a[])(O.behavior_to_json behavior))in
+  (match Correspondence.check_fresh ~expected_document:document ~descriptors changed_ledger with
+   |_->failwith "Fresh correspondence reused source validity for a changed behavior ledger"
+   |exception Diagnostic.Error diagnostic->require(diagnostic.code="policy_correspondence")
+      "Fresh correspondence ledger control failed before independent comparison");
+  (match Correspondence.check_fresh
+    ~charge:(fun _->Diagnostic.fail "correspondence_test_budget" "No fresh checking work remains.")
+    ~expected_document:document ~descriptors behavior with
+   |_->failwith "Fresh correspondence bypassed its parent work callback"
+   |exception Diagnostic.Error diagnostic->require(diagnostic.code="correspondence_test_budget")
+      "Fresh correspondence changed the original parent work failure");
   measuring:=true;
   let lowered=Lower.lower_metered ~charge ~admitted ~library in
   measuring:=false;
@@ -388,6 +413,7 @@ let ()=
   require(M.is_quantitative_composition original && M.is_multi_site original &&
     R.is_coupled(M.implementation_request original) && Option.is_some(M.network_quantitative original))
     "Partitioned composition lost its explicit source and selected-network authority";
+  structural_lowering_controls original;
   let realization=get "implementation_request" request in
   let plan_request=o["schema_version",s "biocompiler.policy_target_plan_request.v0.1";
     "target",s "coupled_quantitative_material";"document",get "document" realization;
@@ -397,6 +423,20 @@ let ()=
   require(at["report";"status"]planned=s "planned" && List.length(rows "selected_components"(get "report" planned))=4 &&
     at["report";"claims";"execution"]planned=s "not_performed" && at["report";"claims";"export"]planned=s "withheld")
     "Coupled planning omitted selected owners or promoted diagnostic planning into acceptance";
+  require(at["report";"material_request_fingerprint"]planned=
+    s "bf572aa9614bb64b6b0d834fddaa538c5e353bc222385cef157e9bf72cd472e9" &&
+    at["report";"material_request_fingerprint"]planned=s(Canonical.fingerprint request))
+    "Coupled planning reused an identity other than the complete original material body";
+  let changed_request=edit["budgets";"max_work"](fun _->Json.int 499999999)request in
+  let changed_plan=call Producer.handle Protocol.Core "plan-policy-target"
+    (o["request",set "material_request" changed_request plan_request])in
+  require(at["report";"status"]changed_plan=s "planned" &&
+    at["report";"material_request_fingerprint"]changed_plan=
+      s "4a64da7717569a11c2c901a3038df482b48bbc48f2deda68bcd48d5d831c7b73" &&
+    at["report";"material_request_fingerprint"]changed_plan=s(Canonical.fingerprint changed_request) &&
+    at["report";"material_request_fingerprint"]changed_plan<>
+      at["report";"material_request_fingerprint"]planned)
+    "Coupled planning retained a prior invocation's material identity after an original-body change";
   let produced=call Producer.handle Protocol.Core "compile-policy-component-material"(o["request",request;"limits",limits])in
   let candidate=get "candidate" produced in
   let _,result=Material.fresh_check ~request ~candidate ~limits in
@@ -404,7 +444,6 @@ let ()=
   let report=Check.report result and contextual=Check.context checked in
   let preservation=A.implementation(C.assembly contextual)in
   let bound=P.binding preservation in
-  structural_lowering_controls original;
   (* Repeated identical configurations retain every distinct candidate node;
      different register configurations remain separate. Independently bind
      the complete result of repeated deterministic arrangement. *)
