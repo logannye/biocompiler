@@ -32,12 +32,14 @@ let fail path message = Diagnostic.fail ~path "policy_operational_unsupported" m
 let require path condition message = if not condition then fail path message
 let supported_types = ["truth";"integer";"text";"quantity"]
 let expr_ops = ["literal";"observe";"state";"parameter";"all";"any";"not";"eq";"ne";"lt";"le";"gt";"ge";"updated";"rising";"effect_event"]
-let admit ~document ~descriptors =
+let admit ?assessed ~document ~descriptors () =
   (* Ingress diagnostic locations are not authored program coordinates. Every
      operational artifact uses one canonical document root, whether admission
      started through the direct API, a request envelope or a native service. *)
-  let document=D.of_json ~path:"/document" (D.to_json document) in
-  let assessment=Policy_check.check ~charge:Charge.charge document in
+  let document,assessment=match assessed with
+    |None->let document=D.of_json ~path:"/document" (D.to_json document)in
+      document,Policy_check.check ~charge:Charge.charge document
+    |Some source->Policy_check.assessed_document source,Policy_check.assessed_report source in
   Diagnostic.require ~path:"/document" (text "status" assessment = "valid") "policy_operational_source_invalid"
     "Operational admission requires a fresh valid native source assessment.";
   let declarations=D.declarations document in
@@ -316,5 +318,9 @@ let admit ~document ~descriptors =
 end
 let admit_metered ~charge ~document ~descriptors =
   let module Admission = Make(struct let charge = charge end) in
-  Admission.admit ~document ~descriptors
+  Admission.admit ~document ~descriptors ()
 let admit ~document ~descriptors = admit_metered ~charge:Policy_generation_meter.no_charge ~document ~descriptors
+let admit_assessed ~source ~descriptors =
+  let document=Policy_check.assessed_document source in
+  let module Admission=Make(struct let charge=Policy_check.charge_assessed source end)in
+  Admission.admit ~assessed:source ~document ~descriptors ()

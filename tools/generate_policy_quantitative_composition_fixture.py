@@ -273,8 +273,18 @@ def build():
     # Molecular expected identity is compared by sequence and exact source-derived
     # construction checks; the prior two-root assembly record is not reused.
     expected.pop('molecule')
+    # The hosted coupled check exhausted the inherited 1M monitor allowance
+    # while hashing its complete checked binding, before the first transition.
+    # Retain that exact invocation as an incomplete/no-export control. Only
+    # this fixture's allowance changes, within the unchanged public 10M cap.
+    limits=deepcopy(prior['limits'])
+    expected['insufficient_monitor']={'request_fingerprint':shared.digest(request),
+        'limits':deepcopy(limits),'status':'incomplete','transitions':0,
+        'diagnostic':'policy_requirement_monitor_work_limit',
+        'export_diagnostic':'policy_quantitative_assurance_export_not_accepted'}
+    limits['monitor']['max_work']=5_000_000
     return {'schema_version':'biocompiler.policy_quantitative_composition_literals.v0.1','notice':__doc__,
-            'request':request,'limits':deepcopy(prior['limits']),'expected':expected}
+            'request':request,'limits':limits,'expected':expected}
 
 
 def main():

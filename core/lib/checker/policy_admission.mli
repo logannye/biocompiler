@@ -9,6 +9,11 @@ type t
     work. The legacy entry below uses the no-op meter and unchanged local caps. *)
 val admit_metered : charge:(int -> unit) -> document:Bioc_domain.Policy_document.t -> descriptors:O.descriptor_bundle -> t
 val admit : document:Bioc_domain.Policy_document.t -> descriptors:O.descriptor_bundle -> t
+
+(** Consume a still-live fresh source assessment under its original meter.
+    Every operational, descriptor and typed-elaboration guard still runs; the
+    original admission entry points retain their independent source checks. *)
+val admit_assessed : source:Policy_check.assessed_source -> descriptors:O.descriptor_bundle -> t
 val document : t -> Bioc_domain.Policy_document.t
 val descriptors : t -> O.descriptor_bundle
 val source_assessment : t -> Bioc_wire.Json.t

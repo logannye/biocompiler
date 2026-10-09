@@ -27,6 +27,9 @@ module Lower = Bioc_compiler.Policy_implementation_lowering
 module Binding = Bioc_domain.Policy_implementation_binding
 module Wire = Bioc_domain.Policy_coupled_wire
 module Correspondence = Bioc_checker.Policy_correspondence
+module Source_check = Bioc_checker.Policy_check
+module Admission = Bioc_checker.Policy_admission
+module Monitor = Bioc_realization_checker.Policy_requirement_monitor
 
 let ()=Printexc.register_printer(function
   |Diagnostic.Error d->Some(Printf.sprintf "Diagnostic.Error(%s, %s)" d.code d.message)
@@ -306,6 +309,43 @@ let structural_lowering_controls original=
      charges and bytes; a changed ledger or denied first charge still fails. *)
   let document=R.document(RA.request admitted) and descriptors=R.definitions(RA.request admitted)
   and behavior=RA.behavior admitted in
+  let scoped_work=ref 0 and duplicate_work=ref 0 and escaped=ref None in
+  let scoped=Source_check.with_assessment ~charge:(fun amount->scoped_work:= !scoped_work+amount)
+    ~document(fun checked->
+      escaped:=Some checked;
+      Admission.admit_assessed ~source:checked ~descriptors)in
+  (* Reproduce the former planner's source-check then operational-admission
+     sequence independently, using the same immutable original and descriptors. *)
+  let prior=Source_check.check ~charge:(fun amount->duplicate_work:= !duplicate_work+amount)document in
+  let legacy=Admission.admit_metered ~charge:(fun amount->duplicate_work:= !duplicate_work+amount)
+    ~document ~descriptors in
+  require(Json.equal prior(Admission.source_assessment scoped) &&
+    Json.equal(Admission.report scoped)(Admission.report legacy) &&
+    Json.equal(Bioc_domain.Policy_document.to_json(Admission.document scoped))
+      (Bioc_domain.Policy_document.to_json(Admission.document legacy)) &&
+    !duplicate_work- !scoped_work>=7_000_000)
+    "Scoped source admission changed complete source authority or report bytes";
+  Printf.printf "coupled source checking work: previous %d; scoped %d\n%!" !duplicate_work !scoped_work;
+  let reject_scope action=match action()with
+    |_->failwith "An escaped source assessment survived its original invocation"
+    |exception Diagnostic.Error diagnostic->require(diagnostic.code="policy_source_assessment_scope")
+       "Escaped source assessment changed its scope diagnostic"in
+  let checked=Option.get !escaped in
+  reject_scope(fun()->Source_check.assessed_report checked);
+  reject_scope(fun()->Admission.admit_assessed ~source:checked ~descriptors);
+  (match Source_check.with_assessment ~charge:(fun _->()) ~document(fun checked->
+    escaped:=Some checked;
+    let altered=O.descriptors_of_json(edit["definitions"](fun values->a(List.tl(Json.array values)))
+      (O.descriptors_to_json descriptors))in
+    (match Admission.admit_assessed ~source:checked ~descriptors:altered with
+     |_->failwith "Scoped source validity admitted a missing original descriptor"
+     |exception Diagnostic.Error diagnostic->require(diagnostic.code="policy_operational_unsupported")
+        "Changed descriptors escaped the original operational guards");
+    Diagnostic.fail "source_scope_test_exit" "Exceptional callback exit.")with
+   |_->failwith "Scoped source test lost its explicit exceptional exit"
+   |exception Diagnostic.Error diagnostic->require(diagnostic.code="source_scope_test_exit")
+      "Scoped source test changed the callback failure");
+  reject_scope(fun()->Source_check.charge_assessed(Option.get !escaped)1);
   let fresh_work=ref 0 and legacy_work=ref 0 in
   let fresh=Correspondence.check_fresh ~charge:(fun amount->fresh_work:= !fresh_work+amount)
     ~expected_document:document ~descriptors behavior in
@@ -425,7 +465,10 @@ let ()=
     "Coupled planning omitted selected owners or promoted diagnostic planning into acceptance";
   require(at["report";"material_request_fingerprint"]planned=
     s "bf572aa9614bb64b6b0d834fddaa538c5e353bc222385cef157e9bf72cd472e9" &&
-    at["report";"material_request_fingerprint"]planned=s(Canonical.fingerprint request))
+    at["report";"material_request_fingerprint"]planned=s(Canonical.fingerprint request) &&
+    at["report";"realization_request_fingerprint"]planned=
+      s "69c81b3e33e4237c24bf535dd02d30cbc82d6f3b2b6dd8c23f8d6315c7c0a6c8" &&
+    at["report";"realization_request_fingerprint"]planned=s(Canonical.fingerprint realization))
     "Coupled planning reused an identity other than the complete original material body";
   let changed_request=edit["budgets";"max_work"](fun _->Json.int 499999999)request in
   let changed_plan=call Producer.handle Protocol.Core "plan-policy-target"
@@ -444,6 +487,12 @@ let ()=
   let report=Check.report result and contextual=Check.context checked in
   let preservation=A.implementation(C.assembly contextual)in
   let bound=P.binding preservation in
+  let monitor_limits=get "monitor" limits in
+  let int key=Z.to_int(Json.integer(get key monitor_limits))in
+  let monitor=Monitor.create ~binding:bound ~limits:{Monitor.max_work=int "max_work";
+    max_obligations=int "max_obligations";max_samples=int "max_samples"}in
+  Printf.printf "coupled monitor initialization work: %d; binding bytes: %d\n%!"
+    (Monitor.usage monitor).work(String.length(Canonical.encode(B.report bound)));
   (* Repeated identical configurations retain every distinct candidate node;
      different register configurations remain separate. Independently bind
      the complete result of repeated deterministic arrangement. *)

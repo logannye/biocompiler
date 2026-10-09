@@ -56,6 +56,7 @@ let plan raw =
   let source_declarations = ref [] and diagnostics = ref [] and missing_inputs = ref [] in
   let selected_models = ref [] and selected_components = ref [] and dependencies = ref Json.Null in
   let checked_material_identity = ref None in
+  let checked_realization_identity = ref None in
   let declaration_id path = match path with
     | None -> Json.Null
     | Some path ->
@@ -79,12 +80,13 @@ let plan raw =
     "policy_network_lowering_missing_model"] in
   (* Only explicit expected diagnostic codes become findings. Resource/search
      exhaustion and unexpected producer/checker failures escape without a plan. *)
-  let attempt ~fallback action =
+  let attempt ?(operation="check") ~fallback action =
     let entered=limits.max_work-W.remaining budget in
     try action () with Diagnostic.Error error ->
       if W.is_exhaustion budget error then
         raise(Diagnostic.Error(if C.realization_schema target_id=R.coupled_schema_version then
           {error with message=error.message^" Target-planning stage: "^ !current^
+            "; operation: "^operation^
             "; work before operation: "^string_of_int entered^
             "; operation work: "^string_of_int(limits.max_work-W.remaining budget-entered)^"."}else error))
       else if List.mem error.code unsupported_codes then block "unsupported_target" error
@@ -118,7 +120,10 @@ let plan raw =
   (try
     let document = attempt ~fallback:(Some "invalid_source") (fun () ->
       Meter.preflight (P.document request); D.of_json ~path:"/document" (P.document request)) in
-    assessment := attempt ~fallback:None (fun () -> Bioc_checker.Policy_check.check ~charge document);
+    let continue assessed =
+    assessment := (match assessed with
+      |Some source->Bioc_checker.Policy_check.assessed_report source
+      |None->attempt ~fallback:None (fun () -> Bioc_checker.Policy_check.check ~charge document));
     source_declarations := D.declarations document;
     declarations := List.map (fun (decl:D.declaration) ->
       o ["id",s decl.id;"kind",get "$type" decl.value;"path",s decl.path]) !source_declarations;
@@ -138,7 +143,9 @@ let plan raw =
     let source = attempt ~fallback:(Some "incompatible_inputs") (fun () ->
       Meter.preflight definitions;
       let descriptors=O.descriptors_of_json definitions in
-      Bioc_checker.Policy_admission.admit_metered ~charge ~document ~descriptors) in
+      match assessed with
+      |Some source->Bioc_checker.Policy_admission.admit_assessed ~source ~descriptors
+      |None->Bioc_checker.Policy_admission.admit_metered ~charge ~document ~descriptors) in
     let behavior = attempt ~fallback:None (fun () -> Bioc_compiler.Policy_lowering.lower ~charge source) in
     mark !current "completed";
     current:="realization_inputs";
@@ -152,7 +159,12 @@ let plan raw =
         get "profile" raw_original=s (C.realization_profile target_id))
         "Realization request schema/profile differs from the selected installed target.";
       Meter.preflight raw_original;
-      if C.realization_schema target_id=R.coupled_schema_version then R.of_coupled_json raw_original
+      if C.realization_schema target_id=R.coupled_schema_version then (
+        let bytes=Input.preflight ~charge raw_original in
+        charge(2*bytes);
+        let original=R.of_coupled_json raw_original in
+        checked_realization_identity:=Some(R.to_json original,R.fingerprint original);
+        original)
       else if C.realization_schema target_id=R.multi_site_schema_version then R.of_multi_site_json raw_original
       else if C.realization_schema target_id=R.network_schema_version then R.of_network_json raw_original
       else if C.realization_schema target_id=R.finite_machine_schema_version then R.of_finite_machine_json raw_original
@@ -179,7 +191,7 @@ let plan raw =
       mark !current "not_applicable"; mark "provider_dependencies" "not_applicable")
     else (
       let raw_material = match P.material_request request with Some value->value|None->need "material_request" in
-      let material = attempt ~fallback:(Some "incompatible_inputs") (fun () ->
+      let material = attempt ~operation:"material_decode" ~fallback:(Some "incompatible_inputs") (fun () ->
         compatible (get "schema_version" raw_material=s (C.request_schema target_id) &&
           get "profile" raw_material=s (C.request_profile target_id))
           "Material request schema/profile differs from the selected installed target.";
@@ -193,10 +205,10 @@ let plan raw =
       let source_inputs = if M.is_network material || M.is_finite_machine material ||
         M.is_two_observation material || M.is_multi_member material then
           Some (List.map (fun (row:M.input_binding) -> row.source,row.input_id) (M.input_bindings material)) else None in
-      let arranged = attempt ~fallback:(Some "incompatible_inputs") (fun () ->
+      let arranged = attempt ~operation:"component_matching" ~fallback:(Some "incompatible_inputs") (fun () ->
         Bioc_compiler.Policy_component_lowering.arrange ~charge ?source_inputs ~library
           ~rule:(M.composition_rule material) lowered) in
-      attempt ~fallback:None (fun () -> bind admitted original arranged.implementation arranged.binding);
+      attempt ~operation:"arranged_source_binding" ~fallback:None (fun () -> bind admitted original arranged.implementation arranged.binding);
       selected_models := models arranged.implementation;
       selected_components := Json.array (get "components" (get "catalog_binding" raw_material));
       mark !current "completed";
@@ -215,9 +227,19 @@ let plan raw =
           status:=category; missing_inputs:=missing;
           diagnostics := [diagnostic category {Diagnostic.code=issue.code;
             message="Static original provider dependencies contain an unresolved obligation; this does not assess biological availability.";
-            path=None}]))
+            path=None}]))in
+    if C.realization_schema target_id=R.coupled_schema_version then
+      attempt ~operation:"scoped_source_check" ~fallback:None(fun()->
+        Bioc_checker.Policy_check.with_assessment ~charge ~document(fun source->continue(Some source)))
+    else continue None
    with Blocked -> ());
   let optional_fingerprint = function None->Json.Null|Some raw->s (Canonical.fingerprint raw) in
+  let realization_fingerprint () = match P.realization_request request,!checked_realization_identity with
+    |Some raw,Some(original,identity) when raw==original->
+      (* The complete original encoding/hash was reserved before its fresh
+         coupled decoder ran; no saved external identity enters this cache. *)
+      charge(1+Stdlib.String.length identity);s identity
+    |value,_->optional_fingerprint value in
   let material_fingerprint () = match P.material_request request,!checked_material_identity with
     |Some raw,Some(original,identity) when raw==original->
       (* This invocation already paid the complete original preflight, encoding
@@ -229,7 +251,7 @@ let plan raw =
   let body = ["schema_version",s report_schema;"status",s !status;"target",target;
     "catalog_fingerprint",s C.catalog_fingerprint;"request_fingerprint",s (P.fingerprint request);
     "document_fingerprint",s (Canonical.fingerprint (P.document request));
-    "realization_request_fingerprint",optional_fingerprint (P.realization_request request);
+    "realization_request_fingerprint",realization_fingerprint ();
     "material_request_fingerprint",material_fingerprint ();
     "source_assessment",!assessment;"declarations",a !declarations;"requirements",a !requirements;
     "obligations",a (List.map (fun id -> o ["id",id;"status",s "required";"stage",s "full_pipeline"])

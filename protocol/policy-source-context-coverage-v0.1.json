@@ -32,13 +32,13 @@
   "sources": [
     {
       "path": "core/lib/checker/policy_admission.ml",
-      "sha256": "b248d924d5b8768b8dcdff44dc503b7b220d2da58e7fe03802ac24b96bf29c87",
+      "sha256": "5f4418b9227fbc2db5fb86eaa668c3e407c3dcf793493d0c9018b0aaf6e4fda8",
       "disposition": "deferred_boundary",
       "ast": null
     },
     {
       "path": "core/lib/checker/policy_check.ml",
-      "sha256": "d8fc6d8a30ede74b89d90aca49d7ec77756761f317205e9bf96a906760ccd054",
+      "sha256": "3f6668b35d2da76b6d4873c5e3cad1056adbb3543e0592ca07618eecf27e66cb",
       "disposition": "source_rule_owner",
       "ast": null
     },

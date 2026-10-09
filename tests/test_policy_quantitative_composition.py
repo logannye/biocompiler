@@ -133,6 +133,20 @@ class CompositionQuantitativeTests(unittest.TestCase):
             self.assertEqual(identities, sorted(set(identities)))
         self.assertEqual(len(self.request['composition_rule']['body']['link_carriers']), 66)
 
+    def test_monitor_allowance_retains_complete_old_incomplete_invocation(self):
+        control = self.packet['expected']['insufficient_monitor']
+        self.assertEqual(control['request_fingerprint'], generator.shared.digest(self.request))
+        previous_limits = deepcopy(self.packet['limits'])
+        self.assertEqual(previous_limits['monitor']['max_work'], 5_000_000)
+        previous_limits['monitor']['max_work'] = 1_000_000
+        self.assertEqual(control['limits'], previous_limits)
+        self.assertEqual(control['limits'], generator.network.build()['limits'])
+        self.assertEqual(control['status'], 'incomplete')
+        self.assertEqual(control['transitions'], 0)
+        self.assertEqual(control['diagnostic'], 'policy_requirement_monitor_work_limit')
+        self.assertEqual(control['export_diagnostic'], 'policy_quantitative_assurance_export_not_accepted')
+        self.assertLessEqual(self.packet['limits']['monitor']['max_work'], 10_000_000)
+
     def test_explicit_private_ownership_and_binary_shape_reject_aliasing(self):
         owners = self.law.owners
         for changed in (owners[::-1], owners[:2], (replace(owners[0], state=owners[1].state),)+owners[1:]):

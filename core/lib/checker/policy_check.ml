@@ -555,3 +555,35 @@ end
 let check ?(charge = Policy_generation_meter.no_charge) document =
   let module Checked = Make(struct let charge = charge end) in
   Checked.check document
+
+type assessed_source = {
+  assessed_document_value:Bioc_domain.Policy_document.t;
+  assessed_report_value:Json.t;
+  assessed_charge_value:int->unit;
+  assessed_live:bool ref;
+}
+let require_live source =
+  Diagnostic.require !(source.assessed_live) "policy_source_assessment_scope"
+    "A source assessment may be consumed only inside its fresh checking invocation."
+let assessed_document source = require_live source;source.assessed_document_value
+let assessed_report source = require_live source;source.assessed_report_value
+let charge_assessed source amount = require_live source;source.assessed_charge_value amount
+let with_assessment ~charge ~document action =
+  let module D=Bioc_domain.Policy_document in
+  (* Admission coordinates are canonical. The existing domain decoder has
+     already validated this immutable document; do not reconstruct its JSON
+     and hashes merely to obtain these same original declaration paths. *)
+  let prefix=match D.kind document with
+    |D.Program->"/document/declarations/"
+    |D.Request->"/document/program/declarations/"
+    |D.Submission->"/document/request/program/declarations/"in
+  List.iteri(fun index(declaration:D.declaration)->
+    let expected=prefix^string_of_int index in
+    charge(1+String.length expected+String.length declaration.path);
+    Diagnostic.require(declaration.path=expected)"policy_source_assessment_scope"
+      "A scoped source assessment requires canonical document coordinates.")(D.declarations document);
+  let assessment=check ~charge document in
+  let live=ref true in
+  let source={assessed_document_value=document;assessed_report_value=assessment;
+    assessed_charge_value=charge;assessed_live=live}in
+  Fun.protect ~finally:(fun()->live:=false)(fun()->action source)

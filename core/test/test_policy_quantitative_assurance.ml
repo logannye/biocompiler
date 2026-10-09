@@ -200,6 +200,29 @@ let ()=
     at["report";"export_permitted"]produced=Json.Bool true)
     "General quantitative component composition lost scoped approximation assurance";
   let coupled_candidate=get "candidate" produced in
+  let insufficient=at["expected";"insufficient_monitor"]coupled in
+  let previous_limits=get "limits" insufficient in
+  require(text "request_fingerprint" insufficient=Canonical.fingerprint coupled_material &&
+    at["monitor";"max_work"]previous_limits=Json.int 1_000_000 &&
+    Json.equal(edit["monitor";"max_work"](fun _->Json.int 5_000_000)previous_limits)coupled_limits)
+    "Monitor control changed an original source or another invocation allowance";
+  let denied=check coupled_request coupled_candidate previous_limits in
+  let denied_report=get "report" denied in
+  let preservation=at["material";"preservation"]denied_report in
+  require(get "export_permitted" denied_report=Json.Bool false &&
+    get "approximation" denied_report=Json.Null && get "exact_refinement" denied_report=Json.Null &&
+    get "realization_evidence" denied_report=Json.Null && get "artifact" denied=Json.Null &&
+    at["material";"status"]denied_report=s "not_accepted" &&
+    get "status" preservation=get "status" insufficient &&
+    at["coverage";"complete"]preservation=Json.Bool false &&
+    at["coverage";"transitions"]preservation=get "transitions" insufficient &&
+    at["stopped";"diagnostic";"code"]preservation=get "diagnostic" insufficient &&
+    at["usage";"monitor_work"]preservation=Json.int 1_000_000)
+    "Inherited 1M monitor allowance did not remain an explicit incomplete, capability-free invocation";
+  (match export coupled_request coupled_candidate previous_limits with
+   |_->failwith "Incomplete monitor invocation exported a payload"
+   |exception Diagnostic.Error diagnostic->require(diagnostic.code=text "export_diagnostic" insufficient)
+       "Incomplete monitor export failed for a different reason");
   let coupled_checked=check coupled_request coupled_candidate coupled_limits in
   require(Json.equal produced coupled_checked)"Packed coupled producer and independent checking disagree";
   let coupled_replayed=call Service.handle Protocol.Verify "replay-policy-quantitative-assurance"
