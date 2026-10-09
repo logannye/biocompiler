@@ -72,6 +72,15 @@ from biocompiler.core_policy_component_selection import (
     PROFILE as COMPONENT_SELECTION_PROFILE, PRODUCER_PROFILE as COMPONENT_SELECTION_PRODUCER_PROFILE,
     VALIDATION_SCOPE as COMPONENT_SELECTION_SCOPE, COMPILE_OPERATION as COMPONENT_SELECTION_COMPILE,
 )
+from biocompiler import (
+    _policy_coupled_wire as coupled_wire,
+    core_policy_component_material as component_extensions,
+    core_policy_implementation as implementation_extensions,
+    core_policy_module_linking as module_linking,
+    core_policy_planning as target_planning,
+    core_policy_quantitative_assurance as quantitative_assurance,
+    core_policy_refinement as refinement,
+)
 from biocompiler.ir.intent import IntentProgram
 from biocompiler.compiler.request import BuildRequest
 from biocompiler.ir.behavior import BehaviorProgram
@@ -277,6 +286,66 @@ def capability_contract(role):
 
 def check_capabilities(capabilities, role):
     operations, scopes, profiles, claim = capability_contract(role)
+    require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
+    check_capability_fields(capabilities, scopes, profiles)
+    require(capabilities["claim_scope"] == claim, "Capabilities lost limited claim scope")
+
+
+def current_capability_contract(role):
+    """Complete current advertisement, extending the frozen historical cohort.
+
+    The historical constructor and its checksum recipes remain separate. These
+    named additions are exhaustive; advertisements are never filtered to fit it.
+    """
+    operations, scopes, profiles, claim = deepcopy(capability_contract(role))
+    i, m = implementation_extensions, component_extensions
+    families = (
+        ("policy_multi_site_implementation", i.MULTI_SITE_PROFILE, i.MULTI_SITE_PRODUCER_PROFILE),
+        ("policy_coupled_implementation", i.COUPLED_PROFILE, i.COUPLED_PRODUCER_PROFILE),
+        ("policy_network_implementation", i.NETWORK_PROFILE, i.NETWORK_PRODUCER_PROFILE),
+        ("policy_finite_machine_implementation", i.FINITE_MACHINE_PROFILE, i.FINITE_MACHINE_PRODUCER_PROFILE),
+        ("policy_step_quantitative_material", m.STEP_QUANTITATIVE_PROFILE, m.STEP_QUANTITATIVE_PRODUCER_PROFILE),
+        ("policy_transfer_pair_material", m.TRANSFER_PAIR_PROFILE, m.TRANSFER_PAIR_PRODUCER_PROFILE),
+        ("policy_transfer_network_material", m.TRANSFER_NETWORK_PROFILE, m.TRANSFER_NETWORK_PRODUCER_PROFILE),
+        ("policy_coupled_quantitative_material", m.COMPOSITION_PROFILE, m.COMPOSITION_PRODUCER_PROFILE),
+        ("policy_network_material", m.NETWORK_PROFILE, m.NETWORK_PRODUCER_PROFILE),
+        ("policy_finite_machine_material", m.FINITE_MACHINE_PROFILE, m.FINITE_MACHINE_PRODUCER_PROFILE),
+        ("policy_quantitative_material", m.QUANTITATIVE_PROFILE, m.QUANTITATIVE_PRODUCER_PROFILE),
+        ("policy_quantitative_assurance", quantitative_assurance.PROFILE, quantitative_assurance.PRODUCER_PROFILE),
+        ("policy_module_material", module_linking.MATERIAL_PROFILE, module_linking.PRODUCER_PROFILE),
+    )
+    profiles.update({name: deepcopy(profile) for name, profile, _ in families})
+    profiles.update(policy_refinement=deepcopy(refinement.PROFILE),
+                    policy_module_linking=deepcopy(module_linking.PROFILE),
+                    policy_coupled_wire=coupled_wire.profile(role),
+                    policy_coupled_assurance_export_wire=coupled_wire.export_profile())
+    at = operations.index(COMPONENT_SELECTION_PROFILE["operations"][0])
+    operations[at:at] = [*quantitative_assurance.PROFILE["operations"], *refinement.PROFILE["operations"],
+                         *module_linking.PROFILE["operations"], *module_linking.MATERIAL_PROFILE["operations"]]
+    at = scopes.index(IMPLEMENTATION_SCOPE) + 1
+    scopes[at:at] = [i.MULTI_SITE_VALIDATION_SCOPE, i.COUPLED_VALIDATION_SCOPE,
+        m.STEP_QUANTITATIVE_VALIDATION_SCOPE, m.TRANSFER_PAIR_VALIDATION_SCOPE,
+        m.TRANSFER_NETWORK_VALIDATION_SCOPE, m.COMPOSITION_VALIDATION_SCOPE,
+        i.NETWORK_VALIDATION_SCOPE, i.FINITE_MACHINE_VALIDATION_SCOPE]
+    at = scopes.index(COMPONENT_SELECTION_SCOPE)
+    scopes[at:at] = [m.NETWORK_VALIDATION_SCOPE, m.FINITE_MACHINE_VALIDATION_SCOPE,
+        quantitative_assurance.VALIDATION_SCOPE, refinement.VALIDATION_SCOPE,
+        module_linking.VALIDATION_SCOPE, module_linking.MATERIAL_SCOPE, m.QUANTITATIVE_VALIDATION_SCOPE]
+    if role == "core":
+        at = operations.index(COMPONENT_SELECTION_COMPILE) + 1
+        operations[at:at] = [*module_linking.PRODUCER_PROFILE["operations"],
+                             *quantitative_assurance.PRODUCER_PROFILE["operations"], *target_planning.PROFILE["operations"]]
+        scopes.insert(scopes.index(PRODUCER_SCOPE) + 1, target_planning.VALIDATION_SCOPE)
+        profiles.update({name + "_producer": deepcopy(producer) for name, _, producer in families})
+        profiles["policy_target_planning"] = deepcopy(target_planning.PROFILE)
+    return operations, scopes, profiles, claim
+
+
+def check_current_capabilities(capabilities, role):
+    operations, scopes, profiles, claim = current_capability_contract(role)
+    require(type(capabilities) is dict and set(capabilities) == {
+        "operations", "validation_scopes", "profiles", "claim_scope", "canonicalization",
+        "intent_schemas", "limits", "schema_version"}, "Capability contract differs: fields")
     require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
     check_capability_fields(capabilities, scopes, profiles)
     require(capabilities["claim_scope"] == claim, "Capabilities lost limited claim scope")
@@ -602,7 +671,7 @@ def run_campaign(clients, corpus, receipt, programs):
     for client in clients:
         capabilities = client.capabilities().result
         require(type(capabilities) is dict, "Missing capabilities")
-        check_capabilities(capabilities, client.role)
+        check_current_capabilities(capabilities, client.role)
         campaign.passed(client, "capabilities", "complete-advertised-contract")
         campaign.component_selection_routes(client)
         for vector in corpus["literal_vectors"]:

@@ -857,5 +857,157 @@ class GroundedHelperCapabilityConformanceTests(unittest.TestCase):
                     campaign.check_capabilities(actual, role)
 
 
+class CurrentCapabilityConformanceTests(unittest.TestCase):
+    """The live campaign checks the entire advertisement, not a legacy projection."""
+
+    COMMON_PROFILES = {
+        "policy_multi_site_implementation", "policy_coupled_implementation",
+        "policy_network_implementation", "policy_finite_machine_implementation",
+        "policy_step_quantitative_material", "policy_transfer_pair_material",
+        "policy_transfer_network_material", "policy_coupled_quantitative_material",
+        "policy_network_material", "policy_finite_machine_material", "policy_quantitative_material",
+        "policy_quantitative_assurance", "policy_module_material", "policy_refinement",
+        "policy_module_linking", "policy_coupled_wire", "policy_coupled_assurance_export_wire",
+    }
+    PRODUCER_PROFILES = {
+        "policy_multi_site_implementation_producer", "policy_coupled_implementation_producer",
+        "policy_network_implementation_producer", "policy_finite_machine_implementation_producer",
+        "policy_step_quantitative_material_producer", "policy_transfer_pair_material_producer",
+        "policy_transfer_network_material_producer", "policy_coupled_quantitative_material_producer",
+        "policy_network_material_producer", "policy_finite_machine_material_producer",
+        "policy_quantitative_material_producer", "policy_quantitative_assurance_producer",
+        "policy_module_material_producer", "policy_target_planning",
+    }
+    COMMON_OPERATIONS = {
+        "check-policy-quantitative-assurance", "replay-policy-quantitative-assurance",
+        "export-policy-quantitative-assurance", "check-policy-refinement", "replay-policy-refinement",
+        "check-policy-module-linking", "replay-policy-module-linking", "check-policy-module-material",
+        "replay-policy-module-material", "export-policy-module-material",
+    }
+    PRODUCER_OPERATIONS = {"compile-policy-module-material", "compile-policy-quantitative-assurance",
+                           "plan-policy-target", "replay-policy-target-plan"}
+
+    @staticmethod
+    def capabilities(role):
+        operations, scopes, profiles, claim = campaign.current_capability_contract(role)
+        return {"operations": operations, "validation_scopes": scopes, "profiles": profiles,
+                "claim_scope": claim, "canonicalization": "python-json-v1",
+                "intent_schemas": ["biocompiler.intent.v0.1"], "limits": deepcopy(campaign.LIMITS),
+                "schema_version": "biocompiler.core_capabilities.v1"}
+
+    def test_complete_additions_preserve_every_historical_contract_byte(self):
+        historical = {"verify": "676cc22223f347eb84d5ba1863c7dae3b0c1a634a8e784f7f694626baed46257",
+                      "core": "d9da6c40404876601e48ff9eba7dd6599b075d873b16e195a9239e3078e03131"}
+        for role, counts in (("verify", (44, 36, 38)), ("core", (67, 43, 68))):
+            old = ComponentCapabilityConformanceTests.capabilities(role)
+            actual = self.capabilities(role)
+            campaign.check_current_capabilities(actual, role)
+            self.assertEqual(tuple(len(actual[key]) for key in ("operations", "validation_scopes", "profiles")), counts)
+            self.assertEqual(set(actual["profiles"]) - set(old["profiles"]), self.COMMON_PROFILES |
+                             (self.PRODUCER_PROFILES if role == "core" else set()))
+            self.assertEqual(set(actual["operations"]) - set(old["operations"]), self.COMMON_OPERATIONS |
+                             (self.PRODUCER_OPERATIONS if role == "core" else set()))
+            for key in ("operations", "validation_scopes"):
+                self.assertEqual(len(actual[key]), len(set(actual[key])))
+                self.assertEqual([item for item in actual[key] if item in old[key]], old[key])
+            self.assertEqual({key: actual["profiles"][key] for key in old["profiles"]}, old["profiles"])
+            self.assertEqual(actual["claim_scope"], old["claim_scope"])
+            retained = {"operations": old["operations"], "scopes": old["validation_scopes"],
+                        "profiles": old["profiles"], "claim": old["claim_scope"]}
+            self.assertEqual(campaign.digest(campaign.canonical(retained)), historical[role])
+            with self.assertRaises(AssertionError): campaign.check_current_capabilities(old, role)
+            with self.assertRaises(AssertionError): campaign.check_capabilities(actual, role)
+
+    def test_complete_policy_profile_and_ordered_scope_census_matches_native_sources(self):
+        service = (campaign.ROOT / "core/lib/service/service.ml").read_text().split("type scoped_reply", 1)[0]
+        producer = (campaign.ROOT / "core/lib/producer_service/producer_service.ml").read_text()
+        producer = producer.split(' @ ["architecture_producer", profile;', 1)[1].split(
+            "] @ Synthetic_producer_service.profiles", 1)[0]
+        base_names = re.findall(r'"(policy_[a-z_]+)"\s*,', service)
+        producer_names = re.findall(r'"(policy_[a-z_]+)"\s*,', producer)
+        for role in ("verify", "core"):
+            actual = self.capabilities(role)
+            names = base_names + (producer_names if role == "core" else [])
+            self.assertEqual(len(names), len(set(names)))
+            self.assertEqual(set(names), {name for name in actual["profiles"] if name.startswith("policy_")})
+        scope_region = service.split('"validation_scopes",', 1)[1].split('"profiles",', 1)[0]
+        references = re.findall(r'(Policy_\w*service)\.(\w+)', scope_region)
+        values = []
+        for module, field in references:
+            source = (campaign.ROOT / "core/lib/service" / (module.lower() + ".ml")).read_text()
+            literals = re.findall(r'let\s+' + field + r'\s*=\s*"([^"]+)"', source)
+            self.assertEqual(len(literals), 1, (module, field))
+            values.append(literals[0])
+        actual = self.capabilities("verify")["validation_scopes"]
+        self.assertEqual(actual[3:3 + len(values)], values)
+        self.assertEqual(len(values), 26)
+
+    def test_all_added_profiles_and_operations_reject_omission_or_unreviewed_changes(self):
+        for role in ("verify", "core"):
+            original = self.capabilities(role)
+            added_profiles = self.COMMON_PROFILES | (self.PRODUCER_PROFILES if role == "core" else set())
+            for name in sorted(added_profiles):
+                for mutation in (lambda value: value["profiles"].pop(name),
+                                 lambda value: value["profiles"][name].update(unreviewed=True)):
+                    changed = deepcopy(original); mutation(changed)
+                    with self.subTest(role=role, profile=name), self.assertRaisesRegex(AssertionError, "profiles"):
+                        campaign.check_current_capabilities(changed, role)
+            for name in sorted(self.COMMON_OPERATIONS | (self.PRODUCER_OPERATIONS if role == "core" else set())):
+                for mutation in (lambda value: value["operations"].remove(name),
+                                 lambda value: value["operations"].append(name)):
+                    changed = deepcopy(original); mutation(changed)
+                    with self.subTest(role=role, operation=name), self.assertRaisesRegex(AssertionError, "advertised operation"):
+                        campaign.check_current_capabilities(changed, role)
+            for mutation in (lambda value: value["operations"].append("unreviewed-operation"),
+                             lambda value: value["profiles"].update(unreviewed_profile={}),
+                             lambda value: value["validation_scopes"].append("unreviewed-scope"),
+                             lambda value: value["validation_scopes"].reverse(),
+                             lambda value: value.update(claim_scope="empirically_verified"),
+                             lambda value: value.update(unreviewed_field=True)):
+                changed = deepcopy(original); mutation(changed)
+                with self.subTest(role=role), self.assertRaises(AssertionError):
+                    campaign.check_current_capabilities(changed, role)
+
+    def test_role_specific_planning_production_and_wire_contracts_stay_closed(self):
+        core, verify = self.capabilities("core"), self.capabilities("verify")
+        self.assertEqual(core["profiles"]["policy_coupled_assurance_export_wire"],
+                         verify["profiles"]["policy_coupled_assurance_export_wire"])
+        self.assertEqual(core["profiles"]["policy_coupled_wire"]["operations"],
+                         verify["profiles"]["policy_coupled_wire"]["operations"] +
+                         ["compile-policy-component-material", "compile-policy-quantitative-assurance"])
+        for profile in self.PRODUCER_PROFILES:
+            changed = deepcopy(verify); changed["profiles"][profile] = deepcopy(core["profiles"][profile])
+            with self.subTest(profile=profile), self.assertRaises(AssertionError):
+                campaign.check_current_capabilities(changed, "verify")
+        for operation in self.PRODUCER_OPERATIONS:
+            changed = deepcopy(verify); changed["operations"].append(operation)
+            with self.subTest(operation=operation), self.assertRaises(AssertionError):
+                campaign.check_current_capabilities(changed, "verify")
+        changed = deepcopy(verify)
+        changed["profiles"]["policy_coupled_wire"] = deepcopy(core["profiles"]["policy_coupled_wire"])
+        with self.assertRaises(AssertionError): campaign.check_current_capabilities(changed, "verify")
+        with self.assertRaisesRegex(AssertionError, "Unknown native executable role"):
+            campaign.current_capability_contract("foreign")
+
+    def test_actual_campaign_uses_complete_current_gate_before_retained_case_recipes(self):
+        class StopAfterCapabilities(Exception): pass
+        corpus = {"python_oracle": {"seed": 1, "finite_float_count": 2048, "binary_boundaries": {}}}
+        for role in ("verify", "core"):
+            client = SimpleNamespace(role=role, capabilities=lambda: SimpleNamespace(result=self.capabilities(role)))
+            receipt = {"checks": []}
+            with patch.object(campaign, "float_patterns", return_value=[]), \
+                 patch.object(campaign, "boundary_floats", return_value=[]), \
+                 patch.object(campaign, "binary_boundary_floats", return_value=[]), \
+                 patch.object(campaign, "intent_mutations", return_value=[]), \
+                 patch.object(campaign, "lowering_cases", return_value=[]), \
+                 patch.object(campaign, "lowering_mutations", return_value=[]), \
+                 patch.object(campaign, "check_capabilities", side_effect=AssertionError("Historical gate used on current binary")), \
+                 patch.object(campaign.Campaign, "component_selection_routes", side_effect=StopAfterCapabilities):
+                with self.assertRaises(StopAfterCapabilities):
+                    campaign.run_campaign([client], corpus, receipt, {})
+            self.assertEqual(receipt["checks"], [{"role": role, "group": "capabilities",
+                "case": "complete-advertised-contract", "status": "pass"}])
+
+
 if __name__ == "__main__":
     unittest.main()
