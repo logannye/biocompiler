@@ -19,15 +19,15 @@ type t={raw:Json.t;context_value:Json.t;template_values:template list;instance_v
 let bound condition=Diagnostic.require ~path:"/modules/limits" condition "policy_module_limit"
   "Module data exceeds its original cumulative work, byte, depth or count allowance."
 let require path condition message=Diagnostic.require ~path condition "policy_module_bundle" message
-let charge meter amount=bound(amount>=0 && amount<=meter.limits_value.max_work-meter.work_value);
+let charge (meter:meter) amount=bound(amount>=0 && amount<=meter.limits_value.max_work-meter.work_value);
   meter.work_value<-meter.work_value+amount
-let inspect meter amount=bound(amount>=0 && amount<=meter.limits_value.max_bytes-meter.bytes_value);
+let inspect (meter:meter) amount=bound(amount>=0 && amount<=meter.limits_value.max_bytes-meter.bytes_value);
   charge meter amount;meter.bytes_value<-meter.bytes_value+amount
-let work meter=meter.work_value
-let bytes meter=meter.bytes_value
+let work (meter:meter)=meter.work_value
+let bytes (meter:meter)=meter.bytes_value
 (* Explicit list-edge visits bound cyclic spines; active containers and depth
    bound cyclic Json values before sorting, encoding or source decoding. *)
-let scan meter raw=
+let scan (meter:meter) raw=
   let rec value active depth raw=
     charge meter 1;bound(depth<=meter.limits_value.max_depth);
     match raw with
@@ -50,7 +50,7 @@ let scan meter raw=
     require "/modules" (not(Hashtbl.mem seen key)) "Duplicate module object field.";
     Hashtbl.add seen key();value active depth item;object_fields seen active depth false rest in
   value [] 0 raw
-let encode meter raw=
+let encode (meter:meter) raw=
   let before=bytes meter in scan meter raw;let size=bytes meter-before in
   (* Reserve the actual encoding separately from its complete traversal. *)
   inspect meter size;
@@ -84,8 +84,8 @@ let pin meter path raw=
     "Template fingerprint must be complete lowercase SHA-256.";
   {id=name meter(path^"/id")(get meter path "id" raw);
    version=version meter(path^"/version")(get meter path "version" raw);content_fingerprint=digest}
-let of_json raw=
-  let budget={limits_value=ceilings;work_value=0;bytes_value=0}in
+let of_json raw : t =
+  let budget:meter={limits_value=ceilings;work_value=0;bytes_value=0}in
   scan budget raw;
   let get path key raw=get budget path key raw and exact path keys raw=exact budget path keys raw in
   let path="/modules" in
@@ -102,7 +102,7 @@ let of_json raw=
   budget.limits_value<-limits_value;charge budget 0;inspect budget 0;
   (* Repeat under caller depth as well; no relaxed first pass grants authority. *)
   scan budget raw;
-  let port path raw=
+  let port path raw : port =
     exact path["name";"declaration";"access"]raw;
     let access=match Json.string(get path "access" raw)with
       |"context"->Context|"read"->Read|"write"->Write|"request"->Request
@@ -110,7 +110,7 @@ let of_json raw=
     {name=name budget(path^"/name")(get path "name" raw);declaration=get path "declaration" raw;access;path}in
   let map path maximum decode raw=List.mapi(fun index value->charge budget 1;
     decode(path^"/"^string_of_int index)value)(rows budget path maximum raw)in
-  let template path raw=
+  let template path raw : template =
     exact path["id";"version";"semantics";"inputs";"outputs";"declarations";"private";"assumptions";"guarantees";"source_map"]raw;
     let inputs=map(path^"/inputs")limits_value.max_ports port(get path "inputs" raw)
     and outputs=map(path^"/outputs")limits_value.max_ports port(get path "outputs" raw)in
@@ -123,7 +123,7 @@ let of_json raw=
       (* A declaration may retain several source spans. The declaration ceiling
          does not count spans; the authoring tuple and source-document bounds do. *)
       source_map=rows budget(path^"/source_map")4096(get path "source_map" raw);path}in
-  let binding path raw=
+  let binding path raw : binding =
     exact path["port";"target"]raw;
     let target_raw=get path "target" raw and target_path=path^"/target"in
     let target=match Json.string(get target_path "kind" target_raw)with
@@ -137,7 +137,7 @@ let of_json raw=
           port=name budget(target_path^"/port")(get target_path "port" target_raw)}
       |_->Diagnostic.fail ~path:target_path "policy_module_bundle" "Unknown binding target kind."in
     {port=name budget(path^"/port")(get path "port" raw);target;path}in
-  let instance path raw=
+  let instance path raw : instance =
     exact path["name";"template";"bindings";"assumptions"]raw;
     {name=name budget(path^"/name")(get path "name" raw);template=pin budget(path^"/template")(get path "template" raw);
       bindings=map(path^"/bindings")limits_value.max_ports binding(get path "bindings" raw);
@@ -156,4 +156,4 @@ let limits(value:t)=value.limits_value
 let fingerprint value=value.identity
 let decoding_work value=value.decoding_work_value
 let decoding_bytes value=value.decoding_bytes_value
-let meter(value:t)={limits_value=value.limits_value;work_value=value.decoding_work_value;bytes_value=value.decoding_bytes_value}
+let meter(value:t) : meter ={limits_value=value.limits_value;work_value=value.decoding_work_value;bytes_value=value.decoding_bytes_value}
