@@ -33663,7 +33663,7 @@
     },
     "quantitative.grid": {
       "distinction": "Exact fractional amount grid is independent of Decimal precision, preserves original full quantities, and does not extend the source Record registry.",
-      "file_sha256": "2f451dcc5e22de15fe6370e25a5c76663bdbf309926f826b4c920682aebdfb5d",
+      "file_sha256": "7f70bcc18145f2adc34161cf1f84eaf56c721618c965ac7291d9d2ad9dc75b31",
       "path": "tests/test_policy_quantitative.py",
       "role": "positive",
       "symbol": "QuantitativeTests.test_exact_law_and_grid_ignore_decimal_context_and_do_not_extend_source_records",
@@ -33671,7 +33671,7 @@
     },
     "quantitative.nominal": {
       "distinction": "Authoring rejects mismatched full nominal units, off-grid quantities, invalid bounds, referenced sample clocks, and binary float input.",
-      "file_sha256": "2f451dcc5e22de15fe6370e25a5c76663bdbf309926f826b4c920682aebdfb5d",
+      "file_sha256": "7f70bcc18145f2adc34161cf1f84eaf56c721618c965ac7291d9d2ad9dc75b31",
       "path": "tests/test_policy_quantitative.py",
       "role": "rejection",
       "symbol": "QuantitativeTests.test_nominal_units_exact_grid_bounds_and_float_inputs_reject",
@@ -33679,7 +33679,7 @@
     },
     "quantitative.selection": {
       "distinction": "Original law, complete selected component identity, nominal source selection, and prepared original request are retained in independent snapshots isolated from subsequent input mutation.",
-      "file_sha256": "2f451dcc5e22de15fe6370e25a5c76663bdbf309926f826b4c920682aebdfb5d",
+      "file_sha256": "7f70bcc18145f2adc34161cf1f84eaf56c721618c965ac7291d9d2ad9dc75b31",
       "path": "tests/test_policy_quantitative.py",
       "role": "positive",
       "symbol": "QuantitativeTests.test_binding_snapshots_original_law_selected_full_pin_and_nominal_source",
@@ -33687,7 +33687,7 @@
     },
     "quantitative.source": {
       "distinction": "Reservoir source transition expansion equals an independently authored eight-transition machine and rejects mismatched local source contracts; no native law acceptance.",
-      "file_sha256": "2f451dcc5e22de15fe6370e25a5c76663bdbf309926f826b4c920682aebdfb5d",
+      "file_sha256": "7f70bcc18145f2adc34161cf1f84eaf56c721618c965ac7291d9d2ad9dc75b31",
       "path": "tests/test_policy_quantitative.py",
       "role": "mixed",
       "symbol": "QuantitativeTests.test_transition_expansion_matches_independently_authored_source",

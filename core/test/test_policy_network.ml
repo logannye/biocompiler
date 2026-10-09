@@ -48,7 +48,8 @@ let bind raw candidate=
     ~proposed:(U.of_json(get "binding" candidate))
 let admit_source raw=
   let request=R.of_network_json raw in
-  require(get "status"(Source.check(R.document request))=s "valid")"Network semantic mutant is not independently source-valid";
+  let report=Source.check(R.document request)in
+  require(get "status" report=s "valid")("Network semantic mutant is not independently source-valid: "^Canonical.encode report);
   let source=Bioc_checker.Policy_admission.admit ~document:(R.document request) ~descriptors:(R.definitions request)in
   let behavior=Bioc_compiler.Policy_lowering.lower source in A.admit ~request ~behavior
 let source_edit id transform raw=edit["document";"program";"declarations"]
@@ -114,8 +115,16 @@ let static_controls raw candidate bound=
     "Metered network reconstruction changed evidence or omitted actual traversal work";
   let assignment=List.hd(rows "assignments"(List.find(fun row->text "id" row="alpha/launch_a")
     (rows "declarations"(at["document";"program"]raw))))in
+  (* Shared writes need one complete source arbitration policy before the
+     network-specific single-writer restriction can be tested independently. *)
+  let declarations=rows "declarations"(at["document";"program"]raw)in
+  let policy=get "arbitration"(List.find(fun row->text "id" row="alpha/machine_a")declarations)
+    |>set "order"(a(List.filter_map(fun row->if text "$type" row="Transition"then Some(get "id" row)else None)declarations))in
+  let shared_writer=raw|>source_edit "alpha/machine_a"(set "arbitration" policy)
+    |>source_edit "beta/machine_b"(set "arbitration" policy)
+    |>source_edit "beta/launch_b"(set "assignments"(a[assignment]))in
   rejects ~code:"policy_realization_network" "state has a second writer machine"(fun()->admit_source
-    (source_edit "beta/launch_b"(set "assignments"(a[assignment]))raw));
+    shared_writer);
   rejects ~code:"policy_realization_network" "peer completion treated as communication"(fun()->admit_source
     (source_edit "beta/complete_b"(edit["on";"ref";"id"](fun _->s "alpha/response_a"))raw));
   rejects ~code:"policy_realization_network" "explicit predicate reset has no register interpretation"(fun()->admit_source

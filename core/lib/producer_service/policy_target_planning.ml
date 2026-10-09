@@ -80,7 +80,9 @@ let plan raw =
      exhaustion and unexpected producer/checker failures escape without a plan. *)
   let attempt ~fallback action =
     try action () with Diagnostic.Error error ->
-      if W.is_exhaustion budget error then raise (Diagnostic.Error error)
+      if W.is_exhaustion budget error then
+        raise(Diagnostic.Error(if C.realization_schema target_id=R.coupled_schema_version then
+          {error with message=error.message^" Target-planning stage: "^ !current^"."}else error))
       else if List.mem error.code unsupported_codes then block "unsupported_target" error
       else if List.mem error.code missing_codes then
         block ~missing:["implementation_library:model_configuration"] "missing_inputs" error

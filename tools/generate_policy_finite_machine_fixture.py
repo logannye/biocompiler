@@ -46,7 +46,7 @@ SPECS = (
 )
 
 
-def source_request(spec):
+def source_request(spec, *, horizon_ticks=5):
     base = shared.build_request()
     retained = [row for row in base.program.declarations if not isinstance(row, (p.Machine, p.Transition, p.Effect, p.Requirement))]
     observation = next(row for row in retained if isinstance(row, p.Observation))
@@ -64,25 +64,27 @@ def source_request(spec):
                                        () if effect is None else (p.ref(effects[effect]),)))
     requirements = [p.Requirement(identity + "_initiation", "progress", "Each requested abstract attempt initiates.",
         p.Scope("encounter", p.Ref("encounter", "Encounter")), trigger=effect.event("requested"), response=effect.event("initiated"),
-        deadline=p.quantity(1, p.SECOND), horizon=p.quantity(5, p.SECOND), clock=p.Ref("clock", "Clock"))
+        deadline=p.quantity(1, p.SECOND), horizon=p.quantity(horizon_ticks, p.SECOND), clock=p.Ref("clock", "Clock"))
         for identity, effect in effects.items()]
     declarations = tuple(retained + list(effects.values()) + [machine] + transitions + requirements)
     program = replace(base.program, id="finite_" + spec["id"], declarations=declarations,
         source_map=tuple(p.SourceSpan(row.id, "finite_" + spec["id"] + ".py", i + 1) for i, row in enumerate(declarations)))
     interface = next(value.ref for value in program.semantics.definitions if value.category == "interface")
     entry = replace(base.implementations.implementations[0], dependencies=(interface,))
-    return replace(base, program=program, assurance=replace(base.assurance, requirements=tuple(row.id for row in requirements)),
+    return replace(base, program=program, assurance=replace(base.assurance, requirements=tuple(row.id for row in requirements),
+                   horizon=p.quantity(horizon_ticks, p.SECOND)),
                    implementations=replace(base.implementations, implementations=(entry,)))
 
 
-def implementation_request(spec, library):
+def implementation_request(spec, library, *, horizon_ticks=5):
     request = shared.realization()
     request.update(schema_version="biocompiler.policy_realization_request.v0.5",
                    profile="biocompiler.policy_finite_machine_inputs.v0.1",
-                   document=p.to_data(source_request(spec)), implementation_library=library)
+                   document=p.to_data(source_request(spec, horizon_ticks=horizon_ticks)), implementation_library=library)
     entry = request["document"]["implementations"]["implementations"][0]
     request["catalog_bindings"][0].update(entry_digest=shared.digest(entry), models=[row["identity"] for row in library["models"]])
     domain = request["operating_domain"]
+    domain["horizon_ticks"] = horizon_ticks
     domain["feedback_factors"] = []
     def sample(tick, value, status="valid", slots=("e1", "e2")):
         return [{"available_tick": tick, "observed_tick": tick, "observation": "condition", "slot": slot,
@@ -267,13 +269,13 @@ def composition(spec, fragments, links, seed):
     return components, rule, union, molecule
 
 
-def context(spec, request, components, rule, union):
+def context(spec, request, components, rule, union, *, horizon_ticks=5):
     base = shared.build()["request"]["context"]
     base["profile"] = MATERIAL_PROFILE
     base["placement"]["template_id"] = rule["body"]["material_authority"]["template"]["id"]
     layout = base["record_layout"]
     layout.update(rule=rule["identity"], union_digest=shared.digest(union), domain_digest=shared.digest(request["operating_domain"]),
-                  ordered_cause_slots=2048)
+                  ordered_cause_slots=2048, horizon_ticks=horizon_ticks)
     providers = {row["body"]["kind"]: row for row in base["providers"]}
     providers["environment"]["body"]["grammar"] = deepcopy(request["operating_domain"])
     interface = providers["interface"]["body"]
@@ -311,12 +313,15 @@ def build():
     assert hashlib.sha256(seed_bytes).hexdigest() == shared.SEED_SHA256
     seed = json.loads(seed_bytes)
     cases = []
-    for spec in SPECS:
+    # The guarded domain has no inputs after tick 3 and its final timeout is at
+    # tick 4. Keep every branch and deadline in the positive case; retain the
+    # previous complete tick-5 original separately as a work-limit control.
+    for spec, horizon_ticks in [(spec, 4 if spec["id"] == "guarded_branch" else 5) for spec in SPECS] + [(SPECS[1], 5)]:
         library, fragments, links = declared_fragments(spec)
         coalesce_output_boundaries(fragments, links)
-        original = implementation_request(spec, library)
+        original = implementation_request(spec, library, horizon_ticks=horizon_ticks)
         components, rule, union, molecule = composition(spec, fragments, links, seed)
-        context_value, inputs, resources = context(spec, original, components, rule, union)
+        context_value, inputs, resources = context(spec, original, components, rule, union, horizon_ticks=horizon_ticks)
         bridge = original["catalog_bindings"][0]
         request = {"schema_version": "biocompiler.policy_component_material_request.v0.7", "profile": MATERIAL_PROFILE,
             "implementation_request": original,
@@ -336,9 +341,19 @@ def build():
     # other signal payloads and final inventories exceed one million work units
     # before evaluator/retention work. Fund it within the existing finite ceiling.
     limits["candidate"]["max_work"] = 10_000_000
+    previous = cases.pop()
+    # Pin the exact independent authority used by hosted run 37984363402. A
+    # bounded incomplete result never transfers acceptance to this old domain.
+    previous_invocation = {"request": previous["request"], "limits": deepcopy(limits)}
+    assert shared.digest(previous_invocation) == "d6aedac658830616d3d58aac29bb13be0eff00f23a705d91117b4942abb3f341"
+    cases[1]["expected"].update(histories=110, transitions=276)
+    incomplete = {"id": "guarded_branch_horizon_5_work_limit", **previous_invocation,
+        "expected": {"histories": 110, "transitions": 386, "status": "incomplete",
+            "diagnostic": "policy_preservation_work_limit", "accepted_material": False,
+            "export_diagnostic": "policy_component_material_export_not_accepted"}}
     return {"schema_version": "biocompiler.policy_finite_machine_literals.v0.1",
         "notice": "Artificial supplied component-to-RNA premises. No native acceptance or biological evidence is asserted.",
-        "seed_sha256": shared.SEED_SHA256, "limits": limits, "cases": cases}
+        "seed_sha256": shared.SEED_SHA256, "limits": limits, "cases": cases, "incomplete_cases": [incomplete]}
 
 
 def main():

@@ -227,6 +227,10 @@ let case limits row=
   require(at["preservation";"coverage";"complete"]report=Json.Bool true &&
     get "all_original_obligations_discharged" report=Json.Bool true && get "empirical" report=s "unassessed")
     "Finite complete-domain/context/prerequisite conjunction or empirical boundary changed";
+  if name="guarded_branch"then (
+    require(at["preservation";"coverage";"histories"]report=Json.int 110 &&
+      at["preservation";"coverage";"transitions"]report=Json.int 276)
+      "Guarded tick-4 domain lost one of its 110 complete branching histories");
   require(List.for_all(fun value->get "status" value=s "pass" && get "nonvacuous" value=Json.Bool true)
     (rows "requirements"(get "preservation" report)))"Original finite requirements are missing or unproved";
   let obligation=List.find(fun value->get "obligation" value=s "machine_reachability_termination_and_progress")(rows "obligations" report)in
@@ -274,6 +278,30 @@ let case limits row=
           "report",edit["report";"preservation";"coverage";"histories"](fun _->Json.int 0)fresh]));
   Printf.printf "finite_machine: %s exact source/graph/component/RNA and selected literal prefixes\n%!" name
 
+let incomplete_case row=
+  let request=get "request" row and limits=get "limits" row and expected=get "expected" row in
+  require(text "id" row="guarded_branch_horizon_5_work_limit" &&
+    Canonical.fingerprint(o["request",request;"limits",limits])=
+      "d6aedac658830616d3d58aac29bb13be0eff00f23a705d91117b4942abb3f341")
+    "The complete previous guarded tick-5 authority changed";
+  let candidate=Bioc_producer_service.Policy_component_material_producer.construct_candidate(M.of_json request)in
+  let _,checked=Bioc_service.Policy_component_material_service.fresh_check ~request ~candidate ~limits in
+  let module Check=Bioc_realization_checker.Policy_component_material_check in
+  let report=Check.report checked in
+  let preservation=get "preservation" report in
+  require(Check.accepted checked=None && text "status" report="not_accepted" &&
+    get "status" preservation=get "status" expected &&
+    at["coverage";"complete"]preservation=Json.Bool false &&
+    at["stopped";"diagnostic";"code"]preservation=get "diagnostic" expected)
+    "Previous guarded tick-5 domain no longer demonstrates explicit work-limit incompleteness";
+  let invocation:Protocol.request={request_id="finite-machine-incomplete-export";
+    operation="export-policy-component-material";payload=o["request",request;"candidate",candidate;"limits",limits]}in
+  (match Service.handle Protocol.Verify invocation with
+    |Protocol.Error,None,[diagnostic] when diagnostic.Diagnostic.code=text "export_diagnostic" expected->incr controls
+    |_->failwith "Incomplete guarded tick-5 domain did not withhold export with the exact acceptance diagnostic"
+    |exception Diagnostic.Error diagnostic when diagnostic.code=text "export_diagnostic" expected->incr controls);
+  Printf.printf "finite_machine: previous tick-5 original retained, work limit explicit, private capability and export withheld\n%!"
+
 let ()=
   require(Array.length Sys.argv=2)"Expected independent finite-machine fixture";
   let fixture=read Sys.argv.(1)in
@@ -281,5 +309,7 @@ let ()=
   require(List.map(text "id")(rows "cases" fixture)=["retry_cycle";"guarded_branch";"updated_fork"])
     "Finite topology fixture census changed";
   List.iter(case(get "limits" fixture))(rows "cases" fixture);
+  require(List.length(rows "incomplete_cases" fixture)=1)"Finite incomplete original census changed";
+  List.iter incomplete_case(rows "incomplete_cases" fixture);
   require(!controls>=30)"Finite semantic rejection control census incomplete";
   Printf.printf "finite_machine: three supplied topologies, four handwritten source/candidate traces, %d rejections\n" !controls

@@ -115,16 +115,15 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
   end) in
   let model_index = if U.is_coupled lowered.binding then (
     charge 64;
-    let index = Exact_index.create 64 in
-    List.iter (fun ((_,encoded) as entry) -> charge 1;
-      let previous=Option.value (Exact_index.find_opt index encoded) ~default:[] in
-      Exact_index.replace index encoded (entry::previous)) actual_models;
-    Some index) else None in
-  let candidates_for wanted = match model_index with
-    | None -> actual_models
-    | Some index ->
-      let reversed=Option.value (Exact_index.find_opt index wanted) ~default:[] in
-      charge (1+List.length reversed);List.rev reversed in
+    let index = Exact_index.create 64 and next_class=ref 0 and classes=ref [] in
+    List.iter (fun ((_,encoded) as entry) -> charge 2;
+      let model_class,previous=match Exact_index.find_opt index encoded with
+        |Some value->value
+        |None->let value= !next_class in incr next_class;value,[] in
+      Exact_index.replace index encoded (model_class,entry::previous);
+      classes:=model_class:: !classes) actual_models;
+    charge(List.length actual_models);
+    Some(index,Array.of_list(List.rev !classes))) else None in
   let original_wires = I.wires implementation in
   (* Resolve immutable endpoint names once. Each index key still compares the
      complete name or port; integer positions only name this invocation's
@@ -139,7 +138,7 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
         Stdlib.String.length cp+Stdlib.String.length dp);
       a=c && b=d && Stdlib.String.equal ap cp && Stdlib.String.equal bp dp
   end) in
-  let indexed_wires=match model_index with None->None|Some _->
+  let indexed_wires=match model_index with None->None|Some(model_table,actual_classes)->
     charge (128+List.length wanted_wires);
     let actual_positions=Exact_index.create 64 and local_positions=Exact_index.create 64 in
     List.iteri(fun ordinal (value:I.node)->charge 1;Exact_index.add actual_positions value.node_id ordinal)actual;
@@ -153,7 +152,47 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
       Wire_index.replace expected
         (position local_positions value.producer.node_id,value.producer.port_id,
          position local_positions value.consumer.node_id,value.consumer.port_id)())wanted_wires;
-    Some(actual_positions,local_positions,actual_wires,expected)in
+    let local_classes=List.map(fun(_,encoded)->
+      match Exact_index.find_opt model_table encoded with Some(kind,_)->kind
+      |None->Diagnostic.fail "policy_component_lowering_unsupported"
+        "A complete original component model signature is absent from the source-produced graph.")local_models in
+    charge(List.length local_classes);
+    let local_classes=Array.of_list local_classes in
+    let local_wires=List.map(fun(value:I.wire)->charge 1;
+      position local_positions value.producer.node_id,value.producer.port_id,
+      position local_positions value.consumer.node_id,value.consumer.port_id)wanted_wires in
+    (* Every complete graph bijection preserves this one-hop multiset. Model
+       classes were assigned only by complete exact signatures. Retain edge
+       direction, both ports and repeated edges; no graph authority is inferred
+       from this necessary search constraint. *)
+    let neighbors classes wires=
+      let count=Array.length classes in charge count;
+      let adjacent=Array.make count []in
+      List.iter(fun(producer,producer_port,consumer,consumer_port)->charge 6;
+        adjacent.(producer)<-(true,producer_port,consumer_port,classes.(consumer))::adjacent.(producer);
+        adjacent.(consumer)<-(false,consumer_port,producer_port,classes.(producer))::adjacent.(consumer))wires;
+      let compare_edge ((_,ap,aq,_)as left)((_,bp,bq,_)as right)=
+        charge(4+Stdlib.String.length ap+Stdlib.String.length aq+Stdlib.String.length bp+Stdlib.String.length bq);
+        Stdlib.compare left right in
+      charge count;
+      Array.mapi(fun ordinal edges->charge 2;
+        let edges=List.sort compare_edge edges in
+        let raw=arr[Json.int classes.(ordinal);arr(List.map(fun(direction,own_port,neighbor_port,kind)->charge 1;
+          arr[Json.Bool direction;str own_port;str neighbor_port;Json.int kind])edges)]in
+        let encoded=Canonical.encode raw in charge(1+String.length encoded);encoded)adjacent in
+    Some(actual_positions,local_positions,actual_wires,expected,
+      neighbors actual_classes actual_wires,neighbors local_classes local_wires)in
+  let candidates_for target wanted = match model_index,indexed_wires with
+    |None,None->actual_models
+    |Some(index,_),Some(actual_positions,local_positions,_,_,actual_neighbors,local_neighbors)->
+      let reversed=match Exact_index.find_opt index wanted with Some(_,values)->values|None->[]in
+      charge(1+List.length reversed);
+      let wanted_neighbors=local_neighbors.(Exact_index.find local_positions target.key)in
+      List.filter(fun((candidate:I.node),_)->charge 2;
+        let provided=actual_neighbors.(Exact_index.find actual_positions candidate.node_id)in
+        charge(1+String.length wanted_neighbors+String.length provided);
+        Stdlib.String.equal wanted_neighbors provided)(List.rev reversed)
+    |_->assert false in
   let lookup pairs id = charge (List.length pairs);
     List.find_map (fun (candidate,value) -> if String.equal id candidate then Some value else None) pairs in
   let same_multiset inspect left right =
@@ -166,7 +205,7 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
   let inspect_text value = outer_charge (1+String.length value) in
   let inspect_group (arbiter,commits) = inspect_text arbiter; List.iter inspect_text commits in
   let partial pairs coordinates = match indexed_wires with
-    |Some(_,_,wires,expected)->
+    |Some(_,_,wires,expected,_,_)->
       let count=List.length actual in charge count;
       let mapped=Array.make count None in
       List.iter(fun(candidate,target)->charge 1;mapped.(candidate)<-Some target)coordinates;
@@ -208,12 +247,12 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inp
           charge (1+String.length wanted+String.length provided);
           if List.exists (String.equal candidate.node_id) used || wanted<>provided then choose remaining_candidates else
           let next = (candidate.node_id,target.key)::pairs in
-          let next_coordinates=match indexed_wires with None->[]|Some(actual_positions,local_positions,_,_)->
+          let next_coordinates=match indexed_wires with None->[]|Some(actual_positions,local_positions,_,_,_,_)->
             charge 1;
             (Exact_index.find actual_positions candidate.node_id,Exact_index.find local_positions target.key)::coordinates in
           if not (partial next next_coordinates) then choose remaining_candidates else
           match search next next_coordinates (candidate.node_id::used) rest with Some _ as result -> result | None -> choose remaining_candidates in
-      choose (candidates_for wanted) in
+      choose (candidates_for target wanted) in
   let pairs,input_pairs = match search [] [] [] local_models with Some value -> value | None ->
     Diagnostic.fail "policy_component_lowering_unsupported"
       "No complete model, wiring, input, group and export bijection matches the original component composition." in

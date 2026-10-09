@@ -238,11 +238,11 @@
     },
     {
       "path": "core/lib/compiler/policy_component_lowering.ml",
-      "sha256": "f0ff119fde6993d5a231b1298d9db14c95c4233bbbe90d8a740fefb0f718a3e7",
+      "sha256": "98f630fb854026e6d45ea70fb06d94a2a13456d6b5ea04a9ff9f7221afe950a5",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 1,
+          "Diagnostic.fail": 2,
           "Diagnostic.require": 2,
           "supported": 6
         },
@@ -1352,7 +1352,7 @@
     },
     {
       "path": "core/lib/producer_service/policy_target_planning.ml",
-      "sha256": "400a4148b70021c6d1bbe50b5672e64e6e348a566b68c3a8a3e6154dbe862312",
+      "sha256": "587a23d52d9146853d4f9fe94c6ff170a131e46f2641e68b740564c6c303a2f8",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -2568,7 +2568,7 @@
     },
     {
       "path": "core/test/data/policy_finite_machine_v01.json",
-      "sha256": "bdd3d516b36dd69ecf70e91ab81e006abc89f33b11c5639a68d1e2f08c9383b6"
+      "sha256": "908215f91399c59f9bed2da6e74c6fc87526fd3e9e110e550928a44058636d16"
     },
     {
       "path": "core/test/data/policy_machine_network_v01.json",
@@ -2584,7 +2584,7 @@
     },
     {
       "path": "core/test/data/policy_module_linking_v01.json",
-      "sha256": "78e9e40a275edd53b61d278fcaa65b8acd86c570fcb77ea3dbe1f60d1d24df44"
+      "sha256": "49a338bb50c9d89a6e9fa98cfd7fff7dcad0064688101bcf59fb28b53128dc84"
     },
     {
       "path": "core/test/data/policy_quantitative_composition_v01.json",
@@ -2772,7 +2772,7 @@
     },
     {
       "path": "core/test/test_policy_finite_machine.ml",
-      "sha256": "cf29370ba08e49c17daf0ff7acdcd2286e8463ae55260dd2f4bfecc9463ebc1a"
+      "sha256": "b9495125a58f0c684700a0677830b1cb2f0e61f475c73bc0ebaa57aa0ecd6519"
     },
     {
       "path": "core/test/test_policy_generation_admission.ml",
@@ -2808,7 +2808,7 @@
     },
     {
       "path": "core/test/test_policy_network.ml",
-      "sha256": "f411f50b339d7c35247778ea8bc8341807ae275e06e7c6a461cacb84341c1ae3"
+      "sha256": "29fd42ea5f0d2fd32e7e5985135359358db216f1ea43370ca1de5c4d84bd6769"
     },
     {
       "path": "core/test/test_policy_prerequisite_material_service.ml",
@@ -2928,7 +2928,7 @@
     },
     {
       "path": "tests/test_policy_finite_machine.py",
-      "sha256": "5f732044942f43cb1f6241a0f1d2c90b428428e24e9232a68f3dddbfd862b6da"
+      "sha256": "02e2a6b237b6f7dd84122c1005205bed6636bb7d34ace74699f4fdcdc1dd71d0"
     },
     {
       "path": "tests/test_policy_grounded_helper_campaign.py",
@@ -2968,7 +2968,7 @@
     },
     {
       "path": "tests/test_policy_machine_network.py",
-      "sha256": "29d5e5d2c8b3cfaac4d7b08472e89de27ccf7ea67e765d7a9cc87690e636de82"
+      "sha256": "87ac73e295825f017b867a600ab463c4933669ae7311898676f53562efaeeec3"
     },
     {
       "path": "tests/test_policy_material_consumer.py",
@@ -3032,7 +3032,7 @@
     },
     {
       "path": "tests/test_policy_quantitative.py",
-      "sha256": "2f451dcc5e22de15fe6370e25a5c76663bdbf309926f826b4c920682aebdfb5d"
+      "sha256": "7f70bcc18145f2adc34161cf1f84eaf56c721618c965ac7291d9d2ad9dc75b31"
     },
     {
       "path": "tests/test_policy_quantitative_assurance.py",
@@ -3232,7 +3232,7 @@
     },
     {
       "path": "tools/generate_policy_finite_machine_fixture.py",
-      "sha256": "c8ef22cf31f7b495a362e39d8a89b1ccfc8ae1893aa286a7d6d6618fb3121524"
+      "sha256": "8a4998db04b21ab8365306eaa61b6559435c001a58fc2bfc45a5824b5ea43331"
     },
     {
       "path": "tools/generate_policy_machine_network_fixture.py",

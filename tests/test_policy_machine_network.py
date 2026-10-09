@@ -136,6 +136,26 @@ class NetworkFixtureTests(unittest.TestCase):
         self.assertTrue(any(row['available_tick'] == 4 and row['observation'] == 'sense/condition_b' and row['value'] is True
             for row in shared['request']['operating_domain']['fixed_observations']))
 
+    def test_second_writer_adversary_preserves_complete_source_arbitration(self):
+        document = deepcopy(self.packet['request']['implementation_request']['document'])
+        rows = document['program']['declarations']
+        index = {row['id']: row for row in rows}
+        index['beta/launch_b']['assignments'] = deepcopy(index['alpha/launch_a']['assignments'])
+        invalid = p.check(p.from_data(document, p.BuildRequest))
+        self.assertIn('inconsistent_arbitration', {error.code for error in invalid.errors})
+        self.assertIn('arbitration_order_coverage', {error.code for error in invalid.errors})
+        policy = deepcopy(index['alpha/machine_a']['arbitration'])
+        policy['order'] = [row['id'] for row in rows if row['$type'] == 'Transition']
+        for row in rows:
+            if row['$type'] == 'Machine': row['arbitration'] = deepcopy(policy)
+        checked = p.check(p.from_data(document, p.BuildRequest))
+        self.assertEqual(checked.status, 'complete', checked.to_dict())
+        self.assertEqual({row['machine']['id'] for row in rows if row['$type'] == 'Transition'
+            for assignment in row['assignments'] if assignment['state']['id'] == 'alpha/permit'},
+            {'alpha/machine_a', 'beta/machine_b'})
+        self.assertEqual(index['alpha/machine_a']['arbitration'], index['beta/machine_b']['arbitration'])
+        self.assertEqual(len(policy['order']), 8)
+
     def test_components_all_pins_carriers_exact_rna_and_shared_static_reservation(self):
         request, expected = self.packet['request'], self.packet['expected']
         rule = request['composition_rule']
@@ -205,7 +225,7 @@ class NetworkFixtureTests(unittest.TestCase):
 
     def test_legacy_finite_fixture_bytes_are_unchanged(self):
         self.assertEqual(hashlib.sha256(generator.finite.PATH.read_bytes()).hexdigest(),
-            'bdd3d516b36dd69ecf70e91ab81e006abc89f33b11c5639a68d1e2f08c9383b6')
+            '908215f91399c59f9bed2da6e74c6fc87526fd3e9e110e550928a44058636d16')
 
 
 class NetworkTransportTests(unittest.TestCase):

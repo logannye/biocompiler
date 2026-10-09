@@ -385,11 +385,11 @@
     },
     {
       "path": "core/lib/compiler/policy_component_lowering.ml",
-      "sha256": "f0ff119fde6993d5a231b1298d9db14c95c4233bbbe90d8a740fefb0f718a3e7",
+      "sha256": "98f630fb854026e6d45ea70fb06d94a2a13456d6b5ea04a9ff9f7221afe950a5",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 1,
+          "Diagnostic.fail": 2,
           "Diagnostic.require": 2,
           "supported": 6
         },
@@ -1878,7 +1878,7 @@
     },
     {
       "path": "core/lib/producer_service/policy_target_planning.ml",
-      "sha256": "400a4148b70021c6d1bbe50b5672e64e6e348a566b68c3a8a3e6154dbe862312",
+      "sha256": "587a23d52d9146853d4f9fe94c6ff170a131e46f2641e68b740564c6c303a2f8",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {

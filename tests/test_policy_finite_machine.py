@@ -129,6 +129,39 @@ class FiniteFixtureTests(unittest.TestCase):
         self.assertEqual([row["status"] for row in unknown], ["missing", "missing"])
         self.assertTrue(all(row["unknown"] == "defer" for row in source_rows(updated_request, "Transition")))
 
+    def test_guarded_tail_scope_preserves_all_branches_and_previous_incomplete_authority(self):
+        branch = self.fixture["cases"][1]
+        self.assertEqual(len(self.fixture["incomplete_cases"]), 1)
+        previous = self.fixture["incomplete_cases"][0]
+        self.assertEqual(previous["id"], "guarded_branch_horizon_5_work_limit")
+        self.assertEqual(peer.digest({key: previous[key] for key in ("request", "limits")}),
+            "d6aedac658830616d3d58aac29bb13be0eff00f23a705d91117b4942abb3f341")
+        self.assertEqual(previous["limits"], self.fixture["limits"])
+        self.assertEqual(previous["expected"], {"histories": 110, "transitions": 386,
+            "status": "incomplete", "diagnostic": "policy_preservation_work_limit",
+            "accepted_material": False, "export_diagnostic": "policy_component_material_export_not_accepted"})
+        self.assertEqual((branch["expected"]["histories"], branch["expected"]["transitions"]), (110, 276))
+        current = branch["request"]["implementation_request"]
+        original = previous["request"]["implementation_request"]
+        domain = deepcopy(original["operating_domain"])
+        domain["horizon_ticks"] = 4
+        self.assertEqual(current["operating_domain"], domain)
+        document = deepcopy(original["document"])
+        document["assurance"]["horizon"]["amount"] = "4"
+        for declaration in document["program"]["declarations"]:
+            if declaration["$type"] == "Requirement": declaration["horizon"]["amount"] = "4"
+        self.assertEqual(current["document"], document)
+        for key in ("component_library", "composition_rule", "catalog_binding", "input_bindings", "resource_bindings"):
+            self.assertEqual(branch["request"][key], previous["request"][key])
+        layout = branch["request"]["context"]["record_layout"]
+        self.assertEqual(layout["horizon_ticks"], 4)
+        self.assertEqual(layout["domain_digest"], peer.digest(domain))
+        for provider in branch["request"]["context"]["providers"]:
+            if provider["body"]["kind"] == "environment":
+                self.assertEqual(provider["body"]["grammar"], domain)
+            for capacity in provider["body"].get("capacities", []):
+                self.assertEqual(capacity["record_layout_digest"], peer.digest(layout))
+
     def test_component_material_originals_retain_all_pins_nodes_links_and_exact_sequence(self):
         self.assertEqual(self.fixture["limits"]["candidate"]["max_work"], 10_000_000)
         for case in self.fixture["cases"]:
