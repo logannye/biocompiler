@@ -1,18 +1,13 @@
 open Bioc_wire
 module R = Bioc_domain.Policy_realization_request
 module M = Bioc_domain.Policy_component_material_request
-module O = Bioc_domain.Policy_operational
 module I = Bioc_domain.Policy_implementation
 module F = Bioc_domain.Policy_operating_domain
 module Q = Bioc_domain.Policy_quantitative_network_contract
 module K = Bioc_domain.Construction_content
 module U = Bioc_domain.Policy_component_assembly_proposal
-module Library = Bioc_domain.Policy_component_library
-module Rule = Bioc_domain.Policy_component_assembly_rule
-module Context = Bioc_domain.Policy_component_context
 module RA = Bioc_checker.Policy_realization_admission
 module B = Bioc_checker.Policy_implementation_binding_check
-module Binding = Bioc_domain.Policy_implementation_binding
 module S = Bioc_semantics.Policy_domain_reference
 module Runtime = Bioc_candidate_runtime.Policy_primitives
 module T = Bioc_realization_checker.Policy_trace_correspondence
@@ -40,7 +35,6 @@ let rows key value=Json.array(get key value)
 let text key value=Json.string(get key value)
 let rec at path value=match path with []->value|key::rest->at rest(get key value)
 let set key item value=o(List.map(fun(name,value)->name,if name=key then item else value)(Json.object_fields value))
-let remove key value=o(List.filter(fun(name,_)->name<>key)(Json.object_fields value))
 let rec edit path f value=match path with []->f value|key::rest->set key(edit rest f(get key value))value
 let require condition message=if not condition then failwith message
 let accepted label=function Some value->value|None->failwith(label^" withheld its checked capability")

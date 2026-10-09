@@ -1,15 +1,11 @@
 open Bioc_wire
 module R = Bioc_domain.Policy_realization_request
 module M = Bioc_domain.Policy_component_material_request
-module O = Bioc_domain.Policy_operational
 module I = Bioc_domain.Policy_implementation
 module F = Bioc_domain.Policy_operating_domain
 module Q = Bioc_domain.Policy_quantitative_contract
 module K = Bioc_domain.Construction_content
 module U = Bioc_domain.Policy_component_assembly_proposal
-module Library = Bioc_domain.Policy_component_library
-module Rule = Bioc_domain.Policy_component_assembly_rule
-module Context = Bioc_domain.Policy_component_context
 module RA = Bioc_checker.Policy_realization_admission
 module B = Bioc_checker.Policy_implementation_binding_check
 module Binding = Bioc_domain.Policy_implementation_binding

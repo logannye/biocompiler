@@ -1642,7 +1642,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_quantitative_composition_check.ml",
-      "sha256": "c8314aac636f4903f5fc68a8a5c9329e719101a311a5411a9b15e9b721608a7c",
+      "sha256": "33a4bf304a86e4bd354761383f70b51162462615c089eac7a98c953a30bebce0",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -2808,7 +2808,7 @@
     },
     {
       "path": "core/test/test_policy_network.ml",
-      "sha256": "7acb0faea124b2f690701a37db810e2582f309d8cf208558ee8caf3a535165b8"
+      "sha256": "bcc9459023041fd0d339f8ddfa632a6c3448bc56d2742583614abd1ad97d9736"
     },
     {
       "path": "core/test/test_policy_prerequisite_material_service.ml",
@@ -2828,19 +2828,19 @@
     },
     {
       "path": "core/test/test_policy_quantitative_composition.ml",
-      "sha256": "d7fd2425ce2b05edbea8193c5c75d307df091bb513dd86c823161a5b86739356"
+      "sha256": "2224aace5c454a2de03b8d8f4836e47fdecfb1c569446bf61b4a4c511ec413c8"
     },
     {
       "path": "core/test/test_policy_quantitative_network.ml",
-      "sha256": "09032f9b7e0a663e089caeb7eb521396d16fbc8768c5d22e54176a664025704a"
+      "sha256": "fef92fd7f8f5a63e2471f6bdf39d6bed813512931ae13dfd41fae57837ad4af1"
     },
     {
       "path": "core/test/test_policy_quantitative_step.ml",
-      "sha256": "71942dde26b572d30d986c5f74691214525f6351c2196e9365a1dca4596f5568"
+      "sha256": "25b542b203c64a6c746d3f4eccee4bf3288cd900f41b57bd67da845e8d34ef91"
     },
     {
       "path": "core/test/test_policy_quantitative_transfer.ml",
-      "sha256": "0ef04843485c16e1ab761c48e67d700af793e6a84a136f00e71fce9285ddc89a"
+      "sha256": "04c73d700788700561f4db4986862d6bdcd798ac22faa96c9b9e7fbd54c83626"
     },
     {
       "path": "core/test/test_policy_realization_evidence.ml",

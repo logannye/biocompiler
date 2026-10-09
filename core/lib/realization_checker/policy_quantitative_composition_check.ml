@@ -337,7 +337,7 @@ module Make(Charge:sig val charge:int->unit end)=struct
     let bindings=obj["machine_bank",str actual_bank.node_id;"observation_bank",str actual_input.node_id;
       "observation_input",str observation_binding.input;"attempt_bank",str effect_binding.bank;
       "crossing_sites",Json.Array crossing_sites;
-      "owners",Json.Array(List.map(fun((owner:Cc.owner),register,next)->obj["instance",str owner.instance;"component",Pin.to_json owner.component;
+      "owners",Json.Array(List.map(fun((owner:Cc.owner),register,(next:I.endpoint))->obj["instance",str owner.instance;"component",Pin.to_json owner.component;
         "contract",str owner.contract;"compartment",str owner.compartment;"source_state",str owner.state;"register",str register;
         "next",obj["node",str next.node_id;"port",str next.port_id]])owner_endpoints);
       "transfers",Json.Array(List.map(fun(id,(ep:I.endpoint))->obj["transfer",str id;"endpoint",obj["node",str ep.node_id;"port",str ep.port_id]])flow_endpoints)]in

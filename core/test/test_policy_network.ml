@@ -5,7 +5,6 @@ module I=Bioc_domain.Policy_implementation
 module U=Bioc_domain.Policy_implementation_binding
 module O=Bioc_domain.Policy_operational
 module F=Bioc_domain.Policy_operating_domain
-module D=Bioc_domain.Policy_document
 module A=Bioc_checker.Policy_realization_admission
 module B=Bioc_checker.Policy_implementation_binding_check
 module Source=Bioc_checker.Policy_check
