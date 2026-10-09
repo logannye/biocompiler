@@ -33279,7 +33279,7 @@
     },
     "assurance.composition_grid": {
       "distinction": "Python source and selected-circuit evaluation match the complete independent finite grid; no native checker or empirical execution is inferred.",
-      "file_sha256": "b7f286ad5eda404ea86e39b52409a2530caf865567c5f78de795a60a73581e22",
+      "file_sha256": "632cf9ac6311241be7f0037f474badaeb7e576ba3358f044b0af0c4c56194e7e",
       "path": "tests/test_policy_quantitative_composition.py",
       "role": "positive",
       "symbol": "CompositionQuantitativeTests.test_partitioned_source_and_selected_circuit_match_complete_independent_table",
@@ -33287,7 +33287,7 @@
     },
     "assurance.composition_ownership": {
       "distinction": "Typed explicit private owners reject aliasing and unsupported binary shapes; this is bounded authoring validation, not native preservation.",
-      "file_sha256": "b7f286ad5eda404ea86e39b52409a2530caf865567c5f78de795a60a73581e22",
+      "file_sha256": "632cf9ac6311241be7f0037f474badaeb7e576ba3358f044b0af0c4c56194e7e",
       "path": "tests/test_policy_quantitative_composition.py",
       "role": "rejection",
       "symbol": "CompositionQuantitativeTests.test_explicit_private_ownership_and_binary_shape_reject_aliasing",
@@ -33295,7 +33295,7 @@
     },
     "assurance.composition_transport": {
       "distinction": "Inert transport rejects forged owners, edge allocations and original contract bindings; serialized reports grant no native capability.",
-      "file_sha256": "b7f286ad5eda404ea86e39b52409a2530caf865567c5f78de795a60a73581e22",
+      "file_sha256": "632cf9ac6311241be7f0037f474badaeb7e576ba3358f044b0af0c4c56194e7e",
       "path": "tests/test_policy_quantitative_composition.py",
       "role": "rejection",
       "symbol": "CompositionQuantitativeTests.test_complete_owner_edge_and_original_contract_transport_rejects_forgery",
