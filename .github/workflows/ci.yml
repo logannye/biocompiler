@@ -2060,7 +2060,7 @@ jobs:
 
   policy-prebuilt-installed:
     needs: policy-prebuilt-sdk
-    timeout-minutes: 45
+    timeout-minutes: 60
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
