@@ -287,7 +287,7 @@ let ()=
   require(Json.equal replayed produced)"Fresh sampled-step replay changed the full wrapper";
   let exported=call Service.handle Protocol.Verify "export-policy-component-material" invocation in
   let artifact=get "artifact" exported and expected=get "expected" fixture in
-  require(at["construction";"inventory";"molecules"]candidate=a[get "molecule" expected] &&
+  require(Json.equal(at["construction";"inventory";"molecules"]candidate)(a[get "molecule" expected]) &&
     get "fasta" artifact=s(">rna_0001 alphabet=RNA\n"^text "sequence" expected^"\n"))
     "Sampled-step source/effect correspondence lost exact declared RNA identity";
   let manifest=get "manifest" artifact in

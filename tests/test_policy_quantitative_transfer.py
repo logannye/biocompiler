@@ -62,6 +62,7 @@ class TransferQuantitativeTests(unittest.TestCase):
 
     def test_fixture_independent_original_pins_and_bounded_execution_premises(self):
         self.assertEqual(generator.build(), self.packet)
+        step.assert_boundary_inventory(self, self.request)
         self.assertEqual(p.check(self.document).status, "complete")
         domain = self.request["implementation_request"]["operating_domain"]
         self.assertEqual(domain["horizon_ticks"], 12)
@@ -218,8 +219,8 @@ class TransferQuantitativeTests(unittest.TestCase):
         self.assertTrue(parse_report.call_args.kwargs["multi_site"])
 
     def test_existing_scalar_and_step_fixtures_remain_frozen(self):
-        self.assertEqual(hashlib.sha256(legacy.generator.PATH.read_bytes()).hexdigest(), "22c1f47c3fbb135bb51df9dfd22530bac347a206e6575de4806b58bd4f36227b")
-        self.assertEqual(hashlib.sha256(step.generator.PATH.read_bytes()).hexdigest(), "2fefcdb64ea2e955683cdc6b122f7804e6ca4c1cb78d51554b04ad8c6cbf5041")
+        self.assertEqual(hashlib.sha256(legacy.generator.PATH.read_bytes()).hexdigest(), "f57665997f2d36d90e24aaa9b4543142efa333044871ec51d3dee5d0d8401f87")
+        self.assertEqual(hashlib.sha256(step.generator.PATH.read_bytes()).hexdigest(), "9054c1f97922ff7f8de58aeffab2def7c6a6094338c3e0666505e44525bf0662")
 
 
 if __name__ == "__main__": unittest.main()

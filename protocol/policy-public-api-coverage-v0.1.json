@@ -33087,7 +33087,7 @@
   "witnesses": {
     "assurance.approximation_chain": {
       "distinction": "Typed chain rejects changed nominal middle endpoints, observation maps, complete units and sample clocks; Python proposals mint no refinement evidence.",
-      "file_sha256": "bfbaad11f579f40db3077c38d311766aa0adc4455b34bfe83d60be371f42b9f0",
+      "file_sha256": "bc173242b2d4494d26fd8d2abe4d0564995a9624004adf529fca9116c4a91f14",
       "path": "tests/test_policy_approximation.py",
       "role": "rejection",
       "symbol": "ApproximationAuthoringTests.test_chain_rejects_spliced_model_map_unit_and_clock",
@@ -33095,7 +33095,7 @@
     },
     "assurance.approximation_exact": {
       "distinction": "Exact rational authoring preserves nonnegative normalized numerical bounds without ambient decimal rounding; not checked model agreement.",
-      "file_sha256": "bfbaad11f579f40db3077c38d311766aa0adc4455b34bfe83d60be371f42b9f0",
+      "file_sha256": "bc173242b2d4494d26fd8d2abe4d0564995a9624004adf529fca9116c4a91f14",
       "path": "tests/test_policy_approximation.py",
       "role": "positive",
       "symbol": "ApproximationAuthoringTests.test_exact_rational_budget_has_no_decimal_rounding",
@@ -33103,7 +33103,7 @@
     },
     "assurance.approximation_grid": {
       "distinction": "Python authoring retains complete finite quantum-aligned intervals, nominal inclusion and Cartesian bounds; no continuous uncertainty or native error guarantee.",
-      "file_sha256": "bfbaad11f579f40db3077c38d311766aa0adc4455b34bfe83d60be371f42b9f0",
+      "file_sha256": "bc173242b2d4494d26fd8d2abe4d0564995a9624004adf529fca9116c4a91f14",
       "path": "tests/test_policy_approximation.py",
       "role": "mixed",
       "symbol": "ApproximationAuthoringTests.test_complete_closed_uncertainty_grid_is_bounded_and_nominal",
@@ -33663,7 +33663,7 @@
     },
     "quantitative.grid": {
       "distinction": "Exact fractional amount grid is independent of Decimal precision, preserves original full quantities, and does not extend the source Record registry.",
-      "file_sha256": "5fef3109aee3167418c4fea0d0fdee3de9784a98dae54579d3f057d4a6a54797",
+      "file_sha256": "509e98e7cccabfb03ca5a52b92b3217dc3d4d42de5a1f2ff3bc4b9d55528b6dc",
       "path": "tests/test_policy_quantitative.py",
       "role": "positive",
       "symbol": "QuantitativeTests.test_exact_law_and_grid_ignore_decimal_context_and_do_not_extend_source_records",
@@ -33671,7 +33671,7 @@
     },
     "quantitative.nominal": {
       "distinction": "Authoring rejects mismatched full nominal units, off-grid quantities, invalid bounds, referenced sample clocks, and binary float input.",
-      "file_sha256": "5fef3109aee3167418c4fea0d0fdee3de9784a98dae54579d3f057d4a6a54797",
+      "file_sha256": "509e98e7cccabfb03ca5a52b92b3217dc3d4d42de5a1f2ff3bc4b9d55528b6dc",
       "path": "tests/test_policy_quantitative.py",
       "role": "rejection",
       "symbol": "QuantitativeTests.test_nominal_units_exact_grid_bounds_and_float_inputs_reject",
@@ -33679,7 +33679,7 @@
     },
     "quantitative.selection": {
       "distinction": "Original law, complete selected component identity, nominal source selection, and prepared original request are retained in independent snapshots isolated from subsequent input mutation.",
-      "file_sha256": "5fef3109aee3167418c4fea0d0fdee3de9784a98dae54579d3f057d4a6a54797",
+      "file_sha256": "509e98e7cccabfb03ca5a52b92b3217dc3d4d42de5a1f2ff3bc4b9d55528b6dc",
       "path": "tests/test_policy_quantitative.py",
       "role": "positive",
       "symbol": "QuantitativeTests.test_binding_snapshots_original_law_selected_full_pin_and_nominal_source",
@@ -33687,7 +33687,7 @@
     },
     "quantitative.source": {
       "distinction": "Reservoir source transition expansion equals an independently authored eight-transition machine and rejects mismatched local source contracts; no native law acceptance.",
-      "file_sha256": "5fef3109aee3167418c4fea0d0fdee3de9784a98dae54579d3f057d4a6a54797",
+      "file_sha256": "509e98e7cccabfb03ca5a52b92b3217dc3d4d42de5a1f2ff3bc4b9d55528b6dc",
       "path": "tests/test_policy_quantitative.py",
       "role": "mixed",
       "symbol": "QuantitativeTests.test_transition_expansion_matches_independently_authored_source",
@@ -34535,7 +34535,7 @@
     },
     "step_quantitative.grid": {
       "distinction": "Exact Python expansion matches independently authored source transition literals at two distinct request sites; no native preservation or biological claim.",
-      "file_sha256": "2600e3d7d3096f9f697d3e31da1635011dac71bad86155503f53425351215121",
+      "file_sha256": "59710ffa0d510f5b3fea080d3e412130c71a37cbb5297c2407388fb4a5d75fe0",
       "path": "tests/test_policy_quantitative_step.py",
       "role": "positive",
       "symbol": "StepQuantitativeTests.test_grid_and_two_distinct_crossings_match_literal_source",
@@ -34543,7 +34543,7 @@
     },
     "step_quantitative.rejection": {
       "distinction": "Python authoring rejects nonpositive, off-grid, oversized and nominally mismatched steps before transport; no native admission or empirical validity claim.",
-      "file_sha256": "2600e3d7d3096f9f697d3e31da1635011dac71bad86155503f53425351215121",
+      "file_sha256": "59710ffa0d510f5b3fea080d3e412130c71a37cbb5297c2407388fb4a5d75fe0",
       "path": "tests/test_policy_quantitative_step.py",
       "role": "rejection",
       "symbol": "StepQuantitativeTests.test_invalid_step_units_grid_and_bounds_fail_before_transport",
@@ -34551,7 +34551,7 @@
     },
     "step_quantitative.shape": {
       "distinction": "A separately specified six-state law checks asymmetric decline and three upward crossing sites against literal expected transitions; no native execution or material acceptance.",
-      "file_sha256": "2600e3d7d3096f9f697d3e31da1635011dac71bad86155503f53425351215121",
+      "file_sha256": "59710ffa0d510f5b3fea080d3e412130c71a37cbb5297c2407388fb4a5d75fe0",
       "path": "tests/test_policy_quantitative_step.py",
       "role": "positive",
       "symbol": "StepQuantitativeTests.test_distinct_three_site_shape_and_larger_decline",
@@ -34671,7 +34671,7 @@
     },
     "transfer_network.cycle": {
       "distinction": "A separately specified two-reservoir cycle retains nonzero-flow self-transitions despite unchanged net state; no native execution or measured edge-flux claim.",
-      "file_sha256": "e5ee9db2c9a31f3d1ed882aec2f1c6cf5e03e235045e79ad4d56e45363586b5f",
+      "file_sha256": "c3aeca915034b4fa7e1bc5679185da23b600cb2e99e957ab82eb90cf7a5419ea",
       "path": "tests/test_policy_quantitative_network.py",
       "role": "positive",
       "symbol": "NetworkQuantitativeTests.test_circulating_positive_flow_retains_net_zero_self_transition",
@@ -34679,7 +34679,7 @@
     },
     "transfer_network.grid": {
       "distinction": "Exact Python expansion matches independent sparse network transition and ordered flow literals; no native preservation or biological claim.",
-      "file_sha256": "e5ee9db2c9a31f3d1ed882aec2f1c6cf5e03e235045e79ad4d56e45363586b5f",
+      "file_sha256": "c3aeca915034b4fa7e1bc5679185da23b600cb2e99e957ab82eb90cf7a5419ea",
       "path": "tests/test_policy_quantitative_network.py",
       "role": "positive",
       "symbol": "NetworkQuantitativeTests.test_sparse_expansion_matches_independent_source_flows_and_complete_table",
@@ -34687,7 +34687,7 @@
     },
     "transfer_network.rejection": {
       "distinction": "Python authoring rejects endpoint aliasing, mismatched units, inexact quantities and unsupported edge/grid bounds before transport; no native admission or empirical claim.",
-      "file_sha256": "e5ee9db2c9a31f3d1ed882aec2f1c6cf5e03e235045e79ad4d56e45363586b5f",
+      "file_sha256": "c3aeca915034b4fa7e1bc5679185da23b600cb2e99e957ab82eb90cf7a5419ea",
       "path": "tests/test_policy_quantitative_network.py",
       "role": "rejection",
       "symbol": "NetworkQuantitativeTests.test_rejects_aliasing_units_inexact_grids_edges_and_product_overflow",
@@ -34695,7 +34695,7 @@
     },
     "transfer_network.shape": {
       "distinction": "A sixteen-state four-reservoir chain checks no incoming-stock reuse and concurrent atomic deltas against literal endpoints; no native execution or material acceptance.",
-      "file_sha256": "e5ee9db2c9a31f3d1ed882aec2f1c6cf5e03e235045e79ad4d56e45363586b5f",
+      "file_sha256": "c3aeca915034b4fa7e1bc5679185da23b600cb2e99e957ab82eb90cf7a5419ea",
       "path": "tests/test_policy_quantitative_network.py",
       "role": "positive",
       "symbol": "NetworkQuantitativeTests.test_four_reservoir_chain_preserves_prestate_no_cascade",
@@ -34703,7 +34703,7 @@
     },
     "transfer_network.snapshot": {
       "distinction": "Original network and selected owner snapshots retain explicit versioned authority; inert Python routing is not native component or material acceptance.",
-      "file_sha256": "e5ee9db2c9a31f3d1ed882aec2f1c6cf5e03e235045e79ad4d56e45363586b5f",
+      "file_sha256": "c3aeca915034b4fa7e1bc5679185da23b600cb2e99e957ab82eb90cf7a5419ea",
       "path": "tests/test_policy_quantitative_network.py",
       "role": "positive",
       "symbol": "NetworkQuantitativeTests.test_original_authority_snapshot_and_explicit_profile_routing",
@@ -34711,7 +34711,7 @@
     },
     "transfer_pair.grid": {
       "distinction": "Exact Python expansion matches independently authored sparse transfer transitions and complete quantity-vector literals; no native preservation or biological claim.",
-      "file_sha256": "265d7fc389241a15cc55fcbf1d8e3ce63bcf69346b7026a9d1fb07a6427e02b6",
+      "file_sha256": "8d3d1337988f198cd212193f2f66a0da5ccef539c4c242070f677ad7d8aaaef4",
       "path": "tests/test_policy_quantitative_transfer.py",
       "role": "positive",
       "symbol": "TransferQuantitativeTests.test_sparse_expansion_matches_independent_source_and_complete_table",
@@ -34719,7 +34719,7 @@
     },
     "transfer_pair.rejection": {
       "distinction": "Python authoring rejects compartment aliasing, nominally mismatched units, invalid grids and Cartesian bounds before transport; no native admission or empirical validity claim.",
-      "file_sha256": "265d7fc389241a15cc55fcbf1d8e3ce63bcf69346b7026a9d1fb07a6427e02b6",
+      "file_sha256": "8d3d1337988f198cd212193f2f66a0da5ccef539c4c242070f677ad7d8aaaef4",
       "path": "tests/test_policy_quantitative_transfer.py",
       "role": "rejection",
       "symbol": "TransferQuantitativeTests.test_rejects_aliasing_units_inexact_grids_and_product_overflow",
@@ -34727,7 +34727,7 @@
     },
     "transfer_pair.shape": {
       "distinction": "A separately specified sixteen-state Cartesian grid checks saturated bidirectional transfer and omitted zero-transfer stutters against literal endpoints; no native execution or material acceptance.",
-      "file_sha256": "265d7fc389241a15cc55fcbf1d8e3ce63bcf69346b7026a9d1fb07a6427e02b6",
+      "file_sha256": "8d3d1337988f198cd212193f2f66a0da5ccef539c4c242070f677ad7d8aaaef4",
       "path": "tests/test_policy_quantitative_transfer.py",
       "role": "positive",
       "symbol": "TransferQuantitativeTests.test_maximal_four_by_four_shape_uses_saturation_and_sparse_stuttering",
@@ -34735,7 +34735,7 @@
     },
     "transfer_pair.snapshot": {
       "distinction": "Original pair law and component pin snapshots retain explicit versioned transport authority; inert Python routing is not native component or material acceptance.",
-      "file_sha256": "265d7fc389241a15cc55fcbf1d8e3ce63bcf69346b7026a9d1fb07a6427e02b6",
+      "file_sha256": "8d3d1337988f198cd212193f2f66a0da5ccef539c4c242070f677ad7d8aaaef4",
       "path": "tests/test_policy_quantitative_transfer.py",
       "role": "positive",
       "symbol": "TransferQuantitativeTests.test_original_authority_snapshot_and_explicit_profile_routing",

@@ -88,6 +88,11 @@ class QuantitativeTests(unittest.TestCase):
         self.assertEqual([row["status"] for row in domain["fixed_observations"] if row["available_tick"] == 3], ["missing", "missing"])
         self.assertFalse(any(row["available_tick"] == 6 for row in domain["fixed_observations"]))
         self.assertTrue(all(row["available_tick"] == row["observed_tick"] for row in domain["fixed_observations"]))
+        nodes = self.packet["expected"]["ordered_union"]["nodes"]
+        self.assertEqual(len(nodes), 22)
+        self.assertNotIn("truth_constant", [row["model"]["body"]["primitive"] for row in nodes])
+        self.assertEqual(sum(row["model"]["body"]["primitive"] == "truth_not" for row in nodes), 1)
+        self.assertEqual(self.packet["limits"]["candidate"]["max_work"], 10_000_000)
         self.assertEqual(hashlib.sha256((generator.ROOT / "core/test/data/policy_finite_machine_v01.json").read_bytes()).hexdigest(),
                          "42cb98f72f1e99ce255475eca982cda6dd40ca2c9ac990c3bbcc0aec7c289024")
 

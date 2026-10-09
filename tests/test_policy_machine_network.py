@@ -140,6 +140,17 @@ class NetworkFixtureTests(unittest.TestCase):
         request, expected = self.packet['request'], self.packet['expected']
         rule = request['composition_rule']
         self.assertEqual(peer.digest(rule['body']), rule['identity']['content_fingerprint'])
+        control = request['component_library']['components'][0]['body']
+        self.assertEqual([row['id'] for row in control['provider_requirements']], [
+            'condition_a.input', 'condition_b.input',
+            'condition_a.input_rows_per_tick.per_encounter_slot',
+            'condition_b.input_rows_per_tick.per_encounter_slot',
+            'evidence_a.evidence_records.per_encounter_slot', 'evidence_a.timer_cells.per_encounter_slot',
+            'evidence_b.evidence_records.per_encounter_slot', 'evidence_b.timer_cells.per_encounter_slot',
+            'permit.truth_cells.per_encounter_slot',
+            'machine_a.machine_state_bits.per_encounter_slot', 'machine_a.machine_correlation_records.per_encounter_slot',
+            'machine_b.machine_state_bits.per_encounter_slot', 'machine_b.machine_correlation_records.per_encounter_slot',
+        ])
         for component in request['component_library']['components']:
             self.assertEqual(peer.digest(component['body']), component['identity']['content_fingerprint'])
             carriers = [row['target'] for row in component['body']['carriers']]

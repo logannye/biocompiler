@@ -635,7 +635,7 @@ def check_boundaries(root: Path):
                     "test_policy_staged_generation": ["policy_staged_realization_request_v01.json"],
                     "test_policy_admitted_ir": ["policy_operational_v01.json", "policy_staged_regimen_source_v01.json", "policy_implementation_binding_v01.json"],
                     "test_policy_finite_machine": ["policy_finite_machine_v01.json"],
-                    'test_policy_quantitative_composition': ['policy_quantitative_composition_v01.json'],
+                    'test_policy_quantitative_composition': ['policy_quantitative_composition_v01.json', 'policy_quantitative_network_v01.json'],
                     'test_policy_approximation': ['policy_approximation_v01.json'],
                     'test_policy_realization_evidence': ['policy_realization_evidence_v01.json', 'policy_quantitative_network_v01.json'],
                     'test_policy_quantitative_assurance': ['policy_approximation_v01.json', 'policy_realization_evidence_v01.json', 'policy_quantitative_network_v01.json', 'policy_quantitative_composition_v01.json'],

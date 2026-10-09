@@ -17,6 +17,33 @@ from tests import test_policy_finite_machine as finite, test_policy_quantitative
 from tools import generate_policy_quantitative_step_fixture as generator
 
 
+def assert_boundary_inventory(case, request):
+    """Boundary identity and endpoint identity are independently unique."""
+    components = {row["identity"]["id"]: row for row in request["component_library"]["components"]}
+    rule = request["composition_rule"]["body"]
+    boundaries = {}
+    for selected in rule["components"]:
+        ports = components[selected["component"]["id"]]["body"]["fragment"]["boundary_ports"]
+        case.assertEqual(len({row["id"] for row in ports}), len(ports))
+        case.assertEqual(len({(row["endpoint"]["node"], row["endpoint"]["port"]) for row in ports}), len(ports))
+        boundaries.update({(selected["slot"], row["id"]): row for row in ports})
+    used, consumers = set(), []
+    for link in rule["links"]:
+        for side, direction in (("producer", "output"), ("consumer", "input")):
+            key = link[side]["slot"], link[side]["boundary"]
+            case.assertIn(key, boundaries)
+            case.assertEqual(boundaries[key]["direction"], direction)
+            case.assertEqual(boundaries[key]["signal_type"], link["signal_type"])
+            used.add(key)
+            if side == "consumer": consumers.append(key)
+    case.assertEqual(used, set(boundaries))
+    case.assertEqual(len(consumers), len(set(consumers)))
+    for suffix in ("product", "authorization"):
+        links = [row for row in rule["links"] if row["id"].startswith("response." + suffix)]
+        case.assertGreater(len(links), 1)
+        case.assertEqual(len({(row["producer"]["slot"], row["producer"]["boundary"]) for row in links}), 1)
+
+
 def law():
     return q.SampledStepReservoir(substance="fixture.reservoir.amount", compartment="fixture.executor.reservoir", unit=p.COUNT,
         quantum=p.quantity(1, p.COUNT), capacity=p.quantity(4, p.COUNT), threshold=p.quantity(3, p.COUNT),
@@ -67,6 +94,7 @@ class StepQuantitativeTests(unittest.TestCase):
 
     def test_literal_fixture_complete_pins_source_ports_and_exact_rna(self):
         self.assertEqual(generator.build(), self.packet)
+        assert_boundary_inventory(self, self.request)
         self.assertLess(generator.PATH.stat().st_size, 1_000_000)
         self.assertEqual(p.check(self.document).status, "complete")
         self.assertEqual(p.to_data(self.document), self.request["implementation_request"]["document"])
@@ -96,6 +124,17 @@ class StepQuantitativeTests(unittest.TestCase):
         self.assertEqual([row["endpoint"]["port"] for row in actuator["boundary_ports"] if row["id"].startswith("response.request")], ["request0", "request1"])
         for provider in self.request["context"]["providers"]:
             self.assertEqual(generator.shared.digest(provider["body"]), provider["identity"]["content_fingerprint"])
+
+    def test_boundary_coalescing_rejects_conflicting_interfaces_and_duplicate_inputs(self):
+        boundary = {"id": "first", "direction": "output", "signal_type": "truth_value",
+                    "endpoint": {"node": "evidence", "port": "value"}}
+        for changes in ({"signal_type": "product_symbol"}, {"direction": "input"}, {"scope": "different"}):
+            fragment = {"boundary_ports": [deepcopy(boundary), {**deepcopy(boundary), "id": "second", **changes}]}
+            with self.subTest(changes=changes), self.assertRaises(AssertionError):
+                generator.coalesce_output_boundaries({"control": fragment}, [])
+        inputs = [{**deepcopy(boundary), "id": name, "direction": "input"} for name in ("first", "second")]
+        with self.assertRaises(AssertionError):
+            generator.coalesce_output_boundaries({"control": {"boundary_ports": inputs}}, [])
 
     def test_grid_and_two_distinct_crossings_match_literal_source(self):
         value = law()
@@ -266,7 +305,7 @@ class StepQuantitativeTests(unittest.TestCase):
 
     def test_existing_law_fixture_bytes_remain_frozen(self):
         self.assertEqual(hashlib.sha256(legacy.generator.PATH.read_bytes()).hexdigest(),
-                         "22c1f47c3fbb135bb51df9dfd22530bac347a206e6575de4806b58bd4f36227b")
+                         "f57665997f2d36d90e24aaa9b4543142efa333044871ec51d3dee5d0d8401f87")
 
 
 if __name__ == "__main__": unittest.main()

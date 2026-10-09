@@ -220,7 +220,7 @@ let case limits row=
   require(Json.equal exported(call Producer.handle Protocol.Core "export-policy-component-material" invocation))
     "Core and Verify paired finite exports differ";
   let artifact=get "artifact" exported and molecule=get "molecule" expected in
-  require(at["construction";"inventory";"molecules"]candidate=a[molecule] && get "sequence" molecule=get "sequence" expected)
+  require(Json.equal(at["construction";"inventory";"molecules"]candidate)(a[molecule]) && get "sequence" molecule=get "sequence" expected)
     "Finite material differs from independently retained exact RNA authority";
   let sequence=text "sequence" expected in
   let fasta=">rna_0001 alphabet=RNA\n"^sequence^"\n"in

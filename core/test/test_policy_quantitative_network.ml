@@ -270,7 +270,7 @@ let ()=
   let effect_value=List.hd(B.effects bound)in
   require(List.length(B.effects bound)=1 && List.map(fun(value:B.effect_site)->value.initiating_rule)effect_value.request_sites=
     ["forward4";"forward5"] && at["bindings";"attempt_bank"]summary=s effect_value.bank &&
-    List.length(B.transitions bound)=7 && List.length(I.nodes(B.implementation bound))=21)
+    List.length(B.transitions bound)=7 && List.length(I.nodes(B.implementation bound))=20)
     "Joint transfer ownership or sparse source/graph inventory changed";
   selected_trace bound false;
   selected_trace bound true;
@@ -381,7 +381,7 @@ let ()=
   require(Json.equal(get "report" verified)report)"Independent verify service changed fresh network evidence";
   let exported=call Service.handle Protocol.Verify "export-policy-component-material" invocation in
   let artifact=get "artifact" exported and expected=get "expected" fixture in
-  require(at["construction";"inventory";"molecules"]candidate=a[get "molecule" expected] &&
+  require(Json.equal(at["construction";"inventory";"molecules"]candidate)(a[get "molecule" expected]) &&
     get "fasta" artifact=s(">rna_0001 alphabet=RNA\n"^text "sequence" expected^"\n"))
     "Reserved network/source correspondence lost exact supplied RNA identity";
   let manifest=get "manifest" artifact in

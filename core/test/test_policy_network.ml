@@ -363,7 +363,7 @@ let ()=
     get "manifest_sha256" artifact=s(Canonical.fingerprint manifest) &&
     get "material_manifest_sha256" manifest=get "manifest_sha256" child)
     "Exact paired network RNA export lost original authority or changed literal bases";
-  require(at["construction";"inventory";"molecules"]candidate=a[get "molecule" expected])
+  require(Json.equal(at["construction";"inventory";"molecules"]candidate)(a[get "molecule" expected]))
     "Network realization differs from the independently supplied exact RNA molecule";
   let raw=get "implementation_request" request in
   let bound=bind raw candidate in

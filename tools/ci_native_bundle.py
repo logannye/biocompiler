@@ -24,7 +24,7 @@ except ImportError:
 
 
 DEPENDENCY_FIXTURES = {
-    'test_policy_quantitative_composition': ['data/policy_quantitative_composition_v01.json'],
+    'test_policy_quantitative_composition': ['data/policy_quantitative_composition_v01.json', 'data/policy_quantitative_network_v01.json'],
     'test_policy_approximation': ['data/policy_approximation_v01.json'],
     'test_policy_realization_evidence': ['data/policy_realization_evidence_v01.json', 'data/policy_quantitative_network_v01.json'],
     'test_policy_quantitative_assurance': ['data/policy_approximation_v01.json', 'data/policy_realization_evidence_v01.json', 'data/policy_quantitative_network_v01.json', 'data/policy_quantitative_composition_v01.json'],

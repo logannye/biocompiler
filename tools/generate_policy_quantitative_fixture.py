@@ -112,9 +112,13 @@ def build():
         for state, positive, negative, requested in (("q0", "q1", "q0", False), ("q1", "q2", "q0", True),
                                                     ("q2", "q3", "q1", False), ("q3", "q3", "q2", False))
         for truth, destination, requested in (("true", positive, requested), ("false", negative, False), ("unknown", state, False))]
+    limits = shared.original()["limits"]
+    # Sixteen complete ticks publish at least two inventories of 63 live
+    # output rows; their fixed charges alone exceed the old one-million cap.
+    limits["candidate"]["max_work"] = 10_000_000
     return {"schema_version": "biocompiler.policy_quantitative_literals.v0.1",
         "notice": "Artificial supplied quantitative component-to-RNA contract. No native acceptance or biological evidence is asserted.",
-        "seed_sha256": shared.SEED_SHA256, "request": request, "limits": shared.original()["limits"],
+        "seed_sha256": shared.SEED_SHA256, "request": request, "limits": limits,
         "expected": {"molecule": molecule, "sequence": "CCAUGGCUUAAGGAAAA", "ordered_union": union, "table": table,
             "states": STATES, "levels": LEVELS, "crossing_transition": "up1", "crossing_commit": "commit2"}}
 

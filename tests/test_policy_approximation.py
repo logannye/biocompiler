@@ -169,7 +169,7 @@ class ApproximationAuthoringTests(unittest.TestCase):
         self.assertEqual(self.packet["expected"]["prefix_error_after_one_sample"], [1, 1])
 
     def test_previous_network_fixture_bytes_stay_frozen(self):
-        self.assertEqual(hashlib.sha256(previous.PATH.read_bytes()).hexdigest(), "1a8af7b189a66d43e4c143dc472333df16ae9966146f0a35e9be257fd203ee41")
+        self.assertEqual(hashlib.sha256(previous.PATH.read_bytes()).hexdigest(), "cd025d9ae0a12d547feadb5102c883a36bdb71813635d732543f20cdef3e7f21")
 
     def test_closed_original_decoder_roundtrip_and_rejections(self):
         original = self.packet["approximation"]

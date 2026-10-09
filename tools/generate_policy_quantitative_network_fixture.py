@@ -11,8 +11,10 @@ from pathlib import Path
 from biocompiler import policy as p
 try:
     import generate_policy_finite_machine_fixture as finite
+    from generate_policy_quantitative_step_fixture import coalesce_output_boundaries
 except ModuleNotFoundError:
     from tools import generate_policy_finite_machine_fixture as finite
+    from tools.generate_policy_quantitative_step_fixture import coalesce_output_boundaries
 
 shared = finite.shared
 ROOT = Path(__file__).resolve().parents[1]
@@ -90,6 +92,7 @@ def declared_fragments():
         seen[identity] = index + 1
         link["id"] = identity + str(index)
         for end in ("producer", "consumer"): link[end]["boundary"] += str(index)
+    coalesce_output_boundaries(fragments, links)
     return library, fragments, links
 
 

@@ -117,8 +117,12 @@ def declared_fragments(spec):
     count = len(spec["transitions"])
     control = [node("evidence", "evidence_bank", {"freshness_ticks": 10}),
         node("machine", "machine_bank", {"states": spec["states"], "initial": "ready", "terminal": spec["terminal"],
-            "writers": count, "retained_capacity": 1}), node("true", "truth_constant", {"value": "true"}),
-        node("arbiter", "exclusive_arbiter", {"lanes": count})]
+            "writers": count, "retained_capacity": 1})]
+    # A literal primitive is a source occurrence, not an implicit helper. The
+    # quantitative shapes use only the observation and its negation as guards.
+    if any(row[4] == "true" for row in spec["transitions"]):
+        control.append(node("true", "truth_constant", {"value": "true"}))
+    control.append(node("arbiter", "exclusive_arbiter", {"lanes": count}))
     cwires = []
     if any(row[3] == "rising" for row in spec["transitions"]):
         control.append(node("edge", "observed_rising", {})); cwires.append(shared.wire("evidence", "value", "edge", "in"))

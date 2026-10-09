@@ -146,6 +146,8 @@ class FiniteFixtureTests(unittest.TestCase):
                         for kind in ("primitive", "configuration", "replication"):
                             self.assertIn({"kind": kind, "id": node["id"]}, [row["target"] for row in body["carriers"]])
                 self.assertEqual(len(expected["ordered_union"]["nodes"]), expected["node_count"])
+                self.assertEqual(sum(row["model"]["body"]["primitive"] == "truth_constant"
+                    for row in expected["ordered_union"]["nodes"]), 1)
                 self.assertEqual(len(rule["body"]["links"]), expected["link_count"])
                 self.assertEqual(expected["molecule"]["sequence"], "CCAUGGCUUAAGGAAAA")
                 self.assertEqual(expected["sequence"], expected["molecule"]["sequence"])

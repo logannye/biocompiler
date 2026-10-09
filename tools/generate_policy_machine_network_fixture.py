@@ -259,7 +259,12 @@ def build():
             if row.get("unit") in ("active_attempt_records", "timer_cells") and row["owner"]["id"].startswith("response_"):
                 row["minimum"] = 12
         if slot == "control":
-            component["body"]["provider_requirements"].append({"kind": "capacity", "id": "permit.truth_cells.per_encounter_slot",
+            requirements = component["body"]["provider_requirements"]
+            # The supplied permit register precedes both machine banks. Its
+            # capacity belongs at that same point in the local node inventory.
+            first_machine = next(index for index, row in enumerate(requirements)
+                if row.get("owner") == {"kind": "node", "id": "machine_a"})
+            requirements.insert(first_machine, {"kind": "capacity", "id": "permit.truth_cells.per_encounter_slot",
                 "owner": {"kind": "node", "id": "permit"}, "unit": "truth_cells", "scope": "per_encounter_slot", "minimum": 1})
         component["identity"]["content_fingerprint"] = shared.digest(component["body"])
     rule["body"]["components"] = [{"slot": slot, "component": value["identity"]} for slot, value in components.items()]
