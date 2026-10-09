@@ -2478,7 +2478,7 @@
     },
     {
       "path": "core/test/test_policy_quantitative_network.ml",
-      "sha256": "1cacf471e873280c29a784a1084fde36784cb96f0b6b2611072db02f97a9179f"
+      "sha256": "e7cb706568a2b39b39d19532026c6e5abdd3a0c44c2104e7a5210f4a76f30a78"
     },
     {
       "path": "core/test/test_policy_quantitative_step.ml",
@@ -2486,7 +2486,7 @@
     },
     {
       "path": "core/test/test_policy_quantitative_transfer.ml",
-      "sha256": "e2a7b797ef17634c598b7e2077e7608f8b814c3707af544094cef62767f4a133"
+      "sha256": "fb5511a3a30b8d0d7470bbc801a0f613f96a784d80d455540fd096e7a224b1b7"
     },
     {
       "path": "core/test/test_policy_refinement.ml",
@@ -2514,7 +2514,7 @@
     },
     {
       "path": "core/test/test_policy_target_planning.ml",
-      "sha256": "9c6d22ea274b71376224879a259235bf3b96a8c9dc47dfced76db73571368f89"
+      "sha256": "be4fbf847572a4c5480fe27278f137dad286091eee64d39fb8d8ece06511d73e"
     },
     {
       "path": "core/test/test_policy_two_observation_material_service.ml",
