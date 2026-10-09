@@ -155,11 +155,21 @@ COMPONENT_GROUNDED_HELPER_SOURCES = tuple(
     ("architecture_contract", "policy_mrna_structure") for suffix in ("ml", "mli"))
 COMPONENT_CONGRUENCE_SOURCES = tuple(
     f"core/lib/realization_checker/policy_preservation_check.{suffix}" for suffix in ("ml", "mli"))
+COMPONENT_REFINEMENT_SOURCES = tuple(sorted([
+    *[f"core/lib/{directory}/{name}.{suffix}" for directory, name in (
+        ("domain", "policy_refinement"), ("realization_checker", "policy_refinement_check"),
+        ("service", "policy_refinement_service"),
+    ) for suffix in ("ml", "mli")],
+    "src/biocompiler/core_policy_refinement.py", "src/biocompiler/policy/refinement.py",
+]))
 COMPONENT_SOURCES = tuple(sorted((*COMPONENT_ROUTE_SOURCES, *COMPONENT_SHARED_SOURCES,
                                   *COMPONENT_STAGED_SOURCES, *COMPONENT_MULTI_MEMBER_SOURCES,
-                                  *COMPONENT_GROUNDED_HELPER_SOURCES, *COMPONENT_CONGRUENCE_SOURCES)))
+                                  *COMPONENT_GROUNDED_HELPER_SOURCES, *COMPONENT_CONGRUENCE_SOURCES,
+                                  *COMPONENT_REFINEMENT_SOURCES)))
 COMPONENT_REASON = "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+REFINEMENT_REASON = "Separate named summaries of fresh component-route checker capabilities; no original whole-kernel admission or export authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
 ROUTE_EXCEPTIONS.update({path: COMPONENT_REASON for path in COMPONENT_ROUTE_SOURCES})
+ROUTE_EXCEPTIONS.update({path: REFINEMENT_REASON for path in COMPONENT_REFINEMENT_SOURCES})
 ROUTE_EXCEPTIONS.update({f"core/lib/compiler/policy_staged_lowering.{suffix}":
     "Separate versioned staged component route; no original whole-kernel material admission authority."
     for suffix in ("ml", "mli")})
@@ -169,6 +179,7 @@ EXTRA_SOURCES += ("core/lib/domain/architecture_contract.ml", "core/lib/domain/a
                   "src/biocompiler/core_policy_component_selection.py", "src/biocompiler/policy/component_selection.py",
                   "src/biocompiler/core_policy_implementation.py", "src/biocompiler/policy/patterns.py",
                   "src/biocompiler/policy/implementation.py")
+EXTRA_SOURCES += tuple(path for path in COMPONENT_REFINEMENT_SOURCES if path.endswith(".py"))
 COMPONENT_LEDGER = "protocol/policy-component-rule-coverage-v0.1.json"
 COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "component.assembly_rule", "component.ordered_union",
     "component.original_request", "component.context", "component.conjunction", "component.production", "component.export", "component.sdk",
@@ -177,7 +188,8 @@ COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "compone
     "component.selection_publication_resources", "component.selection_scope", "component.selection_export", "component.selection_sdk",
     "component.selection_generation", "component.staged_regimen", "component.instance_composition", "component.prerequisite_closure", "component.two_observation_composition",
     "component.multi_member_composition", "component.grounded_helper_composition",
-    "component.candidate_transition_congruence", "component.finite_machine_composition")
+    "component.candidate_transition_congruence", "component.finite_machine_composition",
+    "component.named_refinement")
 COMPONENT_INSTANCE_WITNESSES = tuple(sorted([
     "core/test/test_policy_instance_assembly_rule.ml",
     "core/test/test_policy_instance_material_service.ml",
@@ -277,7 +289,11 @@ COMPONENT_FINITE_MACHINE_WITNESSES = (
     'tests/test_policy_finite_machine.py',
     'tools/generate_policy_finite_machine_fixture.py',
 )
+COMPONENT_REFINEMENT_WITNESSES = (
+    "core/test/test_policy_refinement.ml", "tests/test_policy_refinement.py",
+)
 COMPONENT_WITNESSES = tuple(sorted([
+    *COMPONENT_REFINEMENT_WITNESSES,
     *COMPONENT_FINITE_MACHINE_WITNESSES,
     *COMPONENT_CONGRUENCE_WITNESSES,
     *COMPONENT_INSTANCE_WITNESSES,
@@ -307,8 +323,11 @@ COMPONENT_WITNESSES = tuple(sorted([
 # Fixed reviewed meaning/provenance projection, excluding source-body hashes and
 # lexical counts. Re-pinning changed files cannot reassign witness meaning.
 FINITE_MACHINE_LIMITATION = "Finite-machine composition source controls cover three bounded artificial program shapes; this static gate performs no native execution and transfers no prior acceptance to changed source."
+REFINEMENT_LIMITATION = "Named refinement evidence is a bounded summary of fresh opaque checker capabilities under supplied contracts. Serialized views grant no capability, export, universal or empirical claim; this static gate performs no native execution."
+BEFORE_REFINEMENT_METADATA_SHA256 = "7f2f1b2ae98833e27d959117dfbc2d83de612e670216412a34e9fcd1ba7464f5"
+BEFORE_REFINEMENT_COMPONENT_METADATA_SHA256 = "7b563303ab25cec0d9c394e9113914da079155d9ce73125225e9f9a2f9b61fdd"
 BEFORE_FINITE_MACHINE_COMPONENT_METADATA_SHA256 = "394152e8ccbb347e9f272be773f44a1dab444895c6b4babd413d34c3c7a4db5b"
-COMPONENT_METADATA_SHA256 = "7b563303ab25cec0d9c394e9113914da079155d9ce73125225e9f9a2f9b61fdd"
+COMPONENT_METADATA_SHA256 = "339870f87976d93e774e4d9ac29d741ac41a83827dc7541fcc9958955a49a09b"
 
 
 class CoverageError(ValueError):
@@ -432,9 +451,27 @@ def component_metadata(ledger: dict[str, Any]) -> dict[str, Any]:
             "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
 
 
-def component_metadata_before_finite_machine(ledger: dict[str, Any]) -> dict[str, Any]:
-    """Project only the explicit new family out; preserve all 27 prior meanings."""
+def component_metadata_before_refinement(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove only the named summary route; retain every prior meaning."""
     metadata = component_metadata(ledger)
+    return {**metadata,
+            "rules": [row for row in metadata["rules"] if row["id"] != "component.named_refinement"],
+            "source_paths": [path for path in metadata["source_paths"] if path not in COMPONENT_REFINEMENT_SOURCES],
+            "witness_paths": [path for path in metadata["witness_paths"] if path not in COMPONENT_REFINEMENT_WITNESSES],
+            "limitations": [value for value in metadata["limitations"] if value != REFINEMENT_LIMITATION]}
+
+
+def metadata_before_refinement(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Preserve original whole-kernel meanings and source classifications."""
+    return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
+            "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
+                                       for row in ledger["sources"] if row["path"] not in COMPONENT_REFINEMENT_SOURCES],
+            "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+
+
+def component_metadata_before_finite_machine(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Project the two explicit additions out; preserve all 27 prior meanings."""
+    metadata = component_metadata_before_refinement(ledger)
     return {**metadata,
             "rules": [row for row in metadata["rules"] if row["id"] != "component.finite_machine_composition"],
             "witness_paths": [path for path in metadata["witness_paths"]
@@ -481,6 +518,10 @@ def check_component(root: Path = ROOT, ledger: Any | None = None) -> dict[str, A
                 require(type(pointer["occurrence"]) is int and pointer["occurrence"] >= 1
                         and texts[pointer["path"]].count(pointer["anchor"]) >= pointer["occurrence"],
                         "Missing component source anchor")
+    previous = json.dumps(component_metadata_before_refinement(ledger), sort_keys=True,
+                          separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(previous) == BEFORE_REFINEMENT_COMPONENT_METADATA_SHA256,
+            "Changed pre-refinement reviewed component meaning/witness/provenance metadata")
     previous = json.dumps(component_metadata_before_finite_machine(ledger), sort_keys=True,
                           separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(previous) == BEFORE_FINITE_MACHINE_COMPONENT_METADATA_SHA256,
@@ -583,6 +624,10 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
     require(type(ledger["known_gaps"]) is list and ledger["known_gaps"], "Global acceptance gaps must remain explicit")
     for gap in ledger["known_gaps"]:
         words(gap, "known gap")
+    previous = json.dumps(metadata_before_refinement(ledger), sort_keys=True,
+                          separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(previous) == BEFORE_REFINEMENT_METADATA_SHA256,
+            "Changed pre-refinement original whole-kernel meaning/classification metadata")
     return {"schema_version": SCHEMA, "status": "source_inventory_current", "claim_scope": CLAIM,
             "rules": len(rules), "sources": len(sources), "witness_sources": len(witnesses),
             "rules_with_pending_witnesses": pending, "semantic_proof": "not_established", "test_execution": "not_performed",

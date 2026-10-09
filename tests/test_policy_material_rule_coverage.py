@@ -43,13 +43,13 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 159)
+        self.assertEqual(result["sources"], 167)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 28, "sources": 107, "witness_sources": 131,
+        self.assertEqual(result["component_route"], {"rules": 29, "sources": 115, "witness_sources": 133,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -247,8 +247,75 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_finite_machine(self):
+    def before_refinement(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        added = ledger["rules"].pop()
+        self.assertEqual(added["id"], "component.named_refinement")
+        self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in added[kind]},
+                         set(coverage.COMPONENT_REFINEMENT_WITNESSES))
+        ledger["sources"] = [row for row in ledger["sources"] if row["path"] not in coverage.COMPONENT_REFINEMENT_SOURCES]
+        ledger["witness_sources"] = [row for row in ledger["witness_sources"]
+                                     if row["path"] not in coverage.COMPONENT_REFINEMENT_WITNESSES]
+        self.assertEqual(ledger["limitations"].pop(), coverage.REFINEMENT_LIMITATION)
+        return ledger
+
+    def test_refinement_preserves_all_twenty_eight_prior_families(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        projected = self.before_refinement()
+        self.assertEqual((len(projected["rules"]), len(projected["sources"]), len(projected["witness_sources"])),
+                         (28, 107, 131))
+        self.assertEqual(coverage.component_metadata_before_refinement(original), coverage.component_metadata(projected))
+        encoded = json.dumps(coverage.component_metadata(projected), sort_keys=True,
+                             separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "7b563303ab25cec0d9c394e9113914da079155d9ce73125225e9f9a2f9b61fdd")
+
+    def test_refinement_preserves_original_whole_kernel_meanings_and_classifications(self):
+        added = coverage.COMPONENT_REFINEMENT_SOURCES
+        self.assertEqual(len(added), 8)
+        for path in added:
+            row = next(row for row in self.original["sources"] if row["path"] == path)
+            self.assertEqual((row["disposition"], row["reason"]), ("outside_route", coverage.REFINEMENT_REASON))
+        encoded = json.dumps(coverage.metadata_before_refinement(self.original), sort_keys=True,
+                             separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "7f2f1b2ae98833e27d959117dfbc2d83de612e670216412a34e9fcd1ba7464f5")
+        self.rejected(lambda value: value["rules"][0].update(admitted_context="Unreviewed semantic expansion."),
+                      "pre-refinement original whole-kernel meaning")
+
+    def test_refinement_keeps_source_only_witnesses_and_closed_scope(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        added = original["rules"][-1]
+        self.assertEqual(len(coverage.COMPONENT_REFINEMENT_WITNESSES), 2)
+        for phrase in ("opaque checker capabilities", "three directional composition rules", "stage-local scope",
+                       "complete original", "fresh replay"):
+            self.assertIn(phrase, added["scope"])
+        self.assertIn("no native execution", added["limits"])
+        for path in (*coverage.COMPONENT_REFINEMENT_SOURCES, *coverage.COMPONENT_REFINEMENT_WITNESSES):
+            ledger = deepcopy(original)
+            key = "sources" if path in coverage.COMPONENT_REFINEMENT_SOURCES else "witness_sources"
+            ledger[key] = [row for row in ledger[key] if row["path"] != path]
+            with self.subTest(omitted=path), self.assertRaisesRegex(coverage.CoverageError, "census"):
+                coverage.check_component(coverage.ROOT, ledger)
+        for key, value in (("evidence_scope", "native_validation_complete"),
+                           ("limits", "Serialized evidence grants material export and empirical assurance."),
+                           ("negative", deepcopy(added["positive"]))):
+            ledger = deepcopy(original)
+            ledger["rules"][-1][key] = value
+            with self.subTest(changed=key), self.assertRaises(coverage.CoverageError):
+                coverage.check_component(coverage.ROOT, ledger)
+
+    def test_current_metadata_repin_cannot_reassign_pre_refinement_meaning(self):
+        ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        ledger["rules"][-2]["scope"] += " Unreviewed claim widening."
+        encoded = json.dumps(coverage.component_metadata(ledger), sort_keys=True,
+                             separators=(",", ":"), ensure_ascii=False).encode()
+        with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-refinement reviewed component meaning"):
+                coverage.check_component(coverage.ROOT, ledger)
+
+    def before_finite_machine(self):
+        ledger = self.before_refinement()
         added = ledger["rules"].pop()
         self.assertEqual(added["id"], "component.finite_machine_composition")
         self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in added[kind]},
@@ -271,7 +338,7 @@ let check x = Diagnostic.require x "code" "message"
 
     def test_finite_machine_keeps_four_witnesses_and_conditional_scope(self):
         original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
-        added = original["rules"][-1]
+        added = next(row for row in original["rules"] if row["id"] == "component.finite_machine_composition")
         self.assertEqual(len(coverage.COMPONENT_FINITE_MACHINE_WITNESSES), 4)
         for phrase in ("2-16-state machine", "1-32 ordered transitions", "1-8 uniquely initiated effects",
                        "actual 64-node graph bound", "complete prerequisite closure", "exact paired RNA export"):
@@ -287,7 +354,7 @@ let check x = Diagnostic.require x "code" "message"
                            ("limits", "Arbitrary machines and biological efficacy established."),
                            ("negative", deepcopy(added["positive"]))):
             ledger = deepcopy(original)
-            ledger["rules"][-1][key] = value
+            next(row for row in ledger["rules"] if row["id"] == "component.finite_machine_composition")[key] = value
             with self.subTest(changed=key), self.assertRaises(coverage.CoverageError):
                 coverage.check_component(coverage.ROOT, ledger)
 
@@ -297,7 +364,7 @@ let check x = Diagnostic.require x "code" "message"
         encoded = json.dumps(coverage.component_metadata(ledger), sort_keys=True,
                              separators=(",", ":"), ensure_ascii=False).encode()
         with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
-            with self.assertRaisesRegex(coverage.CoverageError, "pre-finite-machine reviewed component meaning"):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-refinement reviewed component meaning"):
                 coverage.check_component(coverage.ROOT, ledger)
 
     def before_typed_admission(self):
@@ -323,7 +390,8 @@ let check x = Diagnostic.require x "code" "message"
                             if row["path"] in added))
         projected = {key: value for key, value in self.original.items() if key not in {"sources", "witness_sources"}}
         projected["source_classifications"] = [{key: row[key] for key in ("path", "disposition", "reason")}
-            for row in self.original["sources"] if row["path"] not in added]
+            for row in self.original["sources"] if row["path"] not in added
+            and row["path"] not in coverage.COMPONENT_REFINEMENT_SOURCES]
         projected["witness_paths"] = [row["path"] for row in self.original["witness_sources"]]
         encoded = json.dumps(projected, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),

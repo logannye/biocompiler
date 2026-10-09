@@ -106,7 +106,7 @@ class PolicyDevelopmentTests(unittest.TestCase):
         dev.prepare(self.root)
         result = dev.run(self.root)
         self.assertEqual([row[0] for row in dev.SUITES], [
-            "test_policy_admitted_ir", "test_policy_finite_machine",
+            "test_policy_admitted_ir", "test_policy_finite_machine", "test_policy_refinement",
             "test_policy_provider_prerequisites", "test_policy_prerequisite_material_service", "test_policy_two_observation_material_service", "test_policy_multi_member_material_service", "test_policy_grounded_helper_material_service",
             "test_policy_instance_assembly_rule", "test_policy_instance_material_service",
             "test_policy_staged_generation", "test_policy_staged_binding", "test_policy_staged_component_material", "test_policy_staged_primitives", "test_policy_staged_regimen_source",
@@ -122,11 +122,12 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(self.calls[:2], [
             ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"],
             ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]])
-        self.assertEqual(len(self.calls), 44)
-        self.assertEqual(len(result["suites"]), 42)
+        self.assertEqual(len(self.calls), 45)
+        self.assertEqual(len(result["suites"]), 43)
         for name, fixtures in (
             ("test_policy_admitted_ir", ["policy_operational_v01.json", "policy_staged_regimen_source_v01.json", "policy_implementation_binding_v01.json"]),
             ("test_policy_finite_machine", ["policy_finite_machine_v01.json"]),
+            ("test_policy_refinement", ["policy_finite_machine_v01.json"]),
             ("test_policy_component_selection_request", ["policy_material_request_v01.json", "policy_material_state_v01.json"]),
             ("test_policy_component_material_candidate", ["policy_material_request_v01.json"]),
             ("test_policy_component_selection_candidate", ['policy_material_request_v01.json']),
@@ -228,8 +229,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
             dev.run(self.root)
         result = self.report()
-        self.assertEqual(len(self.calls), 44)
-        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 41)
+        self.assertEqual(len(self.calls), 45)
+        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 42)
         self.assertEqual(result["suites"][1]["status"], "failed")
         self.assertEqual(result["status"], "failed")
 
@@ -283,7 +284,7 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(set(writers), {coordinator})
         self.assertEqual([row["name"] for row in result["suites"]], [row["name"] for row in suites])
         self.assertCountEqual(completed, [row["name"] for row in suites])
-        self.assertEqual(len({row["log"] for row in result["suites"]}), 42)
+        self.assertEqual(len({row["log"] for row in result["suites"]}), 43)
         dev.validate_native_feedback(self.root, result, dev.preparation(self.root))
 
     def test_parallel_suite_timeout_retains_every_other_outcome(self):
@@ -300,9 +301,9 @@ class PolicyDevelopmentTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
                 dev.run(self.root)
         report = self.report()
-        self.assertEqual(len(self.calls), 44)
+        self.assertEqual(len(self.calls), 45)
         self.assertEqual([row["name"] for row in report["suites"]], [name for name, _ in dev.SUITES])
-        self.assertEqual([row["status"] for row in report["suites"]].count("passed"), 41)
+        self.assertEqual([row["status"] for row in report["suites"]].count("passed"), 42)
         self.assertEqual(report["suites"][1]["status"], "failed")
         self.assertNotIn("returncode", report["suites"][1])
         self.assertIn("900", report["suites"][1]["error"])

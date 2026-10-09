@@ -1286,6 +1286,30 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/domain/policy_refinement.ml",
+      "sha256": "29d9f1bb8ee7a7d32d8c66582d55db6f3d4a368c74ce8ce3b229fa3284910fe0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {
+          "biocompiler.policy_refinement_evidence.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate named summaries of fresh component-route checker capabilities; no original whole-kernel admission or export authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_refinement.mli",
+      "sha256": "c9e590ebe37730bd7369c5603cc95472ae4c157bf620d986bf8eeb736b631e29",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate named summaries of fresh component-route checker capabilities; no original whole-kernel admission or export authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/domain/policy_schema.ml",
       "sha256": "8057ea511a25835f4e51c720ce815602f69839d0a664fc880c2f8f5bee918e78",
       "census": {
@@ -1738,6 +1762,34 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/realization_checker/policy_refinement_check.ml",
+      "sha256": "97d17afeb08e6a0a16f9bc75e7d95e63b337b7035da74bf3c0a38fd650c3b902",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 6,
+          "require": 9
+        },
+        "profile_literals": {
+          "biocompiler.policy_refinement_resources.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate named summaries of fresh component-route checker capabilities; no original whole-kernel admission or export authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_refinement_check.mli",
+      "sha256": "03ea675f9e18b4559c8bb5e2b665ba6d21e318264a25a68ed666503c66343aab",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate named summaries of fresh component-route checker capabilities; no original whole-kernel admission or export authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/realization_checker/policy_requirement_monitor.ml",
       "sha256": "d86aa0c84cbbc8ab442b76abc27dbcca6eb9e2e4d26262dbce9caa969fa60e9b",
       "census": {
@@ -1882,7 +1934,7 @@
     },
     {
       "path": "core/lib/service/policy_component_material_service.ml",
-      "sha256": "fe1d392b6048a884b047bf6157babedac46292020d46bd4dd8b1ac74d38a4ab2",
+      "sha256": "a00c633aa3c1f7d6d8d5cc380c16763fdd256702ab00b3fcca02e20fe7ec191a",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1908,7 +1960,7 @@
     },
     {
       "path": "core/lib/service/policy_component_material_service.mli",
-      "sha256": "9dd8af93f4f8607b694f5051c7114b3da6bbbb3506d42afffc79b928cd95bd26",
+      "sha256": "ed836ae7bc25ad43acc481c04444c407b6d8d86d7d41e443aae2405c573d0f3f",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -2040,6 +2092,34 @@
       "reason": "Separate source/operational public route; no complete material admission authority."
     },
     {
+      "path": "core/lib/service/policy_refinement_service.ml",
+      "sha256": "ef0e385bc319a891270fdcfb2df5e38e87acad887a5e9fb5f378ca8107d884e8",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 3
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_refinement.v1": 1,
+          "biocompiler.ocaml.policy_refinement.v0.1": 1,
+          "biocompiler.policy_refinement_evidence.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate named summaries of fresh component-route checker capabilities; no original whole-kernel admission or export authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_refinement_service.mli",
+      "sha256": "a7b3928ca15be75269f955e8ae6f8802c78a710081a4682785719d0f80279d32",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate named summaries of fresh component-route checker capabilities; no original whole-kernel admission or export authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/service/policy_service.ml",
       "sha256": "0346b988022611c29ca5990c111418770f3bbc29370fb3e12b0283a71d87a8b9",
       "census": {
@@ -2072,7 +2152,7 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "3a8f61f46f93a2c63e75183074093add0199092d55a263a3ed75514df6e3e271",
+      "sha256": "a077ea9743c6bb4e3e08917acb0c4af4c3d871f724351d17152fd32c611b3307",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -2412,6 +2492,25 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "src/biocompiler/core_policy_refinement.py",
+      "sha256": "d7ad9a05e4445aed9240e6a8ca26dc0bee81a1a7c85a00a1eb8565c2e8d2ebef",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 8,
+          "FunctionDef": 26,
+          "Raise": 1
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_refinement.v1": 1,
+          "biocompiler.ocaml.policy_refinement.v0.1": 1,
+          "biocompiler.policy_refinement_evidence.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate named summaries of fresh component-route checker capabilities; no original whole-kernel admission or export authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "src/biocompiler/entrypoint.py",
       "sha256": "7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8",
       "census": {
@@ -2506,6 +2605,19 @@
         },
         "profile_literals": {}
       }
+    },
+    {
+      "path": "src/biocompiler/policy/refinement.py",
+      "sha256": "84593e71a5041ee5e3011c1578839444b0ce6fe04668fd75af292d297473d28d",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 2
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate named summaries of fresh component-route checker capabilities; no original whole-kernel admission or export authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
       "path": "tools/policy_material_authoring_witness.py",

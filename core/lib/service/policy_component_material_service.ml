@@ -117,7 +117,7 @@ let export_artifact checked candidate limits=
   obj["schema_version",str "biocompiler.policy_component_mrna_export.v0.1";
     "fasta",str fasta;"fasta_sha256",str fasta_sha;
     "manifest",manifest;"manifest_sha256",str(Canonical.sha256 manifest_bytes)]
-let check ~export ~request:raw_request ~candidate:raw_candidate ~limits:raw_limits=
+let fresh_check ~request:raw_request ~candidate:raw_candidate ~limits:raw_limits=
   let request=R.of_json raw_request in
   let fields=Json.object_fields ~path:"/payload/candidate" raw_candidate in
   Json.exact_fields ~path:"/payload/candidate"
@@ -131,6 +131,9 @@ let check ~export ~request:raw_request ~candidate:raw_candidate ~limits:raw_limi
   and candidate=K.of_json(Json.field "construction" fields)
   and limits=P.limits_of_json raw_limits in
   let checked=Check.check ~request ~behavior ~implementation:actual ~proposed ~assembly_proposal ~candidate ~limits in
+  request,checked
+let check ~export ~request:raw_request ~candidate:raw_candidate ~limits:raw_limits=
+  let request,checked=fresh_check ~request:raw_request ~candidate:raw_candidate ~limits:raw_limits in
   let report=Check.report checked in
   let artifact=if not export then Json.Null else match Check.accepted checked with
     |Some checked->export_artifact checked raw_candidate raw_limits

@@ -33,7 +33,9 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "d717a4c1f9cd7d81a90e8c3a71311d445ff46fb79b13233671a7e44fb65c99a1"
+REVIEWED_METADATA_SHA256 = "5bf67512edb43be299929b44a147cec8951867fc52bd7fffa169ef2aa10615ad"
+BEFORE_REFINEMENT_METADATA_SHA256 = "d717a4c1f9cd7d81a90e8c3a71311d445ff46fb79b13233671a7e44fb65c99a1"
+REFINEMENT_PREFIXES = ("biocompiler.core_policy_refinement.", "biocompiler.policy.refinement.")
 BEFORE_TYPED_MODULES_METADATA_SHA256 = "2a9ce2139ab87bd5b5288357249a2433bba232c5e1a9fceef6b248c1325aab68"
 BEFORE_FINITE_MACHINE_METADATA_SHA256 = "d2f6e39a1a7078d9ca33bf1d0f7c03021b42d92a53db18e3f0fdfb6dec9f2834"
 FINITE_MACHINE_DEPENDENCIES = (
@@ -125,8 +127,8 @@ COMPOSITION_DEPENDENCIES = (
     'biocompiler.core_policy_implementation._two_observation_original',
 )
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model modules native observations operational patterns programs requirements research_project serialization space state time typed validation values".split())
-CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection")
+MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model modules native observations operational patterns programs refinement requirements research_project serialization space state time typed validation values".split())
+CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py")
 # These names remain compatible support surfaces, not cellular runtime APIs.
@@ -156,11 +158,13 @@ OPERATIONS = {
     "core_policy_component_selection.PolicyComponentSelectionClient.check": ("check-policy-component-selection", ("request", "candidate", "limits")),
     "core_policy_component_selection.PolicyComponentSelectionClient.replay": ("replay-policy-component-selection", ("request", "candidate", "limits", "report")),
     "core_policy_component_selection.PolicyComponentSelectionClient.export": ("export-policy-component-selection", ("request", "candidate", "limits")),
+    "core_policy_refinement.PolicyRefinementClient.check": ("check-policy-refinement", ("request", "candidate", "limits")),
+    "core_policy_refinement.PolicyRefinementClient.replay": ("replay-policy-refinement", ("request", "candidate", "limits", "report")),
 }
 # Reviewed access names and canonical owners, independent of the ledger file pins.
 REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
   'biocompiler.policy',
-  'behavior catalog chassis coordination deployment effects entities logic modules observations patterns requirements '
+  'behavior catalog chassis coordination deployment effects entities logic modules observations patterns refinement requirements '
   'space state time typed values'),
  ('biocompiler.policy', 'biocompiler.policy.handoff', 'SubmissionError assess_capabilities prepare_submission'),
  ('biocompiler.policy', 'biocompiler.policy.inspection', 'diff graph inspect'),
@@ -204,6 +208,11 @@ REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
   'truth_state integer_state text_state quantity_state truth_parameter integer_parameter text_parameter quantity_parameter rule transition'),
  ('biocompiler.policy.modules', 'biocompiler.policy.modules',
   'Access ModuleError ModuleLimits InputPort OutputPort ModuleOutput ModuleBinding Footprint ModuleTemplate ModuleInstance instantiate compose_modules'),
+ ('biocompiler.core_policy_refinement', 'biocompiler.core_policy_refinement',
+  'Stage Relation PremiseKind DerivationRule StageIdentity RefinementScope RefinementClaim RefinementPremise RefinementDerivation RefinementEvidence PolicyRefinementResult PolicyRefinementClient'),
+ ('biocompiler.policy.refinement', 'biocompiler.core_policy_refinement',
+  'Stage Relation PremiseKind DerivationRule StageIdentity RefinementScope RefinementClaim RefinementPremise RefinementDerivation RefinementEvidence PolicyRefinementResult PolicyRefinementClient'),
+ ('biocompiler.policy.refinement', 'biocompiler.policy.refinement', 'check replay'),
  ('biocompiler.policy.values',
   'biocompiler.policy.model',
   'EVENT INTEGER Parameter Quantity TEXT TRUTH TypeSpec Unit'),
@@ -488,7 +497,7 @@ def discover(root: Path) -> dict[str, Any]:
     reviewed_access = {module + "." + name: owner + "." + name
                        for module, owner, names in REVIEWED_EXPORT_GROUPS for name in names.split()}
     require(access == reviewed_access, "Reviewed export target/alias census differs")
-    require(len(exports.get("biocompiler.policy", [])) == 114 and len(access) == 216,
+    require(len(exports.get("biocompiler.policy", [])) == 115 and len(access) == 243,
             "Reviewed explicit export census differs")
     require(aliases == {"biocompiler.policy.inspection.summary": "biocompiler.policy.inspection.inspect",
                         "biocompiler.policy.inspection.render_html": "biocompiler.policy.inspection.to_html"}, "Reviewed compatibility/display aliases differ")
@@ -628,17 +637,25 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
-    before_finite = {"witnesses": metadata["witnesses"],
-                     "coverage": {key: value for key, value in coverage.items()
+    before_refinement = {
+        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("refinement.")},
+        "coverage": {key: value for key, value in coverage.items() if not key.startswith(REFINEMENT_PREFIXES)},
+    }
+    encoded_refinement = json.dumps(before_refinement, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_refinement["coverage"]) == 1083 and len(before_refinement["witnesses"]) == 152
+            and digest(encoded_refinement) == BEFORE_REFINEMENT_METADATA_SHA256,
+            "Named refinement must preserve every previous API evidence meaning")
+    before_finite = {"witnesses": before_refinement["witnesses"],
+                     "coverage": {key: value for key, value in before_refinement["coverage"].items()
                                   if key not in FINITE_MACHINE_DEPENDENCIES}}
     encoded_finite = json.dumps(before_finite, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded_finite) == BEFORE_FINITE_MACHINE_METADATA_SHA256,
             "Finite-machine SDK must preserve every previous API evidence meaning")
     previous = {
-        "witnesses": {key: value for key, value in metadata["witnesses"].items()
+        "witnesses": {key: value for key, value in before_finite["witnesses"].items()
                       if not key.startswith(("typed.", "modules."))},
-        "coverage": {key: value for key, value in coverage.items()
-                     if key not in FINITE_MACHINE_DEPENDENCIES and not key.startswith(TYPED_MODULE_PREFIXES)},
+        "coverage": {key: value for key, value in before_finite["coverage"].items()
+                     if not key.startswith(TYPED_MODULE_PREFIXES)},
     }
     encoded_previous = json.dumps(previous, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(len(previous["coverage"]) == 905 and digest(encoded_previous) == BEFORE_TYPED_MODULES_METADATA_SHA256,

@@ -36,5 +36,9 @@ val max_result_nodes : int
 val profile : Json.t
 val producer_profile : Json.t
 val validate_publication : Json.t -> unit
+(** Decode the complete originals and candidate, then repeat all checking.
+    This helper never reconstructs acceptance from serialized evidence. *)
+val fresh_check : request:Json.t -> candidate:Json.t -> limits:Json.t ->
+  Bioc_domain.Policy_component_material_request.t * Bioc_realization_checker.Policy_component_material_check.result
 val check : export:bool -> request:Json.t -> candidate:Json.t -> limits:Json.t -> Json.t
 val handle : operation:string -> Json.t -> Json.t

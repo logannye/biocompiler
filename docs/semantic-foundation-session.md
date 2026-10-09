@@ -25,7 +25,7 @@ integration. Development evidence is not release acceptance.
 | 1 | Stable specification and strongly typed admitted IR | Versioned language authority independent of Python dataclass layout; SDK/schema conformance; closed, resolved semantic types actually consumed after admission; exact existing wire/source correspondence preserved. | Implemented and source-reviewed; native validation pending |
 | 2 | Typed Python facade and semantic modules | Distinct expression/reference categories, explicit module ports and private state/effects, hygienic instantiation, checked interfaces and conflicting-composition rejection through the public source path. | Implemented and source-reviewed; focused Python and typing checks pass |
 | 3 | Generic finite-machine lowering and composition | Multiple materially different finite-machine shapes use common lowering/checking and component composition; complete source, attempt identity, atomicity, requirements and material correspondence survive. | Implemented and source-reviewed; focused local checks pass; native validation pending |
-| 4 | Named refinement relations and composable evidence | Explicit relation kinds and source/target/assumption/bound identities; independently checked composition; old exact relations retain their original meaning and cannot be weakened by a producer. | Pending |
+| 4 | Named refinement relations and composable evidence | Explicit relation kinds and source/target/assumption/bound identities; independently checked composition; old exact relations retain their original meaning and cannot be weakened by a producer. | Implemented and source-reviewed; focused Python/static/typing checks pass; native validation pending |
 | 5 | Quantitative mechanism-to-payload profile | Explicit quantitative dynamics, units, domain and observation map connected to selected supplied components, independent behavior/requirement checks and exact paired molecular export; mutations change output or reject. | Pending |
 
 Finite supported domains and model-to-material premises remain explicit. No
@@ -94,3 +94,30 @@ domain, requirements, provider closure and exact material remain independently
 checked. Universal termination and biological realization are not claimed.
 Item 4 follows this checkpoint. No native or release acceptance is claimed for
 this branch.
+
+Item 4 adds a closed vocabulary and private evidence capabilities derived from
+fresh admission, binding, preservation, assembly, context and material tokens.
+Ten named claims retain eighteen exact original/checking premises. Three explicit
+directional rules support composition; conjunction cannot erase scopes or splice
+different artifacts, requests, limits or assumptions. The separate refinement
+check/replay service preserves legacy material reports and export paths. Evidence
+construction and supplementary hashing have their own bounded work accounting.
+The native suite contains 18 source-reviewed rejection controls and is pending
+execution. The Python interface exposes immutable descriptive views and fresh
+native calls; constructing those views grants no acceptance capability. The
+additional 31 inert wiring/development-runner checks pass locally. No CI has been
+dispatched and no native compilation or execution has occurred.
+
+Item 4 local inventory validation also includes 53 material-coverage controls and
+19 migration-inventory controls, all passing. The additive API inventory retains
+all 1,083 previous classifications and 152 witness meanings; 74 new AST entries
+include 23 private dependencies, 22 declarations with focused shared controls and
+29 source-only declarations. Eight new witness descriptions remain limited to
+inert transport/view validation. All 28 prior component-family meanings and the
+original 62-family inventory classifications remain frozen under explicit
+projections. The current source census is not native acceptance.
+
+The final Item 4 SDK controls pass: 13 refinement tests, 49 API inventory tests
+and strict mypy on both new SDK modules (Python 3.11.15). Earlier checks also
+confirmed the unchanged source-context slice with 31 local controls. The migration
+inventory contains 4,052 entries. Item 5 begins after this checkpoint.

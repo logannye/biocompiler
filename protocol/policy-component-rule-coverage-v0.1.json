@@ -923,6 +923,26 @@
       }
     },
     {
+      "path": "core/lib/domain/policy_refinement.ml",
+      "sha256": "29d9f1bb8ee7a7d32d8c66582d55db6f3d4a368c74ce8ce3b229fa3284910fe0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {
+          "biocompiler.policy_refinement_evidence.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_refinement.mli",
+      "sha256": "c9e590ebe37730bd7369c5603cc95472ae4c157bf620d986bf8eeb736b631e29",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/producer_service/policy_component_material_producer.ml",
       "sha256": "3d8e994736a4210a0023565d30d7e28db2a7409a1cf08e50c9bc5bf1bec5c2d5",
       "census": {
@@ -1157,6 +1177,30 @@
       }
     },
     {
+      "path": "core/lib/realization_checker/policy_refinement_check.ml",
+      "sha256": "97d17afeb08e6a0a16f9bc75e7d95e63b337b7035da74bf3c0a38fd650c3b902",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 6,
+          "require": 9
+        },
+        "profile_literals": {
+          "biocompiler.policy_refinement_resources.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_refinement_check.mli",
+      "sha256": "03ea675f9e18b4559c8bb5e2b665ba6d21e318264a25a68ed666503c66343aab",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/realization_checker/policy_requirement_monitor.ml",
       "sha256": "d86aa0c84cbbc8ab442b76abc27dbcca6eb9e2e4d26262dbce9caa969fa60e9b",
       "census": {
@@ -1229,7 +1273,7 @@
     },
     {
       "path": "core/lib/service/policy_component_material_service.ml",
-      "sha256": "fe1d392b6048a884b047bf6157babedac46292020d46bd4dd8b1ac74d38a4ab2",
+      "sha256": "a00c633aa3c1f7d6d8d5cc380c16763fdd256702ab00b3fcca02e20fe7ec191a",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1253,7 +1297,7 @@
     },
     {
       "path": "core/lib/service/policy_component_material_service.mli",
-      "sha256": "9dd8af93f4f8607b694f5051c7114b3da6bbbb3506d42afffc79b928cd95bd26",
+      "sha256": "ed836ae7bc25ad43acc481c04444c407b6d8d86d7d41e443aae2405c573d0f3f",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1289,8 +1333,32 @@
       }
     },
     {
+      "path": "core/lib/service/policy_refinement_service.ml",
+      "sha256": "ef0e385bc319a891270fdcfb2df5e38e87acad887a5e9fb5f378ca8107d884e8",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 3
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_refinement.v1": 1,
+          "biocompiler.ocaml.policy_refinement.v0.1": 1,
+          "biocompiler.policy_refinement_evidence.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/service/policy_refinement_service.mli",
+      "sha256": "a7b3928ca15be75269f955e8ae6f8802c78a710081a4682785719d0f80279d32",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/service/service.ml",
-      "sha256": "3a8f61f46f93a2c63e75183074093add0199092d55a263a3ed75514df6e3e271",
+      "sha256": "a077ea9743c6bb4e3e08917acb0c4af4c3d871f724351d17152fd32c611b3307",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1518,6 +1586,23 @@
       }
     },
     {
+      "path": "src/biocompiler/core_policy_refinement.py",
+      "sha256": "d7ad9a05e4445aed9240e6a8ca26dc0bee81a1a7c85a00a1eb8565c2e8d2ebef",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 8,
+          "FunctionDef": 26,
+          "Raise": 1
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_refinement.v1": 1,
+          "biocompiler.ocaml.policy_refinement.v0.1": 1,
+          "biocompiler.policy_refinement_evidence.v0.1": 1
+        }
+      }
+    },
+    {
       "path": "src/biocompiler/policy/component_material.py",
       "sha256": "1904647e2342d42e2041c76b428ccbf8a2dc3eb3a9e5db4d309bae5bbd15d6a7",
       "census": {
@@ -1560,6 +1645,17 @@
         "guards": {
           "FunctionDef": 6,
           "Raise": 5
+        },
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "src/biocompiler/policy/refinement.py",
+      "sha256": "84593e71a5041ee5e3011c1578839444b0ce6fe04668fd75af292d297473d28d",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 2
         },
         "profile_literals": {}
       }
@@ -1775,6 +1871,10 @@
       "sha256": "e370e5fd743a37cc0342a34bcc13d21d9eda3e47f221a158bbca17cb0fecbe95"
     },
     {
+      "path": "core/test/test_policy_refinement.ml",
+      "sha256": "555112ac616bcf48a680dfd7f87cfcae51794ba64d77637dc869df5dd24445c6"
+    },
+    {
       "path": "core/test/test_policy_staged_binding.ml",
       "sha256": "be227cf48eef80cd328bc0222bd965b6b68622ccc03722817674a93852d7a9de"
     },
@@ -1929,6 +2029,10 @@
     {
       "path": "tests/test_policy_prerequisite_prebuilt.py",
       "sha256": "8981e5d796690ed4cd019aea6e11eacb034d47e2d52ccaad94994e201e12f1aa"
+    },
+    {
+      "path": "tests/test_policy_refinement.py",
+      "sha256": "0ca5e9cc216ac22c45e7a1e56c3b94021cb5c074e3ec3f896c1171a33723eb2e"
     },
     {
       "path": "tests/test_policy_staged_component_sdk.py",
@@ -4442,6 +4546,93 @@
       "scope": "Explicit finite-machine source/binding/material profiles support one 2-16-state machine, 1-32 ordered transitions and 1-8 uniquely initiated effects under the actual 64-node graph bound. Independent checking retains source, update/rising/feedback events, branch and retry attempt identities, original finite domain and requirements, named supplied components, complete prerequisite closure and exact paired RNA export.",
       "limits": "One truth observation, one fixed product, two encounter slots, no independent source stores or rules, named single-member assembly. The three artificial topology fixtures and four handwritten traces are source witnesses only until executed. No universal termination, physical realization, empirical efficacy or extension of existing legacy profiles is claimed.",
       "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.named_refinement",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_refinement.ml",
+          "anchor": "let stages = function",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_refinement_check.ml",
+          "anchor": "let compose left right =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_refinement_check.ml",
+          "anchor": "let of_material checked =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/service/policy_refinement_service.ml",
+          "anchor": "let _,checked=Material.fresh_check",
+          "occurrence": 1
+        },
+        {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "anchor": "def _premise_bindings(",
+          "occurrence": 1
+        },
+        {
+          "path": "src/biocompiler/policy/refinement.py",
+          "anchor": "def check(",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_refinement.ml",
+          "anchor": "Complete named relation census differs",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_refinement.ml",
+          "anchor": "Evidence changed the legacy report, complete premises or canonical identity",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_refinement.py",
+          "anchor": "def test_fresh_check_and_replay_preserve_complete_inputs_and_material_report(",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_refinement.ml",
+          "anchor": "graph-only material promotion",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_refinement.ml",
+          "anchor": "same endpoint different checker limits",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_refinement.ml",
+          "anchor": "cyclic native input spine",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_refinement.ml",
+          "anchor": "Incomplete original-domain checking produced named accepted evidence",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_refinement.py",
+          "anchor": "def test_every_premise_is_bound_to_exact_original_or_fresh_report(",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_refinement.py",
+          "anchor": "def test_claim_census_stages_and_stage_local_scopes_are_exact(",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Named summaries originate only from fresh opaque checker capabilities. The three directional composition rules preserve every complete original authority, stage artifact, retained premise and stage-local scope; conflicts in request, domain, limits or material envelope fail. The service performs complete fresh material checking and fresh replay before returning ten named relations and eighteen retained premises.",
+      "limits": "Closed relations and bounded factories, conjunctions and composition support supplied conditional finite-domain semantics. Lower-stage summaries grant only their existing checked claims. Python views and saved JSON grant no native capability or export. The source controls include one artificial retry fixture and mocked transport tests; this static gate performs no native execution and establishes no universal, empirical or clinical claim.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
     }
   ],
   "limitations": [
@@ -4460,7 +4651,8 @@
     "The additive multi-member composition rule extends a separately versioned staged family to two distinct products and two complete RNA members. Member ownership, local feature identity, explicit original-catalog transport premises and complete delivery/resource/prerequisite evidence are checked before private closure. It adds no helper or new behavioral primitive. The previous 24 component families, all 62 original whole-kernel meanings and historical feedback retain their exact scope. Source inventories do not establish native or installed execution, empirical function or release/main acceptance.",
     "The additive grounded-helper rule extends the existing two-product/two-member staged family with one exact delivered helper RNA, independently supplied completion before source time origin, complete helper environment/delivery closure and typed shared resource accounting. It adds no executable helper behavior and does not infer helper capacity or empirical function from sequence identity. The preceding 25 component families, all 62 original whole-kernel meanings and historical feedback retain their exact scope. Source inventories do not establish native or installed execution, empirical function or release/main acceptance.",
     "Candidate transition congruence is an invocation-owned bounded diagnostic assurance rule only; all original domain histories and independent requirement checks remain fresh. Timing and canonical equality do not establish a speedup or a general modular composition theorem.",
-    "Finite-machine composition source controls cover three bounded artificial program shapes; this static gate performs no native execution and transfers no prior acceptance to changed source."
+    "Finite-machine composition source controls cover three bounded artificial program shapes; this static gate performs no native execution and transfers no prior acceptance to changed source.",
+    "Named refinement evidence is a bounded summary of fresh opaque checker capabilities under supplied contracts. Serialized views grant no capability, export, universal or empirical claim; this static gate performs no native execution."
   ],
   "historical_development_feedback": {
     "revision": "5a45d354ee869f26f0e5d3181c8972a6402baca6",

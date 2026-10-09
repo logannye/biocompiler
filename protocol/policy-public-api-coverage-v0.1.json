@@ -2203,6 +2203,421 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.core_policy_refinement.DerivationRule": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.EVIDENCE_SCHEMA": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.IMPLEMENTATION": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.MAX_RESULT_BYTES": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.MAX_RESULT_NODES": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.PROFILE": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementClient": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.transport"
+      ]
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementClient._call": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementClient.check": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.transport",
+        "refinement.rejection",
+        "refinement.claims",
+        "refinement.premises",
+        "refinement.derivation"
+      ]
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementClient.replay": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.transport",
+        "refinement.replay"
+      ]
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementClient.transport": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views",
+        "refinement.rejection"
+      ]
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult._result_json": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult.candidate_fingerprint": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult.evidence": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views",
+        "refinement.rejection"
+      ]
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult.executable": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult.invocation_fingerprint": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult.material_report": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.transport",
+        "refinement.rejection",
+        "refinement.views"
+      ]
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult.material_report_fingerprint": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult.material_status": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.transport",
+        "refinement.rejection"
+      ]
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult.operation": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult.request_fingerprint": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult.request_id": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.PolicyRefinementResult.result": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views"
+      ]
+    },
+    "biocompiler.core_policy_refinement.PremiseKind": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RESULT_SCHEMA": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementClaim": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views",
+        "refinement.claims"
+      ]
+    },
+    "biocompiler.core_policy_refinement.RefinementClaim.__post_init__": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementClaim.relation": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementClaim.scope": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementClaim.source": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementClaim.target": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementClaim.to_data": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views"
+      ]
+    },
+    "biocompiler.core_policy_refinement.RefinementDerivation": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views",
+        "refinement.derivation"
+      ]
+    },
+    "biocompiler.core_policy_refinement.RefinementDerivation.__post_init__": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementDerivation.inputs": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementDerivation.rule": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementDerivation.to_data": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views"
+      ]
+    },
+    "biocompiler.core_policy_refinement.RefinementEvidence": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views"
+      ]
+    },
+    "biocompiler.core_policy_refinement.RefinementEvidence.__post_init__": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementEvidence.claims": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementEvidence.derivation": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementEvidence.premises": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementEvidence.to_data": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views"
+      ]
+    },
+    "biocompiler.core_policy_refinement.RefinementPremise": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views",
+        "refinement.premises"
+      ]
+    },
+    "biocompiler.core_policy_refinement.RefinementPremise.__post_init__": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementPremise.fingerprint": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementPremise.kind": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementPremise.to_data": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views"
+      ]
+    },
+    "biocompiler.core_policy_refinement.RefinementScope": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views",
+        "refinement.claims"
+      ]
+    },
+    "biocompiler.core_policy_refinement.RefinementScope.__post_init__": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementScope.implementation_request_fingerprint": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementScope.limits_fingerprint": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementScope.material_request_fingerprint": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementScope.operating_domain_fingerprint": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.RefinementScope.to_data": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views"
+      ]
+    },
+    "biocompiler.core_policy_refinement.Relation": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.Stage": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.StageIdentity": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views",
+        "refinement.claims"
+      ]
+    },
+    "biocompiler.core_policy_refinement.StageIdentity.__post_init__": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.StageIdentity.fingerprint": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.StageIdentity.stage": {
+      "scope": "Inventoried typed refinement interface declaration; no independent runtime witness assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement.StageIdentity.to_data": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.views"
+      ]
+    },
+    "biocompiler.core_policy_refinement.VALIDATION_SCOPE": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement._bindings": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement._choice": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement._endpoint": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement._evidence": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement._premise_bindings": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement._require": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement._result": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_refinement._scope": {
+      "scope": "Private refinement transport/view implementation dependency; no independent public or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.policy.cli._json": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
       "status": "dependency",
@@ -7390,6 +7805,20 @@
         "shared.ownership_source_maps.7"
       ]
     },
+    "biocompiler.policy.refinement.check": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.namespace"
+      ]
+    },
+    "biocompiler.policy.refinement.replay": {
+      "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "refinement.namespace"
+      ]
+    },
     "biocompiler.policy.research_project.MAX_BUNDLE_BYTES": {
       "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
       "status": "dependency",
@@ -12076,6 +12505,798 @@
           "symbol": "_source_assessment"
         },
         "syntax_sha256": "34a7641d1200c2f151890c23aa9ec14cd29f8f08c170cc0a57e31d0048c00b1b"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.DerivationRule",
+        "kind": "value",
+        "scope": "public_api",
+        "signature": "TypeAlias = Literal['checked_admission', 'checked_binding', 'checked_preservation', 'checked_assembly', 'checked_context', 'checked_material', 'conjunction', 'source_graph_chain', 'source_behavior_chain', 'source_material_chain']",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "DerivationRule"
+        },
+        "syntax_sha256": "7a5224871d437f0112c6fc9d88d61a72ee2636fb83e3f1a798845cce9cd55f2a"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.EVIDENCE_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "EVIDENCE_SCHEMA"
+        },
+        "syntax_sha256": "fb7a15ace0f3b2b04e5cff2844a02b0842a8a05acad302909339ed066695b5f2"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.IMPLEMENTATION",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "IMPLEMENTATION"
+        },
+        "syntax_sha256": "0b2125b46e44b2937ff87aab4ae9c3bf75f6a4ae9829fe2dccb87741d7f804af"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.MAX_RESULT_BYTES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "MAX_RESULT_BYTES"
+        },
+        "syntax_sha256": "d3163f5ff0391cdac77633d8a9335d17381c23f011b1f4f85463cc4d41c4c5f6"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.MAX_RESULT_NODES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "MAX_RESULT_NODES"
+        },
+        "syntax_sha256": "446c31efe20da26e5e4605cfd2dbfc085623dab1404dc2b8bbd1ddaae59fc350"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {'operations': ['check-policy-refinement', 'replay-policy-refinement'], 'schema_version': RESULT_SCHEMA, 'implementation': IMPLEMENTATION, 'validation_scope': VALIDATION_SCOPE, 'evidence_schema': EVIDENCE_SCHEMA, 'max_result_bytes': MAX_RESULT_BYTES, 'max_result_nodes': MAX_RESULT_NODES, 'artifact': 'none', 'empirical': 'unassessed'}",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PROFILE"
+        },
+        "syntax_sha256": "59740e0a67a9f9845b0e9e0cb673f5f8fb6258e1687675748b6169e77657fdd5"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementClient",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementClient"
+        },
+        "syntax_sha256": "a4d3066a1e795bb92fbc6c8d90d531a5aac79b175a75e00f0b00513c67295fc0"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementClient._call",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None -> PolicyRefinementResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementClient._call"
+        },
+        "syntax_sha256": "83aae46d6b9effd9863c8421a33c7975adbfa9128391280eb30de732ddbf4ab9"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementClient.check",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, candidate: JsonValue, limits: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyRefinementResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementClient.check"
+        },
+        "syntax_sha256": "eea4d49504fa75debf69e07138014d6bd3c48173cc733a609d7375ef8ed25c74"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementClient.replay",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, candidate: JsonValue, limits: JsonValue, report: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyRefinementResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementClient.replay"
+        },
+        "syntax_sha256": "cc288b3da5609f3b9b189da142366271a83a2b2905f3fa507ca774002b36e0b4"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementClient.transport",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "CoreClient",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementClient.transport"
+        },
+        "syntax_sha256": "1c12c2e5fa920a7d4a3b392accc30ac4494ca7f385e0c49042eefabe997d2df4"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult"
+        },
+        "syntax_sha256": "764fe6e996046153edaf30d3e3f614a1f1b6234ecb71ebb05162147b9250b0bb"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult._result_json",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "bytes",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult._result_json"
+        },
+        "syntax_sha256": "c8d74fe1df2f1460502607a539a9b68f0424cc791a6cf60f862b81bff860fac3"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult.candidate_fingerprint",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult.candidate_fingerprint"
+        },
+        "syntax_sha256": "84ff621ad731dcaa34d38bacc0ef8b415ac5798ad31ea05304f10e1cd2df8e60"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult.evidence",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "RefinementEvidence | None",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult.evidence"
+        },
+        "syntax_sha256": "4cb55418ce459d26ceb372f33bc4b9ef2183055115ed4e4d31ea7b0a7531e871"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult.executable",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['core', 'verify']",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult.executable"
+        },
+        "syntax_sha256": "caa593e1ce3d42d26bd5a2fd86531a2c9e71173892090c1364aabbaaa1015aa4"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult.invocation_fingerprint",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult.invocation_fingerprint"
+        },
+        "syntax_sha256": "50dab973c70ef60533c6c68e6142ae01d0ca8b927244988ee939ef972897ba00"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult.material_report",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult.material_report"
+        },
+        "syntax_sha256": "4f5a224ce69f4f865ee0e840cce1895e3853f80651791a7ef9e9e65444210cb2"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult.material_report_fingerprint",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult.material_report_fingerprint"
+        },
+        "syntax_sha256": "cf49590f68b73b046e0b60747710e977b342c1012c875beb8ffbb308d9a09373"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult.material_status",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> Literal['checked_component_material', 'not_accepted']",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult.material_status"
+        },
+        "syntax_sha256": "870b781f146d425887d4012b5a86fc1aa82b7f2acb7eaae321fd25fe44e98ad7"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult.operation",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult.operation"
+        },
+        "syntax_sha256": "1432154ab7dc2238b6879ff760894776c9337b14f9fa45288274df6ff5e896a6"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult.request_fingerprint",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult.request_fingerprint"
+        },
+        "syntax_sha256": "309123a3e8f8242dd3f77af21aa1e57a9588474f7769932e8ccd9428de9b0e3d"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult.request_id",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult.request_id"
+        },
+        "syntax_sha256": "e01c56710d124cc807a7cc140f96bb568fe8d17a49db4c8752dae2019ba60a00"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PolicyRefinementResult.result",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PolicyRefinementResult.result"
+        },
+        "syntax_sha256": "2bd4a45642e547fee08857872036039e1d801bc9acc7f70c77bddcee87d16a1e"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.PremiseKind",
+        "kind": "value",
+        "scope": "public_api",
+        "signature": "TypeAlias = Literal['original_source', 'semantic_definitions', 'operating_domain', 'implementation_catalog', 'implementation_models', 'checker_limits', 'component_library', 'composition_rule', 'material_authority', 'deployment_context', 'material_request', 'source_admission', 'implementation_binding', 'bounded_preservation', 'component_assembly', 'mrna_structure', 'component_context', 'complete_material_check']",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "PremiseKind"
+        },
+        "syntax_sha256": "c17e3786799d0220462ddce97c82dfe355cad5cde7986204d57174cfe86fab66"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RESULT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RESULT_SCHEMA"
+        },
+        "syntax_sha256": "8d60285ed14b01afc5f6113bc48567fd5f624357f836a4bdeb1947163f2bb102"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementClaim",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementClaim"
+        },
+        "syntax_sha256": "ca1621fd84aac9effeb0a0a6312006356694c3da40a2872f9b7ec7cf6ccef65c"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementClaim.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementClaim.__post_init__"
+        },
+        "syntax_sha256": "758ab55d2fd18fd936770da43cc20bbe19496c87ee5727c6f1c1778c98249845"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementClaim.relation",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Relation",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementClaim.relation"
+        },
+        "syntax_sha256": "efc50f59a882da44b02ad11ff964b5a85e53c52d6280612cf008a6c504befeb6"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementClaim.scope",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "RefinementScope",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementClaim.scope"
+        },
+        "syntax_sha256": "b372514febf10343902ec67a56f3d9dd52c5629c0784b848a1ae41c670b2fb6b"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementClaim.source",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "StageIdentity",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementClaim.source"
+        },
+        "syntax_sha256": "8431035de6d39ffcbaff8eb6c85e33cea65d838a86dd845b43a1153d5ff7e8de"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementClaim.target",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "StageIdentity",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementClaim.target"
+        },
+        "syntax_sha256": "70c76a1950c458f73c80349ee7d4f258320a85d714693b603d94d88dc2620364"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementClaim.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementClaim.to_data"
+        },
+        "syntax_sha256": "2a3f441602ed7430c36338adf8a1f7aa5bd0f3c3aa8807de7ff3dd9a5988582d"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementDerivation",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementDerivation"
+        },
+        "syntax_sha256": "8e5caf18c45cd48e0afa8baafc14463f54171e67b8328abaad583e823d9e7a68"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementDerivation.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementDerivation.__post_init__"
+        },
+        "syntax_sha256": "afa18acea082721a2f9cb28ee224e76822c257cabc8898d451a5e2409b375a97"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementDerivation.inputs",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[str, ...]",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementDerivation.inputs"
+        },
+        "syntax_sha256": "c2bf6ff2411aa6e3deda5b05d039949e248c0a4db4a1f90650cebe86d015e7d4"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementDerivation.rule",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "DerivationRule",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementDerivation.rule"
+        },
+        "syntax_sha256": "dad7b3daa1696a56efea08c374de9f66fe3be7e54021e15b9214997ae2abf710"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementDerivation.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementDerivation.to_data"
+        },
+        "syntax_sha256": "b92ead58c9db6d5b2697f9de68b801af82a9278516a2f6c9590dd5923e846145"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementEvidence",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementEvidence"
+        },
+        "syntax_sha256": "df2d7d8c96de19727354068c4466e93b1a74c340886fadfc7b76addaa8fa2034"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementEvidence.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementEvidence.__post_init__"
+        },
+        "syntax_sha256": "2bb03fdc385ec072d8374038a53f9d442998003d431d94c38efe93b2acb1e1b1"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementEvidence.claims",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[RefinementClaim, ...]",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementEvidence.claims"
+        },
+        "syntax_sha256": "9c653d59c5f3b06e5dcacf2bf4affaeaf5189df9204bb4354109d8b8b8a20869"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementEvidence.derivation",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "RefinementDerivation",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementEvidence.derivation"
+        },
+        "syntax_sha256": "cce55e07e57b01fb28f4ef331e4f2185fd7519fd5a874a4633d5560c551781ca"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementEvidence.premises",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[RefinementPremise, ...]",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementEvidence.premises"
+        },
+        "syntax_sha256": "c12eb6671a8d9748829272b3af6fdef7d231f766a19db0a828f52c332e50d39c"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementEvidence.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementEvidence.to_data"
+        },
+        "syntax_sha256": "a75446431c79277c0acf68f78282e4ad2312edd0ceead78dabb9404260698af5"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementPremise",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementPremise"
+        },
+        "syntax_sha256": "481fa74610dc598c4b6df05bf5daf1e479e29121fa5d200ea8c038a338b28052"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementPremise.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementPremise.__post_init__"
+        },
+        "syntax_sha256": "41e19a0dd6970e1b376ab88bcb1817b9ab5e2d6908256c555724f6271473c72a"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementPremise.fingerprint",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementPremise.fingerprint"
+        },
+        "syntax_sha256": "4e7cf06c89fb18370c43205c99897b8c930099fb7261d1e32faaf5f7a4be6eff"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementPremise.kind",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "PremiseKind",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementPremise.kind"
+        },
+        "syntax_sha256": "325e92bef14f0746ee3567e676756b94b2ea4d4a8f211dc4fc1d84e7029a0c61"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementPremise.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementPremise.to_data"
+        },
+        "syntax_sha256": "0ff07fbe7df2c7a75971305bf8284284a79f90c002218e5f059a9aeb9f68e769"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementScope",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementScope"
+        },
+        "syntax_sha256": "7b95c5dcc944dd8e0e2ac5d90b797ab9fbff6718f660325347a6fca6e905b12a"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementScope.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementScope.__post_init__"
+        },
+        "syntax_sha256": "65e3569dae586447a9ce04851b81e935ff7b9c9fe7d479cbd7583c3833beccd1"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementScope.implementation_request_fingerprint",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementScope.implementation_request_fingerprint"
+        },
+        "syntax_sha256": "c8475d6413c368175186b2044da32edd01858f2c6e351466480c637f75a88c55"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementScope.limits_fingerprint",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str | None",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementScope.limits_fingerprint"
+        },
+        "syntax_sha256": "a5a5afd6dc75383cc95411d5e3b7bd78e80165540c632475b78c2afc2801f7dd"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementScope.material_request_fingerprint",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str | None",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementScope.material_request_fingerprint"
+        },
+        "syntax_sha256": "616edee2545aab42b2b1f0dc11bb4b028bff5598f87480ce6297400ddcc20bcf"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementScope.operating_domain_fingerprint",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementScope.operating_domain_fingerprint"
+        },
+        "syntax_sha256": "6bb34fdd3f4dd32617db3b61d8a446de177c9a940141a7daa52746de3735b747"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.RefinementScope.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "RefinementScope.to_data"
+        },
+        "syntax_sha256": "abb7a523878d791d043c8b19d710ea80782aec056baaf474f55d16c76a20a313"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.Relation",
+        "kind": "value",
+        "scope": "public_api",
+        "signature": "TypeAlias = Literal['exact_source_occurrence', 'source_graph_binding', 'bounded_observable_correspondence', 'original_hard_requirements', 'supplied_component_material_correspondence', 'conditional_deployment_context', 'complete_original_obligations', 'exact_source_graph_correspondence', 'bounded_source_observable_correspondence', 'conditional_source_material_correspondence']",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "Relation"
+        },
+        "syntax_sha256": "97b0d3c0f80354613be7d57cf585cdb552c47a6db17ab1bcf23ee3a047804c6f"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.Stage",
+        "kind": "value",
+        "scope": "public_api",
+        "signature": "TypeAlias = Literal['source_document', 'operational_behavior', 'implementation_graph', 'construction_content', 'deployment_context']",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "Stage"
+        },
+        "syntax_sha256": "839f50d7167804bcd67f922dd4e184236bb8a762efc0861bf292d4a318f47a87"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.StageIdentity",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "StageIdentity"
+        },
+        "syntax_sha256": "56b11049125094ee49680c6ae7451390c37042d0d27fd54dd977b69e34c833f0"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.StageIdentity.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "StageIdentity.__post_init__"
+        },
+        "syntax_sha256": "52b9d02d3668a03871f8c0558ae84b10839954b84f5627ebd456374787d5746a"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.StageIdentity.fingerprint",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "StageIdentity.fingerprint"
+        },
+        "syntax_sha256": "4e7cf06c89fb18370c43205c99897b8c930099fb7261d1e32faaf5f7a4be6eff"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.StageIdentity.stage",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Stage",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "StageIdentity.stage"
+        },
+        "syntax_sha256": "9cb020a0723dac70ea53cb6022f6de3a3656c5fdc0a7d88e6847101f8c080d7f"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.StageIdentity.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "StageIdentity.to_data"
+        },
+        "syntax_sha256": "4c74108096fac02811ba2f89eca4f1354b38253323fe89501daf084eaa6d3d9f"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement.VALIDATION_SCOPE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "VALIDATION_SCOPE"
+        },
+        "syntax_sha256": "37e482ceacb9c77709ba1453b4286b52c38d095d3c6945308dcb41edcbefe11b"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement._bindings",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "evidence: RefinementEvidence, request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue], limits: JsonValue -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "_bindings"
+        },
+        "syntax_sha256": "e254e25764a8cb93e744df63e4faf7eb817109c30f79bfc1a3ac7e232dd10695"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement._choice",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue, allowed: tuple[str, ...], label: str -> str",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "_choice"
+        },
+        "syntax_sha256": "202a1f659fe258f760234fef559397fab2de9bc6224b808898fe89fda157b86f"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement._endpoint",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "raw: JsonValue -> StageIdentity",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "_endpoint"
+        },
+        "syntax_sha256": "8206d791639a9299c3bd89bc031fe32c9ee5a5cf76708f032ad249fedd1620ac"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement._evidence",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "raw: JsonValue -> RefinementEvidence",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "_evidence"
+        },
+        "syntax_sha256": "3ecd3dc3e0b0f88ca958f0733e493726febca704f09623e1d0f89b8aa917033a"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement._premise_bindings",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "evidence: RefinementEvidence, request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue], limits: JsonValue -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "_premise_bindings"
+        },
+        "syntax_sha256": "94e3a5e709e59e6a3915b1264b8242f81b61c86f14f722cc3b15c233239d63e1"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: bool, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "db013ee1f3fbb0723ca9ef0828a33661ee82acb6aac6f1fa25dc2bd87ff62365"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement._result",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "response: CoreResponse, payload: dict[str, JsonValue] -> PolicyRefinementResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "_result"
+        },
+        "syntax_sha256": "26c8cd560ec7ceb70fcc3c231be8ba887bc555e664d3644ed8b64eddf0074add"
+      },
+      {
+        "id": "biocompiler.core_policy_refinement._scope",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "raw: JsonValue -> RefinementScope",
+        "source": {
+          "path": "src/biocompiler/core_policy_refinement.py",
+          "symbol": "_scope"
+        },
+        "syntax_sha256": "32dd5c39d77e9197f46351ba9d0fabe44d5690f9c99f891272cbb2c2ea262583"
       },
       {
         "id": "biocompiler.policy.cli._json",
@@ -18205,6 +19426,28 @@
         "syntax_sha256": "b9dd9c9d0f4a01cee7889c1afb967f0c6b3b592043d4d12d6c1f0c80ed13234c"
       },
       {
+        "id": "biocompiler.policy.refinement.check",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: JsonValue, *, candidate: JsonValue, limits: JsonValue, client: PolicyRefinementClient, cancelled: Callable[[], bool] | None=None -> PolicyRefinementResult",
+        "source": {
+          "path": "src/biocompiler/policy/refinement.py",
+          "symbol": "check"
+        },
+        "syntax_sha256": "c849623ff9855b55be6d341b9b08f4f52156a1887134b72544f02fe3793c5f0b"
+      },
+      {
+        "id": "biocompiler.policy.refinement.replay",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: JsonValue, *, candidate: JsonValue, limits: JsonValue, report: JsonValue, client: PolicyRefinementClient, cancelled: Callable[[], bool] | None=None -> PolicyRefinementResult",
+        "source": {
+          "path": "src/biocompiler/policy/refinement.py",
+          "symbol": "replay"
+        },
+        "syntax_sha256": "1f19ccdd40452adbae33e5ca85ad52ef582f08d6224daa01647d056dcf966400"
+      },
+      {
         "id": "biocompiler.policy.research_project.MAX_BUNDLE_BYTES",
         "kind": "value",
         "scope": "dependency",
@@ -20626,6 +21869,18 @@
       }
     ],
     "exports": {
+      "biocompiler.core_policy_refinement.DerivationRule": "biocompiler.core_policy_refinement.DerivationRule",
+      "biocompiler.core_policy_refinement.PolicyRefinementClient": "biocompiler.core_policy_refinement.PolicyRefinementClient",
+      "biocompiler.core_policy_refinement.PolicyRefinementResult": "biocompiler.core_policy_refinement.PolicyRefinementResult",
+      "biocompiler.core_policy_refinement.PremiseKind": "biocompiler.core_policy_refinement.PremiseKind",
+      "biocompiler.core_policy_refinement.RefinementClaim": "biocompiler.core_policy_refinement.RefinementClaim",
+      "biocompiler.core_policy_refinement.RefinementDerivation": "biocompiler.core_policy_refinement.RefinementDerivation",
+      "biocompiler.core_policy_refinement.RefinementEvidence": "biocompiler.core_policy_refinement.RefinementEvidence",
+      "biocompiler.core_policy_refinement.RefinementPremise": "biocompiler.core_policy_refinement.RefinementPremise",
+      "biocompiler.core_policy_refinement.RefinementScope": "biocompiler.core_policy_refinement.RefinementScope",
+      "biocompiler.core_policy_refinement.Relation": "biocompiler.core_policy_refinement.Relation",
+      "biocompiler.core_policy_refinement.Stage": "biocompiler.core_policy_refinement.Stage",
+      "biocompiler.core_policy_refinement.StageIdentity": "biocompiler.core_policy_refinement.StageIdentity",
       "biocompiler.policy.Arbitration": "biocompiler.policy.model.Arbitration",
       "biocompiler.policy.Argument": "biocompiler.policy.model.Argument",
       "biocompiler.policy.Assignment": "biocompiler.policy.model.Assignment",
@@ -20772,6 +22027,21 @@
       "biocompiler.policy.prepare_submission": "biocompiler.policy.handoff.prepare_submission",
       "biocompiler.policy.quantity": "biocompiler.policy.values.quantity",
       "biocompiler.policy.ref": "biocompiler.policy.programs.ref",
+      "biocompiler.policy.refinement": "biocompiler.policy.refinement",
+      "biocompiler.policy.refinement.DerivationRule": "biocompiler.core_policy_refinement.DerivationRule",
+      "biocompiler.policy.refinement.PolicyRefinementClient": "biocompiler.core_policy_refinement.PolicyRefinementClient",
+      "biocompiler.policy.refinement.PolicyRefinementResult": "biocompiler.core_policy_refinement.PolicyRefinementResult",
+      "biocompiler.policy.refinement.PremiseKind": "biocompiler.core_policy_refinement.PremiseKind",
+      "biocompiler.policy.refinement.RefinementClaim": "biocompiler.core_policy_refinement.RefinementClaim",
+      "biocompiler.policy.refinement.RefinementDerivation": "biocompiler.core_policy_refinement.RefinementDerivation",
+      "biocompiler.policy.refinement.RefinementEvidence": "biocompiler.core_policy_refinement.RefinementEvidence",
+      "biocompiler.policy.refinement.RefinementPremise": "biocompiler.core_policy_refinement.RefinementPremise",
+      "biocompiler.policy.refinement.RefinementScope": "biocompiler.core_policy_refinement.RefinementScope",
+      "biocompiler.policy.refinement.Relation": "biocompiler.core_policy_refinement.Relation",
+      "biocompiler.policy.refinement.Stage": "biocompiler.core_policy_refinement.Stage",
+      "biocompiler.policy.refinement.StageIdentity": "biocompiler.core_policy_refinement.StageIdentity",
+      "biocompiler.policy.refinement.check": "biocompiler.policy.refinement.check",
+      "biocompiler.policy.refinement.replay": "biocompiler.policy.refinement.replay",
       "biocompiler.policy.requirements": "biocompiler.policy.requirements",
       "biocompiler.policy.requirements.AssuranceRequest": "biocompiler.policy.model.AssuranceRequest",
       "biocompiler.policy.requirements.Requirement": "biocompiler.policy.model.Requirement",
@@ -20854,8 +22124,9 @@
       "src/biocompiler/core_policy_implementation.py": "a2c8db4980fc0381452737fcb9d58658db0727e53b77234cf1176e81c0de78df",
       "src/biocompiler/core_policy_material.py": "b9606dbc2159da7528f480cc52639653c73da6eac0ae4fb98ec2e757e9cd6948",
       "src/biocompiler/core_policy_operational.py": "089805c81bf6f84e5cf5e264b6ed89babedc3d692e2a7605429aa388e6d5ed02",
+      "src/biocompiler/core_policy_refinement.py": "d7ad9a05e4445aed9240e6a8ca26dc0bee81a1a7c85a00a1eb8565c2e8d2ebef",
       "src/biocompiler/entrypoint.py": "7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8",
-      "src/biocompiler/policy/__init__.py": "5be5cf72782ee9fbc0940da3c3ecddee69ba0cbaf13312b74a9cf20e46d01c8c",
+      "src/biocompiler/policy/__init__.py": "95b5e0aea5aebbe9cd2248bf3eacd7a0c5f863c19e47f92eb1286be0ab92a18a",
       "src/biocompiler/policy/behavior.py": "691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf",
       "src/biocompiler/policy/catalog.py": "96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30",
       "src/biocompiler/policy/chassis.py": "21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1",
@@ -20879,6 +22150,7 @@
       "src/biocompiler/policy/operational.py": "b3db654830b8477c29de9fc13a9fd05cf6337a512cfcd86dde9391146cf4efee",
       "src/biocompiler/policy/patterns.py": "9640080fa505e361b09a2dd9a644938365549b37c8be3a8ce547bc1391044b48",
       "src/biocompiler/policy/programs.py": "ef2823520e47f29f666c8c6bec8f30d43a21195ab5379ae82e0a062563f686fd",
+      "src/biocompiler/policy/refinement.py": "84593e71a5041ee5e3011c1578839444b0ce6fe04668fd75af292d297473d28d",
       "src/biocompiler/policy/requirements.py": "80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b",
       "src/biocompiler/policy/research_project.py": "c2bf6d201d183c43594cfe92dd252f0ac25c95e25d1381f6aca079289faec0b0",
       "src/biocompiler/policy/serialization.py": "d0e2feb4e8dd3fe65a10793d20c06144ad6fec396d99e6107f3485682ee570bf",
@@ -21044,6 +22316,38 @@
         "syntax_sha256": "bfabd21e1685683a0b8fcd269afd5bb3887b2e54a8f1717dbb8d4e7f54e2e42d"
       },
       {
+        "path": "src/biocompiler/core_policy_refinement.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/core_policy_refinement.py",
+        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/core_policy_refinement.py",
+        "syntax_sha256": "6b670f2da4f2cce08bcaf83a332d686bbebcbfdd1341cd5c8b3781e8de117b80"
+      },
+      {
+        "path": "src/biocompiler/core_policy_refinement.py",
+        "syntax_sha256": "39759b77357fd574e0221192c2a9167c6fd943705b25e8ac22ac8e98f9971260"
+      },
+      {
+        "path": "src/biocompiler/core_policy_refinement.py",
+        "syntax_sha256": "e92f5334c13a3ff9903bccf51e9b978cc98bf1e9b6aa8178539a0618b651561f"
+      },
+      {
+        "path": "src/biocompiler/core_policy_refinement.py",
+        "syntax_sha256": "3151207d09a06873af42442822b1dc9953a77ab45dca98c5e8e9c5c009e40689"
+      },
+      {
+        "path": "src/biocompiler/core_policy_refinement.py",
+        "syntax_sha256": "be06581e1562d8a963e1d4ffd44add17e8a3df2c58df100bfcbb8374ca757f0d"
+      },
+      {
+        "path": "src/biocompiler/core_policy_refinement.py",
+        "syntax_sha256": "f255311127c3c735ea86b68bf62c39a57aa405985d27c9ac0c8a73e4ccd786c2"
+      },
+      {
         "path": "src/biocompiler/policy/__init__.py",
         "syntax_sha256": "5444e85cd940472a89c61621cea027fa95eec4c75db8e3ae395ee5dda115bd39"
       },
@@ -21085,7 +22389,7 @@
       },
       {
         "path": "src/biocompiler/policy/__init__.py",
-        "syntax_sha256": "8ff69be3002c733f24640c24c8532619d03c5b00dff7f8fa779f2a6dd04d37b1"
+        "syntax_sha256": "8ab51e0c9cc85bbf44345699ae8b0f1c3fb4562f4306d008b245b3616fd8b49a"
       },
       {
         "path": "src/biocompiler/policy/behavior.py",
@@ -21644,6 +22948,22 @@
         "syntax_sha256": "628ce20be32563bd3325219d52eaf20f2b429aa45d2c1aed455889368798bd20"
       },
       {
+        "path": "src/biocompiler/policy/refinement.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/refinement.py",
+        "syntax_sha256": "3b11f76d682fe33710b1a889ffb28a927e6d74923d208cf24378d703020a165f"
+      },
+      {
+        "path": "src/biocompiler/policy/refinement.py",
+        "syntax_sha256": "a2b89c2bd5d3e26c25aa685525a4975e73ee1f9865b1a8df8b9c61b136063ceb"
+      },
+      {
+        "path": "src/biocompiler/policy/refinement.py",
+        "syntax_sha256": "632bf9d893107f0d50483f224acaf6b250ab1fdc8a3f9d5fddccb399065228d8"
+      },
+      {
         "path": "src/biocompiler/policy/requirements.py",
         "syntax_sha256": "9122d70e443bd9dd6b7e4cb4903570c6a37b9d29c63461f01800124fb083e043"
       },
@@ -22063,6 +23383,25 @@
           "request",
           "candidate",
           "limits"
+        ]
+      },
+      {
+        "operation": "check-policy-refinement",
+        "owner": "biocompiler.core_policy_refinement.PolicyRefinementClient.check",
+        "payload_fields": [
+          "request",
+          "candidate",
+          "limits"
+        ]
+      },
+      {
+        "operation": "replay-policy-refinement",
+        "owner": "biocompiler.core_policy_refinement.PolicyRefinementClient.replay",
+        "payload_fields": [
+          "request",
+          "candidate",
+          "limits",
+          "report"
         ]
       }
     ]
@@ -22818,6 +24157,70 @@
       "role": "mixed",
       "symbol": "PolicyPatternTests.test_repeated_instance_name_rejects_without_rebinding_existing_declarations",
       "syntax_sha256": "1a28f7c33c8dbecef040df9cd4b573274531476481da2590877356298728cdc5"
+    },
+    "refinement.claims": {
+      "distinction": "Tampered ordered relation census, all stage artifact identities and local scope hashes reject in inert transport validation.",
+      "file_sha256": "0ca5e9cc216ac22c45e7a1e56c3b94021cb5c074e3ec3f896c1171a33723eb2e",
+      "path": "tests/test_policy_refinement.py",
+      "role": "rejection",
+      "symbol": "PolicyRefinementTests.test_claim_census_stages_and_stage_local_scopes_are_exact",
+      "syntax_sha256": "fdc44266bfbe156b0a64bad367e4329e7bef76d263ea13428b91f326eb7e41ab"
+    },
+    "refinement.derivation": {
+      "distinction": "Closed bounded derivation description rejects malformed shape but does not verify opaque child hashes as native proof handles.",
+      "file_sha256": "0ca5e9cc216ac22c45e7a1e56c3b94021cb5c074e3ec3f896c1171a33723eb2e",
+      "path": "tests/test_policy_refinement.py",
+      "role": "mixed",
+      "symbol": "PolicyRefinementTests.test_derivation_is_closed_bounded_description_and_not_a_proof_constructor",
+      "syntax_sha256": "45d056a596137a207dd3be8ae7f016cd5fbfa858897eba0de6d70e4db96e5d32"
+    },
+    "refinement.namespace": {
+      "distinction": "Public namespace check/replay use the explicit verify transport, with no Python source-check fallback or production/export operation.",
+      "file_sha256": "0ca5e9cc216ac22c45e7a1e56c3b94021cb5c074e3ec3f896c1171a33723eb2e",
+      "path": "tests/test_policy_refinement.py",
+      "role": "positive",
+      "symbol": "PolicyRefinementTests.test_namespace_verify_routes_are_fresh_and_have_no_fallback_or_export",
+      "syntax_sha256": "e988041bb1f573fab513df1c67d324ead1b985cfe2dfc600b6fc621b5860a192"
+    },
+    "refinement.premises": {
+      "distinction": "Every one of the eighteen original-input or fresh-report premise hashes is independently mutated and rejected; no native proof implication.",
+      "file_sha256": "0ca5e9cc216ac22c45e7a1e56c3b94021cb5c074e3ec3f896c1171a33723eb2e",
+      "path": "tests/test_policy_refinement.py",
+      "role": "rejection",
+      "symbol": "PolicyRefinementTests.test_every_premise_is_bound_to_exact_original_or_fresh_report",
+      "syntax_sha256": "f5dc81fc1af37e758511c203f953e7ab8392857ca6c8d9ca765fe64109f340e2"
+    },
+    "refinement.rejection": {
+      "distinction": "A fresh rejected material report is preserved completely with no named evidence; no acceptance capability is constructed.",
+      "file_sha256": "0ca5e9cc216ac22c45e7a1e56c3b94021cb5c074e3ec3f896c1171a33723eb2e",
+      "path": "tests/test_policy_refinement.py",
+      "role": "positive",
+      "symbol": "PolicyRefinementTests.test_rejection_retains_full_report_and_has_no_named_evidence",
+      "syntax_sha256": "ad69b81f59230a3a568e6a00f35ef06a4c045346425e11c06b79cc2d669f78dd"
+    },
+    "refinement.replay": {
+      "distinction": "Replay performs a fresh transport call and rejects a saved full-wrapper derivation mismatch.",
+      "file_sha256": "0ca5e9cc216ac22c45e7a1e56c3b94021cb5c074e3ec3f896c1171a33723eb2e",
+      "path": "tests/test_policy_refinement.py",
+      "role": "rejection",
+      "symbol": "PolicyRefinementTests.test_replay_compares_entire_saved_wrapper_and_performs_fresh_call",
+      "syntax_sha256": "dfb29ee8f19a85849261b87a64460ce53e46328f9ac2bc6794163d5592382f62"
+    },
+    "refinement.transport": {
+      "distinction": "Inert peer check/replay preserve exact original inputs and complete fresh material report; no native semantic acceptance.",
+      "file_sha256": "0ca5e9cc216ac22c45e7a1e56c3b94021cb5c074e3ec3f896c1171a33723eb2e",
+      "path": "tests/test_policy_refinement.py",
+      "role": "positive",
+      "symbol": "PolicyRefinementTests.test_fresh_check_and_replay_preserve_complete_inputs_and_material_report",
+      "syntax_sha256": "b18aecad9a7679cc6d402f103435bd903b9067e32da5daa9d99cc4e6a08db0ca"
+    },
+    "refinement.views": {
+      "distinction": "Frozen descriptive views roundtrip all claims and premises; fresh JSON snapshots cannot mutate retained views or response.",
+      "file_sha256": "0ca5e9cc216ac22c45e7a1e56c3b94021cb5c074e3ec3f896c1171a33723eb2e",
+      "path": "tests/test_policy_refinement.py",
+      "role": "positive",
+      "symbol": "PolicyRefinementTests.test_immutable_typed_views_roundtrip_and_snapshots_are_independent",
+      "syntax_sha256": "f98cb8e0516237deca92128ffeaa5cea557d4411a205964d902a857e0ef29e83"
     },
     "research_project.atomic": {
       "distinction": "Failed canonical project publication preserves prior bytes and removes its own staging file; no payload acceptance claim.",
