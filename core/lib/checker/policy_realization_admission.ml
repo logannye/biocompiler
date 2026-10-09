@@ -302,9 +302,12 @@ let admit ~request ~(behavior:O.behavior) =
       List.length transition.effects<=1 && not(List.mem transition.source machine.terminal) &&
       List.mem transition.on.op ["rising";"updated";"effect_event"])behavior.transitions &&
       List.for_all(fun(effect:O.effect_spec)->
-        List.length(List.filter(fun(transition:O.transition)->List.mem effect.effect_id transition.effects)behavior.transitions)=1)
+        let count=List.length(List.filter(fun(transition:O.transition)->List.mem effect.effect_id transition.effects)behavior.transitions)in
+        if R.is_multi_site request then count>=1 else count=1)
         behavior.effects)
-      "Finite-machine transitions retain their sole machine and event triggers, forbid terminal reentry and assignments, and give every effect exactly one initiating transition."));
+      (if R.is_multi_site request then
+        "Multi-site transitions retain their sole machine, exclusive event arbitration and at most one request; every effect has at least one original initiating transition."
+       else "Finite-machine transitions retain their sole machine and event triggers, forbid terminal reentry and assignments, and give every effect exactly one initiating transition.")));
   (if R.is_network request then check_network_source request document behavior);
   (* Only externally checked source behavior reaches environment compatibility.
      Neither decoder nor caller-supplied candidate claims can replace this step. *)

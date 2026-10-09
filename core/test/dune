@@ -1040,3 +1040,33 @@
  (modules test_policy_network)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
  (action (run %{test} %{dep:data/policy_machine_network_v01.json})))
+
+(test
+ (name test_policy_target_planning)
+ (modules test_policy_target_planning)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_machine_network_v01.json} %{dep:data/policy_finite_machine_v01.json})))
+
+(test
+ (name test_policy_quantitative_network)
+ (modules test_policy_quantitative_network)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_quantitative_network_v01.json} %{dep:data/policy_quantitative_transfer_v01.json})))
+
+(test
+ (name test_policy_quantitative_transfer)
+ (modules test_policy_quantitative_transfer)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_quantitative_transfer_v01.json} %{dep:data/policy_quantitative_step_v01.json})))
+
+(test
+ (name test_policy_quantitative_step)
+ (modules test_policy_quantitative_step)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_quantitative_step_v01.json})))
+
+(test
+ (name test_policy_multi_site)
+ (modules test_policy_multi_site)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_quantitative_step_v01.json})))

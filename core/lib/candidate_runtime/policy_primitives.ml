@@ -5,8 +5,10 @@ module Set = Set.Make(String)
 
 let profile = "biocompiler.policy_primitive_execution.v0.1"
 let staged_execution_profile = "biocompiler.policy_staged_primitive_execution.v0.1"
+let multi_site_execution_profile = "biocompiler.policy_multi_site_primitive_execution.v0.1"
 let execution_profile implementation =
-  if I.implementation_profile implementation=I.staged_profile then staged_execution_profile else profile
+  if I.implementation_profile implementation=I.multi_site_profile then multi_site_execution_profile
+  else if I.implementation_profile implementation=I.staged_profile then staged_execution_profile else profile
 type reason = Missing | Stale | Invalid | Conflicting
 type truth_signal = { value : I.truth option; reasons : reason list }
 type binding = { slot : string option; generation : int }
@@ -196,11 +198,30 @@ let initialize ~implementation ~(environment:environment) ~(limits:limits) =
                  "Retained transition requires an explicit completion/failure/timeout selector.";
                let origin=input base selected.node_id "events"in
                require(origin.port_id="events" && (match(node base origin.node_id).model.primitive with
-                 |I.Attempt_bank _->true|_->false)) "unsupported" "Retained transition selector lacks an actual attempt bank.")
+                 |I.Attempt_bank _|I.Attempt_bank_sites _->true|_->false)) "unsupported" "Retained transition selector lacks an actual attempt bank.")
          |_->fail "unsupported" "Legacy and machine controls cannot interchange their commit semantics.")
     |I.Attempt_bank _->let producer=input base n.node_id "request"in
         let owner=match List.find_opt(fun(c:control)->c.commit=producer.node_id)controls with Some c->c|None->fail "unsupported" "Attempt requests need one actual initiating gate."in
         require(input base n.node_id "authorization"=input base owner.gate "guard") "unsupported" "Attempt authorization differs from the retained initiating guard endpoint."
+    |I.Attempt_bank_sites{sites;_}->
+        let owners=List.init sites(fun index->
+          let suffix=string_of_int index in
+          let producer=input base n.node_id("request"^suffix)in
+          let owner=match List.find_opt(fun(c:control)->c.commit=producer.node_id)controls with
+            |Some c->c|None->fail "unsupported" "Every request site needs an actual initiating transition."in
+          require(producer.port_id="request0" &&
+            (match(node base owner.commit).model.primitive with I.Transition_commit{requests=1;_}->true|_->false))
+            "unsupported" "Multi-site attempts require one request per original transition commit.";
+          require(input base n.node_id("authorization"^suffix)=input base owner.gate "guard")
+            "unsupported" "Request-site authorization differs from its initiating guard endpoint.";owner)in
+        unique "request-site gate"(List.map(fun(c:control)->c.gate)owners);
+        let arbiters=List.sort_uniq String.compare(List.map(fun(c:control)->c.arbiter)owners)in
+        require(List.length arbiters=1 && (match(node base(List.hd arbiters)).model.primitive with
+          |I.Exclusive_arbiter _->true|_->false)) "unsupported"
+          "Shared attempt sites require one exclusive arbiter with rejected conflicts.";
+        let machines=List.sort_uniq String.compare(List.map(fun(c:control)->
+          (destination base c.commit "machine_write").node_id)owners)in
+        require(List.length machines=1) "unsupported" "Shared effect request sites must retain one actual machine owner."
     |_->())nodes;
   let ancestry=Hashtbl.create 32 in
   let rec observed depth (e:I.endpoint)=
@@ -260,7 +281,7 @@ let event_evaluator w (snapshot:state) (events:event list) =
       charge w (1+List.length events);
       let result=match(node snapshot.plan e.node_id).model.primitive with
       |I.Event_select kind->List.filter(fun(event:event)->event.kind=Primitive_event kind)(evaluate(input snapshot.plan e.node_id "events")b)
-      |I.Evidence_bank _|I.Observed_rising|I.Attempt_bank _->List.filter(fun(event:event)->event.origin=Some e && event.binding=b)events
+      |I.Evidence_bank _|I.Observed_rising|I.Attempt_bank _|I.Attempt_bank_sites _->List.filter(fun(event:event)->event.origin=Some e && event.binding=b)events
       |_->fail "graph" "Event wire reaches a non-event primitive."in
       Hashtbl.add memo cache result;result in evaluate
 let initialize_slot w (slot:slot_state) =
@@ -362,7 +383,8 @@ let refresh_authorization w =
   let snapshot=w.current in let evaluate=evaluator w snapshot in
   let attempts=List.map(fun(a:attempt)->charge w 1;
     match(node snapshot.plan a.bank).model.primitive with
-    |I.Attempt_bank{authorization=I.Continuous;on_unknown;_}when a.status=Active->
+    |(I.Attempt_bank{authorization=I.Continuous;on_unknown;_}
+      |I.Attempt_bank_sites{authorization=I.Continuous;on_unknown;_})when a.status=Active->
         let signal=evaluate a.guard a.binding in let value=truth signal in
         if value=a.authorization then a else (
           let response=if value=I.Unknown then(match on_unknown with I.Continue->"continue"|I.Defer->"defer")else if value=I.False then "continue"else "authorized"in
@@ -457,7 +479,7 @@ let commit w (prepared:prepared list) =
     let key=cell request.bank request.activation.binding in
     let old=match Map.find_opt key !counts with Some count->count|None->
       List.fold_left(fun count(a:attempt)->if a.bank=request.bank && a.binding=request.activation.binding && a.status=Active then count+1 else count)0 w.current.attempts in
-    let capacity=match(node w.current.plan request.bank).model.primitive with I.Attempt_bank{capacity;_}->capacity|_->fail "graph" "Request does not reach an attempt bank."in
+    let capacity=match(node w.current.plan request.bank).model.primitive with I.Attempt_bank{capacity;_}|I.Attempt_bank_sites{capacity;_}->capacity|_->fail "graph" "Request does not reach an attempt bank."in
     require(old<capacity) "capacity" "Per-bank/per-slot active attempt capacity exhausted before atomic commit.";
     counts:=Map.add key(old+1)!counts)requests;
   let machine_writes=List.filter_map(fun(p:prepared)->p.machine_write)prepared in
@@ -478,7 +500,7 @@ let commit w (prepared:prepared list) =
   List.concat_map(fun(p:prepared)->
     let started=List.map(fun(_, (request:request))->
     let s=w.current in
-    let timeout=match(node s.plan request.bank).model.primitive with I.Attempt_bank{timeout_ticks;_}->timeout_ticks|_->assert false in
+    let timeout=match(node s.plan request.bank).model.primitive with I.Attempt_bank{timeout_ticks;_}|I.Attempt_bank_sites{timeout_ticks;_}->timeout_ticks|_->assert false in
     let b=request.activation.binding in
     let slot=match b.slot with Some id->find_slot s id|None->fail "scope" "Attempt cannot collapse an encounter to executor scope."in
     let ordinal=s.allocated+1 in
@@ -701,7 +723,7 @@ let state_fingerprint (value:state)=
     "registers",map(fun value->str(truth_name value))value.registers;"evidence",map retained_json value.evidence;
     "rising",map(fun value->str(truth_name value))value.rising;"attempts",arr(List.map attempt_json value.attempts);
     "observation_ids",arr(List.map str(Set.elements value.observation_ids));"feedback_ids",arr(List.map str(Set.elements value.feedback_ids))]@
-    (if I.implementation_profile value.plan.implementation=I.staged_profile then
+    (if List.mem(I.implementation_profile value.plan.implementation)[I.staged_profile;I.multi_site_profile] then
       ["machines",map machine_json value.machines]else []))in
   Canonical.sha256(Canonical.encode_bounded ~max_bytes:(8*1024*1024)raw)
 

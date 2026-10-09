@@ -15,18 +15,22 @@ let multi_product_schema_version = "biocompiler.policy_realization_request.v0.4"
 let multi_product_profile = "biocompiler.policy_multi_product_prerequisite_inputs.v0.1"
 let finite_machine_schema_version = "biocompiler.policy_realization_request.v0.5"
 let finite_machine_profile = "biocompiler.policy_finite_machine_inputs.v0.1"
+let multi_site_schema_version = "biocompiler.policy_realization_request.v0.7"
+let multi_site_profile = "biocompiler.policy_multi_site_inputs.v0.1"
 let network_schema_version = "biocompiler.policy_realization_request.v0.6"
 let network_profile = "biocompiler.policy_network_inputs.v0.1"
 let resource_profile = "biocompiler.policy_realization_inputs.resources.v0.1"
-type family = Legacy | Prerequisites | Two_observation | Multi_product | Finite_machine | Network
+type family = Legacy | Prerequisites | Two_observation | Multi_product | Finite_machine | Network | Multi_site
 let family_schema = function Legacy -> schema_version | Prerequisites -> prerequisite_schema_version
   | Two_observation -> two_observation_schema_version | Multi_product -> multi_product_schema_version
   | Finite_machine -> finite_machine_schema_version
   | Network -> network_schema_version
+  | Multi_site -> multi_site_schema_version
 let family_profile = function Legacy -> profile | Prerequisites -> prerequisite_profile
   | Two_observation -> two_observation_profile | Multi_product -> multi_product_profile
   | Finite_machine -> finite_machine_profile
   | Network -> network_profile
+  | Multi_site -> multi_site_profile
 type budgets = { max_prefixes:int; max_transitions:int; max_work:int; max_trace_items:int }
 type catalog_binding = {
   entry_id:string; entry_version:string; entry_digest:string;
@@ -105,12 +109,14 @@ let of_json raw = decode ~family:Legacy raw
 let of_prerequisite_json raw = decode ~family:Prerequisites raw
 let of_two_observation_json raw = decode ~family:Two_observation raw
 let of_multi_product_json raw = decode ~family:Multi_product raw
+let of_multi_site_json raw = decode ~family:Multi_site raw
+let is_multi_site value = value.family=Multi_site
 let of_finite_machine_json raw = decode ~family:Finite_machine raw
 let of_network_json raw = decode ~family:Network raw
 let requires_prerequisite_closure value = value.family<>Legacy
 let is_two_observation value = value.family=Two_observation
 let is_multi_product value = value.family=Multi_product
-let is_finite_machine value = value.family=Finite_machine
+let is_finite_machine value = (value.family=Finite_machine || value.family=Multi_site)
 let is_network value = value.family=Network
 let request_profile value = family_profile value.family
 let to_json value = value.raw

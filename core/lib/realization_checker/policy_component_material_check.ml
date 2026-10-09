@@ -104,7 +104,7 @@ let obligation_ledger budget request (implementation:P.checked_implementation) (
        Discharge only its exact bounded operational interpretation: every
        permitted prefix preserves finite states, terminal behavior and retained
        attempts, and every explicit original hard requirement is satisfied. *)
-    text "profile"(B.report binding)=(if R.is_network request then U.network_profile
+    text "profile"(B.report binding)=(if R.is_multi_site request then U.multi_site_profile else if R.is_network request then U.network_profile
       else if R.is_finite_machine request then U.finite_machine_profile
       else if R.is_multi_member request then U.multi_product_profile else U.staged_profile) &&
     (if R.is_network request then List.length(B.machines binding)>=2 && List.length(B.machines binding)<=4 &&
@@ -213,12 +213,18 @@ let check ~request ~behavior ~implementation ~proposed ~assembly_proposal ~candi
   let prerequisites=if prerequisite_profile && context_result<>Json.Null
     then get "prerequisite_closure" context_result else Json.Null in
   let status=if complete then "checked_component_material" else "not_accepted" in
-  let report_base=["schema_version",str (if R.is_quantitative request then "biocompiler.policy_component_material_assessment.v0.5"
+  let report_base=["schema_version",str (if R.is_transfer_network request then "biocompiler.policy_component_material_assessment.v0.8"
+    else if R.is_transfer_pair request then "biocompiler.policy_component_material_assessment.v0.7"
+    else if R.is_multi_site request then "biocompiler.policy_component_material_assessment.v0.6"
+    else if R.is_quantitative request then "biocompiler.policy_component_material_assessment.v0.5"
     else if R.is_grounded_helper request then "biocompiler.policy_component_material_assessment.v0.4"
     else if R.is_multi_member request then "biocompiler.policy_component_material_assessment.v0.3"
     else if prerequisite_profile then "biocompiler.policy_component_material_assessment.v0.2"
     else "biocompiler.policy_component_material_assessment.v0.1");
-    "profile",str (R.request_profile request);"implementation",str (if R.is_network request then "biocompiler.ocaml.policy_component_material_check.v0.9"
+    "profile",str (R.request_profile request);"implementation",str (if R.is_transfer_network request then "biocompiler.ocaml.policy_component_material_check.v0.12"
+      else if R.is_transfer_pair request then "biocompiler.ocaml.policy_component_material_check.v0.11"
+      else if R.is_multi_site request then "biocompiler.ocaml.policy_component_material_check.v0.10"
+      else if R.is_network request then "biocompiler.ocaml.policy_component_material_check.v0.9"
       else if R.is_quantitative request then "biocompiler.ocaml.policy_component_material_check.v0.8"
       else if R.is_finite_machine request then "biocompiler.ocaml.policy_component_material_check.v0.7"
       else if R.is_grounded_helper request then "biocompiler.ocaml.policy_component_material_check.v0.6"

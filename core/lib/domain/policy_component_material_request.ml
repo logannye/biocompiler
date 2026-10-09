@@ -14,6 +14,8 @@ module M = Molecular_record
 module Old = Policy_material_request
 module PX = Policy_material_context
 module QC = Policy_quantitative_contract
+module TC = Policy_quantitative_transfer_contract
+module NC = Policy_quantitative_network_contract
 let schema_version = "biocompiler.policy_component_material_request.v0.1"
 let profile = X.profile
 let instance_schema_version = "biocompiler.policy_component_material_request.v0.2"
@@ -32,6 +34,12 @@ let network_schema_version = "biocompiler.policy_component_material_request.v0.9
 let network_profile = "biocompiler.policy_network_component_mrna.v0.1"
 let quantitative_schema_version = "biocompiler.policy_component_material_request.v0.8"
 let quantitative_profile = "biocompiler.policy_sampled_reservoir_component_mrna.v0.1"
+let transfer_network_schema_version = "biocompiler.policy_component_material_request.v0.12"
+let transfer_network_profile = "biocompiler.policy_sampled_transfer_network_component_mrna.v0.1"
+let transfer_pair_schema_version = "biocompiler.policy_component_material_request.v0.11"
+let transfer_pair_profile = "biocompiler.policy_sampled_transfer_pair_component_mrna.v0.1"
+let step_quantitative_schema_version = "biocompiler.policy_component_material_request.v0.10"
+let step_quantitative_profile = "biocompiler.policy_sampled_step_reservoir_component_mrna.v0.1"
 let resource_profile = "biocompiler.policy_component_material_resources.v0.1"
 let str value = Json.String value
 let obj values = Json.Object values
@@ -84,7 +92,7 @@ let resource_keys rule =
 type budgets = {max_work:int;max_report_bytes:int;max_report_nodes:int}
 type t = {raw:Json.t;identity:string;decoding_work_value:int;original:R.t;library:L.t;rule_value:A.t;
   catalog:catalog_binding;inputs:input_binding list;resources:resource_binding list;context_value:X.t;budget_values:budgets;
-  quantitative_value:QC.selection option}
+  quantitative_value:QC.selection option;transfer_pair_value:TC.selection option;transfer_network_value:NC.selection option}
 let of_json ?(charge=fun _ -> ()) raw =
   let work = ref 0 in
   let spend amount =
@@ -96,7 +104,10 @@ let of_json ?(charge=fun _ -> ()) raw =
   let equal left right = let a=measure left and b=measure right in spend (a+b); Json.equal left right in
   let raw_bytes = measure raw in M.check_resources raw;
   let network = get "schema_version" raw=str network_schema_version && get "profile" raw=str network_profile in
-  let quantitative = get "schema_version" raw=str quantitative_schema_version && get "profile" raw=str quantitative_profile in
+  let transfer_network = get "schema_version" raw=str transfer_network_schema_version && get "profile" raw=str transfer_network_profile in
+  let transfer_pair = get "schema_version" raw=str transfer_pair_schema_version && get "profile" raw=str transfer_pair_profile in
+  let multi_site = transfer_network || transfer_pair || (get "schema_version" raw=str step_quantitative_schema_version && get "profile" raw=str step_quantitative_profile) in
+  let quantitative = multi_site || (get "schema_version" raw=str quantitative_schema_version && get "profile" raw=str quantitative_profile) in
   let fields=["schema_version";"profile";"implementation_request";"component_library";"composition_rule";
     "catalog_binding";"input_bindings";"resource_bindings";"context";"budgets"] in
   exact (if quantitative then fields@["quantitative"] else fields) raw;
@@ -108,17 +119,51 @@ let of_json ?(charge=fun _ -> ()) raw =
   let instanced = prerequisite_closure || (get "schema_version" raw=str instance_schema_version && get "profile" raw=str instance_profile) in
   require (instanced || (get "schema_version" raw=str schema_version && get "profile" raw=str profile))
     "Unsupported original component material request profile.";
-  let original = decode (if network then R.of_network_json else if finite_machine then R.of_finite_machine_json else if multi_member then R.of_multi_product_json
+  let original = decode (if multi_site then R.of_multi_site_json else if network then R.of_network_json else if finite_machine then R.of_finite_machine_json else if multi_member then R.of_multi_product_json
     else if two_observation then R.of_two_observation_json
     else if prerequisite_closure then R.of_prerequisite_json else R.of_json) (get "implementation_request" raw) in
   let library = decode (L.of_json ~library:(R.implementation_library original)) (get "component_library" raw) in
   let rule_value = decode (A.of_json ~components:library) (get "composition_rule" raw) in
-  let quantitative_value=if quantitative then Some(decode (fun raw->QC.selection_of_json raw)(get "quantitative" raw))else None in
-  (match quantitative_value with
+  let quantitative_value=if quantitative && not transfer_pair && not transfer_network then Some(decode (fun raw->QC.selection_of_json raw)(get "quantitative" raw))else None in
+  let transfer_pair_value=if transfer_pair then Some(decode (fun raw->TC.selection_of_json raw)(get "quantitative" raw))else None in
+  let transfer_network_value=if transfer_network then Some(decode (fun raw->NC.selection_of_json raw)(get "quantitative" raw))else None in
+  (match transfer_network_value with
    | None->()
    | Some selection->
      let quantitative_components=List.filter(fun slot->spend 1;
-       LC.quantitative_contracts(A.component rule_value slot)<>[])(A.slots rule_value) in
+       let component=A.component rule_value slot in
+       LC.quantitative_contracts component<>[] || LC.transfer_pair_contracts component<>[] ||
+       LC.transfer_network_contracts component<>[])(A.slots rule_value) in
+     let selected_slot=A.Instance selection.instance in
+     require(quantitative_components=[selected_slot])
+       "Transfer networks require exactly one independently supplied atomic state-owner component instance.";
+     let component=A.component rule_value selected_slot in
+     require(pin_equal selection.component(LC.identity component) && LC.quantitative_contracts component=[] &&
+       LC.transfer_pair_contracts component=[])
+       "Network selection must pin the complete original atomic local component body.";
+     require(List.exists(fun(contract:NC.local_contract)->spend 1;contract.id=selection.contract)
+       (LC.transfer_network_contracts component))"Network selection names an absent supplied atomic contract.");
+  (match transfer_pair_value with
+   | None->()
+   | Some selection->
+     let quantitative_components=List.filter(fun slot->spend 1;
+       let component=A.component rule_value slot in
+       LC.quantitative_contracts component<>[] || LC.transfer_pair_contracts component<>[] || LC.transfer_network_contracts component<>[])(A.slots rule_value) in
+     let selected_slot=A.Instance selection.instance in
+     require(quantitative_components=[selected_slot])
+       "Transfer requests must select exactly one independently supplied joint quantitative component instance.";
+     let component=A.component rule_value selected_slot in
+     require(pin_equal selection.component(LC.identity component) && LC.quantitative_contracts component=[])
+       "Transfer selection must pin the complete original joint local component body.";
+     require(List.exists(fun(contract:TC.local_contract)->spend 1;contract.id=selection.contract)
+       (LC.transfer_pair_contracts component))"Transfer selection names an absent supplied joint contract.");
+  (match quantitative_value with
+   | None->()
+   | Some selection->
+     require(selection.mechanism.multi_site=multi_site)"Quantitative request and complete law profiles must agree.";
+     let quantitative_components=List.filter(fun slot->spend 1;
+       let component=A.component rule_value slot in
+       LC.quantitative_contracts component<>[] || (multi_site && (LC.transfer_pair_contracts component<>[] || LC.transfer_network_contracts component<>[])))(A.slots rule_value) in
      let selected_slot=A.Instance selection.instance in
      require(quantitative_components=[selected_slot])
        "Quantitative requests must select exactly one independently supplied quantitative component instance.";
@@ -128,6 +173,8 @@ let of_json ?(charge=fun _ -> ()) raw =
      require(List.exists(fun(contract:QC.local_contract)->spend 1;contract.id=selection.contract)
        (LC.quantitative_contracts component))"Quantitative selection names an absent supplied contract.");
   let context_value = decode X.of_json (get "context" raw) in
+  require (A.is_multi_site rule_value=multi_site && R.is_multi_site original=multi_site)
+    "Original request, realization and assembly multi-site profiles must agree.";
   require (A.is_instanced rule_value=instanced && X.is_instanced context_value=instanced)
     "Original request, rule and context instance profiles must agree.";
   require (X.requires_prerequisite_closure context_value=prerequisite_closure &&
@@ -271,7 +318,7 @@ let of_json ?(charge=fun _ -> ()) raw =
   Diagnostic.require (String.length encoded=raw_bytes) "policy_component_material_accounting"
     "Composition preflight byte count differs from the complete original encoding.";
   spend raw_bytes;
-  {raw;identity=Canonical.sha256 encoded;decoding_work_value= !work;original;library;rule_value;catalog;inputs;resources;context_value;budget_values;quantitative_value}
+  {raw;identity=Canonical.sha256 encoded;decoding_work_value= !work;original;library;rule_value;catalog;inputs;resources;context_value;budget_values;quantitative_value;transfer_pair_value;transfer_network_value}
 let to_json value = value.raw
 let fingerprint value = value.identity
 let decoding_work value = value.decoding_work_value
@@ -289,11 +336,16 @@ let requires_prerequisite_closure value = R.requires_prerequisite_closure value.
 let is_two_observation value = R.is_two_observation value.original
 let is_multi_member value = R.is_multi_product value.original
 let is_grounded_helper value = A.is_grounded_helper value.rule_value
+let is_multi_site value = R.is_multi_site value.original
 let is_network value = R.is_network value.original
 let is_finite_machine value = R.is_finite_machine value.original
 let quantitative value = value.quantitative_value
-let is_quantitative value = Option.is_some value.quantitative_value
-let request_profile value = if is_quantitative value then quantitative_profile
+let transfer_pair_quantitative value = value.transfer_pair_value
+let is_transfer_pair value = Option.is_some value.transfer_pair_value
+let network_quantitative value = value.transfer_network_value
+let is_transfer_network value = Option.is_some value.transfer_network_value
+let is_quantitative value = Option.is_some value.quantitative_value || is_transfer_pair value || is_transfer_network value
+let request_profile value = if is_transfer_network value then transfer_network_profile else if is_transfer_pair value then transfer_pair_profile else if is_multi_site value then step_quantitative_profile else if is_quantitative value then quantitative_profile
   else if is_network value then network_profile
   else if is_finite_machine value then finite_machine_profile
   else if is_grounded_helper value then grounded_helper_profile

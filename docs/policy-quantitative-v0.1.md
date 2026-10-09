@@ -110,3 +110,7 @@ Native table, selected execution, material/export and rejection controls are
 authored separately. Native acceptance remains pending hosted execution of the
 exact revision; neither the fixture nor Python tests establish biological
 realization.
+
+The separately named [sampled step reservoir profile](policy-quantitative-step-v0.1.md)
+adds exact rise/fall amounts and complete multiple-request-site correspondence.
+This original profile and its single-site behavior remain unchanged.

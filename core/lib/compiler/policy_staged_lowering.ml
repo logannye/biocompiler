@@ -32,7 +32,8 @@ let lower_metered ~charge ~admitted ~library =
     "Staged lowering needs exact truth/event/product types."in
   charge 1;
   let request=A.request admitted and behavior=A.behavior admitted in
-  let multi_product=R.is_multi_product request and finite_machine=R.is_finite_machine request in
+  let multi_product=R.is_multi_product request and finite_machine=R.is_finite_machine request
+  and multi_site=R.is_multi_site request in
   let library_pin=Canonical.fingerprint(I.library_to_json library) in
   let original_library_pin=Canonical.fingerprint(I.library_to_json(R.implementation_library request)) in
   supported(library_pin=original_library_pin)"Original supplied library changed.";
@@ -88,6 +89,7 @@ let lower_metered ~charge ~admitted ~library =
   let ticks duration=let exact=Q.div duration clock.resolution in
     supported(Q.sign exact>0 && Z.equal(Q.den exact)Z.one && Z.compare(Q.num exact)(Z.of_int 10000)<=0)
       "Duration is not a bounded positive exact tick count.";Z.to_int(Q.num exact)in
+  let initiators effect_id=List.filter(fun(value:O.transition)->List.mem effect_id value.effects)behavior.transitions in
   let attempt_primitive (operation:O.effect_spec)=
     let timeout_ticks=match operation.lifecycle.timeout with Some value->ticks value|None->
       Diagnostic.fail "policy_staged_lowering_unsupported" "Each stage requires a finite explicit timeout."in
@@ -95,14 +97,19 @@ let lower_metered ~charge ~admitted ~library =
       |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Unsupported authorization lifetime."in
     let on_unknown=match operation.lifecycle.on_unknown with "defer"->I.Defer|"continue"->I.Continue
       |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Unsupported unknown authorization behavior."in
-    I.Attempt_bank{capacity=domain.logical_limits.max_source_attempts;timeout_ticks;authorization;on_unknown}in
+    if multi_site then I.Attempt_bank_sites{sites=List.length(initiators operation.effect_id);
+      capacity=domain.logical_limits.max_source_attempts;timeout_ticks;authorization;on_unknown}
+    else I.Attempt_bank{capacity=domain.logical_limits.max_source_attempts;timeout_ticks;authorization;on_unknown}in
   List.iter(fun(operation:O.effect_spec)->
     supported(operation.executor=executor.role_id && operation.subject=subject.subject_id && operation.lifecycle.on_loss="continue" &&
       Json.equal bridge.operation(get "contract"(source operation.effect_id)))"Stage operation changed original operation or recipient.";
     let argument=one "product argument"(rows "parameters"(source operation.effect_id))in
     supported(text "name" argument="product" && text "op"(get "value" argument)="parameter")"Unsupported stage parameter.";
-    let initiators=List.filter(fun(value:O.transition)->List.mem operation.effect_id value.effects)behavior.transitions in
-    supported(List.length initiators=1 && (List.hd initiators).effects=[operation.effect_id])"Every stage must have its own single-operation initiator.";
+    let sites=initiators operation.effect_id in
+    supported(if multi_site then sites<>[] &&
+      List.for_all(fun(value:O.transition)->value.effects=[operation.effect_id])sites
+      else List.length sites=1 && (List.hd sites).effects=[operation.effect_id])
+      "Every effect must have the profile-authorized original single-operation initiating sites.";
     ignore(attempt_primitive operation))behavior.effects;
   (if multi_product then (
     let used=List.map(fun(operation:O.effect_spec)->
@@ -143,6 +150,9 @@ let lower_metered ~charge ~admitted ~library =
       let config=match primitive,model.primitive with
         |I.Attempt_bank wanted,I.Attempt_bank supplied->wanted.timeout_ticks=supplied.timeout_ticks &&
           wanted.authorization=supplied.authorization && wanted.on_unknown=supplied.on_unknown && supplied.capacity>=wanted.capacity
+        |I.Attempt_bank_sites wanted,I.Attempt_bank_sites supplied->wanted.sites=supplied.sites &&
+          wanted.timeout_ticks=supplied.timeout_ticks && wanted.authorization=supplied.authorization &&
+          wanted.on_unknown=supplied.on_unknown && supplied.capacity>=wanted.capacity
         |I.Machine_bank wanted,I.Machine_bank supplied->wanted.states=supplied.states && wanted.initial=supplied.initial &&
           wanted.terminal=supplied.terminal && wanted.writers=supplied.writers && supplied.retained_capacity>=wanted.retained_capacity
         |_->primitive=model.primitive in
@@ -221,7 +231,13 @@ let lower_metered ~charge ~admitted ~library =
             connect(out(List.assoc identity attempts)"events")(out id "events");let value=out id "selected"in Hashtbl.add memo key value;value)
         |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Expression lacks a staged primitive interpretation."in
       occurrence location role(if List.mem expression.op["literal";"parameter"]then "constant"else "executable")[result];result in
-    let anchors=ref [] and product_outputs=ref [] and product_targets=ref [] in
+    let anchors=ref [] and product_outputs=ref [] and product_targets=ref [] and effect_products=ref [] in
+    let product_output effect_id argument=
+      if not multi_site then emit "effect_parameter"(path effect_id^"/parameters/0/value")(get "value" argument)
+      else match List.assoc_opt effect_id !effect_products with
+        |Some output->output
+        |None->let output=emit "effect_parameter"(path effect_id^"/parameters/0/value")(get "value" argument)in
+          effect_products:= !effect_products@[effect_id,output];output in
     let commits=List.mapi(fun index(transition:O.transition)->
       let raw=source transition.transition_id and location=path transition.transition_id and prefix="transition/"^string_of_int index in
       let on=emit "predicate"(location^"/on")(get "on" raw)and guard=emit "predicate"(location^"/when")(get "when" raw)in
@@ -232,15 +248,22 @@ let lower_metered ~charge ~admitted ~library =
       connect(out gate "candidate")(out arbiter("in"^string_of_int index));connect(out arbiter("out"^string_of_int index))(out commit "grant");
       connect(out commit "machine_write")(out machine_bank("write"^string_of_int index));
       List.iter(fun effect_id->let effect_raw=source effect_id in let argument=one "stage argument"(rows "parameters" effect_raw)in
-        let output=emit "effect_parameter"(path effect_id^"/parameters/0/value")(get "value" argument)in
+        let output=product_output effect_id argument in
         (if multi_product then (
           let id=O.ref_id(get "ref"(get "value" argument))in
           let previous=Option.value(List.assoc_opt id !product_targets)~default:[] in
           let targets=if List.exists(Json.equal output)previous then previous else previous@[output]in
           product_targets:=(id,targets)::List.remove_assoc id !product_targets));
         if not(List.exists(Json.equal output)!product_outputs)then product_outputs:= !product_outputs@[output];
-        connect output(out commit "product0");connect(out commit "request0")(out(List.assoc effect_id attempts)"request");
-        connect guard(out(List.assoc effect_id attempts)"authorization"))transition.effects;
+        let request_port,authorization_port=if multi_site then
+          let ordered=initiators effect_id in
+          let rec index ordinal=function
+            |[]->assert false
+            |(site:O.transition)::rest->if site.transition_id=transition.transition_id then ordinal else index(ordinal+1)rest in
+          let suffix=string_of_int(index 0 ordered)in "request"^suffix,"authorization"^suffix
+          else "request","authorization"in
+        connect output(out commit "product0");connect(out commit "request0")(out(List.assoc effect_id attempts)request_port);
+        connect guard(out(List.assoc effect_id attempts)authorization_port))transition.effects;
       occurrence location "declaration" "executable"([out gate "candidate";out arbiter("out"^string_of_int index)]@outputs commit);
       anchors:= !anchors@[o["source",s transition.transition_id;"gate",s gate;"arbiter",s arbiter;"lane",Json.int index;"commit",s commit]];commit)behavior.transitions in
     let rec obligations location raw=charge(1+String.length location);match raw with
@@ -271,14 +294,15 @@ let lower_metered ~charge ~admitted ~library =
       "library_digest",s library_pin]in
     let inputs=o["id",s "evidence/0";"kind",s "evidence";"consumer",out evidence "samples"]::
       List.mapi(fun index(_,bank)->o["id",s("feedback/"^string_of_int index);"kind",s "feedback";"consumer",out bank "feedback"])attempts in
-    let graph=o["schema_version",s I.candidate_schema;"profile",s I.staged_profile;"observable_profile",s I.staged_observable_profile;
+    let graph=o["schema_version",s I.candidate_schema;"profile",s(if multi_site then I.multi_site_profile else I.staged_profile);
+      "observable_profile",s(if multi_site then I.multi_site_observable_profile else I.staged_observable_profile);
       "authority",authority;"slot_layout",o["id",s layout_id;"encounter",s encounter.encounter_id;"slots",Json.int 2];
       "nodes",a(List.map(fun(id,(model:I.model))->o["id",s id;"model",P.to_json model.identity;"configuration_digest",s model.configuration_digest])!nodes);
       "wires",a !wires;"inputs",a inputs;"atomic_groups",a[o["id",s "exclusive/0";"arbiter",s arbiter;"commits",a(List.map s commits)]];
       "semantic_exports",a(List.concat_map(fun(id,_)->outputs id)!nodes);
       "occurrences",a(List.sort(fun left right->String.compare(text "source_path" left)(text "source_path" right))!occurrences)]in
-    let binding=o["schema_version",s(if finite_machine then B.finite_machine_schema_version else if multi_product then B.multi_product_schema_version else B.staged_schema_version);
-      "profile",s(if finite_machine then B.finite_machine_profile else if multi_product then B.multi_product_profile else B.staged_profile);"catalog_entry",s bridge.entry_id;
+    let binding=o["schema_version",s(if multi_site then B.multi_site_schema_version else if finite_machine then B.finite_machine_schema_version else if multi_product then B.multi_product_schema_version else B.staged_schema_version);
+      "profile",s(if multi_site then B.multi_site_profile else if finite_machine then B.finite_machine_profile else if multi_product then B.multi_product_profile else B.staged_profile);"catalog_entry",s bridge.entry_id;
       "observations",a[o["source",s observation.observation_id;"bank",s evidence;"input",s "evidence/0"]];"states",a[];"rules",a[];
       "effects",a(List.mapi(fun index(source,bank)->o["source",s source;"bank",s bank;"feedback",s("feedback/"^string_of_int index)])attempts);
       "machines",a[o["source",s machine.machine_id;"bank",s machine_bank]];"transitions",a !anchors]in

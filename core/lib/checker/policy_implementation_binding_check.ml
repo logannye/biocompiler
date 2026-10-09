@@ -13,8 +13,9 @@ type slot = { identity:string; target:string; start_tick:int }
 type environment = { executor:string; slots:slot list; horizon_ticks:int }
 type observation = { source:string; bank:string; input:string; observer:string; subject:string }
 type state = { source:string; register:string }
+type effect_site = { initiating_rule:string; gate:string; guard:I.endpoint }
 type effect_binding = { source:string; bank:string; feedback:string; initiating_rule:string;
-  gate:string; guard:I.endpoint; product_parameter:string; machine:string option }
+  gate:string; guard:I.endpoint; product_parameter:string; machine:string option; request_sites:effect_site list }
 type rule = { source:string; gate:string; arbiter:string; lane:int; commit:string;
   trigger:I.endpoint; source_trigger:O.expression }
 type machine = { source:string; bank:string }
@@ -353,6 +354,7 @@ let check_legacy ~admitted ~implementation ~proposed =
       trigger=incoming(ep r.gate "on");source_trigger=source.on}:rule))anchors in
   let effect_values=[{source=effect_source.effect_id;bank=effect_anchor.bank;feedback=effect_anchor.feedback;
     initiating_rule=initiator.rule_id;gate=initiating_anchor.gate;guard=List.assoc initiator.rule_id !guards;
+    request_sites=[{initiating_rule=initiator.rule_id;gate=initiating_anchor.gate;guard=List.assoc initiator.rule_id !guards}];
     product_parameter=text "name" argument;machine=None}]in
   let expression_values=List.sort(fun(a:expression)(b:expression)->String.compare a.source_path b.source_path)!expressions in
   let report_value=obj[
@@ -376,12 +378,12 @@ let check_legacy ~admitted ~implementation ~proposed =
 let check_staged ~admitted ~implementation ~proposed =
   let request=A.request admitted and behavior=A.behavior admitted in
   let multi_product=R.is_multi_product request in
-  let finite_machine=R.is_finite_machine request in
+  let finite_machine=R.is_finite_machine request and multi_site=R.is_multi_site request in
   let document=R.document request and domain=F.specification(A.operating_domain admitted)in
   let implementation=I.of_json ~library:(R.implementation_library request)(I.to_json implementation)in
-  require(I.implementation_profile implementation=I.staged_profile &&
-    I.implementation_observable_profile implementation=I.staged_observable_profile)
-    "Staged source needs the explicit staged primitive and observable profiles.";
+  require(I.implementation_profile implementation=(if multi_site then I.multi_site_profile else I.staged_profile) &&
+    I.implementation_observable_profile implementation=(if multi_site then I.multi_site_observable_profile else I.staged_observable_profile))
+    "Staged source needs its exact explicit primitive and observable profiles.";
   let authority:I.authority={source_artifact_digest=D.artifact_digest document;
     descriptors_digest=O.descriptors_digest(R.definitions request);domain_digest=F.digest(R.operating_domain request);
     implementation_catalog_digest=Canonical.fingerprint(get "implementations"(D.to_json document));
@@ -609,28 +611,45 @@ let check_staged ~admitted ~implementation ~proposed =
     record I.Declaration source_path ([ep anchor.gate "candidate";ep arbiter("out"^string_of_int index)]@outputs(node anchor.commit)))behavior.transitions;
   let effect_values=List.map(fun(source_effect:O.effect_spec)->
     let anchor=effect_anchor source_effect.effect_id and source=raw source_effect.effect_id in
-    let initiator=singleton "staged effect initiator"(List.filter(fun(t:O.transition)->List.mem source_effect.effect_id t.effects)behavior.transitions)in
-    require(initiator.effects=[source_effect.effect_id] && source_effect.executor=role.role_id && source_effect.subject=subject.subject_id &&
+    let initiators=List.filter(fun(t:O.transition)->List.mem source_effect.effect_id t.effects)behavior.transitions in
+    require((if multi_site then initiators<>[] else List.length initiators=1) &&
+      List.for_all(fun(t:O.transition)->t.effects=[source_effect.effect_id] && t.machine=source_machine.machine_id)initiators &&
+      source_effect.executor=role.role_id && source_effect.subject=subject.subject_id &&
       source_effect.lifecycle.on_loss="continue" && Json.equal bridge.operation(get "contract" source))
-      "Staged effects must retain distinct initiators and the same original product-operation contract.";
+      "Effects must retain their exact profile-authorized initiating sites, machine and original product-operation contract.";
     let timeout=match source_effect.lifecycle.timeout with Some value->ticks value|None->Diagnostic.fail "policy_implementation_source_binding" "Staged effect requires a timeout."in
     let authorization=match source_effect.lifecycle.authorization with "continuous"->I.Continuous|"initiation"->I.At_initiation
       |_->Diagnostic.fail "policy_implementation_source_binding" "Unsupported staged authorization."in
     let on_unknown=match source_effect.lifecycle.on_unknown with "continue"->I.Continue|"defer"->I.Defer
       |_->Diagnostic.fail "policy_implementation_source_binding" "Unsupported staged authorization uncertainty."in
-    require(match primitive anchor.bank with I.Attempt_bank value->value.timeout_ticks=timeout && value.authorization=authorization &&
-      value.on_unknown=on_unknown && value.capacity>=domain.logical_limits.max_source_attempts|_->false)
-      "Staged attempt-bank lifecycle or bounded capacity differs from the original effect.";
+    require(match primitive anchor.bank with
+      |I.Attempt_bank value when not multi_site->value.timeout_ticks=timeout && value.authorization=authorization &&
+        value.on_unknown=on_unknown && value.capacity>=domain.logical_limits.max_source_attempts
+      |I.Attempt_bank_sites value when multi_site->value.sites=List.length initiators && value.timeout_ticks=timeout &&
+        value.authorization=authorization && value.on_unknown=on_unknown && value.capacity>=domain.logical_limits.max_source_attempts
+      |_->false)
+      "Attempt bank sites, lifecycle or shared bounded capacity differ from the original effect.";
     external_input anchor.feedback I.Feedback_input(ep anchor.bank "feedback");
-    let action=transition_anchor initiator.transition_id and guard=List.assoc initiator.transition_id !guards in
-    wire(ep action.commit "request0")(ep anchor.bank "request");wire guard(ep anchor.bank "authorization");
     let argument=singleton "staged product argument"(items "parameters" source)in
     require(text "name" argument="product" && text "op"(get "value" argument)="parameter")"Staged effect must use one fixed product argument.";
-    expression I.Effect_parameter(path source_effect.effect_id^"/parameters/0/value")(get "value" argument)(incoming(ep action.commit "product0"));
+    let product_output=ref None in
+    let request_sites=List.mapi(fun index(initiator:O.transition)->
+      let action=transition_anchor initiator.transition_id and guard=List.assoc initiator.transition_id !guards in
+      let suffix=if multi_site then string_of_int index else ""in
+      wire(ep action.commit "request0")(ep anchor.bank("request"^suffix));
+      wire guard(ep anchor.bank("authorization"^suffix));
+      let output=incoming(ep action.commit "product0")in
+      (match !product_output with
+       |None->expression I.Effect_parameter(path source_effect.effect_id^"/parameters/0/value")(get "value" argument)output;
+         product_output:=Some output
+       |Some expected->require(output=expected)"Repeated request sites must read the same original fixed product endpoint.");
+      ({initiating_rule=initiator.transition_id;gate=action.gate;guard}:effect_site))initiators in
+    let first=List.hd request_sites in
     record I.Lifecycle(path source_effect.effect_id)(outputs(node anchor.bank));
     record I.Lifecycle(path source_effect.effect_id^"/lifecycle")(outputs(node anchor.bank));
-    ({source=source_effect.effect_id;bank=anchor.bank;feedback=anchor.feedback;initiating_rule=initiator.transition_id;
-      gate=action.gate;guard;product_parameter=text "name" argument;machine=Some source_machine.machine_id}:effect_binding))behavior.effects in
+    ({source=source_effect.effect_id;bank=anchor.bank;feedback=anchor.feedback;initiating_rule=first.initiating_rule;
+      gate=first.gate;guard=first.guard;request_sites;product_parameter=text "name" argument;
+      machine=Some source_machine.machine_id}:effect_binding))behavior.effects in
   require(List.filter_map(fun(n:I.node)->match n.model.primitive with I.Transition_gate _->Some n.node_id|_->None)nodes=
     List.map(fun(t:B.transition)->t.gate)anchors)"Staged gate-node order changes original transition/attempt order.";
   require(List.filter_map(fun(n:I.node)->if n.model.primitive=I.Observed_rising then Some n.node_id else None)nodes=List.map snd !edges)
@@ -674,10 +693,11 @@ let check_staged ~admitted ~implementation ~proposed =
     ({source=t.transition_id;machine=t.machine;gate=anchor.gate;arbiter=anchor.arbiter;lane=anchor.lane;commit=anchor.commit;
       trigger=incoming(ep anchor.gate "on");source_trigger=t.on}:transition))behavior.transitions in
   let expression_values=List.sort(fun(a:expression)(b:expression)->String.compare a.source_path b.source_path)!expressions in
-  let report_value=obj["schema_version",str(if finite_machine then "biocompiler.policy_implementation_binding_report.v0.5"
+  let report_value=obj["schema_version",str(if multi_site then "biocompiler.policy_implementation_binding_report.v0.7"
+      else if finite_machine then "biocompiler.policy_implementation_binding_report.v0.5"
       else if multi_product then "biocompiler.policy_implementation_binding_report.v0.4" else "biocompiler.policy_implementation_binding_report.v0.2");
-    "profile",str(if finite_machine then B.finite_machine_profile else if multi_product then B.multi_product_profile else B.staged_profile);
-    "observable_profile",str I.staged_observable_profile;"status",str "source_graph_bound";
+    "profile",str(if multi_site then B.multi_site_profile else if finite_machine then B.finite_machine_profile else if multi_product then B.multi_product_profile else B.staged_profile);
+    "observable_profile",str(if multi_site then I.multi_site_observable_profile else I.staged_observable_profile);"status",str "source_graph_bound";
     "request_fingerprint",str(R.fingerprint request);"catalog_bindings_digest",str(R.catalog_bindings_digest request);
     "catalog_entry",str bridge.entry_id;"catalog_entry_digest",str bridge.entry_digest;
     "source_artifact_digest",str authority.source_artifact_digest;"descriptors_digest",str authority.descriptors_digest;
@@ -965,7 +985,8 @@ let check_network_metered ~charge:parent_charge ~admitted ~implementation ~propo
     expression I.Effect_parameter(path e.effect_id^"/parameters/0/value")(get "value" argument)(incoming(ep action.commit "product0"));
     record I.Lifecycle(path e.effect_id)(outputs(node anchor.bank));record I.Lifecycle(path e.effect_id^"/lifecycle")(outputs(node anchor.bank));
     ({source=e.effect_id;bank=anchor.bank;feedback=anchor.feedback;initiating_rule=initiator.transition_id;
-      gate=action.gate;guard;product_parameter=text "name" argument;machine=Some initiator.machine}:effect_binding))behavior.effects in
+      gate=action.gate;guard;request_sites=[{initiating_rule=initiator.transition_id;gate=action.gate;guard}];
+      product_parameter=text "name" argument;machine=Some initiator.machine}:effect_binding))behavior.effects in
   require(List.filter_map(fun(n:I.node)->match n.model.primitive with I.Evidence_bank _->Some n.node_id|_->None)nodes=List.map(fun(v:B.observation)->v.bank)observations &&
     List.filter_map(fun(n:I.node)->match n.model.primitive with I.Truth_register _->Some n.node_id|_->None)nodes=List.map(fun(v:B.state)->v.register)states &&
     List.filter_map(fun(n:I.node)->match n.model.primitive with I.Machine_bank _->Some n.node_id|_->None)nodes=List.map(fun(v:B.machine)->v.bank)machines &&
@@ -1032,6 +1053,8 @@ let check_network_metered ~charge:parent_charge ~admitted ~implementation ~propo
 let check ~admitted ~implementation ~proposed =
   require(R.is_network(A.request admitted)=B.is_network proposed)
     "Original realization and proposed binding must use the same explicit network family.";
+  require(R.is_multi_site(A.request admitted)=B.is_multi_site proposed)
+    "Original realization and proposed binding must use the same explicit multi-site family.";
   require(R.is_finite_machine(A.request admitted)=B.is_finite_machine proposed)
     "Original realization and proposed binding must use the same explicit finite-machine family.";
   require(R.is_multi_product(A.request admitted)=B.is_multi_product proposed)

@@ -16,6 +16,11 @@
     Each effect has one initiating transition, with at most one request per
     transition; separate rules/stores and alternate state encodings remain
     outside that profile. The original staged topology is unchanged.
+    The explicit multi-site family replaces the unique-initiator restriction
+    with an ordered request-site inventory. All sites belong to the same source
+    machine and arbiter, and each attempt retains its own initiating guard.
+    The singular initiating_rule/gate/guard fields name the first site for
+    legacy callers; complete correspondence must use request_sites.
 
     A result proves only [source_graph_bound]. It does not execute a timeline,
     prove preservation or hard requirements, or authorize material/export. *)
@@ -32,8 +37,9 @@ type observation = { source : string; bank : string; input : string; observer : 
 type state = { source : string; register : string }
 (* [product_parameter] is the effect Argument.name, not the name of the fixed
    Parameter declaration from which its value was read. *)
+type effect_site = { initiating_rule : string; gate : string; guard : I.endpoint }
 type effect_binding = { source : string; bank : string; feedback : string; initiating_rule : string;
-  gate : string; guard : I.endpoint; product_parameter : string; machine : string option }
+  gate : string; guard : I.endpoint; product_parameter : string; machine : string option; request_sites : effect_site list }
 type rule = { source : string; gate : string; arbiter : string; lane : int; commit : string;
   trigger : I.endpoint; source_trigger : O.expression }
 type machine = { source : string; bank : string }

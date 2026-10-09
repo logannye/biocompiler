@@ -47,7 +47,8 @@ let literal_request = {|{"schema_version":"biocompiler.payload_architecture_requ
 let literals () =
   let producer_operations=["compile-architecture";"export-architecture";"compile-policy";
     "compile-policy-implementation";"compile-policy-material";"compile-policy-component-material";
-    "compile-policy-component-selection";"compile-policy-module-material"] in
+    "compile-policy-component-selection";"compile-policy-module-material";
+    "plan-policy-target";"replay-policy-target-plan"] in
   let base=match Base.handle Protocol.Verify (request "capabilities" (obj [])) with
     | Protocol.Ok,Some value,[] -> value | _ -> failwith "Base capabilities failed" in
   let verifier=match call Protocol.Verify "capabilities" (obj []) with
@@ -64,7 +65,7 @@ let literals () =
     List.map str Bioc_producer_service.Synthetic_inspection_service.operations)
     "Core operation census changed";
   require (Json.array (field "validation_scopes" capabilities)=Json.array (field "validation_scopes" base) @
-    [str Service.validation_scope] @ List.map str Bioc_producer_service.Synthetic_producer_service.validation_scopes @
+    [str Service.validation_scope;str "policy-target-planning-v0.1"] @ List.map str Bioc_producer_service.Synthetic_producer_service.validation_scopes @
     List.map str Bioc_producer_service.Synthetic_producer_public_service.validation_scopes @
     List.map str Bioc_producer_service.Synthetic_inspection_service.validation_scopes)
     "Producer scope was not appended to the existing checking scopes";
@@ -74,13 +75,16 @@ let literals () =
     List.sort String.compare(List.map fst checker_profiles @ ["architecture_producer";
       "policy_operational_producer";"policy_implementation_producer";"policy_material_producer";"policy_component_material_producer";
       "policy_component_selection_producer";"policy_instance_material_producer";"policy_prerequisite_material_producer";"policy_two_observation_material_producer";"policy_multi_member_material_producer";"policy_grounded_helper_material_producer";
-      "policy_network_implementation_producer";"policy_network_material_producer";"policy_finite_machine_implementation_producer";"policy_finite_machine_material_producer";"policy_quantitative_material_producer";"policy_module_material_producer"] @
+      "policy_network_implementation_producer";"policy_network_material_producer";"policy_finite_machine_implementation_producer";"policy_finite_machine_material_producer";"policy_quantitative_material_producer";"policy_multi_site_implementation_producer";"policy_step_quantitative_material_producer";"policy_transfer_pair_material_producer";"policy_transfer_network_material_producer";"policy_module_material_producer";"policy_target_planning"] @
       List.map fst (Bioc_producer_service.Synthetic_producer_service.profiles @
         Bioc_producer_service.Synthetic_producer_public_service.profiles @
         Bioc_producer_service.Synthetic_inspection_service.profiles)))
     "Complete producer profile inventory changed";
   List.iter(fun(name,value)->require(Json.equal(field name profiles)value)
     ("Producer changed an existing checker profile: "^name))checker_profiles;
+  require(Json.equal(field "policy_target_planning" profiles)Bioc_producer_service.Policy_target_planning.profile &&
+    field "operations" (field "policy_target_planning" profiles)=arr[str "plan-policy-target";str "replay-policy-target-plan"])
+    "Advisory target planning lost its exact core-only capability";
   List.iter(fun(name,operation,profile)->
     require(Json.equal(field name profiles)profile && field "operations" profile=arr[str operation])
       ("Producer profile lost its exact operation: "^name))
@@ -91,6 +95,10 @@ let literals () =
      "policy_finite_machine_implementation_producer","compile-policy-implementation",Bioc_service.Policy_implementation_service.finite_machine_producer_profile;
      "policy_finite_machine_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.finite_machine_producer_profile;
      "policy_quantitative_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.quantitative_producer_profile;
+     "policy_multi_site_implementation_producer","compile-policy-implementation",Bioc_service.Policy_implementation_service.multi_site_producer_profile;
+     "policy_step_quantitative_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.step_quantitative_producer_profile;
+     "policy_transfer_network_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.transfer_network_producer_profile;
+     "policy_transfer_pair_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.transfer_pair_producer_profile;
      "policy_module_material_producer","compile-policy-module-material",Bioc_service.Policy_module_linking_service.producer_profile;
      "policy_material_producer","compile-policy-material",Bioc_service.Policy_material_service.producer_profile;
      "policy_component_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.producer_profile;

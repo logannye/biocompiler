@@ -452,6 +452,11 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.core_policy_component_material.MULTI_SITE_ASSEMBLY_PROFILE": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.core_policy_component_material.NETWORK_IMPLEMENTATION": {
       "scope": "Private explicit network-family wire routing or retained identity validation dependency; no independent API, native execution, material acceptance or empirical claim.",
       "status": "dependency",
@@ -657,6 +662,96 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.core_policy_component_material.STEP_QUANTITATIVE_IMPLEMENTATION": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.STEP_QUANTITATIVE_PRODUCER_PROFILE": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.STEP_QUANTITATIVE_PROFILE": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.STEP_QUANTITATIVE_REQUEST_PROFILE": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.STEP_QUANTITATIVE_REQUEST_SCHEMA": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.STEP_QUANTITATIVE_VALIDATION_SCOPE": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.TRANSFER_NETWORK_IMPLEMENTATION": {
+      "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.TRANSFER_NETWORK_PRODUCER_PROFILE": {
+      "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.TRANSFER_NETWORK_PROFILE": {
+      "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.TRANSFER_NETWORK_REQUEST_PROFILE": {
+      "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.TRANSFER_NETWORK_REQUEST_SCHEMA": {
+      "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.TRANSFER_NETWORK_VALIDATION_SCOPE": {
+      "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.TRANSFER_PAIR_IMPLEMENTATION": {
+      "scope": "Private versioned transfer-pair transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.TRANSFER_PAIR_PRODUCER_PROFILE": {
+      "scope": "Private versioned transfer-pair transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.TRANSFER_PAIR_PROFILE": {
+      "scope": "Private versioned transfer-pair transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.TRANSFER_PAIR_REQUEST_PROFILE": {
+      "scope": "Private versioned transfer-pair transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.TRANSFER_PAIR_REQUEST_SCHEMA": {
+      "scope": "Private versioned transfer-pair transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.TRANSFER_PAIR_VALIDATION_SCOPE": {
+      "scope": "Private versioned transfer-pair transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.core_policy_component_material.TWO_OBSERVATION_IMPLEMENTATION": {
       "scope": "Private implementation dependency or versioned protocol constant; no independent public API or executed semantic coverage claimed.",
       "status": "dependency",
@@ -747,6 +842,11 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.core_policy_component_material._multi_site": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.core_policy_component_material._network": {
       "scope": "Private explicit network-family wire routing or retained identity validation dependency; no independent API, native execution, material acceptance or empirical claim.",
       "status": "dependency",
@@ -794,6 +894,16 @@
     },
     "biocompiler.core_policy_component_material._result": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material._transfer_network": {
+      "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material._transfer_pair": {
+      "scope": "Private versioned transfer-pair transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
       "status": "dependency",
       "witnesses": []
     },
@@ -1142,6 +1252,56 @@
     },
     "biocompiler.core_policy_implementation.MULTI_PRODUCT_REQUEST_SCHEMA": {
       "scope": "Private implementation dependency or versioned protocol constant; no independent public API or executed semantic coverage claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_implementation.MULTI_SITE_BINDING_PROFILE": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_implementation.MULTI_SITE_BINDING_REPORT_SCHEMA": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_implementation.MULTI_SITE_BINDING_SCHEMA": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_implementation.MULTI_SITE_IMPLEMENTATION": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_implementation.MULTI_SITE_PRESERVATION_PROFILE": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_implementation.MULTI_SITE_PRODUCER_PROFILE": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_implementation.MULTI_SITE_PROFILE": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_implementation.MULTI_SITE_REQUEST_PROFILE": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_implementation.MULTI_SITE_REQUEST_SCHEMA": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_implementation.MULTI_SITE_VALIDATION_SCOPE": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
       "status": "dependency",
       "witnesses": []
     },
@@ -1550,6 +1710,11 @@
     },
     "biocompiler.core_policy_implementation._multi_product_original": {
       "scope": "Private implementation dependency or versioned protocol constant; no independent public API or executed semantic coverage claimed.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_implementation._multi_site_original": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
       "status": "dependency",
       "witnesses": []
     },
@@ -2619,6 +2784,263 @@
     },
     "biocompiler.core_policy_operational._source_assessment": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.CATALOG_FINGERPRINT": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.CLAIMS": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.IMPLEMENTATION": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.MAX_INPUT_BYTES": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.MAX_INPUT_NODES": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.MAX_RESULT_BYTES": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.MAX_RESULT_NODES": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.PROFILE": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.PlanStatus": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlan": {
+      "scope": "Focused pure-Python request snapshots and inert native transport diagnostics only; not native execution, realization feasibility, physical capacity, requirement discharge, material or export acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "target_planning.source",
+        "target_planning.replay"
+      ]
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlan._result_json": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlan.operation": {
+      "scope": "Inventoried typed planning input or descriptive immutable response field; no separate runtime witness is assigned to this AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlan.report": {
+      "scope": "Focused pure-Python request snapshots and inert native transport diagnostics only; not native execution, realization feasibility, physical capacity, requirement discharge, material or export acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "target_planning.source",
+        "target_planning.replay"
+      ]
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlan.report_fingerprint": {
+      "scope": "Inventoried typed planning input or descriptive immutable response field; no separate runtime witness is assigned to this AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlan.request_fingerprint": {
+      "scope": "Inventoried typed planning input or descriptive immutable response field; no separate runtime witness is assigned to this AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlan.request_id": {
+      "scope": "Inventoried typed planning input or descriptive immutable response field; no separate runtime witness is assigned to this AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlan.result": {
+      "scope": "Focused pure-Python request snapshots and inert native transport diagnostics only; not native execution, realization feasibility, physical capacity, requirement discharge, material or export acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "target_planning.source",
+        "target_planning.replay"
+      ]
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlan.status": {
+      "scope": "Inventoried typed planning input or descriptive immutable response field; no separate runtime witness is assigned to this AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlanningClient": {
+      "scope": "Focused pure-Python request snapshots and inert native transport diagnostics only; not native execution, realization feasibility, physical capacity, requirement discharge, material or export acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "target_planning.source",
+        "target_planning.role",
+        "target_planning.negotiation",
+        "target_planning.claims",
+        "target_planning.census",
+        "target_planning.obligations",
+        "target_planning.limits",
+        "target_planning.exhaustion",
+        "target_planning.invalid",
+        "target_planning.models",
+        "target_planning.providers",
+        "target_planning.snapshot"
+      ]
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlanningClient._call": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlanningClient.plan": {
+      "scope": "Focused pure-Python request snapshots and inert native transport diagnostics only; not native execution, realization feasibility, physical capacity, requirement discharge, material or export acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "target_planning.source",
+        "target_planning.role",
+        "target_planning.negotiation",
+        "target_planning.claims",
+        "target_planning.census",
+        "target_planning.obligations",
+        "target_planning.limits",
+        "target_planning.exhaustion",
+        "target_planning.invalid",
+        "target_planning.models",
+        "target_planning.providers",
+        "target_planning.snapshot"
+      ]
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlanningClient.replay": {
+      "scope": "Focused pure-Python request snapshots and inert native transport diagnostics only; not native execution, realization feasibility, physical capacity, requirement discharge, material or export acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "target_planning.replay"
+      ]
+    },
+    "biocompiler.core_policy_planning.PolicyTargetPlanningClient.transport": {
+      "scope": "Inventoried typed planning input or descriptive immutable response field; no separate runtime witness is assigned to this AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.REPORT_SCHEMA": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.REQUEST_SCHEMA": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.RESOURCE_PROFILE": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.RESULT_SCHEMA": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.STAGES": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.TARGET_FINGERPRINTS": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.TargetId": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning.VALIDATION_SCOPE": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._catalog_target": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._census": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._integer": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._measure": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._models": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._original": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._provider_graph": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._record": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._require": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._result": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._rows": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._source_rows": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_planning._strings": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
       "status": "dependency",
       "witnesses": []
     },
@@ -8265,6 +8687,61 @@
         "pattern.shared.test_invalid_bound_and_lifetime_are_rejected_before_any_expansion"
       ]
     },
+    "biocompiler.policy.planning.PlanningLimits": {
+      "scope": "Focused pure-Python request snapshots and inert native transport diagnostics only; not native execution, realization feasibility, physical capacity, requirement discharge, material or export acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "target_planning.facade"
+      ]
+    },
+    "biocompiler.policy.planning.PlanningLimits.__post_init__": {
+      "scope": "Private target-plan representation, identity or transport validation dependency; no individual public API or native semantic authority claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.planning.PlanningLimits.max_report_bytes": {
+      "scope": "Inventoried typed planning input or descriptive immutable response field; no separate runtime witness is assigned to this AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.planning.PlanningLimits.max_report_nodes": {
+      "scope": "Inventoried typed planning input or descriptive immutable response field; no separate runtime witness is assigned to this AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.planning.PlanningLimits.max_work": {
+      "scope": "Inventoried typed planning input or descriptive immutable response field; no separate runtime witness is assigned to this AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.planning.PlanningLimits.to_data": {
+      "scope": "Focused pure-Python request snapshots and inert native transport diagnostics only; not native execution, realization feasibility, physical capacity, requirement discharge, material or export acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "target_planning.facade"
+      ]
+    },
+    "biocompiler.policy.planning.plan": {
+      "scope": "Focused pure-Python request snapshots and inert native transport diagnostics only; not native execution, realization feasibility, physical capacity, requirement discharge, material or export acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "target_planning.source"
+      ]
+    },
+    "biocompiler.policy.planning.prepare_request": {
+      "scope": "Focused pure-Python request snapshots and inert native transport diagnostics only; not native execution, realization feasibility, physical capacity, requirement discharge, material or export acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "target_planning.facade"
+      ]
+    },
+    "biocompiler.policy.planning.replay": {
+      "scope": "Focused pure-Python request snapshots and inert native transport diagnostics only; not native execution, realization feasibility, physical capacity, requirement discharge, material or export acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "target_planning.replay"
+      ]
+    },
     "biocompiler.policy.programs.AuthoringError": {
       "scope": "Exact source body/signature/decorator and dependency inventory only; no per-body semantic completeness or runtime support claim.",
       "status": "source_only",
@@ -8479,6 +8956,44 @@
       "status": "source_only",
       "witnesses": []
     },
+    "biocompiler.policy.quantitative.ReservoirCompartment": {
+      "scope": "Focused exact Python authoring and independent literal transfer expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_pair.grid",
+        "transfer_pair.shape",
+        "transfer_pair.rejection",
+        "transfer_pair.snapshot"
+      ]
+    },
+    "biocompiler.policy.quantitative.ReservoirCompartment.__post_init__": {
+      "scope": "Private versioned transfer-pair transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.ReservoirCompartment.capacity": {
+      "scope": "Inventoried exact compartment or transfer-pair input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.ReservoirCompartment.compartment": {
+      "scope": "Inventoried exact compartment or transfer-pair input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.ReservoirCompartment.initial": {
+      "scope": "Inventoried exact compartment or transfer-pair input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.ReservoirCompartment.to_data": {
+      "scope": "Focused exact Python authoring and independent literal transfer expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_pair.grid",
+        "transfer_pair.snapshot"
+      ]
+    },
     "biocompiler.policy.quantitative.SampledReservoir": {
       "scope": "Focused exact Python authoring and original-contract snapshot controls only; not native quantitative correspondence, material acceptance, or biological validity.",
       "status": "shared_invariant",
@@ -8574,6 +9089,318 @@
     },
     "biocompiler.policy.quantitative.SampledReservoir.unit": {
       "scope": "Inventoried quantitative authoring declaration; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledStepReservoir": {
+      "scope": "Focused exact Python authoring and independent literal transition expansion only; native preservation, quantitative checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "step_quantitative.grid",
+        "step_quantitative.shape",
+        "step_quantitative.rejection"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledStepReservoir._validate": {
+      "scope": "Private versioned multiple-site transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledStepReservoir.fall": {
+      "scope": "Inventoried exact sampled-step input field; generated or inherited protocols remain governed by the reviewed dataclass/base contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledStepReservoir.rise": {
+      "scope": "Inventoried exact sampled-step input field; generated or inherited protocols remain governed by the reviewed dataclass/base contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledStepReservoir.to_data": {
+      "scope": "Focused exact Python authoring and independent literal transition expansion only; native preservation, quantitative checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "step_quantitative.grid"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledStepReservoir.transitions": {
+      "scope": "Focused exact Python authoring and independent literal transition expansion only; native preservation, quantitative checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "step_quantitative.grid",
+        "step_quantitative.shape"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork": {
+      "scope": "Focused exact Python authoring and independent literal network expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_network.grid",
+        "transfer_network.shape",
+        "transfer_network.cycle",
+        "transfer_network.rejection",
+        "transfer_network.snapshot"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.__post_init__": {
+      "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork._source": {
+      "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork._validate": {
+      "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork._vectors": {
+      "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.bind": {
+      "scope": "Focused exact Python authoring and independent literal network expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_network.grid",
+        "transfer_network.snapshot"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.levels": {
+      "scope": "Focused exact Python authoring and independent literal network expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_network.grid",
+        "transfer_network.shape",
+        "transfer_network.cycle"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.quantum": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.reservoirs": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.sample_period": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.state_values": {
+      "scope": "Focused exact Python authoring and independent literal network expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_network.grid",
+        "transfer_network.shape",
+        "transfer_network.cycle"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.substance": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.threshold": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.threshold_compartment": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.to_data": {
+      "scope": "Focused exact Python authoring and independent literal network expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_network.grid",
+        "transfer_network.snapshot"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.transfers": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.transitions": {
+      "scope": "Focused exact Python authoring and independent literal network expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_network.grid",
+        "transfer_network.shape",
+        "transfer_network.cycle"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferNetwork.unit": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair": {
+      "scope": "Focused exact Python authoring and independent literal transfer expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_pair.grid",
+        "transfer_pair.shape",
+        "transfer_pair.rejection",
+        "transfer_pair.snapshot"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.__post_init__": {
+      "scope": "Private versioned transfer-pair transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair._source": {
+      "scope": "Private versioned transfer-pair transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair._validate": {
+      "scope": "Private versioned transfer-pair transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.bind": {
+      "scope": "Focused exact Python authoring and independent literal transfer expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_pair.grid",
+        "transfer_pair.snapshot"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.destination": {
+      "scope": "Inventoried exact compartment or transfer-pair input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.forward": {
+      "scope": "Inventoried exact compartment or transfer-pair input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.levels": {
+      "scope": "Focused exact Python authoring and independent literal transfer expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_pair.grid",
+        "transfer_pair.shape"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.quantum": {
+      "scope": "Inventoried exact compartment or transfer-pair input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.reverse": {
+      "scope": "Inventoried exact compartment or transfer-pair input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.sample_period": {
+      "scope": "Inventoried exact compartment or transfer-pair input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.source": {
+      "scope": "Inventoried exact compartment or transfer-pair input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.state_values": {
+      "scope": "Focused exact Python authoring and independent literal transfer expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_pair.grid",
+        "transfer_pair.shape"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.substance": {
+      "scope": "Inventoried exact compartment or transfer-pair input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.threshold": {
+      "scope": "Inventoried exact compartment or transfer-pair input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.to_data": {
+      "scope": "Focused exact Python authoring and independent literal transfer expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_pair.grid",
+        "transfer_pair.snapshot"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.transitions": {
+      "scope": "Focused exact Python authoring and independent literal transfer expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_pair.grid",
+        "transfer_pair.shape"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledTransferPair.unit": {
+      "scope": "Inventoried exact compartment or transfer-pair input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.TransferEdge": {
+      "scope": "Focused exact Python authoring and independent literal network expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_network.grid",
+        "transfer_network.shape",
+        "transfer_network.cycle",
+        "transfer_network.rejection",
+        "transfer_network.snapshot"
+      ]
+    },
+    "biocompiler.policy.quantitative.TransferEdge.__post_init__": {
+      "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.TransferEdge.amount": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.TransferEdge.destination": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.TransferEdge.id": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.TransferEdge.source": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.TransferEdge.to_data": {
+      "scope": "Focused exact Python authoring and independent literal network expansion only; native preservation, quantitative conservation checking, component realization and export remain separate.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "transfer_network.grid",
+        "transfer_network.snapshot"
+      ]
+    },
+    "biocompiler.policy.quantitative.TransferEdge.when": {
+      "scope": "Inventoried exact edge or transfer-network input field; generated protocols remain governed by the reviewed dataclass contract.",
       "status": "source_only",
       "witnesses": []
     },
@@ -10648,6 +11475,17 @@
         "syntax_sha256": "d6a3447e638f8e4872455b2f8aff15979a5ee08a7784b7a8c9d9e1d9cb88562a"
       },
       {
+        "id": "biocompiler.core_policy_component_material.MULTI_SITE_ASSEMBLY_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "MULTI_SITE_ASSEMBLY_PROFILE"
+        },
+        "syntax_sha256": "e51348456ee641294f6662d3365bedb324f610aebf02c465aa84f9e9152031ee"
+      },
+      {
         "id": "biocompiler.core_policy_component_material.NETWORK_IMPLEMENTATION",
         "kind": "value",
         "scope": "dependency",
@@ -11022,6 +11860,204 @@
         "syntax_sha256": "bfd337df681984c7543d553e4cffa96c02a785d20e7a0bb5d8decb309049ff00"
       },
       {
+        "id": "biocompiler.core_policy_component_material.STEP_QUANTITATIVE_IMPLEMENTATION",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "STEP_QUANTITATIVE_IMPLEMENTATION"
+        },
+        "syntax_sha256": "987f63e17ae9a4658104b8b03164968b04924a668dcf7b1d6e687d15be26e203"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.STEP_QUANTITATIVE_PRODUCER_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PRODUCER_PROFILE, 'implementation': STEP_QUANTITATIVE_IMPLEMENTATION, 'validation_scope': STEP_QUANTITATIVE_VALIDATION_SCOPE}",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "STEP_QUANTITATIVE_PRODUCER_PROFILE"
+        },
+        "syntax_sha256": "496f8ea25ec56ebfa65764da3f2266bd9769a6d02da4683b97cf80145d4234e5"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.STEP_QUANTITATIVE_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PROFILE, 'request_schema': STEP_QUANTITATIVE_REQUEST_SCHEMA, 'implementation': STEP_QUANTITATIVE_IMPLEMENTATION, 'validation_scope': STEP_QUANTITATIVE_VALIDATION_SCOPE}",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "STEP_QUANTITATIVE_PROFILE"
+        },
+        "syntax_sha256": "8bf33cdb966f8516440d65e4f02a50fa54be45f8cf9329886bca15fb7ab8c4be"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.STEP_QUANTITATIVE_REQUEST_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "STEP_QUANTITATIVE_REQUEST_PROFILE"
+        },
+        "syntax_sha256": "14b4f63ebf3e4772039b71d5df8b9b4c9ef4f84f10d70e0756e1d1d2f178ac08"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.STEP_QUANTITATIVE_REQUEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "STEP_QUANTITATIVE_REQUEST_SCHEMA"
+        },
+        "syntax_sha256": "2987996c61dc9af1817d0721fd98490a741b1922fbbd73ce3bc70c5682c45a50"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.STEP_QUANTITATIVE_VALIDATION_SCOPE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "STEP_QUANTITATIVE_VALIDATION_SCOPE"
+        },
+        "syntax_sha256": "0183adc0a312699c80bf15d4709ea51861eceb285ee28e74fe848a61bc389983"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.TRANSFER_NETWORK_IMPLEMENTATION",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "TRANSFER_NETWORK_IMPLEMENTATION"
+        },
+        "syntax_sha256": "93e87fc5f47efeaed7f00a0528b4a1ac943b4c7bc3988ea806fa97c6383e0f83"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.TRANSFER_NETWORK_PRODUCER_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PRODUCER_PROFILE, 'implementation': TRANSFER_NETWORK_IMPLEMENTATION, 'validation_scope': TRANSFER_NETWORK_VALIDATION_SCOPE}",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "TRANSFER_NETWORK_PRODUCER_PROFILE"
+        },
+        "syntax_sha256": "737fa4d838224877d34b3c4c600b6346bb98fdb4d6bb3b0f77ee17c2cfcb57ff"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.TRANSFER_NETWORK_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PROFILE, 'request_schema': TRANSFER_NETWORK_REQUEST_SCHEMA, 'implementation': TRANSFER_NETWORK_IMPLEMENTATION, 'validation_scope': TRANSFER_NETWORK_VALIDATION_SCOPE}",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "TRANSFER_NETWORK_PROFILE"
+        },
+        "syntax_sha256": "aa07389d18f9b23e016b1f4536f5dbfe9ae95b8768f85ddba7b3444a36792aae"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.TRANSFER_NETWORK_REQUEST_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "TRANSFER_NETWORK_REQUEST_PROFILE"
+        },
+        "syntax_sha256": "38a001a6522082b41c297ed6c5ce7462d310e2039f8424488e13c5d6f6448877"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.TRANSFER_NETWORK_REQUEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "TRANSFER_NETWORK_REQUEST_SCHEMA"
+        },
+        "syntax_sha256": "93893138e6bffa7f9dceed1fc5ffa239fbbe2befc9991d8cfd8f8265c2c7f8b4"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.TRANSFER_NETWORK_VALIDATION_SCOPE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "TRANSFER_NETWORK_VALIDATION_SCOPE"
+        },
+        "syntax_sha256": "b0611d28f469ce436899ec59845089faf580d01c388069109bab10a0f20613f2"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.TRANSFER_PAIR_IMPLEMENTATION",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "TRANSFER_PAIR_IMPLEMENTATION"
+        },
+        "syntax_sha256": "a267e17af73e681291eadb4e074c4720e5d1e804399db7fef016948725f36aa7"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.TRANSFER_PAIR_PRODUCER_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PRODUCER_PROFILE, 'implementation': TRANSFER_PAIR_IMPLEMENTATION, 'validation_scope': TRANSFER_PAIR_VALIDATION_SCOPE}",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "TRANSFER_PAIR_PRODUCER_PROFILE"
+        },
+        "syntax_sha256": "4dcb1b0898b4de19061b047a3eda3c72213aa6543d238aca88fa1f3351e215a0"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.TRANSFER_PAIR_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PROFILE, 'request_schema': TRANSFER_PAIR_REQUEST_SCHEMA, 'implementation': TRANSFER_PAIR_IMPLEMENTATION, 'validation_scope': TRANSFER_PAIR_VALIDATION_SCOPE}",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "TRANSFER_PAIR_PROFILE"
+        },
+        "syntax_sha256": "9203cfb8389a3ef600ca1691e1325cc79ac2c11fe12babd21033e38d65ebe8d3"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.TRANSFER_PAIR_REQUEST_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "TRANSFER_PAIR_REQUEST_PROFILE"
+        },
+        "syntax_sha256": "5908a1ee177005e58465a787cbd695e80980f9eef0d8c83641354742c9e63b0d"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.TRANSFER_PAIR_REQUEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "TRANSFER_PAIR_REQUEST_SCHEMA"
+        },
+        "syntax_sha256": "0530059d8ded904bf86d80b2a189106332611abbfc6eb9b581f07eba22f74004"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.TRANSFER_PAIR_VALIDATION_SCOPE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "TRANSFER_PAIR_VALIDATION_SCOPE"
+        },
+        "syntax_sha256": "26c4ab4afe10fcecff1aababf456aaeb47f1270b2250548ee3dd42f19eff7538"
+      },
+      {
         "id": "biocompiler.core_policy_component_material.TWO_OBSERVATION_IMPLEMENTATION",
         "kind": "value",
         "scope": "dependency",
@@ -11107,18 +12143,18 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_assessment"
         },
-        "syntax_sha256": "5eb2c8d2c6cf57bba9b370e41439f6cee91ffa0428ad68e04ade37ce587548bd"
+        "syntax_sha256": "d9b13179a464ef66f9228381781b771ee170d136795029bebb2dfe1fd2dbde9a"
       },
       {
         "id": "biocompiler.core_policy_component_material._candidate",
         "kind": "function",
         "scope": "dependency",
-        "signature": "value: JsonValue, *, instanced: bool=False, multi_member: bool=False, grounded_helper: bool=False -> dict[str, JsonValue]",
+        "signature": "value: JsonValue, *, instanced: bool=False, multi_member: bool=False, grounded_helper: bool=False, multi_site: bool=False -> dict[str, JsonValue]",
         "source": {
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_candidate"
         },
-        "syntax_sha256": "36a791509edc4c8862d04c12f31a8fd8539ea38a288dfeb8a3375808bcd60c8e"
+        "syntax_sha256": "e9b523761ca8118ea1f533e303f4f455ed82a0e689d385402948b47673fd4e86"
       },
       {
         "id": "biocompiler.core_policy_component_material._context_inventory",
@@ -11151,7 +12187,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_finite_machine"
         },
-        "syntax_sha256": "37ad6fbd6c28ce48df46e64b129eaf49fa477b839653b13f3e52105f5eff8914"
+        "syntax_sha256": "981deaf94de0b8c53705a3b67c2ca9dc00685cb541db1fa378eb6797041f2101"
       },
       {
         "id": "biocompiler.core_policy_component_material._grounded_helper",
@@ -11184,7 +12220,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_instanced"
         },
-        "syntax_sha256": "3a0746530129c283a15cc0c80398d5e1997bf37b9f86c7fccd6f1b8bf424947d"
+        "syntax_sha256": "6e4129646d77f0917bf1a22d19d54e40940f1616240aee30e13da7192d20d64b"
       },
       {
         "id": "biocompiler.core_policy_component_material._leaves",
@@ -11195,7 +12231,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_leaves"
         },
-        "syntax_sha256": "a931912c592bcbd79aee47a6836062f3ff1498b1f9fa482d674093ee2b165d5c"
+        "syntax_sha256": "9bfb2c57b269bf5205d8cb7f151157f4fe73ddd4eddbdc8ecfb3c8de8f9bdf4e"
       },
       {
         "id": "biocompiler.core_policy_component_material._member_transport_inventory",
@@ -11220,6 +12256,17 @@
         "syntax_sha256": "e201bc30daac4a9db539f294b90beaaa0ac1c356fda13f0cb956678fc29fef09"
       },
       {
+        "id": "biocompiler.core_policy_component_material._multi_site",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "request: dict[str, JsonValue] -> bool",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "_multi_site"
+        },
+        "syntax_sha256": "a825dc49a118d4e449cf1ec9472c57fb00163c805463238313f771306183837f"
+      },
+      {
         "id": "biocompiler.core_policy_component_material._network",
         "kind": "function",
         "scope": "dependency",
@@ -11239,7 +12286,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_original"
         },
-        "syntax_sha256": "0f69c2bd8ecaafdc26b2ab9623c1247675886cad27dc84266185c87fdef9d40f"
+        "syntax_sha256": "5a742a8bc31d201dd376d19aaf16a99a53384af6949786343ff009340221e9fa"
       },
       {
         "id": "biocompiler.core_policy_component_material._prerequisite_evidence",
@@ -11261,7 +12308,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_prerequisites"
         },
-        "syntax_sha256": "3e95f03c5280baf96f1f7743984b964a957601ac80e79553b671981a1a0f5224"
+        "syntax_sha256": "4ae12528ebd97a29135bc0f3e9c39926f3ecc40a6b4fd7def5995fee6977d70b"
       },
       {
         "id": "biocompiler.core_policy_component_material._profile_settings",
@@ -11272,7 +12319,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_profile_settings"
         },
-        "syntax_sha256": "2fc38500f42829bd0d06fb3d5a05275cd0863895496b8276375b7856b4d90604"
+        "syntax_sha256": "d438c04ef1438fddb2d81668db1a0de2bd60d90d8505c688b036fe4af4bf9a8f"
       },
       {
         "id": "biocompiler.core_policy_component_material._projections",
@@ -11294,7 +12341,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_quantitative"
         },
-        "syntax_sha256": "6fb6024b25a33cab97e42098267f88b80b3d2f9f562621158dd060e6ee0c01cb"
+        "syntax_sha256": "4b215f9e09c4cf37145bdbad695a437eb96b95446bab7ae6a2d7d4f5ca69adf3"
       },
       {
         "id": "biocompiler.core_policy_component_material._quantitative_evidence",
@@ -11305,18 +12352,18 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_quantitative_evidence"
         },
-        "syntax_sha256": "c328d535961469dc168be019c8e7594510e74fe8b5451c8cd1ac095849034780"
+        "syntax_sha256": "b53c4f8b81d767757a69cf01080acb39ab7585ba329c5299bbcbb1c1479a19c0"
       },
       {
         "id": "biocompiler.core_policy_component_material._report",
         "kind": "function",
         "scope": "dependency",
-        "signature": "value: JsonValue, *, instanced: bool=False, prerequisites: bool=False, two_observations: bool=False, multi_member: bool=False, grounded_helper: bool=False, finite_machine: bool=False, quantitative: bool=False, network: bool=False -> dict[str, JsonValue]",
+        "signature": "value: JsonValue, *, instanced: bool=False, prerequisites: bool=False, two_observations: bool=False, multi_member: bool=False, grounded_helper: bool=False, finite_machine: bool=False, quantitative: bool=False, network: bool=False, multi_site: bool=False, transfer_pair: bool=False, transfer_network: bool=False -> dict[str, JsonValue]",
         "source": {
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_report"
         },
-        "syntax_sha256": "3812668731f8b007d0baaacd3ef5788a27633ad0c6c13dc4cd95b7647f54c347"
+        "syntax_sha256": "4d2ba6a380374d9972aec6bc0e69eaca0fceea949374c4a2e5e549473cfb8a0f"
       },
       {
         "id": "biocompiler.core_policy_component_material._result",
@@ -11327,7 +12374,29 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "f029cc379fad98d1a6afa835b63fb8de23fc2fc34cbfac025ab8081c82b3148a"
+        "syntax_sha256": "71171f76c196bea87b6a2688cd1295b3451271f768a260f5fbacda2e6ce06d2d"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material._transfer_network",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "request: dict[str, JsonValue] -> bool",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "_transfer_network"
+        },
+        "syntax_sha256": "608f4876fab8dbd36dadfc3a65e35189d908369c4e1a948a5dd6cd866742c0a2"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material._transfer_pair",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "request: dict[str, JsonValue] -> bool",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "_transfer_pair"
+        },
+        "syntax_sha256": "12d81ffa1ee30158ef5182cdd9923474d27edc00d59fa571889639598c4a863f"
       },
       {
         "id": "biocompiler.core_policy_component_material._two_observations",
@@ -12001,6 +13070,116 @@
         "syntax_sha256": "f032adbdb7027e48b527728dfd44b83480724f3dd1e08d78b1e9b2321710c161"
       },
       {
+        "id": "biocompiler.core_policy_implementation.MULTI_SITE_BINDING_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_implementation.py",
+          "symbol": "MULTI_SITE_BINDING_PROFILE"
+        },
+        "syntax_sha256": "baf242fa50650c5823ab71e0bc4fd4657df13552bcfc281a5c44ae09d7823b4d"
+      },
+      {
+        "id": "biocompiler.core_policy_implementation.MULTI_SITE_BINDING_REPORT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_implementation.py",
+          "symbol": "MULTI_SITE_BINDING_REPORT_SCHEMA"
+        },
+        "syntax_sha256": "d2f314150833afd531c6c7f1572d8ee001f1bba8dd27ed4f546ac931a9fa33bd"
+      },
+      {
+        "id": "biocompiler.core_policy_implementation.MULTI_SITE_BINDING_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_implementation.py",
+          "symbol": "MULTI_SITE_BINDING_SCHEMA"
+        },
+        "syntax_sha256": "65b720475b32111dd8b050f468be7575b71136d984dd4ebb686af08ab95fd738"
+      },
+      {
+        "id": "biocompiler.core_policy_implementation.MULTI_SITE_IMPLEMENTATION",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_implementation.py",
+          "symbol": "MULTI_SITE_IMPLEMENTATION"
+        },
+        "syntax_sha256": "e9af01f1ebdc4b86da4a53e533c495887dc9600d9cde1c5125b7b4139d0f6672"
+      },
+      {
+        "id": "biocompiler.core_policy_implementation.MULTI_SITE_PRESERVATION_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_implementation.py",
+          "symbol": "MULTI_SITE_PRESERVATION_PROFILE"
+        },
+        "syntax_sha256": "a8fb938b4f738f1d7eb2c36c15f5f7401d15a023ee03750820080af87fe52f00"
+      },
+      {
+        "id": "biocompiler.core_policy_implementation.MULTI_SITE_PRODUCER_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PRODUCER_PROFILE, 'implementation': MULTI_SITE_IMPLEMENTATION, 'validation_scope': MULTI_SITE_VALIDATION_SCOPE}",
+        "source": {
+          "path": "src/biocompiler/core_policy_implementation.py",
+          "symbol": "MULTI_SITE_PRODUCER_PROFILE"
+        },
+        "syntax_sha256": "2545f42092131ccee4175141dc0a0700122c9424e5213d44482be933e25d6952"
+      },
+      {
+        "id": "biocompiler.core_policy_implementation.MULTI_SITE_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PROFILE, 'request_schema': MULTI_SITE_REQUEST_SCHEMA, 'implementation': MULTI_SITE_IMPLEMENTATION, 'validation_scope': MULTI_SITE_VALIDATION_SCOPE}",
+        "source": {
+          "path": "src/biocompiler/core_policy_implementation.py",
+          "symbol": "MULTI_SITE_PROFILE"
+        },
+        "syntax_sha256": "53711f578511597e26f1a24fac234103524d0b483bac2a08ebfdbe70d17bdebf"
+      },
+      {
+        "id": "biocompiler.core_policy_implementation.MULTI_SITE_REQUEST_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_implementation.py",
+          "symbol": "MULTI_SITE_REQUEST_PROFILE"
+        },
+        "syntax_sha256": "4d198c6c45b2b46c48d32f4832baaea696006764b5cf5ce16abbd32c6e9b1bec"
+      },
+      {
+        "id": "biocompiler.core_policy_implementation.MULTI_SITE_REQUEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_implementation.py",
+          "symbol": "MULTI_SITE_REQUEST_SCHEMA"
+        },
+        "syntax_sha256": "1c157866ed5e12725b3a75a9d7a54a8c7f39cedde12f94e64abb0facf065c2da"
+      },
+      {
+        "id": "biocompiler.core_policy_implementation.MULTI_SITE_VALIDATION_SCOPE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_implementation.py",
+          "symbol": "MULTI_SITE_VALIDATION_SCOPE"
+        },
+        "syntax_sha256": "3a3afe89cddd77c2fbcf1a7f33039ab2654c434b61728d1f3a2e24afcb4b459b"
+      },
+      {
         "id": "biocompiler.core_policy_implementation.NETWORK_BINDING_PROFILE",
         "kind": "value",
         "scope": "dependency",
@@ -12477,12 +13656,12 @@
         "id": "biocompiler.core_policy_implementation._authority",
         "kind": "function",
         "scope": "dependency",
-        "signature": "response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue], *, prerequisites: bool=False, two_observations: bool=False, multi_product: bool=False, finite_machine: bool=False, network: bool=False -> None",
+        "signature": "response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue], *, prerequisites: bool=False, two_observations: bool=False, multi_product: bool=False, finite_machine: bool=False, network: bool=False, multi_site: bool=False -> None",
         "source": {
           "path": "src/biocompiler/core_policy_implementation.py",
           "symbol": "_authority"
         },
-        "syntax_sha256": "50d09fe50a4728a29a7aae0bc073e56a6c9a527af6635a4b718aa8f955eb20b0"
+        "syntax_sha256": "f0fe7b619eb07f042927ca12b051a90f36c0e29c7aca0f98c6e78ebf79221c0c"
       },
       {
         "id": "biocompiler.core_policy_implementation._claim",
@@ -12562,6 +13741,17 @@
         "syntax_sha256": "631f3866a118f4ffb72da2929aac4316c03544a5b3bfe97971b949cb80619b60"
       },
       {
+        "id": "biocompiler.core_policy_implementation._multi_site_original",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "request: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_implementation.py",
+          "symbol": "_multi_site_original"
+        },
+        "syntax_sha256": "22918cd88fb46733b72bc8db0945ca461dd3c12bca80602a40b4a002851a3e30"
+      },
+      {
         "id": "biocompiler.core_policy_implementation._network_anchors",
         "kind": "function",
         "scope": "dependency",
@@ -12625,7 +13815,7 @@
           "path": "src/biocompiler/core_policy_implementation.py",
           "symbol": "_profile_settings"
         },
-        "syntax_sha256": "77813f9cf5c96e88814090798270fef78e7be31d1973ec2e36809cf4255f9b84"
+        "syntax_sha256": "42b0229910df6160beab5e50cb3734bc5f84179617d27e037f4554621fe9bd82"
       },
       {
         "id": "biocompiler.core_policy_implementation._record",
@@ -12647,7 +13837,7 @@
           "path": "src/biocompiler/core_policy_implementation.py",
           "symbol": "_request"
         },
-        "syntax_sha256": "ec8e0b7550683cf8de950e83d06ceaa6a02d651ffbd9366a1905c96117621442"
+        "syntax_sha256": "a0b565b2fa841fe7b5bbc6d65d24db3bd0fc3d7325b6183e03b0757deb6ff2c0"
       },
       {
         "id": "biocompiler.core_policy_implementation._result",
@@ -12658,7 +13848,7 @@
           "path": "src/biocompiler/core_policy_implementation.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "43ec2e6fe82e2aecf00c08971c2232a9e8743515341f296794613e2c6784c1c6"
+        "syntax_sha256": "2d181ec2b72ccb0036b13ca218b82955624c68cede662ccc5bbfa00681da6ff9"
       },
       {
         "id": "biocompiler.core_policy_implementation._rows",
@@ -13126,12 +14316,12 @@
         "id": "biocompiler.core_policy_material._obligations",
         "kind": "function",
         "scope": "dependency",
-        "signature": "report: dict[str, JsonValue], *, material_key: str='material', accepted_status: str='checked_material', conjunction_stage: str='conditional_material_context_conjunction', prerequisite_key: str | None=None, multi_product: bool=False, finite_machine: bool=False, network: bool=False, quantitative_key: str | None=None -> None",
+        "signature": "report: dict[str, JsonValue], *, material_key: str='material', accepted_status: str='checked_material', conjunction_stage: str='conditional_material_context_conjunction', prerequisite_key: str | None=None, multi_product: bool=False, finite_machine: bool=False, network: bool=False, multi_site: bool=False, quantitative_key: str | None=None -> None",
         "source": {
           "path": "src/biocompiler/core_policy_material.py",
           "symbol": "_obligations"
         },
-        "syntax_sha256": "dd48ebb1c97aef5a527c100910987537e55782bcf2460896ed4f684388f9a22f"
+        "syntax_sha256": "835de1fbc18f99d3234af506df9e0c52dca72fc4f9c2eaeab08cb10e2cd1819c"
       },
       {
         "id": "biocompiler.core_policy_material._original",
@@ -13148,12 +14338,12 @@
         "id": "biocompiler.core_policy_material._preservation",
         "kind": "function",
         "scope": "dependency",
-        "signature": "response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue], limits: JsonValue, *, prerequisites: bool=False, two_observations: bool=False, multi_product: bool=False, finite_machine: bool=False, network: bool=False -> None",
+        "signature": "response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue], limits: JsonValue, *, prerequisites: bool=False, two_observations: bool=False, multi_product: bool=False, finite_machine: bool=False, network: bool=False, multi_site: bool=False -> None",
         "source": {
           "path": "src/biocompiler/core_policy_material.py",
           "symbol": "_preservation"
         },
-        "syntax_sha256": "2817446d15b60e1b07539406c686ef4fdf61730bdee80db2d22d4b3d77bc3288"
+        "syntax_sha256": "7251d016cbf5084324851c94e3b44bb5fab73b4fde5dfd04421d2bf290810725"
       },
       {
         "id": "biocompiler.core_policy_material._publication",
@@ -14124,6 +15314,490 @@
         "syntax_sha256": "34a7641d1200c2f151890c23aa9ec14cd29f8f08c170cc0a57e31d0048c00b1b"
       },
       {
+        "id": "biocompiler.core_policy_planning.CATALOG_FINGERPRINT",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "CATALOG_FINGERPRINT"
+        },
+        "syntax_sha256": "421a29315b6449b1632cc9b685a3740eefc256bfe8962c64d3211d3d3754b315"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.CLAIMS",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {'planning': 'diagnostic_only', 'diagnostic_completeness': 'first_blocker', 'execution': 'not_performed', 'preservation': 'unassessed', 'requirements': 'unassessed', 'resource_feasibility': 'unassessed', 'material': 'unassessed', 'empirical': 'unassessed', 'artifact': 'withheld', 'export': 'withheld'}",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "CLAIMS"
+        },
+        "syntax_sha256": "22d471b15ca06bf7b79564c6f13dd009b0805a89f16d532f711a0ee704542d62"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.IMPLEMENTATION",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "IMPLEMENTATION"
+        },
+        "syntax_sha256": "6d1432cbae653524cfd84267ea32ee555845cfdd472c663e51c211e27ab93d89"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.MAX_INPUT_BYTES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "MAX_INPUT_BYTES"
+        },
+        "syntax_sha256": "9526e73c8acd610e5934150cfb9100c80a7e9514316a9415a8786bb42e97be77"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.MAX_INPUT_NODES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "MAX_INPUT_NODES"
+        },
+        "syntax_sha256": "d4b78aa5f75654e7f5872be431193556845f5067c1f109f5d1705413d6edd959"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.MAX_RESULT_BYTES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "MAX_RESULT_BYTES"
+        },
+        "syntax_sha256": "c55e870c283c213555e4f4241d17ab521bba6192559dd67b977a30400384a222"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.MAX_RESULT_NODES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "MAX_RESULT_NODES"
+        },
+        "syntax_sha256": "b4aab79874b5b51dc1cad16349f352f5f580a344818f748831218139de06fd69"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {'operations': ['plan-policy-target', 'replay-policy-target-plan'], 'request_schema': REQUEST_SCHEMA, 'report_schema': REPORT_SCHEMA, 'implementation': IMPLEMENTATION, 'validation_scope': VALIDATION_SCOPE, 'resource_profile': RESOURCE_PROFILE, 'catalog_fingerprint': CATALOG_FINGERPRINT, 'max_result_bytes': MAX_RESULT_BYTES, 'max_result_nodes': MAX_RESULT_NODES}",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PROFILE"
+        },
+        "syntax_sha256": "d5c09e8b296d5242e230b5e93be4f64173d8f452f94c9fba6cb91abb90135ac9"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PlanStatus",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PlanStatus"
+        },
+        "syntax_sha256": "bbfc416423758da9648b407eb9ab5061194e4b3eea0ff73c4dbf571ebbce7f60"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlan",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlan"
+        },
+        "syntax_sha256": "8e1a4b82e03d51f6c91569cdc8391fb036357cc0142d976e0c5eb02702ea75e7"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlan._result_json",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "bytes",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlan._result_json"
+        },
+        "syntax_sha256": "c8d74fe1df2f1460502607a539a9b68f0424cc791a6cf60f862b81bff860fac3"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlan.operation",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlan.operation"
+        },
+        "syntax_sha256": "1432154ab7dc2238b6879ff760894776c9337b14f9fa45288274df6ff5e896a6"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlan.report",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlan.report"
+        },
+        "syntax_sha256": "888e8118edad894e80f5a4cea3140ed505081bac8d237354fe773b57f3029ff5"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlan.report_fingerprint",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlan.report_fingerprint"
+        },
+        "syntax_sha256": "0b647f9e6a1413b6e6aa053dc27515d350191919cff6735073eb23f21fe1f152"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlan.request_fingerprint",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlan.request_fingerprint"
+        },
+        "syntax_sha256": "309123a3e8f8242dd3f77af21aa1e57a9588474f7769932e8ccd9428de9b0e3d"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlan.request_id",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlan.request_id"
+        },
+        "syntax_sha256": "e01c56710d124cc807a7cc140f96bb568fe8d17a49db4c8752dae2019ba60a00"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlan.result",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlan.result"
+        },
+        "syntax_sha256": "2bd4a45642e547fee08857872036039e1d801bc9acc7f70c77bddcee87d16a1e"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlan.status",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "PlanStatus",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlan.status"
+        },
+        "syntax_sha256": "68d6df9100728c630fd3f94810507a837f0d118f9fd68ba2e18457cb175e5f3e"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlanningClient",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlanningClient"
+        },
+        "syntax_sha256": "11f957a310380fff5523a26e958a3b3309aada7c60c853c6bbcb09e3e429c7a9"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlanningClient._call",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None -> PolicyTargetPlan",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlanningClient._call"
+        },
+        "syntax_sha256": "bffe9e0a6587ba339ca9c7b1411bc07100b4ee06b8f965faced442a54ca36d40"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlanningClient.plan",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyTargetPlan",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlanningClient.plan"
+        },
+        "syntax_sha256": "1e1318ed9ad49031e703094cd71be091aa2b4327d6a2ddd7edef18ecd4ce1e70"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlanningClient.replay",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, *, report: JsonValue, cancelled: Callable[[], bool] | None=None -> PolicyTargetPlan",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlanningClient.replay"
+        },
+        "syntax_sha256": "2285ce4100c3d4e95706c0e321f9447178855b3ac5ecd6ab2b652c6a783015d5"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.PolicyTargetPlanningClient.transport",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "CoreClient",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "PolicyTargetPlanningClient.transport"
+        },
+        "syntax_sha256": "1c12c2e5fa920a7d4a3b392accc30ac4494ca7f385e0c49042eefabe997d2df4"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.REPORT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "REPORT_SCHEMA"
+        },
+        "syntax_sha256": "4ada18d7500dfe54532089cd90026ac7671797371feb0841ceba273e8d8a0bab"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.REQUEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "REQUEST_SCHEMA"
+        },
+        "syntax_sha256": "ca77d292275cee6a41d5e8b6c90c58866f5891b372a0f7933cab4642599e1d61"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.RESOURCE_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "RESOURCE_PROFILE"
+        },
+        "syntax_sha256": "10cccf451138d30a01e58f18050313fd182b1ec32e59583d5e9a025ad0878a8e"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.RESULT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "RESULT_SCHEMA"
+        },
+        "syntax_sha256": "613b871645233fe5a42c7212bd20a5a258931b1dc1c9ae42d3d5a86199de87af"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.STAGES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "STAGES"
+        },
+        "syntax_sha256": "585617adc03cbd17b9d41dc0411cdae2ce75d58d303827c0c79102627ffc864c"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.TARGET_FINGERPRINTS",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "TARGET_FINGERPRINTS"
+        },
+        "syntax_sha256": "1e0a827b1b440d0247e1b13658c80dc878af140112e5c359913a1bf8a11c975b"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.TargetId",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "TargetId"
+        },
+        "syntax_sha256": "ad662824ffcc4a5fd3ed21c581f4ba994856945587b39417df2a4604ed111d71"
+      },
+      {
+        "id": "biocompiler.core_policy_planning.VALIDATION_SCOPE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "VALIDATION_SCOPE"
+        },
+        "syntax_sha256": "1cda1d3605155b57562fd0b983087254d3214c32425760244602a3f3634f8d8a"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._catalog_target",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "report: dict[str, JsonValue], request: dict[str, JsonValue] -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_catalog_target"
+        },
+        "syntax_sha256": "455c36210eedafbd8b4864a6aeb1e03e419ae75c8b6c4a50736a2142e89aa522"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._census",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "report: dict[str, JsonValue], document: JsonValue -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_census"
+        },
+        "syntax_sha256": "b6a3ff329b4981a5eefe773a0fb6bd876f9ba0622e4789134842cf5da87b392f"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._integer",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue, minimum: int, maximum: int, label: str -> int",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_integer"
+        },
+        "syntax_sha256": "26c339a0e070ca04497f96c5e769fb45e2b4301a8c6e83b80227ad1a907283ca"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._measure",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue, *, max_bytes: int, max_nodes: int -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_measure"
+        },
+        "syntax_sha256": "0f6ff886496f633949031ff611b332f20aaf228d889af8df71495cdd9a34e08c"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._models",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "report: dict[str, JsonValue], request: dict[str, JsonValue] -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_models"
+        },
+        "syntax_sha256": "70d1afe361aa843974d9379111c980096f5f52e20a1e67890f6728fca01c691e"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._original",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_original"
+        },
+        "syntax_sha256": "2041b2d44992c6afe18dc6264e4b8e3661e929bd1e8f48bb4b9470be1b2fd0ec"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._provider_graph",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "raw: JsonValue, request: dict[str, JsonValue] -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_provider_graph"
+        },
+        "syntax_sha256": "ecc1bf2f8a5c394ec0d30f6e93704c1389a2727cbd7142679f3696f3a188662b"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._record",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue, label: str -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_record"
+        },
+        "syntax_sha256": "3bdec00e9a95ca37bb4ec90f9094fcd0bc776741d3b8eb9960979360f9731966"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: bool, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "db013ee1f3fbb0723ca9ef0828a33661ee82acb6aac6f1fa25dc2bd87ff62365"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._result",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "response: CoreResponse, request: dict[str, JsonValue] -> PolicyTargetPlan",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_result"
+        },
+        "syntax_sha256": "0e8a132551047da247724a276358050d0454abb773ce8ae87530ceed6929ceb5"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._rows",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue, label: str -> list[dict[str, JsonValue]]",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_rows"
+        },
+        "syntax_sha256": "8bed44794d0407aef0d00da4458b8fbdb713ab852cadafeb96f6022b3df0d482"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._source_rows",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "document: JsonValue -> list[tuple[str, dict[str, JsonValue]]] | None",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_source_rows"
+        },
+        "syntax_sha256": "a0aa520f8df9898a2f819df6c839457f85e977bf0c0da6bff3ad6c0235c50cbb"
+      },
+      {
+        "id": "biocompiler.core_policy_planning._strings",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue, label: str -> list[str]",
+        "source": {
+          "path": "src/biocompiler/core_policy_planning.py",
+          "symbol": "_strings"
+        },
+        "syntax_sha256": "1f33366e0db52b2114ce87a73a20479f3f145211dd29f35bf69ba75167f6a9dd"
+      },
+      {
         "id": "biocompiler.core_policy_refinement.DerivationRule",
         "kind": "value",
         "scope": "public_api",
@@ -14902,7 +16576,7 @@
           "path": "src/biocompiler/core_policy_refinement.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "b24283b3cea3572aed2dbb85c4c76625a4edff551f088a1c5ea1a6850f4338ef"
+        "syntax_sha256": "e8205e423e7b0905638bb4560a14ffd22a770ddf081e33c480d50eaa82afbe88"
       },
       {
         "id": "biocompiler.core_policy_refinement._scope",
@@ -15007,12 +16681,12 @@
         "id": "biocompiler.policy.component_material.prepare_request",
         "kind": "function",
         "scope": "public_api",
-        "signature": "*, implementation_request: JsonValue, component_library: JsonValue, composition_rule: JsonValue, catalog_binding: JsonValue, input_bindings: JsonValue, resource_bindings: JsonValue, context: JsonValue, budgets: JsonValue, instanced: bool=False, prerequisites: bool=False, two_observations: bool=False, multi_member: bool=False, grounded_helper: bool=False, finite_machine: bool=False, quantitative: JsonValue=None, network: bool=False -> dict[str, JsonValue]",
+        "signature": "*, implementation_request: JsonValue, component_library: JsonValue, composition_rule: JsonValue, catalog_binding: JsonValue, input_bindings: JsonValue, resource_bindings: JsonValue, context: JsonValue, budgets: JsonValue, instanced: bool=False, prerequisites: bool=False, two_observations: bool=False, multi_member: bool=False, grounded_helper: bool=False, finite_machine: bool=False, quantitative: JsonValue=None, network: bool=False, multi_site: bool=False, transfer_pair: bool=False, transfer_network: bool=False -> dict[str, JsonValue]",
         "source": {
           "path": "src/biocompiler/policy/component_material.py",
           "symbol": "prepare_request"
         },
-        "syntax_sha256": "6a62b05fe6e743e4b4a44587e26a3021813b2d7791732d5ce2a6b688f75b0c80"
+        "syntax_sha256": "123a21396760e3b3129931a0d49c7bed4924bdd98905cc8dc4f7f053ca5901fb"
       },
       {
         "id": "biocompiler.policy.component_material.replay",
@@ -15227,12 +16901,12 @@
         "id": "biocompiler.policy.implementation.prepare_request",
         "kind": "function",
         "scope": "public_api",
-        "signature": "document: BuildRequest, *, definitions: JsonValue, operating_domain: JsonValue, implementation_library: JsonValue, catalog_bindings: JsonValue, budgets: JsonValue, prerequisites: bool=False, two_observations: bool=False, multi_product: bool=False, finite_machine: bool=False, network: bool=False -> dict[str, JsonValue]",
+        "signature": "document: BuildRequest, *, definitions: JsonValue, operating_domain: JsonValue, implementation_library: JsonValue, catalog_bindings: JsonValue, budgets: JsonValue, prerequisites: bool=False, two_observations: bool=False, multi_product: bool=False, finite_machine: bool=False, network: bool=False, multi_site: bool=False -> dict[str, JsonValue]",
         "source": {
           "path": "src/biocompiler/policy/implementation.py",
           "symbol": "prepare_request"
         },
-        "syntax_sha256": "0a0ce9fbe8d125d10ab285e394f1a33a48c5ba848ec27e621a75c6f9b99d8520"
+        "syntax_sha256": "aa412fdda0ae3cb71dbe5c10bfcee88079630db289f37effea9ba1be135a4caf"
       },
       {
         "id": "biocompiler.policy.implementation.replay",
@@ -21208,6 +22882,105 @@
         "syntax_sha256": "269dc46aaeac82520fd71ce2026caacdf2cb8f8df9e6d4d84c8be5976fdcbc6e"
       },
       {
+        "id": "biocompiler.policy.planning.PlanningLimits",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/planning.py",
+          "symbol": "PlanningLimits"
+        },
+        "syntax_sha256": "8862c54aad650b256fe3c3ea860c7e05266039bbd77430255fbcf5482d717d34"
+      },
+      {
+        "id": "biocompiler.policy.planning.PlanningLimits.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/planning.py",
+          "symbol": "PlanningLimits.__post_init__"
+        },
+        "syntax_sha256": "efff5daa499c23b9fda12b2710a5c7e27d3f2c1dda28c86e06fc2d9de165d86c"
+      },
+      {
+        "id": "biocompiler.policy.planning.PlanningLimits.max_report_bytes",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int = MAX_RESULT_BYTES",
+        "source": {
+          "path": "src/biocompiler/policy/planning.py",
+          "symbol": "PlanningLimits.max_report_bytes"
+        },
+        "syntax_sha256": "c8c2737d52012f71667f684a8645268728d35426c3a9a346c9ebb4755bb58c91"
+      },
+      {
+        "id": "biocompiler.policy.planning.PlanningLimits.max_report_nodes",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int = MAX_RESULT_NODES",
+        "source": {
+          "path": "src/biocompiler/policy/planning.py",
+          "symbol": "PlanningLimits.max_report_nodes"
+        },
+        "syntax_sha256": "50594030b280b4d7fef28aed7cdffb2bbc8f1fab795a480413462fd52bc4f121"
+      },
+      {
+        "id": "biocompiler.policy.planning.PlanningLimits.max_work",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int = 100000000",
+        "source": {
+          "path": "src/biocompiler/policy/planning.py",
+          "symbol": "PlanningLimits.max_work"
+        },
+        "syntax_sha256": "b0521e5d475f4a1716876a547cb8409692d8823904d538a9cbeacf7ea9de24c2"
+      },
+      {
+        "id": "biocompiler.policy.planning.PlanningLimits.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/planning.py",
+          "symbol": "PlanningLimits.to_data"
+        },
+        "syntax_sha256": "730c7b370a868cfa99f9596b2e9dd163fc8980eca26c3f18bfc7bb876ebbe216"
+      },
+      {
+        "id": "biocompiler.policy.planning.plan",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: JsonValue, *, client: PolicyTargetPlanningClient, cancelled: Callable[[], bool] | None=None -> PolicyTargetPlan",
+        "source": {
+          "path": "src/biocompiler/policy/planning.py",
+          "symbol": "plan"
+        },
+        "syntax_sha256": "6e3570b7550fa27de6900e7ce4725121734c75f9931ac6fd1744d2da881cfda4"
+      },
+      {
+        "id": "biocompiler.policy.planning.prepare_request",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "document: PolicyProgram | BuildRequest | CompilationSubmission, *, target: TargetId, definitions: JsonValue=None, realization_request: JsonValue=None, material_request: JsonValue=None, limits: PlanningLimits=PlanningLimits() -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/planning.py",
+          "symbol": "prepare_request"
+        },
+        "syntax_sha256": "476ad8dfdf51ee4ebad0c3344073e753e61938cb2259effd1b3944d9dda0c4da"
+      },
+      {
+        "id": "biocompiler.policy.planning.replay",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: JsonValue, *, report: PolicyTargetPlan, client: PolicyTargetPlanningClient, cancelled: Callable[[], bool] | None=None -> PolicyTargetPlan",
+        "source": {
+          "path": "src/biocompiler/policy/planning.py",
+          "symbol": "replay"
+        },
+        "syntax_sha256": "261a5ac4f1a0b2553ebb7d553e85e73f9abbaddd5fe5fc388b18b49d8b919259"
+      },
+      {
         "id": "biocompiler.policy.programs.AuthoringError",
         "kind": "class",
         "scope": "public_api",
@@ -21527,6 +23300,72 @@
         "syntax_sha256": "a1f3016d7b7939666a97d060aee66ee0620f024aefa92ee85cfa0e18bcecfb53"
       },
       {
+        "id": "biocompiler.policy.quantitative.ReservoirCompartment",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "ReservoirCompartment"
+        },
+        "syntax_sha256": "524cb00667b28c149774bf6d7f4cb2b7fbbc0ae7cf7bc47e63ae0a328494c225"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.ReservoirCompartment.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "ReservoirCompartment.__post_init__"
+        },
+        "syntax_sha256": "1ee7b750e26644a7c246d612a7929080b3080257ee29c5e334bddc400647e1b3"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.ReservoirCompartment.capacity",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "ReservoirCompartment.capacity"
+        },
+        "syntax_sha256": "be5da827fd0caa25aedade14df1ad4ad991732acb8545253c77d2c8e6c645336"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.ReservoirCompartment.compartment",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "ReservoirCompartment.compartment"
+        },
+        "syntax_sha256": "edf490e983cfc784b98bff5b19983b7965248aad0ac4ecd85f6385376adc02b7"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.ReservoirCompartment.initial",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "ReservoirCompartment.initial"
+        },
+        "syntax_sha256": "2c27b2f2759c6086e72be5f4e092613b3bafbd1705186fb1c0fbd9e254f8bfcb"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.ReservoirCompartment.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "ReservoirCompartment.to_data"
+        },
+        "syntax_sha256": "5bded86c58fc02e8d196e83197fbe168e6e807f54832e943ff084ca239c8e716"
+      },
+      {
         "id": "biocompiler.policy.quantitative.SampledReservoir",
         "kind": "class",
         "scope": "public_api",
@@ -21712,6 +23551,556 @@
           "symbol": "SampledReservoir.unit"
         },
         "syntax_sha256": "3b4c1e76a716c39b4551aef068f67ab7de4aeb08f171c6662aa22a25e6117e04"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledStepReservoir",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledStepReservoir"
+        },
+        "syntax_sha256": "2315572570fc87bdf0086dec211d37ef9f6836ff171099917175a2265f93b623"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledStepReservoir._validate",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> tuple[int, int, int]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledStepReservoir._validate"
+        },
+        "syntax_sha256": "7204426ed154c125c82ba8c46d57c0d257ac286bc8b35ad78cf82fd64ad8b990"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledStepReservoir.fall",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledStepReservoir.fall"
+        },
+        "syntax_sha256": "d87c2faa3f2e3f7ca04c12ef30596416b1d76ee7aafd43f7ca3d1f3f7665189f"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledStepReservoir.rise",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledStepReservoir.rise"
+        },
+        "syntax_sha256": "332964c2f20cd1273d9d89d75877bb06894d09d342a6a75145f08a188232fe4b"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledStepReservoir.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledStepReservoir.to_data"
+        },
+        "syntax_sha256": "d4c055ac4781a6ff949aba61979133ff3b500d4db88aeb744e6ca52eb81da2ee"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledStepReservoir.transitions",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, machine: m.Machine, observation: m.Observation, effect: m.Effect, *, prefix: str -> tuple[m.Transition, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledStepReservoir.transitions"
+        },
+        "syntax_sha256": "3d5a5b5eef27cfa9571a75028a67b878f6656897f754dbd51950ebf73de60629"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork"
+        },
+        "syntax_sha256": "34fcdea99fa755e3846afe6f6f8f023d96a824ce7aeb991d6cd24162c408a0ef"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.__post_init__"
+        },
+        "syntax_sha256": "052d6e0763108b8f9c3b23585eb5b6f2ee7f7f5d79a2e73b1c65f34a2060815a"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork._source",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self, machine: m.Machine, observation: m.Observation, effect: m.Effect -> None",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork._source"
+        },
+        "syntax_sha256": "23015b548e65cb171e7a8a2aed154c091baf8e323bf82ec30460c625c7b64632"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork._validate",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> tuple[tuple[int, ...], tuple[int, ...], tuple[tuple[int, int, int, bool], ...], int, int]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork._validate"
+        },
+        "syntax_sha256": "01282bb675fcfa87b9291ad2708b862e71c4fcf9a59e888ef5bb1b1d9f320344"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork._vectors",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> tuple[tuple[int, ...], ...]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork._vectors"
+        },
+        "syntax_sha256": "90298adb1f34730a00a6df832751ea3c72328e3bb1809782ce424756ce01dc63"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.bind",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, *, instance: str, component: JsonValue, contract: str, machine: m.Machine, observation: m.Observation, effect: m.Effect -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.bind"
+        },
+        "syntax_sha256": "e4c3704a1186a9f0b9b0397d687f169507167c713a1f071f95e3fcf6b4a45c76"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.levels",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> tuple[tuple[m.Quantity, ...], ...]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.levels"
+        },
+        "syntax_sha256": "5c5c32208749b5eac5f1a27f61e7de29104eef123e3a185c88ebb16048d8efc8"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.quantum",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.quantum"
+        },
+        "syntax_sha256": "09a4671bcf02b1e66e59ff3caf5f77f589a28cf253adbf4924e4f113b77f5ab3"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.reservoirs",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[ReservoirCompartment, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.reservoirs"
+        },
+        "syntax_sha256": "39b7553b5a0421e0155219ee61d190c987ae39e9a105270b25dc9b1f9c798a5c"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.sample_period",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.sample_period"
+        },
+        "syntax_sha256": "fe3188b5728cc5b7ae240b068fd9e9a0d9adb8ad67c6cd8db6c756e5c1874b98"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.state_values",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, states: tuple[str, ...] -> list[JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.state_values"
+        },
+        "syntax_sha256": "bc68ca448671d5df6e2ac2f79d2d3e421a761516344bd6015a63017b1673d509"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.substance",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.substance"
+        },
+        "syntax_sha256": "4cd98177f87797a2111fc965f3f14a5b4fe546a6202dd86d749eeba775b1049f"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.threshold",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.threshold"
+        },
+        "syntax_sha256": "63a3f925d326dc519f4cbac03de1a537b551cacf4002055ff7571576a011b5d1"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.threshold_compartment",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.threshold_compartment"
+        },
+        "syntax_sha256": "199471c9b90574bd5d259c920c3a66d2af11e759a9688d0c91e3ce6a042ce065"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.to_data"
+        },
+        "syntax_sha256": "ab17b1967bf993f1218a8faeb1d8ff93371b14d4c1bb83a82206887db72d2637"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.transfers",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[TransferEdge, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.transfers"
+        },
+        "syntax_sha256": "765d8a425708b254a530443125f1796da12baa6757966eaf80c58e792b12f371"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.transitions",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, machine: m.Machine, observation: m.Observation, effect: m.Effect, *, prefix: str -> tuple[m.Transition, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.transitions"
+        },
+        "syntax_sha256": "0bcd0f6f959ef0773794adfc00432edd6a270aeed97e75ecfc35530b2fbf89d3"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferNetwork.unit",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Unit",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferNetwork.unit"
+        },
+        "syntax_sha256": "3b4c1e76a716c39b4551aef068f67ab7de4aeb08f171c6662aa22a25e6117e04"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair"
+        },
+        "syntax_sha256": "d7b19dbf341b7d3fae400475b2e439a51c79763f95e81966f74eed2d6d75180a"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.__post_init__"
+        },
+        "syntax_sha256": "052d6e0763108b8f9c3b23585eb5b6f2ee7f7f5d79a2e73b1c65f34a2060815a"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair._source",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self, machine: m.Machine, observation: m.Observation, effect: m.Effect -> tuple[int, int, int, int, int, int, int]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair._source"
+        },
+        "syntax_sha256": "25086c25238ca680fd714098c72453123e9679465dd7e3465858395e8d9dc122"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair._validate",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> tuple[int, int, int, int, int, int, int]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair._validate"
+        },
+        "syntax_sha256": "063ffca268139061d16b85ad12c02dccbcc8b132f4af4f9d6e16b2128da61398"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.bind",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, *, instance: str, component: JsonValue, contract: str, machine: m.Machine, observation: m.Observation, effect: m.Effect -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.bind"
+        },
+        "syntax_sha256": "60e2db9aa23c8eb93733fd6aae43d601c4356efacca472e7ea14468d491c136d"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.destination",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "ReservoirCompartment",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.destination"
+        },
+        "syntax_sha256": "74e77e0512da662dde9588acc68222e9fa50775bced4af882ab05e944bac1712"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.forward",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.forward"
+        },
+        "syntax_sha256": "c487a93ecc4beb3af39a6f7776a86a5dc2dff28d6c3ebce23da176f13e861735"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.levels",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> tuple[tuple[m.Quantity, m.Quantity], ...]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.levels"
+        },
+        "syntax_sha256": "a24fed830096566be5a2eb94e9427fa7d14588b826b869fc2e02e7dedce1436d"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.quantum",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.quantum"
+        },
+        "syntax_sha256": "09a4671bcf02b1e66e59ff3caf5f77f589a28cf253adbf4924e4f113b77f5ab3"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.reverse",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.reverse"
+        },
+        "syntax_sha256": "dc8c1b1fccfd230408d3a6a8934ea702d2ad4fd78945c20624a907b21a162e76"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.sample_period",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.sample_period"
+        },
+        "syntax_sha256": "fe3188b5728cc5b7ae240b068fd9e9a0d9adb8ad67c6cd8db6c756e5c1874b98"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.source",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "ReservoirCompartment",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.source"
+        },
+        "syntax_sha256": "3fd1d9a4947a1f0ad56ad82194682f30b19dd47371e1d7d38ffcab18b57715ff"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.state_values",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, states: tuple[str, ...] -> list[JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.state_values"
+        },
+        "syntax_sha256": "2d0d93bcd872eda60eb2a1b3514a699a77a2be1b5501e9dbc77a7430f9937595"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.substance",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.substance"
+        },
+        "syntax_sha256": "4cd98177f87797a2111fc965f3f14a5b4fe546a6202dd86d749eeba775b1049f"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.threshold",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.threshold"
+        },
+        "syntax_sha256": "63a3f925d326dc519f4cbac03de1a537b551cacf4002055ff7571576a011b5d1"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.to_data"
+        },
+        "syntax_sha256": "22a20a7f98e025c66ec107b10a008a09271dfc53d8a29c1a25f21e195e22d033"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.transitions",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, machine: m.Machine, observation: m.Observation, effect: m.Effect, *, prefix: str -> tuple[m.Transition, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.transitions"
+        },
+        "syntax_sha256": "9d7d7c97e800865304d584b1035137b75bda532731fd3957acc45616c85c2bcd"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledTransferPair.unit",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Unit",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledTransferPair.unit"
+        },
+        "syntax_sha256": "3b4c1e76a716c39b4551aef068f67ab7de4aeb08f171c6662aa22a25e6117e04"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.TransferEdge",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "TransferEdge"
+        },
+        "syntax_sha256": "d99d62fd9cdf8a7fc182c2eb71adef27456a441db421c058ae51fbfe2eceffab"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.TransferEdge.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "TransferEdge.__post_init__"
+        },
+        "syntax_sha256": "8425f564c7d427174b0fd9f9fe3b82a0b3db2f5ad75ccc460c631a2e6f675ddd"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.TransferEdge.amount",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "TransferEdge.amount"
+        },
+        "syntax_sha256": "88c2929c0a66d370c235aa7b3544c893c1e1deabac5dcc93f6bf3a37a2786410"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.TransferEdge.destination",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "TransferEdge.destination"
+        },
+        "syntax_sha256": "2bda367201ae28b5e88837ac813390af97fe2fda64c86d6d6d196e8f4ea7f17f"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.TransferEdge.id",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "TransferEdge.id"
+        },
+        "syntax_sha256": "98027b84112a1c4a6e0e40fb916b7c84d3efbf4d18387b743c2011238a59d9f3"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.TransferEdge.source",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "TransferEdge.source"
+        },
+        "syntax_sha256": "67d43d6809c09e3d969aafb5c59ec2303ecdd3feea87a376ffc12c15807da858"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.TransferEdge.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "TransferEdge.to_data"
+        },
+        "syntax_sha256": "ed092dd2209c36b24853fad8fedacfc45dc9e02d5d1bb20e4fd3804e04bfbd9a"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.TransferEdge.when",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "bool",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "TransferEdge.when"
+        },
+        "syntax_sha256": "b2894b2247a3a162a6b6c4fe07ed23a7a7ce9a7d5c482fb69e18be8fa99d390f"
       },
       {
         "id": "biocompiler.policy.quantitative._name",
@@ -24375,7 +26764,12 @@
       "biocompiler.policy.prepare_submission": "biocompiler.policy.handoff.prepare_submission",
       "biocompiler.policy.quantitative": "biocompiler.policy.quantitative",
       "biocompiler.policy.quantitative.QuantitativeAuthoringError": "biocompiler.policy.quantitative.QuantitativeAuthoringError",
+      "biocompiler.policy.quantitative.ReservoirCompartment": "biocompiler.policy.quantitative.ReservoirCompartment",
       "biocompiler.policy.quantitative.SampledReservoir": "biocompiler.policy.quantitative.SampledReservoir",
+      "biocompiler.policy.quantitative.SampledStepReservoir": "biocompiler.policy.quantitative.SampledStepReservoir",
+      "biocompiler.policy.quantitative.SampledTransferNetwork": "biocompiler.policy.quantitative.SampledTransferNetwork",
+      "biocompiler.policy.quantitative.SampledTransferPair": "biocompiler.policy.quantitative.SampledTransferPair",
+      "biocompiler.policy.quantitative.TransferEdge": "biocompiler.policy.quantitative.TransferEdge",
       "biocompiler.policy.quantity": "biocompiler.policy.values.quantity",
       "biocompiler.policy.ref": "biocompiler.policy.programs.ref",
       "biocompiler.policy.refinement": "biocompiler.policy.refinement",
@@ -24470,20 +26864,21 @@
       "src/biocompiler/__main__.py": "d5b809722d6dfee6e4cb84d0b4a513239d99ae898defe55c1753ac85c21a9eb4",
       "src/biocompiler/core_client.py": "c8d65a42c1f92cbd75cb5edd176a9463657e03509be8ed487496d78b17be00fc",
       "src/biocompiler/core_policy.py": "9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e",
-      "src/biocompiler/core_policy_component_material.py": "d1a9a022ba3fa940642d35e0e0169db847df6efd9372c4057ebb43a94364f4ad",
+      "src/biocompiler/core_policy_component_material.py": "eaf4243e50343ccdbba482641e9d5a8189eda966fe5050665da6724b4fedaebe",
       "src/biocompiler/core_policy_component_selection.py": "20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9",
-      "src/biocompiler/core_policy_implementation.py": "a8ed81c322fa24a9c5566d212b7983ffa1d41bd9cc8ed93433c90c7a3baca953",
-      "src/biocompiler/core_policy_material.py": "e276271431e83ab2f3d39226288e498f00111daa3c00e5c4cf5951718810fa11",
+      "src/biocompiler/core_policy_implementation.py": "99648b8f12f55ca99b7d1fade55e24dab1eb564153b2882c022f3dd2c2bb7304",
+      "src/biocompiler/core_policy_material.py": "117b8240354c5608f820a88bacea0a58ead5348e9345dedcdfd12ab8d27eb72f",
       "src/biocompiler/core_policy_module_linking.py": "8c6cb783a929dc4e4bd7f191af8d228905ef314d1c0ff3e7c9fa584f9e4fd165",
       "src/biocompiler/core_policy_operational.py": "089805c81bf6f84e5cf5e264b6ed89babedc3d692e2a7605429aa388e6d5ed02",
-      "src/biocompiler/core_policy_refinement.py": "1f3548ebb4c98c377f80e2ee2115ee64db4c1622b76e9714a02e588d47395ad0",
+      "src/biocompiler/core_policy_planning.py": "19e03c0b870d7e0bd844065bdc444ae1836bfa3e185d659f9f96197a40a2831b",
+      "src/biocompiler/core_policy_refinement.py": "df04acb3d46bdad0ea2e508fead5e6d4cc8a202c402c2e00aa36e09e14e07362",
       "src/biocompiler/entrypoint.py": "7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8",
       "src/biocompiler/policy/__init__.py": "eb2c3cd05296437e2bb2cf4b1a7ae8b1788a80eaefae072362065c2b83717e91",
       "src/biocompiler/policy/behavior.py": "691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf",
       "src/biocompiler/policy/catalog.py": "96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30",
       "src/biocompiler/policy/chassis.py": "21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1",
       "src/biocompiler/policy/cli.py": "beaff7cf4994019f24fab7361e588a3702b32bb16d357bda42e16000a5060d0f",
-      "src/biocompiler/policy/component_material.py": "bce7443fb9ac9c9139a0f3b14a85b91dd2e4467bc67a9d20ebf58742b9d3b757",
+      "src/biocompiler/policy/component_material.py": "3e38169f4449eb67dc5a5292491980db69f7e473e451b974b0f7fbc04445f015",
       "src/biocompiler/policy/component_selection.py": "10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80",
       "src/biocompiler/policy/coordination.py": "ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9",
       "src/biocompiler/policy/deployment.py": "cddace3d45f04ecd722a47849325c9ff6a41fc166b0e23253c2377f037eae29f",
@@ -24491,7 +26886,7 @@
       "src/biocompiler/policy/entities.py": "f38a35089b5c5c7522b012729f95a2b17f45fd2a56c1affe168aa526fb1d7f18",
       "src/biocompiler/policy/examples.py": "36f4e4ba467ae48bc2bfb1d1f54455533a7981dcd8a2c659227d34d06807017a",
       "src/biocompiler/policy/handoff.py": "a51200b3bb412ebc65cc43df3d69435ea37a7f48a75ba2eba5b7fbafd2479a51",
-      "src/biocompiler/policy/implementation.py": "51f93b0ced55bf5157bc74ded9dbf4539c6259626370292f14073b9d802b7448",
+      "src/biocompiler/policy/implementation.py": "a2f21ae87855b612d6acbd2e65923c83debf0ff2dcb611ffe4e4a56a24b68372",
       "src/biocompiler/policy/inspection.py": "7eca4c5bf12aab21899bb7c9e54b64f8255bae9759e7ebd6a4858bf0f5e76caf",
       "src/biocompiler/policy/logic.py": "cc0a0fe952f9c8aa16fb5714d0cd1972296154cf1e5e5deed4e7ea9ece3ddf4f",
       "src/biocompiler/policy/material.py": "5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79",
@@ -24502,8 +26897,9 @@
       "src/biocompiler/policy/observations.py": "24400413e0b42fad132d02d0841cfdc3f9307c452e64ec1b2283be7f389f5a26",
       "src/biocompiler/policy/operational.py": "b3db654830b8477c29de9fc13a9fd05cf6337a512cfcd86dde9391146cf4efee",
       "src/biocompiler/policy/patterns.py": "9640080fa505e361b09a2dd9a644938365549b37c8be3a8ce547bc1391044b48",
+      "src/biocompiler/policy/planning.py": "141b7236aca37e8a3bafafab87c91a1057f99e141fde9bd3c0ad9273245bc335",
       "src/biocompiler/policy/programs.py": "ef2823520e47f29f666c8c6bec8f30d43a21195ab5379ae82e0a062563f686fd",
-      "src/biocompiler/policy/quantitative.py": "c8e013785ab8cfb40bf717f50c3a9d1c121c08dc26c58821c8beea95a7ab8e3e",
+      "src/biocompiler/policy/quantitative.py": "d2e35a2ff2898f8e119f2b6eee0de931905e267717643d6548c1a645e90ec4d1",
       "src/biocompiler/policy/refinement.py": "84593e71a5041ee5e3011c1578839444b0ce6fe04668fd75af292d297473d28d",
       "src/biocompiler/policy/requirements.py": "80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b",
       "src/biocompiler/policy/research_project.py": "c2bf6d201d183c43594cfe92dd252f0ac25c95e25d1381f6aca079289faec0b0",
@@ -24544,6 +26940,14 @@
       {
         "path": "src/biocompiler/core_policy_component_material.py",
         "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/core_policy_component_material.py",
+        "syntax_sha256": "ebb86c2f2e53ae53f2d2e77be1eb05c5fa0021270b6b7fdfb30da1eac4fc4058"
+      },
+      {
+        "path": "src/biocompiler/core_policy_component_material.py",
+        "syntax_sha256": "1de34ad9695e7d4f275ce31577c64e4211c3dc0472b76977492e08238691b4db"
       },
       {
         "path": "src/biocompiler/core_policy_component_material.py",
@@ -24708,6 +27112,34 @@
       {
         "path": "src/biocompiler/core_policy_operational.py",
         "syntax_sha256": "bfabd21e1685683a0b8fcd269afd5bb3887b2e54a8f1717dbb8d4e7f54e2e42d"
+      },
+      {
+        "path": "src/biocompiler/core_policy_planning.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/core_policy_planning.py",
+        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/core_policy_planning.py",
+        "syntax_sha256": "a34c891ffc801263d257df2b1aadfbe42a6dec969fec2d1a95dd8bdd9039112b"
+      },
+      {
+        "path": "src/biocompiler/core_policy_planning.py",
+        "syntax_sha256": "39759b77357fd574e0221192c2a9167c6fd943705b25e8ac22ac8e98f9971260"
+      },
+      {
+        "path": "src/biocompiler/core_policy_planning.py",
+        "syntax_sha256": "be06581e1562d8a963e1d4ffd44add17e8a3df2c58df100bfcbb8374ca757f0d"
+      },
+      {
+        "path": "src/biocompiler/core_policy_planning.py",
+        "syntax_sha256": "0a8981dd718f5a49ef3fbee82a41c2615466e8fb3c31a8605a3fa81fb3e6df81"
+      },
+      {
+        "path": "src/biocompiler/core_policy_planning.py",
+        "syntax_sha256": "f255311127c3c735ea86b68bf62c39a57aa405985d27c9ac0c8a73e4ccd786c2"
       },
       {
         "path": "src/biocompiler/core_policy_refinement.py",
@@ -24951,7 +27383,7 @@
       },
       {
         "path": "src/biocompiler/policy/component_material.py",
-        "syntax_sha256": "3bc4fbca833fceaac5727ee993a4e3952b6ed2d5e0a69fa927a4332f129b99f6"
+        "syntax_sha256": "3b5946b3da9ccd2568eb63f2a5f83d0139e57b8f21ff5f8703b0cb5836925cee"
       },
       {
         "path": "src/biocompiler/policy/component_material.py",
@@ -25059,7 +27491,7 @@
       },
       {
         "path": "src/biocompiler/policy/implementation.py",
-        "syntax_sha256": "f8b165ea676291fe5abe287f65ab02db1abf06a270e908a3b402e9e7de84012b"
+        "syntax_sha256": "38d1426716128201f9391f44f8ee3c961d670ea97b2b7c4eacf418545f7092c5"
       },
       {
         "path": "src/biocompiler/policy/implementation.py",
@@ -25344,6 +27776,34 @@
       {
         "path": "src/biocompiler/policy/patterns.py",
         "syntax_sha256": "b57389d731918a13f7cc44576c64d61c0cc5f92624fa570a5d8739893f57f846"
+      },
+      {
+        "path": "src/biocompiler/policy/planning.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/planning.py",
+        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/policy/planning.py",
+        "syntax_sha256": "67ee0f2195b5dd6d32007ab0636061358254666e071561ec389ec9c59836707c"
+      },
+      {
+        "path": "src/biocompiler/policy/planning.py",
+        "syntax_sha256": "f7ac139c8d303f3133275c9dde8aac7adc3d0f3c3088d16b0564bad7e3a59f9c"
+      },
+      {
+        "path": "src/biocompiler/policy/planning.py",
+        "syntax_sha256": "71cf7da62371eaf941609855938eef69608fd0ba02938458ddc1935df2a2feda"
+      },
+      {
+        "path": "src/biocompiler/policy/planning.py",
+        "syntax_sha256": "951f250554ee9c5af4cb039e48a4e9318e4111d32d6e4e5a4d79b57553c340db"
+      },
+      {
+        "path": "src/biocompiler/policy/planning.py",
+        "syntax_sha256": "b52436024228c41d3698f4ba71a6bc6f62b079f1f2582488cb30fd4d9487a93b"
       },
       {
         "path": "src/biocompiler/policy/programs.py",
@@ -25667,6 +28127,21 @@
       }
     ],
     "operations": [
+      {
+        "operation": "plan-policy-target",
+        "owner": "biocompiler.core_policy_planning.PolicyTargetPlanningClient.plan",
+        "payload_fields": [
+          "request"
+        ]
+      },
+      {
+        "operation": "replay-policy-target-plan",
+        "owner": "biocompiler.core_policy_planning.PolicyTargetPlanningClient.replay",
+        "payload_fields": [
+          "request",
+          "report"
+        ]
+      },
       {
         "operation": "assess-policy",
         "owner": "biocompiler.core_policy.PolicyClient.assess",
@@ -27636,6 +30111,214 @@
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_event_and_guard_types_remain_separate",
       "syntax_sha256": "693fb927c99efb9624ed370f0c8e11b6b0de83c4f9f193aa6eed9427a3544c3d"
+    },
+    "step_quantitative.grid": {
+      "distinction": "Exact Python expansion matches independently authored source transition literals at two distinct request sites; no native preservation or biological claim.",
+      "file_sha256": "2600e3d7d3096f9f697d3e31da1635011dac71bad86155503f53425351215121",
+      "path": "tests/test_policy_quantitative_step.py",
+      "role": "positive",
+      "symbol": "StepQuantitativeTests.test_grid_and_two_distinct_crossings_match_literal_source",
+      "syntax_sha256": "31746fd4815f3386b449d6ee3766f48779383ae737bdcf796c955de2e0663550"
+    },
+    "step_quantitative.rejection": {
+      "distinction": "Python authoring rejects nonpositive, off-grid, oversized and nominally mismatched steps before transport; no native admission or empirical validity claim.",
+      "file_sha256": "2600e3d7d3096f9f697d3e31da1635011dac71bad86155503f53425351215121",
+      "path": "tests/test_policy_quantitative_step.py",
+      "role": "rejection",
+      "symbol": "StepQuantitativeTests.test_invalid_step_units_grid_and_bounds_fail_before_transport",
+      "syntax_sha256": "b8a1e7366d4cb4cb740ba08428b9bfd92e575e6fa01ed2d1d8f0b2551d187492"
+    },
+    "step_quantitative.shape": {
+      "distinction": "A separately specified six-state law checks asymmetric decline and three upward crossing sites against literal expected transitions; no native execution or material acceptance.",
+      "file_sha256": "2600e3d7d3096f9f697d3e31da1635011dac71bad86155503f53425351215121",
+      "path": "tests/test_policy_quantitative_step.py",
+      "role": "positive",
+      "symbol": "StepQuantitativeTests.test_distinct_three_site_shape_and_larger_decline",
+      "syntax_sha256": "a62516784124541cc33c40ec88117f11b5cae0b7f87fd0b00f8ae8ef6eee12b2"
+    },
+    "target_planning.census": {
+      "distinction": "Transport rejects omitted declaration occurrences, changed source paths and altered or discharged original requirements.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "rejection",
+      "symbol": "TargetPlanningTransportTests.test_complete_source_occurrences_and_requirements_cannot_be_dropped_or_rebound",
+      "syntax_sha256": "d3505105f702907170db50b8146fe230ec3233e16b4965975568f9fa6d357ed2"
+    },
+    "target_planning.claims": {
+      "distinction": "Transport rejects strengthened execution, requirement, physical resource, material and export claims or injected candidate fields even after report repinning.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "rejection",
+      "symbol": "TargetPlanningTransportTests.test_every_nonaccepting_claim_is_closed",
+      "syntax_sha256": "b790c200c5a682369cb6ef912c85c5cb8198e8cda1e1784987a634e8811a6a07"
+    },
+    "target_planning.exhaustion": {
+      "distinction": "An inert native resource error propagates separately from classified diagnostic plans and yields no partial result.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "rejection",
+      "symbol": "TargetPlanningTransportTests.test_native_resource_exhaustion_produces_no_partial_plan",
+      "syntax_sha256": "393f0ea4bdef4925f21ec213fad2a3cd1cb8460249ea99c59236bfeda78a8946"
+    },
+    "target_planning.facade": {
+      "distinction": "Typed request assembly snapshots frozen source and supplied nested material authority, rejects malformed limit values and performs no admission.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "mixed",
+      "symbol": "TargetPlanningTransportTests.test_typed_facade_snapshots_material_nested_authority_without_validation",
+      "syntax_sha256": "b49d08a861164e71c5c2f5e98139c4b01769c94040f6787f75a46059b8a06d5b"
+    },
+    "target_planning.invalid": {
+      "distinction": "Raw invalid source reaches the inert producer and remains a diagnostic outcome instead of being hidden behind Python semantic admission.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "mixed",
+      "symbol": "TargetPlanningTransportTests.test_invalid_source_stays_a_native_diagnostic_outcome",
+      "syntax_sha256": "9ff60f6cb5af9efdfba59c1c516a35c2c652cee02403d477c38aeec05e1d5215"
+    },
+    "target_planning.limits": {
+      "distinction": "Transport rejects Boolean work counts, original-limit changes and oversized result publication. Native work charging remains unexecuted.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "rejection",
+      "symbol": "TargetPlanningTransportTests.test_usage_and_publication_stay_within_original_limits",
+      "syntax_sha256": "0dddaaf92844ed77d55ebd75c683c4c6969d579673ca4c892b319ba51666b426"
+    },
+    "target_planning.models": {
+      "distinction": "Inert model rows retain supplied library membership, complete body pins and primitive/configuration identity; this does not independently derive or execute the graph.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "mixed",
+      "symbol": "TargetPlanningTransportTests.test_explicit_complete_network_authority_and_selected_model_membership",
+      "syntax_sha256": "540137a6b75e3b4f731572dc1e3f37d2f966247ae25e7d856ef08d9174bff68c"
+    },
+    "target_planning.negotiation": {
+      "distinction": "Inert capability negotiation rejects changed installed catalog identity or publication ceilings.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "rejection",
+      "symbol": "TargetPlanningTransportTests.test_negotiation_requires_exact_catalog_and_limits",
+      "syntax_sha256": "2af558434f5bdb671c63d924977d5649d046d3bdf6e914f1f479881e36db7890"
+    },
+    "target_planning.obligations": {
+      "distinction": "Every target-specific deferred software obligation remains ordered and required; planning cannot erase or discharge it.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "rejection",
+      "symbol": "TargetPlanningTransportTests.test_required_full_pipeline_obligations_cannot_be_discharged_or_omitted",
+      "syntax_sha256": "781cfbce0261149ac984c0b7390007a21c95a9effe51453a1d0e7695bcfbf162"
+    },
+    "target_planning.providers": {
+      "distinction": "Diagnostic provider transport rejects altered source roots, dependency occurrences, original body pins and issue categories; no dependency closure or physical capacity claim is granted.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "rejection",
+      "symbol": "TargetPlanningProviderTransportTests.test_repinned_provider_roots_edges_definition_bodies_and_issue_categories_reject",
+      "syntax_sha256": "15ccae31b6bf5c80b8820e38dedb80e0e5a2cc39f01ff2a224a9ca3f1d1a6f13"
+    },
+    "target_planning.replay": {
+      "distinction": "Inert fresh replay compares the entire request-bound wrapper and rejects a changed report; retained result views do not mutate stored bytes or create checked capabilities.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "mixed",
+      "symbol": "TargetPlanningTransportTests.test_retained_report_is_immutable_and_freshly_replayed",
+      "syntax_sha256": "1007c82c6d0569ecb10b01499b96c719fa5387314d1ba86046efa6f81b42d0e7"
+    },
+    "target_planning.role": {
+      "distinction": "Planning rejects the verifier role before dispatch; native producer operation execution is not tested.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "rejection",
+      "symbol": "TargetPlanningTransportTests.test_verify_executable_cannot_negotiate_a_planner",
+      "syntax_sha256": "8a9d69b39f7ccb7619ddcfa2533512a12ad64f1f9dff105f74efa6fe23d53d63"
+    },
+    "target_planning.snapshot": {
+      "distinction": "Caller mutation during inert capability negotiation cannot alter complete original authority sent for planning.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "rejection",
+      "symbol": "TargetPlanningTransportTests.test_mutation_during_negotiation_cannot_change_authority",
+      "syntax_sha256": "cfda344d9f71751e22da691fac9e85361ca39093bd1ddf0ae45448663558e316"
+    },
+    "target_planning.source": {
+      "distinction": "An inert native peer retains the full original requirement census and descriptive first blocker; no native admission or target support is established.",
+      "file_sha256": "2476b7287f057c4174765fcd3eadf8ce86646dfb25c156d112f774daff3ff9f3",
+      "path": "tests/test_policy_target_planning.py",
+      "role": "positive",
+      "symbol": "TargetPlanningTransportTests.test_source_only_plan_retains_requirements_and_first_blocker_without_acceptance",
+      "syntax_sha256": "ff7054a0ed089400c2a50064ea68edb9ba91fc267d3aee18f1b842270af293d8"
+    },
+    "transfer_network.cycle": {
+      "distinction": "A separately specified two-reservoir cycle retains nonzero-flow self-transitions despite unchanged net state; no native execution or measured edge-flux claim.",
+      "file_sha256": "e5ee9db2c9a31f3d1ed882aec2f1c6cf5e03e235045e79ad4d56e45363586b5f",
+      "path": "tests/test_policy_quantitative_network.py",
+      "role": "positive",
+      "symbol": "NetworkQuantitativeTests.test_circulating_positive_flow_retains_net_zero_self_transition",
+      "syntax_sha256": "5b4ca7fa5fb5d925694cb0df62527cde006f17f0aa83e9eed91d095e3b5519cd"
+    },
+    "transfer_network.grid": {
+      "distinction": "Exact Python expansion matches independent sparse network transition and ordered flow literals; no native preservation or biological claim.",
+      "file_sha256": "e5ee9db2c9a31f3d1ed882aec2f1c6cf5e03e235045e79ad4d56e45363586b5f",
+      "path": "tests/test_policy_quantitative_network.py",
+      "role": "positive",
+      "symbol": "NetworkQuantitativeTests.test_sparse_expansion_matches_independent_source_flows_and_complete_table",
+      "syntax_sha256": "0040706de587cb5a97b15b4a01439aa68b9ce2117c0dd30c0ecf7939fb636f9b"
+    },
+    "transfer_network.rejection": {
+      "distinction": "Python authoring rejects endpoint aliasing, mismatched units, inexact quantities and unsupported edge/grid bounds before transport; no native admission or empirical claim.",
+      "file_sha256": "e5ee9db2c9a31f3d1ed882aec2f1c6cf5e03e235045e79ad4d56e45363586b5f",
+      "path": "tests/test_policy_quantitative_network.py",
+      "role": "rejection",
+      "symbol": "NetworkQuantitativeTests.test_rejects_aliasing_units_inexact_grids_edges_and_product_overflow",
+      "syntax_sha256": "2ee871ac49fb4a0665456405d81a80ba66bae1a8789134e4e2de320864294e3a"
+    },
+    "transfer_network.shape": {
+      "distinction": "A sixteen-state four-reservoir chain checks no incoming-stock reuse and concurrent atomic deltas against literal endpoints; no native execution or material acceptance.",
+      "file_sha256": "e5ee9db2c9a31f3d1ed882aec2f1c6cf5e03e235045e79ad4d56e45363586b5f",
+      "path": "tests/test_policy_quantitative_network.py",
+      "role": "positive",
+      "symbol": "NetworkQuantitativeTests.test_four_reservoir_chain_preserves_prestate_no_cascade",
+      "syntax_sha256": "adbced00d3d78610cf7c2031349dd23ea86c8ea52a9aac89def909b1984ec1bd"
+    },
+    "transfer_network.snapshot": {
+      "distinction": "Original network and selected owner snapshots retain explicit versioned authority; inert Python routing is not native component or material acceptance.",
+      "file_sha256": "e5ee9db2c9a31f3d1ed882aec2f1c6cf5e03e235045e79ad4d56e45363586b5f",
+      "path": "tests/test_policy_quantitative_network.py",
+      "role": "positive",
+      "symbol": "NetworkQuantitativeTests.test_original_authority_snapshot_and_explicit_profile_routing",
+      "syntax_sha256": "a8b1ded47e7b025d47bd4d12df654450abc6b7f7ee8536f249d03b313fc7e285"
+    },
+    "transfer_pair.grid": {
+      "distinction": "Exact Python expansion matches independently authored sparse transfer transitions and complete quantity-vector literals; no native preservation or biological claim.",
+      "file_sha256": "265d7fc389241a15cc55fcbf1d8e3ce63bcf69346b7026a9d1fb07a6427e02b6",
+      "path": "tests/test_policy_quantitative_transfer.py",
+      "role": "positive",
+      "symbol": "TransferQuantitativeTests.test_sparse_expansion_matches_independent_source_and_complete_table",
+      "syntax_sha256": "8725fb14a0cee0a143a39f2ea13f36ba2da8afa0c52f07e2e6a18a6cfff5dae8"
+    },
+    "transfer_pair.rejection": {
+      "distinction": "Python authoring rejects compartment aliasing, nominally mismatched units, invalid grids and Cartesian bounds before transport; no native admission or empirical validity claim.",
+      "file_sha256": "265d7fc389241a15cc55fcbf1d8e3ce63bcf69346b7026a9d1fb07a6427e02b6",
+      "path": "tests/test_policy_quantitative_transfer.py",
+      "role": "rejection",
+      "symbol": "TransferQuantitativeTests.test_rejects_aliasing_units_inexact_grids_and_product_overflow",
+      "syntax_sha256": "2e3f51e0da6eeb5b9c07096751a5d60c5fd807e1ba5386d4c0f98a9fa54616ad"
+    },
+    "transfer_pair.shape": {
+      "distinction": "A separately specified sixteen-state Cartesian grid checks saturated bidirectional transfer and omitted zero-transfer stutters against literal endpoints; no native execution or material acceptance.",
+      "file_sha256": "265d7fc389241a15cc55fcbf1d8e3ce63bcf69346b7026a9d1fb07a6427e02b6",
+      "path": "tests/test_policy_quantitative_transfer.py",
+      "role": "positive",
+      "symbol": "TransferQuantitativeTests.test_maximal_four_by_four_shape_uses_saturation_and_sparse_stuttering",
+      "syntax_sha256": "b403bd82bf608b71d37f8901344bd4c4140009944fddc4bc00f15a23017cc8b0"
+    },
+    "transfer_pair.snapshot": {
+      "distinction": "Original pair law and component pin snapshots retain explicit versioned transport authority; inert Python routing is not native component or material acceptance.",
+      "file_sha256": "265d7fc389241a15cc55fcbf1d8e3ce63bcf69346b7026a9d1fb07a6427e02b6",
+      "path": "tests/test_policy_quantitative_transfer.py",
+      "role": "positive",
+      "symbol": "TransferQuantitativeTests.test_original_authority_snapshot_and_explicit_profile_routing",
+      "syntax_sha256": "e0f0228634e897d869f5bc2dc3ecc0b1bde92677a2b377170d16df65f850207b"
     },
     "typed.events": {
       "distinction": "Event/scalar category separation in guards, arguments and state updates; no general operational-admission claim.",

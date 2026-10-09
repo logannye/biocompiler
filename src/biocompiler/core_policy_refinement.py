@@ -271,7 +271,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyRefi
              and result["validation_scope"] == VALIDATION_SCOPE, "Refinement response changed its negotiated profile")
     request = component._original(payload["request"])
     candidate = component._candidate(payload["candidate"], instanced=component._instanced(request),
-        multi_member=component._multi_member(request), grounded_helper=component._grounded_helper(request))
+        multi_member=component._multi_member(request), grounded_helper=component._grounded_helper(request), multi_site=component._multi_site(request))
     request_pin = operational._pin(result["request_fingerprint"], request, "Complete refinement request")
     candidate_pin = operational._pin(result["candidate_fingerprint"], candidate, "Complete refinement candidate")
     invocation_pin = operational._pin(result["invocation_fingerprint"], {
@@ -279,7 +279,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyRefi
     report = component._report(result["material_report"], instanced=component._instanced(request),
         prerequisites=component._prerequisites(request), two_observations=component._two_observations(request),
         multi_member=component._multi_member(request), grounded_helper=component._grounded_helper(request),
-        finite_machine=component._finite_machine(request), quantitative=component._quantitative(request), network=component._network(request))
+        finite_machine=component._finite_machine(request), quantitative=component._quantitative(request), network=component._network(request), multi_site=component._multi_site(request), transfer_pair=component._transfer_pair(request), transfer_network=component._transfer_network(request))
     report_pin = operational._pin(result["material_report_fingerprint"], report, "Fresh complete material report")
     component._assessment(response, request, candidate, report, payload["limits"])
     evidence = None if result["evidence"] is None else _evidence(result["evidence"])

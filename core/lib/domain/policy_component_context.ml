@@ -67,10 +67,10 @@ let ordered_union_json rule =
     obj ["slot",str (slot_name row.slot);"id",str group.group_id;"arbiter",reference row.slot group.arbiter;
       "commits",arr (reference row.slot) group.commits]) (A.group_order rule) in
   let layout = A.layout rule in
-  let staged=A.is_staged rule in
-  let value = obj ["schema_version",str (if A.is_instanced rule then instance_union_profile else union_profile);"primitive_profile",str (if staged then I.staged_profile else I.profile);
-    "observable_profile",str (if staged then I.staged_observable_profile else I.observable_profile);
-    "phase_profile",str (if staged then F.staged_phase_profile else F.phase_profile);"transport_profile",str A.transport_profile;
+  let staged=A.is_staged rule and multi_site=A.is_multi_site rule in
+  let value = obj ["schema_version",str (if A.is_instanced rule then instance_union_profile else union_profile);"primitive_profile",str (if multi_site then I.multi_site_profile else if staged then I.staged_profile else I.profile);
+    "observable_profile",str (if multi_site then I.multi_site_observable_profile else if staged then I.staged_observable_profile else I.observable_profile);
+    "phase_profile",str (if multi_site then F.multi_site_phase_profile else if staged then F.staged_phase_profile else F.phase_profile);"transport_profile",str A.transport_profile;
     "slot_layout",obj ["id",str layout.layout_id;"slots",Json.int layout.slots];
     "nodes",Json.Array nodes;"wires",Json.Array wires;"inputs",Json.Array inputs;"atomic_groups",Json.Array groups;
     "semantic_exports",arr (fun (row:A.endpoint_ref) -> obj ["slot",str (slot_name row.node.slot);

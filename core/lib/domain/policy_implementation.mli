@@ -40,11 +40,19 @@
     gates and atomic transition commits. Their supplied state labels are a
     bounded alphabet, not executable source syntax. Machine writes cross the
     same atomic phase boundary as register writes. Legacy model bodies retain
-    their original profile and exact identity inside a staged library. *)
+    their original profile and exact identity inside a staged library.
+
+    The explicit multi-site profile adds [Attempt_bank_sites]. Ordered request/
+    authorization port pairs share one capacity and lifecycle bank. Independent
+    admission requires distinct gates and commits under one exclusive arbiter
+    and one actual machine bank; each activation retains its initiating site.
+    Legacy profiles continue to reject this primitive. *)
 open Bioc_wire
 
 val profile : string
 val observable_profile : string
+val multi_site_profile : string
+val multi_site_observable_profile : string
 val staged_profile : string
 val staged_observable_profile : string
 val library_schema : string
@@ -72,6 +80,8 @@ type primitive =
   | Atomic_commit of { writes : int; requests : int }
   | Attempt_bank of { capacity : int; timeout_ticks : int;
       authorization : authorization; on_unknown : unknown_response }
+  | Attempt_bank_sites of { sites:int; capacity:int; timeout_ticks:int;
+      authorization:authorization; on_unknown:unknown_response }
   | Machine_bank of { states : string list; initial : string; terminal : string list;
       writers : int; retained_capacity : int }
   | Transition_gate of { source : string; correlation : correlation }

@@ -7,6 +7,7 @@ module I = Bioc_domain.Policy_implementation
 
 val profile : string
 val staged_execution_profile : string
+val multi_site_execution_profile : string
 val execution_profile : I.t -> string
 type reason = Missing | Stale | Invalid | Conflicting
 type truth_signal = { value : I.truth option; reasons : reason list }

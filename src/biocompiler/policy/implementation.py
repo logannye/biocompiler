@@ -9,7 +9,7 @@ from biocompiler.core_policy_implementation import (
     TWO_OBSERVATION_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_SCHEMA,
     MULTI_PRODUCT_REQUEST_PROFILE, MULTI_PRODUCT_REQUEST_SCHEMA,
     FINITE_MACHINE_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_SCHEMA,
-    NETWORK_REQUEST_PROFILE, NETWORK_REQUEST_SCHEMA,
+    NETWORK_REQUEST_PROFILE, NETWORK_REQUEST_SCHEMA, MULTI_SITE_REQUEST_PROFILE, MULTI_SITE_REQUEST_SCHEMA,
     PolicyImplementationClient, PolicyImplementationResult,
 )
 from .model import BuildRequest
@@ -19,10 +19,12 @@ from .serialization import to_data
 def prepare_request(document: BuildRequest, *, definitions: JsonValue, operating_domain: JsonValue,
                     implementation_library: JsonValue, catalog_bindings: JsonValue,
                     budgets: JsonValue, prerequisites: bool = False,
-                    two_observations: bool = False, multi_product: bool = False, finite_machine: bool = False, network: bool = False) -> dict[str, JsonValue]:
+                    two_observations: bool = False, multi_product: bool = False, finite_machine: bool = False, network: bool = False, multi_site: bool = False) -> dict[str, JsonValue]:
     """Freeze complete caller-supplied authority; this performs no admission."""
     if type(document) is not BuildRequest:
         raise TypeError("Implementation authority requires an original frozen BuildRequest")
+    if multi_site and (not finite_machine or network):
+        raise ValueError("Multiple request sites require the explicit finite-machine route")
     if network and (not prerequisites or finite_machine or two_observations or multi_product):
         raise ValueError("Network compilation requires its distinct explicit prerequisite route")
     if finite_machine and (not prerequisites or two_observations or multi_product):
@@ -32,8 +34,8 @@ def prepare_request(document: BuildRequest, *, definitions: JsonValue, operating
     if two_observations and not prerequisites:
         raise ValueError("Two observations require explicit prerequisite closure")
     raw: JsonValue = {
-        "schema_version": NETWORK_REQUEST_SCHEMA if network else FINITE_MACHINE_REQUEST_SCHEMA if finite_machine else MULTI_PRODUCT_REQUEST_SCHEMA if multi_product else TWO_OBSERVATION_REQUEST_SCHEMA if two_observations else PREREQUISITE_REQUEST_SCHEMA if prerequisites else REQUEST_SCHEMA,
-        "profile": NETWORK_REQUEST_PROFILE if network else FINITE_MACHINE_REQUEST_PROFILE if finite_machine else MULTI_PRODUCT_REQUEST_PROFILE if multi_product else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else PREREQUISITE_REQUEST_PROFILE if prerequisites else REQUEST_PROFILE,
+        "schema_version": MULTI_SITE_REQUEST_SCHEMA if multi_site else NETWORK_REQUEST_SCHEMA if network else FINITE_MACHINE_REQUEST_SCHEMA if finite_machine else MULTI_PRODUCT_REQUEST_SCHEMA if multi_product else TWO_OBSERVATION_REQUEST_SCHEMA if two_observations else PREREQUISITE_REQUEST_SCHEMA if prerequisites else REQUEST_SCHEMA,
+        "profile": MULTI_SITE_REQUEST_PROFILE if multi_site else NETWORK_REQUEST_PROFILE if network else FINITE_MACHINE_REQUEST_PROFILE if finite_machine else MULTI_PRODUCT_REQUEST_PROFILE if multi_product else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else PREREQUISITE_REQUEST_PROFILE if prerequisites else REQUEST_PROFILE,
         "document": cast(JsonValue, to_data(document)), "definitions": definitions,
         "operating_domain": operating_domain, "implementation_library": implementation_library,
         "catalog_bindings": catalog_bindings, "budgets": budgets,

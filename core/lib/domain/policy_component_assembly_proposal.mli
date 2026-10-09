@@ -4,6 +4,8 @@ open Bioc_wire
 module A = Policy_component_assembly_rule
 val schema_version : string
 val profile : string
+val multi_site_schema_version : string
+val multi_site_profile : string
 val instance_schema_version : string
 val instance_profile : string
 val multi_member_schema_version : string
@@ -17,6 +19,7 @@ val to_json : t -> Json.t
 val fingerprint : t -> string
 val rule : t -> Pinned_identity.t
 val nodes : t -> node_binding list
+val is_multi_site : t -> bool
 val is_instanced : t -> bool
 val is_multi_member : t -> bool
 val is_grounded_helper : t -> bool

@@ -6,6 +6,8 @@ edit: check/export invoke native checking and replay requires exact fresh equali
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction
+import re
 from typing import Callable, cast
 
 from biocompiler import core_policy_implementation as implementation
@@ -54,6 +56,19 @@ QUANTITATIVE_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.
 QUANTITATIVE_REQUEST_PROFILE = "biocompiler.policy_sampled_reservoir_component_mrna.v0.1"
 QUANTITATIVE_IMPLEMENTATION = "biocompiler.ocaml.policy_sampled_reservoir_component_material.v0.1"
 QUANTITATIVE_VALIDATION_SCOPE = "policy-sampled-reservoir-component-mrna-v0.1"
+STEP_QUANTITATIVE_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.10"
+STEP_QUANTITATIVE_REQUEST_PROFILE = "biocompiler.policy_sampled_step_reservoir_component_mrna.v0.1"
+STEP_QUANTITATIVE_IMPLEMENTATION = "biocompiler.ocaml.policy_sampled_step_reservoir_component_material.v0.1"
+STEP_QUANTITATIVE_VALIDATION_SCOPE = "policy-sampled-step-reservoir-component-mrna-v0.1"
+TRANSFER_PAIR_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.11"
+TRANSFER_PAIR_REQUEST_PROFILE = "biocompiler.policy_sampled_transfer_pair_component_mrna.v0.1"
+TRANSFER_PAIR_IMPLEMENTATION = "biocompiler.ocaml.policy_sampled_transfer_pair_component_material.v0.1"
+TRANSFER_PAIR_VALIDATION_SCOPE = "policy-sampled-transfer-pair-component-mrna-v0.1"
+TRANSFER_NETWORK_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.12"
+TRANSFER_NETWORK_REQUEST_PROFILE = "biocompiler.policy_sampled_transfer_network_component_mrna.v0.1"
+TRANSFER_NETWORK_IMPLEMENTATION = "biocompiler.ocaml.policy_sampled_transfer_network_component_material.v0.1"
+TRANSFER_NETWORK_VALIDATION_SCOPE = "policy-sampled-transfer-network-component-mrna-v0.1"
+MULTI_SITE_ASSEMBLY_PROFILE = "biocompiler.policy_multi_site_component_assembly.v0.1"
 REPORT_SCHEMA = "biocompiler.policy_component_material_assessment.v0.1"
 EXPORT_SCHEMA = "biocompiler.policy_component_mrna_export.v0.1"
 MANIFEST_SCHEMA = "biocompiler.policy_component_mrna_manifest.v0.1"
@@ -129,6 +144,30 @@ QUANTITATIVE_PROFILE: dict[str, JsonValue] = {
 QUANTITATIVE_PRODUCER_PROFILE: dict[str, JsonValue] = {
     **PRODUCER_PROFILE, "implementation": QUANTITATIVE_IMPLEMENTATION, "validation_scope": QUANTITATIVE_VALIDATION_SCOPE,
 }
+STEP_QUANTITATIVE_PROFILE: dict[str, JsonValue] = {
+    **PROFILE, "request_schema": STEP_QUANTITATIVE_REQUEST_SCHEMA, "implementation": STEP_QUANTITATIVE_IMPLEMENTATION,
+    "validation_scope": STEP_QUANTITATIVE_VALIDATION_SCOPE,
+}
+STEP_QUANTITATIVE_PRODUCER_PROFILE: dict[str, JsonValue] = {
+    **PRODUCER_PROFILE, "implementation": STEP_QUANTITATIVE_IMPLEMENTATION,
+    "validation_scope": STEP_QUANTITATIVE_VALIDATION_SCOPE,
+}
+TRANSFER_PAIR_PROFILE: dict[str, JsonValue] = {
+    **PROFILE, "request_schema": TRANSFER_PAIR_REQUEST_SCHEMA, "implementation": TRANSFER_PAIR_IMPLEMENTATION,
+    "validation_scope": TRANSFER_PAIR_VALIDATION_SCOPE,
+}
+TRANSFER_PAIR_PRODUCER_PROFILE: dict[str, JsonValue] = {
+    **PRODUCER_PROFILE, "implementation": TRANSFER_PAIR_IMPLEMENTATION,
+    "validation_scope": TRANSFER_PAIR_VALIDATION_SCOPE,
+}
+TRANSFER_NETWORK_PROFILE: dict[str, JsonValue] = {
+    **PROFILE, "request_schema": TRANSFER_NETWORK_REQUEST_SCHEMA, "implementation": TRANSFER_NETWORK_IMPLEMENTATION,
+    "validation_scope": TRANSFER_NETWORK_VALIDATION_SCOPE,
+}
+TRANSFER_NETWORK_PRODUCER_PROFILE: dict[str, JsonValue] = {
+    **PRODUCER_PROFILE, "implementation": TRANSFER_NETWORK_IMPLEMENTATION,
+    "validation_scope": TRANSFER_NETWORK_VALIDATION_SCOPE,
+}
 _REQUEST_FIELDS = {"schema_version", "profile", "implementation_request", "component_library", "composition_rule",
                    "catalog_binding", "input_bindings", "resource_bindings", "context", "budgets"}
 _CANDIDATE_FIELDS = {"schema_version", "behavior", "implementation", "binding", "assembly_proposal", "construction"}
@@ -137,7 +176,7 @@ _same, _pin, _record, _rows, _count = material._same, material._pin, material._r
 
 
 def _original(value: JsonValue) -> dict[str, JsonValue]:
-    quantitative = _record(value, "Original component material request").get("profile") == QUANTITATIVE_REQUEST_PROFILE
+    quantitative = _record(value, "Original component material request").get("profile") in (QUANTITATIVE_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE)
     request = _object(value, _REQUEST_FIELDS | ({"quantitative"} if quantitative else set()), "Original component material request")
     if (request["schema_version"], request["profile"]) not in ((REQUEST_SCHEMA, REQUEST_PROFILE),
             (INSTANCE_REQUEST_SCHEMA, INSTANCE_REQUEST_PROFILE),
@@ -147,9 +186,12 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
             (GROUNDED_HELPER_REQUEST_SCHEMA, GROUNDED_HELPER_REQUEST_PROFILE),
             (FINITE_MACHINE_REQUEST_SCHEMA, FINITE_MACHINE_REQUEST_PROFILE),
             (NETWORK_REQUEST_SCHEMA, NETWORK_REQUEST_PROFILE),
-            (QUANTITATIVE_REQUEST_SCHEMA, QUANTITATIVE_REQUEST_PROFILE)):
+            (QUANTITATIVE_REQUEST_SCHEMA, QUANTITATIVE_REQUEST_PROFILE),
+            (STEP_QUANTITATIVE_REQUEST_SCHEMA, STEP_QUANTITATIVE_REQUEST_PROFILE),
+            (TRANSFER_PAIR_REQUEST_SCHEMA, TRANSFER_PAIR_REQUEST_PROFILE),
+            (TRANSFER_NETWORK_REQUEST_SCHEMA, TRANSFER_NETWORK_REQUEST_PROFILE)):
         raise CoreProtocolError("Component material request changed its closed original profile")
-    decoder = (implementation._network_original if _network(request) else implementation._finite_machine_original if _finite_machine(request) else implementation._multi_product_original if _multi_member(request) else
+    decoder = (implementation._multi_site_original if _multi_site(request) else implementation._network_original if _network(request) else implementation._finite_machine_original if _finite_machine(request) else implementation._multi_product_original if _multi_member(request) else
                implementation._two_observation_original if _two_observations(request) else
                implementation._prerequisite_original if _prerequisites(request) else implementation._original)
     decoder(request["implementation_request"])
@@ -159,7 +201,9 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
         _rows(request[key], "Original " + key)
     if quantitative:
         contract = _object(request["quantitative"], {"mechanism", "selection", "source"}, "Original quantitative contract")
-        _record(contract["mechanism"], "Independent original reservoir law")
+        mechanism = _record(contract["mechanism"], "Independent original reservoir law")
+        _expect(mechanism, {"schema_version": "biocompiler.policy_sampled_transfer_network.v0.1" if _transfer_network(request) else "biocompiler.policy_sampled_transfer_pair.v0.1" if _transfer_pair(request) else "biocompiler.policy_sampled_reservoir.v0.2" if _multi_site(request) else "biocompiler.policy_sampled_reservoir.v0.1",
+            "profile": "biocompiler.policy_sampled_reserved_transfer_network.v0.1" if _transfer_network(request) else "biocompiler.policy_sampled_conservative_transfer_pair.v0.1" if _transfer_pair(request) else "biocompiler.policy_sampled_saturating_step_reservoir.v0.1" if _multi_site(request) else "biocompiler.policy_sampled_saturating_reservoir.v0.1"}, "Original quantitative family")
         _object(contract["selection"], {"instance", "component", "contract"}, "Original quantitative selection")
         _object(contract["source"], {"machine", "observation", "effect"}, "Original quantitative source")
     else:
@@ -174,12 +218,12 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
 
 def _instanced(request: dict[str, JsonValue]) -> bool:
     return request["profile"] in (INSTANCE_REQUEST_PROFILE, PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE,
-                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE, NETWORK_REQUEST_PROFILE)
+                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE, NETWORK_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE)
 
 
 def _prerequisites(request: dict[str, JsonValue]) -> bool:
     return request["profile"] in (PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE,
-                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE, NETWORK_REQUEST_PROFILE)
+                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE, NETWORK_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE)
 
 
 def _two_observations(request: dict[str, JsonValue]) -> bool:
@@ -195,18 +239,39 @@ def _grounded_helper(request: dict[str, JsonValue]) -> bool:
 
 
 def _finite_machine(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] in (FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE)
+    return request["profile"] in (FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE)
 
 
 def _network(request: dict[str, JsonValue]) -> bool:
     return request["profile"] == NETWORK_REQUEST_PROFILE
 
 
+def _transfer_network(request: dict[str, JsonValue]) -> bool:
+    return request["profile"] == TRANSFER_NETWORK_REQUEST_PROFILE
+
+
+def _transfer_pair(request: dict[str, JsonValue]) -> bool:
+    return request["profile"] == TRANSFER_PAIR_REQUEST_PROFILE
+
+
+def _multi_site(request: dict[str, JsonValue]) -> bool:
+    return request["profile"] in (STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE)
+
+
 def _quantitative(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] == QUANTITATIVE_REQUEST_PROFILE
+    return request["profile"] in (QUANTITATIVE_REQUEST_PROFILE, STEP_QUANTITATIVE_REQUEST_PROFILE, TRANSFER_PAIR_REQUEST_PROFILE, TRANSFER_NETWORK_REQUEST_PROFILE)
 
 
 def _profile_settings(request: dict[str, JsonValue]) -> tuple[str, dict[str, JsonValue], dict[str, JsonValue], str, str]:
+    if _transfer_network(request):
+        return ("policy_transfer_network_material", TRANSFER_NETWORK_PROFILE, TRANSFER_NETWORK_PRODUCER_PROFILE,
+                TRANSFER_NETWORK_VALIDATION_SCOPE, TRANSFER_NETWORK_IMPLEMENTATION)
+    if _transfer_pair(request):
+        return ("policy_transfer_pair_material", TRANSFER_PAIR_PROFILE, TRANSFER_PAIR_PRODUCER_PROFILE,
+                TRANSFER_PAIR_VALIDATION_SCOPE, TRANSFER_PAIR_IMPLEMENTATION)
+    if _multi_site(request):
+        return ("policy_step_quantitative_material", STEP_QUANTITATIVE_PROFILE, STEP_QUANTITATIVE_PRODUCER_PROFILE,
+                STEP_QUANTITATIVE_VALIDATION_SCOPE, STEP_QUANTITATIVE_IMPLEMENTATION)
     if _network(request):
         return ("policy_network_material", NETWORK_PROFILE, NETWORK_PRODUCER_PROFILE,
                 NETWORK_VALIDATION_SCOPE, NETWORK_IMPLEMENTATION)
@@ -692,6 +757,7 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
     prerequisites = _prerequisites(request)
     multi_member = _multi_member(request)
     grounded_helper = _grounded_helper(request)
+    multi_site = _multi_site(request)
     assembly, context = report["assembly"], report["context"]
     if assembly is not None:
         leaf = _object(assembly, {"schema_version", "checker_version", "profile", "original_fingerprint", "components_fingerprint",
@@ -700,8 +766,8 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
             "catalog_authorization", "context", "resource_capacity", "input_compatibility", "source_obligation_discharge", "empirical", "artifact", "export"}
             | ({"helper_projections"} if grounded_helper else set()), "Assembly evidence")
         _expect(leaf, {"schema_version": "biocompiler.policy_component_assembly_assessment.v0.1",
-            "checker_version": "biocompiler.ocaml.policy_component_assembly_check.v0.4" if grounded_helper else "biocompiler.ocaml.policy_component_assembly_check.v0.3" if multi_member else "biocompiler.ocaml.policy_component_assembly_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_assembly_check.v0.1",
-            "profile": GROUNDED_HELPER_ASSEMBLY_PROFILE if grounded_helper else MULTI_MEMBER_ASSEMBLY_PROFILE if multi_member else INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1",
+            "checker_version": "biocompiler.ocaml.policy_component_assembly_check.v0.5" if multi_site else "biocompiler.ocaml.policy_component_assembly_check.v0.4" if grounded_helper else "biocompiler.ocaml.policy_component_assembly_check.v0.3" if multi_member else "biocompiler.ocaml.policy_component_assembly_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_assembly_check.v0.1",
+            "profile": MULTI_SITE_ASSEMBLY_PROFILE if multi_site else GROUNDED_HELPER_ASSEMBLY_PROFILE if grounded_helper else MULTI_MEMBER_ASSEMBLY_PROFILE if multi_member else INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1",
             "claim_scope": "exact_supplied_component_graph_and_material_correspondence", "premise": "supplied_conditional_model_to_sequence_composition_rule",
             **{key: "unassessed" for key in ("catalog_authorization", "context", "resource_capacity", "input_compatibility", "source_obligation_discharge", "empirical")},
             "artifact": "withheld", "export": "withheld"}, "Assembly evidence")
@@ -725,7 +791,7 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
             | ({"member_allocations", "transport_allocations"} if multi_member else set())
             | ({"helper_allocations"} if grounded_helper else set()), "Component context evidence")
         _expect(leaf, {"schema_version": "biocompiler.policy_component_context_assessment.v0.3" if grounded_helper else "biocompiler.policy_component_context_assessment.v0.2" if multi_member else "biocompiler.policy_component_context_assessment.v0.1", "profile": context_profile,
-            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.8" if _network(request) else "biocompiler.ocaml.policy_component_context_check.v0.7" if _finite_machine(request) else "biocompiler.ocaml.policy_component_context_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_context_check.v0.5" if multi_member else
+            "implementation_version": "biocompiler.ocaml.policy_component_context_check.v0.9" if _multi_site(request) else "biocompiler.ocaml.policy_component_context_check.v0.8" if _network(request) else "biocompiler.ocaml.policy_component_context_check.v0.7" if _finite_machine(request) else "biocompiler.ocaml.policy_component_context_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_context_check.v0.5" if multi_member else
             "biocompiler.ocaml.policy_component_context_check.v0.4" if _two_observations(request) else
             "biocompiler.ocaml.policy_component_context_check.v0.3" if prerequisites else
             "biocompiler.ocaml.policy_component_context_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_context_check.v0.1", "claim_scope": "conditional_component_context_and_complete_record_capacity",
@@ -761,21 +827,29 @@ class PolicyComponentMaterialResult(material.PolicyMaterialResult):
 
 
 def _candidate(value: JsonValue, *, instanced: bool = False, multi_member: bool = False,
-               grounded_helper: bool = False) -> dict[str, JsonValue]:
+               grounded_helper: bool = False, multi_site: bool = False) -> dict[str, JsonValue]:
+    if multi_site and (not instanced or multi_member or grounded_helper):
+        raise CoreProtocolError("Multiple-site proposal requires its distinct named-instance route")
     if grounded_helper and not (instanced and multi_member):
         raise CoreProtocolError("Grounded helper proposal requires its explicit named-instance multi-member route")
     candidate = _object(value, _CANDIDATE_FIELDS, "Complete component candidate")
     if candidate["schema_version"] != CANDIDATE_SCHEMA:
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
     proposal = _object(candidate["assembly_proposal"], {"schema_version", "profile", "rule", "nodes"}, "Assembly proposal")
-    _expect(proposal, {"schema_version": "biocompiler.policy_component_assembly_proposal.v0.4" if grounded_helper else "biocompiler.policy_component_assembly_proposal.v0.3" if multi_member else "biocompiler.policy_component_assembly_proposal.v0.2" if instanced else "biocompiler.policy_component_assembly_proposal.v0.1",
-                      "profile": GROUNDED_HELPER_ASSEMBLY_PROFILE if grounded_helper else MULTI_MEMBER_ASSEMBLY_PROFILE if multi_member else INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1"}, "Assembly proposal")
+    _expect(proposal, {"schema_version": "biocompiler.policy_component_assembly_proposal.v0.5" if multi_site else "biocompiler.policy_component_assembly_proposal.v0.4" if grounded_helper else "biocompiler.policy_component_assembly_proposal.v0.3" if multi_member else "biocompiler.policy_component_assembly_proposal.v0.2" if instanced else "biocompiler.policy_component_assembly_proposal.v0.1",
+                      "profile": MULTI_SITE_ASSEMBLY_PROFILE if multi_site else GROUNDED_HELPER_ASSEMBLY_PROFILE if grounded_helper else MULTI_MEMBER_ASSEMBLY_PROFILE if multi_member else INSTANCE_ASSEMBLY_PROFILE if instanced else "biocompiler.policy_exact_component_assembly.v0.1"}, "Assembly proposal")
     return candidate
 
 
 def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = False,
             two_observations: bool = False, multi_member: bool = False,
-            grounded_helper: bool = False, finite_machine: bool = False, quantitative: bool = False, network: bool = False) -> dict[str, JsonValue]:
+            grounded_helper: bool = False, finite_machine: bool = False, quantitative: bool = False, network: bool = False, multi_site: bool = False, transfer_pair: bool = False, transfer_network: bool = False) -> dict[str, JsonValue]:
+    if transfer_network and (not multi_site or transfer_pair):
+        raise CoreProtocolError("Transfer network assessment requires its distinct multiple-site route")
+    if transfer_pair and not multi_site:
+        raise CoreProtocolError("Transfer-pair assessment requires its explicit multiple-site quantitative route")
+    if multi_site and (not (finite_machine and quantitative) or network):
+        raise CoreProtocolError("Step quantitative assessment requires its explicit multiple-site route")
     if network and (not (instanced and prerequisites) or finite_machine or quantitative or two_observations or multi_member or grounded_helper):
         raise CoreProtocolError("Network assessment requires its distinct prerequisite route")
     if quantitative and not finite_machine:
@@ -790,10 +864,10 @@ def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = 
         raise CoreProtocolError("Two-observation assessment requires the named-instance prerequisite route")
     report = _object(value, _REPORT_FIELDS | ({"prerequisites", "prerequisite_status"} if prerequisites else set())
                      | ({"quantitative", "quantitative_status"} if quantitative else set()), "Complete component assessment")
-    _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.5" if quantitative else "biocompiler.policy_component_material_assessment.v0.4" if grounded_helper else "biocompiler.policy_component_material_assessment.v0.3" if multi_member else "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
-        "profile": NETWORK_REQUEST_PROFILE if network else QUANTITATIVE_REQUEST_PROFILE if quantitative else FINITE_MACHINE_REQUEST_PROFILE if finite_machine else GROUNDED_HELPER_REQUEST_PROFILE if grounded_helper else MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
+    _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.8" if transfer_network else "biocompiler.policy_component_material_assessment.v0.7" if transfer_pair else "biocompiler.policy_component_material_assessment.v0.6" if multi_site else "biocompiler.policy_component_material_assessment.v0.5" if quantitative else "biocompiler.policy_component_material_assessment.v0.4" if grounded_helper else "biocompiler.policy_component_material_assessment.v0.3" if multi_member else "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
+        "profile": TRANSFER_NETWORK_REQUEST_PROFILE if transfer_network else TRANSFER_PAIR_REQUEST_PROFILE if transfer_pair else STEP_QUANTITATIVE_REQUEST_PROFILE if multi_site else NETWORK_REQUEST_PROFILE if network else QUANTITATIVE_REQUEST_PROFILE if quantitative else FINITE_MACHINE_REQUEST_PROFILE if finite_machine else GROUNDED_HELPER_REQUEST_PROFILE if grounded_helper else MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
         PREREQUISITE_REQUEST_PROFILE if prerequisites else INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
-        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.9" if network else "biocompiler.ocaml.policy_component_material_check.v0.8" if quantitative else "biocompiler.ocaml.policy_component_material_check.v0.7" if finite_machine else "biocompiler.ocaml.policy_component_material_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_material_check.v0.5" if multi_member else "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
+        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.12" if transfer_network else "biocompiler.ocaml.policy_component_material_check.v0.11" if transfer_pair else "biocompiler.ocaml.policy_component_material_check.v0.10" if multi_site else "biocompiler.ocaml.policy_component_material_check.v0.9" if network else "biocompiler.ocaml.policy_component_material_check.v0.8" if quantitative else "biocompiler.ocaml.policy_component_material_check.v0.7" if finite_machine else "biocompiler.ocaml.policy_component_material_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_material_check.v0.5" if multi_member else "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
         "biocompiler.ocaml.policy_component_material_check.v0.3" if prerequisites else
         "biocompiler.ocaml.policy_component_material_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
         "claim_scope": CLAIM_SCOPE, "premise": PREMISE, "empirical": "unassessed", "artifact": "withheld", "export": "withheld"}, "Component report")
@@ -802,6 +876,9 @@ def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = 
 
 def _quantitative_evidence(request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue]) -> None:
     """Retain quantitative report identities and source table; native checks the law."""
+    step = _multi_site(request)
+    transfer_network = _transfer_network(request)
+    transfer = _transfer_pair(request) or transfer_network
     raw = report["quantitative"]
     status = report["quantitative_status"]
     if raw is None:
@@ -809,10 +886,13 @@ def _quantitative_evidence(request: dict[str, JsonValue], candidate: dict[str, J
             raise CoreProtocolError("Quantitative acceptance requires its fresh checked report")
         return
     leaf = _object(raw, {"schema_version", "profile", "implementation", "outcome", "claim_scope", "request_fingerprint",
-        "mechanism_fingerprint", "selection", "source", "bindings", "table", "sampling", "issues", "usage", "empirical"}, "Quantitative evidence")
-    _expect(leaf, {"schema_version": "biocompiler.policy_quantitative_assessment.v0.1",
-        "profile": "biocompiler.policy_sampled_saturating_reservoir.v0.1", "implementation": "biocompiler.ocaml.policy_quantitative_check.v0.1",
-        "claim_scope": "exact_sampled_reservoir_under_supplied_contract", "empirical": "unassessed"}, "Quantitative evidence")
+        "mechanism_fingerprint", "selection", "source", "bindings", "table", "sampling", "issues", "usage", "empirical"} | ({"conservation"} if transfer else set()) | ({"arbitration", "ownership"} if transfer_network else set()), "Quantitative evidence")
+    _expect(leaf, {"schema_version": "biocompiler.policy_quantitative_assessment.v0.4" if transfer_network else "biocompiler.policy_quantitative_assessment.v0.3" if transfer else "biocompiler.policy_quantitative_assessment.v0.2" if step else "biocompiler.policy_quantitative_assessment.v0.1",
+        "profile": "biocompiler.policy_sampled_reserved_transfer_network.v0.1" if transfer_network else "biocompiler.policy_sampled_conservative_transfer_pair.v0.1" if transfer else "biocompiler.policy_sampled_saturating_step_reservoir.v0.1" if step else "biocompiler.policy_sampled_saturating_reservoir.v0.1",
+        "implementation": "biocompiler.ocaml.policy_quantitative_check.v0.4" if transfer_network else "biocompiler.ocaml.policy_quantitative_check.v0.3" if transfer else "biocompiler.ocaml.policy_quantitative_check.v0.2" if step else "biocompiler.ocaml.policy_quantitative_check.v0.1",
+        "claim_scope": "exact_sampled_reserved_transfer_network_under_supplied_contract" if transfer_network else "exact_sampled_conservative_transfer_pair_under_supplied_contract" if transfer else "exact_sampled_step_reservoir_under_supplied_contract" if step else "exact_sampled_reservoir_under_supplied_contract", "empirical": "unassessed"}, "Quantitative evidence")
+    if transfer_network:
+        _expect(leaf, {"arbitration": "declared_order_prestate_reservation", "ownership": "single_atomic_state_owner"}, "Network quantitative evidence")
     if leaf["outcome"] not in ("pass", "fail") or status != leaf["outcome"] or report["status"] == ACCEPTED_STATUS and status != "pass":
         raise CoreProtocolError("Quantitative stage contradicts material acceptance")
     original = _record(request["quantitative"], "Original quantitative contract")
@@ -836,7 +916,7 @@ def _quantitative_evidence(request: dict[str, JsonValue], candidate: dict[str, J
         raise CoreProtocolError("Quantitative issues must be explicit ordered text")
     rows = _rows(leaf["table"], "Quantitative transition table")
     if status == "fail":
-        if leaf["bindings"] is not None or rows or not issues:
+        if leaf["bindings"] is not None or rows or not issues or transfer and leaf["conservation"] is not None:
             raise CoreProtocolError("Failed quantitative checking must not publish partial bindings or table")
         return
     if issues:
@@ -852,27 +932,152 @@ def _quantitative_evidence(request: dict[str, JsonValue], candidate: dict[str, J
     source_machine = next((row for row in declarations if row.get("$type") == "Machine" and row.get("id") == selected["machine"]), None)
     transitions = [row for row in declarations if row.get("$type") == "Transition"]
     crossing = [row for row in transitions if row.get("effects")]
-    if machine is None or observation is None or source_machine is None or len(crossing) != 1:
+    if machine is None or observation is None or source_machine is None or not crossing or (not step and len(crossing) != 1):
         raise CoreProtocolError("Quantitative report lacks its exact source and implementation anchors")
-    commit = next((row for row in _rows(binding["transitions"], "Transition bindings") if row["source"] == crossing[0]["id"]), None)
-    if commit is None:
-        raise CoreProtocolError("Quantitative crossing has no exact implementation commit")
-    expected_bindings: JsonValue = {"machine_bank": machine["bank"], "observation_bank": observation["bank"],
-        "observation_input": observation["input"], "crossing_transition": crossing[0]["id"], "request_endpoint": {"node": commit["commit"], "port": "request0"}}
-    if not _same(leaf["bindings"], expected_bindings):
-        raise CoreProtocolError("Quantitative binding identities differ from the complete source-to-graph binding")
     states = source_machine["states"]
     if type(states) is not list or not 2 <= len(states) <= 16:
         raise CoreProtocolError("Quantitative source state census is outside the bounded profile")
+    commits = _rows(binding["transitions"], "Transition bindings")
+    if step:
+        effects = [row for row in _rows(binding["effects"], "Effect bindings") if row["source"] == selected["effect"]]
+        if len(effects) != 1:
+            raise CoreProtocolError("Step quantitative evidence lacks its single shared attempt bank")
+        nodes = _rows(_record(candidate["implementation"], "Implementation graph")["nodes"], "Implementation nodes")
+        sites: list[JsonValue] = []
+        for state in states:
+            ordered_crossings = list(enumerate(crossing))
+            if transfer_network:
+                ordered_crossings.sort(key=lambda item: _record(item[1]["when"], "Crossing guard")["op"] != "observe")
+            for index, transition in ordered_crossings:
+                if transition["source"] != state:
+                    continue
+                commit = _unique(commits, "source", transition["id"], "Crossing transition")
+                node = _unique(nodes, "id", commit["commit"], "Crossing commit")
+                sites.append({"transition": transition["id"], "source_state": state, "input": _record(transition["when"], "Crossing guard")["op"] == "observe" if transfer_network else True,
+                    "request_endpoint": {"node": commit["commit"], "port": "request0"}, "model": node["model"],
+                    "attempt_port": "request" + str(index)})
+        expected_bindings: JsonValue = {"machine_bank": machine["bank"], "observation_bank": observation["bank"],
+            "observation_input": observation["input"], "attempt_bank": effects[0]["bank"], "crossing_sites": sites}
+    else:
+        commit = _unique(commits, "source", crossing[0]["id"], "Crossing transition")
+        expected_bindings = {"machine_bank": machine["bank"], "observation_bank": observation["bank"],
+            "observation_input": observation["input"], "crossing_transition": crossing[0]["id"],
+            "request_endpoint": {"node": commit["commit"], "port": "request0"}}
+    if not _same(leaf["bindings"], expected_bindings):
+        raise CoreProtocolError("Quantitative binding identities differ from the complete source-to-graph binding")
     expected_rows: list[JsonValue] = []
     for state in states:
         for truth, operation in (("true", "observe"), ("false", "not")):
             matching = [row for row in transitions if row["source"] == state and _record(row["when"], "Original guard")["op"] == operation]
-            if len(matching) != 1:
-                raise CoreProtocolError("Quantitative table requires exactly the two original sample guards per state")
-            row = matching[0]
-            expected_rows.append({"source": state, "input": truth, "destination": row["destination"], "request": bool(row["effects"])})
+            if len(matching) > 1 or not matching and not transfer:
+                raise CoreProtocolError("Quantitative table requires the profile-specific complete sample guard census")
+            row = matching[0] if matching else None
+            expected_rows.append({"source": state, "input": truth, "destination": state if row is None else row["destination"],
+                                  "request": False if row is None else bool(row["effects"])})
         expected_rows.append({"source": state, "input": "unknown", "destination": state, "request": False})
+    if transfer:
+        selected_component = _record(original["selection"], "Original quantitative selection")
+        components = _rows(_record(request["component_library"], "Original component library")["components"], "Original components")
+        matched = [value for value in components if _same(value["identity"], selected_component["component"])]
+        if len(matched) != 1:
+            raise CoreProtocolError("Transfer table lost its selected component")
+        contracts = _rows(_record(matched[0]["body"], "Selected component body")["quantitative_contracts"], "Quantitative contracts")
+        contract = _unique(contracts, "id", selected_component["contract"], "Selected quantitative contract")
+        vectors = _rows(_record(contract["state"], "Selected local state")["values"], "Complete Cartesian map")
+        if not _same([value["state"] for value in vectors], states):
+            raise CoreProtocolError("Transfer table lost the complete original state order")
+        if transfer_network:
+            def exact_quantity(value: JsonValue) -> Fraction:
+                quantity = _object(value, {"$type", "amount", "unit"}, "Original network Quantity")
+                text = quantity["amount"]
+                if quantity["$type"] != "Quantity" or not _same(quantity["unit"], mechanism.get("unit")) or type(text) is not str or len(text) > 256:
+                    raise CoreProtocolError("Network quantity lost its exact bounded decimal or complete unit")
+                match = re.fullmatch(r"(-?)(0|[1-9][0-9]*)(?:\.([0-9]+))?(?:[eE]([+-]?[0-9]+))?", text)
+                if match is None:
+                    raise CoreProtocolError("Network quantity is outside the exact finite decimal grammar")
+                sign, whole, fraction, exponent = match.groups()
+                places = int(exponent or "0") - len(fraction or "")
+                if abs(places) > 1024:
+                    raise CoreProtocolError("Network quantity exceeds the exact decimal exponent bound")
+                return Fraction(int(sign + whole + (fraction or ""))) * Fraction(10) ** places
+            quantum = exact_quantity(mechanism.get("quantum"))
+            if quantum <= 0:
+                raise CoreProtocolError("Network quantum must be positive")
+            def quanta(value: JsonValue) -> int:
+                amount = exact_quantity(value) / quantum
+                if amount.denominator != 1 or amount < 0:
+                    raise CoreProtocolError("Network quantity is not an exact nonnegative grid amount")
+                return amount.numerator
+            reservoirs = _rows(mechanism.get("reservoirs"), "Original ordered reservoirs")
+            edges = _rows(mechanism.get("transfers"), "Original ordered transfers")
+            names = [value["compartment"] for value in reservoirs]
+            capacities = [quanta(value["capacity"]) for value in reservoirs]
+            if not 2 <= len(names) <= 4 or any(type(name) is not str for name in names) or len(set(cast(list[str], names))) != len(names):
+                raise CoreProtocolError("Network reservoirs require distinct bounded identities")
+            widths = [capacity + 1 for capacity in capacities]
+            product = 1
+            for width in widths:
+                product *= width
+            if any(width < 2 for width in widths) or product != len(states) or len(rows) != len(expected_rows):
+                raise CoreProtocolError("Network state map or report lost its complete Cartesian grid")
+            if not 1 <= len(edges) <= 8 or any(type(edge["id"]) is not str for edge in edges) or len({cast(str, edge["id"]) for edge in edges}) != len(edges):
+                raise CoreProtocolError("Network transfers require a complete ordered identity census")
+            edge_bounds = []
+            for edge in edges:
+                if edge["source"] not in names or edge["destination"] not in names or edge["source"] == edge["destination"] or type(edge["when"]) is not bool:
+                    raise CoreProtocolError("Network transfers require declared distinct endpoints and an exact Boolean sample")
+                source, destination = names.index(edge["source"]), names.index(edge["destination"])
+                amount = quanta(edge["amount"])
+                if not 0 < amount <= capacities[source]:
+                    raise CoreProtocolError("Network transfer amount exceeds its donor grid capacity")
+                edge_bounds.append((source, destination, amount, edge["when"]))
+            def coordinates(state: JsonValue) -> list[int]:
+                ordinal = states.index(state)
+                result: list[int] = []
+                for width in reversed(widths):
+                    result.insert(0, ordinal % width)
+                    ordinal //= width
+                return result
+            for vector in vectors:
+                amounts = vector.get("amounts")
+                if type(amounts) is not list or [quanta(value) for value in amounts] != coordinates(vector["state"]):
+                    raise CoreProtocolError("Network local state map changed its exact ordered quantity coordinates")
+            for expected, actual in zip(expected_rows, rows):
+                row = _record(expected, "Expected network source row")
+                before, after = coordinates(row["source"]), coordinates(row["destination"])
+                outgoing, incoming = [0] * len(names), [0] * len(names)
+                expected_flows: list[JsonValue] = []
+                for edge, (source, destination, maximum, enabled) in zip(edges, edge_bounds):
+                    amount = (min(maximum, before[source] - outgoing[source], capacities[destination] - before[destination] - incoming[destination])
+                              if row["input"] != "unknown" and enabled == (row["input"] == "true") else 0)
+                    outgoing[source] += amount
+                    incoming[destination] += amount
+                    expected_flows.append({"transfer": edge["id"], "quanta": amount})
+                if not _same(actual.get("flows"), expected_flows):
+                    raise CoreProtocolError("Network retained flows differ from the original ordered prestate reservations")
+                declared = any(value["source"] == row["source"] and _record(value["when"], "Original guard")["op"] ==
+                               ("observe" if row["input"] == "true" else "not") for value in transitions) if row["input"] != "unknown" else False
+                if after != [amount - out + inc for amount, out, inc in zip(before, outgoing, incoming)] or declared != any(outgoing):
+                    raise CoreProtocolError("Network reservations or sparse source transition contradict the retained row")
+                row.update(before=cast(JsonValue, before), after=cast(JsonValue, after), flows=expected_flows)
+        else:
+            width = len({encode_json(value["destination"]) for value in vectors})
+            if width < 2 or len(states) % width != 0 or len(states) // width < 2:
+                raise CoreProtocolError("Transfer state map is not a bounded two-dimensional Cartesian grid")
+            for expected in expected_rows:
+                row = _record(expected, "Expected source row")
+                before_index = states.index(row["source"])
+                after_index = states.index(row["destination"])
+                before = [before_index // width, before_index % width]
+                after = [after_index // width, after_index % width]
+                if sum(before) != sum(after):
+                    raise CoreProtocolError("Transfer report source table contradicts its conservation claim")
+                row.update(before=cast(JsonValue, before), after=cast(JsonValue, after), transfer_quanta=abs(after[0] - before[0]))
+        expected_conservation: JsonValue = {"scope": "accepted_samples_within_encounter_generation",
+            "quantity": "sum_all_reservoirs" if transfer_network else "source_plus_destination",
+            "reset": "restore_declared_initial_vector" if transfer_network else "restore_declared_initial_pair", "checked_rows": len(expected_rows)}
+        if not _same(leaf["conservation"], expected_conservation):
+            raise CoreProtocolError("Transfer conservation changed its exact checked scope or complete row census")
     if not _same(cast(JsonValue, rows), expected_rows):
         raise CoreProtocolError("Quantitative table differs from the complete ordered original source transitions")
 
@@ -893,7 +1098,7 @@ def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate
         raise CoreProtocolError("Component work accounting changed its unit or original bound")
     prerequisites = _prerequisites(request)
     material._preservation(response, request, candidate, report, limits, prerequisites=prerequisites,
-                           two_observations=_two_observations(request), multi_product=_multi_member(request), finite_machine=_finite_machine(request), network=_network(request))
+                           two_observations=_two_observations(request), multi_product=_multi_member(request), finite_machine=_finite_machine(request), network=_network(request), multi_site=_multi_site(request))
     _leaves(request, candidate, report)
     if prerequisites:
         _prerequisite_evidence(request, report)
@@ -902,7 +1107,7 @@ def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate
     material._obligations(report, material_key="assembly", accepted_status=ACCEPTED_STATUS,
                           conjunction_stage="conditional_component_context_conjunction",
                           prerequisite_key="prerequisites" if prerequisites else None, multi_product=_multi_member(request),
-                          finite_machine=_finite_machine(request), network=_network(request), quantitative_key="quantitative" if _quantitative(request) else None)
+                          finite_machine=_finite_machine(request), network=_network(request), multi_site=_multi_site(request), quantitative_key="quantitative" if _quantitative(request) else None)
 
 
 def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComponentMaterialResult:
@@ -916,10 +1121,10 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
     candidate = _object(result["candidate"], _CANDIDATE_FIELDS, "Complete component candidate")
     if candidate["schema_version"] != CANDIDATE_SCHEMA or "candidate" in payload and not _same(candidate, payload["candidate"]):
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
-    _candidate(candidate, instanced=instanced, multi_member=_multi_member(request), grounded_helper=_grounded_helper(request))
+    _candidate(candidate, instanced=instanced, multi_member=_multi_member(request), grounded_helper=_grounded_helper(request), multi_site=_multi_site(request))
     report = _report(result["report"], instanced=instanced, prerequisites=prerequisites,
                      two_observations=_two_observations(request), multi_member=_multi_member(request), grounded_helper=_grounded_helper(request),
-                     finite_machine=_finite_machine(request), quantitative=_quantitative(request), network=_network(request))
+                     finite_machine=_finite_machine(request), quantitative=_quantitative(request), network=_network(request), multi_site=_multi_site(request), transfer_pair=_transfer_pair(request), transfer_network=_transfer_network(request))
     invocation: JsonValue = {"request": request, "candidate": candidate, "limits": payload["limits"]}
     request_hash = _pin(result["request_fingerprint"], request, "Complete original component request")
     candidate_hash = _pin(result["candidate_fingerprint"], candidate, "Complete component candidate")

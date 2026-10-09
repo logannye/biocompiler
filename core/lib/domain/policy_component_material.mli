@@ -7,6 +7,12 @@ module F = Policy_component_fragment
 module MC = Policy_material_contract
 val schema_version : string
 val profile : string
+val transfer_network_schema_version : string
+val transfer_network_profile : string
+val transfer_pair_schema_version : string
+val transfer_pair_profile : string
+val step_quantitative_schema_version : string
+val step_quantitative_profile : string
 val quantitative_schema_version : string
 val quantitative_profile : string
 val max_carriers : int
@@ -46,5 +52,7 @@ val products : t -> product list
     slot/model; minima are not proof of memory sufficiency or runtime behavior. *)
 val provider_requirements : t -> provider_requirement list
 val quantitative_contracts : t -> Policy_quantitative_contract.local_contract list
+val transfer_pair_contracts : t -> Policy_quantitative_transfer_contract.local_contract list
+val transfer_network_contracts : t -> Policy_quantitative_network_contract.local_contract list
 val target_inventory : F.t -> target list
 val target_to_json : target -> Json.t

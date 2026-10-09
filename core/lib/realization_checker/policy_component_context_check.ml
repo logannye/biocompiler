@@ -135,7 +135,7 @@ let derive ~charge (binding:IB.checked_binding) rule (domain:F.t) =
         | Some value -> value.source | None -> Diagnostic.fail "policy_component_context_fail" "evidence_resource_binding" in
       let _,total=rows observation in add MC.Evidence_records MC.Per_encounter_slot owner total;add MC.Timer_cells MC.Per_encounter_slot owner 1
     | I.Observed_rising -> incr edges;add MC.Edge_history_cells MC.Per_encounter_slot owner 1
-    | I.Attempt_bank {capacity;timeout_ticks;_} -> maximum_delta:=max !maximum_delta timeout_ticks;
+    | I.Attempt_bank {capacity;timeout_ticks;_} | I.Attempt_bank_sites {capacity;timeout_ticks;_} -> maximum_delta:=max !maximum_delta timeout_ticks;
       add MC.Active_attempt_records MC.Per_encounter_slot owner capacity;
       add MC.Retained_correlation_records MC.Per_executor owner domain.logical_limits.max_source_attempts;
       add MC.Timer_cells MC.Per_encounter_slot owner capacity
@@ -603,7 +603,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
         charge(List.length nodes);
         let actual=match List.find_opt(fun((reference:Rule.node_ref),_)->reference.slot=slot && reference.node_id=node_id)nodes with Some(_,node)->node
           |None->Diagnostic.fail "policy_component_context_fail" "grounded_helper_actual_owner_absent" in
-        (match actual.model.primitive with I.Attempt_bank _->()
+        (match actual.model.primitive with I.Attempt_bank _ | I.Attempt_bank_sites _->()
           |_->fail false "grounded_helper_requires_attempt_bank");
         let instance=Rule.slot_name slot in
         if not(List.mem instance !helper_consumers)then helper_consumers:= !helper_consumers@[instance];
@@ -675,7 +675,8 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
   let report_value=obj (["schema_version",str (if grounded_helper then "biocompiler.policy_component_context_assessment.v0.3"
     else if multi_member then "biocompiler.policy_component_context_assessment.v0.2"
     else "biocompiler.policy_component_context_assessment.v0.1");
-    "profile",str context_profile;"implementation_version",str (if network then
+    "profile",str context_profile;"implementation_version",str (if R.is_multi_site request then
+      "biocompiler.ocaml.policy_component_context_check.v0.9" else if network then
       "biocompiler.ocaml.policy_component_context_check.v0.8" else if finite_machine then
       "biocompiler.ocaml.policy_component_context_check.v0.7" else if grounded_helper then
       "biocompiler.ocaml.policy_component_context_check.v0.6" else if multi_member then

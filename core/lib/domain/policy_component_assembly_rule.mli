@@ -9,6 +9,8 @@ module C = Policy_component_material
 module L = Policy_component_library
 val schema_version : string
 val profile : string
+val multi_site_schema_version : string
+val multi_site_profile : string
 val staged_profile : string
 val instance_schema_version : string
 val instance_profile : string
@@ -84,6 +86,7 @@ val link_carriers : t -> link_carrier list
 val carrier_joins : link_carrier -> string list
 val material_authority : t -> Policy_mrna_structure.t
 
+val is_multi_site : t -> bool
 val is_staged : t -> bool
 val is_instanced : t -> bool
 val link_name : link_kind -> string

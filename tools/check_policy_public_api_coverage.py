@@ -33,7 +33,18 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "67e9eff1bc5a45833bfa0ab2034d2b64f30d36b51e3f278ccb1c0e993bbc58ec"
+REVIEWED_METADATA_SHA256 = "404ab87f1e9deb42ff3c117d84bc7c3da8926036a429beade5b5b933a58737ff"
+BEFORE_TRANSFER_NETWORK_METADATA_SHA256 = "de1b1202fcbfe2453c78be6fbe40828189fa28f32fc62eede742a0f4fe19225d"
+TRANSFER_NETWORK_PREFIXES = ('biocompiler.policy.quantitative.TransferEdge', 'biocompiler.policy.quantitative.SampledTransferNetwork')
+TRANSFER_NETWORK_DEPENDENCIES = ('biocompiler.core_policy_component_material.TRANSFER_NETWORK_IMPLEMENTATION', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_PRODUCER_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_REQUEST_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_REQUEST_SCHEMA', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_VALIDATION_SCOPE', 'biocompiler.core_policy_component_material._transfer_network')
+BEFORE_TRANSFER_PAIR_METADATA_SHA256 = "169ff67cf58f5e2d3babb3e9f8c63b55128a2613c2f04e1ad73d3c1884968874"
+TRANSFER_PAIR_PREFIXES = ('biocompiler.policy.quantitative.ReservoirCompartment', 'biocompiler.policy.quantitative.SampledTransferPair')
+TRANSFER_PAIR_DEPENDENCIES = ('biocompiler.core_policy_component_material.TRANSFER_PAIR_IMPLEMENTATION', 'biocompiler.core_policy_component_material.TRANSFER_PAIR_PRODUCER_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_PAIR_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_PAIR_REQUEST_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_PAIR_REQUEST_SCHEMA', 'biocompiler.core_policy_component_material.TRANSFER_PAIR_VALIDATION_SCOPE', 'biocompiler.core_policy_component_material._transfer_pair')
+BEFORE_STEP_QUANTITATIVE_METADATA_SHA256 = "8db45c56f118a7271e7ce6225b7a2bb0940793b3807a016a6442dd6f36c2d3d7"
+STEP_QUANTITATIVE_PREFIX = "biocompiler.policy.quantitative.SampledStepReservoir"
+STEP_QUANTITATIVE_DEPENDENCIES = ('biocompiler.core_policy_component_material.MULTI_SITE_ASSEMBLY_PROFILE', 'biocompiler.core_policy_component_material.STEP_QUANTITATIVE_IMPLEMENTATION', 'biocompiler.core_policy_component_material.STEP_QUANTITATIVE_PRODUCER_PROFILE', 'biocompiler.core_policy_component_material.STEP_QUANTITATIVE_PROFILE', 'biocompiler.core_policy_component_material.STEP_QUANTITATIVE_REQUEST_PROFILE', 'biocompiler.core_policy_component_material.STEP_QUANTITATIVE_REQUEST_SCHEMA', 'biocompiler.core_policy_component_material.STEP_QUANTITATIVE_VALIDATION_SCOPE', 'biocompiler.core_policy_component_material._multi_site', 'biocompiler.core_policy_implementation.MULTI_SITE_BINDING_PROFILE', 'biocompiler.core_policy_implementation.MULTI_SITE_BINDING_REPORT_SCHEMA', 'biocompiler.core_policy_implementation.MULTI_SITE_BINDING_SCHEMA', 'biocompiler.core_policy_implementation.MULTI_SITE_IMPLEMENTATION', 'biocompiler.core_policy_implementation.MULTI_SITE_PRESERVATION_PROFILE', 'biocompiler.core_policy_implementation.MULTI_SITE_PRODUCER_PROFILE', 'biocompiler.core_policy_implementation.MULTI_SITE_PROFILE', 'biocompiler.core_policy_implementation.MULTI_SITE_REQUEST_PROFILE', 'biocompiler.core_policy_implementation.MULTI_SITE_REQUEST_SCHEMA', 'biocompiler.core_policy_implementation.MULTI_SITE_VALIDATION_SCOPE', 'biocompiler.core_policy_implementation._multi_site_original')
+BEFORE_TARGET_PLANNING_METADATA_SHA256 = "67e9eff1bc5a45833bfa0ab2034d2b64f30d36b51e3f278ccb1c0e993bbc58ec"
+TARGET_PLANNING_PREFIXES = ("biocompiler.core_policy_planning.", "biocompiler.policy.planning.")
 BEFORE_NETWORK_METADATA_SHA256 = "fb0cae52848ceef5f8d9ee9743846a23647175dc70e8144741aee087f5ca4a40"
 NETWORK_DEPENDENCIES = (
     'biocompiler.core_policy_component_material.NETWORK_IMPLEMENTATION',
@@ -155,8 +166,8 @@ COMPOSITION_DEPENDENCIES = (
     'biocompiler.core_policy_implementation._two_observation_original',
 )
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model module_linking modules native observations operational patterns programs quantitative refinement requirements research_project serialization space state time typed validation values".split())
-CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking")
+MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs quantitative refinement requirements research_project serialization space state time typed validation values".split())
+CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking", "core_policy_planning")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py")
 # These names remain compatible support surfaces, not cellular runtime APIs.
@@ -165,6 +176,8 @@ BUILDER_METHODS = tuple("__init__ qualified namespace add hole resolve executor 
 PATTERNS = tuple("bounded_response context_gate once_per_scope ordered_effects persistence_gate population_handoff".split())
 CLI = tuple("check inspect diff export-schema export-request assess-native compile-native check-lowering-native execute-native replay-execution-native compile-implementation-native check-implementation-native replay-implementation-native compile-material-native check-material-native replay-material-native export-material-native".split())
 OPERATIONS = {
+    "core_policy_planning.PolicyTargetPlanningClient.plan": ("plan-policy-target", ("request",)),
+    "core_policy_planning.PolicyTargetPlanningClient.replay": ("replay-policy-target-plan", ("request", "report")),
     "core_policy.PolicyClient.assess": ("assess-policy", ("document",)),
     "core_policy.PolicyClient.replay": ("replay-policy-assessment", ("expected_document", "assessment")),
     "core_policy_operational.OperationalPolicyClient.compile": ("compile-policy", ("document", "definitions")),
@@ -251,7 +264,7 @@ REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
   'ModuleLinkingLimits ModuleBundle ModuleProposal bundle_from_data prepare check replay compile_material check_material replay_material export_material'),
  ('biocompiler.core_policy_module_linking', 'biocompiler.core_policy_module_linking',
   'PolicyModuleLinkingResult PolicyModuleMaterialResult PolicyModuleLinkingClient PolicyModuleMaterialClient'),
- ('biocompiler.policy.quantitative', 'biocompiler.policy.quantitative', 'QuantitativeAuthoringError SampledReservoir'),
+ ('biocompiler.policy.quantitative', 'biocompiler.policy.quantitative', 'QuantitativeAuthoringError SampledReservoir SampledStepReservoir ReservoirCompartment SampledTransferPair TransferEdge SampledTransferNetwork'),
  ('biocompiler.policy.values',
   'biocompiler.policy.model',
   'EVENT INTEGER Parameter Quantity TEXT TRUTH TypeSpec Unit'),
@@ -536,7 +549,7 @@ def discover(root: Path) -> dict[str, Any]:
     reviewed_access = {module + "." + name: owner + "." + name
                        for module, owner, names in REVIEWED_EXPORT_GROUPS for name in names.split()}
     require(access == reviewed_access, "Reviewed export target/alias census differs")
-    require(len(exports.get("biocompiler.policy", [])) == 117 and len(access) == 262,
+    require(len(exports.get("biocompiler.policy", [])) == 117 and len(access) == 267,
             "Reviewed explicit export census differs")
     require(aliases == {"biocompiler.policy.inspection.summary": "biocompiler.policy.inspection.inspect",
                         "biocompiler.policy.inspection.render_html": "biocompiler.policy.inspection.to_html"}, "Reviewed compatibility/display aliases differ")
@@ -676,8 +689,43 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
-    before_network = {"witnesses": metadata["witnesses"],
-                      "coverage": {key: value for key, value in coverage.items() if key not in NETWORK_DEPENDENCIES}}
+    before_transfer_network = {
+        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("transfer_network.")},
+        "coverage": {key: value for key, value in coverage.items()
+                     if not key.startswith(TRANSFER_NETWORK_PREFIXES) and key not in TRANSFER_NETWORK_DEPENDENCIES},
+    }
+    encoded_network_transfer = json.dumps(before_transfer_network, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_transfer_network["coverage"]) == 1406 and len(before_transfer_network["witnesses"]) == 195
+            and digest(encoded_network_transfer) == BEFORE_TRANSFER_NETWORK_METADATA_SHA256,
+            "Transfer network authoring must preserve every previous API evidence meaning")
+    before_transfer_pair = {
+        "witnesses": {key: value for key, value in before_transfer_network["witnesses"].items() if not key.startswith("transfer_pair.")},
+        "coverage": {key: value for key, value in before_transfer_network["coverage"].items()
+                     if not key.startswith(TRANSFER_PAIR_PREFIXES) and key not in TRANSFER_PAIR_DEPENDENCIES},
+    }
+    encoded_transfer = json.dumps(before_transfer_pair, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_transfer_pair["coverage"]) == 1375 and len(before_transfer_pair["witnesses"]) == 191
+            and digest(encoded_transfer) == BEFORE_TRANSFER_PAIR_METADATA_SHA256,
+            "Transfer pair authoring must preserve every previous API evidence meaning")
+    before_step_quantitative = {
+        "witnesses": {key: value for key, value in before_transfer_pair["witnesses"].items() if not key.startswith("step_quantitative.")},
+        "coverage": {key: value for key, value in before_transfer_pair["coverage"].items()
+                     if not key.startswith(STEP_QUANTITATIVE_PREFIX) and key not in STEP_QUANTITATIVE_DEPENDENCIES},
+    }
+    encoded_step = json.dumps(before_step_quantitative, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_step_quantitative["coverage"]) == 1350 and len(before_step_quantitative["witnesses"]) == 188
+            and digest(encoded_step) == BEFORE_STEP_QUANTITATIVE_METADATA_SHA256,
+            "Step quantitative authoring must preserve every previous API evidence meaning")
+    before_target_planning = {
+        "witnesses": {key: value for key, value in before_step_quantitative["witnesses"].items() if not key.startswith("target_planning.")},
+        "coverage": {key: value for key, value in before_step_quantitative["coverage"].items() if not key.startswith(TARGET_PLANNING_PREFIXES)},
+    }
+    encoded_planning = json.dumps(before_target_planning, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_target_planning["coverage"]) == 1297 and len(before_target_planning["witnesses"]) == 174
+            and digest(encoded_planning) == BEFORE_TARGET_PLANNING_METADATA_SHA256,
+            "Target planning must preserve every previous API evidence meaning")
+    before_network = {"witnesses": before_target_planning["witnesses"],
+                      "coverage": {key: value for key, value in before_target_planning["coverage"].items() if key not in NETWORK_DEPENDENCIES}}
     encoded_network = json.dumps(before_network, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(len(before_network["coverage"]) == 1279 and len(before_network["witnesses"]) == 174
             and digest(encoded_network) == BEFORE_NETWORK_METADATA_SHA256,

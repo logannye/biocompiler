@@ -59,10 +59,11 @@ let evidence (value:checked_assembly) = value.evidence_value
 let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementation ~proposed ~candidate () =
   Diagnostic.require (maximum>=0 && maximum<=max_work) "policy_component_assembly_resource_limit"
     "Assembly checker work exceeds its fixed ceiling.";
+  let multi_site = A.is_multi_site rule in
   let instanced = A.is_instanced rule in
   let multi_member = A.is_multi_member rule in
   let grounded_helper = A.is_grounded_helper rule in
-  let profile = if grounded_helper then A.grounded_helper_profile else if multi_member then A.multi_member_profile else if instanced then A.instance_profile else A.profile in
+  let profile = if multi_site then A.multi_site_profile else if grounded_helper then A.grounded_helper_profile else if multi_member then A.multi_member_profile else if instanced then A.instance_profile else A.profile in
   let budget = match parent with
     | None -> W.create ~profile ~error_code:"policy_component_assembly_resource_limit" ~maximum ()
     | Some parent -> W.nested ~parent ~profile ~error_code:"policy_component_assembly_resource_limit" ~maximum () in
@@ -78,7 +79,7 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   let original_raw = R.to_json original and library_raw = L.to_json components
   and rule_raw = A.to_json rule and proposal_raw = Q.to_json proposed in
   List.iter (fun raw -> ignore (encoded raw)) [original_raw;library_raw;rule_raw;proposal_raw];
-  let original = (if R.is_network original then R.of_network_json else if R.is_finite_machine original then R.of_finite_machine_json
+  let original = (if R.is_multi_site original then R.of_multi_site_json else if R.is_network original then R.of_network_json else if R.is_finite_machine original then R.of_finite_machine_json
     else if R.is_multi_product original then R.of_multi_product_json
     else if R.is_two_observation original then R.of_two_observation_json
     else if R.requires_prerequisite_closure original then R.of_prerequisite_json
@@ -91,6 +92,7 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
      source-bearing implementation or replacement v1 material request exists. *)
   let components = L.of_json ~library:(R.implementation_library original) library_raw in
   let rule = A.of_json ~components rule_raw and proposed = Q.of_json proposal_raw in
+  verify(multi_site=Q.is_multi_site proposed && multi_site=R.is_multi_site original) "multi_site_proposal_original_profile";
   if instanced || Q.is_instanced proposed then
     verify (instanced=Q.is_instanced proposed) "instance_proposal_profile";
   if multi_member || Q.is_multi_member proposed || R.is_multi_product original then (
@@ -107,9 +109,9 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   verify (equal (Pin.to_json (Q.rule proposed)) (Pin.to_json (A.identity rule))) "original_assembly_rule_pin";
   verify (A.model_library_digest rule = (I.authority actual).library_digest) "original_model_library";
   verify (A.component_library_digest rule = L.fingerprint components) "original_component_library";
-  verify ((if A.is_staged rule then F.staged_phase_profile else F.phase_profile) =
+  verify ((if multi_site then F.multi_site_phase_profile else if A.is_staged rule then F.staged_phase_profile else F.phase_profile) =
     Bioc_candidate_runtime.Policy_primitives.execution_profile actual &&
-    I.implementation_profile actual=(if A.is_staged rule then I.staged_profile else I.profile))
+    I.implementation_profile actual=(if multi_site then I.multi_site_profile else if A.is_staged rule then I.staged_profile else I.profile))
     "fixed_primitive_execution_phases";
   let bindings = Q.nodes proposed and actual_nodes = I.nodes actual in
   verify (List.map (fun (row:Q.node_binding) -> row.slot,row.node_id) bindings =
@@ -504,7 +506,7 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   let findings = List.rev !findings in
   let outcome_value = if findings<>[] then E.Fail else S.outcome structure_result in
   let report_value = obj (["schema_version",str "biocompiler.policy_component_assembly_assessment.v0.1";
-    "checker_version",str (if grounded_helper then grounded_helper_implementation_version else if multi_member then multi_member_implementation_version else if instanced then instance_implementation_version else implementation_version);"profile",str profile;
+    "checker_version",str (if multi_site then "biocompiler.ocaml.policy_component_assembly_check.v0.5" else if grounded_helper then grounded_helper_implementation_version else if multi_member then multi_member_implementation_version else if instanced then instance_implementation_version else implementation_version);"profile",str profile;
     "original_fingerprint",str (R.fingerprint original);"components_fingerprint",str (L.fingerprint components);
     "rule_fingerprint",str (A.fingerprint rule);"implementation_fingerprint",str (I.fingerprint actual);
     "proposed_fingerprint",str (Q.fingerprint proposed);"candidate_fingerprint",str (K.fingerprint candidate);

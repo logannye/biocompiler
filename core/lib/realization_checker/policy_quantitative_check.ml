@@ -17,9 +17,13 @@ module B = Bioc_checker.Policy_implementation_binding_check
 module Admission = Bioc_checker.Policy_realization_admission
 module W = Bioc_checker.Work_budget
 module E = Bioc_domain.Construction_assessment
+module Transfer = Policy_quantitative_transfer_check
+module Network = Policy_quantitative_network_check
 let schema_version="biocompiler.policy_quantitative_assessment.v0.1"
 let profile=Qc.profile
 let implementation_version="biocompiler.ocaml.policy_quantitative_check.v0.1"
+let step_schema_version="biocompiler.policy_quantitative_assessment.v0.2"
+let step_implementation_version="biocompiler.ocaml.policy_quantitative_check.v0.2"
 let max_work=128*1024*1024
 let str value=Json.String value
 let obj value=Json.Object value
@@ -60,6 +64,7 @@ module Make(Charge:sig val charge:int->unit end)=struct
     fail(String.equal selected.contract local.id && same(Qc.to_json selected.mechanism)(Qc.to_json local.mechanism))
       "independent_original_and_selected_mechanism";
     let law=selected.mechanism in
+    fail(R.is_multi_site request=law.multi_site)"explicit_quantitative_request_site_family";
     let machine=one "one_source_machine" behavior.machines
     and observation=one "one_source_observation" behavior.observations
     and effect=one "one_source_effect" behavior.effects in
@@ -138,8 +143,10 @@ module Make(Charge:sig val charge:int->unit end)=struct
       let next=match input_value with None->value.quantity.amount|Some truth->
         (* Production and consumption are combined before either saturation.
            True at capacity therefore holds capacity, rather than decaying. *)
-        let production=if truth then Q.mul(Q.of_int 2)law.quantum.amount else Q.zero in
-        let changed=Q.sub(Q.add value.quantity.amount production)law.quantum.amount in
+        let changed=if law.multi_site then
+          if truth then Q.add value.quantity.amount law.rise.amount else Q.sub value.quantity.amount law.fall.amount
+          else let production=if truth then Q.mul(Q.of_int 2)law.quantum.amount else Q.zero in
+            Q.sub(Q.add value.quantity.amount production)law.quantum.amount in
         if Q.sign changed<0 then Q.zero else if Q.compare changed law.capacity.amount>0 then law.capacity.amount else changed in
       let destination=find "computed_grid_value_absent"(fun(candidate:Qc.state_value)->Q.equal candidate.quantity.amount next)local.values in
       let request=input_value<>None && Q.compare value.quantity.amount law.threshold.amount<0 &&
@@ -150,40 +157,92 @@ module Make(Charge:sig val charge:int->unit end)=struct
         let transition=one "one_transition_for_each_known_sample" transitions in
         fail(transition.destination=destination.state && transition.effects=(if request then[selected.effect]else[]))
           "exact_saturating_law_and_unique_crossing_request";
-        if request then crossings:=transition:: !crossings);
+        if request then crossings:=(transition,truth):: !crossings);
       obj["source",str value.state;"input",str(match input_value with None->"unknown"|Some true->"true"|Some false->"false");
         "destination",str destination.state;"request",Json.Bool request]) [Some true;Some false;None])local.values in
-    let crossing=one "exactly_one_upward_threshold_initiator" !crossings in
+    let effect_binding=one "one_bound_effect"(B.effects binding) in
+    fail(effect_binding.source=selected.effect)"crossing_request_original_effect_identity";
+    let check_output boundary model (transition_binding:B.transition)=
+      let output=find "quantitative_request_boundary_absent"
+        (fun(value:F.boundary_port)->value.boundary_id=boundary)(F.boundary_ports fragment) in
+      let output_node=local_node output.endpoint.node_id and actual_output=relocate output.endpoint.node_id in
+      fail(pin_equal output_node.model.identity model && pin_equal actual_output.model.identity model &&
+        output.direction=I.Output && output.signal_type=I.Effect_request &&
+        output.endpoint.port_id="request0" && actual_output.node_id=transition_binding.commit)
+        "complete_crossing_commit_model_and_request_endpoint";
+      actual_output,output.endpoint.port_id in
+    if law.multi_site then (
+      let crossings=List.rev !crossings in
+      fail(crossings<>[] && List.length crossings=List.length local.outputs &&
+        List.length crossings=List.length effect_binding.request_sites)
+        "complete_quantitative_crossing_site_inventory";
+      let bank=find "quantitative_attempt_bank_absent"
+        (fun(value:I.node)->value.node_id=effect_binding.bank)actual_nodes in
+      fail((match bank.model.primitive with I.Attempt_bank_sites value->value.sites=List.length crossings|_->false))
+        "shared_multisite_attempt_bank_shape";
+      let sites=List.mapi(fun index(site:B.effect_site)->site.initiating_rule,index)effect_binding.request_sites in
+      fail(List.length(List.sort_uniq compare(List.map fst sites))=List.length sites)
+        "unique_quantitative_request_site_identity";
+      let crossing_sites=List.map2(fun ((crossing:O.transition),truth)(output:Qc.output_site)->
+        fail(output.source_state=crossing.source && output.input=truth)
+          "ordered_complete_crossing_output_inventory";
+        let transition_binding=find "crossing_transition_binding_absent"
+          (fun(value:B.transition)->value.source=crossing.transition_id)(B.transitions binding)in
+        let _,index=find "crossing_request_site_binding_absent"(fun(id,_)->id=crossing.transition_id)sites in
+        let actual_output,port=check_output output.boundary output.model transition_binding in
+        let attempt_port="request"^string_of_int index in
+        let connected=List.filter(fun(wire:I.wire)->wire.consumer.node_id=effect_binding.bank &&
+          wire.consumer.port_id=attempt_port)(I.wires actual)in
+        let wire=one "one_crossing_request_bank_connection" connected in
+        fail(wire.producer.node_id=actual_output.node_id && wire.producer.port_id=port)
+          "crossing_request_site_actual_bank_port";
+        obj["transition",str crossing.transition_id;"source_state",str crossing.source;"input",Json.Bool truth;
+          "request_endpoint",obj["node",str actual_output.node_id;"port",str port];
+          "model",Pin.to_json output.model;"attempt_port",str attempt_port])crossings local.outputs in
+      obj["machine_bank",str actual_bank.node_id;"observation_bank",str actual_input.node_id;
+        "observation_input",str observation_binding.input;"attempt_bank",str effect_binding.bank;
+        "crossing_sites",Json.Array crossing_sites],table)
+    else (
+    let crossing,_=one "exactly_one_upward_threshold_initiator" !crossings in
     let transition_binding=find "crossing_transition_binding_absent"
       (fun(value:B.transition)->value.source=crossing.transition_id)(B.transitions binding) in
-    let effect_binding=one "one_bound_effect"(B.effects binding) in
     fail(effect_binding.source=selected.effect && effect_binding.initiating_rule=crossing.transition_id)
       "crossing_request_original_effect_identity";
-    let output=find "quantitative_request_boundary_absent"
-      (fun(value:F.boundary_port)->value.boundary_id=local.output_boundary)(F.boundary_ports fragment) in
-    let output_node=local_node output.endpoint.node_id and actual_output=relocate output.endpoint.node_id in
-    fail(pin_equal output_node.model.identity local.output_model && pin_equal actual_output.model.identity local.output_model &&
-      output.direction=I.Output && output.signal_type=I.Effect_request &&
-      output.endpoint.port_id="request0" && actual_output.node_id=transition_binding.commit)
-      "complete_crossing_commit_model_and_request_endpoint";
+    let actual_output,port=check_output local.output_boundary local.output_model transition_binding in
     obj["machine_bank",str actual_bank.node_id;"observation_bank",str actual_input.node_id;
       "observation_input",str observation_binding.input;"crossing_transition",str crossing.transition_id;
-      "request_endpoint",obj["node",str actual_output.node_id;"port",str output.endpoint.port_id]],table
+      "request_endpoint",obj["node",str actual_output.node_id;"port",str port]],table)
 end
 
 let check ?parent ?(maximum=max_work) ~request ~context ()=
+  if R.is_transfer_network request then (
+    let result=Network.check ?parent ~maximum ~request ~context ()in
+    let report_value=Network.report result and outcome_value=Network.outcome result in
+    let accepted_value=Option.map(fun checked->
+      {request_value=Network.request checked;evidence_value=Network.evidence checked})(Network.accepted result)in
+    {report_value;outcome_value;accepted_value}
+  )else if R.is_transfer_pair request then (
+    let result=Transfer.check ?parent ~maximum ~request ~context ()in
+    let report_value=Transfer.report result and outcome_value=Transfer.outcome result in
+    let accepted_value=Option.map(fun checked->{request_value=Transfer.request checked;
+      evidence_value=Transfer.evidence checked})(Transfer.accepted result)in
+    {report_value;outcome_value;accepted_value})
+  else (
   Diagnostic.require(maximum>=0 && maximum<=max_work)"policy_quantitative_resource_limit""Quantitative work allowance exceeds its fixed ceiling.";
+  let selected=match R.quantitative request with Some value->value|None->Diagnostic.fail "policy_quantitative_request""Quantitative checking requires the explicit original quantitative request."in
+  let profile=if selected.mechanism.multi_site then Qc.step_profile else profile in
   let budget=match parent with None->W.create ~profile ~error_code:"policy_quantitative_resource_limit" ~maximum()
     |Some parent->W.nested ~parent ~profile ~error_code:"policy_quantitative_resource_limit" ~maximum()in
   let before=W.remaining budget in
   let module Check=Make(struct let charge=W.charge budget end)in
-  let selected=match R.quantitative request with Some value->value|None->Diagnostic.fail "policy_quantitative_request""Quantitative checking requires the explicit original quantitative request."in
   let bindings,table,issues,outcome_value=match Check.execute request context selected with
     |bindings,table->bindings,table,[],E.Pass
     |exception Diagnostic.Error error when error.code="policy_quantitative_fail"->Json.Null,[],[error.message],E.Fail in
   let raw=Qc.selection_to_json selected in
-  let fields=["schema_version",str schema_version;"profile",str profile;"implementation",str implementation_version;
-    "outcome",str(E.outcome_name outcome_value);"claim_scope",str "exact_sampled_reservoir_under_supplied_contract";
+  let fields=["schema_version",str(if selected.mechanism.multi_site then step_schema_version else schema_version);
+    "profile",str profile;"implementation",str(if selected.mechanism.multi_site then step_implementation_version else implementation_version);
+    "outcome",str(E.outcome_name outcome_value);"claim_scope",str(if selected.mechanism.multi_site then
+      "exact_sampled_step_reservoir_under_supplied_contract" else "exact_sampled_reservoir_under_supplied_contract");
     "request_fingerprint",str(R.fingerprint request);"mechanism_fingerprint",str(Check.hash(Qc.to_json selected.mechanism));
     "selection",Check.get "selection" raw;"source",Check.get "source" raw;"bindings",bindings;"table",Json.Array table;
     "sampling",obj["sample_period",selected.mechanism.sample_period.raw;"max_rows_per_slot_tick",Json.int 1;
@@ -198,4 +257,4 @@ let check ?parent ?(maximum=max_work) ~request ~context ()=
   let report_value=obj(fields@["usage",usage(before-W.remaining budget)])in
   Diagnostic.require(not(W.exhausted budget))"policy_quantitative_resource_limit""Quantitative work was exhausted.";
   let accepted_value=if outcome_value=E.Pass then Some{request_value=request;evidence_value=report_value}else None in
-  {report_value;outcome_value;accepted_value}
+  {report_value;outcome_value;accepted_value})

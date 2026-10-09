@@ -8,7 +8,10 @@ module A = Bioc_checker.Policy_realization_admission
 
 let profile = "biocompiler.policy_exact_trace_correspondence.v0.1"
 let staged_profile = "biocompiler.policy_staged_trace_correspondence.v0.1"
-let profile_for checked = if B.machines checked=[] then profile else staged_profile
+let multi_site_profile = "biocompiler.policy_multi_site_trace_correspondence.v0.1"
+let profile_for checked =
+  if I.implementation_profile(B.implementation checked)=I.multi_site_profile then multi_site_profile
+  else if B.machines checked=[] then profile else staged_profile
 let str x = Json.String x
 let arr x = Json.Array x
 let obj x = Json.Object x
@@ -118,8 +121,9 @@ let event_json state tick (event:P.event) =
     "attempt",optional (fun id->str(source_attempt state id)) event.attempt_id; "microstep",Json.int event.microstep]
 let attempt_json state (attempt:P.attempt) =
   let effect_binding=effect_by_bank state attempt.bank and rule=rule_by_gate state attempt.gate in
-  require (attempt.gate=effect_binding.gate && attempt.guard=effect_binding.guard && rule.source=effect_binding.initiating_rule)
-    "Attempt guard/initiator differs from checked source binding.";
+  require (List.exists(fun(site:B.effect_site)->attempt.gate=site.gate && attempt.guard=site.guard &&
+    rule.source=site.initiating_rule)effect_binding.request_sites)
+    "Attempt guard/initiator differs from the complete checked source request-site inventory.";
   let machine=Option.map(fun bank->(machine_by_bank state bank).source)attempt.machine in
   require(machine=effect_binding.machine)"Attempt machine ownership differs from the checked source initiator.";
   obj ["id",str (source_attempt state attempt.attempt_id); "effect",str effect_binding.source;

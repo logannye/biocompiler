@@ -13,6 +13,8 @@ val multi_product_schema_version : string
 val multi_product_profile : string
 val finite_machine_schema_version : string
 val finite_machine_profile : string
+val multi_site_schema_version : string
+val multi_site_profile : string
 val network_schema_version : string
 val network_profile : string
 val resource_profile : string
@@ -32,6 +34,8 @@ type catalog_binding = private {
   models : Pinned_identity.t list;
 }
 type t
+val of_multi_site_json : Json.t -> t
+val is_multi_site : t -> bool
 
 val of_json : Json.t -> t
 

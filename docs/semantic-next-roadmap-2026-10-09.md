@@ -23,17 +23,23 @@ local checks; native execution and installed-package acceptance remain pending.
    transitions, Unknown, reset and effect-attempt correlation. Preserve complete
    whole-program checking before introducing independently justified compositional
    verification.
-3. **Explicit target capabilities and obligation planning — to do.**
+3. **Explicit target capabilities and obligation planning — implemented locally; native validation pending.**
    Explain supported constructs, required supplied components and outstanding
    compilation/export obligations before expensive work. Distinguish invalid
    source, unsupported realization, failed requirements and exhausted resources.
    Declaration-level diagnostics begin with item 1; broader capability planning
    follows without granting acceptance from a planning report.
-4. **Broader quantitative semantics and realization evidence — to do.**
+4. **Broader quantitative semantics and realization evidence — first three increments implemented locally; native validation pending.**
    Extend exact sampled mechanisms into composable quantitative programs, then
    introduce uncertainty and approximation through named refinement relations.
-   Explicitly resolve multiple effect-request sites before generalizing threshold
-   crossings. Component contracts should retain measured parameters, uncertainty,
+   The first increment supplies multiple effect-request sites with shared capacity
+   and exact sampled rise/fall laws with every threshold crossing independently
+   bound to selected components and exact material. The second increment adds a
+   conservative two-reservoir transfer law under a checked joint component
+   contract. The third increment adds bounded networks with explicit ordered
+   reservation of shared stock and headroom under one atomic state owner.
+   Decomposition across separate component owners and uncertainty/evidence
+   interfaces remain queued. Component contracts should retain measured parameters, uncertainty,
    applicable environments and experimental provenance; supplied model agreement
    and empirical function remain separate claims.
 
@@ -52,4 +58,25 @@ separates passed local checks from the pending native and installed gates.
 Item 2's explicit network profile is recorded in [the machine-network contract](policy-machine-network-v0.1.md).
 Its [implementation checkpoint](semantic-machine-network-checkpoint-2026-10-09.md)
 records bounded interaction, shared-resource and exact material scope, passed local
-checks and the pending native and installed gates. Items 3–4 remain queued.
+checks and the pending native and installed gates.
+
+Item 3's diagnostic-only interface is recorded in [the target-planning contract](policy-target-planning-v0.1.md).
+Its [implementation checkpoint](semantic-target-planning-checkpoint-2026-10-09.md)
+records the installed target catalog, fresh bounded preflight, preserved obligations
+and local validation scope.
+
+Item 4's first increment is recorded in [the sampled step contract](policy-quantitative-step-v0.1.md)
+and its [implementation checkpoint](semantic-quantitative-step-checkpoint-2026-10-09.md).
+It preserves exact existing paths while adding multiple request sites; broader
+quantitative composition and empirical evidence interfaces remain future work.
+
+Item 4's second increment is recorded in [the transfer-pair contract](policy-quantitative-transfer-v0.1.md)
+and its [implementation checkpoint](semantic-quantitative-transfer-checkpoint-2026-10-09.md).
+It checks exact coupling and conservation under one supplied joint component;
+separate molecular realization and empirical evidence remain distinct obligations.
+
+Item 4's third increment is recorded in [the transfer-network contract](policy-quantitative-network-v0.1.md)
+and its [implementation checkpoint](semantic-quantitative-network-checkpoint-2026-10-09.md).
+It composes named reservoirs and directed transfers with exact prestate
+reservations; distributed molecular coordination and empirical realization
+evidence remain explicit follow-ups.

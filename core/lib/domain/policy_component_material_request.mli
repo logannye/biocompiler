@@ -23,6 +23,12 @@ val network_schema_version : string
 val network_profile : string
 val finite_machine_schema_version : string
 val finite_machine_profile : string
+val transfer_network_schema_version : string
+val transfer_network_profile : string
+val transfer_pair_schema_version : string
+val transfer_pair_profile : string
+val step_quantitative_schema_version : string
+val step_quantitative_profile : string
 val quantitative_schema_version : string
 val quantitative_profile : string
 val resource_profile : string
@@ -47,6 +53,9 @@ val resource_keys : A.t -> resource_key list
 val resource_owner_to_json : resource_owner -> Json.t
 type budgets = private {max_work:int; max_report_bytes:int; max_report_nodes:int}
 type t
+val is_transfer_network : t -> bool
+val is_transfer_pair : t -> bool
+val is_multi_site : t -> bool
 val is_network : t -> bool
 val of_json : ?charge:(int -> unit) -> Json.t -> t
 val is_instanced : t -> bool
@@ -57,6 +66,8 @@ val is_grounded_helper : t -> bool
 val is_finite_machine : t -> bool
 val is_quantitative : t -> bool
 val quantitative : t -> Policy_quantitative_contract.selection option
+val transfer_pair_quantitative : t -> Policy_quantitative_transfer_contract.selection option
+val network_quantitative : t -> Policy_quantitative_network_contract.selection option
 val request_profile : t -> string
 val to_json : t -> Json.t
 val fingerprint : t -> string

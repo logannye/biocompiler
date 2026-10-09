@@ -5,6 +5,8 @@ module Names = Set.Make (String)
 
 let schema_version = "biocompiler.policy_component_fragment.v0.1"
 let profile = "biocompiler.policy_exact_fragment.v0.1"
+let multi_site_profile = "biocompiler.policy_multi_site_fragment.v0.1"
+let multi_site_phase_profile = "biocompiler.policy_multi_site_primitive_execution.v0.1"
 let staged_profile = "biocompiler.policy_staged_fragment.v0.1"
 let staged_phase_profile = "biocompiler.policy_staged_primitive_execution.v0.1"
 let primitive_profile = I.profile
@@ -199,7 +201,7 @@ let validate_graph (value : t) =
   List.iter (fun (node : node) -> match node.model.primitive with
     | I.Exclusive_arbiter _ | I.Priority_arbiter _ | I.Atomic_commit _ | I.Transition_commit _ ->
         require (Hashtbl.mem member_groups node.node_id) "Fragment atomic node lacks local group ownership."
-    | I.Truth_register _ | I.Attempt_bank _ | I.Machine_bank _ ->
+    | I.Truth_register _ | I.Attempt_bank _ | I.Attempt_bank_sites _ | I.Machine_bank _ ->
         let groups = value.wire_values |> List.filter_map (fun (wire : I.wire) ->
           if wire.consumer.node_id = node.node_id &&
             (match (find_node index wire.producer.node_id).model.primitive with I.Atomic_commit _ | I.Transition_commit _ -> true | _ -> false)
@@ -211,6 +213,7 @@ let validate_graph (value : t) =
     match (node wire.consumer.node_id).model.primitive with
     | I.Truth_register _ | I.Machine_bank _ -> false
     | I.Attempt_bank _ when wire.consumer.port_id = "request" -> false
+    | I.Attempt_bank_sites _ when String.starts_with ~prefix:"request" wire.consumer.port_id -> false
     | _ -> true) value.wire_values in
   let visited = ref Names.empty in
   let rec order remaining = match remaining with
@@ -229,12 +232,13 @@ let of_json ~library raw =
   exact ["schema_version"; "profile"; "primitive_profile"; "observable_profile"; "phase_profile";
     "id"; "version"; "slot_layout"; "nodes"; "wires"; "boundary_ports"; "external_slots";
     "atomic_groups"; "semantic_exports"] raw;
-  let staged=text "profile" raw=staged_profile in
+  let multi_site=text "profile" raw=multi_site_profile in
+  let staged=multi_site || text "profile" raw=staged_profile in
   require (text "schema_version" raw = schema_version &&
     (text "profile" raw = profile || staged) &&
-    text "primitive_profile" raw = (if staged then I.staged_profile else primitive_profile) &&
-    text "observable_profile" raw = (if staged then I.staged_observable_profile else observable_profile) &&
-    text "phase_profile" raw = (if staged then staged_phase_profile else phase_profile))
+    text "primitive_profile" raw = (if multi_site then I.multi_site_profile else if staged then I.staged_profile else primitive_profile) &&
+    text "observable_profile" raw = (if multi_site then I.multi_site_observable_profile else if staged then I.staged_observable_profile else observable_profile) &&
+    text "phase_profile" raw = (if multi_site then multi_site_phase_profile else if staged then staged_phase_profile else phase_profile))
     "Unknown fragment, primitive, observable or phase profile.";
   let fragment_id = name (get "id" raw) and fragment_version = name (get "version" raw) in
   let raw_layout = get "slot_layout" raw in
@@ -244,7 +248,8 @@ let of_json ~library raw =
   let node_values = List.map (fun value ->
     exact ["id"; "model"] value;
     let node_id = name (get "id" value) and model = model_of_json ~library (get "model" value) in
-    require (staged || I.profile_for_primitive model.primitive=I.profile)
+    require (multi_site || I.profile_for_primitive model.primitive=I.profile ||
+      (staged && I.profile_for_primitive model.primitive=I.staged_profile))
       "Legacy fragments cannot contain staged primitives.";
     (match model.replication with
     | I.Executor -> ()

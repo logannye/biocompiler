@@ -85,6 +85,7 @@ let normalized_monitor correspondence row =
     else value)(Json.object_fields obligation)))(items "obligations" row)in
   obj(List.map(fun(key,value)->key,if key="obligations"then arr obligations else value)(Json.object_fields row))
 let check_engine ~startup_charge ~clock ~measure ~share_candidate_transitions ~request ~behavior ~implementation ~proposed ~limits =
+  let profile=if R.is_multi_site request then "biocompiler.policy_multi_site_preservation.v0.1" else profile in
   let started=if measure then clock()else 0. in
   let source_cpu=ref 0. and candidate_cpu=ref 0. and correspondence_cpu=ref 0.
   and monitor_cpu=ref 0. and encoding_cpu=ref 0. in

@@ -25,6 +25,8 @@ let multi_member_schema_version = "biocompiler.policy_component_assembly_rule.v0
 let multi_member_profile = "biocompiler.policy_multi_member_component_assembly.v0.1"
 let grounded_helper_schema_version = "biocompiler.policy_component_assembly_rule.v0.4"
 let grounded_helper_profile = "biocompiler.policy_grounded_helper_component_assembly.v0.1"
+let multi_site_schema_version = "biocompiler.policy_component_assembly_rule.v0.5"
+let multi_site_profile = "biocompiler.policy_multi_site_component_assembly.v0.1"
 let max_instances = 8
 let transport_profile = "biocompiler.policy_identity_transport.v0.1"
 type slot = Decision | Driver | Instance of string
@@ -49,7 +51,7 @@ type transport = { definition:MC.provider_ref; provider:P.t; producer_member:str
 type join = { join_id:string; step_id:string; port_id:string; left:slot; right:slot; offset:int }
 type link_carrier = { kind:link_kind; producer_site:int; consumer_site:int; join_id:string; join_path:string list; transport:transport option }
 type t = {
-  staged:bool; instanced:bool; multi_member:bool; grounded_helper:bool; identity_value:P.t; selections:component_selection list; selected:(slot * C.t) list;
+  multi_site:bool; staged:bool; instanced:bool; multi_member:bool; grounded_helper:bool; identity_value:P.t; selections:component_selection list; selected:(slot * C.t) list;
   library_digest:string; model_digest:string; layout_value:F.slot_layout;
   link_values:link list; node_values:node_ref list; wire_values:wire_ref list;
   input_values:input_ref list; group_values:group_ref list; export_values:endpoint_ref list;
@@ -105,7 +107,7 @@ let kind_of_json ?(instanced=false) raw =
 let expected_links value = if value.instanced then List.map (fun (row:link) -> row.kind) value.link_values
   else if value.staged then staged_links else [Product;Request;Authorization]
 let slots value = List.map (fun (row:component_selection) -> row.slot) value.selections
-let assembly_profile value = if value.grounded_helper then grounded_helper_profile else if value.multi_member then multi_member_profile else if value.instanced then instance_profile else if value.staged then staged_profile else profile
+let assembly_profile value = if value.multi_site then multi_site_profile else if value.grounded_helper then grounded_helper_profile else if value.multi_member then multi_member_profile else if value.instanced then instance_profile else if value.staged then staged_profile else profile
 let scope_name = function Same_encounter_slot -> "same_encounter_slot" | Immutable_executor_broadcast -> "immutable_executor_broadcast"
 let scope_of_json raw = match Json.string raw with
   | "same_encounter_slot" -> Same_encounter_slot | "immutable_executor_broadcast" -> Immutable_executor_broadcast
@@ -199,9 +201,9 @@ let carrier_of_json ?(instanced=false) ?(multi_member=false) raw =
   {kind=kind_of_json ~instanced (get "link" raw);producer_site=index 3 (get "producer_site" raw);
    consumer_site=index 3 (get "consumer_site" raw);join_id=(if multi_member then "" else List.hd join_path);join_path;
    transport=(if multi_member then Some (transport_of_json (get "transport" raw)) else None)}
-let body_json value = obj (["primitive_profile",str (if value.staged then I.staged_profile else I.profile);
-  "observable_profile",str (if value.staged then I.staged_observable_profile else I.observable_profile);
-  "phase_profile",str (if value.staged then F.staged_phase_profile else F.phase_profile);"transport_profile",str transport_profile;
+let body_json value = obj (["primitive_profile",str (if value.multi_site then I.multi_site_profile else if value.staged then I.staged_profile else I.profile);
+  "observable_profile",str (if value.multi_site then I.multi_site_observable_profile else if value.staged then I.staged_observable_profile else I.observable_profile);
+  "phase_profile",str (if value.multi_site then F.multi_site_phase_profile else if value.staged then F.staged_phase_profile else F.phase_profile);"transport_profile",str transport_profile;
   "slot_layout",obj ["id",str value.layout_value.layout_id;"slots",Json.int value.layout_value.slots];
   "components",arr selection_json value.selections;"links",arr link_json value.link_values;
   "node_order",arr node_json value.node_values;"wire_order",arr wire_json value.wire_values;
@@ -212,7 +214,7 @@ let body_json value = obj (["primitive_profile",str (if value.staged then I.stag
   "material_authority",PM.to_json value.material_value] @
   (if value.multi_member then ["member_bindings",arr member_json value.member_values] else []) @
   (if value.grounded_helper then ["helper",helper_json (Option.get value.helper_value)] else []))
-let to_json value = obj ["schema_version",str (if value.grounded_helper then grounded_helper_schema_version else if value.multi_member then multi_member_schema_version else if value.instanced then instance_schema_version else schema_version);"profile",str (assembly_profile value);
+let to_json value = obj ["schema_version",str (if value.multi_site then multi_site_schema_version else if value.grounded_helper then grounded_helper_schema_version else if value.multi_member then multi_member_schema_version else if value.instanced then instance_schema_version else schema_version);"profile",str (assembly_profile value);
   "identity",P.to_json value.identity_value;"body",body_json value]
 
 let check_orders value =
@@ -604,25 +606,27 @@ let check_carriers value =
 let of_json ~components raw =
   preflight raw;
   exact ["schema_version";"profile";"identity";"body"] raw;
+  let multi_site=get "profile" raw=str multi_site_profile in
   let grounded_helper=get "profile" raw=str grounded_helper_profile in
   let multi_member=grounded_helper || get "profile" raw=str multi_member_profile in
-  let instanced=multi_member || get "profile" raw=str instance_profile in
+  let instanced=multi_site || multi_member || get "profile" raw=str instance_profile in
   let legacy_staged=get "profile" raw=str staged_profile in
-  require ((grounded_helper && get "schema_version" raw=str grounded_helper_schema_version) ||
+  require ((multi_site && get "schema_version" raw=str multi_site_schema_version) ||
+    (grounded_helper && get "schema_version" raw=str grounded_helper_schema_version) ||
     (multi_member && not grounded_helper && get "schema_version" raw=str multi_member_schema_version) ||
-    (instanced && not multi_member && get "schema_version" raw=str instance_schema_version) ||
+    (instanced && not multi_member && not multi_site && get "schema_version" raw=str instance_schema_version) ||
     (not instanced && get "schema_version" raw=str schema_version && (get "profile" raw=str profile || legacy_staged)))
     "Unsupported original assembly rule profile.";
   let identity_value=P.of_json (get "identity" raw) and body=get "body" raw in
   exact (["primitive_profile";"observable_profile";"phase_profile";"transport_profile";"slot_layout";"components";"links";
     "node_order";"wire_order";"input_order";"group_order";"export_order";"root_bindings";(if instanced then "joins" else "join");"link_carriers";"material_authority"] @ (if multi_member then ["member_bindings"] else []) @ (if grounded_helper then ["helper"] else [])) body;
-  let staged=if instanced then get "primitive_profile" body=str I.staged_profile else legacy_staged in
+  let staged=multi_site || if instanced then get "primitive_profile" body=str I.staged_profile else legacy_staged in
   require (not multi_member || staged) "Multi-member assembly requires the fixed staged primitive profile.";
   require (P.kind identity_value=P.Model && P.content_fingerprint identity_value=Canonical.fingerprint body)
     "Original assembly identity must pin its complete supplied body.";
-  require (get "primitive_profile" body=str (if staged then I.staged_profile else I.profile) &&
-    get "observable_profile" body=str (if staged then I.staged_observable_profile else I.observable_profile) &&
-    get "phase_profile" body=str (if staged then F.staged_phase_profile else F.phase_profile) && get "transport_profile" body=str transport_profile)
+  require (get "primitive_profile" body=str (if multi_site then I.multi_site_profile else if staged then I.staged_profile else I.profile) &&
+    get "observable_profile" body=str (if multi_site then I.multi_site_observable_profile else if staged then I.staged_observable_profile else I.observable_profile) &&
+    get "phase_profile" body=str (if multi_site then F.multi_site_phase_profile else if staged then F.staged_phase_profile else F.phase_profile) && get "transport_profile" body=str transport_profile)
     "Assembly requires the fixed primitive, observable, phase and identity-transport profiles.";
   let selections=List.map (fun raw -> exact ["slot";"component"] raw;
     {slot=slot_of_json ~instanced (get "slot" raw);identity=P.of_json (get "component" raw)})
@@ -640,13 +644,13 @@ let of_json ~components raw =
   require (layout_value.slots=2 && List.for_all (fun (_,component) -> F.layout (C.fragment component)=layout_value) selected)
     "Assembly requires one shared original two-slot layout.";
   require (List.for_all (fun (_,component) ->
-    get "profile" (F.to_json (C.fragment component))=str (if staged then F.staged_profile else F.profile)) selected)
+    get "profile" (F.to_json (C.fragment component))=str (if multi_site then F.multi_site_profile else if staged then F.staged_profile else F.profile)) selected)
     "Every selected component must use the exact assembly fragment profile.";
   let maximum_links=if instanced then 2048 else if staged then 12 else 3 in
   let join_values=if instanced then List.map (join_of_json ~instanced) (rows (max_instances-1) (get "joins" body))
     else [join_of_json (get "join" body)] in
   require (multi_member || join_values<>[]) "Original assembly requires a bounded nonempty join inventory.";
-  let value={staged;instanced;multi_member;grounded_helper;identity_value;selections;selected;library_digest=L.fingerprint components;model_digest=L.model_library_digest components;layout_value;
+  let value={multi_site;staged;instanced;multi_member;grounded_helper;identity_value;selections;selected;library_digest=L.fingerprint components;model_digest=L.model_library_digest components;layout_value;
     link_values=List.map (link_of_json ~instanced) (rows maximum_links (get "links" body));node_values=List.map (node_of_json ~instanced) (rows 256 (get "node_order" body));
     wire_values=List.map (wire_of_json ~instanced) (rows 2048 (get "wire_order" body));input_values=List.map (input_of_json ~instanced) (rows 64 (get "input_order" body));
     group_values=List.map (group_of_json ~instanced) (rows 64 (get "group_order" body));export_values=List.map (endpoint_of_json ~instanced) (rows 2048 (get "export_order" body));
@@ -688,6 +692,7 @@ let carrier_joins value = value.join_path
 let link_carriers value = value.carrier_values
 let material_authority value = value.material_value
 
+let is_multi_site value = value.multi_site
 let is_staged value = value.staged
 let is_instanced value = value.instanced
 let link_name = kind_name
