@@ -2,6 +2,8 @@ open Bioc_wire
 module Service=Bioc_service.Service
 module Producer=Bioc_producer_service.Producer_service
 module R=Bioc_domain.Policy_quantitative_assurance_request
+module Wire=Bioc_domain.Policy_coupled_wire
+module Material=Bioc_service.Policy_component_material_service
 let ()=Printexc.register_printer(function Diagnostic.Error d->Some(d.code^": "^d.message)|_->None)
 let s value=Json.String value
 let o fields=Json.Object fields
@@ -14,8 +16,15 @@ let require condition message=if not condition then failwith message
 let read path=let channel=open_in_bin path in Fun.protect ~finally:(fun()->close_in_noerr channel)(fun()->
   Json.parse_artifact ~max_bytes:8388608 ~max_nodes:250000(really_input_string channel(in_channel_length channel)))
 let call handler role operation payload=
+  let original=get "request" payload in
+  let material=if text "schema_version" original=R.schema_version then get "material_request" original else original in
+  let coupled=Material.is_coupled_request material in
+  let payload=if coupled then Wire.encode payload else payload in
   let request:Protocol.request={request_id="quantitative-assurance";operation;payload} in
-  match handler role request with Protocol.Ok,Some result,[]->result|_->failwith("Failed "^operation)
+  match handler role request with Protocol.Ok,Some result,[]->
+    require(Wire.is_packet result=coupled)"Coupled transport selection changed a legacy response";
+    if coupled then Wire.decode result else result
+  |_->failwith("Failed "^operation)
 let rejected label action=match action()with
   |_->failwith("Assurance adversary accepted: "^label)
   |exception Diagnostic.Error _->()
@@ -109,5 +118,23 @@ let ()=
   require(at["report";"approximation";"outcome"]produced=s "pass" &&
     at["report";"export_permitted"]produced=Json.Bool true)
     "General quantitative component composition lost scoped approximation assurance";
-  ignore(export coupled_request(get "candidate" produced)coupled_limits);
+  let coupled_candidate=get "candidate" produced in
+  let coupled_checked=check coupled_request coupled_candidate coupled_limits in
+  require(Json.equal produced coupled_checked)"Packed coupled producer and independent checking disagree";
+  let coupled_replayed=call Service.handle Protocol.Verify "replay-policy-quantitative-assurance"
+    (o["request",coupled_request;"candidate",coupled_candidate;"limits",coupled_limits;"report",coupled_checked])in
+  require(Json.equal coupled_checked coupled_replayed)"Packed coupled replay changed complete logical evidence";
+  let coupled_exported=export coupled_request coupled_candidate coupled_limits in
+  let coupled_artifact=get "artifact" coupled_exported in
+  let coupled_manifest=get "manifest" coupled_artifact in
+  let exact_material=call Service.handle Protocol.Verify "export-policy-component-material"
+    (payload coupled_material coupled_candidate coupled_limits)in
+  require(Json.equal(at["artifact";"manifest"]exact_material)(get "material_manifest" coupled_manifest) &&
+    Json.equal(at["artifact";"fasta"]exact_material)(get "fasta" coupled_artifact) &&
+    Canonical.fingerprint coupled_manifest=text "manifest_sha256" coupled_artifact &&
+    Json.equal(get "request" coupled_manifest)coupled_request)
+    "Packed assurance failed to preserve standalone exact material authority and RNA";
+  rejected "packed retained PASS mutation"(fun()->call Service.handle Protocol.Verify "replay-policy-quantitative-assurance"
+    (o["request",coupled_request;"candidate",coupled_candidate;"limits",coupled_limits;
+       "report",set "artifact"(o[])coupled_checked]));
   print_endline "quantitative assurance: fresh compile/check/replay, exact RNA lineage, error bounds, separate evidence and conjunctive export checked"

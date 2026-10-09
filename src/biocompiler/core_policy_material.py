@@ -332,7 +332,11 @@ def _artifact(value: JsonValue, *, operation: str, request: dict[str, JsonValue]
               export_operation: str = "export-policy-material", accepted_status: str = "checked_material",
               export_schema: str = EXPORT_SCHEMA, manifest_schema: str = "biocompiler.policy_mrna_manifest.v0.1",
               request_profile: str = REQUEST_PROFILE, claim_scope: str = "bounded_conditional_policy_to_exact_mrna",
-              premise: str = "supplied_model_to_sequence_and_provider_contracts") -> None:
+              premise: str = "supplied_model_to_sequence_and_provider_contracts",
+              document_encoder: Callable[[JsonValue], bytes] = encode_json) -> None:
+    def pin(actual: JsonValue, expected: JsonValue, label: str) -> None:
+        if actual != hashlib.sha256(document_encoder(expected)).hexdigest():
+            raise CoreProtocolError(label + " fingerprint does not match complete supplied authority")
     if operation != export_operation:
         if value is not None:
             raise CoreProtocolError("Only a fresh native export invocation may return an artifact")
@@ -344,7 +348,7 @@ def _artifact(value: JsonValue, *, operation: str, request: dict[str, JsonValue]
         raise CoreProtocolError("Export changed its exact artifact profile")
     if artifact["fasta_sha256"] != hashlib.sha256(artifact["fasta"].encode("utf-8")).hexdigest():
         raise CoreProtocolError("FASTA bytes differ from their native digest")
-    _pin(artifact["manifest_sha256"], artifact["manifest"], "Complete native manifest")
+    pin(artifact["manifest_sha256"], artifact["manifest"], "Complete native manifest")
     manifest = _object(artifact["manifest"], {"schema_version", "profile", "claim_scope", "premise", "request", "candidate", "limits",
         "assessment", "bindings", "members", "fasta_sha256", "empirical", "original_authority"}, "Complete native manifest")
     if any(manifest[key] != expected for key, expected in (
@@ -353,12 +357,12 @@ def _artifact(value: JsonValue, *, operation: str, request: dict[str, JsonValue]
             ("empirical", "unassessed"), ("original_authority", "retain_original_inputs_separately"))):
         raise CoreProtocolError("Manifest upgraded or changed its exact export claim")
     for key, expected in (("request", request), ("candidate", candidate), ("limits", limits), ("assessment", report)):
-        if not _same(manifest[key], expected):
+        if document_encoder(manifest[key]) != document_encoder(expected):
             raise CoreProtocolError("Manifest changed complete original " + key)
     bindings = _object(manifest["bindings"], {"request_fingerprint", "candidate_fingerprint", "invocation_fingerprint", "assessment_fingerprint"}, "Manifest identity bindings")
     for key, expected in (("request_fingerprint", request), ("candidate_fingerprint", candidate),
             ("invocation_fingerprint", {"request": request, "candidate": candidate, "limits": limits}), ("assessment_fingerprint", report)):
-        _pin(bindings[key], expected, "Manifest " + key)
+        pin(bindings[key], expected, "Manifest " + key)
     _artifact_members(construction=candidate["construction"], members=manifest["members"],
                       fasta=artifact["fasta"], fasta_sha256=artifact["fasta_sha256"],
                       manifest_fasta_sha256=manifest["fasta_sha256"])
@@ -468,7 +472,8 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyMate
                                 request_hash, candidate_hash, invocation_hash, report_hash, encode_json(result))
 
 
-def _publication(raw: JsonValue, maximum_bytes: int, maximum_nodes: int) -> None:
+def _publication(raw: JsonValue, maximum_bytes: int, maximum_nodes: int, *,
+                 document_encoder: Callable[[JsonValue], bytes] = encode_json) -> None:
     pending = [raw]
     nodes = 0
     while pending:
@@ -481,7 +486,7 @@ def _publication(raw: JsonValue, maximum_bytes: int, maximum_nodes: int) -> None
             pending.extend(value)
         if nodes + len(pending) > maximum_nodes:
             raise CoreProtocolError("Complete material evidence exceeds its declared node bound")
-    if len(encode_json(raw)) > maximum_bytes:
+    if len(document_encoder(raw)) > maximum_bytes:
         raise CoreProtocolError("Complete material evidence exceeds its declared publication bound")
 
 

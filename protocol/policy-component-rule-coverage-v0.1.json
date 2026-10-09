@@ -322,7 +322,7 @@
     },
     {
       "path": "core/lib/compiler/policy_staged_lowering.ml",
-      "sha256": "01a33c1e2d19819267b7331609a5c6a7ee0d23a2e6300067bc8b604793bd5718",
+      "sha256": "954a6d680367006dee49d74fb05ee458a03be529889a3c0ff108b39595c6839b",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -761,6 +761,30 @@
     {
       "path": "core/lib/domain/policy_component_selection_request.mli",
       "sha256": "24cb9c515d9ca2fd0c8e72d65ddc415974e6f8ea99b6cbfada3db2ed55389a79",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_coupled_wire.ml",
+      "sha256": "c21a33eb15ea637f52a941380f61b708182aec9dd757119e7996fff8920ff04d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 2,
+          "require": 17
+        },
+        "profile_literals": {
+          "biocompiler.policy_coupled_json_graph.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_coupled_wire.mli",
+      "sha256": "07dd15c3b1f7cdf6cf71e69569158b2cb9c66a81813de168baaf983bfa32aba0",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1280,7 +1304,7 @@
     },
     {
       "path": "core/lib/producer_service/policy_component_material_producer.ml",
-      "sha256": "9360d03936d985e546e6b57db98ea6d1d1c15bf5e0cd8335e5830638fca1eddb",
+      "sha256": "4ca4a6436a17bedc9c241242d87c431bbec45839e6b3a770bca6c4a9e582c36a",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1334,7 +1358,7 @@
     },
     {
       "path": "core/lib/producer_service/policy_quantitative_assurance_producer.ml",
-      "sha256": "e3db75ac353c28e2add90e01bdfb72d7bde53f2f4e8715ccb3c3f06546eae99d",
+      "sha256": "21ca25d5ea111ced356171af98117acc0818718fe6b4c7998ba5fe9356e4eca4",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1377,7 +1401,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "57bc6a32057905a222da57553bb27c5d67bb9f4d1595a6fb0015ff574b01ca3e",
+      "sha256": "e011a22c44b2a958973f77f97589c220f7623a1946c0875dfc01914fe8c41592",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1836,12 +1860,12 @@
     },
     {
       "path": "core/lib/service/policy_component_material_service.ml",
-      "sha256": "cbc9c45a6724f300295bd008f1d0309279e8bccfa809ba93331fe89b594145eb",
+      "sha256": "a0c8f932e56052d16306529ee2880e827c97959669337b24a001ea0c50c7aebf",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 1,
-          "Diagnostic.require": 4
+          "Diagnostic.require": 7
         },
         "profile_literals": {
           "biocompiler.core.policy_component_material.v1": 1,
@@ -1866,7 +1890,7 @@
     },
     {
       "path": "core/lib/service/policy_component_material_service.mli",
-      "sha256": "8e227bf792490c0d6123c66e7f5e7194c2c7a04acd195b95a61cd1028d15614b",
+      "sha256": "740dd5277d6fc5925683686e1cbd144f926880fa1736ec4dd2fb53b6a66f10e0",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1931,7 +1955,7 @@
     },
     {
       "path": "core/lib/service/policy_quantitative_assurance_service.ml",
-      "sha256": "7ba05934f2e01db0635950ed261563bf8b7d970c6358d89ab9fee28c55556adb",
+      "sha256": "175a81fe730d7aef81cfbafcc46737ec678a6e5ffe36ccd44e989129a139d791",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1957,7 +1981,7 @@
     },
     {
       "path": "core/lib/service/policy_refinement_service.ml",
-      "sha256": "ef0e385bc319a891270fdcfb2df5e38e87acad887a5e9fb5f378ca8107d884e8",
+      "sha256": "3a3028cdcef8b3854d8f48f0bd629f8ee52c1c5eab6a96be82d9d10f94371d2c",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1981,7 +2005,7 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "a00c8f9579e8d7d5f467b6b3238e7b4dd276202dc6bbc22b55f90f925d12b3c1",
+      "sha256": "2dcd82b8a0e4f2ff701546f063d72d2ec0640e803678379c14ea5bf5892d3975",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -2006,14 +2030,28 @@
       }
     },
     {
+      "path": "src/biocompiler/_policy_coupled_wire.py",
+      "sha256": "daa93313b7fd03ce2c249e7d8e7682b181bcb4b8acfe2bcc391026172bcb2588",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 12,
+          "Raise": 1
+        },
+        "profile_literals": {
+          "biocompiler.policy_coupled_json_graph.v0.1": 1
+        }
+      }
+    },
+    {
       "path": "src/biocompiler/core_policy_component_material.py",
-      "sha256": "5a6dd119db235b17fd0201ec60b1a4de10f8b88b8d5c47e24db793e412fa27ca",
+      "sha256": "5d317d091e9895556968aed3a2965d425733346ae4422b129986fa27fedd789d",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 42,
-          "Raise": 115
+          "FunctionDef": 49,
+          "Raise": 118
         },
         "profile_literals": {
           "biocompiler.core.policy_component_material.v1": 1,
@@ -2248,13 +2286,13 @@
     },
     {
       "path": "src/biocompiler/core_policy_material.py",
-      "sha256": "64d690df2654f93f1b0149d775db55b029950f1e4fad0ce8c9877927b16ab31a",
+      "sha256": "e3b990c93130fb7d0b74462e30bf87dc5cd5f42d582a0808163f1a6ba965b5cf",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 22,
-          "Raise": 58
+          "FunctionDef": 23,
+          "Raise": 59
         },
         "profile_literals": {
           "biocompiler.construction_content_assessment.v0.1": 1,
@@ -2328,7 +2366,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_quantitative_assurance.py",
-      "sha256": "1545f860c21649ef721edbad46b98c885c5535c989cfdad24cba44a6f3ff5253",
+      "sha256": "6e1fa5ba5dddec8fcef969696809e951b5e3567e2e7251cb4202830bd0ba2930",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -2351,7 +2389,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_refinement.py",
-      "sha256": "1aa77ccdb85263c35d904b5d1d0085046cff4c926f2bab2e98d99df57c82f63c",
+      "sha256": "ea059004962bc243a3dd12d30d89115ac192d303f2b79d6dc049eb049aca250b",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -2824,11 +2862,11 @@
     },
     {
       "path": "core/test/test_policy_quantitative_assurance.ml",
-      "sha256": "3bc5fd61f9192a855387dc97f88a48a7f3804b7a3a4e146260497de99b9c890d"
+      "sha256": "b98491c8b27e978e7ca0662f0e1ef95522a8bd3c6da198b3a74c432127037eb9"
     },
     {
       "path": "core/test/test_policy_quantitative_composition.ml",
-      "sha256": "89eb0048ef5112d24402037a84effae304e65cc1373fbab7608cb3f74d171a1b"
+      "sha256": "4d2fa02ca574f92da7fd70650d82ebe3f7938fa329e1d7956aeaa4d65db47592"
     },
     {
       "path": "core/test/test_policy_quantitative_network.ml",
@@ -2925,6 +2963,14 @@
     {
       "path": "tests/test_policy_component_selection_witness.py",
       "sha256": "e8c988fa57cef5bb8861ec7a73821627725b2d8586cadf5ddfe352097bd741ab"
+    },
+    {
+      "path": "tests/test_policy_coupled_transport.py",
+      "sha256": "7305f33ec84e97de72724cd4b1b179566a8615d574dcc98da331f3045bec1b00"
+    },
+    {
+      "path": "tests/test_policy_coupled_wire.py",
+      "sha256": "196de013113ed81ad7ac2b5cfc922f06cae383bd4fd98d79535bc3b30f2caaf5"
     },
     {
       "path": "tests/test_policy_finite_machine.py",
@@ -3040,7 +3086,7 @@
     },
     {
       "path": "tests/test_policy_quantitative_assurance_campaign.py",
-      "sha256": "56243ccf338894e36aa37b21cb648222b57260a86427f9628b3b6fe033bcfea0"
+      "sha256": "97e7c5638cb2ccd0b400cf3db65b109e9013320318f0cad3b538198017f122c2"
     },
     {
       "path": "tests/test_policy_quantitative_composition.py",
@@ -3192,11 +3238,11 @@
     },
     {
       "path": "tools/check_policy_quantitative_assurance.py",
-      "sha256": "4b6642a0b3b7b51b2f888e87b3025f5cf13d9596f592604a2e2d34ca3d6a7809"
+      "sha256": "cd89ee85b9efbeb92ed21711773e4d07ec59945894fa71e3bccb7d29adb7dd55"
     },
     {
       "path": "tools/check_policy_quantitative_assurance_prebuilt.py",
-      "sha256": "24d16a97d222bb8071bf343a7896f043d388a515d1ef61138261b1694e6c3da1"
+      "sha256": "4271fa20416881314190376ae399d8d527d25240b7e38c29306d54fdbbee1160"
     },
     {
       "path": "tools/check_policy_staged_component_material.py",
@@ -6633,6 +6679,16 @@
           "occurrence": 1
         },
         {
+          "path": "core/lib/domain/policy_coupled_wire.ml",
+          "anchor": "let decode",
+          "occurrence": 1
+        },
+        {
+          "path": "src/biocompiler/_policy_coupled_wire.py",
+          "anchor": "def unpack(",
+          "occurrence": 1
+        },
+        {
           "path": "core/lib/service/policy_quantitative_assurance_service.ml",
           "anchor": "let check ~export",
           "occurrence": 1
@@ -6673,12 +6729,22 @@
           "path": "tests/test_policy_quantitative_assurance_campaign.py",
           "anchor": "def test_complete_retained_results_validate_with_full_original_payloads(",
           "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_coupled_wire.py",
+          "anchor": "def test_independent_literal_postorder_and_complete_identity(",
+          "occurrence": 1
         }
       ],
       "negative": [
         {
           "path": "core/test/test_policy_quantitative_assurance.ml",
           "anchor": "tampered replay",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_coupled_wire.py",
+          "anchor": "def test_expansion_bombs_reject_before_serializing_or_allocating_expanded_tree(",
           "occurrence": 1
         },
         {

@@ -43,13 +43,13 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 224)
+        self.assertEqual(result["sources"], 227)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 40, "sources": 172, "witness_sources": 179,
+        self.assertEqual(result["component_route"], {"rules": 40, "sources": 175, "witness_sources": 181,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)

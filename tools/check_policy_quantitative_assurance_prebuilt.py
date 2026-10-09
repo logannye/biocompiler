@@ -106,7 +106,8 @@ def validate_campaign(path, identity, slot, binaries, sdk_entries, package):
     require(type(imports) is dict and set(imports) == {"package", "modules", "record_verified"} and imports["record_verified"] is True
         and imports["package"] == package and type(imports["modules"]) is dict and bool(imports["modules"]), "Installed import ownership is missing")
     required = {"biocompiler", "biocompiler.core_client", "biocompiler.core_policy_quantitative_assurance",
-        "biocompiler.policy.approximation", "biocompiler.policy.realization_evidence", "biocompiler.policy.quantitative_assurance"}
+        "biocompiler.policy.approximation", "biocompiler.policy.realization_evidence", "biocompiler.policy.quantitative_assurance",
+        "biocompiler._policy_coupled_wire"}
     require(required <= set(imports["modules"]), "Required installed SDK modules were not exercised")
     for name, row in imports["modules"].items():
         require(name == "biocompiler" or name.startswith("biocompiler."), "Foreign recorded import")
@@ -231,9 +232,8 @@ def compare(args):
         found.add(slot)
     require(found == SLOTS and all(pin(path, maximum) == expected for path, maximum, expected in retained), "Missing slots or changed retained authority")
     require(args.output is not None and not args.output.exists(), "Comparison output must be fresh")
-    from biocompiler.core_client import encode_json
     result = {"schema_version": SCHEMA, "status": "pass", **identity, "scope": SCOPE, "slots": sorted(attempts, key=lambda row: row["slot"]),
-        "observations": list(campaign.OBSERVATIONS), "complete_observations_sha256": base.build.sha(encode_json(baseline, limit=128 * 1024 * 1024)),
+        "observations": list(campaign.OBSERVATIONS), "complete_observations_sha256": campaign.observations_digest(baseline),
         "empirical_function": "unassessed"}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     write(args.output, result)

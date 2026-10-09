@@ -60,6 +60,13 @@ val max_result_nodes : int
 val profile : Json.t
 val producer_profile : Json.t
 val validate_publication : Json.t -> unit
+val is_coupled_request : Json.t -> bool
+
+(** Decode only an explicitly tagged operation envelope, then require the full
+    original coupled material family. Nested authored values are never decoded. *)
+val unpack_payload : assurance:bool -> Json.t -> Json.t
+val publish_result : coupled:bool -> Json.t -> Json.t
+val replay_equal : coupled:bool -> Json.t -> Json.t -> bool
 
 (** Reuse only a fresh, opaque accepted material capability. *)
 val export_artifact : Bioc_realization_checker.Policy_component_material_check.checked_material -> Json.t -> Json.t -> Json.t

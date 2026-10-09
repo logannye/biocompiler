@@ -25,6 +25,7 @@ module Producer = Bioc_producer_service.Producer_service
 module Arrange = Bioc_compiler.Policy_component_lowering
 module Lower = Bioc_compiler.Policy_implementation_lowering
 module Binding = Bioc_domain.Policy_implementation_binding
+module Wire = Bioc_domain.Policy_coupled_wire
 
 let ()=Printexc.register_printer(function
   |Diagnostic.Error d->Some(Printf.sprintf "Diagnostic.Error(%s, %s)" d.code d.message)
@@ -43,20 +44,83 @@ let accepted label=function Some value->value|None->failwith(label^" withheld it
 let read path=let channel=open_in_bin path in Fun.protect ~finally:(fun()->close_in_noerr channel)(fun()->
   Json.parse_artifact ~max_bytes:(8*1024*1024) ~max_nodes:400000(really_input_string channel(in_channel_length channel)))
 let call handler role operation payload=
+  let payload=if operation="plan-policy-target"then payload else Wire.encode payload in
   let request:Protocol.request={request_id="quantitative-literal";operation;payload}in
   match handler role request with
-  |Protocol.Ok,Some result,[]->result
+  |Protocol.Ok,Some result,[]->if Wire.is_packet result then Wire.decode result else result
   |_,_,diagnostics->failwith(operation^": "^String.concat "; "(List.map(fun(d:Diagnostic.t)->d.code^": "^d.message)diagnostics))
 let controls=ref 0
 let rejects label action=match action()with
   |_->failwith("Quantitative adversary accepted: "^label)
   |exception Diagnostic.Error _->incr controls
 let rejected_service label operation payload=
-  let request:Protocol.request={request_id="quantitative-mutant";operation;payload}in
+  let request:Protocol.request={request_id="quantitative-mutant";operation;payload=Wire.encode payload}in
   match Service.handle Protocol.Verify request with
   |Protocol.Error,None,(_::_)->incr controls
   |_->failwith("Quantitative service adversary accepted: "^label)
   |exception Diagnostic.Error _->incr controls
+
+let wire_controls previous=
+  let rec cyclic_fields=("other",Json.Null)::cyclic_fields in
+  require(not(Wire.is_packet(Json.Object cyclic_fields)))"Coupled packet dispatch must be bounded before preflight";
+  let logical=o["b",a[Json.int 1;Json.int 1];"a",a[Json.int 1;Json.int 1]]in
+  let golden=o["schema_version",s Wire.schema_version;"expanded_sha256",
+    s "d0b48ae3cfa37127402304d220cab43c3b9b3ae27a73c3f80a4f41228056db53";
+    "root",Json.int 2;"nodes",a[o["kind",s "integer";"value",Json.int 1];
+      o["kind",s "array";"items",a[Json.int 0;Json.int 0]];
+      o["kind",s "object";"fields",a[a[s "a";Json.int 1];a[s "b";Json.int 1]]]]]in
+  require(Json.equal(Wire.encode logical)golden && Json.equal(Wire.decode golden)logical)
+    "Coupled transport differs from the independent literal cross-language DAG";
+  require(Wire.preflight logical=String.length(Canonical.encode logical))
+    "Coupled transport lost complete canonical byte accounting";
+  let scalars=a[Json.Null;Json.Bool true;Json.Bool false;Json.int 1;Json.Float 1.;Json.Float(-0.);
+    s "\195\169\000\n";a[];o[]]in
+  require(Canonical.encode(Wire.decode(Wire.encode scalars))=Canonical.encode scalars)
+    "Typed transport conflated numbers, signed zero, Unicode, escapes or empty containers";
+  let denied=ref 0 in
+  let reject ?code label action=match action()with
+    |_->failwith("Coupled wire adversary accepted: "^label)
+    |exception Diagnostic.Error diagnostic->
+      Option.iter(fun expected->require(diagnostic.code=expected)(label^": wrong diagnostic "^diagnostic.code))code;
+      incr denied in
+  let packet rows=o["schema_version",s Wire.schema_version;"expanded_sha256",s(String.make 64 '0');
+    "root",Json.int(List.length rows-1);"nodes",a rows]in
+  let null=o["kind",s "null"] and boolean=o["kind",s "boolean";"value",Json.Bool true]in
+  let array refs=o["kind",s "array";"items",a(List.map Json.int refs)]in
+  reject "changed expanded fingerprint"(fun()->Wire.decode(set "expanded_sha256"(s(String.make 64 '0'))golden));
+  reject "non-final root"(fun()->Wire.decode(set "root"(Json.int 1)golden));
+  reject "forward reference"(fun()->Wire.decode(packet[array[1];null]));
+  reject "negative reference"(fun()->Wire.decode(packet[null;array[-1]]));
+  reject "duplicate interned row"(fun()->Wire.decode(packet[null;null;array[0;1]]));
+  reject "unreachable row"(fun()->Wire.decode(packet[null;boolean;array[0]]));
+  reject "noncanonical reachable postorder"(fun()->Wire.decode(packet[null;boolean;array[1;0]]));
+  reject "scalar kind mismatch"(fun()->Wire.decode(packet[o["kind",s "boolean";"value",Json.int 1]]));
+  reject "unknown node field"(fun()->Wire.decode(packet[o["kind",s "null";"value",Json.Null]]));
+  reject "unknown packet field"(fun()->Wire.decode(o(("extra",Json.Null)::Json.object_fields golden)));
+  let object_node fields=o["kind",s "object";"fields",a(List.map(fun key->a[s key;Json.int 0])fields)]in
+  reject "unsorted object keys"(fun()->Wire.decode(packet[null;object_node["b";"a"]]));
+  reject "duplicate object keys"(fun()->Wire.decode(packet[null;object_node["a";"a"]]));
+  let bomb=packet(null::List.init 20(fun index->array[index;index]))in
+  let work=ref 0 in
+  reject ~code:"policy_coupled_wire_limit" "exponential expanded inventory"(fun()->
+    Wire.decode ~charge:(fun amount->work:= !work+amount)bomb);
+  require(!work<100000)"Expanded-size rejection traversed the exponential logical value";
+  reject ~code:"policy_coupled_wire_limit" "expanded canonical byte bound"(fun()->
+    Wire.decode(packet[o["kind",s "string";"value",s(String.make 65536 'x')];
+      array(List.init 128(fun _->0))]));
+  reject ~code:"policy_coupled_wire_limit" "expanded depth"(fun()->
+    Wire.decode(packet(null::List.init 129(fun index->array[index]))));
+  reject ~code:"policy_coupled_wire_limit" "integer decimal bound"(fun()->Wire.encode(Json.Int(Z.pow(Z.of_int 10)4300)));
+  reject "nonfinite float"(fun()->Wire.encode(Json.Float infinity));
+  let rec cyclic=Json.Array[cyclic]in
+  reject "cyclic logical JSON"(fun()->Wire.encode cyclic);
+  reject "duplicate logical keys"(fun()->Wire.encode(o["a",Json.Null;"a",Json.Bool true]));
+  reject ~code:"wire_test_budget" "charged codec work"(fun()->Wire.encode
+    ~charge:(fun _->Diagnostic.fail "wire_test_budget" "No codec work remains.")logical);
+  reject ~code:"policy_coupled_wire_profile" "packet cannot promote an older material family"(fun()->
+    Material.unpack_payload ~assurance:false(Wire.encode(o["request",get "request" previous;
+      "limits",get "limits" previous])));
+  require(!denied=21)"Coupled codec adversarial control census changed"
 let edge_ids=["a_to_b";"b_to_c";"a_to_c";"b_to_a";"c_to_a"]
 let table_row source input destination request before after allocations=o[
   "source",s source;"input",s input;"destination",s destination;"request",Json.Bool request;
@@ -220,10 +284,99 @@ let selected_trace bound reset=
   require(!created=6 && text "claim"(T.report matched)="matched_prefix_only")
     "Selected quantitative trace changed request count or broadened its prefix scope"
 
+let structural_lowering_controls original=
+  let library=R.implementation_library(M.implementation_request original)in
+  let raw=R.to_json(M.implementation_request original)in
+  let prepare ?(charge=Bioc_checker.Policy_generation_meter.no_charge) raw=
+    let request=R.of_coupled_json raw in
+    let source=Bioc_checker.Policy_admission.admit ~document:(R.document request)~descriptors:(R.definitions request)in
+    let behavior=Bioc_compiler.Policy_lowering.lower source in
+    RA.admit_metered ~charge ~request ~behavior in
+  (* Measure this lowering phase, including model-authorization callbacks into
+     its fresh admission, separately from independent source preparation. *)
+  let work=ref 0 and measuring=ref false in
+  let charge amount=if !measuring then (
+    require(amount>=0 && amount<=100_000_000- !work)
+      "Coupled lowering repeated whole expression subtrees under its fixture work bound";
+    work:= !work+amount)in
+  let admitted=prepare ~charge raw in
+  measuring:=true;
+  let lowered=Lower.lower_metered ~charge ~admitted ~library in
+  measuring:=false;
+  let bind admitted (value:Lower.proposal)=ignore(B.check ~admitted
+    ~implementation:value.implementation ~proposed:value.binding)in
+  bind admitted lowered;
+  let graph=I.to_json lowered.implementation in
+  let source implementation node port=
+    (List.find(fun(wire:I.wire)->wire.consumer.node_id=node && wire.consumer.port_id=port)
+      (I.wires implementation)).producer in
+  let original_roots=List.init 3(fun ordinal->source lowered.implementation "transition/0/commit"("value"^string_of_int ordinal))in
+  List.iteri(fun ordinal root->for transition=1 to 6 do
+    require(source lowered.implementation ("transition/"^string_of_int transition^"/commit")
+      ("value"^string_of_int ordinal)=root)"Identical original expressions lost sharing across atomic writers"
+  done)original_roots;
+  (* Read every source occurrence independently of the producer's memo table.
+     Repeated expression identity never erases a source path from the ledger. *)
+  let declarations=rows "declarations"(at["document";"program"]raw)in
+  let paths=ref []in
+  let rec visit path value=
+    paths:=path:: !paths;
+    List.iteri(fun index child->visit(path^"/args/"^string_of_int index)child)(rows "args" value)in
+  List.iteri(fun index declaration->let path="/document/program/declarations/"^string_of_int index in
+    if text "$type" declaration="Transition"then(
+      visit(path^"/on")(get "on" declaration);visit(path^"/when")(get "when" declaration);
+      List.iteri(fun ordinal assignment->visit(path^"/assignments/"^string_of_int ordinal^"/value")(get "value" assignment))
+        (rows "assignments" declaration))
+    else if text "$type" declaration="Effect"then
+      visit(path^"/parameters/0/value")(get "value"(List.hd(rows "parameters" declaration))))declarations;
+  require(List.length !paths=977 && List.for_all(fun path->
+    List.length(List.filter(fun row->text "source_path" row=path)(rows "occurrences" graph))=1)!paths)
+    "Structural expression keys dropped or duplicated original occurrence paths";
+  let lower raw=
+    let admitted=prepare raw in
+    let result=Lower.lower ~admitted ~library in bind admitted result;result in
+  let rec reorder=function
+    |Json.Object fields->o(List.rev_map(fun(key,value)->key,reorder value)fields)
+    |Json.Array values->a(List.map reorder values)|value->value in
+  let reordered=lower(reorder raw)in
+  require(Canonical.encode(I.to_json reordered.implementation)=Canonical.encode graph &&
+    Canonical.encode(Binding.to_json reordered.binding)=Canonical.encode(Binding.to_json lowered.binding))
+    "Expression interning made complete output bytes depend on JSON field order";
+  (* These nearby expressions keep valid source typing and available models,
+     but change child order, child identity/multiplicity, and arity. Each must
+     retain a distinct root while unchanged later writers keep their sharing. *)
+  let changed=edit["document";"program";"declarations"](fun values->a(List.map(fun declaration->
+    if text "id" declaration<>"reverse1"then declaration else
+    edit["assignments"](fun assignments->a(List.mapi(fun ordinal assignment->
+      edit["value";"args"](fun children->match ordinal,Json.array children with
+        |0,[x;y;z]->a[y;x;z]
+        |1,[x;_]->a[x;x]
+        |2,[x;y;_]->a[x;y]
+        |_->failwith "Structural-key adversaries no longer match the independent source shape")assignment)
+      (Json.array assignments)))declaration)(Json.array values)))raw in
+  let changed=lower changed in
+  require(List.length(I.nodes lowered.implementation)=49 && List.length(I.nodes changed.implementation)=52)
+    "Different complete expression keys were merged or changed unrelated nodes";
+  List.iteri(fun ordinal _->
+    let root=source changed.implementation "transition/0/commit"("value"^string_of_int ordinal)
+    and original=source changed.implementation "transition/1/commit"("value"^string_of_int ordinal)in
+    require(root<>original)"Near-matching expression incorrectly reused an original output";
+    let input endpoint port=source changed.implementation endpoint.I.node_id port in
+    (match ordinal with
+    |0->require(input root "in0"=input original "in1" && input root "in1"=input original "in0" &&
+      input root "in2"=input original "in2")"Ordered child identities were normalized away"
+    |1->require(input root "in0"=input original "in0" && input root "in1"=input original "in0" &&
+      input original "in0"<>input original "in1")"Repeated child identity was confused with a different operand"
+    |_->let node=List.find(fun(node:I.node)->node.node_id=root.node_id)(I.nodes changed.implementation)in
+      require(node.model.primitive=I.Truth_any 2 && input root "in0"=input original "in0" &&
+        input root "in1"=input original "in1")"Expression configuration or original operands were dropped"))original_roots;
+  Printf.printf "coupled model lowering work: %d\n%!" !work
+
 
 let ()=
   require(Array.length Sys.argv=3)"Expected coupled and unchanged single-owner network fixtures";
   let fixture=read Sys.argv.(1) and previous=read Sys.argv.(2)in
+  wire_controls previous;
   let previous_request=M.of_json(get "request" previous)in
   require(M.is_transfer_network previous_request && not(M.is_quantitative_composition previous_request))
     "Coupled profile changed the existing exact single-owner network route";
@@ -251,6 +404,7 @@ let ()=
   let report=Check.report result and contextual=Check.context checked in
   let preservation=A.implementation(C.assembly contextual)in
   let bound=P.binding preservation in
+  structural_lowering_controls original;
   (* Repeated identical configurations retain every distinct candidate node;
      different register configurations remain separate. Independently bind
      the complete result of repeated deterministic arrangement. *)

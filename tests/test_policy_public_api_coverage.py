@@ -47,9 +47,9 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (57, 1672, 305, 17, 35))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 580,
-            'independent_expansion': 28, 'shared_invariant': 708, 'source_only': 350})
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (57, 1679, 305, 17, 35))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 586,
+            'independent_expansion': 28, 'shared_invariant': 708, 'source_only': 351})
         self.assertEqual(len(self.ledger['syntax_links']), 359)
         self.assertEqual(len(self.ledger['witnesses']), 214)
         self.assertEqual(result['status'], 'source_inventory_checked')
@@ -66,7 +66,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 1672)
+        self.assertEqual(len(found['entries']), 1679)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
 

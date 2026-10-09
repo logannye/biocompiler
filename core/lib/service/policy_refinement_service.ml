@@ -4,6 +4,7 @@ module Check = Bioc_realization_checker.Policy_component_material_check
 module Evidence = Bioc_realization_checker.Policy_refinement_check
 module W = Bioc_checker.Work_budget
 module Input = Bioc_domain.Policy_material_request
+module Wire = Bioc_domain.Policy_coupled_wire
 let str value=Json.String value
 let obj fields=Json.Object fields
 let get key value=Json.field key(Json.object_fields value)
@@ -21,11 +22,13 @@ let profile=obj ["operations",Json.Array(List.map str operations);
 let handle ~operation payload=
   Diagnostic.require(List.mem operation operations) "unsupported_operation"
     "Named refinement service only freshly checks or replays original inputs.";
+  let payload=Material.unpack_payload ~assurance:false payload in
   let replay=operation="replay-policy-refinement" in
   let fields=Json.object_fields ~path:"/payload" payload in
   Json.exact_fields ~path:"/payload" (["request";"candidate";"limits"]@(if replay then ["report"] else [])) fields;
   let request=Json.field "request" fields and candidate=Json.field "candidate" fields
   and limits=Json.field "limits" fields in
+  let coupled=Material.is_coupled_request request in
   let _,checked=Material.fresh_check ~request ~candidate ~limits in
   let material_report=Check.report checked in
   let evidence=match Check.accepted checked with
@@ -36,8 +39,9 @@ let handle ~operation payload=
      scope cannot alter or borrow the completed material assessment's receipt. *)
   let budget=W.create ~profile:validation_scope ~error_code:"policy_refinement_service_work_limit"
     ~maximum:67108864 () in
-  let size=Input.preflight ~max_bytes:Material.max_result_bytes ~max_nodes:Material.max_result_nodes
-    ~max_depth:128 ~charge:(W.charge budget) material_report in
+  let size=if coupled then Wire.preflight ~charge:(W.charge budget) material_report else
+    Input.preflight ~max_bytes:Material.max_result_bytes ~max_nodes:Material.max_result_nodes
+      ~max_depth:128 ~charge:(W.charge budget) material_report in
   W.charge budget size;
   let bytes=Canonical.encode_bounded ~max_bytes:Material.max_result_bytes material_report in
   Diagnostic.require(String.length bytes=size) "policy_refinement_service_accounting"
@@ -51,7 +55,7 @@ let handle ~operation payload=
     "invocation_fingerprint",get "invocation_fingerprint" material_report;
     "material_report_fingerprint",str material_report_fingerprint;
     "material_report",material_report;"evidence",evidence] in
-  Material.validate_publication result;
-  if replay then Diagnostic.require(Json.equal result(Json.field "report" fields))
+  if not coupled then Material.validate_publication result;
+  if replay then Diagnostic.require(Material.replay_equal ~coupled result(Json.field "report" fields))
     "policy_refinement_replay" "Saved named evidence differs from complete fresh checking.";
-  result
+  if coupled then Material.publish_result ~coupled result else result

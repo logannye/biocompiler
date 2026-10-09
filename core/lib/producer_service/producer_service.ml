@@ -68,7 +68,11 @@ let capabilities executable request =
           match key with
           | "operations" -> Json.Array (Json.array value @ List.map str (operations @ ["compile-policy"; "compile-policy-implementation"; "compile-policy-material"; "compile-policy-component-material"; "compile-policy-component-selection"; "compile-policy-module-material"; "compile-policy-quantitative-assurance"] @ Policy_target_planning.operations @ Synthetic_producer_service.operations @ Synthetic_producer_public_service.operations @ Synthetic_inspection_service.operations))
           | "validation_scopes" -> Json.Array (Json.array value @ List.map str (validation_scope :: Policy_target_planning.validation_scope :: Synthetic_producer_service.validation_scopes @ Synthetic_producer_public_service.validation_scopes @ Synthetic_inspection_service.validation_scopes))
-          | "profiles" -> obj (Json.object_fields value @ ["architecture_producer", profile;
+          | "profiles" -> obj (List.map(fun(name,body)->name,
+              if name="policy_coupled_wire" then obj(List.map(fun(key,value)->key,
+                if key="operations" then Json.Array(Json.array value @
+                  List.map str ["compile-policy-component-material";"compile-policy-quantitative-assurance"])
+                else value)(Json.object_fields body)) else body)(Json.object_fields value) @ ["architecture_producer", profile;
               "policy_target_planning", Policy_target_planning.profile;
               "policy_quantitative_assurance_producer", Bioc_service.Policy_quantitative_assurance_service.producer_profile;
               "policy_operational_producer", Bioc_service.Policy_operational_service.producer_profile;

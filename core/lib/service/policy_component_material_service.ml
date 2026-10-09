@@ -9,6 +9,7 @@ module K=Bioc_domain.Construction_content
 module P=Bioc_realization_checker.Policy_preservation_check
 module Check=Bioc_realization_checker.Policy_component_material_check
 module W=Bioc_checker.Work_budget
+module Wire=Bioc_domain.Policy_coupled_wire
 let str value=Json.String value
 let obj fields=Json.Object fields
 let arr values=Json.Array values
@@ -143,6 +144,44 @@ let validate_publication raw=
   W.reserve_json output framed;
   let encoded=Canonical.encode_bounded ~max_bytes:max_result_bytes framed in
   ignore(Json.parse_artifact ~max_bytes:max_result_bytes ~max_nodes:max_result_nodes encoded)
+let is_coupled_request raw=
+  let rec field remaining key=function
+    |[]->None
+    |_ when remaining=0->None
+    |(name,value)::rest->if name=key then Some value else field(remaining-1)key rest in
+  match raw with
+  |Json.Object fields->field 64 "schema_version" fields=Some(str R.composition_schema_version) &&
+    field 64 "profile" fields=Some(str R.composition_profile)
+  |_->false
+let wire_budget ()=W.create ~profile:Wire.schema_version
+  ~error_code:"policy_coupled_wire_work_limit" ~maximum:134217728 ()
+let unpack_payload ~assurance payload=
+  if not(Wire.is_packet payload)then payload else
+  let work=wire_budget ()in
+  let decoded=Wire.decode ~charge:(W.charge work) payload in
+  let request=get "request" decoded in
+  let material=if assurance then get "material_request" request else request in
+  Diagnostic.require(is_coupled_request material)"policy_coupled_wire_profile"
+    "The coupled wire format requires a complete original coupled material request.";
+  decoded
+let publish_result ~coupled result=
+  let published=if coupled then
+    let work=wire_budget ()in Wire.encode ~charge:(W.charge work) result
+    else result in
+  validate_publication published;published
+let replay_equal ~coupled left right=
+  if not coupled then Json.equal left right else
+  let work=wire_budget ()in
+  let bytes raw=
+    let size=Wire.preflight ~charge:(W.charge work) raw in
+    W.charge work size;
+    let encoded=Canonical.encode_bounded ~max_bytes:max_result_bytes raw in
+    Diagnostic.require(String.length encoded=size)"policy_coupled_wire_accounting"
+      "Coupled replay accounting differs from the complete canonical bytes.";
+    encoded in
+  let left=bytes left and right=bytes right in
+  W.charge work(1+String.length left+String.length right);
+  String.equal left right
 let export_artifact checked candidate limits=
   let request=Check.request checked and report=Check.evidence checked in
   Diagnostic.require(candidate_schema=Check.candidate_schema &&
@@ -163,10 +202,21 @@ let export_artifact checked candidate limits=
     "empirical",str "unassessed";"original_authority",str "retain_original_inputs_separately"]in
   (* Hash the exact canonical bytes published as manifest.json. No self-hash is
      embedded; the enclosing export binds the complete manifest and FASTA pair. *)
-  let output=W.create_output ~profile:validation_scope ~error_code:"policy_component_material_service_publication_limit"
-    ~max_bytes:max_result_bytes ~max_nodes:max_result_nodes ()in
-  W.reserve_json output manifest;
-  let manifest_bytes=Canonical.encode_bounded ~max_bytes:max_result_bytes manifest in
+  let manifest_bytes=if R.is_quantitative_composition request then (
+    (* The full logical manifest remains self-contained and retains its exact
+       canonical identity. Only the enclosing coupled operation is packed. *)
+    let work=wire_budget ()in
+    let size=Wire.preflight ~charge:(W.charge work) manifest in
+    W.charge work size;
+    let bytes=Canonical.encode_bounded ~max_bytes:max_result_bytes manifest in
+    Diagnostic.require(String.length bytes=size)"policy_component_material_export_accounting"
+      "Coupled manifest accounting differs from the exact canonical bytes.";
+    W.charge work size;bytes)
+  else (
+    let output=W.create_output ~profile:validation_scope ~error_code:"policy_component_material_service_publication_limit"
+      ~max_bytes:max_result_bytes ~max_nodes:max_result_nodes ()in
+    W.reserve_json output manifest;
+    Canonical.encode_bounded ~max_bytes:max_result_bytes manifest)in
   obj["schema_version",str "biocompiler.policy_component_mrna_export.v0.1";
     "fasta",str fasta;"fasta_sha256",str fasta_sha;
     "manifest",manifest;"manifest_sha256",str(Canonical.sha256 manifest_bytes)]
@@ -213,14 +263,16 @@ let check ~export ~request:raw_request ~candidate:raw_candidate ~limits:raw_limi
     "request_fingerprint",str(R.fingerprint request);"candidate_fingerprint",str(Canonical.fingerprint raw_candidate);
     "invocation_fingerprint",str(Canonical.fingerprint(obj["request",raw_request;"candidate",raw_candidate;"limits",raw_limits]));
     "report_fingerprint",str(Canonical.fingerprint report);"candidate",raw_candidate;"report",report;"artifact",artifact]in
-  validate_publication result;result
+  ignore(publish_result ~coupled:(R.is_quantitative_composition request) result);result
 let handle ~operation payload=
   Diagnostic.require(List.mem operation operations)"unsupported_operation""Material service only checks, replays or freshly exports supplied candidates.";
+  let payload=unpack_payload ~assurance:false payload in
   let replay=operation="replay-policy-component-material"in
   let fields=Json.object_fields ~path:"/payload" payload in
   Json.exact_fields ~path:"/payload"(["request";"candidate";"limits"]@(if replay then["report"]else[]))fields;
+  let coupled=is_coupled_request(Json.field "request" fields)in
   let result=check ~export:(operation="export-policy-component-material") ~request:(Json.field "request" fields)
     ~candidate:(Json.field "candidate" fields) ~limits:(Json.field "limits" fields)in
-  if replay then Diagnostic.require(Json.equal result(Json.field "report" fields))
+  if replay then Diagnostic.require(replay_equal ~coupled result(Json.field "report" fields))
     "policy_component_material_replay""Saved full material wrapper differs from complete fresh checking.";
-  result
+  if coupled then publish_result ~coupled:true result else result

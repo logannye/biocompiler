@@ -62,6 +62,7 @@ EXTRA_SOURCES = (
     "src/biocompiler/core_client.py", "src/biocompiler/policy/cli.py",
     "src/biocompiler/entrypoint.py", "src/biocompiler/__main__.py",
     "src/biocompiler/core_distribution.py",
+    "src/biocompiler/_policy_coupled_wire.py",
 )
 # Closed exceptions concern separate public routes; they are still fully pinned.
 ROUTE_EXCEPTIONS = {
@@ -196,6 +197,7 @@ COMPONENT_TRANSFER_NETWORK_SOURCES = tuple(sorted(
     for suffix in ("ml", "mli")))
 COMPONENT_ASSURED_SOURCES = tuple(sorted([
     *[f"core/lib/{directory}/{name}.{suffix}" for directory, name in (
+        ("domain", "policy_coupled_wire"),
         ("domain", "policy_quantitative_composition_contract"), ("realization_checker", "policy_quantitative_composition_check"),
         ("domain", "policy_approximation_contract"), ("realization_checker", "policy_approximation_check"),
         ("domain", "policy_realization_evidence_contract"), ("realization_checker", "policy_realization_evidence_check"),
@@ -205,6 +207,7 @@ COMPONENT_ASSURED_SOURCES = tuple(sorted([
     "src/biocompiler/policy/quantitative_composition.py", "src/biocompiler/policy/approximation.py",
     "src/biocompiler/policy/realization_evidence.py", "src/biocompiler/policy/quantitative_assurance.py",
     "src/biocompiler/core_policy_quantitative_assurance.py",
+    "src/biocompiler/_policy_coupled_wire.py",
 ]))
 COMPONENT_SOURCES = tuple(sorted((*COMPONENT_ROUTE_SOURCES, *COMPONENT_SHARED_SOURCES,
                                   *COMPONENT_STAGED_SOURCES, *COMPONENT_MULTI_MEMBER_SOURCES,
@@ -395,6 +398,7 @@ COMPONENT_ASSURED_WITNESSES = (
     "core/test/test_policy_quantitative_assurance.ml", "tests/test_policy_quantitative_assurance.py",
     "tools/check_policy_quantitative_assurance.py", "tools/check_policy_quantitative_assurance_prebuilt.py",
     "tests/test_policy_quantitative_assurance_campaign.py",
+    "tests/test_policy_coupled_wire.py", "tests/test_policy_coupled_transport.py",
 )
 COMPONENT_WITNESSES = tuple(sorted([
     *COMPONENT_ASSURED_WITNESSES,
@@ -462,7 +466,7 @@ BEFORE_QUANTITATIVE_COMPONENT_METADATA_SHA256 = "339870f87976d93e774e4d9ac29d741
 BEFORE_REFINEMENT_METADATA_SHA256 = "7f2f1b2ae98833e27d959117dfbc2d83de612e670216412a34e9fcd1ba7464f5"
 BEFORE_REFINEMENT_COMPONENT_METADATA_SHA256 = "7b563303ab25cec0d9c394e9113914da079155d9ce73125225e9f9a2f9b61fdd"
 BEFORE_FINITE_MACHINE_COMPONENT_METADATA_SHA256 = "394152e8ccbb347e9f272be773f44a1dab444895c6b4babd413d34c3c7a4db5b"
-COMPONENT_METADATA_SHA256 = "56656deef53d9b82a49860dd68b6eaa0f9a075610e7b8c46ea88ba9cd7796474"
+COMPONENT_METADATA_SHA256 = "e525d2456aabebfbc920ab795204b848dffb3ad8b8554ab4e42d95ccc1c7afed"
 
 
 class CoverageError(ValueError):

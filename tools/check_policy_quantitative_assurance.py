@@ -57,6 +57,36 @@ def file_pin(path, maximum=32 * 1024 * 1024):
     return {"sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw)}
 
 
+def observation_bytes(name, value):
+    """Retain logical evidence under its explicit operation-family bounds."""
+    from biocompiler.core_client import encode_json
+    require(name in OBSERVATIONS, "Unknown assurance observation identity")
+    if name.startswith("coupled-"):
+        from biocompiler._policy_coupled_wire import canonical_bytes
+        return canonical_bytes(value)
+    return encode_json(value, limit=32 * 1024 * 1024)
+
+
+def observations_digest(values):
+    """Hash the same canonical object bytes without flattening all records."""
+    from biocompiler.core_client import encode_json
+    require(type(values) is dict and set(values) == set(OBSERVATIONS), "Incomplete assurance observation census")
+    digest = hashlib.sha256()
+    count = 0
+    def append(raw):
+        nonlocal count
+        count += len(raw)
+        require(count <= 128 * 1024 * 1024, "Complete assurance observations exceed their aggregate byte bound")
+        digest.update(raw)
+    append(b"{")
+    for index, name in enumerate(sorted(values)):
+        if index: append(b",")
+        append(encode_json(name)); append(b":")
+        append(observation_bytes(name, values[name]))
+    append(b"}")
+    return digest.hexdigest()
+
+
 def imported_modules(require_installed):
     import biocompiler
     package = Path(biocompiler.__file__).resolve().parent
@@ -83,7 +113,8 @@ def imported_modules(require_installed):
             encoded = base64.urlsafe_b64encode(bytes.fromhex(pin["sha256"])).decode().rstrip("=")
             require(record.hash.value == encoded, "Imported SDK source differs from actual installed RECORD")
         result[name] = {"path": str(path), **pin}
-    require("biocompiler.core_policy_quantitative_assurance" in result and "biocompiler.policy.approximation" in result,
+    require("biocompiler.core_policy_quantitative_assurance" in result and "biocompiler.policy.approximation" in result
+            and "biocompiler._policy_coupled_wire" in result,
             "Campaign did not import the quantitative SDK")
     return {"package": str(package), "modules": result, "record_verified": require_installed}
 
@@ -153,7 +184,7 @@ def run(args):
     def retain(name, value):
         require(name not in {row["name"] for row in receipt["observations"]}, "Duplicate observation identity")
         path = sidecars / (name + ".json")
-        raw = encode_json(value, limit=32 * 1024 * 1024)
+        raw = observation_bytes(name, value)
         with path.open("xb") as stream:
             stream.write(raw)
         receipt["observations"].append({"name": name, "path": str(path.relative_to(output.parent)), **file_pin(path)})

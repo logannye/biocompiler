@@ -135,6 +135,32 @@ the unchanged original material manifest and RNA digest. Exact RNA bytes and the
 old material manifest remain independently checkable. Each child retains its
 own work limits; approximation/evidence work also charges the supplementary
 parent allowance. Publication is bounded and checked before returning a result.
+Equivalent source expressions can have different checking and publication costs:
+retaining complete source correspondence also retains its representation size.
+Admission to the finite mathematical domain therefore does not promise that an
+arbitrarily expanded expression fits the work or artifact limits. Resource
+exhaustion grants no export capability. Compact authoring must preserve the
+complete law, observation behavior and effect requests; it cannot omit an
+obligation to fit a budget.
+
+Coupled material, assurance and refinement operations negotiate the separate
+`policy_coupled_wire` transport profile. Its versioned JSON graph stores each
+identical typed record once in deterministic postorder. It preserves the complete
+logical document, source occurrences, manifest and canonical SHA-256; authored
+JSON fields are never interpreted as references. Every packet must have a closed,
+reachable graph with strictly backward references, unique records and sorted
+object keys. Decoding proves the expanded size and depth before constructing the
+logical document and then checks its complete canonical digest.
+
+The physical packet remains bounded by 249,968 key/value nodes and 8,323,072
+bytes. The explicitly negotiated logical expansion admits at most 1,000,000
+key/value nodes under the same byte bound and depth 128. Original source,
+candidate and child-checker limits remain in force. Repeated references cannot
+hide expansion costs, and a decoded graph grants no admission or acceptance.
+Every check, replay and export rechecks the original inputs. Existing exact
+profiles retain their original wire representation. Python result views return
+detached logical documents, while the coupled transport carries the bounded
+graph representation.
 
 This profile deliberately separates three statements: the specification matches
 the supplied executable model; the selected material exactly implements the

@@ -5,13 +5,15 @@ edit: check/export invoke native checking and replay requires exact fresh equali
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+import hashlib
 from fractions import Fraction
 import re
-from typing import Callable, cast
+from typing import Callable, Literal, cast
 
 from biocompiler import core_policy_implementation as implementation
 from biocompiler import core_policy_material as material
+from biocompiler import _policy_coupled_wire as coupled_wire
 from biocompiler.core_client import CoreClient, CoreProtocolError, CoreResponse, JsonValue, _object, decode_json, encode_json
 
 VALIDATION_SCOPE = "policy-component-mrna-v0.1"
@@ -181,6 +183,37 @@ _REQUEST_FIELDS = {"schema_version", "profile", "implementation_request", "compo
 _CANDIDATE_FIELDS = {"schema_version", "behavior", "implementation", "binding", "assembly_proposal", "construction"}
 _REPORT_FIELDS = (material._REPORT_FIELDS - {"material", "material_status"}) | {"assembly", "assembly_status"}
 _same, _pin, _record, _rows, _count = material._same, material._pin, material._record, material._rows, material._count
+
+
+def _document_pin(actual: JsonValue, expected: JsonValue, label: str) -> str:
+    digest = hashlib.sha256(coupled_wire.canonical_bytes(expected)).hexdigest()
+    if actual != digest:
+        raise CoreProtocolError(label + " fingerprint does not match complete supplied authority")
+    return digest
+
+
+def _document_same(left: JsonValue, right: JsonValue) -> bool:
+    return coupled_wire.canonical_bytes(left) == coupled_wire.canonical_bytes(right)
+
+
+def _stored_result(data: bytes) -> dict[str, JsonValue]:
+    raw = decode_json(data)
+    return cast(dict[str, JsonValue], coupled_wire.unpack(raw) if coupled_wire.is_packet(raw) else raw)
+
+
+def _result_bytes(value: JsonValue, *, coupled: bool) -> bytes:
+    return encode_json(coupled_wire.pack(value) if coupled else value)
+
+
+def _wire_response(response: CoreResponse, *, coupled: bool) -> CoreResponse:
+    if coupled != coupled_wire.is_packet(response.result):
+        raise CoreProtocolError("Coupled wire response does not match the negotiated original profile")
+    return replace(response, result=coupled_wire.unpack(response.result)) if coupled else response
+
+
+def _wire_capability(profiles: dict[str, JsonValue], role: Literal["core", "verify"]) -> None:
+    if not _same(profiles.get("policy_coupled_wire"), coupled_wire.profile(role)):
+        raise CoreProtocolError("Selected executable lacks the exact coupled JSON graph wire profile")
 
 
 def _original(value: JsonValue) -> dict[str, JsonValue]:
@@ -852,6 +885,10 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
 class PolicyComponentMaterialResult(material.PolicyMaterialResult):
     """Immutable component evidence; only a fresh export returns paired native bytes."""
 
+    @property
+    def result(self) -> dict[str, JsonValue]:
+        return _stored_result(self._result_json)
+
 
 def _candidate(value: JsonValue, *, instanced: bool = False, multi_member: bool = False,
                grounded_helper: bool = False, multi_site: bool = False) -> dict[str, JsonValue]:
@@ -1167,8 +1204,13 @@ def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate
                 report: dict[str, JsonValue], limits: JsonValue) -> None:
     """Check an actual nested assessment, without constructing a child response."""
     invocation: JsonValue = {"request": request, "candidate": candidate, "limits": limits}
+    pin = _document_pin if _composition(request) else _pin
+    if _composition(request):
+        budgets = _record(request["budgets"], "Original component budgets")
+        material._publication(report, _count(budgets.get("max_report_bytes"), "Original report byte ceiling"),
+                              _count(budgets.get("max_report_nodes"), "Original report node ceiling"))
     for key, original in (("request_fingerprint", request), ("candidate_fingerprint", candidate), ("invocation_fingerprint", invocation)):
-        _pin(report[key], original, key)
+        pin(report[key], original, key)
     if not _same(report["limits"], limits) or not _same(report["budgets"], request["budgets"]):
         raise CoreProtocolError("Component checking changed original budgets or preservation limits")
     usage = _object(report["usage"], {"unit", "charged_work", "request_decoding_work"}, "Component work accounting")
@@ -1193,6 +1235,9 @@ def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate
 
 def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComponentMaterialResult:
     request = _original(payload["request"])
+    coupled = _composition(request)
+    pin = _document_pin if coupled else _pin
+    same = _document_same if coupled else _same
     instanced = _instanced(request)
     prerequisites = _prerequisites(request)
     _, _, _, expected_scope, expected_implementation = _profile_settings(request)
@@ -1200,6 +1245,8 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
     _expect(result, {"schema_version": RESULT_SCHEMA, "implementation": expected_implementation,
                     "resource_profile": RESOURCE_PROFILE, "validation_scope": expected_scope}, "Negotiated component result")
     candidate = _object(result["candidate"], _CANDIDATE_FIELDS, "Complete component candidate")
+    if coupled:
+        material._publication(candidate, 8_388_608, 250_000)
     if candidate["schema_version"] != CANDIDATE_SCHEMA or "candidate" in payload and not _same(candidate, payload["candidate"]):
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
     _candidate(candidate, instanced=instanced, multi_member=_multi_member(request), grounded_helper=_grounded_helper(request), multi_site=_multi_site(request))
@@ -1207,22 +1254,23 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
                      two_observations=_two_observations(request), multi_member=_multi_member(request), grounded_helper=_grounded_helper(request),
                      finite_machine=_finite_machine(request), quantitative=_quantitative(request), network=_network(request), multi_site=_multi_site(request), transfer_pair=_transfer_pair(request), transfer_network=_transfer_network(request), composition=_composition(request))
     invocation: JsonValue = {"request": request, "candidate": candidate, "limits": payload["limits"]}
-    request_hash = _pin(result["request_fingerprint"], request, "Complete original component request")
-    candidate_hash = _pin(result["candidate_fingerprint"], candidate, "Complete component candidate")
-    invocation_hash = _pin(result["invocation_fingerprint"], invocation, "Complete component invocation")
-    report_hash = _pin(result["report_fingerprint"], report, "Complete component report")
+    request_hash = pin(result["request_fingerprint"], request, "Complete original component request")
+    candidate_hash = pin(result["candidate_fingerprint"], candidate, "Complete component candidate")
+    invocation_hash = pin(result["invocation_fingerprint"], invocation, "Complete component invocation")
+    report_hash = pin(result["report_fingerprint"], report, "Complete component report")
     _assessment(response, request, candidate, report, payload["limits"])
     material._artifact(result["artifact"], operation=response.operation, request=request, candidate=candidate, report=report, limits=payload["limits"],
         export_operation="export-policy-component-material", accepted_status=ACCEPTED_STATUS, export_schema=EXPORT_SCHEMA,
-        manifest_schema=MANIFEST_SCHEMA, request_profile=cast(str, request["profile"]), claim_scope=CLAIM_SCOPE, premise=PREMISE)
-    if response.operation == "replay-policy-component-material" and not _same(result, payload["report"]):
+        manifest_schema=MANIFEST_SCHEMA, request_profile=cast(str, request["profile"]), claim_scope=CLAIM_SCOPE, premise=PREMISE,
+        document_encoder=coupled_wire.canonical_bytes if coupled else encode_json)
+    if response.operation == "replay-policy-component-material" and not same(result, payload["report"]):
         raise CoreProtocolError("Fresh replay differs from the complete retained component wrapper")
     budgets = _record(request["budgets"], "Original component budgets")
     material._publication(report, _count(budgets.get("max_report_bytes"), "Original report byte ceiling"),
                           _count(budgets.get("max_report_nodes"), "Original report node ceiling"))
-    material._publication({"result": result}, MAX_RESULT_BYTES, MAX_RESULT_NODES)
+    material._publication({"result": coupled_wire.pack(result) if coupled else result}, MAX_RESULT_BYTES, MAX_RESULT_NODES)
     return PolicyComponentMaterialResult(response.request_id, response.operation, response.executable,
-        request_hash, candidate_hash, invocation_hash, report_hash, encode_json(result))
+        request_hash, candidate_hash, invocation_hash, report_hash, _result_bytes(result, coupled=coupled))
 
 
 @dataclass(frozen=True)
@@ -1230,17 +1278,26 @@ class PolicyComponentMaterialClient:
     transport: CoreClient
 
     def _call(self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None) -> PolicyComponentMaterialResult:
-        snapshot = cast(dict[str, JsonValue], decode_json(encode_json(payload)))
+        coupled = _record(payload["request"], "Original request").get("profile") == COMPOSITION_REQUEST_PROFILE
+        snapshot = cast(dict[str, JsonValue], coupled_wire.snapshot(payload) if coupled else decode_json(encode_json(payload)))
         request = _original(snapshot["request"])
+        if coupled:
+            material._publication(request, 8_388_608, 250_000)
+            if "candidate" in snapshot:
+                material._publication(snapshot["candidate"], 8_388_608, 250_000)
         profile_key, expected_profile, expected_producer, expected_scope, _ = _profile_settings(request)
         if operation == "compile-policy-component-material" and self.transport.role != "core":
             raise CoreProtocolError("Component production requires an explicitly selected Core producer")
         capabilities = self.transport.negotiate(operation, cancelled=cancelled)
+        if coupled:
+            _wire_capability(capabilities.profiles, self.transport.role)
         if not _same(capabilities.profiles.get(profile_key), expected_profile) or expected_scope not in capabilities.validation_scopes:
             raise CoreProtocolError("Selected executable lacks the exact component material profile")
         if operation == "compile-policy-component-material" and not _same(capabilities.profiles.get(profile_key + "_producer"), expected_producer):
             raise CoreProtocolError("Selected executable lacks the exact component producer profile")
-        return _result(self.transport.call(operation, snapshot, cancelled=cancelled), snapshot)
+        wire = coupled_wire.pack(snapshot) if coupled else snapshot
+        response = self.transport.call(operation, wire, cancelled=cancelled)
+        return _result(_wire_response(response, coupled=coupled), snapshot)
 
     def compile(self, request: JsonValue, limits: JsonValue, *, cancelled: Callable[[], bool] | None = None) -> PolicyComponentMaterialResult:
         return self._call("compile-policy-component-material", {"request": request, "limits": limits}, cancelled=cancelled)

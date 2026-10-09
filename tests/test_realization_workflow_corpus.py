@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class RealizationWorkflowSourceScopeTests(unittest.TestCase):
     OPERATIONAL_MODULES = {
+        "src/biocompiler/_policy_coupled_wire.py": "biocompiler._policy_coupled_wire",
         'src/biocompiler/core_policy_module_linking.py': 'biocompiler.core_policy_module_linking',
         'src/biocompiler/core_policy_planning.py': 'biocompiler.core_policy_planning',
         'src/biocompiler/core_policy_quantitative_assurance.py': 'biocompiler.core_policy_quantitative_assurance',
@@ -53,7 +54,7 @@ class RealizationWorkflowSourceScopeTests(unittest.TestCase):
         historical = {row["path"] for row in scope["historical_sources"]}
         additions = {row["path"]: row["sha256"] for row in scope["reviewed_additions"]}
         self.assertEqual(scope["historical_corpus_pin"], PIN)
-        self.assertEqual(len(additions), 76)
+        self.assertEqual(len(additions), 77)
         self.assertEqual(additions["src/biocompiler/core_workflow.py"],
                          "43b57b87a2d89db200463d8aed8b7eea7e262cf1c4ea02c772843598dbda90df")
         self.assertEqual(additions["src/biocompiler/core_artifacts.py"],

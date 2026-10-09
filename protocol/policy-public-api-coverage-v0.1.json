@@ -637,6 +637,11 @@
         "component.withheld"
       ]
     },
+    "biocompiler.core_policy_component_material.PolicyComponentMaterialResult.result": {
+      "scope": "Focused Python authoring and inert transport controls only; no exhaustive API combination, native preservation, empirical or release acceptance.",
+      "status": "source_only",
+      "witnesses": []
+    },
     "biocompiler.core_policy_component_material.QUANTITATIVE_IMPLEMENTATION": {
       "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
       "status": "dependency",
@@ -837,6 +842,16 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.core_policy_component_material._document_pin": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material._document_same": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.core_policy_component_material._expect": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
       "status": "dependency",
@@ -932,6 +947,16 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.core_policy_component_material._result_bytes": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material._stored_result": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.core_policy_component_material._transfer_network": {
       "scope": "Private versioned transfer-network transport or exact authoring validation dependency; no individual native semantic or material acceptance claim.",
       "status": "dependency",
@@ -949,6 +974,16 @@
     },
     "biocompiler.core_policy_component_material._unique": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material._wire_capability": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material._wire_response": {
+      "scope": "Private typed-authoring or native transport dependency; no independent acceptance claim.",
       "status": "dependency",
       "witnesses": []
     },
@@ -13224,7 +13259,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "PolicyComponentMaterialClient"
         },
-        "syntax_sha256": "d2fd4379bc1dec8c9ec5af8b48a414a1a7ae8153e077c88182f64d3a952e04d0"
+        "syntax_sha256": "a45a173aeff50d180ea876dcb89064609e1149b893a48ef425a1132893e00cc7"
       },
       {
         "id": "biocompiler.core_policy_component_material.PolicyComponentMaterialClient._call",
@@ -13235,7 +13270,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "PolicyComponentMaterialClient._call"
         },
-        "syntax_sha256": "b6791a95b0ad23f595e09e2f03e394b54880b98588c88d8d40ae0f7d671b7335"
+        "syntax_sha256": "ad5a48e25ac732ce0d6f61b8a3931737aac11b85ebe913f97951f23777186b76"
       },
       {
         "id": "biocompiler.core_policy_component_material.PolicyComponentMaterialClient.check",
@@ -13301,7 +13336,18 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "PolicyComponentMaterialResult"
         },
-        "syntax_sha256": "949bd02c7e8f04ab545e54857547edccd89bc2e583da985b497f86689a7252c7"
+        "syntax_sha256": "bafa7d4f8bd689837641479d4a6b0cc347fe94bf36ba5fd2bfd262c8477ad671"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.PolicyComponentMaterialResult.result",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "PolicyComponentMaterialResult.result"
+        },
+        "syntax_sha256": "ab8c16075eddd74694e68a65c15031c9c7b2e7a99c1c728794e4c5b340274eaa"
       },
       {
         "id": "biocompiler.core_policy_component_material.QUANTITATIVE_IMPLEMENTATION",
@@ -13708,7 +13754,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_assessment"
         },
-        "syntax_sha256": "d4c42d092acf93548331b233727994ea0c532fb1f9bd2255316a3b4529b1949f"
+        "syntax_sha256": "7a539fff7a6fa17f3f0c1135d03c6b10f1925bdb79f4b5f074b7fd036fe783ed"
       },
       {
         "id": "biocompiler.core_policy_component_material._candidate",
@@ -13742,6 +13788,28 @@
           "symbol": "_context_inventory"
         },
         "syntax_sha256": "a64ee11f6323d063b869079847197d99ee502ae95f9527fcdc087777a9151468"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material._document_pin",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "actual: JsonValue, expected: JsonValue, label: str -> str",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "_document_pin"
+        },
+        "syntax_sha256": "c5f9b309161e60dd0e0bc5fa93a2cf958d3c8695b45742b20335c1cd4bd36aa8"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material._document_same",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "left: JsonValue, right: JsonValue -> bool",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "_document_same"
+        },
+        "syntax_sha256": "1c419a7e97e6e7d0df32469bd5a216f6bbcbba3e89ffebe217e4ea12b06fb479"
       },
       {
         "id": "biocompiler.core_policy_component_material._expect",
@@ -13950,7 +14018,29 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "4bae6a3d377d7f95fb6a3ce6c312865fdf32623c90fe78bf01f437f1c712f81d"
+        "syntax_sha256": "094eea10b3786ea37553cad209ab268b40310ab87a711da1108dd4489a19669c"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material._result_bytes",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue, *, coupled: bool -> bytes",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "_result_bytes"
+        },
+        "syntax_sha256": "5c218e857f70b7ca99cb3d2e16e9387605343a98f6110915c9eb3cab3618535c"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material._stored_result",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "data: bytes -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "_stored_result"
+        },
+        "syntax_sha256": "a5ea43353fc1611acee1fa136a8d0d0f81552ccb736c2845577e0ec52aafa5d6"
       },
       {
         "id": "biocompiler.core_policy_component_material._transfer_network",
@@ -13995,6 +14085,28 @@
           "symbol": "_unique"
         },
         "syntax_sha256": "a9fcbce25d4a8208ce59f56e7c2d908c1e64923ee14405f8c4d58b12e6c15eb7"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material._wire_capability",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "profiles: dict[str, JsonValue], role: Literal['core', 'verify'] -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "_wire_capability"
+        },
+        "syntax_sha256": "895eb4f689a1970c50cc8261a5f80f70ddd6aad3f6570c83e9b9739460c4cfe3"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material._wire_response",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "response: CoreResponse, *, coupled: bool -> CoreResponse",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "_wire_response"
+        },
+        "syntax_sha256": "eea8228cd794921e71d2cc58d3fc7bbfd8114e19cbaa5c6a1ea97624ba92cb42"
       },
       {
         "id": "biocompiler.core_policy_component_selection.ACCEPTED_STATUS",
@@ -15947,12 +16059,12 @@
         "id": "biocompiler.core_policy_material._artifact",
         "kind": "function",
         "scope": "dependency",
-        "signature": "value: JsonValue, *, operation: str, request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue], limits: JsonValue, export_operation: str='export-policy-material', accepted_status: str='checked_material', export_schema: str=EXPORT_SCHEMA, manifest_schema: str='biocompiler.policy_mrna_manifest.v0.1', request_profile: str=REQUEST_PROFILE, claim_scope: str='bounded_conditional_policy_to_exact_mrna', premise: str='supplied_model_to_sequence_and_provider_contracts' -> None",
+        "signature": "value: JsonValue, *, operation: str, request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue], limits: JsonValue, export_operation: str='export-policy-material', accepted_status: str='checked_material', export_schema: str=EXPORT_SCHEMA, manifest_schema: str='biocompiler.policy_mrna_manifest.v0.1', request_profile: str=REQUEST_PROFILE, claim_scope: str='bounded_conditional_policy_to_exact_mrna', premise: str='supplied_model_to_sequence_and_provider_contracts', document_encoder: Callable[[JsonValue], bytes]=encode_json -> None",
         "source": {
           "path": "src/biocompiler/core_policy_material.py",
           "symbol": "_artifact"
         },
-        "syntax_sha256": "3f47813b490aa2b0705b18ec642619daadbcd01f1412bf3029d74fd6a59c4460"
+        "syntax_sha256": "c4dc1a2e9e3c312f9a7fd2d02df3182875058859b95540a23a6c7ac51085da9a"
       },
       {
         "id": "biocompiler.core_policy_material._artifact_members",
@@ -16035,12 +16147,12 @@
         "id": "biocompiler.core_policy_material._publication",
         "kind": "function",
         "scope": "dependency",
-        "signature": "raw: JsonValue, maximum_bytes: int, maximum_nodes: int -> None",
+        "signature": "raw: JsonValue, maximum_bytes: int, maximum_nodes: int, *, document_encoder: Callable[[JsonValue], bytes]=encode_json -> None",
         "source": {
           "path": "src/biocompiler/core_policy_material.py",
           "symbol": "_publication"
         },
-        "syntax_sha256": "00299b4be93d8f008306d7c695524f7d90e943f710ad80e683c02a8d896b22ea"
+        "syntax_sha256": "842b8e065c388b1d0cefc05005c66d63b6bf659652e5399d064409e5237cd717"
       },
       {
         "id": "biocompiler.core_policy_material._result",
@@ -17558,7 +17670,7 @@
           "path": "src/biocompiler/core_policy_quantitative_assurance.py",
           "symbol": "PolicyQuantitativeAssuranceClient"
         },
-        "syntax_sha256": "c94afa0e8d4edcd2d0e2609209f2be92d1ce8e59e547f1f62ead48e994248a37"
+        "syntax_sha256": "b804cd11e0218c64967de44b2f62a697286e4f262cd441365aaa2c3861689d0f"
       },
       {
         "id": "biocompiler.core_policy_quantitative_assurance.PolicyQuantitativeAssuranceClient._call",
@@ -17569,7 +17681,7 @@
           "path": "src/biocompiler/core_policy_quantitative_assurance.py",
           "symbol": "PolicyQuantitativeAssuranceClient._call"
         },
-        "syntax_sha256": "06dab017f684ec9e60ae1f21e5c88dc258c7ad11a0d0ed16ddb09a8900509c92"
+        "syntax_sha256": "f3ebb84cee67534fcafe935c23a7e95ae4292995f07c217b9e10836f75e38660"
       },
       {
         "id": "biocompiler.core_policy_quantitative_assurance.PolicyQuantitativeAssuranceClient.check",
@@ -17635,7 +17747,7 @@
           "path": "src/biocompiler/core_policy_quantitative_assurance.py",
           "symbol": "PolicyQuantitativeAssuranceResult"
         },
-        "syntax_sha256": "384e7b06b51085d56b71b5643095e92e582a84ca626ad99d93c8d526b9f49ceb"
+        "syntax_sha256": "8f5070300026241646a55e4c0901694ac52c6da7e68d4835e35b99821042dd41"
       },
       {
         "id": "biocompiler.core_policy_quantitative_assurance.PolicyQuantitativeAssuranceResult._result_json",
@@ -17723,7 +17835,7 @@
           "path": "src/biocompiler/core_policy_quantitative_assurance.py",
           "symbol": "PolicyQuantitativeAssuranceResult.result"
         },
-        "syntax_sha256": "2bd4a45642e547fee08857872036039e1d801bc9acc7f70c77bddcee87d16a1e"
+        "syntax_sha256": "f847da010a4fc4d2208fd71ac022f9f927a3cf42e90131c2d00c6146829b1f83"
       },
       {
         "id": "biocompiler.core_policy_quantitative_assurance.REPORT_SCHEMA",
@@ -17789,7 +17901,7 @@
           "path": "src/biocompiler/core_policy_quantitative_assurance.py",
           "symbol": "_artifact"
         },
-        "syntax_sha256": "321947a8efc896a8008bdd650ef07e2032cfefe7749802950b4b91748cb3d9c4"
+        "syntax_sha256": "7b36f8c594ba4de86eb3942bd6bdffbafd22cbd4394a6d419e8f73a6e2e72e4e"
       },
       {
         "id": "biocompiler.core_policy_quantitative_assurance._material_report",
@@ -17844,7 +17956,7 @@
           "path": "src/biocompiler/core_policy_quantitative_assurance.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "988c936b4e3f8f341a2e98110a6632b9c4b0d7ae74285bf7e60fe47c4bf1063a"
+        "syntax_sha256": "7f9d78dda087321903789c052a8d4bc5bef91c219ad069668bbe3d28765e5fc1"
       },
       {
         "id": "biocompiler.core_policy_refinement.DerivationRule",
@@ -17921,7 +18033,7 @@
           "path": "src/biocompiler/core_policy_refinement.py",
           "symbol": "PolicyRefinementClient"
         },
-        "syntax_sha256": "a4d3066a1e795bb92fbc6c8d90d531a5aac79b175a75e00f0b00513c67295fc0"
+        "syntax_sha256": "8162a2619f0197ab2fdfd7831c2ba9e03e424026b0fa2733156011da7c152cb0"
       },
       {
         "id": "biocompiler.core_policy_refinement.PolicyRefinementClient._call",
@@ -17932,7 +18044,7 @@
           "path": "src/biocompiler/core_policy_refinement.py",
           "symbol": "PolicyRefinementClient._call"
         },
-        "syntax_sha256": "83aae46d6b9effd9863c8421a33c7975adbfa9128391280eb30de732ddbf4ab9"
+        "syntax_sha256": "61f075fcf3edc7c30305e26e4181f9bf8c39ffa0b32607e2c6192caa02751204"
       },
       {
         "id": "biocompiler.core_policy_refinement.PolicyRefinementClient.check",
@@ -17976,7 +18088,7 @@
           "path": "src/biocompiler/core_policy_refinement.py",
           "symbol": "PolicyRefinementResult"
         },
-        "syntax_sha256": "764fe6e996046153edaf30d3e3f614a1f1b6234ecb71ebb05162147b9250b0bb"
+        "syntax_sha256": "0397701f0578053d19767cc5bb739623b7af2156ac0b7c33e863e7bf0a133948"
       },
       {
         "id": "biocompiler.core_policy_refinement.PolicyRefinementResult._result_json",
@@ -18108,7 +18220,7 @@
           "path": "src/biocompiler/core_policy_refinement.py",
           "symbol": "PolicyRefinementResult.result"
         },
-        "syntax_sha256": "2bd4a45642e547fee08857872036039e1d801bc9acc7f70c77bddcee87d16a1e"
+        "syntax_sha256": "f847da010a4fc4d2208fd71ac022f9f927a3cf42e90131c2d00c6146829b1f83"
       },
       {
         "id": "biocompiler.core_policy_refinement.PremiseKind",
@@ -18625,7 +18737,7 @@
           "path": "src/biocompiler/core_policy_refinement.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "1f35b7447efb266f207f23912862db58d23f328e2aa3e327e1ebf0c296c42b07"
+        "syntax_sha256": "b2feee66d05c669895a855f1196af29d3927ab8e32c197b39d8129973f8b3dfd"
       },
       {
         "id": "biocompiler.core_policy_refinement._scope",
@@ -30964,15 +31076,15 @@
       "src/biocompiler/__main__.py": "d5b809722d6dfee6e4cb84d0b4a513239d99ae898defe55c1753ac85c21a9eb4",
       "src/biocompiler/core_client.py": "c8d65a42c1f92cbd75cb5edd176a9463657e03509be8ed487496d78b17be00fc",
       "src/biocompiler/core_policy.py": "9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e",
-      "src/biocompiler/core_policy_component_material.py": "5a6dd119db235b17fd0201ec60b1a4de10f8b88b8d5c47e24db793e412fa27ca",
+      "src/biocompiler/core_policy_component_material.py": "5d317d091e9895556968aed3a2965d425733346ae4422b129986fa27fedd789d",
       "src/biocompiler/core_policy_component_selection.py": "20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9",
       "src/biocompiler/core_policy_implementation.py": "75abd92ee9ef28a34b0a9df5ad8ea133beb6d01f60bd2ae74f2d6f9cf064ab4f",
-      "src/biocompiler/core_policy_material.py": "64d690df2654f93f1b0149d775db55b029950f1e4fad0ce8c9877927b16ab31a",
+      "src/biocompiler/core_policy_material.py": "e3b990c93130fb7d0b74462e30bf87dc5cd5f42d582a0808163f1a6ba965b5cf",
       "src/biocompiler/core_policy_module_linking.py": "8c6cb783a929dc4e4bd7f191af8d228905ef314d1c0ff3e7c9fa584f9e4fd165",
       "src/biocompiler/core_policy_operational.py": "089805c81bf6f84e5cf5e264b6ed89babedc3d692e2a7605429aa388e6d5ed02",
       "src/biocompiler/core_policy_planning.py": "0da78ac83d9627eb0f649f919a4a902f4312a466699b75292271e348f811615c",
-      "src/biocompiler/core_policy_quantitative_assurance.py": "1545f860c21649ef721edbad46b98c885c5535c989cfdad24cba44a6f3ff5253",
-      "src/biocompiler/core_policy_refinement.py": "1aa77ccdb85263c35d904b5d1d0085046cff4c926f2bab2e98d99df57c82f63c",
+      "src/biocompiler/core_policy_quantitative_assurance.py": "6e1fa5ba5dddec8fcef969696809e951b5e3567e2e7251cb4202830bd0ba2930",
+      "src/biocompiler/core_policy_refinement.py": "ea059004962bc243a3dd12d30d89115ac192d303f2b79d6dc049eb049aca250b",
       "src/biocompiler/entrypoint.py": "7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8",
       "src/biocompiler/policy/__init__.py": "25b639b654e3f509b0a072c5e5e0f9132e5f68e6186acac54e64c00afd2303e8",
       "src/biocompiler/policy/approximation.py": "df7ca7cd614cfd42b04bbd62c33174fdc3e823246825ee1b11af8ebd42fb20a8",
@@ -31044,7 +31156,11 @@
       },
       {
         "path": "src/biocompiler/core_policy_component_material.py",
-        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+        "syntax_sha256": "71fc78b8cc7a173c37a08f002882aa475cb0b6a200bc0aaffed8c3ac916dcb62"
+      },
+      {
+        "path": "src/biocompiler/core_policy_component_material.py",
+        "syntax_sha256": "e8157a73584becff04ba142bf301a16a3e95078563bad5119c5eb01211b23c01"
       },
       {
         "path": "src/biocompiler/core_policy_component_material.py",
@@ -31056,7 +31172,7 @@
       },
       {
         "path": "src/biocompiler/core_policy_component_material.py",
-        "syntax_sha256": "67ee0f2195b5dd6d32007ab0636061358254666e071561ec389ec9c59836707c"
+        "syntax_sha256": "a34c891ffc801263d257df2b1aadfbe42a6dec969fec2d1a95dd8bdd9039112b"
       },
       {
         "path": "src/biocompiler/core_policy_component_material.py",
@@ -31065,6 +31181,10 @@
       {
         "path": "src/biocompiler/core_policy_component_material.py",
         "syntax_sha256": "a9f4264b593c0118d841209a64d7d0e5b8722d5ff596df2e36d467a2936d8c97"
+      },
+      {
+        "path": "src/biocompiler/core_policy_component_material.py",
+        "syntax_sha256": "0c2ab11fa94115798ce4da70091a5b97f9020f80ea3514ac42a152b1c151ec47"
       },
       {
         "path": "src/biocompiler/core_policy_component_material.py",
@@ -31260,6 +31380,10 @@
       },
       {
         "path": "src/biocompiler/core_policy_quantitative_assurance.py",
+        "syntax_sha256": "d07be52debd7030b8d9c9a0b8e9e32a62eea94bca32490623c7e8d2984b6cd73"
+      },
+      {
+        "path": "src/biocompiler/core_policy_quantitative_assurance.py",
         "syntax_sha256": "e92f5334c13a3ff9903bccf51e9b978cc98bf1e9b6aa8178539a0618b651561f"
       },
       {
@@ -31297,6 +31421,10 @@
       {
         "path": "src/biocompiler/core_policy_refinement.py",
         "syntax_sha256": "39759b77357fd574e0221192c2a9167c6fd943705b25e8ac22ac8e98f9971260"
+      },
+      {
+        "path": "src/biocompiler/core_policy_refinement.py",
+        "syntax_sha256": "d07be52debd7030b8d9c9a0b8e9e32a62eea94bca32490623c7e8d2984b6cd73"
       },
       {
         "path": "src/biocompiler/core_policy_refinement.py",

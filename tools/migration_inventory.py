@@ -406,6 +406,8 @@ def cli_commands(source: Source, registration="main"):
 
 
 def ownership(module, category):
+    if module == "biocompiler._policy_coupled_wire":
+        return "Python", ["LM-12", "LM-25"], "retain_bounded_lossless_coupled_transport_without_semantic_acceptance_authority"
     if category == "studio_asset":
         return "TypeScript", ["LM-10", "LM-30"], "preserve_studio_surface"
     if category == "example":
@@ -453,6 +455,8 @@ def ownership(module, category):
 
 
 def authority(module, category):
+    if module == "biocompiler._policy_coupled_wire":
+        return "canonical_original_document_identity_only_fresh_native_checks_remain_required_for_acceptance"
     if category in {"example", "studio_asset"}:
         return "authored_or_displayed_inputs_are_not_acceptance_authority"
     if module == "biocompiler.core_distribution":

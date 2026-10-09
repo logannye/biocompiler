@@ -21,13 +21,14 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # hashes for historical source files are deliberately unsupported.
 REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py", "examples/researcher_alpha.py"})
 REVIEWED_ADDITIONS = {
+    'src/biocompiler/_policy_coupled_wire.py': 'daa93313b7fd03ce2c249e7d8e7682b181bcb4b8acfe2bcc391026172bcb2588',
     # Semantic modules, planning, exact quantitative composition and assurance
     # are reviewed current additions only. The immutable original cohort must
     # never import these files or acquire their newer checking authority.
     'src/biocompiler/core_policy_module_linking.py': '8c6cb783a929dc4e4bd7f191af8d228905ef314d1c0ff3e7c9fa584f9e4fd165',
     'src/biocompiler/core_policy_planning.py': '0da78ac83d9627eb0f649f919a4a902f4312a466699b75292271e348f811615c',
-    'src/biocompiler/core_policy_quantitative_assurance.py': '1545f860c21649ef721edbad46b98c885c5535c989cfdad24cba44a6f3ff5253',
-    'src/biocompiler/core_policy_refinement.py': '1aa77ccdb85263c35d904b5d1d0085046cff4c926f2bab2e98d99df57c82f63c',
+    'src/biocompiler/core_policy_quantitative_assurance.py': '6e1fa5ba5dddec8fcef969696809e951b5e3567e2e7251cb4202830bd0ba2930',
+    'src/biocompiler/core_policy_refinement.py': 'ea059004962bc243a3dd12d30d89115ac192d303f2b79d6dc049eb049aca250b',
     'src/biocompiler/policy/approximation.py': 'df7ca7cd614cfd42b04bbd62c33174fdc3e823246825ee1b11af8ebd42fb20a8',
     'src/biocompiler/policy/module_linking.py': '87dd2eb7ffd36ff3bc76d2de4957eb3806e0da29cd58bc3c029c3f25a7a3efe2',
     'src/biocompiler/policy/modules.py': '07060e46cac6551e77c7b2f97e3956539ba39ee3a1ec009d17429ea63a7e508f',
@@ -68,9 +69,9 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5",
     # Reviewed versioned instance/prerequisite transports remain outside historical authority.
     'src/biocompiler/policy/component_material.py': 'e23f08b6113670c73363a0852b390e6d39d0d058fdd3a7a044f2ba1c04e61da1',
-    'src/biocompiler/core_policy_component_material.py': '5a6dd119db235b17fd0201ec60b1a4de10f8b88b8d5c47e24db793e412fa27ca',
+    'src/biocompiler/core_policy_component_material.py': '5d317d091e9895556968aed3a2965d425733346ae4422b129986fa27fedd789d',
     'src/biocompiler/policy/material.py': '5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79',
-    'src/biocompiler/core_policy_material.py': '64d690df2654f93f1b0149d775db55b029950f1e4fad0ce8c9877927b16ab31a',
+    'src/biocompiler/core_policy_material.py': 'e3b990c93130fb7d0b74462e30bf87dc5cd5f42d582a0808163f1a6ba965b5cf',
     'src/biocompiler/policy/implementation.py': '452344e7e6681d04e0018bf0ad4cb3cacd47a5022c9a41883867e4fd62db4ee8',
     'src/biocompiler/core_policy_implementation.py': '75abd92ee9ef28a34b0a9df5ad8ea133beb6d01f60bd2ae74f2d6f9cf064ab4f',
     # Explicit operational-policy transport and CLI stay excluded from the

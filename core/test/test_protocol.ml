@@ -34,6 +34,18 @@ let () =
     (Bioc_service.Realization_service.profiles @ Bioc_service.Verification_workflow_service.profiles @
      Bioc_service.Verification_workflow_authority.profiles @
      ["artifact_transport",Bioc_service.Artifact_io.profile;
+      "policy_coupled_wire",Json.Object(("operations",Json.Array(List.map(fun value->Json.String value)
+        ["check-policy-component-material";"replay-policy-component-material";"export-policy-component-material";
+         "check-policy-quantitative-assurance";"replay-policy-quantitative-assurance";"export-policy-quantitative-assurance";
+         "check-policy-refinement";"replay-policy-refinement"]))::[
+        "schema_version",Json.String "biocompiler.policy_coupled_json_graph.v0.1";
+        "encoding",Json.String "lossless_typed_postorder_dag";
+        "expanded_identity",Json.String "sha256_canonical_json";
+        "expanded_node_count",Json.String "values_and_object_keys";
+        "max_expanded_bytes",Json.int 8323072;"max_expanded_nodes",Json.int 1000000;
+        "max_packet_bytes",Json.int 8323072;"max_packet_nodes",Json.int 249968;
+        "max_depth",Json.int 128;"max_string_bytes",Json.int 4194304;"max_number_chars",Json.int 4300;
+        "claims",Json.String "transport_only"]);
       "artifact_transport_authority",Bioc_service.Artifact_io.authority_profile;
       "policy_material",Bioc_service.Policy_material_service.profile;
       "policy_component_material",Bioc_service.Policy_component_material_service.profile;

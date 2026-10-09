@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import Callable, Literal, TypeAlias, cast
 
 from . import core_policy as source
+from . import _policy_coupled_wire as coupled_wire
 from . import core_policy_component_material as component
 from . import core_policy_material as material_transport
 from . import core_policy_operational as operational
@@ -253,7 +254,7 @@ class PolicyRefinementResult:
 
     @property
     def result(self) -> dict[str, JsonValue]:
-        return cast(dict[str, JsonValue], decode_json(self._result_json))
+        return component._stored_result(self._result_json)
 
     @property
     def material_report(self) -> dict[str, JsonValue]:
@@ -266,21 +267,24 @@ class PolicyRefinementResult:
 
 def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyRefinementResult:
     result = _object(response.result, _RESULT_FIELDS, "Named refinement response")
-    material_transport._publication({"result": result}, MAX_RESULT_BYTES, MAX_RESULT_NODES)
     _require(result["schema_version"] == RESULT_SCHEMA and result["implementation"] == IMPLEMENTATION
              and result["validation_scope"] == VALIDATION_SCOPE, "Refinement response changed its negotiated profile")
     request = component._original(payload["request"])
+    coupled = component._composition(request)
+    pin = component._document_pin if coupled else operational._pin
+    same = component._document_same if coupled else operational._same
+    material_transport._publication({"result": coupled_wire.pack(result) if coupled else result}, MAX_RESULT_BYTES, MAX_RESULT_NODES)
     candidate = component._candidate(payload["candidate"], instanced=component._instanced(request),
         multi_member=component._multi_member(request), grounded_helper=component._grounded_helper(request), multi_site=component._multi_site(request))
-    request_pin = operational._pin(result["request_fingerprint"], request, "Complete refinement request")
-    candidate_pin = operational._pin(result["candidate_fingerprint"], candidate, "Complete refinement candidate")
-    invocation_pin = operational._pin(result["invocation_fingerprint"], {
+    request_pin = pin(result["request_fingerprint"], request, "Complete refinement request")
+    candidate_pin = pin(result["candidate_fingerprint"], candidate, "Complete refinement candidate")
+    invocation_pin = pin(result["invocation_fingerprint"], {
         "request": request, "candidate": candidate, "limits": payload["limits"]}, "Complete refinement invocation")
     report = component._report(result["material_report"], instanced=component._instanced(request),
         prerequisites=component._prerequisites(request), two_observations=component._two_observations(request),
         multi_member=component._multi_member(request), grounded_helper=component._grounded_helper(request),
         finite_machine=component._finite_machine(request), quantitative=component._quantitative(request), network=component._network(request), multi_site=component._multi_site(request), transfer_pair=component._transfer_pair(request), transfer_network=component._transfer_network(request), composition=component._composition(request))
-    report_pin = operational._pin(result["material_report_fingerprint"], report, "Fresh complete material report")
+    report_pin = pin(result["material_report_fingerprint"], report, "Fresh complete material report")
     component._assessment(response, request, candidate, report, payload["limits"])
     evidence = None if result["evidence"] is None else _evidence(result["evidence"])
     _require((evidence is not None) == (report["status"] == component.ACCEPTED_STATUS),
@@ -288,9 +292,9 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyRefi
     if evidence is not None:
         _bindings(evidence, request, candidate, report, payload["limits"])
     if response.operation == "replay-policy-refinement":
-        _require(operational._same(result, payload["report"]), "Fresh refinement replay differs from the full saved response")
+        _require(same(result, payload["report"]), "Fresh refinement replay differs from the full saved response")
     return PolicyRefinementResult(response.request_id, response.operation, response.executable, request_pin,
-        candidate_pin, invocation_pin, report_pin, evidence, encode_json(result))
+        candidate_pin, invocation_pin, report_pin, evidence, component._result_bytes(result, coupled=coupled))
 
 
 @dataclass(frozen=True)
@@ -298,12 +302,20 @@ class PolicyRefinementClient:
     transport: CoreClient
 
     def _call(self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None) -> PolicyRefinementResult:
-        snapshot = cast(dict[str, JsonValue], decode_json(encode_json(payload)))
-        component._original(snapshot["request"])
+        coupled = component._record(payload["request"], "Original request").get("profile") == component.COMPOSITION_REQUEST_PROFILE
+        snapshot = cast(dict[str, JsonValue], coupled_wire.snapshot(payload) if coupled else decode_json(encode_json(payload)))
+        request = component._original(snapshot["request"])
+        if coupled:
+            material_transport._publication(request, 8_388_608, 250_000)
+            material_transport._publication(snapshot["candidate"], 8_388_608, 250_000)
         capabilities = self.transport.negotiate(operation, cancelled=cancelled)
+        if coupled:
+            component._wire_capability(capabilities.profiles, self.transport.role)
         _require(operational._same(capabilities.profiles.get("policy_refinement"), PROFILE)
                  and VALIDATION_SCOPE in capabilities.validation_scopes, "Selected executable lacks the exact named-refinement profile")
-        return _result(self.transport.call(operation, snapshot, cancelled=cancelled), snapshot)
+        wire = coupled_wire.pack(snapshot) if coupled else snapshot
+        response = self.transport.call(operation, wire, cancelled=cancelled)
+        return _result(component._wire_response(response, coupled=coupled), snapshot)
 
     def check(self, request: JsonValue, candidate: JsonValue, limits: JsonValue, *,
               cancelled: Callable[[], bool] | None = None) -> PolicyRefinementResult:

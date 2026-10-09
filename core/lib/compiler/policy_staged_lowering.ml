@@ -194,17 +194,56 @@ let lower_metered ~charge ~admitted ~library =
     let attempts=List.mapi(fun index(operation:O.effect_spec)->operation.effect_id,allocate("attempt/"^string_of_int index)(attempt_primitive operation))behavior.effects in
     let arbiter=allocate "arbitration/0"(I.Exclusive_arbiter transition_count)in
     let expression_node primitive=let ordinal= !next in incr next;allocate("expression/"^string_of_int ordinal)primitive in
-    let rec emit role location raw=
-      Meter.serialization raw;absent["contract";"duration";"clock";"coverage";"binding"]raw;
-      let expression=O.expression_of_json raw and args=rows "args" raw in
-      let children=List.mapi(fun index value->emit role(location^"/args/"^string_of_int index)value)args in
-      let key=Canonical.encode raw in charge(String.length key);
+    let module Expression_keys=Hashtbl.Make(struct
+      type t=string
+      let hash value=charge(1+Stdlib.String.length value);Hashtbl.hash value
+      let equal left right=charge(1+Stdlib.String.length left+Stdlib.String.length right);
+        Stdlib.String.equal left right
+    end)in
+    let structural=if coupled then (
+      charge 64;Some(Expression_keys.create 32,Expression_keys.create 32,ref 0))else None in
+    let memo_find key=match structural with None->Hashtbl.find_opt memo key
+      |Some(_,outputs,_)->Expression_keys.find_opt outputs key in
+    let memo_add key output=match structural with None->Hashtbl.add memo key output
+      |Some(_,outputs,_)->Expression_keys.add outputs key output in
+    let rec emit_with_identity role location raw=
+      if not coupled then Meter.serialization raw;
+      absent["contract";"duration";"clock";"coverage";"binding"]raw;
+      let op,literal=if coupled then (
+        (* Every original occurrence is still visited. Read only this node's
+           already-admitted scalar fields instead of rebuilding its entire
+           typed subtree before recursively visiting those same children. *)
+        let kind=get "value_type" raw in Meter.serialization kind;
+        let value_type=if text "kind" kind="event"then None else Some(O.value_type kind)in
+        let op=text "op" raw in
+        let literal=if op="literal"then (
+          let value=get "value" raw in Meter.serialization value;
+          Option.map(fun kind->O.value_of_json kind value)value_type)else None in
+        op,literal)
+      else let expression=O.expression_of_json raw in expression.op,expression.value in
+      let args=rows "args" raw in
+      let children=List.mapi(fun index value->emit_with_identity role(location^"/args/"^string_of_int index)value)args in
+      let key,identity=match structural with
+        |None->let key=Canonical.encode raw in charge(String.length key);key,0
+        |Some(identities,_,next_identity)->
+          (* Inductively, child IDs agree exactly when the complete original
+             child JSON agrees. Retaining every other original field and the
+             ordered child IDs therefore preserves full-expression equality.
+             These invocation-local keys never replace published authority. *)
+          let shell=o(List.map(fun(name,value)->name,
+            if name="args"then a(List.map(fun(_,id)->Json.int id)children)else value)(Json.object_fields raw))in
+          let key=Canonical.encode shell in charge(String.length key);
+          let identity=match Expression_keys.find_opt identities key with Some value->value
+            |None->charge 1;let value= !next_identity in incr next_identity;
+              Expression_keys.add identities key value;value in
+          key,identity in
+      let children=if coupled then List.map fst children else Stdlib.List.map fst children in
       let new_output primitive port input_ports=
-        match Hashtbl.find_opt memo key with Some value->value|None->
+        match memo_find key with Some value->value|None->
           let id=expression_node primitive in List.iter2(fun child port->connect child(out id port))children input_ports;
-          let value=out id port in Hashtbl.add memo key value;value in
+          let value=out id port in memo_add key value;value in
       let pure ()=absent["ref";"scope";"value"]raw in
-      let result=match expression.op with
+      let result=match op with
         |"observe"->type_is "truth"(get "value_type" raw);
           supported(args=[] && get "value" raw=Json.Null && Json.equal(get "ref" raw)(reference "Observation" observation.observation_id) &&
             Json.equal(get "scope" raw)(reference "Subject" subject.subject_id))"Observation identity changed.";out evidence "value"
@@ -221,7 +260,7 @@ let lower_metered ~charge ~admitted ~library =
             Json.equal(get "scope" raw)(reference "Encounter" encounter.encounter_id))"Coupled state changes its original owner.";
           out(List.assoc identity states)"value"
         |"literal"->type_is "truth"(get "value_type" raw);absent["ref";"scope"]raw;supported(args=[])"Literal operands.";
-          let value=match expression.value with Some(O.Truth value)->truth value|_->Diagnostic.fail "policy_staged_lowering_unsupported" "Expected truth literal."in
+          let value=match literal with Some(O.Truth value)->truth value|_->Diagnostic.fail "policy_staged_lowering_unsupported" "Expected truth literal."in
           new_output(I.Truth_constant value)"out"[]
         |"parameter"->type_is "text"(get "value_type" raw);absent["scope";"value"]raw;
           if multi_product then (
@@ -233,23 +272,26 @@ let lower_metered ~charge ~admitted ~library =
             new_output(I.Product_constant product_symbol)"out"[])
         |"not"->type_is "truth"(get "value_type" raw);pure();supported(List.length args=1)"Negation arity.";new_output I.Truth_not "out"["in"]
         |"all"|"any"->type_is "truth"(get "value_type" raw);pure();supported(args<>[] && List.length args<=64)"Truth arity.";
-          new_output(if expression.op="all"then I.Truth_all(List.length args)else I.Truth_any(List.length args))"out"
+          new_output(if op="all"then I.Truth_all(List.length args)else I.Truth_any(List.length args))"out"
             (List.mapi(fun index _->"in"^string_of_int index)args)
         |"rising"->type_is "event"(get "value_type" raw);pure();supported(List.length args=1)"Rising arity.";
           let rec evidence_only value=charge 1;List.mem(text "op" value)["observe";"literal";"not";"all";"any"] && List.for_all evidence_only(rows "args" value)in
           let rec observed value=charge 1;text "op" value="observe" || List.exists observed(rows "args" value)in
           supported(evidence_only(List.hd args)&&observed(List.hd args))"Rising needs observed truth evidence.";
-          let value=new_output I.Observed_rising "events"["in"]in if not(List.mem key !edges)then edges:=key:: !edges;value
+          let value=new_output I.Observed_rising "events"["in"]in
+          let edge_key=if coupled then Canonical.encode raw else key in
+          if not(List.mem edge_key !edges)then edges:=edge_key:: !edges;value
         |"effect_event"->type_is "event"(get "value_type" raw);
           let identity=O.ref_id(get "ref" raw)in
           supported(args=[] && List.mem_assoc identity attempts && Json.equal(get "ref" raw)(reference "Effect" identity) &&
             Json.equal(get "scope" raw)(reference "Subject" subject.subject_id))"Effect event identity changed.";
           let kind=match text "value" raw with "completed"->I.Completed|"failed"->I.Failed|"timed_out"->I.Timed_out
             |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Only completion, failure and timeout drive stage feedback."in
-          (match Hashtbl.find_opt memo key with Some value->value|None->let id=expression_node(I.Event_select kind)in
-            connect(out(List.assoc identity attempts)"events")(out id "events");let value=out id "selected"in Hashtbl.add memo key value;value)
+          (match memo_find key with Some value->value|None->let id=expression_node(I.Event_select kind)in
+            connect(out(List.assoc identity attempts)"events")(out id "events");let value=out id "selected"in memo_add key value;value)
         |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Expression lacks a staged primitive interpretation."in
-      occurrence location role(if List.mem expression.op["literal";"parameter"]then "constant"else "executable")[result];result in
+      occurrence location role(if List.mem op["literal";"parameter"]then "constant"else "executable")[result];result,identity in
+    let emit role location raw=fst(emit_with_identity role location raw)in
     let anchors=ref [] and product_outputs=ref [] and product_targets=ref [] and effect_products=ref [] in
     let product_output effect_id argument=
       if not multi_site then emit "effect_parameter"(path effect_id^"/parameters/0/value")(get "value" argument)

@@ -1,6 +1,7 @@
 """Inert retained-evidence controls; no subprocess or native execution is allowed."""
 from argparse import Namespace
 from copy import deepcopy
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -27,7 +28,8 @@ class QuantitativeAssuranceCampaignTests(unittest.TestCase):
         self.binaries = {role: {"sha256": ("c" if role == "core" else "d") * 64, "bytes": 16} for role in ("core", "verify")}
         self.sdk = {}
         self.required = ("biocompiler", "biocompiler.core_client", "biocompiler.core_policy_quantitative_assurance",
-            "biocompiler.policy.approximation", "biocompiler.policy.realization_evidence", "biocompiler.policy.quantitative_assurance")
+            "biocompiler.policy.approximation", "biocompiler.policy.realization_evidence", "biocompiler.policy.quantitative_assurance",
+            "biocompiler._policy_coupled_wire")
         for name in self.required:
             relative = name.replace(".", "/") + ("/__init__.py" if name == "biocompiler" else ".py")
             self.sdk[relative] = ((campaign.ROOT / "src" / relative).read_bytes(), 0o644)
@@ -106,6 +108,7 @@ class QuantitativeAssuranceCampaignTests(unittest.TestCase):
             lambda row: row["binaries"]["core"].update(sha256="0" * 64),
             lambda row: row["imports"].update(record_verified=False),
             lambda row: row["imports"]["modules"]["biocompiler"].update(sha256="0" * 64),
+            lambda row: row["imports"]["modules"].pop("biocompiler._policy_coupled_wire"),
             lambda row: row["inputs"].pop("coupled"), lambda row: row.update(empirical_function="verified")]
         for change in changes:
             value = deepcopy(receipt)
@@ -191,7 +194,8 @@ class QuantitativeAssuranceCampaignTests(unittest.TestCase):
                 "artifacts": {"inert": "external wheel authority"}, "command": {"logs": {}}, "receipt": companion.pin(output / companion.RECEIPT)})
             directories.append(directory)
         self.stack(patch.object(companion.ownership_gate, "owned_slot", side_effect=lambda path, *args: owned[path]))
-        boundary = self.stack(patch.object(companion, "validate_campaign", return_value={"complete": "retained exact observations"}))
+        observations = {name: {"inert": name} for name in campaign.OBSERVATIONS}
+        boundary = self.stack(patch.object(companion, "validate_campaign", return_value=observations))
         args = Namespace(slot=directories, sdk=sdk, release_candidate=candidate, platform_root=[], material_authority=[], output=self.root / "comparison.json")
         result = companion.compare(args)
         self.assertEqual(result["status"], "pass")
@@ -201,8 +205,35 @@ class QuantitativeAssuranceCampaignTests(unittest.TestCase):
         for changed in (directories[:3], [directories[0], directories[0], *directories[2:]]):
             with self.subTest(slots=changed), self.assertRaises(ValueError):
                 companion.compare(Namespace(**dict(vars(args), slot=changed)))
-        boundary.side_effect = [{"complete": "same"}, {"complete": "different"}]
+        different = deepcopy(observations)
+        different["coupled-check"]["inert"] = "different"
+        boundary.side_effect = [observations, different]
         with self.assertRaises(ValueError): companion.compare(args)
+
+    def test_saved_logical_evidence_expansion_requires_explicit_coupled_identity(self):
+        from biocompiler.core_client import CoreProtocolError
+        large = [[None] * 1000] * 251
+        raw = campaign.observation_bytes("coupled-check", large)
+        self.assertEqual(json.loads(raw), large)
+        with self.assertRaises(CoreProtocolError): campaign.observation_bytes("evidence-check", large)
+        with self.assertRaises(AssertionError): campaign.observation_bytes("unknown-coupled-check", large)
+
+    def test_incremental_complete_hash_preserves_canonical_identity_and_census(self):
+        from biocompiler.core_client import encode_json
+        values = {name: {"label": name, "value": [None, True, 3, "µ"]} for name in campaign.OBSERVATIONS}
+        self.assertEqual(campaign.observations_digest(values), hashlib.sha256(encode_json(values)).hexdigest())
+        values["coupled-check"] = [[None] * 1000] * 251
+        digest = campaign.observations_digest(values)
+        # The aggregate is exactly the same full logical canonical JSON, even
+        # though its complete tree cannot use the legacy 250k-node codec.
+        raw = json.dumps(values, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(digest, hashlib.sha256(raw).hexdigest())
+        values["coupled-check"] = [[True] * 1000] + [[None] * 1000] * 250
+        self.assertNotEqual(campaign.observations_digest(values), digest)
+        values.pop("coupled-check")
+        with self.assertRaises(AssertionError): campaign.observations_digest(values)
+        values["unlisted"] = {}
+        with self.assertRaises(AssertionError): campaign.observations_digest(values)
 
     def test_workflows_retain_original_gates_and_add_one_campaign_per_surface(self):
         development = (campaign.ROOT / ".github/workflows/policy-development.yml").read_text()

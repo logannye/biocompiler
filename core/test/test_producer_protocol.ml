@@ -80,7 +80,12 @@ let literals () =
         Bioc_producer_service.Synthetic_producer_public_service.profiles @
         Bioc_producer_service.Synthetic_inspection_service.profiles)))
     "Complete producer profile inventory changed";
-  List.iter(fun(name,value)->require(Json.equal(field name profiles)value)
+  List.iter(fun(name,value)->
+    let expected=if name="policy_coupled_wire"then obj(List.map(fun(key,value)->key,
+      if key="operations"then arr(Json.array value @
+        List.map str["compile-policy-component-material";"compile-policy-quantitative-assurance"])
+      else value)(Json.object_fields value))else value in
+    require(Json.equal(field name profiles)expected)
     ("Producer changed an existing checker profile: "^name))checker_profiles;
   require(Json.equal(field "policy_target_planning" profiles)Bioc_producer_service.Policy_target_planning.profile &&
     field "operations" (field "policy_target_planning" profiles)=arr[str "plan-policy-target";str "replay-policy-target-plan"])
