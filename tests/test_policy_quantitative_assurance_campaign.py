@@ -11,6 +11,7 @@ from unittest.mock import patch
 
 from tools import check_policy_quantitative_assurance as campaign
 from tools import check_policy_quantitative_assurance_prebuilt as companion
+from tests.test_policy_coupled_wire import paired_export
 
 IDENTITY = {"revision": "a" * 40, "head_revision": "b" * 40, "run_id": "1234", "run_attempt": "3"}
 
@@ -63,6 +64,11 @@ class QuantitativeAssuranceCampaignTests(unittest.TestCase):
             result = {"candidate": {"inert": name}, "report": report}
             for suffix in ("compile", "check", "replay"): data[name + "-" + suffix] = deepcopy(result)
             data[name + "-export"] = dict(result, artifact={"fasta": ">literal\n" + sequence + "\n"})
+            if name == "coupled":
+                exported = paired_export(report)
+                exported["candidate"] = result["candidate"]
+                exported["artifact"]["fasta"] = ">literal\n" + sequence + "\n"
+                data[name + "-export"] = exported
         data["insufficient-error-bound"] = {"report": {"export_permitted": False, "approximation": {"outcome": "fail"}, "material": {"status": "checked_component_material"}}}
         data["missing-gated-evidence"] = {"report": {"export_permitted": False, "realization_evidence": {"status": "unassessed"}, "material": {"status": "checked_component_material"}}}
         for name, operation in (("cumulative-budget", "check"), ("failed-bound-export", "export"), ("retained-pass-mutation", "replay"), ("verifier-production-role", "compile")):
@@ -195,6 +201,7 @@ class QuantitativeAssuranceCampaignTests(unittest.TestCase):
             directories.append(directory)
         self.stack(patch.object(companion.ownership_gate, "owned_slot", side_effect=lambda path, *args: owned[path]))
         observations = {name: {"inert": name} for name in campaign.OBSERVATIONS}
+        observations["coupled-export"] = paired_export()
         boundary = self.stack(patch.object(companion, "validate_campaign", return_value=observations))
         args = Namespace(slot=directories, sdk=sdk, release_candidate=candidate, platform_root=[], material_authority=[], output=self.root / "comparison.json")
         result = companion.compare(args)
@@ -221,6 +228,7 @@ class QuantitativeAssuranceCampaignTests(unittest.TestCase):
     def test_incremental_complete_hash_preserves_canonical_identity_and_census(self):
         from biocompiler.core_client import encode_json
         values = {name: {"label": name, "value": [None, True, 3, "µ"]} for name in campaign.OBSERVATIONS}
+        values["coupled-export"] = paired_export()
         self.assertEqual(campaign.observations_digest(values), hashlib.sha256(encode_json(values)).hexdigest())
         values["coupled-check"] = [[None] * 1000] * 251
         digest = campaign.observations_digest(values)
@@ -232,6 +240,18 @@ class QuantitativeAssuranceCampaignTests(unittest.TestCase):
         self.assertNotEqual(campaign.observations_digest(values), digest)
         values.pop("coupled-check")
         with self.assertRaises(AssertionError): campaign.observations_digest(values)
+
+    def test_paired_export_sidecar_has_exact_named_scope_and_complete_digest(self):
+        from biocompiler.core_client import CoreProtocolError
+        value = paired_export([[None] * 1000] * 510, [[None] * 1000] * 510)
+        raw = campaign.observation_bytes("coupled-export", value)
+        self.assertEqual(json.loads(raw), value)
+        for name in ("coupled-check", "coupled-replay", "coupled-originals", "evidence-export"):
+            with self.subTest(name=name), self.assertRaises(CoreProtocolError): campaign.observation_bytes(name, value)
+        values = {name: {} for name in campaign.OBSERVATIONS}
+        values["coupled-export"] = value
+        expected = json.dumps(values, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(campaign.observations_digest(values), hashlib.sha256(expected).hexdigest())
         values["unlisted"] = {}
         with self.assertRaises(AssertionError): campaign.observations_digest(values)
 

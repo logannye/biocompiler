@@ -61,6 +61,9 @@ def observation_bytes(name, value):
     """Retain logical evidence under its explicit operation-family bounds."""
     from biocompiler.core_client import encode_json
     require(name in OBSERVATIONS, "Unknown assurance observation identity")
+    if name == "coupled-export":
+        from biocompiler._policy_coupled_wire import export_canonical_bytes
+        return export_canonical_bytes(value)
     if name.startswith("coupled-"):
         from biocompiler._policy_coupled_wire import canonical_bytes
         return canonical_bytes(value)

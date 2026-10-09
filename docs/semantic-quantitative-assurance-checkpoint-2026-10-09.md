@@ -74,6 +74,16 @@ Earlier passing or failed runs never qualify a later source revision. The
 initial recovered checkpoint's preflight/compiler failures are preserved as
 diagnostic lineage, not acceptance.
 
+Hosted diagnostic run `37998032843`, attempt 1, at
+`b5658d498b6f04c9df217d4d326efd4bf047b2e9` passed 54 of 55 native suites.
+The remaining assurance export contained 956,667 logical nodes, 8,329,069
+canonical bytes and depth 42: 5,997 bytes beyond the base transport's byte
+ceiling. Its assessment and manifest were independently within their original
+bounds. This measured failure motivates the separate export-response envelope
+described in the versioned contract. It preserves both independently bounded
+partitions, the complete logical evidence and the original physical packet
+limits. This diagnostic run does not validate the subsequent correction.
+
 The remaining long-term extensions are richer reservoir grids, multiple clocks,
 delayed transport, continuous uncertainty, additional physical coordination
 contracts and authenticated experimental artifact ingestion. They are outside

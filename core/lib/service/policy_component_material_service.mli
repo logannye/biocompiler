@@ -63,7 +63,8 @@ val validate_publication : Json.t -> unit
 val is_coupled_request : Json.t -> bool
 
 (** Decode only an explicitly tagged operation envelope, then require the full
-    original coupled material family. Nested authored values are never decoded. *)
+    original coupled material family. Response-only paired export packets are
+    rejected. Nested authored values are never decoded. *)
 val unpack_payload : assurance:bool -> Json.t -> Json.t
 val publish_result : coupled:bool -> Json.t -> Json.t
 val replay_equal : coupled:bool -> Json.t -> Json.t -> bool

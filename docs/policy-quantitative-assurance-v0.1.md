@@ -162,6 +162,24 @@ profiles retain their original wire representation. Python result views return
 detached logical documents, while the coupled transport carries the bounded
 graph representation.
 
+A separately negotiated `policy_coupled_assurance_export_wire` capability carries
+coupled assurance exports using `biocompiler.policy_coupled_export_json_graph.v0.1`.
+It preserves the complete logical result: the artifact and the result with
+`artifact=null` must each satisfy the original 1,000,000-node and 8,323,072-byte
+bounds. Replacing that null with the artifact gives an aggregate ceiling of
+1,999,999 nodes and 16,646,140 bytes. The physical packet still has the original
+249,968-node and 8,323,072-byte ceilings; depth, scalar and work limits also
+remain unchanged. Partition accounting uses the same traversal or decoded
+subtree sizes, before expanding the graph. Neither a larger artifact nor a
+larger non-artifact result can borrow the other partition's allowance.
+
+Only the coupled assurance export response uses this additional format. Inputs,
+ordinary material exports, checks, replay and the original wire profile retain
+their existing bounds. The client requires the additional export capability
+before invoking this path. Request, candidate, report and manifest identities
+remain the hashes of their complete original canonical JSON. The transport
+extension changes neither a checking obligation nor the exported RNA.
+
 This profile deliberately separates three statements: the specification matches
 the supplied executable model; the selected material exactly implements the
 supplied construction contract; supplied measurements are compatible with a

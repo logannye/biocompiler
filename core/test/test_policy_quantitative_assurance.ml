@@ -103,8 +103,10 @@ let call handler role operation payload=
   let payload=if coupled then Wire.encode payload else payload in
   let request:Protocol.request={request_id="quantitative-assurance";operation;payload} in
   match handler role request with Protocol.Ok,Some result,[]->
-    require(Wire.is_packet result=coupled)"Coupled transport selection changed a legacy response";
-    if coupled then Wire.decode result else result
+    let paired=coupled && operation="export-policy-quantitative-assurance"in
+    require(Wire.is_export_packet result=paired && Wire.is_packet result=(coupled && not paired))
+      "Coupled transport selection changed an operation's response profile";
+    if paired then Wire.decode_export result else if coupled then Wire.decode result else result
   |_,_,diagnostics->failwith(!operation_context^": "^String.concat "; "
       (List.map(fun(d:Diagnostic.t)->d.code^": "^d.message)diagnostics))
 let rejected label action=match action()with
@@ -116,6 +118,76 @@ let original material approximation evidence=o[
 let payload request candidate limits=o["request",request;"candidate",candidate;"limits",limits]
 let check request candidate limits=call Service.handle Protocol.Verify "check-policy-quantitative-assurance"(payload request candidate limits)
 let export request candidate limits=call Service.handle Protocol.Verify "export-policy-quantitative-assurance"(payload request candidate limits)
+let paired_codec_controls ()=
+  let manifest data=o["schema_version",s "biocompiler.policy_quantitative_assurance_manifest.v0.1";"payload",data]in
+  let response report data=o["schema_version",s "biocompiler.core.policy_quantitative_assurance.v1";
+    "implementation",s "biocompiler.ocaml.policy_quantitative_assurance.v0.1";
+    "validation_scope",s "policy-quantitative-assurance-v0.1";
+    "request_fingerprint",s(String.make 64 '0');"candidate_fingerprint",s(String.make 64 '1');
+    "invocation_fingerprint",s(String.make 64 '2');"report_fingerprint",s(String.make 64 '3');
+    "candidate",Json.Null;"report",report;"artifact",o[
+      "schema_version",s "biocompiler.policy_quantitative_assurance_export.v0.1";
+      "manifest",manifest data;"manifest_sha256",s(String.make 64 '4');
+      "fasta",s ">example\nACGU\n";"fasta_sha256",s(String.make 64 '5')]]in
+  let limit label action=match action()with
+    |_->failwith("Paired codec admitted "^label)
+    |exception Diagnostic.Error error->require(error.code="policy_coupled_wire_limit")
+      ("Paired codec limit changed for "^label)in
+  let rec doubled depth value=if depth=0 then value else
+    let child=doubled(depth-1)value in Json.Array[child;child]in
+  let tree=doubled 18 Json.Null in
+  let node_pair=response tree tree in
+  limit "base node overflow"(fun()->Wire.encode node_pair);
+  let node_packet=Wire.encode_export node_pair in
+  require(Wire.is_export_packet node_packet && not(Wire.is_packet node_packet) &&
+    Json.equal(Wire.decode_export node_packet)node_pair)
+    "Paired export did not preserve a bounded pair beyond the base node limit";
+  rejected "paired packet on base decoder"(fun()->Wire.decode node_packet);
+  rejected "base packet on paired decoder"(fun()->Wire.decode_export(Wire.encode(response Json.Null Json.Null)));
+  let blob=s(String.make 32768 'x')in
+  let repeated=Json.Array(List.init 130(fun _->blob))in
+  let byte_pair=response repeated repeated in
+  limit "base byte overflow"(fun()->Wire.preflight byte_pair);
+  let byte_packet=Wire.encode_export byte_pair in
+  require(Json.equal(Wire.decode_export byte_packet)byte_pair &&
+    Wire.preflight_export byte_pair=String.length(Canonical.encode byte_pair))
+    "Paired export did not preserve both independently bounded byte inventories";
+  List.iter(fun(report,data)->limit "oversized individual part"(fun()->
+    Wire.preflight_export(response report data)))
+    [doubled 19 Json.Null,Json.Null;Json.Null,doubled 19 Json.Null;
+     Json.Array(List.init 260(fun _->blob)),Json.Null;Json.Null,Json.Array(List.init 260(fun _->blob))];
+  (* Change only a deepest array row. Its aggregate still fits the paired
+     ceiling; the independently oversized part must fail before stale SHA. *)
+  let enlarged packet=
+    let nodes=Json.array(get "nodes" packet)in
+    let last=List.fold_left(fun found(index,row)->if text "kind" row="array"then index else found)
+      (-1)(List.mapi(fun index row->index,row)nodes)in
+    edit["nodes"](fun _->Json.Array(List.mapi(fun index row->if index<>last then row else
+      let items=Json.array(get "items" row)in
+      require(items<>[])"Paired adversary lost repeated sharing";
+      set "items"(Json.Array(items@items))row)nodes))packet in
+  List.iter(fun(report,data)->limit "decoded oversized individual part"(fun()->
+    Wire.decode_export(enlarged(Wire.encode_export(response report data)))))
+    [tree,Json.Null;Json.Null,tree;repeated,Json.Null;Json.Null,repeated];
+  let short=response Json.Null Json.Null in
+  rejected "wrong paired response schema"(fun()->Wire.encode_export(set "schema_version"(s "other")short));
+  rejected "null paired artifact"(fun()->Wire.encode_export(set "artifact" Json.Null short));
+  rejected "extra paired response field"(fun()->Wire.encode_export(o(("extra",Json.Null)::Json.object_fields short)));
+  let calls=ref 0 in
+  (match Wire.encode_export ~charge:(fun _->incr calls;Diagnostic.fail "inert_work_limit" "No codec work authorized")short with
+  |_->failwith "Paired codec ignored its work callback"
+  |exception Diagnostic.Error error->require(error.code="inert_work_limit" && !calls=1)
+      "Paired codec did not fail at its first charged visit");
+  List.iter(fun operation->
+    let request:Protocol.request={request_id="paired-input";operation;payload=node_packet}in
+    match Service.handle Protocol.Verify request with
+    |Protocol.Error,None,[error]->require(error.code="policy_coupled_wire_profile")
+      "Paired response packet reached request decoding"
+    |_->failwith "Paired export packet acquired input authority"
+    |exception Diagnostic.Error error->require(error.code="policy_coupled_wire_profile")
+      "Paired response input rejection changed")
+    ["check-policy-quantitative-assurance";"replay-policy-quantitative-assurance";
+     "export-policy-quantitative-assurance";"check-policy-component-material"]
 let export_census ~request ~limits ~checked ~material_export=
   (* Diagnostic arithmetic over already accepted immutable child results. This
      neither publishes a response nor replaces the real export call below. *)
@@ -159,6 +231,7 @@ let export_census ~request ~limits ~checked ~material_export=
   result
 let ()=
   diagnostic_controls();
+  paired_codec_controls();
   scenario:="approximation";
   require(Array.length Sys.argv=5)"Expected approximation, evidence, network and component-composition originals";
   let fixture=read Sys.argv.(1)and evidence_fixture=read Sys.argv.(2)and network=read Sys.argv.(3)in

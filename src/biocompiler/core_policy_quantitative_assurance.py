@@ -140,7 +140,7 @@ class PolicyQuantitativeAssuranceResult:
 
     @property
     def result(self) -> dict[str, JsonValue]:
-        return component._stored_result(self._result_json)
+        return component._stored_result(self._result_json, paired_export=self.operation == "export-policy-quantitative-assurance")
 
     @property
     def report(self) -> dict[str, JsonValue]:
@@ -162,9 +162,11 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyQuan
     request = _request(payload["request"])
     original = component._original(request["material_request"])
     coupled = component._composition(original)
+    paired_export = coupled and response.operation == "export-policy-quantitative-assurance"
     pin = component._document_pin if coupled else operational._pin
     same = component._document_same if coupled else operational._same
-    material._publication({"result": coupled_wire.pack(result) if coupled else result}, MAX_RESULT_BYTES, MAX_RESULT_NODES)
+    packet = coupled_wire.pack_export(result) if paired_export else coupled_wire.pack(result) if coupled else result
+    material._publication({"result": packet}, MAX_RESULT_BYTES, MAX_RESULT_NODES)
     candidate = component._candidate(result["candidate"], instanced=component._instanced(original),
         multi_member=component._multi_member(original), grounded_helper=component._grounded_helper(original),
         multi_site=component._multi_site(original))
@@ -191,7 +193,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyQuan
     if response.operation == "replay-policy-quantitative-assurance":
         _require(same(result, payload["report"]), "Fresh assurance replay differs from retained complete result")
     return PolicyQuantitativeAssuranceResult(response.request_id, response.operation, response.executable,
-        component._result_bytes(result, coupled=coupled))
+        component._result_bytes(result, coupled=coupled, paired_export=paired_export))
 
 
 @dataclass(frozen=True)
@@ -201,6 +203,7 @@ class PolicyQuantitativeAssuranceClient:
     def _call(self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None) -> PolicyQuantitativeAssuranceResult:
         raw = component._record(payload["request"], "Original assurance request")
         coupled = component._record(raw.get("material_request"), "Original material request").get("profile") == component.COMPOSITION_REQUEST_PROFILE
+        paired_export = coupled and operation == "export-policy-quantitative-assurance"
         snapshot = cast(dict[str, JsonValue], coupled_wire.snapshot(payload) if coupled else decode_json(encode_json(payload)))
         _request(snapshot["request"])
         if coupled and "candidate" in snapshot:
@@ -209,7 +212,7 @@ class PolicyQuantitativeAssuranceClient:
         _require(not producing or self.transport.role == "core", "Assurance production requires an explicitly selected Core producer")
         capabilities = self.transport.negotiate(operation, cancelled=cancelled)
         if coupled:
-            component._wire_capability(capabilities.profiles, self.transport.role)
+            component._wire_capability(capabilities.profiles, self.transport.role, paired_export=paired_export)
         _require(operational._same(capabilities.profiles.get("policy_quantitative_assurance"), PROFILE)
             and VALIDATION_SCOPE in capabilities.validation_scopes, "Selected executable lacks exact quantitative assurance profile")
         if producing:
@@ -217,7 +220,7 @@ class PolicyQuantitativeAssuranceClient:
                      "Selected producer lacks exact assurance production profile")
         wire = coupled_wire.pack(snapshot) if coupled else snapshot
         response = self.transport.call(operation, wire, cancelled=cancelled)
-        return _result(component._wire_response(response, coupled=coupled), snapshot)
+        return _result(component._wire_response(response, coupled=coupled, paired_export=paired_export), snapshot)
 
     def compile(self, request: JsonValue, limits: JsonValue, *, cancelled: Callable[[], bool] | None = None) -> PolicyQuantitativeAssuranceResult:
         return self._call("compile-policy-quantitative-assurance", {"request": request, "limits": limits}, cancelled=cancelled)

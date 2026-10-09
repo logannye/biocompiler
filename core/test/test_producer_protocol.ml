@@ -87,6 +87,13 @@ let literals () =
       else value)(Json.object_fields value))else value in
     require(Json.equal(field name profiles)expected)
     ("Producer changed an existing checker profile: "^name))checker_profiles;
+  let export_wire=field "policy_coupled_assurance_export_wire" profiles in
+  require(field "operations" export_wire=arr[str "export-policy-quantitative-assurance"] &&
+    field "direction" export_wire=str "response")
+    "Producer expanded the response-only assurance export operation scope";
+  List.iter(fun operation->rejected "policy_coupled_wire_profile"(fun()->
+    call Protocol.Core operation(obj["schema_version",str "biocompiler.policy_coupled_export_json_graph.v0.1"])))
+    ["compile-policy-component-material";"compile-policy-quantitative-assurance"];
   require(Json.equal(field "policy_target_planning" profiles)Bioc_producer_service.Policy_target_planning.profile &&
     field "operations" (field "policy_target_planning" profiles)=arr[str "plan-policy-target";str "replay-policy-target-plan"])
     "Advisory target planning lost its exact core-only capability";

@@ -196,24 +196,40 @@ def _document_same(left: JsonValue, right: JsonValue) -> bool:
     return coupled_wire.canonical_bytes(left) == coupled_wire.canonical_bytes(right)
 
 
-def _stored_result(data: bytes) -> dict[str, JsonValue]:
+def _stored_result(data: bytes, *, paired_export: bool = False) -> dict[str, JsonValue]:
     raw = decode_json(data)
+    if coupled_wire.is_export_packet(raw):
+        if not paired_export:
+            raise CoreProtocolError("Paired export packet is not a result for this operation")
+        return cast(dict[str, JsonValue], coupled_wire.unpack_export(raw))
     return cast(dict[str, JsonValue], coupled_wire.unpack(raw) if coupled_wire.is_packet(raw) else raw)
 
 
-def _result_bytes(value: JsonValue, *, coupled: bool) -> bytes:
+def _result_bytes(value: JsonValue, *, coupled: bool, paired_export: bool = False) -> bytes:
+    if paired_export:
+        if not coupled:
+            raise CoreProtocolError("Paired export requires the explicit coupled family")
+        return encode_json(coupled_wire.pack_export(value))
     return encode_json(coupled_wire.pack(value) if coupled else value)
 
 
-def _wire_response(response: CoreResponse, *, coupled: bool) -> CoreResponse:
+def _wire_response(response: CoreResponse, *, coupled: bool, paired_export: bool = False) -> CoreResponse:
+    if paired_export:
+        if not coupled or response.operation != "export-policy-quantitative-assurance" or not coupled_wire.is_export_packet(response.result):
+            raise CoreProtocolError("Paired export response does not match the negotiated operation")
+        return replace(response, result=coupled_wire.unpack_export(response.result))
+    if coupled_wire.is_export_packet(response.result):
+        raise CoreProtocolError("Paired export packet is forbidden for this response")
     if coupled != coupled_wire.is_packet(response.result):
         raise CoreProtocolError("Coupled wire response does not match the negotiated original profile")
     return replace(response, result=coupled_wire.unpack(response.result)) if coupled else response
 
 
-def _wire_capability(profiles: dict[str, JsonValue], role: Literal["core", "verify"]) -> None:
+def _wire_capability(profiles: dict[str, JsonValue], role: Literal["core", "verify"], *, paired_export: bool = False) -> None:
     if not _same(profiles.get("policy_coupled_wire"), coupled_wire.profile(role)):
         raise CoreProtocolError("Selected executable lacks the exact coupled JSON graph wire profile")
+    if paired_export and not _same(profiles.get("policy_coupled_assurance_export_wire"), coupled_wire.export_profile()):
+        raise CoreProtocolError("Selected executable lacks the exact paired assurance export wire profile")
 
 
 def _original(value: JsonValue) -> dict[str, JsonValue]:

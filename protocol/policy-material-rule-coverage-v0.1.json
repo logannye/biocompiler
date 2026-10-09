@@ -1021,16 +1021,21 @@
     },
     {
       "path": "core/lib/domain/policy_coupled_wire.ml",
-      "sha256": "8f3b5aa8271510baa9c14f91ff173ba4fee939ab5a503ff110eca7f546ad5bbf",
+      "sha256": "286eefd4afd9b08ba11722460156f2f5f4fbf974d53daf26ed128fefc46f5905",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 2,
+          "Diagnostic.fail": 4,
           "Diagnostic.require": 2,
-          "require": 17
+          "require": 19
         },
         "profile_literals": {
-          "biocompiler.policy_coupled_json_graph.v0.1": 1
+          "biocompiler.core.policy_quantitative_assurance.v1": 1,
+          "biocompiler.ocaml.policy_quantitative_assurance.v0.1": 1,
+          "biocompiler.policy_coupled_export_json_graph.v0.1": 1,
+          "biocompiler.policy_coupled_json_graph.v0.1": 1,
+          "biocompiler.policy_quantitative_assurance_export.v0.1": 1,
+          "biocompiler.policy_quantitative_assurance_manifest.v0.1": 1
         }
       },
       "disposition": "outside_route",
@@ -1038,7 +1043,7 @@
     },
     {
       "path": "core/lib/domain/policy_coupled_wire.mli",
-      "sha256": "07dd15c3b1f7cdf6cf71e69569158b2cb9c66a81813de168baaf983bfa32aba0",
+      "sha256": "4b7d82514120232c4f2a736615e4b8f214eaa2af40b3b7d0b8502f2815b6e9f3",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -2610,12 +2615,12 @@
     },
     {
       "path": "core/lib/service/policy_component_material_service.ml",
-      "sha256": "a0c8f932e56052d16306529ee2880e827c97959669337b24a001ea0c50c7aebf",
+      "sha256": "7ab6b808cb1d99d5647965c809460f05929bea3cec42eb9f96c9f936e1639e1c",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 1,
-          "Diagnostic.require": 7
+          "Diagnostic.require": 8
         },
         "profile_literals": {
           "biocompiler.core.policy_component_material.v1": 1,
@@ -2642,7 +2647,7 @@
     },
     {
       "path": "core/lib/service/policy_component_material_service.mli",
-      "sha256": "740dd5277d6fc5925683686e1cbd144f926880fa1736ec4dd2fb53b6a66f10e0",
+      "sha256": "eb8dcbd24cc843e1c58b2dfac1d71e9edaa1856b9e4a4e2b7e60eb5fd4b540c6",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -2810,7 +2815,7 @@
     },
     {
       "path": "core/lib/service/policy_quantitative_assurance_service.ml",
-      "sha256": "175a81fe730d7aef81cfbafcc46737ec678a6e5ffe36ccd44e989129a139d791",
+      "sha256": "1fe6485fcc0d04d11bc7d2ee59c1299118bffd01737a24632624ea9319906f13",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -2829,7 +2834,7 @@
     },
     {
       "path": "core/lib/service/policy_quantitative_assurance_service.mli",
-      "sha256": "0f72a7641d5f10e80fe9e7e0ae6d6fe8816c9abc9c1cd224c3b1fc73fd22a6f6",
+      "sha256": "06677be57263e25f3959e9097fe54898cfa532578de2f70d9421df3850dd52c9",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -2899,7 +2904,7 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "2dcd82b8a0e4f2ff701546f063d72d2ec0640e803678379c14ea5bf5892d3975",
+      "sha256": "98c26122b6f53427e9e975f179167d07a90554d8d2c24550f2c0f7ed2e056b90",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -2990,15 +2995,20 @@
     },
     {
       "path": "src/biocompiler/_policy_coupled_wire.py",
-      "sha256": "daa93313b7fd03ce2c249e7d8e7682b181bcb4b8acfe2bcc391026172bcb2588",
+      "sha256": "b482ab65ce427d4b5520d4c9d37578d0c2b8993de9a5669e80eee85372ece650",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
-          "FunctionDef": 12,
+          "FunctionDef": 22,
           "Raise": 1
         },
         "profile_literals": {
-          "biocompiler.policy_coupled_json_graph.v0.1": 1
+          "biocompiler.core.policy_quantitative_assurance.v1": 1,
+          "biocompiler.ocaml.policy_quantitative_assurance.v0.1": 1,
+          "biocompiler.policy_coupled_export_json_graph.v0.1": 1,
+          "biocompiler.policy_coupled_json_graph.v0.1": 1,
+          "biocompiler.policy_quantitative_assurance_export.v0.1": 1,
+          "biocompiler.policy_quantitative_assurance_manifest.v0.1": 1
         }
       },
       "disposition": "outside_route",
@@ -3045,13 +3055,13 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_material.py",
-      "sha256": "5126ddde34b181bff15e8adac67cc306614d4b09981b6f471c6c074a2a0f71c5",
+      "sha256": "034ad00206989a7435b3ab85ba3e6d4e33918f0dc3ca993b896ec68a840c1e96",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
           "FunctionDef": 49,
-          "Raise": 118
+          "Raise": 123
         },
         "profile_literals": {
           "biocompiler.core.policy_component_material.v1": 1,
@@ -3379,7 +3389,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_quantitative_assurance.py",
-      "sha256": "6e1fa5ba5dddec8fcef969696809e951b5e3567e2e7251cb4202830bd0ba2930",
+      "sha256": "19fbb1f6a1b3c7e90980757b9540abf88a53739822543d0df4b8dfc4319c350b",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {

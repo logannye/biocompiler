@@ -156,6 +156,8 @@ let is_coupled_request raw=
 let wire_budget ()=W.create ~profile:Wire.schema_version
   ~error_code:"policy_coupled_wire_work_limit" ~maximum:134217728 ()
 let unpack_payload ~assurance payload=
+  Diagnostic.require(not(Wire.is_export_packet payload))"policy_coupled_wire_profile"
+    "The paired assurance export wire format is response-only and cannot supply original authority.";
   if not(Wire.is_packet payload)then payload else
   let work=wire_budget ()in
   let decoded=Wire.decode ~charge:(W.charge work) payload in

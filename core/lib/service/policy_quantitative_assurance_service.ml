@@ -44,6 +44,16 @@ let hash ~coupled work raw=
   Diagnostic.require(String.length bytes=size)"policy_quantitative_assurance_accounting"
     "Assurance preflight differs from the exact canonical bytes.";
   W.charge work size;Canonical.sha256 bytes
+let publish_result ~coupled ~export result=
+  if coupled && export then (
+    (* Only this freshly checked export response may use the paired envelope.
+       Its two logical parts retain the original bounds, and the complete
+       physical publication still uses the ordinary protocol allowance. *)
+    let work=W.create ~profile:Wire.export_schema_version
+      ~error_code:"policy_coupled_wire_work_limit" ~maximum:134217728 ()in
+    let published=Wire.encode_export ~charge:(W.charge work) result in
+    Material.validate_publication published;published)
+  else Material.publish_result ~coupled result
 let check ~export ~request:raw ~candidate ~limits=
   (* A fixed bounded preflight precedes decoding. The caller's lower allowance
      is then charged for the complete decoding input before any child checks. *)
@@ -104,10 +114,12 @@ let check ~export ~request:raw ~candidate ~limits=
     "validation_scope",str validation_scope;"request_fingerprint",str request_pin;
     "candidate_fingerprint",str candidate_pin;"invocation_fingerprint",str invocation_pin;
     "report_fingerprint",str report_pin;"candidate",candidate;"report",report;"artifact",artifact] in
-  ignore(at_stage ~coupled "result_preflight"(fun()->preflight ~coupled work result));
+  ignore(at_stage ~coupled "result_preflight"(fun()->
+    if coupled && export then Wire.preflight_export ~charge:(W.charge work) result
+    else preflight ~coupled work result));
   Diagnostic.require(not(W.exhausted work))"policy_quantitative_assurance_work_limit"
     "Assurance work was exhausted before publication.";
-  ignore(at_stage ~coupled "result_publication"(fun()->Material.publish_result ~coupled result));result
+  ignore(at_stage ~coupled "result_publication"(fun()->publish_result ~coupled ~export result));result
 let handle ~operation payload=
   Diagnostic.require(List.mem operation operations)"unsupported_operation"
     "Quantitative assurance verifier cannot produce a candidate.";
@@ -120,4 +132,4 @@ let handle ~operation payload=
     ~request:(Json.field "request" fields) ~candidate:(Json.field "candidate" fields) ~limits:(Json.field "limits" fields) in
   if replay then Diagnostic.require(Material.replay_equal ~coupled result(Json.field "report" fields))
     "policy_quantitative_assurance_replay" "Saved assurance differs from complete fresh original-authority checking.";
-  if coupled then Material.publish_result ~coupled:true result else result
+  if coupled then publish_result ~coupled:true ~export:(operation="export-policy-quantitative-assurance") result else result

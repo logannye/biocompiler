@@ -13,6 +13,7 @@ from biocompiler import core_policy_quantitative_assurance as assurance
 from biocompiler import core_policy_refinement as refinement
 from biocompiler.core_client import CORE_VERSION, CoreProtocolError, CoreResponse, encode_json
 from tests import test_core_policy_material as old
+from tests.test_policy_coupled_wire import paired_export
 from tools import generate_policy_quantitative_composition_fixture as fixture
 
 
@@ -27,13 +28,15 @@ class InertTransport:
     def __init__(self):
         self.calls = []
         self.packed = True
+        self.response = None
         self.capabilities = SimpleNamespace(profiles={
             "policy_coupled_quantitative_material": component.COMPOSITION_PROFILE,
             "policy_coupled_quantitative_material_producer": component.COMPOSITION_PRODUCER_PROFILE,
             "policy_quantitative_assurance": assurance.PROFILE,
             "policy_quantitative_assurance_producer": assurance.PRODUCER_PROFILE,
             "policy_refinement": refinement.PROFILE,
-            "policy_coupled_wire": wire.profile(self.role)}, validation_scopes=[
+            "policy_coupled_wire": wire.profile(self.role),
+            "policy_coupled_assurance_export_wire": wire.export_profile()}, validation_scopes=[
                 component.COMPOSITION_VALIDATION_SCOPE, assurance.VALIDATION_SCOPE, refinement.VALIDATION_SCOPE])
 
     def negotiate(self, operation, *, cancelled=None):
@@ -42,8 +45,9 @@ class InertTransport:
     def call(self, operation, payload, *, cancelled=None):
         encode_json({"payload": payload})  # The unchanged physical protocol cap.
         self.calls.append((operation, deepcopy(payload)))
-        value = {"notice": "inert wire observation"}
-        return CoreResponse("inert-coupled", operation, "ok", wire.pack(value) if self.packed else value,
+        value = self.response if self.response is not None else {"notice": "inert wire observation"}
+        packet = (wire.pack_export(value) if operation == "export-policy-quantitative-assurance" else wire.pack(value)) if self.packed else value
+        return CoreResponse("inert-coupled", operation, "ok", packet,
                             (), self.role, CORE_VERSION)
 
 
@@ -120,6 +124,53 @@ class CoupledTransportTests(unittest.TestCase):
         with self.assertRaises(CoreProtocolError): component._wire_response(response, coupled=False)
         ordinary = CoreResponse("id", "check", "ok", {"notice": "data"}, (), "verify", CORE_VERSION)
         self.assertIs(component._wire_response(ordinary, coupled=False), ordinary)
+
+    def test_paired_export_requires_additional_exact_capability_and_operation(self):
+        api, constructor, request = self.clients()[1]
+        payload = {"request": request, "candidate": {}, "limits": self.fixture["limits"]}
+        operation = "export-policy-quantitative-assurance"
+        transport = InertTransport()
+        transport.response = paired_export()
+        with patch.object(api, "_result", side_effect=lambda response, original: response.result):
+            self.assertEqual(constructor(transport)._call(operation, payload, cancelled=None), paired_export())
+        self.assertTrue(wire.is_packet(transport.calls[0][1]))  # Inputs retain v0.1.
+        for mutation in ("absent", "input_direction", "larger_part", "other_operation"):
+            transport = InertTransport()
+            transport.response = paired_export()
+            profile = transport.capabilities.profiles["policy_coupled_assurance_export_wire"]
+            if mutation == "absent": transport.capabilities.profiles.pop("policy_coupled_assurance_export_wire")
+            elif mutation == "input_direction": profile["direction"] = "request"
+            elif mutation == "larger_part": profile["max_part_bytes"] += 1
+            else: profile["operations"] = ["check-policy-quantitative-assurance"]
+            with self.subTest(mutation=mutation), self.assertRaises(CoreProtocolError):
+                constructor(transport)._call(operation, payload, cancelled=None)
+            self.assertEqual(transport.calls, [])
+        packet = wire.pack_export(paired_export())
+        for name in (operation, "check-policy-quantitative-assurance", "export-policy-component-material", "check-policy-refinement"):
+            response = CoreResponse("id", name, "ok", packet, (), "verify", CORE_VERSION)
+            with self.subTest(name=name), self.assertRaises(CoreProtocolError):
+                component._wire_response(response, coupled=True)
+            with self.assertRaises(CoreProtocolError): component._wire_response(response, coupled=False)
+            if name != operation:
+                with self.assertRaises(CoreProtocolError): component._wire_response(response, coupled=True, paired_export=True)
+        ordinary = CoreResponse("id", operation, "ok", wire.pack(paired_export()), (), "verify", CORE_VERSION)
+        with self.assertRaises(CoreProtocolError): component._wire_response(ordinary, coupled=True, paired_export=True)
+
+    def test_paired_export_storage_is_explicit_detached_and_not_a_replay_input(self):
+        value = paired_export(large_tree(510), large_tree(510))
+        stored = component._result_bytes(value, coupled=True, paired_export=True)
+        result = assurance.PolicyQuantitativeAssuranceResult("id", "export-policy-quantitative-assurance", "verify", stored)
+        self.assertEqual(result.result, value)
+        view = result.result
+        view["report"][0][0] = True
+        self.assertIsNone(view["report"][1][0])
+        self.assertIsNone(result.report[0][0])
+        with self.assertRaises(CoreProtocolError): component._stored_result(stored)
+        with self.assertRaises(CoreProtocolError): component._result_bytes(value, coupled=False, paired_export=True)
+        api, constructor, request = self.clients()[1]
+        payload = {"request": request, "candidate": {}, "limits": self.fixture["limits"], "report": value}
+        with self.assertRaises(CoreProtocolError):
+            constructor(InertTransport())._call("replay-policy-quantitative-assurance", payload, cancelled=None)
 
     def test_expanded_hash_is_exact_and_legacy_hash_remains_bounded(self):
         value = {"left": large_tree(), "right": large_tree()}

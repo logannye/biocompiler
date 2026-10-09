@@ -21,13 +21,13 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # hashes for historical source files are deliberately unsupported.
 REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py", "examples/researcher_alpha.py"})
 REVIEWED_ADDITIONS = {
-    'src/biocompiler/_policy_coupled_wire.py': 'daa93313b7fd03ce2c249e7d8e7682b181bcb4b8acfe2bcc391026172bcb2588',
+    'src/biocompiler/_policy_coupled_wire.py': 'b482ab65ce427d4b5520d4c9d37578d0c2b8993de9a5669e80eee85372ece650',
     # Semantic modules, planning, exact quantitative composition and assurance
     # are reviewed current additions only. The immutable original cohort must
     # never import these files or acquire their newer checking authority.
     'src/biocompiler/core_policy_module_linking.py': '8c6cb783a929dc4e4bd7f191af8d228905ef314d1c0ff3e7c9fa584f9e4fd165',
     'src/biocompiler/core_policy_planning.py': '0da78ac83d9627eb0f649f919a4a902f4312a466699b75292271e348f811615c',
-    'src/biocompiler/core_policy_quantitative_assurance.py': '6e1fa5ba5dddec8fcef969696809e951b5e3567e2e7251cb4202830bd0ba2930',
+    'src/biocompiler/core_policy_quantitative_assurance.py': '19fbb1f6a1b3c7e90980757b9540abf88a53739822543d0df4b8dfc4319c350b',
     'src/biocompiler/core_policy_refinement.py': 'ea059004962bc243a3dd12d30d89115ac192d303f2b79d6dc049eb049aca250b',
     'src/biocompiler/policy/approximation.py': 'df7ca7cd614cfd42b04bbd62c33174fdc3e823246825ee1b11af8ebd42fb20a8',
     'src/biocompiler/policy/module_linking.py': '87dd2eb7ffd36ff3bc76d2de4957eb3806e0da29cd58bc3c029c3f25a7a3efe2',
@@ -69,7 +69,7 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5",
     # Reviewed versioned instance/prerequisite transports remain outside historical authority.
     'src/biocompiler/policy/component_material.py': 'e23f08b6113670c73363a0852b390e6d39d0d058fdd3a7a044f2ba1c04e61da1',
-    'src/biocompiler/core_policy_component_material.py': '5d317d091e9895556968aed3a2965d425733346ae4422b129986fa27fedd789d',
+    'src/biocompiler/core_policy_component_material.py': '034ad00206989a7435b3ab85ba3e6d4e33918f0dc3ca993b896ec68a840c1e96',
     'src/biocompiler/policy/material.py': '5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79',
     'src/biocompiler/core_policy_material.py': 'e3b990c93130fb7d0b74462e30bf87dc5cd5f42d582a0808163f1a6ba965b5cf',
     'src/biocompiler/policy/implementation.py': '452344e7e6681d04e0018bf0ad4cb3cacd47a5022c9a41883867e4fd62db4ee8',
