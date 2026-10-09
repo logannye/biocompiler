@@ -123,6 +123,8 @@ COMPONENT_GENERATION_SHARED_SOURCES = (
     'core/lib/compiler/policy_lowering.mli',
     'core/lib/compiler/recoding_producer.ml',
     'core/lib/compiler/recoding_producer.mli',
+    'core/lib/domain/policy_admitted_ir.ml',
+    'core/lib/domain/policy_admitted_ir.mli',
     'core/lib/domain/policy_operating_domain.ml',
     'core/lib/domain/policy_operating_domain.mli',
     'core/lib/producer_service/producer_service.ml',
@@ -297,7 +299,7 @@ COMPONENT_WITNESSES = tuple(sorted([
 ]))
 # Fixed reviewed meaning/provenance projection, excluding source-body hashes and
 # lexical counts. Re-pinning changed files cannot reassign witness meaning.
-COMPONENT_METADATA_SHA256 = "e9a16f88aaf74c370fda146574f5e5d90e93a7fe37c540e79be69e2ccd5ea45a"
+COMPONENT_METADATA_SHA256 = "394152e8ccbb347e9f272be773f44a1dab444895c6b4babd413d34c3c7a4db5b"
 
 
 class CoverageError(ValueError):

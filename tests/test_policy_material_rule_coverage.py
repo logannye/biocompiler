@@ -42,13 +42,13 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 157)
+        self.assertEqual(result["sources"], 159)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 27, "sources": 105, "witness_sources": 127,
+        self.assertEqual(result["component_route"], {"rules": 27, "sources": 107, "witness_sources": 127,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -202,7 +202,7 @@ let check x = Diagnostic.require x "code" "message"
 
     def test_component_route_cannot_be_promoted_into_old_whole_kernel_rules(self):
         self.assertEqual(len(coverage.COMPONENT_ROUTE_SOURCES), 50)
-        self.assertEqual(len(coverage.COMPONENT_SHARED_SOURCES), 29)
+        self.assertEqual(len(coverage.COMPONENT_SHARED_SOURCES), 31)
         for path in coverage.COMPONENT_ROUTE_SOURCES:
             row = next(value for value in self.original["sources"] if value["path"] == path)
             self.assertEqual(row["disposition"], "outside_route")
@@ -246,8 +246,37 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_candidate_congruence(self):
+    def before_typed_admission(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        added = {"core/lib/domain/policy_admitted_ir.ml", "core/lib/domain/policy_admitted_ir.mli"}
+        self.assertEqual({row["path"] for row in ledger["sources"] if row["path"] in added}, added)
+        ledger["sources"] = [row for row in ledger["sources"] if row["path"] not in added]
+        return ledger
+
+    def test_typed_admission_preserves_all_previous_component_meaning(self):
+        projected = self.before_typed_admission()
+        self.assertEqual((len(projected["rules"]), len(projected["sources"]), len(projected["witness_sources"])),
+                         (27, 105, 127))
+        encoded = json.dumps(coverage.component_metadata(projected), sort_keys=True,
+                             separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "e9a16f88aaf74c370fda146574f5e5d90e93a7fe37c540e79be69e2ccd5ea45a")
+
+    def test_typed_admission_preserves_all_previous_whole_kernel_claims(self):
+        added = {"core/lib/domain/policy_admitted_ir.ml", "core/lib/domain/policy_admitted_ir.mli"}
+        self.assertEqual({row["path"] for row in self.original["sources"] if row["path"] in added}, added)
+        self.assertTrue(all(row["disposition"] == "dependency" for row in self.original["sources"]
+                            if row["path"] in added))
+        projected = {key: value for key, value in self.original.items() if key not in {"sources", "witness_sources"}}
+        projected["source_classifications"] = [{key: row[key] for key in ("path", "disposition", "reason")}
+            for row in self.original["sources"] if row["path"] not in added]
+        projected["witness_paths"] = [row["path"] for row in self.original["witness_sources"]]
+        encoded = json.dumps(projected, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "fdaaa600c19538cf7319c1bfea4e1c41becd76ae4c00328c494eddfeff4267ab")
+
+    def before_candidate_congruence(self):
+        ledger = self.before_typed_admission()
         rule = ledger["rules"].pop()
         self.assertEqual(rule["id"], "component.candidate_transition_congruence")
         self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in rule[kind]},

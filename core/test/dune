@@ -1004,3 +1004,9 @@
  (modules test_policy_candidate_transition_congruence)
  (libraries bioc_wire bioc_domain bioc_candidate_runtime bioc_policy_staged_test_support)
  (action (run %{test} %{dep:data/policy_primitives_v01.json})))
+
+(test
+ (name test_policy_admitted_ir)
+ (modules test_policy_admitted_ir)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{dep:data/policy_operational_v01.json} %{dep:data/policy_staged_regimen_source_v01.json} %{dep:data/policy_implementation_binding_v01.json})))

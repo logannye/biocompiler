@@ -45,6 +45,7 @@ ADDED_DEPENDENCIES = {
     "test_policy_grounded_helper_material_service": ["data/policy_staged_material_v01.json"],
     "test_policy_candidate_congruence_check": ["data/policy_implementation_binding_v01.json"],
     "test_policy_candidate_transition_congruence": ["data/policy_primitives_v01.json"],
+    "test_policy_admitted_ir": ["data/policy_operational_v01.json", "data/policy_staged_regimen_source_v01.json", "data/policy_implementation_binding_v01.json"],
 }
 
 
@@ -77,8 +78,8 @@ class NativeFixtureWiringTests(unittest.TestCase):
         return declared
 
     def assert_reviewed_census(self, declared):
-        self.assertEqual(len(declared), 180, "complete union native suite census changed")
-        self.assertEqual(sum("dependencies" in row for row in declared), 62)
+        self.assertEqual(len(declared), 181, "complete union native suite census changed")
+        self.assertEqual(sum("dependencies" in row for row in declared), 63)
         added = [row for row in declared if row["name"] in ADDED_DEPENDENCIES]
         self.assertEqual(added, [{"name": name, "environment": [], "dependencies": dependencies}
                                 for name, dependencies in ADDED_DEPENDENCIES.items()],
@@ -138,8 +139,8 @@ class NativeFixtureWiringTests(unittest.TestCase):
             *("core/_build/default/test/" + relative for row in declared for relative in row.get("dependencies", []))},
             "compiled bundle omitted or added a native executable or source dependency fixture")
         members = bundle.expected_members(root)
-        self.assertEqual(len(members), 214)
-        self.assertEqual(sum(path.endswith(".exe") for path in members), 188)
+        self.assertEqual(len(members), 215)
+        self.assertEqual(sum(path.endswith(".exe") for path in members), 189)
         return declared, dict(bindings)
 
     def test_reviewed_baseline_projection_rejects_changes_despite_same_total(self):

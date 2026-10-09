@@ -28,6 +28,8 @@ jobs:
       - name: Authenticate hosted push and exact sources before native setup
         run: |
           python -B tools/check_policy_development.py prepare
+          python -B tools/generate_policy_wire_schema.py --check
+          python -B tools/check_policy_source_context_coverage.py
           python -B tools/check_policy_material_rule_coverage.py
           python -B tools/check_policy_public_api_coverage.py
           python -B tools/migration_inventory.py --check

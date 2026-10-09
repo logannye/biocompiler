@@ -13,3 +13,6 @@ val document : t -> Bioc_domain.Policy_document.t
 val descriptors : t -> O.descriptor_bundle
 val source_assessment : t -> Bioc_wire.Json.t
 val report : t -> Bioc_wire.Json.t
+(** Closed resolved executable terms, available only through fresh admission.
+    This is not source preservation, realization or export authority. *)
+val typed : t -> Bioc_domain.Policy_admitted_ir.t

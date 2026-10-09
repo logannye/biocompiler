@@ -5,6 +5,12 @@ policy specifications. It constructs portable declarations for human immune cell
 engineered in vivo with RNA payloads. It does not execute those declarations,
 select molecular implementations, emit sequences or establish acceptance.
 
+The [independent language specification](policy-language-specification-v0.1.md)
+and its versioned JSON schema define the language. This page documents the Python
+authoring client and its source interpretation obligations. The SDK and native
+record schema must conform to the language, rather than deriving its authority
+from Python dataclass layout.
+
 The document profile is `biocompiler.policy.v0.1`. This is a new authoring family;
 it does not change Behavior v0.1/v0.2 or extend their executable capabilities.
 Studio and conversational authoring remain deferred clients of this same format.
@@ -313,8 +319,9 @@ checks both the generated target and encounter before adding either; a rejected
 expansion leaves the declarations and source map unchanged.
 
 `dump(..., overwrite=False)` uses atomic no-clobber publication. Loading performs
-no dynamic imports, dependency downloads or backend discovery. Schema export is
-derived from the reviewed closed registry. Wire changes require an explicit
+no dynamic imports, dependency downloads or backend discovery. The SDK's schema
+export is conformance-checked against the independent language specification.
+Wire changes require an explicit
 version decision; imports never silently upgrade old documents.
 
 `BackendCapabilities` is an explicit caller-supplied declaration.

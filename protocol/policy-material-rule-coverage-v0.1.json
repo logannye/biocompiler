@@ -125,14 +125,14 @@
     },
     {
       "path": "core/lib/checker/policy_admission.ml",
-      "sha256": "185cd8857caf6ee43461fde6b9c064745cb9a9d692ca16c848134b9777a53745",
+      "sha256": "b248d924d5b8768b8dcdff44dc503b7b220d2da58e7fe03802ac24b96bf29c87",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 1,
           "Diagnostic.require": 1,
           "fail": 5,
-          "require": 52
+          "require": 54
         },
         "profile_literals": {
           "biocompiler.policy_operational_admission.v0.1": 1
@@ -143,7 +143,7 @@
     },
     {
       "path": "core/lib/checker/policy_admission.mli",
-      "sha256": "5ff3e8bf9b7a12da3f2afb5f006ba1b32643777ef9b0beb509b55da515ffe8f3",
+      "sha256": "e1ce3f1bf1c142dfdfe5533db8e20357fa639690c69a59d8cbe11c4b59d5a710",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -403,7 +403,7 @@
     },
     {
       "path": "core/lib/compiler/policy_lowering.ml",
-      "sha256": "9cd1d929568d6802166cc60dc64db421dfc753530d9667ab0fb298199add47d6",
+      "sha256": "07644e5426bffe2b515a4625916d48bdac7fa7589ca9c33853efb76b127fe7a8",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -548,6 +548,32 @@
       },
       "disposition": "dependency",
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_admitted_ir.ml",
+      "sha256": "aaceab675d7faddf16b44e2e216b12721051ef906ab2cd218c4ef8076a5245f7",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "fail": 32,
+          "require": 10
+        },
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Closed typed executable representation consumed after source admission; original family claims and witness gaps remain unchanged."
+    },
+    {
+      "path": "core/lib/domain/policy_admitted_ir.mli",
+      "sha256": "7c0704ecf71d8878e6799f31cab49506003528c11b38a2227e3e8d3e75ff3b87",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Closed typed executable representation consumed after source admission; original family claims and witness gaps remain unchanged."
     },
     {
       "path": "core/lib/domain/policy_component_assembly_proposal.ml",
@@ -1253,7 +1279,7 @@
     },
     {
       "path": "core/lib/domain/policy_schema.ml",
-      "sha256": "ea829a61d0584e98e4c63a3df6404988dec0d6af4bdf3faef31158420be2b2c5",
+      "sha256": "8057ea511a25835f4e51c720ce815602f69839d0a664fc880c2f8f5bee918e78",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1267,7 +1293,7 @@
     },
     {
       "path": "core/lib/domain/policy_schema.mli",
-      "sha256": "9cfd2d1449ea8e0611e6c96406bc3ca2bdd89a640b017dda7b3d45936ef4b8f1",
+      "sha256": "2ece7d7bce2eb7e8e383d4799fda1b18e4655ec0947ed83c8ab93b64d85bb181",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -3459,7 +3485,7 @@
             "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
             "occurrence": 1
           },
-          "context": "All four initiation/continuous × continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -4525,7 +4551,7 @@
             "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
             "occurrence": 1
           },
-          "context": "All four initiation/continuous × continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         },
         {
@@ -5351,7 +5377,7 @@
           "occurrence": 1
         }
       ],
-      "admitted_context": "PM-02–09 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
+      "admitted_context": "PM-02\u201309 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
       "outside_context": {
         "disposition": "mixed",
         "description": "Core-only/partial RNA, wrong modality, missing member or bounded/unknown unrepresented tail cannot be complete."

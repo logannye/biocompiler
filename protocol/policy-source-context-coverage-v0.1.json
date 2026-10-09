@@ -32,7 +32,7 @@
   "sources": [
     {
       "path": "core/lib/checker/policy_admission.ml",
-      "sha256": "185cd8857caf6ee43461fde6b9c064745cb9a9d692ca16c848134b9777a53745",
+      "sha256": "b248d924d5b8768b8dcdff44dc503b7b220d2da58e7fe03802ac24b96bf29c87",
       "disposition": "deferred_boundary",
       "ast": null
     },
@@ -86,7 +86,7 @@
     },
     {
       "path": "core/lib/domain/policy_schema.ml",
-      "sha256": "ea829a61d0584e98e4c63a3df6404988dec0d6af4bdf3faef31158420be2b2c5",
+      "sha256": "8057ea511a25835f4e51c720ce815602f69839d0a664fc880c2f8f5bee918e78",
       "disposition": "source_codec_dependency",
       "ast": null
     },

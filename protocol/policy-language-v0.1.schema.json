@@ -1,0 +1,2794 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Biocompiler policy declarations (representation only)",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/PolicyDraft"
+    },
+    {
+      "$ref": "#/$defs/PolicyProgram"
+    },
+    {
+      "$ref": "#/$defs/BuildRequest"
+    }
+  ],
+  "$defs": {
+    "Arbitration": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Arbitration"
+        },
+        "mode": {
+          "enum": [
+            "exclusive",
+            "priority",
+            "concurrent",
+            "nondeterministic"
+          ]
+        },
+        "tie": {
+          "enum": [
+            "reject",
+            "declared_order",
+            "nondeterministic"
+          ]
+        },
+        "write_conflict": {
+          "enum": [
+            "reject",
+            "identical_only",
+            "contract"
+          ]
+        },
+        "preemption": {
+          "enum": [
+            "forbidden",
+            "request_cancel",
+            "contract"
+          ]
+        },
+        "fairness": {
+          "enum": [
+            "none",
+            "weak",
+            "strong"
+          ]
+        },
+        "order": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contract": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DefinitionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "mode",
+        "tie",
+        "write_conflict",
+        "preemption",
+        "fairness",
+        "order",
+        "contract"
+      ],
+      "additionalProperties": false
+    },
+    "Argument": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Argument"
+        },
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/Expr"
+        }
+      },
+      "required": [
+        "$type",
+        "name",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "Assignment": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Assignment"
+        },
+        "state": {
+          "$ref": "#/$defs/Ref"
+        },
+        "value": {
+          "$ref": "#/$defs/Expr"
+        }
+      },
+      "required": [
+        "$type",
+        "state",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "AssuranceRequest": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "AssuranceRequest"
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "level": {
+          "enum": [
+            "structural",
+            "bounded",
+            "proof"
+          ]
+        },
+        "horizon": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "enum": [
+                "unbounded_requested"
+              ]
+            }
+          ]
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tolerances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Argument"
+          }
+        }
+      },
+      "required": [
+        "$type",
+        "requirements",
+        "level",
+        "horizon",
+        "assumptions",
+        "tolerances"
+      ],
+      "additionalProperties": false
+    },
+    "BackendCapabilities": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "BackendCapabilities"
+        },
+        "backend_id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "$type",
+        "backend_id",
+        "version",
+        "profiles",
+        "features"
+      ],
+      "additionalProperties": false
+    },
+    "BuildRequest": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "BuildRequest"
+        },
+        "program": {
+          "$ref": "#/$defs/PolicyProgram"
+        },
+        "deployment": {
+          "$ref": "#/$defs/Deployment"
+        },
+        "implementations": {
+          "$ref": "#/$defs/ImplementationCatalogLock"
+        },
+        "assurance": {
+          "$ref": "#/$defs/AssuranceRequest"
+        },
+        "profile": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$type",
+        "program",
+        "deployment",
+        "implementations",
+        "assurance",
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "CapabilityAssessment": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "CapabilityAssessment"
+        },
+        "backend_id": {
+          "type": "string"
+        },
+        "backend_version": {
+          "type": "string"
+        },
+        "profile": {
+          "type": "string"
+        },
+        "profile_supported": {
+          "type": "boolean"
+        },
+        "document_digest": {
+          "type": "string"
+        },
+        "authoring_status": {
+          "enum": [
+            "complete",
+            "incomplete",
+            "invalid"
+          ]
+        },
+        "required_features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "supported_features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unsupported_features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "enum": [
+            "declared_compatible",
+            "unsupported"
+          ]
+        },
+        "target_status": {
+          "enum": [
+            "unassessed",
+            "unbound"
+          ]
+        },
+        "schema_version": {
+          "enum": [
+            "biocompiler.policy_capability_assessment.v0.1"
+          ]
+        },
+        "semantic_status": {
+          "enum": [
+            "unassessed"
+          ]
+        },
+        "backend_execution": {
+          "enum": [
+            "not_performed"
+          ]
+        },
+        "claim_scope": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$type",
+        "backend_id",
+        "backend_version",
+        "profile",
+        "profile_supported",
+        "document_digest",
+        "authoring_status",
+        "required_features",
+        "supported_features",
+        "unsupported_features",
+        "status",
+        "target_status",
+        "schema_version",
+        "semantic_status",
+        "backend_execution",
+        "claim_scope"
+      ],
+      "additionalProperties": false
+    },
+    "Channel": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Channel"
+        },
+        "id": {
+          "type": "string"
+        },
+        "sender": {
+          "$ref": "#/$defs/Ref"
+        },
+        "recipients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          }
+        },
+        "message_type": {
+          "$ref": "#/$defs/TypeSpec"
+        },
+        "contract": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "ordering": {
+          "enum": [
+            "fifo",
+            "unordered",
+            "causal"
+          ]
+        },
+        "loss": {
+          "enum": [
+            "permitted",
+            "forbidden",
+            "contract"
+          ]
+        },
+        "duplication": {
+          "enum": [
+            "permitted",
+            "deduplicate",
+            "forbidden"
+          ]
+        },
+        "acknowledgment": {
+          "enum": [
+            "none",
+            "required"
+          ]
+        },
+        "retry": {
+          "enum": [
+            "none",
+            "bounded",
+            "contract"
+          ]
+        },
+        "max_attempts": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "latency": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "spatial_scope": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "sender",
+        "recipients",
+        "message_type",
+        "contract",
+        "scope",
+        "ordering",
+        "loss",
+        "duplication",
+        "acknowledgment",
+        "retry",
+        "max_attempts",
+        "latency",
+        "spatial_scope"
+      ],
+      "additionalProperties": false
+    },
+    "ChassisProfile": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "ChassisProfile"
+        },
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "lineage": {
+          "type": "string"
+        },
+        "subtype": {
+          "type": "string"
+        },
+        "activation_states": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "differentiation_states": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DefinitionRef"
+          }
+        },
+        "operational_model": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "environment": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DefinitionRef"
+          }
+        },
+        "interfaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DefinitionRef"
+          }
+        },
+        "species": {
+          "enum": [
+            "human"
+          ]
+        },
+        "recipient_class": {
+          "enum": [
+            "immune",
+            "immune_progenitor"
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "version",
+        "lineage",
+        "subtype",
+        "activation_states",
+        "differentiation_states",
+        "capabilities",
+        "operational_model",
+        "environment",
+        "interfaces",
+        "species",
+        "recipient_class"
+      ],
+      "additionalProperties": false
+    },
+    "Clock": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Clock"
+        },
+        "id": {
+          "type": "string"
+        },
+        "basis": {
+          "enum": [
+            "availability",
+            "observation",
+            "logical"
+          ]
+        },
+        "resolution": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "simultaneous": {
+          "enum": [
+            "atomic_batch"
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "basis",
+        "resolution",
+        "simultaneous"
+      ],
+      "additionalProperties": false
+    },
+    "CompilationSubmission": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "CompilationSubmission"
+        },
+        "request": {
+          "$ref": "#/$defs/BuildRequest"
+        },
+        "profile": {
+          "type": "string"
+        },
+        "document_digest": {
+          "type": "string"
+        },
+        "program_digest": {
+          "type": "string"
+        },
+        "semantic_bundle": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "implementation_catalog": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DefinitionRef"
+          }
+        },
+        "required_features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "outstanding_obligations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "schema_version": {
+          "enum": [
+            "biocompiler.policy_submission.v0.1"
+          ]
+        },
+        "authoring_status": {
+          "enum": [
+            "complete"
+          ]
+        },
+        "semantic_status": {
+          "enum": [
+            "unassessed"
+          ]
+        },
+        "target_status": {
+          "enum": [
+            "unassessed"
+          ]
+        },
+        "backend_execution": {
+          "enum": [
+            "not_performed"
+          ]
+        },
+        "claim_scope": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$type",
+        "request",
+        "profile",
+        "document_digest",
+        "program_digest",
+        "semantic_bundle",
+        "implementation_catalog",
+        "dependencies",
+        "required_features",
+        "assumptions",
+        "outstanding_obligations",
+        "schema_version",
+        "authoring_status",
+        "semantic_status",
+        "target_status",
+        "backend_execution",
+        "claim_scope"
+      ],
+      "additionalProperties": false
+    },
+    "ContractClause": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "ContractClause"
+        },
+        "kind": {
+          "enum": [
+            "precondition",
+            "postcondition",
+            "transition",
+            "event",
+            "assumption",
+            "progress",
+            "resource"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "expression": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Expr"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "kind",
+        "description",
+        "expression"
+      ],
+      "additionalProperties": false
+    },
+    "DefinitionRef": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "DefinitionRef"
+        },
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "version",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "DeliveryContract": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "DeliveryContract"
+        },
+        "id": {
+          "type": "string"
+        },
+        "intended_recipients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          }
+        },
+        "arrival": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "expression": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "activation": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "co_delivery": {
+          "enum": [
+            "none_required",
+            "same_recipient",
+            "same_population",
+            "contract"
+          ]
+        },
+        "contract": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "intended_recipients",
+        "arrival",
+        "expression",
+        "activation",
+        "co_delivery",
+        "contract",
+        "assumptions"
+      ],
+      "additionalProperties": false
+    },
+    "Deployment": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Deployment"
+        },
+        "id": {
+          "type": "string"
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RoleBinding"
+          }
+        },
+        "environment": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DefinitionRef"
+          }
+        },
+        "delivery": {
+          "$ref": "#/$defs/DeliveryContract"
+        },
+        "payload": {
+          "$ref": "#/$defs/RNAConstraints"
+        },
+        "route": {
+          "enum": [
+            "in_vivo"
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "bindings",
+        "environment",
+        "delivery",
+        "payload",
+        "route"
+      ],
+      "additionalProperties": false
+    },
+    "Effect": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Effect"
+        },
+        "id": {
+          "type": "string"
+        },
+        "contract": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "executor": {
+          "$ref": "#/$defs/Ref"
+        },
+        "subject": {
+          "$ref": "#/$defs/Ref"
+        },
+        "lifecycle": {
+          "$ref": "#/$defs/EffectLifecycle"
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Argument"
+          }
+        },
+        "spatial_scope": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "relationship": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DefinitionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DefinitionRef"
+          }
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "contract",
+        "executor",
+        "subject",
+        "lifecycle",
+        "parameters",
+        "spatial_scope",
+        "relationship",
+        "resources"
+      ],
+      "additionalProperties": false
+    },
+    "EffectLifecycle": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "EffectLifecycle"
+        },
+        "authorization": {
+          "enum": [
+            "initiation",
+            "continuous"
+          ]
+        },
+        "on_loss": {
+          "enum": [
+            "continue",
+            "request_cancel",
+            "request_stop"
+          ]
+        },
+        "on_unknown": {
+          "enum": [
+            "continue",
+            "request_cancel",
+            "request_stop",
+            "defer"
+          ]
+        },
+        "cancellation": {
+          "enum": [
+            "unsupported",
+            "acknowledged",
+            "contract"
+          ]
+        },
+        "completion": {
+          "enum": [
+            "feedback",
+            "contract"
+          ]
+        },
+        "failure": {
+          "enum": [
+            "feedback",
+            "contract"
+          ]
+        },
+        "contract": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "timeout": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "feedback_identity": {
+          "enum": [
+            "attempt_executor_subject"
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "authorization",
+        "on_loss",
+        "on_unknown",
+        "cancellation",
+        "completion",
+        "failure",
+        "contract",
+        "timeout",
+        "feedback_identity"
+      ],
+      "additionalProperties": false
+    },
+    "Encounter": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Encounter"
+        },
+        "id": {
+          "type": "string"
+        },
+        "executor": {
+          "$ref": "#/$defs/Ref"
+        },
+        "target": {
+          "$ref": "#/$defs/Ref"
+        },
+        "contract": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "termination": {
+          "enum": [
+            "contact_loss",
+            "explicit_event",
+            "contract"
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "executor",
+        "target",
+        "contract",
+        "termination"
+      ],
+      "additionalProperties": false
+    },
+    "Expr": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Expr"
+        },
+        "op": {
+          "enum": [
+            "literal",
+            "observe",
+            "state",
+            "parameter",
+            "all",
+            "any",
+            "not",
+            "eq",
+            "ne",
+            "lt",
+            "le",
+            "gt",
+            "ge",
+            "add",
+            "subtract",
+            "multiply",
+            "divide",
+            "exists",
+            "forall",
+            "count",
+            "distinct",
+            "holds",
+            "recently",
+            "followed_by",
+            "within",
+            "after",
+            "until",
+            "rising",
+            "updated",
+            "effect_event",
+            "message_event",
+            "call",
+            "integrate"
+          ]
+        },
+        "value_type": {
+          "$ref": "#/$defs/TypeSpec"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Expr"
+          }
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scope": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contract": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DefinitionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clock": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage": {
+          "anyOf": [
+            {
+              "enum": [
+                "continuous",
+                "sampled",
+                "event"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "op",
+        "value_type",
+        "args",
+        "ref",
+        "value",
+        "scope",
+        "contract",
+        "duration",
+        "clock",
+        "coverage",
+        "binding"
+      ],
+      "additionalProperties": false
+    },
+    "Hole": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Hole"
+        },
+        "id": {
+          "type": "string"
+        },
+        "expected": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "expected",
+        "question"
+      ],
+      "additionalProperties": false
+    },
+    "ImplementationBinding": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "ImplementationBinding"
+        },
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "operation": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "realization": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "chassis": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "payload_formats": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "RNA"
+            ]
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DefinitionRef"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DefinitionRef"
+          }
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "version",
+        "operation",
+        "realization",
+        "chassis",
+        "payload_formats",
+        "dependencies",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "ImplementationCatalogLock": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "ImplementationCatalogLock"
+        },
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "implementations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ImplementationBinding"
+          }
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "version",
+        "implementations"
+      ],
+      "additionalProperties": false
+    },
+    "Machine": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Machine"
+        },
+        "id": {
+          "type": "string"
+        },
+        "executor": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "initial": {
+          "type": "string"
+        },
+        "terminal": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "lifetime": {
+          "enum": [
+            "encounter",
+            "executor",
+            "persistent"
+          ]
+        },
+        "arbitration": {
+          "$ref": "#/$defs/Arbitration"
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "executor",
+        "scope",
+        "states",
+        "initial",
+        "terminal",
+        "lifetime",
+        "arbitration"
+      ],
+      "additionalProperties": false
+    },
+    "Message": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Message"
+        },
+        "id": {
+          "type": "string"
+        },
+        "channel": {
+          "$ref": "#/$defs/Ref"
+        },
+        "sender": {
+          "$ref": "#/$defs/Ref"
+        },
+        "subject": {
+          "$ref": "#/$defs/Ref"
+        },
+        "correlation": {
+          "$ref": "#/$defs/Ref"
+        },
+        "payload": {
+          "$ref": "#/$defs/Expr"
+        },
+        "identity_policy": {
+          "enum": [
+            "per_emission_preserved_across_retries"
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "channel",
+        "sender",
+        "subject",
+        "correlation",
+        "payload",
+        "identity_policy"
+      ],
+      "additionalProperties": false
+    },
+    "Observation": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Observation"
+        },
+        "id": {
+          "type": "string"
+        },
+        "observer": {
+          "$ref": "#/$defs/Ref"
+        },
+        "subject": {
+          "$ref": "#/$defs/Ref"
+        },
+        "value_type": {
+          "$ref": "#/$defs/TypeSpec"
+        },
+        "contract": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "clock": {
+          "$ref": "#/$defs/Ref"
+        },
+        "access": {
+          "enum": [
+            "cell",
+            "external_evaluator"
+          ]
+        },
+        "coverage": {
+          "enum": [
+            "continuous",
+            "sampled",
+            "event"
+          ]
+        },
+        "coherence": {
+          "type": "string"
+        },
+        "freshness": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "spatial_scope": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "invalidity": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "missing",
+              "stale",
+              "invalid",
+              "conflicting"
+            ]
+          }
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "observer",
+        "subject",
+        "value_type",
+        "contract",
+        "clock",
+        "access",
+        "coverage",
+        "coherence",
+        "freshness",
+        "spatial_scope",
+        "invalidity"
+      ],
+      "additionalProperties": false
+    },
+    "Parameter": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Parameter"
+        },
+        "id": {
+          "type": "string"
+        },
+        "value_type": {
+          "$ref": "#/$defs/TypeSpec"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selection": {
+          "enum": [
+            "fixed",
+            "design",
+            "measured",
+            "uncertain"
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "value_type",
+        "value",
+        "lower",
+        "upper",
+        "selection"
+      ],
+      "additionalProperties": false
+    },
+    "PolicyDraft": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "PolicyDraft"
+        },
+        "id": {
+          "type": "string"
+        },
+        "semantics": {
+          "$ref": "#/$defs/SemanticBundle"
+        },
+        "declarations": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Role"
+              },
+              {
+                "$ref": "#/$defs/Subject"
+              },
+              {
+                "$ref": "#/$defs/Encounter"
+              },
+              {
+                "$ref": "#/$defs/SpatialScope"
+              },
+              {
+                "$ref": "#/$defs/Clock"
+              },
+              {
+                "$ref": "#/$defs/Observation"
+              },
+              {
+                "$ref": "#/$defs/StateStore"
+              },
+              {
+                "$ref": "#/$defs/Effect"
+              },
+              {
+                "$ref": "#/$defs/Rule"
+              },
+              {
+                "$ref": "#/$defs/Machine"
+              },
+              {
+                "$ref": "#/$defs/Transition"
+              },
+              {
+                "$ref": "#/$defs/Channel"
+              },
+              {
+                "$ref": "#/$defs/Message"
+              },
+              {
+                "$ref": "#/$defs/Requirement"
+              },
+              {
+                "$ref": "#/$defs/Parameter"
+              }
+            ]
+          }
+        },
+        "holes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Hole"
+          }
+        },
+        "source_map": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SourceSpan"
+          }
+        },
+        "profile": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "semantics",
+        "declarations",
+        "holes",
+        "source_map",
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "PolicyProgram": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "PolicyProgram"
+        },
+        "id": {
+          "type": "string"
+        },
+        "semantics": {
+          "$ref": "#/$defs/SemanticBundle"
+        },
+        "declarations": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Role"
+              },
+              {
+                "$ref": "#/$defs/Subject"
+              },
+              {
+                "$ref": "#/$defs/Encounter"
+              },
+              {
+                "$ref": "#/$defs/SpatialScope"
+              },
+              {
+                "$ref": "#/$defs/Clock"
+              },
+              {
+                "$ref": "#/$defs/Observation"
+              },
+              {
+                "$ref": "#/$defs/StateStore"
+              },
+              {
+                "$ref": "#/$defs/Effect"
+              },
+              {
+                "$ref": "#/$defs/Rule"
+              },
+              {
+                "$ref": "#/$defs/Machine"
+              },
+              {
+                "$ref": "#/$defs/Transition"
+              },
+              {
+                "$ref": "#/$defs/Channel"
+              },
+              {
+                "$ref": "#/$defs/Message"
+              },
+              {
+                "$ref": "#/$defs/Requirement"
+              },
+              {
+                "$ref": "#/$defs/Parameter"
+              }
+            ]
+          }
+        },
+        "source_map": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SourceSpan"
+          }
+        },
+        "profile": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "semantics",
+        "declarations",
+        "source_map",
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "Quantity": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Quantity"
+        },
+        "amount": {
+          "type": "string"
+        },
+        "unit": {
+          "$ref": "#/$defs/Unit"
+        }
+      },
+      "required": [
+        "$type",
+        "amount",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "RNAConstraints": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "RNAConstraints"
+        },
+        "design_count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "member_count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "helper_count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "copy_number": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Parameter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dose": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Parameter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "orf_count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "product_count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payload_persistence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effector_persistence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "format": {
+          "enum": [
+            "RNA"
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "design_count",
+        "member_count",
+        "helper_count",
+        "copy_number",
+        "dose",
+        "orf_count",
+        "product_count",
+        "payload_persistence",
+        "effector_persistence",
+        "format"
+      ],
+      "additionalProperties": false
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Ref"
+        },
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "Requirement": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Requirement"
+        },
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "safety",
+            "progress",
+            "bound",
+            "observability",
+            "external_control",
+            "approximation",
+            "assumption",
+            "preference",
+            "objective"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Expr"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "response": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Expr"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deadline": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "horizon": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "enum": [
+                "unbounded_requested"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "applies_to": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          }
+        },
+        "contract": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DefinitionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trigger": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Expr"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clock": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "kind",
+        "description",
+        "scope",
+        "condition",
+        "response",
+        "deadline",
+        "lower",
+        "upper",
+        "horizon",
+        "assumptions",
+        "applies_to",
+        "contract",
+        "trigger",
+        "clock"
+      ],
+      "additionalProperties": false
+    },
+    "Role": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Role"
+        },
+        "id": {
+          "type": "string"
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DefinitionRef"
+          }
+        },
+        "population": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lineage_role": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "requires",
+        "population",
+        "lineage_role"
+      ],
+      "additionalProperties": false
+    },
+    "RoleBinding": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "RoleBinding"
+        },
+        "role": {
+          "$ref": "#/$defs/Ref"
+        },
+        "chassis": {
+          "$ref": "#/$defs/ChassisProfile"
+        }
+      },
+      "required": [
+        "$type",
+        "role",
+        "chassis"
+      ],
+      "additionalProperties": false
+    },
+    "Rule": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Rule"
+        },
+        "id": {
+          "type": "string"
+        },
+        "executor": {
+          "$ref": "#/$defs/Ref"
+        },
+        "on": {
+          "$ref": "#/$defs/Expr"
+        },
+        "when": {
+          "$ref": "#/$defs/Expr"
+        },
+        "unknown": {
+          "enum": [
+            "defer",
+            "transition",
+            "request_stop"
+          ]
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          }
+        },
+        "assignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Assignment"
+          }
+        },
+        "arbitration": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Arbitration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unknown_target": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "emissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          }
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "executor",
+        "on",
+        "when",
+        "unknown",
+        "effects",
+        "assignments",
+        "arbitration",
+        "unknown_target",
+        "emissions"
+      ],
+      "additionalProperties": false
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Scope"
+        },
+        "kind": {
+          "enum": [
+            "executor",
+            "encounter",
+            "target",
+            "population",
+            "lineage",
+            "region",
+            "program"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "kind",
+        "subject"
+      ],
+      "additionalProperties": false
+    },
+    "SemanticBundle": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "SemanticBundle"
+        },
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "definitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SemanticDefinition"
+          }
+        },
+        "profile": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "version",
+        "definitions",
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "SemanticDefinition": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "SemanticDefinition"
+        },
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "operation",
+            "capability",
+            "encounter",
+            "observation",
+            "lifecycle",
+            "environment",
+            "delivery",
+            "requirement",
+            "inheritance",
+            "resource",
+            "interface",
+            "spatial",
+            "transport",
+            "model"
+          ]
+        },
+        "meaning": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Parameter"
+          }
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TypeSpec"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clauses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ContractClause"
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "executor_kind": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "subject_kind": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "version",
+        "category",
+        "meaning",
+        "parameters",
+        "result",
+        "clauses",
+        "assumptions",
+        "executor_kind",
+        "subject_kind"
+      ],
+      "additionalProperties": false
+    },
+    "SourceSpan": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "SourceSpan"
+        },
+        "declaration_id": {
+          "type": "string"
+        },
+        "file": {
+          "type": "string"
+        },
+        "line": {
+          "type": "integer"
+        },
+        "column": {
+          "type": "integer"
+        },
+        "pattern": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "declaration_id",
+        "file",
+        "line",
+        "column",
+        "pattern"
+      ],
+      "additionalProperties": false
+    },
+    "SpatialScope": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "SpatialScope"
+        },
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "contact",
+            "neighborhood",
+            "compartment",
+            "region"
+          ]
+        },
+        "anchor": {
+          "$ref": "#/$defs/Ref"
+        },
+        "contract": {
+          "$ref": "#/$defs/DefinitionRef"
+        },
+        "radius": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "kind",
+        "anchor",
+        "contract",
+        "radius"
+      ],
+      "additionalProperties": false
+    },
+    "StateStore": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "StateStore"
+        },
+        "id": {
+          "type": "string"
+        },
+        "value_type": {
+          "$ref": "#/$defs/TypeSpec"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "initial": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "$ref": "#/$defs/Quantity"
+            }
+          ]
+        },
+        "capacity": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "enum": [
+                "unbounded_requested"
+              ]
+            }
+          ]
+        },
+        "overflow": {
+          "enum": [
+            "reject",
+            "saturate",
+            "evict_oldest",
+            "contract"
+          ]
+        },
+        "lifetime": {
+          "enum": [
+            "encounter",
+            "executor",
+            "persistent",
+            "duration"
+          ]
+        },
+        "reset": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Expr"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "inheritance": {
+          "enum": [
+            "reset",
+            "copy",
+            "partition",
+            "contract",
+            "not_applicable"
+          ]
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contract": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DefinitionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coordination": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "value_type",
+        "scope",
+        "initial",
+        "capacity",
+        "overflow",
+        "lifetime",
+        "reset",
+        "inheritance",
+        "duration",
+        "contract",
+        "coordination"
+      ],
+      "additionalProperties": false
+    },
+    "Subject": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Subject"
+        },
+        "id": {
+          "type": "string"
+        },
+        "entity_kind": {
+          "enum": [
+            "cell",
+            "population",
+            "region",
+            "compartment",
+            "lineage"
+          ]
+        },
+        "identity": {
+          "enum": [
+            "encounter",
+            "stable",
+            "aggregate",
+            "bound"
+          ]
+        },
+        "executor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "encounter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "domain": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "entity_kind",
+        "identity",
+        "executor",
+        "encounter",
+        "domain"
+      ],
+      "additionalProperties": false
+    },
+    "Transition": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Transition"
+        },
+        "id": {
+          "type": "string"
+        },
+        "machine": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source": {
+          "type": "string"
+        },
+        "destination": {
+          "type": "string"
+        },
+        "on": {
+          "$ref": "#/$defs/Expr"
+        },
+        "when": {
+          "$ref": "#/$defs/Expr"
+        },
+        "unknown": {
+          "enum": [
+            "defer",
+            "transition",
+            "request_stop"
+          ]
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          }
+        },
+        "assignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Assignment"
+          }
+        },
+        "unknown_target": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "emissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          }
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "machine",
+        "source",
+        "destination",
+        "on",
+        "when",
+        "unknown",
+        "effects",
+        "assignments",
+        "unknown_target",
+        "emissions"
+      ],
+      "additionalProperties": false
+    },
+    "TypeSpec": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "TypeSpec"
+        },
+        "kind": {
+          "enum": [
+            "truth",
+            "event",
+            "quantity",
+            "integer",
+            "text",
+            "entity"
+          ]
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Unit"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "entity_kind": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "kind",
+        "unit",
+        "entity_kind"
+      ],
+      "additionalProperties": false
+    },
+    "Unit": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "const": "Unit"
+        },
+        "id": {
+          "type": "string"
+        },
+        "dimension": {
+          "type": "string"
+        },
+        "quantity_kind": {
+          "type": "string"
+        },
+        "scale": {
+          "type": "string"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$type",
+        "id",
+        "dimension",
+        "quantity_kind",
+        "scale",
+        "reference"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$id": "https://biocompiler.org/protocol/policy-language-v0.1.schema.json",
+  "x-policy-language": {
+    "profile": "biocompiler.policy.v0.1",
+    "revision": 1,
+    "scope": "closed_representation_only",
+    "wire_defaults": "none_all_fields_required",
+    "canonical_json": {
+      "encoding": "UTF-8",
+      "sort_object_keys": true,
+      "array_order": "preserved",
+      "ensure_ascii": false,
+      "separators": [
+        ",",
+        ":"
+      ],
+      "allow_nan": false
+    },
+    "document_digest": {
+      "algorithm": "SHA-256",
+      "exclude_keys_recursively": [
+        "source_map",
+        "provenance"
+      ]
+    },
+    "limits": {
+      "max_bytes": 2097152,
+      "max_depth": 64,
+      "max_nodes": 100000,
+      "max_string_bytes": 262144,
+      "max_number_characters": 256,
+      "max_decimal_exponent": 1024
+    }
+  }
+}
