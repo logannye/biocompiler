@@ -13,6 +13,7 @@ module P = Pinned_identity
 module M = Molecular_record
 module Old = Policy_material_request
 module PX = Policy_material_context
+module QC = Policy_quantitative_contract
 let schema_version = "biocompiler.policy_component_material_request.v0.1"
 let profile = X.profile
 let instance_schema_version = "biocompiler.policy_component_material_request.v0.2"
@@ -27,6 +28,8 @@ let grounded_helper_schema_version = "biocompiler.policy_component_material_requ
 let grounded_helper_profile = "biocompiler.policy_grounded_helper_prerequisite_mrna.v0.1"
 let finite_machine_schema_version = "biocompiler.policy_component_material_request.v0.7"
 let finite_machine_profile = "biocompiler.policy_finite_machine_component_mrna.v0.1"
+let quantitative_schema_version = "biocompiler.policy_component_material_request.v0.8"
+let quantitative_profile = "biocompiler.policy_sampled_reservoir_component_mrna.v0.1"
 let resource_profile = "biocompiler.policy_component_material_resources.v0.1"
 let str value = Json.String value
 let obj values = Json.Object values
@@ -78,7 +81,8 @@ let resource_keys rule =
      {owner=Layout;unit=C.Control_event_records;scope=C.Per_executor}]
 type budgets = {max_work:int;max_report_bytes:int;max_report_nodes:int}
 type t = {raw:Json.t;identity:string;decoding_work_value:int;original:R.t;library:L.t;rule_value:A.t;
-  catalog:catalog_binding;inputs:input_binding list;resources:resource_binding list;context_value:X.t;budget_values:budgets}
+  catalog:catalog_binding;inputs:input_binding list;resources:resource_binding list;context_value:X.t;budget_values:budgets;
+  quantitative_value:QC.selection option}
 let of_json ?(charge=fun _ -> ()) raw =
   let work = ref 0 in
   let spend amount =
@@ -89,10 +93,12 @@ let of_json ?(charge=fun _ -> ()) raw =
   let decode parser raw = ignore (measure raw); parser raw in
   let equal left right = let a=measure left and b=measure right in spend (a+b); Json.equal left right in
   let raw_bytes = measure raw in M.check_resources raw;
-  exact ["schema_version";"profile";"implementation_request";"component_library";"composition_rule";
-    "catalog_binding";"input_bindings";"resource_bindings";"context";"budgets"] raw;
+  let quantitative = get "schema_version" raw=str quantitative_schema_version && get "profile" raw=str quantitative_profile in
+  let fields=["schema_version";"profile";"implementation_request";"component_library";"composition_rule";
+    "catalog_binding";"input_bindings";"resource_bindings";"context";"budgets"] in
+  exact (if quantitative then fields@["quantitative"] else fields) raw;
   let grounded_helper = get "schema_version" raw=str grounded_helper_schema_version && get "profile" raw=str grounded_helper_profile in
-  let finite_machine = get "schema_version" raw=str finite_machine_schema_version && get "profile" raw=str finite_machine_profile in
+  let finite_machine = quantitative || (get "schema_version" raw=str finite_machine_schema_version && get "profile" raw=str finite_machine_profile) in
   let multi_member = grounded_helper || (get "schema_version" raw=str multi_member_schema_version && get "profile" raw=str multi_member_profile) in
   let two_observation = get "schema_version" raw=str two_observation_schema_version && get "profile" raw=str two_observation_profile in
   let prerequisite_closure = finite_machine || multi_member || two_observation || (get "schema_version" raw=str prerequisite_schema_version && get "profile" raw=str prerequisite_profile) in
@@ -104,6 +110,20 @@ let of_json ?(charge=fun _ -> ()) raw =
     else if prerequisite_closure then R.of_prerequisite_json else R.of_json) (get "implementation_request" raw) in
   let library = decode (L.of_json ~library:(R.implementation_library original)) (get "component_library" raw) in
   let rule_value = decode (A.of_json ~components:library) (get "composition_rule" raw) in
+  let quantitative_value=if quantitative then Some(decode (fun raw->QC.selection_of_json raw)(get "quantitative" raw))else None in
+  (match quantitative_value with
+   | None->()
+   | Some selection->
+     let quantitative_components=List.filter(fun slot->spend 1;
+       LC.quantitative_contracts(A.component rule_value slot)<>[])(A.slots rule_value) in
+     let selected_slot=A.Instance selection.instance in
+     require(quantitative_components=[selected_slot])
+       "Quantitative requests must select exactly one independently supplied quantitative component instance.";
+     let component=A.component rule_value selected_slot in
+     require(pin_equal selection.component(LC.identity component))
+       "Quantitative selection must pin the complete original local component body.";
+     require(List.exists(fun(contract:QC.local_contract)->spend 1;contract.id=selection.contract)
+       (LC.quantitative_contracts component))"Quantitative selection names an absent supplied contract.");
   let context_value = decode X.of_json (get "context" raw) in
   require (A.is_instanced rule_value=instanced && X.is_instanced context_value=instanced)
     "Original request, rule and context instance profiles must agree.";
@@ -166,7 +186,12 @@ let of_json ?(charge=fun _ -> ()) raw =
     List.exists (fun (row:component_binding) -> pin_equal row.component (LC.identity component)) catalog.components) (L.components library))
     (if instanced then "Composition request allows only selected original component definitions, without alternatives or helpers."
      else "Composition request allows only its two selected original components, without alternatives or helpers.");
-  List.iter (fun selection -> List.iter (fun (node:F.node) ->
+  List.iter (fun selection ->
+    (* This constant-time check shares the existing selected-component walk;
+       legacy requests retain their old traversal and accounting. *)
+    if not quantitative then require(LC.quantitative_contracts(A.component rule_value selection)=[])
+      "Selected quantitative components require the separate quantitative request and fresh quantitative checking.";
+    List.iter (fun (node:F.node) ->
     require (List.exists (pin_equal node.model.identity) selected.models)
       "Selected component primitive lacks the original catalog model membership.") (F.nodes (LC.fragment (A.component rule_value selection)))) (A.slots rule_value);
   let layout = X.record_layout context_value in
@@ -240,7 +265,7 @@ let of_json ?(charge=fun _ -> ()) raw =
   Diagnostic.require (String.length encoded=raw_bytes) "policy_component_material_accounting"
     "Composition preflight byte count differs from the complete original encoding.";
   spend raw_bytes;
-  {raw;identity=Canonical.sha256 encoded;decoding_work_value= !work;original;library;rule_value;catalog;inputs;resources;context_value;budget_values}
+  {raw;identity=Canonical.sha256 encoded;decoding_work_value= !work;original;library;rule_value;catalog;inputs;resources;context_value;budget_values;quantitative_value}
 let to_json value = value.raw
 let fingerprint value = value.identity
 let decoding_work value = value.decoding_work_value
@@ -259,7 +284,10 @@ let is_two_observation value = R.is_two_observation value.original
 let is_multi_member value = R.is_multi_product value.original
 let is_grounded_helper value = A.is_grounded_helper value.rule_value
 let is_finite_machine value = R.is_finite_machine value.original
-let request_profile value = if is_finite_machine value then finite_machine_profile
+let quantitative value = value.quantitative_value
+let is_quantitative value = Option.is_some value.quantitative_value
+let request_profile value = if is_quantitative value then quantitative_profile
+  else if is_finite_machine value then finite_machine_profile
   else if is_grounded_helper value then grounded_helper_profile
   else if is_multi_member value then multi_member_profile
   else if is_two_observation value then two_observation_profile

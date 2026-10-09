@@ -162,14 +162,22 @@ COMPONENT_REFINEMENT_SOURCES = tuple(sorted([
     ) for suffix in ("ml", "mli")],
     "src/biocompiler/core_policy_refinement.py", "src/biocompiler/policy/refinement.py",
 ]))
+COMPONENT_QUANTITATIVE_SOURCES = tuple(sorted([
+    *[f"core/lib/{directory}/{name}.{suffix}" for directory, name in (
+        ("domain", "policy_quantitative_contract"), ("realization_checker", "policy_quantitative_check"),
+    ) for suffix in ("ml", "mli")],
+    "src/biocompiler/policy/quantitative.py",
+]))
 COMPONENT_SOURCES = tuple(sorted((*COMPONENT_ROUTE_SOURCES, *COMPONENT_SHARED_SOURCES,
                                   *COMPONENT_STAGED_SOURCES, *COMPONENT_MULTI_MEMBER_SOURCES,
                                   *COMPONENT_GROUNDED_HELPER_SOURCES, *COMPONENT_CONGRUENCE_SOURCES,
-                                  *COMPONENT_REFINEMENT_SOURCES)))
+                                  *COMPONENT_REFINEMENT_SOURCES, *COMPONENT_QUANTITATIVE_SOURCES)))
 COMPONENT_REASON = "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
 REFINEMENT_REASON = "Separate named summaries of fresh component-route checker capabilities; no original whole-kernel admission or export authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
 ROUTE_EXCEPTIONS.update({path: COMPONENT_REASON for path in COMPONENT_ROUTE_SOURCES})
 ROUTE_EXCEPTIONS.update({path: REFINEMENT_REASON for path in COMPONENT_REFINEMENT_SOURCES})
+QUANTITATIVE_REASON = "Separate sampled quantitative component profile; no original whole-kernel authority. Conditional exact-grid source and selected-component correspondence is indexed independently in policy-component-rule-coverage-v0.1.json."
+ROUTE_EXCEPTIONS.update({path: QUANTITATIVE_REASON for path in COMPONENT_QUANTITATIVE_SOURCES})
 ROUTE_EXCEPTIONS.update({f"core/lib/compiler/policy_staged_lowering.{suffix}":
     "Separate versioned staged component route; no original whole-kernel material admission authority."
     for suffix in ("ml", "mli")})
@@ -179,7 +187,7 @@ EXTRA_SOURCES += ("core/lib/domain/architecture_contract.ml", "core/lib/domain/a
                   "src/biocompiler/core_policy_component_selection.py", "src/biocompiler/policy/component_selection.py",
                   "src/biocompiler/core_policy_implementation.py", "src/biocompiler/policy/patterns.py",
                   "src/biocompiler/policy/implementation.py")
-EXTRA_SOURCES += tuple(path for path in COMPONENT_REFINEMENT_SOURCES if path.endswith(".py"))
+EXTRA_SOURCES += tuple(path for path in (*COMPONENT_REFINEMENT_SOURCES, *COMPONENT_QUANTITATIVE_SOURCES) if path.endswith(".py"))
 COMPONENT_LEDGER = "protocol/policy-component-rule-coverage-v0.1.json"
 COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "component.assembly_rule", "component.ordered_union",
     "component.original_request", "component.context", "component.conjunction", "component.production", "component.export", "component.sdk",
@@ -189,7 +197,7 @@ COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "compone
     "component.selection_generation", "component.staged_regimen", "component.instance_composition", "component.prerequisite_closure", "component.two_observation_composition",
     "component.multi_member_composition", "component.grounded_helper_composition",
     "component.candidate_transition_congruence", "component.finite_machine_composition",
-    "component.named_refinement")
+    "component.named_refinement", "component.sampled_quantitative_material")
 COMPONENT_INSTANCE_WITNESSES = tuple(sorted([
     "core/test/test_policy_instance_assembly_rule.ml",
     "core/test/test_policy_instance_material_service.ml",
@@ -292,7 +300,12 @@ COMPONENT_FINITE_MACHINE_WITNESSES = (
 COMPONENT_REFINEMENT_WITNESSES = (
     "core/test/test_policy_refinement.ml", "tests/test_policy_refinement.py",
 )
+COMPONENT_QUANTITATIVE_WITNESSES = (
+    "core/test/data/policy_quantitative_v01.json", "core/test/test_policy_quantitative.ml",
+    "tests/test_policy_quantitative.py", "tools/generate_policy_quantitative_fixture.py",
+)
 COMPONENT_WITNESSES = tuple(sorted([
+    *COMPONENT_QUANTITATIVE_WITNESSES,
     *COMPONENT_REFINEMENT_WITNESSES,
     *COMPONENT_FINITE_MACHINE_WITNESSES,
     *COMPONENT_CONGRUENCE_WITNESSES,
@@ -324,10 +337,13 @@ COMPONENT_WITNESSES = tuple(sorted([
 # lexical counts. Re-pinning changed files cannot reassign witness meaning.
 FINITE_MACHINE_LIMITATION = "Finite-machine composition source controls cover three bounded artificial program shapes; this static gate performs no native execution and transfers no prior acceptance to changed source."
 REFINEMENT_LIMITATION = "Named refinement evidence is a bounded summary of fresh opaque checker capabilities under supplied contracts. Serialized views grant no capability, export, universal or empirical claim; this static gate performs no native execution."
+QUANTITATIVE_LIMITATION = "Sampled quantitative correspondence is conditional on supplied local component contracts and successful atomic capacity reservation; it establishes no continuous kinetics, physical calibration or empirical function. This inventory performs no native execution."
+BEFORE_QUANTITATIVE_METADATA_SHA256 = "474ae673b3fa63e859dca9e344dd81f663a7ed2963e3fde419f0d298a5bf3d5b"
+BEFORE_QUANTITATIVE_COMPONENT_METADATA_SHA256 = "339870f87976d93e774e4d9ac29d741ac41a83827dc7541fcc9958955a49a09b"
 BEFORE_REFINEMENT_METADATA_SHA256 = "7f2f1b2ae98833e27d959117dfbc2d83de612e670216412a34e9fcd1ba7464f5"
 BEFORE_REFINEMENT_COMPONENT_METADATA_SHA256 = "7b563303ab25cec0d9c394e9113914da079155d9ce73125225e9f9a2f9b61fdd"
 BEFORE_FINITE_MACHINE_COMPONENT_METADATA_SHA256 = "394152e8ccbb347e9f272be773f44a1dab444895c6b4babd413d34c3c7a4db5b"
-COMPONENT_METADATA_SHA256 = "339870f87976d93e774e4d9ac29d741ac41a83827dc7541fcc9958955a49a09b"
+COMPONENT_METADATA_SHA256 = "5da8ac899aadbf0ef49b36e053971a92fbcead0aa475d319834c3fe2104fdfee"
 
 
 class CoverageError(ValueError):
@@ -451,9 +467,26 @@ def component_metadata(ledger: dict[str, Any]) -> dict[str, Any]:
             "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
 
 
-def component_metadata_before_refinement(ledger: dict[str, Any]) -> dict[str, Any]:
-    """Remove only the named summary route; retain every prior meaning."""
+def component_metadata_before_quantitative(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove only the sampled profile, keeping all 29 prior families intact."""
     metadata = component_metadata(ledger)
+    return {**metadata,
+            "rules": [row for row in metadata["rules"] if row["id"] != "component.sampled_quantitative_material"],
+            "source_paths": [path for path in metadata["source_paths"] if path not in COMPONENT_QUANTITATIVE_SOURCES],
+            "witness_paths": [path for path in metadata["witness_paths"] if path not in COMPONENT_QUANTITATIVE_WITNESSES],
+            "limitations": [value for value in metadata["limitations"] if value != QUANTITATIVE_LIMITATION]}
+
+
+def metadata_before_quantitative(ledger: dict[str, Any]) -> dict[str, Any]:
+    return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
+            "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
+                                       for row in ledger["sources"] if row["path"] not in COMPONENT_QUANTITATIVE_SOURCES],
+            "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+
+
+def component_metadata_before_refinement(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove the additive sampled and summary routes; retain prior meaning."""
+    metadata = component_metadata_before_quantitative(ledger)
     return {**metadata,
             "rules": [row for row in metadata["rules"] if row["id"] != "component.named_refinement"],
             "source_paths": [path for path in metadata["source_paths"] if path not in COMPONENT_REFINEMENT_SOURCES],
@@ -463,10 +496,9 @@ def component_metadata_before_refinement(ledger: dict[str, Any]) -> dict[str, An
 
 def metadata_before_refinement(ledger: dict[str, Any]) -> dict[str, Any]:
     """Preserve original whole-kernel meanings and source classifications."""
-    return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
-            "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
-                                       for row in ledger["sources"] if row["path"] not in COMPONENT_REFINEMENT_SOURCES],
-            "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+    metadata = metadata_before_quantitative(ledger)
+    return {**metadata, "source_classifications": [row for row in metadata["source_classifications"]
+            if row["path"] not in COMPONENT_REFINEMENT_SOURCES]}
 
 
 def component_metadata_before_finite_machine(ledger: dict[str, Any]) -> dict[str, Any]:
@@ -518,6 +550,10 @@ def check_component(root: Path = ROOT, ledger: Any | None = None) -> dict[str, A
                 require(type(pointer["occurrence"]) is int and pointer["occurrence"] >= 1
                         and texts[pointer["path"]].count(pointer["anchor"]) >= pointer["occurrence"],
                         "Missing component source anchor")
+    quantitative_previous = json.dumps(component_metadata_before_quantitative(ledger), sort_keys=True,
+                          separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(quantitative_previous) == BEFORE_QUANTITATIVE_COMPONENT_METADATA_SHA256,
+            "Changed pre-quantitative component meaning/witness/provenance metadata")
     previous = json.dumps(component_metadata_before_refinement(ledger), sort_keys=True,
                           separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(previous) == BEFORE_REFINEMENT_COMPONENT_METADATA_SHA256,
@@ -624,6 +660,10 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
     require(type(ledger["known_gaps"]) is list and ledger["known_gaps"], "Global acceptance gaps must remain explicit")
     for gap in ledger["known_gaps"]:
         words(gap, "known gap")
+    quantitative_previous = json.dumps(metadata_before_quantitative(ledger), sort_keys=True,
+                          separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(quantitative_previous) == BEFORE_QUANTITATIVE_METADATA_SHA256,
+            "Changed pre-quantitative original whole-kernel meaning/classification metadata")
     previous = json.dumps(metadata_before_refinement(ledger), sort_keys=True,
                           separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(previous) == BEFORE_REFINEMENT_METADATA_SHA256,

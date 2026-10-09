@@ -38,6 +38,9 @@ let () =
       "policy_material",Bioc_service.Policy_material_service.profile;
       "policy_component_material",Bioc_service.Policy_component_material_service.profile;
       "policy_refinement",Bioc_service.Policy_refinement_service.profile;
+      "policy_finite_machine_material",Bioc_service.Policy_component_material_service.finite_machine_profile;
+      "policy_finite_machine_implementation",Bioc_service.Policy_implementation_service.finite_machine_profile;
+      "policy_quantitative_material",Bioc_service.Policy_component_material_service.quantitative_profile;
       "policy_component_selection",Bioc_service.Policy_component_selection_service.profile;
       "policy_implementation",Bioc_service.Policy_implementation_service.profile;
       "policy_operational",Bioc_service.Policy_operational_service.profile;

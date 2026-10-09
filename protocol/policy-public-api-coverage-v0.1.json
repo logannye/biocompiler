@@ -572,6 +572,36 @@
         "component.withheld"
       ]
     },
+    "biocompiler.core_policy_component_material.QUANTITATIVE_IMPLEMENTATION": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.QUANTITATIVE_PRODUCER_PROFILE": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.QUANTITATIVE_PROFILE": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.QUANTITATIVE_REQUEST_PROFILE": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.QUANTITATIVE_REQUEST_SCHEMA": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material.QUANTITATIVE_VALIDATION_SCOPE": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.core_policy_component_material.REPORT_SCHEMA": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
       "status": "dependency",
@@ -709,6 +739,16 @@
     },
     "biocompiler.core_policy_component_material._projections": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material._quantitative": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_component_material._quantitative_evidence": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
       "status": "dependency",
       "witnesses": []
     },
@@ -7805,6 +7845,129 @@
         "shared.ownership_source_maps.7"
       ]
     },
+    "biocompiler.policy.quantitative.QuantitativeAuthoringError": {
+      "scope": "Inventoried quantitative authoring declaration; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledReservoir": {
+      "scope": "Focused exact Python authoring and original-contract snapshot controls only; not native quantitative correspondence, material acceptance, or biological validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "quantitative.grid",
+        "quantitative.nominal"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.__post_init__": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledReservoir._source": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledReservoir._validate": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.bind": {
+      "scope": "Focused exact Python authoring and original-contract snapshot controls only; not native quantitative correspondence, material acceptance, or biological validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "quantitative.selection"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.capacity": {
+      "scope": "Inventoried quantitative authoring declaration; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.compartment": {
+      "scope": "Inventoried quantitative authoring declaration; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.initial": {
+      "scope": "Inventoried quantitative authoring declaration; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.levels": {
+      "scope": "Focused exact Python authoring and original-contract snapshot controls only; not native quantitative correspondence, material acceptance, or biological validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "quantitative.grid"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.quantum": {
+      "scope": "Inventoried quantitative authoring declaration; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.sample_period": {
+      "scope": "Inventoried quantitative authoring declaration; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.state_values": {
+      "scope": "Focused exact Python authoring and original-contract snapshot controls only; not native quantitative correspondence, material acceptance, or biological validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "quantitative.grid"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.substance": {
+      "scope": "Inventoried quantitative authoring declaration; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.threshold": {
+      "scope": "Inventoried quantitative authoring declaration; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.to_data": {
+      "scope": "Focused exact Python authoring and original-contract snapshot controls only; not native quantitative correspondence, material acceptance, or biological validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "quantitative.grid"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.transitions": {
+      "scope": "Focused exact Python authoring and original-contract snapshot controls only; not native quantitative correspondence, material acceptance, or biological validity.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "quantitative.source"
+      ]
+    },
+    "biocompiler.policy.quantitative.SampledReservoir.unit": {
+      "scope": "Inventoried quantitative authoring declaration; no independent runtime witness is assigned to this individual AST declaration.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative._name": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative._require": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative._scaled": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.quantitative._value": {
+      "scope": "Private quantitative authoring or transport dependency; no independent public API or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.policy.refinement.check": {
       "scope": "Focused inert Python transport and descriptive-view controls only; not native refinement proof, material acceptance, or empirical validity.",
       "status": "shared_invariant",
@@ -10043,6 +10206,72 @@
         "syntax_sha256": "949bd02c7e8f04ab545e54857547edccd89bc2e583da985b497f86689a7252c7"
       },
       {
+        "id": "biocompiler.core_policy_component_material.QUANTITATIVE_IMPLEMENTATION",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "QUANTITATIVE_IMPLEMENTATION"
+        },
+        "syntax_sha256": "b2fb0c3c0dc6c734c5e0075a10b31b601570ed4af3dfc1eff2ed820b4f623fdc"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.QUANTITATIVE_PRODUCER_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PRODUCER_PROFILE, 'implementation': QUANTITATIVE_IMPLEMENTATION, 'validation_scope': QUANTITATIVE_VALIDATION_SCOPE}",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "QUANTITATIVE_PRODUCER_PROFILE"
+        },
+        "syntax_sha256": "868f44dd226455a3e5cdd9fe7a3483f69b90bc536a52299412d810087b7ff9e2"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.QUANTITATIVE_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PROFILE, 'request_schema': QUANTITATIVE_REQUEST_SCHEMA, 'implementation': QUANTITATIVE_IMPLEMENTATION, 'validation_scope': QUANTITATIVE_VALIDATION_SCOPE}",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "QUANTITATIVE_PROFILE"
+        },
+        "syntax_sha256": "c36f4f0dc923a5de2d4e190b459a6bd6ac40458022381dea9f7636c615db34b5"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.QUANTITATIVE_REQUEST_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "QUANTITATIVE_REQUEST_PROFILE"
+        },
+        "syntax_sha256": "905685a757a8d202c8f97eebacf398f5c4fc6292c1a12f3e8d77903221ab506e"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.QUANTITATIVE_REQUEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "QUANTITATIVE_REQUEST_SCHEMA"
+        },
+        "syntax_sha256": "2ebe32e8e5272d3ef51d2c9eeb2b5055e9de61b1d8f3e860655424e498437108"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material.QUANTITATIVE_VALIDATION_SCOPE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "QUANTITATIVE_VALIDATION_SCOPE"
+        },
+        "syntax_sha256": "94a311b5f186a3c82d4aeb4dddfcb5f12603e6c796f1ec3d911bd4f9a296878c"
+      },
+      {
         "id": "biocompiler.core_policy_component_material.REPORT_SCHEMA",
         "kind": "value",
         "scope": "dependency",
@@ -10183,7 +10412,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_assessment"
         },
-        "syntax_sha256": "a78b36d8db3d89ce24f414da0ff164e18df805231b2cf84885fb7bee92903b3d"
+        "syntax_sha256": "2ff477ca3658903bd8551a78ab3ba9d849bc8f877cee8424b54d39d65004c813"
       },
       {
         "id": "biocompiler.core_policy_component_material._candidate",
@@ -10227,7 +10456,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_finite_machine"
         },
-        "syntax_sha256": "08fdc23e6bc0d867fc7d682571c97f03c3aa532789849e399369d85a530bc9dd"
+        "syntax_sha256": "37ad6fbd6c28ce48df46e64b129eaf49fa477b839653b13f3e52105f5eff8914"
       },
       {
         "id": "biocompiler.core_policy_component_material._grounded_helper",
@@ -10260,7 +10489,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_instanced"
         },
-        "syntax_sha256": "eea5c1b8a434548e4bc4d0b721fab0e3fd9b83111c1199c3f57583e126469def"
+        "syntax_sha256": "64e2a630b33285e06c00c13791d91cf2c2f17b0faaaca73ca926d017f12347ac"
       },
       {
         "id": "biocompiler.core_policy_component_material._leaves",
@@ -10271,7 +10500,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_leaves"
         },
-        "syntax_sha256": "324cd7b628714080d232a15f6b5913fec6bae8eb946db39d4f6b7ee18af35b6e"
+        "syntax_sha256": "94d1fd7d786e57174808c03b56e31238b5469da53a003ef34d53fb05574946a1"
       },
       {
         "id": "biocompiler.core_policy_component_material._member_transport_inventory",
@@ -10304,7 +10533,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_original"
         },
-        "syntax_sha256": "cf1da7ccb7d9c812731a8a0cf22fac3a537f072d2e4c4d5dd1d9e1e7be7d9e56"
+        "syntax_sha256": "9ed3d6f82d0d23ef3d5101e92c1f858dd25ceb055521293e50972eb32ed4a739"
       },
       {
         "id": "biocompiler.core_policy_component_material._prerequisite_evidence",
@@ -10326,7 +10555,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_prerequisites"
         },
-        "syntax_sha256": "2aa03cff034972c103c4f01a34169fd5143d4dd1ace99016e31245a48cbaaeb5"
+        "syntax_sha256": "3b40763aa9da3511f39ee6a581fa36aeefbec225e21d882f5d6f05de6581d14c"
       },
       {
         "id": "biocompiler.core_policy_component_material._profile_settings",
@@ -10337,7 +10566,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_profile_settings"
         },
-        "syntax_sha256": "a502bf92062fcf9c2af86d301c1a4f2100f50882a6147fc96ef27baae6daccb1"
+        "syntax_sha256": "ea00cf33aa61a32220a5df1d71f631e85d9027a9a56332014608e60cd769accb"
       },
       {
         "id": "biocompiler.core_policy_component_material._projections",
@@ -10351,15 +10580,37 @@
         "syntax_sha256": "ca07405eec8f133edc6a0c21059d49c31327e8c30598e5c5f6024e1e2157b4b2"
       },
       {
+        "id": "biocompiler.core_policy_component_material._quantitative",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "request: dict[str, JsonValue] -> bool",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "_quantitative"
+        },
+        "syntax_sha256": "6fb6024b25a33cab97e42098267f88b80b3d2f9f562621158dd060e6ee0c01cb"
+      },
+      {
+        "id": "biocompiler.core_policy_component_material._quantitative_evidence",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue] -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_component_material.py",
+          "symbol": "_quantitative_evidence"
+        },
+        "syntax_sha256": "c328d535961469dc168be019c8e7594510e74fe8b5451c8cd1ac095849034780"
+      },
+      {
         "id": "biocompiler.core_policy_component_material._report",
         "kind": "function",
         "scope": "dependency",
-        "signature": "value: JsonValue, *, instanced: bool=False, prerequisites: bool=False, two_observations: bool=False, multi_member: bool=False, grounded_helper: bool=False, finite_machine: bool=False -> dict[str, JsonValue]",
+        "signature": "value: JsonValue, *, instanced: bool=False, prerequisites: bool=False, two_observations: bool=False, multi_member: bool=False, grounded_helper: bool=False, finite_machine: bool=False, quantitative: bool=False -> dict[str, JsonValue]",
         "source": {
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_report"
         },
-        "syntax_sha256": "f2d67ab67af2a78dd575045422ae8bdb9655faa4ba756a9b1bef93a4378454dd"
+        "syntax_sha256": "4519d4ac6f74045a76f167b7fbfae9ae6d1c2be82f96f89158a9f713c162f8b3"
       },
       {
         "id": "biocompiler.core_policy_component_material._result",
@@ -10370,7 +10621,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "0bbded62535a398cb8275d94ff8e7055ae2f478f228b7e2b6d32746f639b57f6"
+        "syntax_sha256": "6912976f1ff1a9b067462bd5e1d32a5711ac18644484e841f2d22592d73ce3da"
       },
       {
         "id": "biocompiler.core_policy_component_material._two_observations",
@@ -12048,12 +12299,12 @@
         "id": "biocompiler.core_policy_material._obligations",
         "kind": "function",
         "scope": "dependency",
-        "signature": "report: dict[str, JsonValue], *, material_key: str='material', accepted_status: str='checked_material', conjunction_stage: str='conditional_material_context_conjunction', prerequisite_key: str | None=None, multi_product: bool=False, finite_machine: bool=False -> None",
+        "signature": "report: dict[str, JsonValue], *, material_key: str='material', accepted_status: str='checked_material', conjunction_stage: str='conditional_material_context_conjunction', prerequisite_key: str | None=None, multi_product: bool=False, finite_machine: bool=False, quantitative_key: str | None=None -> None",
         "source": {
           "path": "src/biocompiler/core_policy_material.py",
           "symbol": "_obligations"
         },
-        "syntax_sha256": "bcb777bf6cb7a6a489d66580e59291d6aeea14faeaaa5fc8fad811246bb84d18"
+        "syntax_sha256": "3db05122c11d092b2ab06113b007cf4ce892a91628a694f6a6077dadf060a776"
       },
       {
         "id": "biocompiler.core_policy_material._original",
@@ -13285,7 +13536,7 @@
           "path": "src/biocompiler/core_policy_refinement.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "26c8cd560ec7ceb70fcc3c231be8ba887bc555e664d3644ed8b64eddf0074add"
+        "syntax_sha256": "0ead7c98e89ed3f08f956a68de11e4636c5647c3caaac3516bf2d74f48fabe98"
       },
       {
         "id": "biocompiler.core_policy_refinement._scope",
@@ -13390,12 +13641,12 @@
         "id": "biocompiler.policy.component_material.prepare_request",
         "kind": "function",
         "scope": "public_api",
-        "signature": "*, implementation_request: JsonValue, component_library: JsonValue, composition_rule: JsonValue, catalog_binding: JsonValue, input_bindings: JsonValue, resource_bindings: JsonValue, context: JsonValue, budgets: JsonValue, instanced: bool=False, prerequisites: bool=False, two_observations: bool=False, multi_member: bool=False, grounded_helper: bool=False, finite_machine: bool=False -> dict[str, JsonValue]",
+        "signature": "*, implementation_request: JsonValue, component_library: JsonValue, composition_rule: JsonValue, catalog_binding: JsonValue, input_bindings: JsonValue, resource_bindings: JsonValue, context: JsonValue, budgets: JsonValue, instanced: bool=False, prerequisites: bool=False, two_observations: bool=False, multi_member: bool=False, grounded_helper: bool=False, finite_machine: bool=False, quantitative: JsonValue=None -> dict[str, JsonValue]",
         "source": {
           "path": "src/biocompiler/policy/component_material.py",
           "symbol": "prepare_request"
         },
-        "syntax_sha256": "5f0aa4b7b5a878232507b9238687c6c73268b6305bc4d193da5e088a9a289381"
+        "syntax_sha256": "39b5969fb41b25cd3054f191b6d8a2b584f0a36c6eeced32f3714fb459056941"
       },
       {
         "id": "biocompiler.policy.component_material.replay",
@@ -19426,6 +19677,248 @@
         "syntax_sha256": "b9dd9c9d0f4a01cee7889c1afb967f0c6b3b592043d4d12d6c1f0c80ed13234c"
       },
       {
+        "id": "biocompiler.policy.quantitative.QuantitativeAuthoringError",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "QuantitativeAuthoringError"
+        },
+        "syntax_sha256": "a1f3016d7b7939666a97d060aee66ee0620f024aefa92ee85cfa0e18bcecfb53"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir"
+        },
+        "syntax_sha256": "08763a48e5ce470c05efac564eb0d3696948895d9672eee2aaa8247d6497e077"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.__post_init__"
+        },
+        "syntax_sha256": "052d6e0763108b8f9c3b23585eb5b6f2ee7f7f5d79a2e73b1c65f34a2060815a"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir._source",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self, machine: m.Machine, observation: m.Observation, effect: m.Effect -> tuple[int, int]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir._source"
+        },
+        "syntax_sha256": "b1f62d7c7171bc14060fe79535beaa1b72f7c9283a7d4dbbf48175a5930ca1d2"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir._validate",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> tuple[int, int, int]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir._validate"
+        },
+        "syntax_sha256": "86304c3843c448b46ee58c97673d0791bf3260157b1eafe44029cca370cb9a82"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.bind",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, *, instance: str, component: JsonValue, contract: str, machine: m.Machine, observation: m.Observation, effect: m.Effect -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.bind"
+        },
+        "syntax_sha256": "a590b230a4b2f760564b564364bc3c7fe071d545ee9828a8a3241b524d1c066f"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.capacity",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.capacity"
+        },
+        "syntax_sha256": "be5da827fd0caa25aedade14df1ad4ad991732acb8545253c77d2c8e6c645336"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.compartment",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.compartment"
+        },
+        "syntax_sha256": "edf490e983cfc784b98bff5b19983b7965248aad0ac4ecd85f6385376adc02b7"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.initial",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.initial"
+        },
+        "syntax_sha256": "2c27b2f2759c6086e72be5f4e092613b3bafbd1705186fb1c0fbd9e254f8bfcb"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.levels",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> tuple[m.Quantity, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.levels"
+        },
+        "syntax_sha256": "acab625a208dbba136d61edf772efc60238f97acfe5b8199714a96dc027e17a3"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.quantum",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.quantum"
+        },
+        "syntax_sha256": "09a4671bcf02b1e66e59ff3caf5f77f589a28cf253adbf4924e4f113b77f5ab3"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.sample_period",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.sample_period"
+        },
+        "syntax_sha256": "fe3188b5728cc5b7ae240b068fd9e9a0d9adb8ad67c6cd8db6c756e5c1874b98"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.state_values",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, states: tuple[str, ...] -> list[JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.state_values"
+        },
+        "syntax_sha256": "8a3555b14a9e9b97e919cdf9421b4b2a02d3275d7026309a2e028aa90fb29c22"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.substance",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.substance"
+        },
+        "syntax_sha256": "4cd98177f87797a2111fc965f3f14a5b4fe546a6202dd86d749eeba775b1049f"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.threshold",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.threshold"
+        },
+        "syntax_sha256": "63a3f925d326dc519f4cbac03de1a537b551cacf4002055ff7571576a011b5d1"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.to_data"
+        },
+        "syntax_sha256": "0d0f65db985539a013b8c8182e5550160deb1ab8af88954b3e643c97beedcc85"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.transitions",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, machine: m.Machine, observation: m.Observation, effect: m.Effect, *, prefix: str -> tuple[m.Transition, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.transitions"
+        },
+        "syntax_sha256": "67bd8ea23a4d83f03fce518bf99d27bdc5ac869db31bbbd0a93e1d25a46f06dd"
+      },
+      {
+        "id": "biocompiler.policy.quantitative.SampledReservoir.unit",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Unit",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "SampledReservoir.unit"
+        },
+        "syntax_sha256": "3b4c1e76a716c39b4551aef068f67ab7de4aeb08f171c6662aa22a25e6117e04"
+      },
+      {
+        "id": "biocompiler.policy.quantitative._name",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "_name"
+        },
+        "syntax_sha256": "af284e65ebd0fb609bfa949fb5ab42e10097d1e93332bfc53f49e2acba64e3f4"
+      },
+      {
+        "id": "biocompiler.policy.quantitative._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: bool, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "d9169ca0fad7b20e0875115319ca11854d9ac00aca52831269fec3b280fc1354"
+      },
+      {
+        "id": "biocompiler.policy.quantitative._scaled",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "quantum: m.Quantity, multiple: int -> m.Quantity",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "_scaled"
+        },
+        "syntax_sha256": "8c5cd025250938af2ccd68592f20531102a4ea3fa7ecd77323f5594ae4548036"
+      },
+      {
+        "id": "biocompiler.policy.quantitative._value",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: m.Quantity -> Fraction",
+        "source": {
+          "path": "src/biocompiler/policy/quantitative.py",
+          "symbol": "_value"
+        },
+        "syntax_sha256": "109b5491a5b5acb850b3765bd82a1b77a429d6a8a6191c64b2cdbe62667ad5e0"
+      },
+      {
         "id": "biocompiler.policy.refinement.check",
         "kind": "function",
         "scope": "public_api",
@@ -22025,6 +22518,9 @@
       "biocompiler.policy.observations.TypeSpec": "biocompiler.policy.model.TypeSpec",
       "biocompiler.policy.patterns": "biocompiler.policy.patterns",
       "biocompiler.policy.prepare_submission": "biocompiler.policy.handoff.prepare_submission",
+      "biocompiler.policy.quantitative": "biocompiler.policy.quantitative",
+      "biocompiler.policy.quantitative.QuantitativeAuthoringError": "biocompiler.policy.quantitative.QuantitativeAuthoringError",
+      "biocompiler.policy.quantitative.SampledReservoir": "biocompiler.policy.quantitative.SampledReservoir",
       "biocompiler.policy.quantity": "biocompiler.policy.values.quantity",
       "biocompiler.policy.ref": "biocompiler.policy.programs.ref",
       "biocompiler.policy.refinement": "biocompiler.policy.refinement",
@@ -22119,19 +22615,19 @@
       "src/biocompiler/__main__.py": "d5b809722d6dfee6e4cb84d0b4a513239d99ae898defe55c1753ac85c21a9eb4",
       "src/biocompiler/core_client.py": "c8d65a42c1f92cbd75cb5edd176a9463657e03509be8ed487496d78b17be00fc",
       "src/biocompiler/core_policy.py": "9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e",
-      "src/biocompiler/core_policy_component_material.py": "0116c5bb317ad3db918651b5e7e348b09584c2ac2ce3bd549669519a2a10d403",
+      "src/biocompiler/core_policy_component_material.py": "1545aebc164afcff89b9d7e361bf9eb72c4551bc1078df851d0b3d2e14e3bb0a",
       "src/biocompiler/core_policy_component_selection.py": "20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9",
       "src/biocompiler/core_policy_implementation.py": "a2c8db4980fc0381452737fcb9d58658db0727e53b77234cf1176e81c0de78df",
-      "src/biocompiler/core_policy_material.py": "b9606dbc2159da7528f480cc52639653c73da6eac0ae4fb98ec2e757e9cd6948",
+      "src/biocompiler/core_policy_material.py": "e699367a8df98b4246d12d5b0f74069209c20eb34e5762d2a32513d52ba894b7",
       "src/biocompiler/core_policy_operational.py": "089805c81bf6f84e5cf5e264b6ed89babedc3d692e2a7605429aa388e6d5ed02",
-      "src/biocompiler/core_policy_refinement.py": "d7ad9a05e4445aed9240e6a8ca26dc0bee81a1a7c85a00a1eb8565c2e8d2ebef",
+      "src/biocompiler/core_policy_refinement.py": "053abd644e401fef08dc53538c436fac7c4b6ec0a9e115a3af019643865fec08",
       "src/biocompiler/entrypoint.py": "7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8",
-      "src/biocompiler/policy/__init__.py": "95b5e0aea5aebbe9cd2248bf3eacd7a0c5f863c19e47f92eb1286be0ab92a18a",
+      "src/biocompiler/policy/__init__.py": "b5576c52f38e713c011806348cf6662044479eac51bf7feef8aac3cde64864ae",
       "src/biocompiler/policy/behavior.py": "691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf",
       "src/biocompiler/policy/catalog.py": "96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30",
       "src/biocompiler/policy/chassis.py": "21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1",
       "src/biocompiler/policy/cli.py": "beaff7cf4994019f24fab7361e588a3702b32bb16d357bda42e16000a5060d0f",
-      "src/biocompiler/policy/component_material.py": "1904647e2342d42e2041c76b428ccbf8a2dc3eb3a9e5db4d309bae5bbd15d6a7",
+      "src/biocompiler/policy/component_material.py": "db8726b62ebf42c86b05b1ba3e9ab899925272523f31f736135a62a3f197fadc",
       "src/biocompiler/policy/component_selection.py": "10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80",
       "src/biocompiler/policy/coordination.py": "ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9",
       "src/biocompiler/policy/deployment.py": "cddace3d45f04ecd722a47849325c9ff6a41fc166b0e23253c2377f037eae29f",
@@ -22150,6 +22646,7 @@
       "src/biocompiler/policy/operational.py": "b3db654830b8477c29de9fc13a9fd05cf6337a512cfcd86dde9391146cf4efee",
       "src/biocompiler/policy/patterns.py": "9640080fa505e361b09a2dd9a644938365549b37c8be3a8ce547bc1391044b48",
       "src/biocompiler/policy/programs.py": "ef2823520e47f29f666c8c6bec8f30d43a21195ab5379ae82e0a062563f686fd",
+      "src/biocompiler/policy/quantitative.py": "c8e013785ab8cfb40bf717f50c3a9d1c121c08dc26c58821c8beea95a7ab8e3e",
       "src/biocompiler/policy/refinement.py": "84593e71a5041ee5e3011c1578839444b0ce6fe04668fd75af292d297473d28d",
       "src/biocompiler/policy/requirements.py": "80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b",
       "src/biocompiler/policy/research_project.py": "c2bf6d201d183c43594cfe92dd252f0ac25c95e25d1381f6aca079289faec0b0",
@@ -22389,7 +22886,7 @@
       },
       {
         "path": "src/biocompiler/policy/__init__.py",
-        "syntax_sha256": "8ab51e0c9cc85bbf44345699ae8b0f1c3fb4562f4306d008b245b3616fd8b49a"
+        "syntax_sha256": "383c2f664670d9f4a11bc0fa1c06dad0b6dc70d3e9d0aa6ca842870bccc66d17"
       },
       {
         "path": "src/biocompiler/policy/behavior.py",
@@ -22557,7 +23054,7 @@
       },
       {
         "path": "src/biocompiler/policy/component_material.py",
-        "syntax_sha256": "e4ceb2153d580d78d44ccfcb989a989074684abd89f0277a9a714e97ecdccfd4"
+        "syntax_sha256": "8755f98afccbe78441f4aa88d3a3c4c9ed7870b821c9426e041e647d7519ec26"
       },
       {
         "path": "src/biocompiler/policy/component_material.py",
@@ -22946,6 +23443,42 @@
       {
         "path": "src/biocompiler/policy/programs.py",
         "syntax_sha256": "628ce20be32563bd3325219d52eaf20f2b429aa45d2c1aed455889368798bd20"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative.py",
+        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative.py",
+        "syntax_sha256": "ebb86c2f2e53ae53f2d2e77be1eb05c5fa0021270b6b7fdfb30da1eac4fc4058"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative.py",
+        "syntax_sha256": "1ed6cd3628c06bd941b1208109f32ebd1223f7ac1a6cce709499855441506331"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative.py",
+        "syntax_sha256": "f7ac139c8d303f3133275c9dde8aac7adc3d0f3c3088d16b0564bad7e3a59f9c"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative.py",
+        "syntax_sha256": "2c236c19fe0e7c7761fd8a8bcf5ea80f5272ec6d896362302be3584c73fec27e"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative.py",
+        "syntax_sha256": "c71ca562092d52ec0697130afc302c4843a6819aaac1edd10fd36cb5279ea532"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative.py",
+        "syntax_sha256": "b52436024228c41d3698f4ba71a6bc6f62b079f1f2582488cb30fd4d9487a93b"
+      },
+      {
+        "path": "src/biocompiler/policy/quantitative.py",
+        "syntax_sha256": "afc387366761df72be2294d693ca71ff56d5a84984d3ad79ea808dfa77c9f222"
       },
       {
         "path": "src/biocompiler/policy/refinement.py",
@@ -24157,6 +24690,38 @@
       "role": "mixed",
       "symbol": "PolicyPatternTests.test_repeated_instance_name_rejects_without_rebinding_existing_declarations",
       "syntax_sha256": "1a28f7c33c8dbecef040df9cd4b573274531476481da2590877356298728cdc5"
+    },
+    "quantitative.grid": {
+      "distinction": "Exact fractional amount grid is independent of Decimal precision, preserves original full quantities, and does not extend the source Record registry.",
+      "file_sha256": "5fef3109aee3167418c4fea0d0fdee3de9784a98dae54579d3f057d4a6a54797",
+      "path": "tests/test_policy_quantitative.py",
+      "role": "positive",
+      "symbol": "QuantitativeTests.test_exact_law_and_grid_ignore_decimal_context_and_do_not_extend_source_records",
+      "syntax_sha256": "0eab27f66d0f2891b64bba67c025eb1a2335bc1d5ba2ef1e3535ddb6fe3c7aa6"
+    },
+    "quantitative.nominal": {
+      "distinction": "Authoring rejects mismatched full nominal units, off-grid quantities, invalid bounds, referenced sample clocks, and binary float input.",
+      "file_sha256": "5fef3109aee3167418c4fea0d0fdee3de9784a98dae54579d3f057d4a6a54797",
+      "path": "tests/test_policy_quantitative.py",
+      "role": "rejection",
+      "symbol": "QuantitativeTests.test_nominal_units_exact_grid_bounds_and_float_inputs_reject",
+      "syntax_sha256": "07b002cae601cce44fb70828269cea9913f72905bbee00bca360d0e951d828e5"
+    },
+    "quantitative.selection": {
+      "distinction": "Original law, complete selected component identity, nominal source selection, and prepared original request are retained in independent snapshots isolated from subsequent input mutation.",
+      "file_sha256": "5fef3109aee3167418c4fea0d0fdee3de9784a98dae54579d3f057d4a6a54797",
+      "path": "tests/test_policy_quantitative.py",
+      "role": "positive",
+      "symbol": "QuantitativeTests.test_binding_snapshots_original_law_selected_full_pin_and_nominal_source",
+      "syntax_sha256": "7aed6a0a044818eeffb33a56b64dfe117a0dca05d3e671002966ed00d9e60030"
+    },
+    "quantitative.source": {
+      "distinction": "Reservoir source transition expansion equals an independently authored eight-transition machine and rejects mismatched local source contracts; no native law acceptance.",
+      "file_sha256": "5fef3109aee3167418c4fea0d0fdee3de9784a98dae54579d3f057d4a6a54797",
+      "path": "tests/test_policy_quantitative.py",
+      "role": "mixed",
+      "symbol": "QuantitativeTests.test_transition_expansion_matches_independently_authored_source",
+      "syntax_sha256": "edf84ca21a4f27dd282802e0c2502ad12b2e346c3807fa6c917ee0e62ef12e22"
     },
     "refinement.claims": {
       "distinction": "Tampered ordered relation census, all stage artifact identities and local scope hashes reject in inert transport validation.",

@@ -18,6 +18,7 @@ module W = Bioc_checker.Work_budget
 module P = Policy_preservation_check
 module A = Policy_component_assembly_check
 module X = Policy_component_context_check
+module Quantitative = Policy_quantitative_check
 let profile = R.profile
 let implementation_version = "biocompiler.ocaml.policy_component_material_check.v0.1"
 let candidate_schema = "biocompiler.policy_component_material_candidate.v0.1"
@@ -27,13 +28,15 @@ let arr value = Json.Array value
 let get key value = Json.field key (Json.object_fields value)
 let text key value = Json.string (get key value)
 let items key value = Json.array (get key value)
-type checked_material = {request_value:R.t;context_value:X.checked_context;evidence_value:Json.t}
+type checked_material = {request_value:R.t;context_value:X.checked_context;evidence_value:Json.t;
+  quantitative_value:Quantitative.checked_quantitative option}
 type result = {report_value:Json.t;accepted_value:checked_material option}
 let report (value:result) = value.report_value
 let accepted (value:result) = value.accepted_value
 let request (value:checked_material) = value.request_value
 let context (value:checked_material) = value.context_value
 let evidence (value:checked_material) = value.evidence_value
+let quantitative (value:checked_material) = value.quantitative_value
 let require condition message = Diagnostic.require condition "policy_component_material_catalog_binding" message
 let measure budget raw =
   Input.preflight ~max_bytes:8388608 ~max_nodes:250000 ~max_depth:128 ~charge:(W.charge budget) raw
@@ -69,7 +72,7 @@ let catalog_check budget request checked =
     "rule_fingerprint",str (fingerprint budget (Rule.to_json rule));
     "premise",str "supplied_conditional_component_composition_and_provider_contracts"]
 
-let obligation_ledger budget request (implementation:P.checked_implementation) (checked:X.checked_context) =
+let obligation_ledger budget request (implementation:P.checked_implementation) (checked:X.checked_context) quantitative =
   let binding=P.binding implementation in
   let admitted=B.admitted_inputs binding in
   let original=Admission.request admitted in
@@ -79,6 +82,8 @@ let obligation_ledger budget request (implementation:P.checked_implementation) (
   let implementation_pin=fingerprint budget (P.evidence implementation)
   and assembly_pin=fingerprint budget (A.evidence (X.assembly checked))
   and context_pin=fingerprint budget (X.evidence checked) in
+  let quantitative_pins=match quantitative with None->[]|Some value->
+    ["quantitative",str(fingerprint budget(Quantitative.evidence value))] in
   let prerequisite_pins = if R.requires_prerequisite_closure request then
     match X.prerequisite_closure checked with
     | None -> Diagnostic.fail "policy_component_material_prerequisite_closure"
@@ -145,6 +150,7 @@ let obligation_ledger budget request (implementation:P.checked_implementation) (
           "universal_termination",str "not_claimed";"progress",str "declared_requirements_only"]
       | "declared_context" -> ["context",str context_pin] @ prerequisite_pins
       | _ -> ["preservation",str implementation_pin;"assembly",str assembly_pin;"context",str context_pin] @ prerequisite_pins in
+      let pins=if quantitative_pins=[] then pins else pins@quantitative_pins in
       obj ["obligation",str obligation;"status",str "discharged";"stage",str stage;"evidence",obj pins]) obligations in
   (* Preserve the exact source inventory, including unknown future obligations.
      A deferred definition needs its specific checked context or catalog stage;
@@ -176,22 +182,26 @@ let check ~request ~behavior ~implementation ~proposed ~assembly_proposal ~candi
   let unresolved=List.map (fun obligation -> W.charge budget 1;
     obj ["obligation",obligation;"status",str "unresolved";"stage",Json.Null;"evidence",Json.Null])
     (items "unresolved_obligations" original_source) in
-  let catalog,assembly_result,context_result,ledger,complete,accepted_context =
+  let catalog,assembly_result,context_result,ledger,complete,accepted_context,quantitative_result,accepted_quantitative =
     match P.accepted preservation with
-    | None -> Json.Null,Json.Null,Json.Null,unresolved,false,None
+    | None -> Json.Null,Json.Null,Json.Null,unresolved,false,None,Json.Null,None
     | Some checked ->
       let catalog=catalog_check budget request (P.binding checked) in
       let assembly=A.check ~parent:budget ~original ~components:(R.component_library request) ~rule:(R.composition_rule request)
         ~implementation:checked ~proposed:assembly_proposal ~candidate () in
       match A.accepted assembly with
-      | None -> catalog,A.report assembly,Json.Null,unresolved,false,None
+      | None -> catalog,A.report assembly,Json.Null,unresolved,false,None,Json.Null,None
       | Some assembly ->
         let contextual=X.check ~parent:budget ~request ~assembly () in
         match X.accepted contextual with
-        | None -> catalog,A.evidence assembly,X.report contextual,unresolved,false,None
+        | None -> catalog,A.evidence assembly,X.report contextual,unresolved,false,None,Json.Null,None
         | Some accepted_context ->
-          let ledger,complete=obligation_ledger budget request checked accepted_context in
-          catalog,A.evidence assembly,X.report contextual,ledger,complete,Some accepted_context in
+          let quantitative_result,accepted_quantitative=if not(R.is_quantitative request)then Json.Null,None else
+            let checked=Quantitative.check ~parent:budget ~request ~context:accepted_context ()in
+            Quantitative.report checked,Quantitative.accepted checked in
+          let ledger,complete=if R.is_quantitative request && Option.is_none accepted_quantitative then unresolved,false else
+            obligation_ledger budget request checked accepted_context accepted_quantitative in
+          catalog,A.evidence assembly,X.report contextual,ledger,complete,Some accepted_context,quantitative_result,accepted_quantitative in
   let request_pin=R.fingerprint request and candidate_pin=fingerprint budget candidate_raw in
   let invocation_pin=fingerprint budget (obj ["request",raw;"candidate",candidate_raw;"limits",limits_raw]) in
   let stage value=if value=Json.Null then str "unassessed" else get "outcome" value in
@@ -199,11 +209,13 @@ let check ~request ~behavior ~implementation ~proposed ~assembly_proposal ~candi
   let prerequisites=if prerequisite_profile && context_result<>Json.Null
     then get "prerequisite_closure" context_result else Json.Null in
   let status=if complete then "checked_component_material" else "not_accepted" in
-  let report_base=["schema_version",str (if R.is_grounded_helper request then "biocompiler.policy_component_material_assessment.v0.4"
+  let report_base=["schema_version",str (if R.is_quantitative request then "biocompiler.policy_component_material_assessment.v0.5"
+    else if R.is_grounded_helper request then "biocompiler.policy_component_material_assessment.v0.4"
     else if R.is_multi_member request then "biocompiler.policy_component_material_assessment.v0.3"
     else if prerequisite_profile then "biocompiler.policy_component_material_assessment.v0.2"
     else "biocompiler.policy_component_material_assessment.v0.1");
-    "profile",str (R.request_profile request);"implementation",str (if R.is_finite_machine request then "biocompiler.ocaml.policy_component_material_check.v0.7"
+    "profile",str (R.request_profile request);"implementation",str (if R.is_quantitative request then "biocompiler.ocaml.policy_component_material_check.v0.8"
+      else if R.is_finite_machine request then "biocompiler.ocaml.policy_component_material_check.v0.7"
       else if R.is_grounded_helper request then "biocompiler.ocaml.policy_component_material_check.v0.6"
       else if R.is_multi_member request then "biocompiler.ocaml.policy_component_material_check.v0.5"
       else if R.is_two_observation request then "biocompiler.ocaml.policy_component_material_check.v0.4"
@@ -219,6 +231,8 @@ let check ~request ~behavior ~implementation ~proposed ~assembly_proposal ~candi
     "empirical",str "unassessed";"artifact",str "withheld";"export",str "withheld"] @
     (if prerequisite_profile then ["prerequisites",prerequisites;
       "prerequisite_status",(if prerequisites=Json.Null then str "unassessed" else get "status" prerequisites)] else []) in
+  let report_base=if R.is_quantitative request then
+    report_base@["quantitative",quantitative_result;"quantitative_status",stage quantitative_result]else report_base in
   let before=allowances.max_work-W.remaining budget in
   let usage value=obj ["unit",str "logical_data_visits_and_child_semantic_work";"charged_work",Json.int value;
     "request_decoding_work",Json.int (R.decoding_work request)] in
@@ -232,6 +246,7 @@ let check ~request ~behavior ~implementation ~proposed ~assembly_proposal ~candi
     "Composition aggregate work was exhausted or overflowed.";
   let report_value=obj (report_base@["usage",usage charged]) in
   let accepted_value=match complete,accepted_context with
-    | true,Some context_value -> Some {request_value=request;context_value;evidence_value=report_value}
+    | true,Some context_value when not(R.is_quantitative request) || Option.is_some accepted_quantitative ->
+      Some {request_value=request;context_value;evidence_value=report_value;quantitative_value=accepted_quantitative}
     | _ -> None in
   {report_value;accepted_value}

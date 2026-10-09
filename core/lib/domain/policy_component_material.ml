@@ -9,10 +9,13 @@ module H = Molecule_chemistry
 module R = Molecular_recoding
 module PM = Policy_mrna_structure
 module Pin = Pinned_identity
+module QC = Policy_quantitative_contract
 module Names = Set.Make (String)
 
 let schema_version = "biocompiler.policy_component_material.v0.1"
 let profile = "biocompiler.policy_exact_local_material.v0.1"
+let quantitative_schema_version = "biocompiler.policy_component_material.v0.2"
+let quantitative_profile = "biocompiler.policy_quantitative_local_material.v0.1"
 let max_carriers = 32768
 let max_provider_requirements = 1024
 
@@ -30,6 +33,7 @@ type t = {
   identity_value:Pin.t; fragment_value:F.t; root_value:Construction.Root_source.t;
   carrier_values:carrier list; product_values:product list;
   requirement_values:provider_requirement list;
+  quantitative_values:QC.local_contract list;
 }
 
 let str value = Json.String value
@@ -115,12 +119,16 @@ let requirement_of_json raw = match Json.string (get "kind" raw) with
       Capacity {id=name (get "id" raw);owner=owner_of_json (get "owner" raw);
         unit=MC.resource_unit_of_json (get "unit" raw);scope=MC.resource_scope_of_json (get "scope" raw);minimum}
   | _ -> Diagnostic.fail "policy_component_material" "Unknown local provider prerequisite."
-let body_to_json value = obj ["fragment",F.to_json value.fragment_value;
+let body_to_json value =
+  let fields=["fragment",F.to_json value.fragment_value;
   "root",Construction.Root_source.to_json value.root_value;
   "carriers",arr (List.map carrier_json value.carrier_values);
   "products",arr (List.map product_json value.product_values);
-  "provider_requirements",arr (List.map requirement_json value.requirement_values)]
-let to_json value = obj ["schema_version",str schema_version;"profile",str profile;
+  "provider_requirements",arr (List.map requirement_json value.requirement_values)] in
+  obj(if value.quantitative_values=[] then fields else
+    fields@["quantitative_contracts",arr(List.map QC.local_to_json value.quantitative_values)])
+let to_json value = obj ["schema_version",str (if value.quantitative_values=[] then schema_version else quantitative_schema_version);
+  "profile",str (if value.quantitative_values=[] then profile else quantitative_profile);
   "identity",Pin.to_json value.identity_value;"body",body_to_json value]
 
 type requirement_key = Input_key of string | Capacity_key of owner * MC.resource_unit * MC.resource_scope
@@ -208,10 +216,12 @@ let check_products fragment root products =
 let of_json ~library raw =
   preflight raw;
   exact ["schema_version";"profile";"identity";"body"] raw;
-  require (get "schema_version" raw = str schema_version && get "profile" raw = str profile)
+  let quantitative=get "schema_version" raw=str quantitative_schema_version && get "profile" raw=str quantitative_profile in
+  require (quantitative || (get "schema_version" raw = str schema_version && get "profile" raw = str profile))
     "Unsupported local component material profile.";
   let identity_value = Pin.of_json (get "identity" raw) and body = get "body" raw in
-  exact ["fragment";"root";"carriers";"products";"provider_requirements"] body;
+  let fields=["fragment";"root";"carriers";"products";"provider_requirements"]in
+  exact (if quantitative then fields@["quantitative_contracts"] else fields) body;
   require (Pin.kind identity_value = Pin.Model && Pin.content_fingerprint identity_value = Canonical.fingerprint body)
     "Local component identity must pin its complete supplied body.";
   let fragment_value = F.of_json ~library (get "fragment" body) in
@@ -238,7 +248,11 @@ let of_json ~library raw =
   let requirement_values = M.array ~maximum:max_provider_requirements (get "provider_requirements" body)
     |> List.map requirement_of_json in
   check_requirements fragment_value requirement_values;
-  let value = {identity_value;fragment_value;root_value;carrier_values;product_values;requirement_values} in
+  let quantitative_values=if not quantitative then [] else
+    let values=M.array ~maximum:1(get "quantitative_contracts" body) in
+    require(List.length values=1)"A quantitative local component requires exactly one complete supplied contract.";
+    List.map (fun raw->QC.local_of_json raw) values in
+  let value = {identity_value;fragment_value;root_value;carrier_values;product_values;requirement_values;quantitative_values} in
   require (equal raw (to_json value)) "Local material must preserve its complete canonical typed body without normalization.";
   preflight (to_json value);value
 let fingerprint value = Canonical.fingerprint (to_json value)
@@ -249,3 +263,4 @@ let root value = value.root_value
 let carriers value = value.carrier_values
 let products value = value.product_values
 let provider_requirements value = value.requirement_values
+let quantitative_contracts value = value.quantitative_values

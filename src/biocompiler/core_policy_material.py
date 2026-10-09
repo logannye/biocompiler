@@ -257,7 +257,7 @@ def _obligations(report: dict[str, JsonValue], *, material_key: str = "material"
                  accepted_status: str = "checked_material",
                  conjunction_stage: str = "conditional_material_context_conjunction",
                  prerequisite_key: str | None = None, multi_product: bool = False,
-                 finite_machine: bool = False) -> None:
+                 finite_machine: bool = False, quantitative_key: str | None = None) -> None:
     preservation = _record(report["preservation"], "Preservation")
     binding = _record(preservation["binding"], "Binding")
     admission = _record(binding["source_admission"], "Admission")
@@ -271,10 +271,17 @@ def _obligations(report: dict[str, JsonValue], *, material_key: str = "material"
             if row["stage"] is not None or row["evidence"] is not None:
                 raise CoreProtocolError("Unresolved obligation carries contradictory discharge evidence")
         elif row["status"] == "discharged":
+            quantitative_fields = {quantitative_key} if quantitative_key is not None else set()
+            if quantitative_key is not None:
+                quantitative = report.get(quantitative_key)
+                if (quantitative is None or _record(quantitative, "Required quantitative report").get("outcome") != "pass"
+                        or report.get(quantitative_key + "_status") != "pass"):
+                    raise CoreProtocolError("Quantitative obligations require a fresh passing original-law correspondence")
+                _pin(_record(row["evidence"], "Quantitative obligation evidence").get(quantitative_key), quantitative, "Obligation quantitative")
             stage = row["stage"]
             if stage == "bounded_machine_semantics_and_declared_requirements":
                 evidence = _object(row["evidence"], {"preservation", "machine_binding", "state_and_terminal_semantics", "prefixes",
-                    "retained_attempt_identity", "universal_termination", "progress"}, "Bounded machine evidence")
+                    "retained_attempt_identity", "universal_termination", "progress"} | quantitative_fields, "Bounded machine evidence")
                 if (material_key != "assembly" or row["obligation"] != "machine_reachability_termination_and_progress"
                         or binding.get("schema_version") != (implementation.FINITE_MACHINE_BINDING_REPORT_SCHEMA if finite_machine else implementation.MULTI_PRODUCT_BINDING_REPORT_SCHEMA if multi_product else "biocompiler.policy_implementation_binding_report.v0.2")
                         or binding.get("profile") != (implementation.FINITE_MACHINE_BINDING_PROFILE if finite_machine else implementation.MULTI_PRODUCT_BINDING_PROFILE if multi_product else "biocompiler.policy_staged_source_graph.v0.1")
@@ -294,7 +301,7 @@ def _obligations(report: dict[str, JsonValue], *, material_key: str = "material"
                     conjunction_stage: ("preservation", material_key, "context") + extra}
             if type(stage) is not str or stage not in keys:
                 raise CoreProtocolError("Unknown original-obligation discharge stage")
-            evidence = _object(row["evidence"], set(keys[stage]), "Obligation evidence pins")
+            evidence = _object(row["evidence"], set(keys[stage]) | quantitative_fields, "Obligation evidence pins")
             for key in keys[stage]:
                 if report[key] is None:
                     raise CoreProtocolError("Discharged obligation lacks its checked stage")
@@ -311,6 +318,10 @@ def _obligations(report: dict[str, JsonValue], *, material_key: str = "material"
                   and report.get("prerequisite_status") == "pass")
         if not stages and any(row["status"] == "discharged" for row in rows):
             raise CoreProtocolError("Prerequisite obligations require the complete checked context chain")
+    if quantitative_key is not None:
+        quantitative = report.get(quantitative_key)
+        stages = (stages and quantitative is not None and _record(quantitative, "Required quantitative report").get("outcome") == "pass"
+                  and report.get(quantitative_key + "_status") == "pass")
     if (type(complete) is not bool or report["status"] not in (accepted_status, "not_accepted")
             or checked != (stages and all(row["status"] == "discharged" for row in rows)) or complete != checked):
         raise CoreProtocolError("Material acceptance contradicts complete stage and obligation evidence")

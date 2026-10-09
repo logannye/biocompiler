@@ -751,17 +751,19 @@
     },
     {
       "path": "core/lib/domain/policy_component_material.ml",
-      "sha256": "d9a6a919fde6bf34dd75bc37ffe9c4c0e65579b99b9c55e42dd0d33a2c95545b",
+      "sha256": "239ab9347862451e0d8835d68af49909659aecfdbedc6d7a2c6f0f96700aa69b",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 6,
           "Diagnostic.require": 1,
-          "require": 25
+          "require": 26
         },
         "profile_literals": {
           "biocompiler.policy_component_material.v0.1": 1,
-          "biocompiler.policy_exact_local_material.v0.1": 1
+          "biocompiler.policy_component_material.v0.2": 1,
+          "biocompiler.policy_exact_local_material.v0.1": 1,
+          "biocompiler.policy_quantitative_local_material.v0.1": 1
         }
       },
       "disposition": "outside_route",
@@ -769,7 +771,7 @@
     },
     {
       "path": "core/lib/domain/policy_component_material.mli",
-      "sha256": "842042bda5b80933543e5061e64cc99c722111e53148f4a87e58e10b7c0d9e87",
+      "sha256": "f0dc08ad4467dd3807be64c740e8694e91f2e7eaa622ddbea6019e7b2c68c872",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -806,13 +808,13 @@
     },
     {
       "path": "core/lib/domain/policy_component_material_request.ml",
-      "sha256": "b66d306d25afed229fcdf7572125a0a8516f62c84d6d4845573212af7e545e4e",
+      "sha256": "e772d2cfb555d4f4a612cc962a381920de71d1894a5a8a847f1c6f0e7d973d32",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 6,
           "Diagnostic.require": 3,
-          "require": 31
+          "require": 35
         },
         "profile_literals": {
           "biocompiler.policy_component_material_request.v0.1": 1,
@@ -822,13 +824,15 @@
           "biocompiler.policy_component_material_request.v0.5": 1,
           "biocompiler.policy_component_material_request.v0.6": 1,
           "biocompiler.policy_component_material_request.v0.7": 1,
+          "biocompiler.policy_component_material_request.v0.8": 1,
           "biocompiler.policy_component_material_resources.v0.1": 1,
           "biocompiler.policy_finite_machine_component_mrna.v0.1": 1,
           "biocompiler.policy_grounded_helper_prerequisite_mrna.v0.1": 1,
           "biocompiler.policy_instance_component_mrna.v0.1": 1,
           "biocompiler.policy_instance_prerequisite_mrna.v0.1": 1,
           "biocompiler.policy_instance_two_observation_prerequisite_mrna.v0.1": 1,
-          "biocompiler.policy_multi_member_prerequisite_mrna.v0.1": 1
+          "biocompiler.policy_multi_member_prerequisite_mrna.v0.1": 1,
+          "biocompiler.policy_sampled_reservoir_component_mrna.v0.1": 1
         }
       },
       "disposition": "outside_route",
@@ -836,7 +840,7 @@
     },
     {
       "path": "core/lib/domain/policy_component_material_request.mli",
-      "sha256": "fad06a6ac8cf12a35521b5e9ea4b3269b54b6ae6357a80a37a73ac18e9c99406",
+      "sha256": "79529a406899902bd042a94edcb3e8149f3d7905f4d4010ec10c63bed8d2b0bc",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1249,6 +1253,34 @@
       }
     },
     {
+      "path": "core/lib/domain/policy_quantitative_contract.ml",
+      "sha256": "500a6d291b00cb4ad289be36bf50f1ed1bc7cbec958dca0c8271f413b9e30084",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 17
+        },
+        "profile_literals": {
+          "biocompiler.policy_sampled_reservoir.v0.1": 1,
+          "biocompiler.policy_sampled_saturating_reservoir.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate sampled quantitative component profile; no original whole-kernel authority. Conditional exact-grid source and selected-component correspondence is indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_quantitative_contract.mli",
+      "sha256": "8793fc38fc80872faa628770d2f0162ad210ab6710313cf6ab03968ad04e6b91",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate sampled quantitative component profile; no original whole-kernel authority. Conditional exact-grid source and selected-component correspondence is indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/domain/policy_realization_request.ml",
       "sha256": "89b0836152531cc0489e0b62b92bdaf00c8f27d4aa3ebfb25d4d7f36ac7eb542",
       "census": {
@@ -1450,7 +1482,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "e227726dd001f86731d261638e3305ec931cc4c7bb3eafd580d4e6bf69dd50a7",
+      "sha256": "e1272f4502e15aad7eddb54f089b5f177727d2c4e48e2c0a4d7f2d1dd7915666",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1548,7 +1580,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_material_check.ml",
-      "sha256": "5a80713c9c54e55f53c80cc1541d50858b06aa229d78f66b3bddb823688be351",
+      "sha256": "137c2cfb156ed238ad1f7b911665514d7351fae2642bf2d81ab153f3de2961c7",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1564,10 +1596,12 @@
           "biocompiler.ocaml.policy_component_material_check.v0.5": 1,
           "biocompiler.ocaml.policy_component_material_check.v0.6": 1,
           "biocompiler.ocaml.policy_component_material_check.v0.7": 1,
+          "biocompiler.ocaml.policy_component_material_check.v0.8": 1,
           "biocompiler.policy_component_material_assessment.v0.1": 1,
           "biocompiler.policy_component_material_assessment.v0.2": 1,
           "biocompiler.policy_component_material_assessment.v0.3": 1,
           "biocompiler.policy_component_material_assessment.v0.4": 1,
+          "biocompiler.policy_component_material_assessment.v0.5": 1,
           "biocompiler.policy_component_material_candidate.v0.1": 1
         }
       },
@@ -1576,7 +1610,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_material_check.mli",
-      "sha256": "bc15bb010c303d0a293c2e2312cf5ccb8dc68913ab056ff907620e7203098b9f",
+      "sha256": "c9d4f57ce26ded2cd9242118b11c531afdc05b66771116ed48ffff151c729e1b",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1762,6 +1796,35 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/realization_checker/policy_quantitative_check.ml",
+      "sha256": "788857bacd7b6a2f3a73b0e1a0e1d8a01562a2655bf3e9bcfad7ed7f9fb8f22a",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 3,
+          "Diagnostic.require": 3,
+          "fail": 23
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_quantitative_check.v0.1": 1,
+          "biocompiler.policy_quantitative_assessment.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate sampled quantitative component profile; no original whole-kernel authority. Conditional exact-grid source and selected-component correspondence is indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_quantitative_check.mli",
+      "sha256": "3408d55ff7680a4f548a557622c35182b0fa2d66618dd4116cd4efd02eb282a1",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate sampled quantitative component profile; no original whole-kernel authority. Conditional exact-grid source and selected-component correspondence is indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/realization_checker/policy_refinement_check.ml",
       "sha256": "97d17afeb08e6a0a16f9bc75e7d95e63b337b7035da74bf3c0a38fd650c3b902",
       "census": {
@@ -1934,7 +1997,7 @@
     },
     {
       "path": "core/lib/service/policy_component_material_service.ml",
-      "sha256": "a00c633aa3c1f7d6d8d5cc380c16763fdd256702ab00b3fcca02e20fe7ec191a",
+      "sha256": "bb83e204864b4d7a697d5c60a431733e0649d4ea7721358fbb13e2ad2aa7bf16",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1950,6 +2013,7 @@
           "biocompiler.ocaml.policy_instance_prerequisite_material.v0.1": 1,
           "biocompiler.ocaml.policy_instance_two_observation_prerequisite_material.v0.1": 1,
           "biocompiler.ocaml.policy_multi_member_prerequisite_material.v0.1": 1,
+          "biocompiler.ocaml.policy_sampled_reservoir_component_material.v0.1": 1,
           "biocompiler.policy_component_material_candidate.v0.1": 1,
           "biocompiler.policy_component_mrna_export.v0.1": 1,
           "biocompiler.policy_component_mrna_manifest.v0.1": 1
@@ -1960,7 +2024,7 @@
     },
     {
       "path": "core/lib/service/policy_component_material_service.mli",
-      "sha256": "ed836ae7bc25ad43acc481c04444c407b6d8d86d7d41e443aae2405c573d0f3f",
+      "sha256": "2c913189d5111d001b44075461fff032d151b629ec0ad6ebfdeae38a4dab6332",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -2152,7 +2216,7 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "a077ea9743c6bb4e3e08917acb0c4af4c3d871f724351d17152fd32c611b3307",
+      "sha256": "0ebef3ff6a5ea106afbb12d089ac4a21b8979c115d59fab0fcd7644fb524fa91",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -2282,13 +2346,13 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_material.py",
-      "sha256": "0116c5bb317ad3db918651b5e7e348b09584c2ac2ce3bd549669519a2a10d403",
+      "sha256": "1545aebc164afcff89b9d7e361bf9eb72c4551bc1078df851d0b3d2e14e3bb0a",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 29,
-          "Raise": 68
+          "FunctionDef": 31,
+          "Raise": 84
         },
         "profile_literals": {
           "biocompiler.core.policy_component_material.v1": 1,
@@ -2311,12 +2375,15 @@
           "biocompiler.ocaml.policy_component_material_check.v0.5": 1,
           "biocompiler.ocaml.policy_component_material_check.v0.6": 1,
           "biocompiler.ocaml.policy_component_material_check.v0.7": 1,
+          "biocompiler.ocaml.policy_component_material_check.v0.8": 1,
           "biocompiler.ocaml.policy_finite_machine_component_material.v0.1": 1,
           "biocompiler.ocaml.policy_grounded_helper_prerequisite_material.v0.1": 1,
           "biocompiler.ocaml.policy_instance_component_material.v0.1": 1,
           "biocompiler.ocaml.policy_instance_prerequisite_material.v0.1": 1,
           "biocompiler.ocaml.policy_instance_two_observation_prerequisite_material.v0.1": 1,
           "biocompiler.ocaml.policy_multi_member_prerequisite_material.v0.1": 1,
+          "biocompiler.ocaml.policy_quantitative_check.v0.1": 1,
+          "biocompiler.ocaml.policy_sampled_reservoir_component_material.v0.1": 1,
           "biocompiler.policy_complete_signal_identity_transport.v0.1": 1,
           "biocompiler.policy_component_assembly_assessment.v0.1": 1,
           "biocompiler.policy_component_assembly_proposal.v0.1": 1,
@@ -2326,10 +2393,12 @@
           "biocompiler.policy_component_context_assessment.v0.1": 1,
           "biocompiler.policy_component_context_assessment.v0.2": 1,
           "biocompiler.policy_component_context_assessment.v0.3": 1,
+          "biocompiler.policy_component_material.v0.2": 1,
           "biocompiler.policy_component_material_assessment.v0.1": 1,
           "biocompiler.policy_component_material_assessment.v0.2": 1,
           "biocompiler.policy_component_material_assessment.v0.3": 1,
           "biocompiler.policy_component_material_assessment.v0.4": 1,
+          "biocompiler.policy_component_material_assessment.v0.5": 1,
           "biocompiler.policy_component_material_candidate.v0.1": 1,
           "biocompiler.policy_component_material_request.v0.1": 1,
           "biocompiler.policy_component_material_request.v0.2": 1,
@@ -2338,6 +2407,7 @@
           "biocompiler.policy_component_material_request.v0.5": 1,
           "biocompiler.policy_component_material_request.v0.6": 1,
           "biocompiler.policy_component_material_request.v0.7": 1,
+          "biocompiler.policy_component_material_request.v0.8": 1,
           "biocompiler.policy_component_material_resources.v0.1": 1,
           "biocompiler.policy_component_mrna.v0.1": 1,
           "biocompiler.policy_component_mrna_export.v0.1": 1,
@@ -2359,6 +2429,10 @@
           "biocompiler.policy_provider_prerequisite_closure.v0.1": 1,
           "biocompiler.policy_provider_prerequisite_closure.v0.2": 1,
           "biocompiler.policy_provider_prerequisite_closure.v0.3": 1,
+          "biocompiler.policy_quantitative_assessment.v0.1": 1,
+          "biocompiler.policy_quantitative_local_material.v0.1": 1,
+          "biocompiler.policy_sampled_reservoir_component_mrna.v0.1": 1,
+          "biocompiler.policy_sampled_saturating_reservoir.v0.1": 1,
           "biocompiler.policy_staged_component_mrna.v0.1": 1,
           "biocompiler.policy_staged_primitive_execution.v0.1": 1
         }
@@ -2453,13 +2527,13 @@
     },
     {
       "path": "src/biocompiler/core_policy_material.py",
-      "sha256": "b9606dbc2159da7528f480cc52639653c73da6eac0ae4fb98ec2e757e9cd6948",
+      "sha256": "e699367a8df98b4246d12d5b0f74069209c20eb34e5762d2a32513d52ba894b7",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
           "FunctionDef": 22,
-          "Raise": 57
+          "Raise": 58
         },
         "profile_literals": {
           "biocompiler.construction_content_assessment.v0.1": 1,
@@ -2493,7 +2567,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_refinement.py",
-      "sha256": "d7ad9a05e4445aed9240e6a8ca26dc0bee81a1a7c85a00a1eb8565c2e8d2ebef",
+      "sha256": "053abd644e401fef08dc53538c436fac7c4b6ec0a9e115a3af019643865fec08",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -2539,12 +2613,12 @@
     },
     {
       "path": "src/biocompiler/policy/component_material.py",
-      "sha256": "1904647e2342d42e2041c76b428ccbf8a2dc3eb3a9e5db4d309bae5bbd15d6a7",
+      "sha256": "db8726b62ebf42c86b05b1ba3e9ab899925272523f31f736135a62a3f197fadc",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "FunctionDef": 5,
-          "Raise": 5
+          "Raise": 6
         },
         "profile_literals": {}
       },
@@ -2605,6 +2679,25 @@
         },
         "profile_literals": {}
       }
+    },
+    {
+      "path": "src/biocompiler/policy/quantitative.py",
+      "sha256": "c8e013785ab8cfb40bf717f50c3a9d1c121c08dc26c58821c8beea95a7ab8e3e",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 12,
+          "Raise": 1
+        },
+        "profile_literals": {
+          "biocompiler.component_identity.v0.1": 1,
+          "biocompiler.policy_sampled_reservoir.v0.1": 1,
+          "biocompiler.policy_sampled_saturating_reservoir.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate sampled quantitative component profile; no original whole-kernel authority. Conditional exact-grid source and selected-component correspondence is indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
       "path": "src/biocompiler/policy/refinement.py",

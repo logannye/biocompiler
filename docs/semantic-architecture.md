@@ -73,6 +73,14 @@ An optimizer may propose a transformation, but the authority to accept it belong
 to the checker of the named relation. A JSON report is a reproducible record of
 checking; it is not itself a native checked capability.
 
+The implemented [named refinement interface](policy-refinement-v0.1.md) provides
+ten closed relation kinds and retains eighteen original or freshly checked
+premises. Its three directional composition rules distinguish exact source/graph
+correspondence, bounded observable correspondence, and conditional source/material
+correspondence. Composition rejects mismatched endpoints, domains, limits and
+material requests. Fresh check/replay calls expose these claims without changing
+the established material export authority.
+
 Quantitative extensions need an independent original law, exact units, sampling
 semantics and a complete state interpretation. A number attached to a machine
 state is insufficient. The chosen component must declare the same quantitative
@@ -80,6 +88,35 @@ contract, its local interfaces must map to the checked graph, and the resulting
 material must remain bound to that component's complete identity. Physical rate
 calibration, stochastic error models and continuous dynamics would require new
 explicit premises and checking relations.
+
+The first implemented [quantitative profile](policy-quantitative-v0.1.md) is an
+exact sampled reservoir. A known sample adds or subtracts one quantum with
+saturation; an upward threshold crossing requests an effect. Unknown and absent
+updates hold the quantity. The checker independently derives every grid transition
+from the original law, binds its state and observation models to the selected
+component and checked graph, and requires its fresh result before material
+acceptance. The paired molecular construction remains exact under the supplied
+component contract. This deliberately bounded profile connects quantitative
+meaning to the existing compiler path; it does not establish physical calibration.
+
+## What should grow next
+
+The architecture separates frontend convenience from semantic authority. The
+[stable source specification](policy-language-specification-v0.1.md), typed admission, module
+interfaces, generic finite lowering, named evidence and sampled quantitative
+profile now have explicit boundaries. Native execution of this implementation
+batch is still pending; the session record distinguishes implemented controls
+from executed checks.
+
+Further expressiveness should add checked meanings in this order: native module
+provenance for separate compilation; richer multi-machine and multi-observation
+composition with explicit interference checks; additional refinement relations
+for approximation and nondeterminism; and calibrated quantitative profiles with
+declared uncertainty, tolerances and experimental provenance. Each needs an
+independent checker and rejection controls before its claim can reach export.
+Avoid expanding the trusted core merely to accommodate frontend ergonomics or
+producer search strategies. OCaml's private types support that boundary, while
+the versioned wire language leaves other frontends possible.
 
 The long-term aim is a small, stable semantic core with extensible frontends,
 profiles and checked transformations. Expressiveness grows by adding precisely

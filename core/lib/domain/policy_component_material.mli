@@ -7,6 +7,8 @@ module F = Policy_component_fragment
 module MC = Policy_material_contract
 val schema_version : string
 val profile : string
+val quantitative_schema_version : string
+val quantitative_profile : string
 val max_carriers : int
 val max_provider_requirements : int
 
@@ -43,5 +45,6 @@ val products : t -> product list
     demands remain external. Input types/replication come from the exact fragment
     slot/model; minima are not proof of memory sufficiency or runtime behavior. *)
 val provider_requirements : t -> provider_requirement list
+val quantitative_contracts : t -> Policy_quantitative_contract.local_contract list
 val target_inventory : F.t -> target list
 val target_to_json : target -> Json.t

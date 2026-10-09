@@ -28,6 +28,8 @@ let grounded_helper_implementation="biocompiler.ocaml.policy_grounded_helper_pre
 let grounded_helper_validation_scope="policy-grounded-helper-prerequisite-mrna-v0.1"
 let finite_machine_implementation="biocompiler.ocaml.policy_finite_machine_component_material.v0.1"
 let finite_machine_validation_scope="policy-finite-machine-component-mrna-v0.1"
+let quantitative_implementation="biocompiler.ocaml.policy_sampled_reservoir_component_material.v0.1"
+let quantitative_validation_scope="policy-sampled-reservoir-component-mrna-v0.1"
 let schema_version="biocompiler.core.policy_component_material.v1"
 let resource_profile=R.resource_profile
 let candidate_schema="biocompiler.policy_component_material_candidate.v0.1"
@@ -83,6 +85,13 @@ let finite_machine_profile=obj (List.map (fun (key,value) -> key,match key with
   | _ -> value) (Json.object_fields profile))
 let finite_machine_producer_profile=obj["operations",arr[str "compile-policy-component-material"];
   "implementation",str finite_machine_implementation;"validation_scope",str finite_machine_validation_scope]
+let quantitative_profile=obj (List.map (fun (key,value) -> key,match key with
+  | "request_schema" -> str R.quantitative_schema_version
+  | "implementation" -> str quantitative_implementation
+  | "validation_scope" -> str quantitative_validation_scope
+  | _ -> value) (Json.object_fields profile))
+let quantitative_producer_profile=obj["operations",arr[str "compile-policy-component-material"];
+  "implementation",str quantitative_implementation;"validation_scope",str quantitative_validation_scope]
 let validate_publication raw=
   let framed=obj["result",raw]in
   let output=W.create_output ~profile:validation_scope ~error_code:"policy_component_material_service_publication_limit"
@@ -140,14 +149,16 @@ let check ~export ~request:raw_request ~candidate:raw_candidate ~limits:raw_limi
     |None->Diagnostic.fail "policy_component_material_export_not_accepted"
       "Fresh original-source, implementation, material, context or obligation checking withheld accepted export."in
   let result=obj["schema_version",str schema_version;
-    "implementation",str (if R.is_finite_machine request then finite_machine_implementation
+    "implementation",str (if R.is_quantitative request then quantitative_implementation
+      else if R.is_finite_machine request then finite_machine_implementation
       else if R.is_grounded_helper request then grounded_helper_implementation
       else if R.is_multi_member request then multi_member_implementation
       else if R.is_two_observation request then two_observation_implementation
       else if R.requires_prerequisite_closure request then prerequisite_implementation
       else if R.is_instanced request then instance_implementation else implementation);
     "resource_profile",str resource_profile;
-    "validation_scope",str (if R.is_finite_machine request then finite_machine_validation_scope
+    "validation_scope",str (if R.is_quantitative request then quantitative_validation_scope
+      else if R.is_finite_machine request then finite_machine_validation_scope
       else if R.is_grounded_helper request then grounded_helper_validation_scope
       else if R.is_multi_member request then multi_member_validation_scope
       else if R.is_two_observation request then two_observation_validation_scope

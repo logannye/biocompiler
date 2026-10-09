@@ -21,6 +21,8 @@ val grounded_helper_schema_version : string
 val grounded_helper_profile : string
 val finite_machine_schema_version : string
 val finite_machine_profile : string
+val quantitative_schema_version : string
+val quantitative_profile : string
 val resource_profile : string
 type component_binding = private { slot:A.slot; component:Pinned_identity.t }
 type catalog_binding = private {
@@ -50,6 +52,8 @@ val is_two_observation : t -> bool
 val is_multi_member : t -> bool
 val is_grounded_helper : t -> bool
 val is_finite_machine : t -> bool
+val is_quantitative : t -> bool
+val quantitative : t -> Policy_quantitative_contract.selection option
 val request_profile : t -> string
 val to_json : t -> Json.t
 val fingerprint : t -> string

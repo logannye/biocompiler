@@ -33,7 +33,12 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "5bf67512edb43be299929b44a147cec8951867fc52bd7fffa169ef2aa10615ad"
+REVIEWED_METADATA_SHA256 = "4505ad72eaddb74c56cb7587ebbf2b719cd9b78b2e6c673b76c8820e19335bef"
+BEFORE_QUANTITATIVE_METADATA_SHA256 = "5bf67512edb43be299929b44a147cec8951867fc52bd7fffa169ef2aa10615ad"
+QUANTITATIVE_PREFIX = "biocompiler.policy.quantitative."
+QUANTITATIVE_DEPENDENCIES = tuple("biocompiler.core_policy_component_material." + name for name in (
+    "QUANTITATIVE_REQUEST_SCHEMA", "QUANTITATIVE_REQUEST_PROFILE", "QUANTITATIVE_IMPLEMENTATION", "QUANTITATIVE_VALIDATION_SCOPE",
+    "QUANTITATIVE_PROFILE", "QUANTITATIVE_PRODUCER_PROFILE", "_quantitative", "_quantitative_evidence"))
 BEFORE_REFINEMENT_METADATA_SHA256 = "d717a4c1f9cd7d81a90e8c3a71311d445ff46fb79b13233671a7e44fb65c99a1"
 REFINEMENT_PREFIXES = ("biocompiler.core_policy_refinement.", "biocompiler.policy.refinement.")
 BEFORE_TYPED_MODULES_METADATA_SHA256 = "2a9ce2139ab87bd5b5288357249a2433bba232c5e1a9fceef6b248c1325aab68"
@@ -127,7 +132,7 @@ COMPOSITION_DEPENDENCIES = (
     'biocompiler.core_policy_implementation._two_observation_original',
 )
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model modules native observations operational patterns programs refinement requirements research_project serialization space state time typed validation values".split())
+MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model modules native observations operational patterns programs quantitative refinement requirements research_project serialization space state time typed validation values".split())
 CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py")
@@ -164,7 +169,7 @@ OPERATIONS = {
 # Reviewed access names and canonical owners, independent of the ledger file pins.
 REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
   'biocompiler.policy',
-  'behavior catalog chassis coordination deployment effects entities logic modules observations patterns refinement requirements '
+  'behavior catalog chassis coordination deployment effects entities logic modules observations patterns quantitative refinement requirements '
   'space state time typed values'),
  ('biocompiler.policy', 'biocompiler.policy.handoff', 'SubmissionError assess_capabilities prepare_submission'),
  ('biocompiler.policy', 'biocompiler.policy.inspection', 'diff graph inspect'),
@@ -213,6 +218,7 @@ REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
  ('biocompiler.policy.refinement', 'biocompiler.core_policy_refinement',
   'Stage Relation PremiseKind DerivationRule StageIdentity RefinementScope RefinementClaim RefinementPremise RefinementDerivation RefinementEvidence PolicyRefinementResult PolicyRefinementClient'),
  ('biocompiler.policy.refinement', 'biocompiler.policy.refinement', 'check replay'),
+ ('biocompiler.policy.quantitative', 'biocompiler.policy.quantitative', 'QuantitativeAuthoringError SampledReservoir'),
  ('biocompiler.policy.values',
   'biocompiler.policy.model',
   'EVENT INTEGER Parameter Quantity TEXT TRUTH TypeSpec Unit'),
@@ -497,7 +503,7 @@ def discover(root: Path) -> dict[str, Any]:
     reviewed_access = {module + "." + name: owner + "." + name
                        for module, owner, names in REVIEWED_EXPORT_GROUPS for name in names.split()}
     require(access == reviewed_access, "Reviewed export target/alias census differs")
-    require(len(exports.get("biocompiler.policy", [])) == 115 and len(access) == 243,
+    require(len(exports.get("biocompiler.policy", [])) == 116 and len(access) == 246,
             "Reviewed explicit export census differs")
     require(aliases == {"biocompiler.policy.inspection.summary": "biocompiler.policy.inspection.inspect",
                         "biocompiler.policy.inspection.render_html": "biocompiler.policy.inspection.to_html"}, "Reviewed compatibility/display aliases differ")
@@ -637,9 +643,18 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
+    before_quantitative = {
+        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("quantitative.")},
+        "coverage": {key: value for key, value in coverage.items()
+                     if not key.startswith(QUANTITATIVE_PREFIX) and key not in QUANTITATIVE_DEPENDENCIES},
+    }
+    encoded_quantitative = json.dumps(before_quantitative, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_quantitative["coverage"]) == 1157 and len(before_quantitative["witnesses"]) == 160
+            and digest(encoded_quantitative) == BEFORE_QUANTITATIVE_METADATA_SHA256,
+            "Quantitative authoring must preserve every previous API evidence meaning")
     before_refinement = {
-        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("refinement.")},
-        "coverage": {key: value for key, value in coverage.items() if not key.startswith(REFINEMENT_PREFIXES)},
+        "witnesses": {key: value for key, value in before_quantitative["witnesses"].items() if not key.startswith("refinement.")},
+        "coverage": {key: value for key, value in before_quantitative["coverage"].items() if not key.startswith(REFINEMENT_PREFIXES)},
     }
     encoded_refinement = json.dumps(before_refinement, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(len(before_refinement["coverage"]) == 1083 and len(before_refinement["witnesses"]) == 152

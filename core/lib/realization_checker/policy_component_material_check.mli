@@ -31,3 +31,4 @@ val accepted : result -> checked_material option
 val request : checked_material -> R.t
 val context : checked_material -> X.checked_context
 val evidence : checked_material -> Json.t
+val quantitative : checked_material -> Policy_quantitative_check.checked_quantitative option

@@ -73,7 +73,8 @@ let literals () =
   require(List.sort String.compare(List.map fst(Json.object_fields profiles))=
     List.sort String.compare(List.map fst checker_profiles @ ["architecture_producer";
       "policy_operational_producer";"policy_implementation_producer";"policy_material_producer";"policy_component_material_producer";
-      "policy_component_selection_producer";"policy_instance_material_producer";"policy_prerequisite_material_producer";"policy_two_observation_material_producer";"policy_multi_member_material_producer";"policy_grounded_helper_material_producer"] @
+      "policy_component_selection_producer";"policy_instance_material_producer";"policy_prerequisite_material_producer";"policy_two_observation_material_producer";"policy_multi_member_material_producer";"policy_grounded_helper_material_producer";
+      "policy_finite_machine_implementation_producer";"policy_finite_machine_material_producer";"policy_quantitative_material_producer"] @
       List.map fst (Bioc_producer_service.Synthetic_producer_service.profiles @
         Bioc_producer_service.Synthetic_producer_public_service.profiles @
         Bioc_producer_service.Synthetic_inspection_service.profiles)))
@@ -85,6 +86,9 @@ let literals () =
       ("Producer profile lost its exact operation: "^name))
     ["policy_operational_producer","compile-policy",Bioc_service.Policy_operational_service.producer_profile;
      "policy_implementation_producer","compile-policy-implementation",Bioc_service.Policy_implementation_service.producer_profile;
+     "policy_finite_machine_implementation_producer","compile-policy-implementation",Bioc_service.Policy_implementation_service.finite_machine_producer_profile;
+     "policy_finite_machine_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.finite_machine_producer_profile;
+     "policy_quantitative_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.quantitative_producer_profile;
      "policy_material_producer","compile-policy-material",Bioc_service.Policy_material_service.producer_profile;
      "policy_component_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.producer_profile;
      "policy_instance_material_producer","compile-policy-component-material",Bioc_service.Policy_component_material_service.instance_producer_profile;

@@ -28,6 +28,10 @@ val finite_machine_implementation : string
 val finite_machine_validation_scope : string
 val finite_machine_profile : Json.t
 val finite_machine_producer_profile : Json.t
+val quantitative_implementation : string
+val quantitative_validation_scope : string
+val quantitative_profile : Json.t
+val quantitative_producer_profile : Json.t
 val schema_version : string
 val resource_profile : string
 val candidate_schema : string

@@ -26,7 +26,7 @@ integration. Development evidence is not release acceptance.
 | 2 | Typed Python facade and semantic modules | Distinct expression/reference categories, explicit module ports and private state/effects, hygienic instantiation, checked interfaces and conflicting-composition rejection through the public source path. | Implemented and source-reviewed; focused Python and typing checks pass |
 | 3 | Generic finite-machine lowering and composition | Multiple materially different finite-machine shapes use common lowering/checking and component composition; complete source, attempt identity, atomicity, requirements and material correspondence survive. | Implemented and source-reviewed; focused local checks pass; native validation pending |
 | 4 | Named refinement relations and composable evidence | Explicit relation kinds and source/target/assumption/bound identities; independently checked composition; old exact relations retain their original meaning and cannot be weakened by a producer. | Implemented and source-reviewed; focused Python/static/typing checks pass; native validation pending |
-| 5 | Quantitative mechanism-to-payload profile | Explicit quantitative dynamics, units, domain and observation map connected to selected supplied components, independent behavior/requirement checks and exact paired molecular export; mutations change output or reject. | Pending |
+| 5 | Quantitative mechanism-to-payload profile | Explicit quantitative dynamics, units, domain and observation map connected to selected supplied components, independent behavior/requirement checks and exact paired molecular export; mutations change output or reject. | Implemented and source-reviewed; focused Python/static/typing checks pass; native validation pending |
 
 Finite supported domains and model-to-material premises remain explicit. No
 increment claims arbitrary biological realization or empirical therapeutic
@@ -48,9 +48,10 @@ than become a separate simulator.
 
 ## Current checkpoint
 
-The original alpha was published before this session. Main was refreshed as
-`e253ed5b3370af9a7d8b9ba96af2e7f8f025798a`. PR99 remains open at the base source
-above, with its separate fresh run active. Item 1 is implemented in this isolated checkout. Its local feedback includes
+The original alpha was published before this session. At session start, main was
+refreshed as `e253ed5b3370af9a7d8b9ba96af2e7f8f025798a`. PR99 was open at the base
+source above, with its separate fresh run active. These are initial session
+observations, not a later acceptance claim. Item 1 is implemented in this isolated checkout. Its local feedback includes
 31 inert wiring/development-runner tests, 94 language/coverage tests and 17
 language tests on Python 3.11.15 (the other checks used Python 3.14.6). The
 language generator and native dependency boundaries pass static checks.
@@ -121,3 +122,54 @@ The final Item 4 SDK controls pass: 13 refinement tests, 49 API inventory tests
 and strict mypy on both new SDK modules (Python 3.11.15). Earlier checks also
 confirmed the unchanged source-context slice with 31 local controls. The migration
 inventory contains 4,052 entries. Item 5 begins after this checkpoint.
+
+Item 5 implements a separate sampled-reservoir material profile. The independent
+law uses complete nominal units and an exact 2-16-state quantity grid. True adds
+one quantum, False subtracts one, and saturation follows the combined update.
+Unknown and absent updates hold; an upward threshold crossing requests the one
+declared effect. The profile checks one-tick freshness, zero-age samples, complete
+sampling multiplicity, reset state and the exact original clock. Existing atomic
+reservation and effect lifecycle contracts remain applicable.
+
+The selected component carries its own law, state map and complete local model
+pins. A fresh quantitative capability binds them to the original source and
+checked assembly, including the actual threshold request endpoint. Material
+acceptance requires this capability, and every discharged obligation pins the
+quantitative report. Existing compile/check/replay/export operations negotiate the
+new explicit profile. Old profiles keep their report shapes and cannot silently
+consume a quantitative component. Named refinement keeps its ten relations and
+eighteen premises; the complete material premise includes the new checked stage.
+
+The artificial four-level fixture has an independent twelve-row truth table and
+two handwritten source/candidate trajectories covering saturation, decay, Unknown,
+missing input, repeated crossing and reset. Native rejection controls mutate
+units, clocks, original/local laws, state maps, sampling, selected pins and payload
+construction. Semantic mutants repin the complete component, rule and contextual
+authority so rejection cannot be attributed merely to stale fingerprints. These
+native controls have been source-reviewed, not compiled or executed. Review also
+corrected a finite-profile producer census omission in the native protocol test;
+no prior native execution was claimed for that source.
+
+Item 5 local validation passes on Python 3.11.15: 60 focused quantitative and
+existing transport controls; 65 quantitative/public-API controls; 56 material
+inventory controls; 31 inert native-wiring/development-runner controls; 19 migration
+inventory controls; and 17 language-specification controls. These overlapping
+slices are not summed into a unique-test total. Strict mypy passes on all five
+modified quantitative SDK/facade modules. Fixture regeneration, native dependency
+boundaries and source inventory checks also pass. Wiring tests simulate native
+processes and provide no native execution evidence.
+
+The final API inventory has 1,187 entries in 48 files and 164 witness descriptions;
+the preceding 1,157 classifications and 160 meanings remain exactly preserved.
+The original 62 material-family meanings and all 29 preceding component-family
+meanings remain frozen under explicit projections. The additive component
+inventory has 30 families, 120 source files and 137 witness sources. The migration
+inventory has 4,074 entries. Inventory pins establish reviewed source identity,
+not successful execution or biological realization.
+
+All five requested implementation increments are now present in order. No CI was
+dispatched, no OCaml/Rust build or native executable was run, and no package was
+rebuilt or published during this session. Native and installed-package acceptance
+remain pending for the combined source; these local checks do not qualify a
+release. The [architecture overview](semantic-architecture.md) describes the
+resulting boundaries and subsequent extensions without widening these claims.

@@ -46,6 +46,10 @@ FINITE_MACHINE_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v
 FINITE_MACHINE_REQUEST_PROFILE = "biocompiler.policy_finite_machine_component_mrna.v0.1"
 FINITE_MACHINE_IMPLEMENTATION = "biocompiler.ocaml.policy_finite_machine_component_material.v0.1"
 FINITE_MACHINE_VALIDATION_SCOPE = "policy-finite-machine-component-mrna-v0.1"
+QUANTITATIVE_REQUEST_SCHEMA = "biocompiler.policy_component_material_request.v0.8"
+QUANTITATIVE_REQUEST_PROFILE = "biocompiler.policy_sampled_reservoir_component_mrna.v0.1"
+QUANTITATIVE_IMPLEMENTATION = "biocompiler.ocaml.policy_sampled_reservoir_component_material.v0.1"
+QUANTITATIVE_VALIDATION_SCOPE = "policy-sampled-reservoir-component-mrna-v0.1"
 REPORT_SCHEMA = "biocompiler.policy_component_material_assessment.v0.1"
 EXPORT_SCHEMA = "biocompiler.policy_component_mrna_export.v0.1"
 MANIFEST_SCHEMA = "biocompiler.policy_component_mrna_manifest.v0.1"
@@ -107,6 +111,13 @@ FINITE_MACHINE_PROFILE: dict[str, JsonValue] = {
 FINITE_MACHINE_PRODUCER_PROFILE: dict[str, JsonValue] = {
     **PRODUCER_PROFILE, "implementation": FINITE_MACHINE_IMPLEMENTATION, "validation_scope": FINITE_MACHINE_VALIDATION_SCOPE,
 }
+QUANTITATIVE_PROFILE: dict[str, JsonValue] = {
+    **PROFILE, "request_schema": QUANTITATIVE_REQUEST_SCHEMA, "implementation": QUANTITATIVE_IMPLEMENTATION,
+    "validation_scope": QUANTITATIVE_VALIDATION_SCOPE,
+}
+QUANTITATIVE_PRODUCER_PROFILE: dict[str, JsonValue] = {
+    **PRODUCER_PROFILE, "implementation": QUANTITATIVE_IMPLEMENTATION, "validation_scope": QUANTITATIVE_VALIDATION_SCOPE,
+}
 _REQUEST_FIELDS = {"schema_version", "profile", "implementation_request", "component_library", "composition_rule",
                    "catalog_binding", "input_bindings", "resource_bindings", "context", "budgets"}
 _CANDIDATE_FIELDS = {"schema_version", "behavior", "implementation", "binding", "assembly_proposal", "construction"}
@@ -115,14 +126,16 @@ _same, _pin, _record, _rows, _count = material._same, material._pin, material._r
 
 
 def _original(value: JsonValue) -> dict[str, JsonValue]:
-    request = _object(value, _REQUEST_FIELDS, "Original component material request")
+    quantitative = _record(value, "Original component material request").get("profile") == QUANTITATIVE_REQUEST_PROFILE
+    request = _object(value, _REQUEST_FIELDS | ({"quantitative"} if quantitative else set()), "Original component material request")
     if (request["schema_version"], request["profile"]) not in ((REQUEST_SCHEMA, REQUEST_PROFILE),
             (INSTANCE_REQUEST_SCHEMA, INSTANCE_REQUEST_PROFILE),
             (PREREQUISITE_REQUEST_SCHEMA, PREREQUISITE_REQUEST_PROFILE),
             (TWO_OBSERVATION_REQUEST_SCHEMA, TWO_OBSERVATION_REQUEST_PROFILE),
             (MULTI_MEMBER_REQUEST_SCHEMA, MULTI_MEMBER_REQUEST_PROFILE),
             (GROUNDED_HELPER_REQUEST_SCHEMA, GROUNDED_HELPER_REQUEST_PROFILE),
-            (FINITE_MACHINE_REQUEST_SCHEMA, FINITE_MACHINE_REQUEST_PROFILE)):
+            (FINITE_MACHINE_REQUEST_SCHEMA, FINITE_MACHINE_REQUEST_PROFILE),
+            (QUANTITATIVE_REQUEST_SCHEMA, QUANTITATIVE_REQUEST_PROFILE)):
         raise CoreProtocolError("Component material request changed its closed original profile")
     decoder = (implementation._finite_machine_original if _finite_machine(request) else implementation._multi_product_original if _multi_member(request) else
                implementation._two_observation_original if _two_observations(request) else
@@ -132,17 +145,29 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
         _record(request[key], "Original " + key)
     for key in ("input_bindings", "resource_bindings"):
         _rows(request[key], "Original " + key)
+    if quantitative:
+        contract = _object(request["quantitative"], {"mechanism", "selection", "source"}, "Original quantitative contract")
+        _record(contract["mechanism"], "Independent original reservoir law")
+        _object(contract["selection"], {"instance", "component", "contract"}, "Original quantitative selection")
+        _object(contract["source"], {"machine", "observation", "effect"}, "Original quantitative source")
+    else:
+        library = _record(request["component_library"], "Original component library")
+        for component in _rows(library.get("components"), "Original local components"):
+            if (component.get("schema_version") == "biocompiler.policy_component_material.v0.2"
+                    or component.get("profile") == "biocompiler.policy_quantitative_local_material.v0.1"
+                    or "quantitative_contracts" in _record(component.get("body"), "Original local component body")):
+                raise CoreProtocolError("Quantitative local components require their explicit original material profile")
     return request
 
 
 def _instanced(request: dict[str, JsonValue]) -> bool:
     return request["profile"] in (INSTANCE_REQUEST_PROFILE, PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE,
-                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE)
+                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE)
 
 
 def _prerequisites(request: dict[str, JsonValue]) -> bool:
     return request["profile"] in (PREREQUISITE_REQUEST_PROFILE, TWO_OBSERVATION_REQUEST_PROFILE,
-                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE)
+                                 MULTI_MEMBER_REQUEST_PROFILE, GROUNDED_HELPER_REQUEST_PROFILE, FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE)
 
 
 def _two_observations(request: dict[str, JsonValue]) -> bool:
@@ -158,10 +183,17 @@ def _grounded_helper(request: dict[str, JsonValue]) -> bool:
 
 
 def _finite_machine(request: dict[str, JsonValue]) -> bool:
-    return request["profile"] == FINITE_MACHINE_REQUEST_PROFILE
+    return request["profile"] in (FINITE_MACHINE_REQUEST_PROFILE, QUANTITATIVE_REQUEST_PROFILE)
+
+
+def _quantitative(request: dict[str, JsonValue]) -> bool:
+    return request["profile"] == QUANTITATIVE_REQUEST_PROFILE
 
 
 def _profile_settings(request: dict[str, JsonValue]) -> tuple[str, dict[str, JsonValue], dict[str, JsonValue], str, str]:
+    if _quantitative(request):
+        return ("policy_quantitative_material", QUANTITATIVE_PROFILE, QUANTITATIVE_PRODUCER_PROFILE,
+                QUANTITATIVE_VALIDATION_SCOPE, QUANTITATIVE_IMPLEMENTATION)
     if _finite_machine(request):
         return ("policy_finite_machine_material", FINITE_MACHINE_PROFILE, FINITE_MACHINE_PRODUCER_PROFILE,
                 FINITE_MACHINE_VALIDATION_SCOPE, FINITE_MACHINE_IMPLEMENTATION)
@@ -662,7 +694,7 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
         _projections(request, candidate, leaf)
     if context is not None:
         context_profile = _record(request["context"], "Original component context").get("profile")
-        allowed_contexts = ((request["profile"],) if prerequisites else
+        allowed_contexts = ((FINITE_MACHINE_REQUEST_PROFILE,) if _quantitative(request) else (request["profile"],) if prerequisites else
                             (INSTANCE_REQUEST_PROFILE, "biocompiler.policy_instance_staged_component_mrna.v0.1") if instanced
                             else (REQUEST_PROFILE, "biocompiler.policy_staged_component_mrna.v0.1"))
         if context_profile not in allowed_contexts:
@@ -724,7 +756,9 @@ def _candidate(value: JsonValue, *, instanced: bool = False, multi_member: bool 
 
 def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = False,
             two_observations: bool = False, multi_member: bool = False,
-            grounded_helper: bool = False, finite_machine: bool = False) -> dict[str, JsonValue]:
+            grounded_helper: bool = False, finite_machine: bool = False, quantitative: bool = False) -> dict[str, JsonValue]:
+    if quantitative and not finite_machine:
+        raise CoreProtocolError("Quantitative assessment requires the explicit finite-machine backing profile")
     if finite_machine and (not (instanced and prerequisites) or two_observations or multi_member or grounded_helper):
         raise CoreProtocolError("Finite-machine assessment requires its distinct prerequisite route")
     if grounded_helper and not multi_member:
@@ -733,15 +767,93 @@ def _report(value: JsonValue, *, instanced: bool = False, prerequisites: bool = 
         raise CoreProtocolError("Multi-member assessment requires its distinct named-instance prerequisite route")
     if two_observations and not (instanced and prerequisites):
         raise CoreProtocolError("Two-observation assessment requires the named-instance prerequisite route")
-    report = _object(value, _REPORT_FIELDS | ({"prerequisites", "prerequisite_status"} if prerequisites else set()), "Complete component assessment")
-    _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.4" if grounded_helper else "biocompiler.policy_component_material_assessment.v0.3" if multi_member else "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
-        "profile": FINITE_MACHINE_REQUEST_PROFILE if finite_machine else GROUNDED_HELPER_REQUEST_PROFILE if grounded_helper else MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
+    report = _object(value, _REPORT_FIELDS | ({"prerequisites", "prerequisite_status"} if prerequisites else set())
+                     | ({"quantitative", "quantitative_status"} if quantitative else set()), "Complete component assessment")
+    _expect(report, {"schema_version": "biocompiler.policy_component_material_assessment.v0.5" if quantitative else "biocompiler.policy_component_material_assessment.v0.4" if grounded_helper else "biocompiler.policy_component_material_assessment.v0.3" if multi_member else "biocompiler.policy_component_material_assessment.v0.2" if prerequisites else REPORT_SCHEMA,
+        "profile": QUANTITATIVE_REQUEST_PROFILE if quantitative else FINITE_MACHINE_REQUEST_PROFILE if finite_machine else GROUNDED_HELPER_REQUEST_PROFILE if grounded_helper else MULTI_MEMBER_REQUEST_PROFILE if multi_member else TWO_OBSERVATION_REQUEST_PROFILE if two_observations else
         PREREQUISITE_REQUEST_PROFILE if prerequisites else INSTANCE_REQUEST_PROFILE if instanced else REQUEST_PROFILE,
-        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.7" if finite_machine else "biocompiler.ocaml.policy_component_material_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_material_check.v0.5" if multi_member else "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
+        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.8" if quantitative else "biocompiler.ocaml.policy_component_material_check.v0.7" if finite_machine else "biocompiler.ocaml.policy_component_material_check.v0.6" if grounded_helper else "biocompiler.ocaml.policy_component_material_check.v0.5" if multi_member else "biocompiler.ocaml.policy_component_material_check.v0.4" if two_observations else
         "biocompiler.ocaml.policy_component_material_check.v0.3" if prerequisites else
         "biocompiler.ocaml.policy_component_material_check.v0.2" if instanced else "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
         "claim_scope": CLAIM_SCOPE, "premise": PREMISE, "empirical": "unassessed", "artifact": "withheld", "export": "withheld"}, "Component report")
     return report
+
+
+def _quantitative_evidence(request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue]) -> None:
+    """Retain quantitative report identities and source table; native checks the law."""
+    raw = report["quantitative"]
+    status = report["quantitative_status"]
+    if raw is None:
+        if status != "unassessed" or report["status"] == ACCEPTED_STATUS:
+            raise CoreProtocolError("Quantitative acceptance requires its fresh checked report")
+        return
+    leaf = _object(raw, {"schema_version", "profile", "implementation", "outcome", "claim_scope", "request_fingerprint",
+        "mechanism_fingerprint", "selection", "source", "bindings", "table", "sampling", "issues", "usage", "empirical"}, "Quantitative evidence")
+    _expect(leaf, {"schema_version": "biocompiler.policy_quantitative_assessment.v0.1",
+        "profile": "biocompiler.policy_sampled_saturating_reservoir.v0.1", "implementation": "biocompiler.ocaml.policy_quantitative_check.v0.1",
+        "claim_scope": "exact_sampled_reservoir_under_supplied_contract", "empirical": "unassessed"}, "Quantitative evidence")
+    if leaf["outcome"] not in ("pass", "fail") or status != leaf["outcome"] or report["status"] == ACCEPTED_STATUS and status != "pass":
+        raise CoreProtocolError("Quantitative stage contradicts material acceptance")
+    original = _record(request["quantitative"], "Original quantitative contract")
+    mechanism = _record(original["mechanism"], "Original reservoir law")
+    _pin(leaf["request_fingerprint"], request, "Quantitative complete request")
+    _pin(leaf["mechanism_fingerprint"], mechanism, "Independent original quantitative law")
+    for key in ("selection", "source"):
+        if not _same(leaf[key], original[key]):
+            raise CoreProtocolError("Quantitative evidence changed original " + key)
+    sampling = _object(leaf["sampling"], {"sample_period", "max_rows_per_slot_tick", "observed_age_ticks", "no_update", "unknown", "reset", "reservation"}, "Quantitative sampling premises")
+    expected_sampling: JsonValue = {"sample_period": mechanism.get("sample_period"), "max_rows_per_slot_tick": 1,
+        "observed_age_ticks": 0, "no_update": "hold", "unknown": "hold_without_request", "reset": "initial", "reservation": "existing_atomic_reservation"}
+    if not _same(sampling, expected_sampling):
+        raise CoreProtocolError("Quantitative evidence changed its explicit sampling or reservation premises")
+    usage = _object(leaf["usage"], {"unit", "charged_work"}, "Quantitative work accounting")
+    budgets = _record(request["budgets"], "Original component budgets")
+    if usage["unit"] != "logical_data_visits_and_exact_finite_table_work" or _count(usage["charged_work"], "Quantitative work") > _count(budgets["max_work"], "Original work maximum"):
+        raise CoreProtocolError("Quantitative work exceeds its original bounds or changed units")
+    issues = leaf["issues"]
+    if type(issues) is not list or any(type(item) is not str or not item for item in issues):
+        raise CoreProtocolError("Quantitative issues must be explicit ordered text")
+    rows = _rows(leaf["table"], "Quantitative transition table")
+    if status == "fail":
+        if leaf["bindings"] is not None or rows or not issues:
+            raise CoreProtocolError("Failed quantitative checking must not publish partial bindings or table")
+        return
+    if issues:
+        raise CoreProtocolError("Passing quantitative checking carries unresolved issues")
+    selected = _record(original["source"], "Original quantitative source")
+    binding = _record(candidate["binding"], "Checked proposed source binding")
+    machine = next((row for row in _rows(binding["machines"], "Machine bindings") if row["source"] == selected["machine"]), None)
+    observation = next((row for row in _rows(binding["observations"], "Observation bindings") if row["source"] == selected["observation"]), None)
+    implementation_request = _record(request["implementation_request"], "Original implementation request")
+    document = _record(implementation_request["document"], "Original source document")
+    program = _record(document["program"], "Original source program")
+    declarations = _rows(program["declarations"], "Original source declarations")
+    source_machine = next((row for row in declarations if row.get("$type") == "Machine" and row.get("id") == selected["machine"]), None)
+    transitions = [row for row in declarations if row.get("$type") == "Transition"]
+    crossing = [row for row in transitions if row.get("effects")]
+    if machine is None or observation is None or source_machine is None or len(crossing) != 1:
+        raise CoreProtocolError("Quantitative report lacks its exact source and implementation anchors")
+    commit = next((row for row in _rows(binding["transitions"], "Transition bindings") if row["source"] == crossing[0]["id"]), None)
+    if commit is None:
+        raise CoreProtocolError("Quantitative crossing has no exact implementation commit")
+    expected_bindings: JsonValue = {"machine_bank": machine["bank"], "observation_bank": observation["bank"],
+        "observation_input": observation["input"], "crossing_transition": crossing[0]["id"], "request_endpoint": {"node": commit["commit"], "port": "request0"}}
+    if not _same(leaf["bindings"], expected_bindings):
+        raise CoreProtocolError("Quantitative binding identities differ from the complete source-to-graph binding")
+    states = source_machine["states"]
+    if type(states) is not list or not 2 <= len(states) <= 16:
+        raise CoreProtocolError("Quantitative source state census is outside the bounded profile")
+    expected_rows: list[JsonValue] = []
+    for state in states:
+        for truth, operation in (("true", "observe"), ("false", "not")):
+            matching = [row for row in transitions if row["source"] == state and _record(row["when"], "Original guard")["op"] == operation]
+            if len(matching) != 1:
+                raise CoreProtocolError("Quantitative table requires exactly the two original sample guards per state")
+            row = matching[0]
+            expected_rows.append({"source": state, "input": truth, "destination": row["destination"], "request": bool(row["effects"])})
+        expected_rows.append({"source": state, "input": "unknown", "destination": state, "request": False})
+    if not _same(cast(JsonValue, rows), expected_rows):
+        raise CoreProtocolError("Quantitative table differs from the complete ordered original source transitions")
 
 
 def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
@@ -764,10 +876,12 @@ def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate
     _leaves(request, candidate, report)
     if prerequisites:
         _prerequisite_evidence(request, report)
+    if _quantitative(request):
+        _quantitative_evidence(request, candidate, report)
     material._obligations(report, material_key="assembly", accepted_status=ACCEPTED_STATUS,
                           conjunction_stage="conditional_component_context_conjunction",
                           prerequisite_key="prerequisites" if prerequisites else None, multi_product=_multi_member(request),
-                          finite_machine=_finite_machine(request))
+                          finite_machine=_finite_machine(request), quantitative_key="quantitative" if _quantitative(request) else None)
 
 
 def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComponentMaterialResult:
@@ -784,7 +898,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
     _candidate(candidate, instanced=instanced, multi_member=_multi_member(request), grounded_helper=_grounded_helper(request))
     report = _report(result["report"], instanced=instanced, prerequisites=prerequisites,
                      two_observations=_two_observations(request), multi_member=_multi_member(request), grounded_helper=_grounded_helper(request),
-                     finite_machine=_finite_machine(request))
+                     finite_machine=_finite_machine(request), quantitative=_quantitative(request))
     invocation: JsonValue = {"request": request, "candidate": candidate, "limits": payload["limits"]}
     request_hash = _pin(result["request_fingerprint"], request, "Complete original component request")
     candidate_hash = _pin(result["candidate_fingerprint"], candidate, "Complete component candidate")

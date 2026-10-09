@@ -43,13 +43,13 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 167)
+        self.assertEqual(result["sources"], 172)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 29, "sources": 115, "witness_sources": 133,
+        self.assertEqual(result["component_route"], {"rules": 30, "sources": 120, "witness_sources": 137,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -247,8 +247,59 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_refinement(self):
+    def before_quantitative(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        added = ledger["rules"].pop()
+        self.assertEqual(added["id"], "component.sampled_quantitative_material")
+        self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in added[kind]},
+                         set(coverage.COMPONENT_QUANTITATIVE_WITNESSES))
+        ledger["sources"] = [row for row in ledger["sources"] if row["path"] not in coverage.COMPONENT_QUANTITATIVE_SOURCES]
+        ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] not in coverage.COMPONENT_QUANTITATIVE_WITNESSES]
+        self.assertEqual(ledger["limitations"].pop(), coverage.QUANTITATIVE_LIMITATION)
+        return ledger
+
+    def test_quantitative_preserves_all_twenty_nine_prior_families(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        projected = self.before_quantitative()
+        self.assertEqual((len(projected["rules"]), len(projected["sources"]), len(projected["witness_sources"])), (29, 115, 133))
+        self.assertEqual(coverage.component_metadata_before_quantitative(original), coverage.component_metadata(projected))
+        encoded = json.dumps(coverage.component_metadata(projected), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), "339870f87976d93e774e4d9ac29d741ac41a83827dc7541fcc9958955a49a09b")
+        ledger = deepcopy(original)
+        ledger["rules"][0]["scope"] += " Unreviewed quantitative weakening."
+        encoded = json.dumps(coverage.component_metadata(ledger), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-quantitative component meaning"):
+                coverage.check_component(coverage.ROOT, ledger)
+
+    def test_quantitative_preserves_original_whole_kernel_classifications(self):
+        self.assertEqual(len(coverage.COMPONENT_QUANTITATIVE_SOURCES), 5)
+        for path in coverage.COMPONENT_QUANTITATIVE_SOURCES:
+            row = next(row for row in self.original["sources"] if row["path"] == path)
+            self.assertEqual((row["disposition"], row["reason"]), ("outside_route", coverage.QUANTITATIVE_REASON))
+        encoded = json.dumps(coverage.metadata_before_quantitative(self.original), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), "474ae673b3fa63e859dca9e344dd81f663a7ed2963e3fde419f0d298a5bf3d5b")
+
+    def test_quantitative_witnesses_remain_source_only_and_conditional(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        row = original["rules"][-1]
+        self.assertEqual(row["evidence_scope"], "source_only_not_executed_by_this_gate")
+        self.assertIn("exact sampled", row["scope"])
+        self.assertIn("selected component", row["scope"])
+        self.assertIn("atomic capacity", row["limits"])
+        for path in (*coverage.COMPONENT_QUANTITATIVE_SOURCES, *coverage.COMPONENT_QUANTITATIVE_WITNESSES):
+            changed = deepcopy(original)
+            key = "sources" if path in coverage.COMPONENT_QUANTITATIVE_SOURCES else "witness_sources"
+            changed[key] = [item for item in changed[key] if item["path"] != path]
+            with self.subTest(omitted=path), self.assertRaisesRegex(coverage.CoverageError, "census"):
+                coverage.check_component(coverage.ROOT, changed)
+        for key, value in (("evidence_scope", "native_execution_passed"), ("limits", "Physical kinetic calibration proven.")):
+            changed = deepcopy(original); changed["rules"][-1][key] = value
+            with self.assertRaises(coverage.CoverageError):
+                coverage.check_component(coverage.ROOT, changed)
+
+    def before_refinement(self):
+        ledger = self.before_quantitative()
         added = ledger["rules"].pop()
         self.assertEqual(added["id"], "component.named_refinement")
         self.assertEqual({pointer["path"] for kind in ("positive", "negative") for pointer in added[kind]},
@@ -281,11 +332,11 @@ let check x = Diagnostic.require x "code" "message"
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "7f2f1b2ae98833e27d959117dfbc2d83de612e670216412a34e9fcd1ba7464f5")
         self.rejected(lambda value: value["rules"][0].update(admitted_context="Unreviewed semantic expansion."),
-                      "pre-refinement original whole-kernel meaning")
+                      "pre-quantitative original whole-kernel meaning")
 
     def test_refinement_keeps_source_only_witnesses_and_closed_scope(self):
         original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
-        added = original["rules"][-1]
+        added = next(row for row in original["rules"] if row["id"] == "component.named_refinement")
         self.assertEqual(len(coverage.COMPONENT_REFINEMENT_WITNESSES), 2)
         for phrase in ("opaque checker capabilities", "three directional composition rules", "stage-local scope",
                        "complete original", "fresh replay"):
@@ -301,17 +352,17 @@ let check x = Diagnostic.require x "code" "message"
                            ("limits", "Serialized evidence grants material export and empirical assurance."),
                            ("negative", deepcopy(added["positive"]))):
             ledger = deepcopy(original)
-            ledger["rules"][-1][key] = value
+            next(row for row in ledger["rules"] if row["id"] == "component.named_refinement")[key] = value
             with self.subTest(changed=key), self.assertRaises(coverage.CoverageError):
                 coverage.check_component(coverage.ROOT, ledger)
 
     def test_current_metadata_repin_cannot_reassign_pre_refinement_meaning(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
-        ledger["rules"][-2]["scope"] += " Unreviewed claim widening."
+        next(row for row in ledger["rules"] if row["id"] == "component.finite_machine_composition")["scope"] += " Unreviewed claim widening."
         encoded = json.dumps(coverage.component_metadata(ledger), sort_keys=True,
                              separators=(",", ":"), ensure_ascii=False).encode()
         with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
-            with self.assertRaisesRegex(coverage.CoverageError, "pre-refinement reviewed component meaning"):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-quantitative component meaning"):
                 coverage.check_component(coverage.ROOT, ledger)
 
     def before_finite_machine(self):
@@ -364,7 +415,7 @@ let check x = Diagnostic.require x "code" "message"
         encoded = json.dumps(coverage.component_metadata(ledger), sort_keys=True,
                              separators=(",", ":"), ensure_ascii=False).encode()
         with patch.object(coverage, "COMPONENT_METADATA_SHA256", hashlib.sha256(encoded).hexdigest()):
-            with self.assertRaisesRegex(coverage.CoverageError, "pre-refinement reviewed component meaning"):
+            with self.assertRaisesRegex(coverage.CoverageError, "pre-quantitative component meaning"):
                 coverage.check_component(coverage.ROOT, ledger)
 
     def before_typed_admission(self):
@@ -391,7 +442,8 @@ let check x = Diagnostic.require x "code" "message"
         projected = {key: value for key, value in self.original.items() if key not in {"sources", "witness_sources"}}
         projected["source_classifications"] = [{key: row[key] for key in ("path", "disposition", "reason")}
             for row in self.original["sources"] if row["path"] not in added
-            and row["path"] not in coverage.COMPONENT_REFINEMENT_SOURCES]
+            and row["path"] not in coverage.COMPONENT_REFINEMENT_SOURCES
+            and row["path"] not in coverage.COMPONENT_QUANTITATIVE_SOURCES]
         projected["witness_paths"] = [row["path"] for row in self.original["witness_sources"]]
         encoded = json.dumps(projected, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
