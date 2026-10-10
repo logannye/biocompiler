@@ -128,6 +128,9 @@ response shapes and ordering expectations are corrected without changing
 production behavior or removing existing assertions. An outdated native
 suite-count assertion is updated from 180 to the complete current 195-suite
 inventory, preserving every verifier separation and trusted-base assertion.
+The prerequisite campaign's synthetic retention fixture also now carries the
+nonempty inert component list already required by legacy admission, preserving
+its complete A/B authority markers.
 The remaining integration work is retained for diagnostic feedback; these
 corrections still require a
 fresh complete development/integration gate and actual-main acceptance.

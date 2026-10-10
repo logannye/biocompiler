@@ -43,6 +43,11 @@ def outer(case="A"):
         **{key: {"inert_authority": key} for key in
            ("component_library", "composition_rule", "catalog_binding", "context", "budgets")}}
     request["context"]["profile"] = transport.PREREQUISITE_REQUEST_PROFILE
+    # Nonempty legacy-shaped transport data only; no executable component claim.
+    request["component_library"]["components"] = [{
+        "schema_version": "biocompiler.policy_component_material.v0.1",
+        "profile": "biocompiler.policy_exact_local_material.v0.1",
+        "body": {"inert_authority": "complete original local component", "case": case}}]
     return request, limits
 
 

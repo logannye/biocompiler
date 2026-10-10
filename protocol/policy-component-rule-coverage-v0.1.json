@@ -3070,7 +3070,7 @@
     },
     {
       "path": "tests/test_policy_prerequisite_campaign.py",
-      "sha256": "c39025815caf88075c2cdf536a56e7d5c67272ffe572f7c31a4a2739d1d0f05a"
+      "sha256": "27f12399d76e867483763147ea9e0390974d7b86c0553e3828f28271857dd845"
     },
     {
       "path": "tests/test_policy_prerequisite_evidence.py",
