@@ -426,8 +426,8 @@ class PolicyDevelopmentSelectionSDKTests(unittest.TestCase):
             "python -B -m tools.generate_policy_approximation_fixture --check",
             "python -B -m tools.generate_policy_realization_evidence_fixture --check",
             "python -B tools/check_policy_development.py run",
-            "python -B tools/check_policy_development.py sdk-all",
             "python -B tools/check_policy_quantitative_assurance.py \\",
+            "python -B tools/check_policy_development.py sdk-all",
         ])
         self.assertLess(text.index("tools/migration_inventory.py --check"), text.index("uses: ocaml/setup-ocaml@"))
         self.assertEqual(text.count("PYTHONPATH: src"), 3)

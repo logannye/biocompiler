@@ -3094,7 +3094,7 @@
     },
     {
       "path": "tests/test_policy_quantitative.py",
-      "sha256": "7f70bcc18145f2adc34161cf1f84eaf56c721618c965ac7291d9d2ad9dc75b31"
+      "sha256": "27d62626c9e5f54f2a50e5982a1cec81abae57582858c9779167860e32ed6b44"
     },
     {
       "path": "tests/test_policy_quantitative_assurance.py",
@@ -3110,15 +3110,15 @@
     },
     {
       "path": "tests/test_policy_quantitative_network.py",
-      "sha256": "c3aeca915034b4fa7e1bc5679185da23b600cb2e99e957ab82eb90cf7a5419ea"
+      "sha256": "cc99b73bcd89dd875ee2b634280421098e5a7f893647c120254df995d7fe3070"
     },
     {
       "path": "tests/test_policy_quantitative_step.py",
-      "sha256": "59710ffa0d510f5b3fea080d3e412130c71a37cbb5297c2407388fb4a5d75fe0"
+      "sha256": "d2028b93e2035b65ba74da0040d801ece1933ac48d59d3f7343e59729f20d74f"
     },
     {
       "path": "tests/test_policy_quantitative_transfer.py",
-      "sha256": "8d3d1337988f198cd212193f2f66a0da5ccef539c4c242070f677ad7d8aaaef4"
+      "sha256": "cf3e4ae80fa506333045396aad7a8cf5ef3ab50a2aa3b9631058d9c7ce148a6a"
     },
     {
       "path": "tests/test_policy_realization_evidence.py",

@@ -164,7 +164,10 @@ class TransferQuantitativeTests(unittest.TestCase):
             profiles={"policy_transfer_pair_material": deepcopy(api.TRANSFER_PAIR_PROFILE),
                       "policy_transfer_pair_material_producer": deepcopy(api.TRANSFER_PAIR_PRODUCER_PROFILE)},
             validation_scopes=[api.TRANSFER_PAIR_VALIDATION_SCOPE])
-        transport.call = lambda operation, payload, cancelled=None: calls.append((operation, deepcopy(payload)))
+        def call(operation, payload, cancelled=None):
+            calls.append((operation, deepcopy(payload)))
+            return CoreResponse("inert-quantitative-route", operation, "ok", None, (), "core", CORE_VERSION)
+        transport.call = call
         client = api.PolicyComponentMaterialClient(transport)
         with patch.object(api, "_result", side_effect=lambda response, payload: payload):
             client.compile(self.request, self.packet["limits"])

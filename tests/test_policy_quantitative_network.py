@@ -196,7 +196,10 @@ class NetworkQuantitativeTests(unittest.TestCase):
             profiles={"policy_transfer_network_material": deepcopy(api.TRANSFER_NETWORK_PROFILE),
                       "policy_transfer_network_material_producer": deepcopy(api.TRANSFER_NETWORK_PRODUCER_PROFILE)},
             validation_scopes=[api.TRANSFER_NETWORK_VALIDATION_SCOPE])
-        transport.call = lambda operation, payload, cancelled=None: calls.append((operation, deepcopy(payload)))
+        def call(operation, payload, cancelled=None):
+            calls.append((operation, deepcopy(payload)))
+            return CoreResponse("inert-quantitative-route", operation, "ok", None, (), "core", CORE_VERSION)
+        transport.call = call
         client = api.PolicyComponentMaterialClient(transport)
         with patch.object(api, "_result", side_effect=lambda response, payload: payload):
             client.compile(self.request, self.packet["limits"])

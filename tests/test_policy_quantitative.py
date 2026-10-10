@@ -185,7 +185,7 @@ class QuantitativeTests(unittest.TestCase):
             validation_scopes=[api.QUANTITATIVE_VALIDATION_SCOPE])
         def call(operation, payload, cancelled=None):
             calls.append((operation, deepcopy(payload)))
-            return object()
+            return CoreResponse("inert-quantitative-route", operation, "ok", None, (), "core", CORE_VERSION)
         transport.call = call
         client = api.PolicyComponentMaterialClient(transport)
         with patch.object(api, "_result", side_effect=lambda response, payload: payload):

@@ -113,14 +113,24 @@ These partial runs remain diagnostic evidence. Both corrections require fresh
 development, integration, installed-package and actual-main acceptance.
 
 At `37e5372b6ae7acdb4aa90cd8783072ad5657a680`, fresh development run
-`38006370321` passed all 55 native suites and the assurance campaign. Integration
+`38006370321` passed all 55 native suites, 260 SDK observations and 21 assurance
+observations. The complete retained evidence was independently rehashed against
+that exact Git revision and its final successful run/attempt identity. Integration
 run `38006373257` passed both preflights, then both platform build jobs reported
 the same policy typing failure: the policy configuration skipped the private
 codec's declared return types. Adding that exact codec to the existing typed
 dependency list preserves strict checking and product behavior. Both complete
 pinned mypy configurations pass locally (39 core and 41 policy source files).
-The hosted SDK and remaining integration work are retained for diagnostic
-feedback; the configuration correction still requires a fresh complete gate.
+The unit gate also found four quantitative transport tests whose inert response
+doubles no longer matched the transport's `CoreResponse` boundary, and one
+workflow test still expected the former SDK-before-assurance order. Their
+response shapes and ordering expectations are corrected without changing
+production behavior or removing existing assertions. An outdated native
+suite-count assertion is updated from 180 to the complete current 195-suite
+inventory, preserving every verifier separation and trusted-base assertion.
+The remaining integration work is retained for diagnostic feedback; these
+corrections still require a
+fresh complete development/integration gate and actual-main acceptance.
 
 The remaining long-term extensions are richer reservoir grids, multiple clocks,
 delayed transport, continuous uncertainty, additional physical coordination
