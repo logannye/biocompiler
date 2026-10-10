@@ -105,6 +105,19 @@ package retaining its own required integration and release checks.
 Choose early feedback from the affected dependency surface. A staged-regimen
 change should get staged feedback promptly; edits to shared semantics, transport,
 authority, packaging or receipt accounting need broader regression coverage.
+For Python facade, transport or shared dependency changes, run both complete
+typing configurations with the pinned pure-Python tooling from
+`tools/typecheck-requirements.txt` before pushing:
+
+```sh
+python -m mypy --config-file tools/mypy-core.ini
+python -m mypy --config-file tools/mypy-policy.ini
+```
+
+Reuse the existing tooling target through `PYTHONPATH` when needed. These are
+static checks and require no native build. A focused file check does not cover
+the other configuration's imported dependency types.
+
 **Automatic profile-specific hosted routing is not implemented.** The current
 `policy-development.yml` still requires all 55 native suites, all 260 original SDK
 observations and the 21-observation quantitative-assurance campaign. Individual witnesses or future scoped runners must report their
