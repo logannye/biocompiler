@@ -62,10 +62,13 @@ build. Each suite retains its original command, fixture, source and executable
 checks, timeout and separate log. The coordinator alone publishes the fixed
 ordered result inventory and waits for every outcome. After native completion,
 two SDK lanes overlap: component then selection, and instance composition, prerequisite closure, two-observation composition, multi-member composition, grounded-helper composition,
-staged source, staged material then the 20-observation researcher-project workflow. Each lane preserves
+staged source, staged material then the 38-observation researcher-project workflow. Each lane preserves
 its dependencies and existing campaign receipts.
 There are at most two workers in either phase, and no SDK calls are moved into
 unguarded worker threads inside a campaign. All 55 native suites and the original 260 SDK observations remain mandatory.
+The typed finite path adds 18 researcher observations (two complete shapes,
+including typed roundtrip, fresh Core/Verify execution, paired publication and
+mutation rejection), for 278 SDK observations across the same ten campaigns.
 A separate quantitative-assurance campaign adds 21 observations, preserving
 complete original requests, exact material, bounded approximation and supplied
 evidence gates. It follows the two original lanes and retains its own receipt.
@@ -119,8 +122,9 @@ static checks and require no native build. A focused file check does not cover
 the other configuration's imported dependency types.
 
 **Automatic profile-specific hosted routing is not implemented.** The current
-`policy-development.yml` still requires all 55 native suites, all 260 original SDK
-observations and the 21-observation quantitative-assurance campaign. Individual witnesses or future scoped runners must report their
+`policy-development.yml` still requires all 55 native suites, all 278 SDK
+observations (the original 260 plus 18 typed finite observations) and the
+21-observation quantitative-assurance campaign. Individual witnesses or future scoped runners must report their
 own scope and cannot satisfy that complete census. Until explicit scoped routing
 exists, use the supported complete workflow for hosted development acceptance.
 Do not change CI triggers, required checks or final acceptance based on this

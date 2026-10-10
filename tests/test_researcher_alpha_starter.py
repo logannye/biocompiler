@@ -44,7 +44,8 @@ class ResearcherStarterTests(unittest.TestCase):
         evidence = self.slots[0] / "evidence"
         (evidence / "researcher-alpha").mkdir(parents=True)
         self.child = {**self.identity, "status": "pass", "files": {}, "system": "Linux", "machine": "x86_64", "python_version": "3.11.15"}
-        for name in ("staged-project.json", "comparison-project.json", "staged.zip", "comparison.zip"):
+        for name in ("staged-project.json", "comparison-project.json", "staged.zip", "comparison.zip",
+                     "retry_cycle-project.json", "guarded_branch-project.json", "retry_cycle.zip", "guarded_branch.zip"):
             relative = "researcher-alpha/" + name
             (evidence / relative).write_bytes(b"INERT PAIRED EXAMPLE")
             measured = starter.pin((evidence / relative).read_bytes())
@@ -65,7 +66,8 @@ class ResearcherStarterTests(unittest.TestCase):
 
     def test_exact_copy_plan_keeps_installed_candidate_scope(self):
         files, manifest = self.plan()
-        self.assertEqual(len(files), len(starter.SOURCE_FILES) + 10)
+        self.assertEqual(len(files), len(starter.SOURCE_FILES) + 14)
+        self.assertEqual(manifest["schema_version"], "biocompiler.researcher_alpha_starter.v0.2")
         self.assertEqual(set(files), set(manifest["files"]))
         self.assertEqual(manifest["status"], "installed_candidate")
         self.assertEqual(manifest["release_acceptance"], "pending_overall_and_actual_main_gates")
@@ -84,6 +86,11 @@ class ResearcherStarterTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 self.plan()
             self.comparison = deepcopy(original)
+
+    def test_missing_typed_finite_bundle_cannot_prepare_complete_handoff(self):
+        (self.slots[0] / "evidence/researcher-alpha/guarded_branch.zip").unlink()
+        with self.assertRaisesRegex(ValueError, "starter input"):
+            self.plan()
 
     def test_nested_comparator_tuple_slots_survive_json_roundtrip(self):
         self.comparison["researcher_project"]["slots"] = [

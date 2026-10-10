@@ -49,8 +49,8 @@ class ResearcherAlphaWitnessTests(unittest.TestCase):
         patch("subprocess.run", side_effect=AssertionError("Pure witness test attempted a process")).start()
 
     def test_independent_corpus_pins_and_complete_cases_are_inert(self):
-        self.assertEqual(tuple(self.packet["inputs"]), ("staged", "comparison"))
-        self.assertEqual([case["sequence"] for case in self.packet["expected"]["cases"]], ["CCAUGGCUUAAGGAAAA", "CGCAUGGCUUAAGGAAAA"])
+        self.assertEqual(tuple(self.packet["inputs"]), ("staged", "comparison", "retry_cycle", "guarded_branch"))
+        self.assertEqual([case["sequence"] for case in self.packet["expected"]["cases"]], ["CCAUGGCUUAAGGAAAA", "CGCAUGGCUUAAGGAAAA", "CCAUGGCUUAAGGAAAA", "CCAUGGCUUAAGGAAAA"])
         self.assertFalse(self.packet["expected"]["acceptance"])
         self.assertFalse(self.packet["expected"]["claim_scope"]["real_researcher_project_qualified"])
         with tempfile.TemporaryDirectory() as directory:
@@ -63,11 +63,67 @@ class ResearcherAlphaWitnessTests(unittest.TestCase):
 
     def test_complete_observation_census_is_additive_and_fail_closed(self):
         witness.check_census(witness.OBSERVATIONS)
-        self.assertEqual(len(witness.OBSERVATIONS), 20)
-        for names in (witness.OBSERVATIONS[:-1], witness.OBSERVATIONS[::-1],
+        self.assertEqual(len(witness.OBSERVATIONS), 38)
+        self.assertEqual(len(witness.LEGACY_OBSERVATIONS), 20)
+        self.assertEqual(witness.OBSERVATIONS[:20], witness.LEGACY_OBSERVATIONS)
+        for names in (witness.LEGACY_OBSERVATIONS, witness.OBSERVATIONS[:-1], witness.OBSERVATIONS[::-1],
                       witness.OBSERVATIONS + (witness.OBSERVATIONS[0],), (witness.OBSERVATIONS[0],) * 20):
             with self.subTest(names=names), self.assertRaisesRegex(AssertionError, "census"):
                 witness.check_census(names)
+
+    def test_finite_originals_are_frozen_complete_authority_with_independent_oracles(self):
+        fixture = json.loads((ROOT / "core/test/data/policy_finite_machine_v01.json").read_text())
+        for native, case in zip(fixture["cases"][:2], self.packet["expected"]["cases"][2:]):
+            with self.subTest(case=case["id"]):
+                original = self.packet["inputs"][case["id"]]
+                self.assertEqual(original, {"request": native["request"], "limits": fixture["limits"]})
+                self.assertEqual(case["sequence"], "CC" + "AUGGCUUAA" + "GG" + "AAAA")
+                self.assertEqual(case["protein"], "MA*")
+                self.assertEqual(case["graph"], {"nodes": native["expected"]["node_count"],
+                    "wires": native["expected"]["wire_count"], "links": native["expected"]["link_count"]})
+                value = inert_result(case, original)
+                value["candidate"]["construction"]["inventory"]["molecules"] = [native["expected"]["molecule"]]
+                witness.checked_result(value, case, original)
+        self.assertEqual([case["bounded_domain"] for case in self.packet["expected"]["cases"][2:]], [
+            {"histories": 36, "transitions": 82, "prefixes_started": 83},
+            {"histories": 110, "transitions": 276, "prefixes_started": 277}])
+
+    def test_public_typed_prepare_load_preserves_every_original_without_semantic_execution(self):
+        from biocompiler.policy.finite_build import FiniteMachineBuild
+        from biocompiler.policy.model import BuildRequest
+        from biocompiler.policy.research_project import ResearchProject
+        from tools.check_researcher_alpha_installed import expected_project
+        example = witness.load_example(ROOT / "examples/researcher_alpha.py")
+        with tempfile.TemporaryDirectory() as directory:
+            for case in self.packet["expected"]["cases"][2:]:
+                destination = Path(directory) / (case["id"] + ".json")
+                with patch.object(ResearchProject, "from_build", wraps=ResearchProject.from_build) as create:
+                    project = example.prepare(ROOT / "data/researcher_alpha" / case["input"], destination,
+                        project_id="software.rehearsal." + case["id"],
+                        title="Artificial software rehearsal: " + case["id"], version="1",
+                        reuse_terms="Project-authored software test inputs; repository distribution terms remain separate.",
+                        typed_finite=True)
+                self.assertEqual(create.call_count, 1)
+                self.assertIs(type(create.call_args.kwargs["build"]), FiniteMachineBuild)
+                self.assertEqual(project.data, expected_project(case, self.packet))
+                restored = ResearchProject.load(destination)
+                self.assertIs(type(restored.build.document), BuildRequest)
+                self.assertEqual(restored.build.to_request(), self.packet["inputs"][case["id"]]["request"])
+                self.assertEqual(restored.build.to_limits(), self.packet["inputs"][case["id"]]["limits"])
+                self.assertEqual(restored.data, project.data)
+                detached = restored.build.to_request()
+                detached["profile"] = "changed"
+                self.assertEqual(restored.data, project.data)
+                self.assertEqual(restored.preflight().native_status, "not_run")
+
+    def test_typed_preparation_rejects_legacy_profile_without_publishing(self):
+        example = witness.load_example(ROOT / "examples/researcher_alpha.py")
+        with tempfile.TemporaryDirectory() as directory:
+            destination = Path(directory) / "project.json"
+            with self.assertRaisesRegex(ValueError, "finite-machine"):
+                example.prepare(ROOT / "data/researcher_alpha/staged-input.json", destination,
+                    project_id="wrong", title="wrong", version="1", reuse_terms="inert", typed_finite=True)
+            self.assertFalse(destination.exists())
 
     def test_actual_feature_shape_and_coordinate_order_match_independent_oracle(self):
         staged = json.loads((ROOT / "core/test/data/policy_staged_material_v01.json").read_text())

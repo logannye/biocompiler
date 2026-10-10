@@ -17,6 +17,12 @@ val admit_metered : charge:(int -> unit) -> request:R.t -> behavior:O.behavior -
 val admit : request:R.t -> behavior:O.behavior -> admitted_inputs
 val request : admitted_inputs -> R.t
 val behavior : admitted_inputs -> O.behavior
+
+(** Exact finite-machine v0.5 inputs retain the typed program from this token's
+    fresh source admission. Other families return [None]. This is not a decoder
+    or a caller-supplied program; independent correspondence has already checked
+    the complete operational candidate against the same original source. *)
+val finite_program : admitted_inputs -> Bioc_domain.Policy_admitted_ir.t option
 val operating_domain : admitted_inputs -> F.validated
 val authorized_models : admitted_inputs -> P.t list
 
