@@ -4238,6 +4238,435 @@
       "status": "source_only",
       "witnesses": []
     },
+    "biocompiler.policy.finite_build.CandidateExecutionLimits": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.CandidateExecutionLimits.__post_init__": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build.CandidateExecutionLimits.from_data": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.CandidateExecutionLimits.max_attempts": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.CandidateExecutionLimits.max_events": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.CandidateExecutionLimits.max_microsteps": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.CandidateExecutionLimits.max_work": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.CandidateExecutionLimits.to_data": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.FiniteBuildError": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build.FiniteMachineAuthority": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.immutable",
+        "finite_build.authority",
+        "finite_build.profiles"
+      ]
+    },
+    "biocompiler.policy.finite_build.FiniteMachineAuthority.__post_init__": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build.FiniteMachineAuthority._json": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build.FiniteMachineAuthority.from_request": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.immutable",
+        "finite_build.authority",
+        "finite_build.profiles"
+      ]
+    },
+    "biocompiler.policy.finite_build.FiniteMachineAuthority.original_document": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.immutable",
+        "finite_build.authority",
+        "finite_build.profiles"
+      ]
+    },
+    "biocompiler.policy.finite_build.FiniteMachineAuthority.to_data": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.immutable",
+        "finite_build.authority",
+        "finite_build.profiles"
+      ]
+    },
+    "biocompiler.policy.finite_build.FiniteMachineBuild": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.scope",
+        "finite_build.immutable",
+        "finite_build.authority",
+        "finite_build.profiles"
+      ]
+    },
+    "biocompiler.policy.finite_build.FiniteMachineBuild.__post_init__": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build.FiniteMachineBuild.authority": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.scope",
+        "finite_build.immutable",
+        "finite_build.authority",
+        "finite_build.profiles"
+      ]
+    },
+    "biocompiler.policy.finite_build.FiniteMachineBuild.document": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.scope",
+        "finite_build.immutable",
+        "finite_build.authority",
+        "finite_build.profiles"
+      ]
+    },
+    "biocompiler.policy.finite_build.FiniteMachineBuild.from_request": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.scope",
+        "finite_build.immutable",
+        "finite_build.authority",
+        "finite_build.profiles"
+      ]
+    },
+    "biocompiler.policy.finite_build.FiniteMachineBuild.limits": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.scope",
+        "finite_build.immutable",
+        "finite_build.authority",
+        "finite_build.profiles"
+      ]
+    },
+    "biocompiler.policy.finite_build.FiniteMachineBuild.to_limits": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.scope",
+        "finite_build.immutable",
+        "finite_build.authority",
+        "finite_build.profiles"
+      ]
+    },
+    "biocompiler.policy.finite_build.FiniteMachineBuild.to_request": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.scope",
+        "finite_build.immutable",
+        "finite_build.authority",
+        "finite_build.profiles"
+      ]
+    },
+    "biocompiler.policy.finite_build.FiniteMachineBuild.with_document": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.scope",
+        "finite_build.immutable",
+        "finite_build.authority",
+        "finite_build.profiles"
+      ]
+    },
+    "biocompiler.policy.finite_build.LIMITS_PROFILE": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build.PreservationLimits": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.PreservationLimits.__post_init__": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build.PreservationLimits.candidate": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.PreservationLimits.from_data": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.PreservationLimits.max_report_bytes": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.PreservationLimits.max_report_nodes": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.PreservationLimits.max_step_retained": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.PreservationLimits.max_step_work": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.PreservationLimits.monitor": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.PreservationLimits.source": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.PreservationLimits.to_data": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.RequirementMonitorLimits": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.RequirementMonitorLimits.__post_init__": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build.RequirementMonitorLimits.from_data": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.RequirementMonitorLimits.max_obligations": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.RequirementMonitorLimits.max_samples": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.RequirementMonitorLimits.max_work": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.RequirementMonitorLimits.to_data": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.SourceExecutionLimits": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.SourceExecutionLimits.__post_init__": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build.SourceExecutionLimits.from_data": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.SourceExecutionLimits.max_attempts": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.SourceExecutionLimits.max_encounters": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.SourceExecutionLimits.max_inputs": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.SourceExecutionLimits.max_microsteps": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.SourceExecutionLimits.max_ticks": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.SourceExecutionLimits.max_trace_items": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.SourceExecutionLimits.max_work": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build.SourceExecutionLimits.to_data": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.budgets"
+      ]
+    },
+    "biocompiler.policy.finite_build._count": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build._numbers": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build._object": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build._request": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.finite_build._require": {
+      "scope": "Retained typed-build source dependency; no independent semantic or native acceptance claim.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.policy.handoff.SubmissionError": {
       "scope": "Exact source body/signature/decorator and dependency inventory only; no per-body semantic completeness or runtime support claim.",
       "status": "source_only",
@@ -11118,6 +11547,15 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.policy.research_project.ResearchProject.build": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.workflow",
+        "finite_build.roles"
+      ]
+    },
     "biocompiler.policy.research_project.ResearchProject.compile": {
       "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
       "status": "shared_invariant",
@@ -11147,6 +11585,15 @@
       "witnesses": [
         "research_project.io",
         "research_project.atomic"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.from_build": {
+      "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "finite_build.roundtrip",
+        "finite_build.workflow",
+        "finite_build.roles"
       ]
     },
     "biocompiler.policy.research_project.ResearchProject.from_data": {
@@ -19542,6 +19989,655 @@
           "symbol": "semantic_bundle"
         },
         "syntax_sha256": "a0cd7c3016ad46aa129052fb0c53d15369de565854a10bfacf054be343a7ed95"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.CandidateExecutionLimits",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "CandidateExecutionLimits"
+        },
+        "syntax_sha256": "5bae14858817627e90b06ceb759b6b5b07001b368ad8bace7ba8a287137531a8"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.CandidateExecutionLimits.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "CandidateExecutionLimits.__post_init__"
+        },
+        "syntax_sha256": "5aed73ff3021accc5b22602154d02cfb1483c269c9e1f67749ba5116c28c77ab"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.CandidateExecutionLimits.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> CandidateExecutionLimits",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "CandidateExecutionLimits.from_data"
+        },
+        "syntax_sha256": "c1ea7bca725ab8d81101991ddfc12519723332a5a7e0c591b7fcbfe7cc6e1d71"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.CandidateExecutionLimits.max_attempts",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "CandidateExecutionLimits.max_attempts"
+        },
+        "syntax_sha256": "5bc9b7810813f73dba98194a90c2513554f92fd55dbe0137c82c177ddc5d2778"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.CandidateExecutionLimits.max_events",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "CandidateExecutionLimits.max_events"
+        },
+        "syntax_sha256": "a0a42bf4ee1acb30f253529764d2a9ecb615be1d94b48f2ff504a11288a123b6"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.CandidateExecutionLimits.max_microsteps",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "CandidateExecutionLimits.max_microsteps"
+        },
+        "syntax_sha256": "61be9ef290477015aec0a2ed6f73e67d9b63b3fb1bb0991cd8115b2175006a93"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.CandidateExecutionLimits.max_work",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "CandidateExecutionLimits.max_work"
+        },
+        "syntax_sha256": "beb50cb8b31dbb3da41f25767e2bb97d67eea9ddb89f90f80269ac74732cc08d"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.CandidateExecutionLimits.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "CandidateExecutionLimits.to_data"
+        },
+        "syntax_sha256": "d786205766c996fbd965d242ff6d6f9d71710d016a4d6e9dda47602dff53c0c5"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteBuildError",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteBuildError"
+        },
+        "syntax_sha256": "83a73cde5530ae1b70eff4b1af8693f06dd746ca01f56cb0801688c2ed104a82"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineAuthority",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineAuthority"
+        },
+        "syntax_sha256": "c0c637e9239aef971c958a954c62939bb1f9f4bbad9e07d81bd63a61805e636e"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineAuthority.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineAuthority.__post_init__"
+        },
+        "syntax_sha256": "5bd6ddfaf251bf8ce6e4f57d2cc907c49df79cab0967c0377ee0cb1f6a0a26e5"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineAuthority._json",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "bytes",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineAuthority._json"
+        },
+        "syntax_sha256": "63a3a2ddaadf5a73736870745782248d5e282639c5108317f7b22e8f736eecff"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineAuthority.from_request",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, request: JsonValue -> FiniteMachineAuthority",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineAuthority.from_request"
+        },
+        "syntax_sha256": "fca68bdde1d45ff0b2caa388e559a3dcf5c089e19cbf73d60c5355034d385555"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineAuthority.original_document",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> BuildRequest",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineAuthority.original_document"
+        },
+        "syntax_sha256": "2313c3382c7ef0c3109ed486a9316645c14259cccfc3cad8717908828d25ee9a"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineAuthority.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineAuthority.to_data"
+        },
+        "syntax_sha256": "9180c28da7251dadb916fa8a075624b298df96faeb94d258080ccb3c76a7fbbe"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineBuild",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineBuild"
+        },
+        "syntax_sha256": "a36d2430e4ecd5eed328e03337f26b45f429375237188282b8924ae79b4d08e6"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineBuild.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineBuild.__post_init__"
+        },
+        "syntax_sha256": "15ba52db0b95ea612d5e0fc57740c2802e653205c3d7968184c89b9e09c4a799"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineBuild.authority",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "FiniteMachineAuthority",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineBuild.authority"
+        },
+        "syntax_sha256": "30eada2045cbcdf8092506dd0c17ed5018c3f3e9f343d136c86e11215798cd66"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineBuild.document",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "BuildRequest",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineBuild.document"
+        },
+        "syntax_sha256": "3c367ef476d1c52368d8c1eec155d8b24ddec93fba74d1e842959d78d30dca9d"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineBuild.from_request",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, request: JsonValue, *, limits: JsonValue -> FiniteMachineBuild",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineBuild.from_request"
+        },
+        "syntax_sha256": "d29f0ff4138698067f9c5d4f041a3dbc9f1d059c5d690ff7958752bf3953bf8a"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineBuild.limits",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "PreservationLimits",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineBuild.limits"
+        },
+        "syntax_sha256": "347c0e7bd1663b34fcf12e38f88c300622a67e2d45ea8a2a3c313810ee2225e4"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineBuild.to_limits",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineBuild.to_limits"
+        },
+        "syntax_sha256": "2577ddc05ebbbb58a708266117186309b7001986fbb8c0dc1e791f24d95ed096"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineBuild.to_request",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineBuild.to_request"
+        },
+        "syntax_sha256": "06d1c7c98f26d9504d6df781e5bea67692c602c6ef3e390b58f4109f9f4cea1a"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.FiniteMachineBuild.with_document",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, document: BuildRequest -> FiniteMachineBuild",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "FiniteMachineBuild.with_document"
+        },
+        "syntax_sha256": "0b4f970b6eb056bba9599eaa0034243ebde1fa71bb2b483aa7b1760e999029bc"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.LIMITS_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "LIMITS_PROFILE"
+        },
+        "syntax_sha256": "3ddb3599386d7470ad6c74446c847e9b2b0bc25216d0cf121eefdb4d34cc1348"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.PreservationLimits",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "PreservationLimits"
+        },
+        "syntax_sha256": "db8430f47c3482a9083c6b1614d7fc9db82ba9bfd00152778e32864680f57c92"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.PreservationLimits.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "PreservationLimits.__post_init__"
+        },
+        "syntax_sha256": "bc8920ab3e22cc36cfa73de9e76da47724ce3f36809bc02a2e990362b07075ad"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.PreservationLimits.candidate",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "CandidateExecutionLimits",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "PreservationLimits.candidate"
+        },
+        "syntax_sha256": "1f4f175c9636188e246094068d6019c32b72240c007f80428495e8bfc63b581a"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.PreservationLimits.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> PreservationLimits",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "PreservationLimits.from_data"
+        },
+        "syntax_sha256": "1b0fd2b12263517f18061c9bc644be5de6bab4112e5da98f2b6603d84b400702"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.PreservationLimits.max_report_bytes",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "PreservationLimits.max_report_bytes"
+        },
+        "syntax_sha256": "d72150a3283a0d58e69c58fb98c808bbef94544077eccbba37bc290958ca6ceb"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.PreservationLimits.max_report_nodes",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "PreservationLimits.max_report_nodes"
+        },
+        "syntax_sha256": "39414aa99ec1d845d7af28e1b000a7424ffc83b5a609771c7de10a48a3e06fef"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.PreservationLimits.max_step_retained",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "PreservationLimits.max_step_retained"
+        },
+        "syntax_sha256": "6b7770b7ee73082e0e72ad8076f73a03850b29a0a42df3a5344437b632fb676a"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.PreservationLimits.max_step_work",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "PreservationLimits.max_step_work"
+        },
+        "syntax_sha256": "676f403f9c70331416436de4bdbe1a3c21769bef553c7a3431dea89ff07c357a"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.PreservationLimits.monitor",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "RequirementMonitorLimits",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "PreservationLimits.monitor"
+        },
+        "syntax_sha256": "1a5242c13a1e93b69254aa1cfb3a24de3b4f307a722aaaa2cd1699408935c3fc"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.PreservationLimits.source",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "SourceExecutionLimits",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "PreservationLimits.source"
+        },
+        "syntax_sha256": "ef922e1d609fa1b40af42a4b7290fc1381baadb4ee36136c8af5425d159ea146"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.PreservationLimits.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "PreservationLimits.to_data"
+        },
+        "syntax_sha256": "ccfdcac50a1b96d438223bd1e882865600bfc76ad4e5fb86169a34adb5105687"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.RequirementMonitorLimits",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "RequirementMonitorLimits"
+        },
+        "syntax_sha256": "dcee1c7651466fbe549aa295fb048b8e3c01b8b75b4c2eebfd8f74ddcb8b3539"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.RequirementMonitorLimits.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "RequirementMonitorLimits.__post_init__"
+        },
+        "syntax_sha256": "5aed73ff3021accc5b22602154d02cfb1483c269c9e1f67749ba5116c28c77ab"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.RequirementMonitorLimits.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> RequirementMonitorLimits",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "RequirementMonitorLimits.from_data"
+        },
+        "syntax_sha256": "b98d26c97bcce0e54bba589b64851b8358d383451250a2e18262b20d973b79c7"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.RequirementMonitorLimits.max_obligations",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "RequirementMonitorLimits.max_obligations"
+        },
+        "syntax_sha256": "4ef8276b19c41850fdf145580aa04640bb997a95e9d5b5c9b18847198a46e802"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.RequirementMonitorLimits.max_samples",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "RequirementMonitorLimits.max_samples"
+        },
+        "syntax_sha256": "3078800396783c2580cc0429b989021133b302417543d11d8634860cb6c02a65"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.RequirementMonitorLimits.max_work",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "RequirementMonitorLimits.max_work"
+        },
+        "syntax_sha256": "beb50cb8b31dbb3da41f25767e2bb97d67eea9ddb89f90f80269ac74732cc08d"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.RequirementMonitorLimits.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "RequirementMonitorLimits.to_data"
+        },
+        "syntax_sha256": "33721617d27131c2d20bc6c0c30eae7a651a57413ee192b1e2cb126c0f0920ec"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.SourceExecutionLimits",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "SourceExecutionLimits"
+        },
+        "syntax_sha256": "c13c3f76cc540b81989437e16ce580a6088c782193804753e32856f1f17070d0"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.SourceExecutionLimits.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "SourceExecutionLimits.__post_init__"
+        },
+        "syntax_sha256": "5aed73ff3021accc5b22602154d02cfb1483c269c9e1f67749ba5116c28c77ab"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.SourceExecutionLimits.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> SourceExecutionLimits",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "SourceExecutionLimits.from_data"
+        },
+        "syntax_sha256": "9be8c938dbedf829fcab144235137d4e19d09032338ea0524e18d317d803a85a"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.SourceExecutionLimits.max_attempts",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "SourceExecutionLimits.max_attempts"
+        },
+        "syntax_sha256": "5bc9b7810813f73dba98194a90c2513554f92fd55dbe0137c82c177ddc5d2778"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.SourceExecutionLimits.max_encounters",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "SourceExecutionLimits.max_encounters"
+        },
+        "syntax_sha256": "8a74e2a11e48dc9022d10a67746541d276f3e1953f84dc4490eaf8bf947f0d85"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.SourceExecutionLimits.max_inputs",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "SourceExecutionLimits.max_inputs"
+        },
+        "syntax_sha256": "c8bb5bf9ad9af04d8585532e91e6f73f82b9a331d87f9ffd61686cb59c6b77bb"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.SourceExecutionLimits.max_microsteps",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "SourceExecutionLimits.max_microsteps"
+        },
+        "syntax_sha256": "61be9ef290477015aec0a2ed6f73e67d9b63b3fb1bb0991cd8115b2175006a93"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.SourceExecutionLimits.max_ticks",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "SourceExecutionLimits.max_ticks"
+        },
+        "syntax_sha256": "d84efc269d6f8a5afb2d253bd1946fe4de467203b9b84e5b71858ee3bd55b075"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.SourceExecutionLimits.max_trace_items",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "SourceExecutionLimits.max_trace_items"
+        },
+        "syntax_sha256": "a4a35853926ad28b4a0c9d2bdbc7ffd4bcc4bac3677075f770a0cf744b00934f"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.SourceExecutionLimits.max_work",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "SourceExecutionLimits.max_work"
+        },
+        "syntax_sha256": "beb50cb8b31dbb3da41f25767e2bb97d67eea9ddb89f90f80269ac74732cc08d"
+      },
+      {
+        "id": "biocompiler.policy.finite_build.SourceExecutionLimits.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "SourceExecutionLimits.to_data"
+        },
+        "syntax_sha256": "154cd9ab55bc06ab923f34676775f6ba7dd18c1b56f5100c9edee16ebe8415e0"
+      },
+      {
+        "id": "biocompiler.policy.finite_build._count",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue, maximum: int, label: str -> int",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "_count"
+        },
+        "syntax_sha256": "9f63ca2e3020c36759da5762064620b2925c102647dbce8ec26ac59889980b39"
+      },
+      {
+        "id": "biocompiler.policy.finite_build._numbers",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: object, maxima: dict[str, int] -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "_numbers"
+        },
+        "syntax_sha256": "b5b2e3c274c4130837706d2b385927f64c03b762e179026d11ae18afa0d9d344"
+      },
+      {
+        "id": "biocompiler.policy.finite_build._object",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue, names: set[str], label: str -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "_object"
+        },
+        "syntax_sha256": "0d71e17b9463993afb9e4bec9cc5afa06f47f84f58dc24ebed23b83a56cbc98e"
+      },
+      {
+        "id": "biocompiler.policy.finite_build._request",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "_request"
+        },
+        "syntax_sha256": "c6f4207e083edde15048b70487424030d3a9561fc0a0bbdddac20dca18fcec66"
+      },
+      {
+        "id": "biocompiler.policy.finite_build._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: object, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/finite_build.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "e341122fa8d5e67494c6a2626edcbbc33fb0ccff012d9edb0714cb58ccead5d9"
       },
       {
         "id": "biocompiler.policy.handoff.SubmissionError",
@@ -28660,7 +29756,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "ResearchProject"
         },
-        "syntax_sha256": "c6a2c6f959ef137535bb5bd4c24eda557c401c47f7d35bea8cebf6bac1461559"
+        "syntax_sha256": "6417e7a9c263add8068baf3e5f9894aa7240a000413849d607b01abf7a1df6b5"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.__post_init__",
@@ -28694,6 +29790,17 @@
           "symbol": "ResearchProject._json"
         },
         "syntax_sha256": "63a3a2ddaadf5a73736870745782248d5e282639c5108317f7b22e8f736eecff"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.build",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> FiniteMachineBuild",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.build"
+        },
+        "syntax_sha256": "16a24e40d8bd5f31fcc9fa0d37f451aceabf49968a9646d9244363e6dbc433db"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.compile",
@@ -28738,6 +29845,17 @@
           "symbol": "ResearchProject.dump"
         },
         "syntax_sha256": "09c1aff88db630a20c5586abd0d980075d61155d12dfdecf41b6158af34299d8"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.from_build",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, *, project_id: str, title: str, build: FiniteMachineBuild, sources: Sequence[SourceRecord], assumptions: Sequence[str] -> ResearchProject",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.from_build"
+        },
+        "syntax_sha256": "b7f9589486cae796a20227aa70f690a059eb5160264976e81c1d09c59d576883"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.from_data",
@@ -29034,7 +30152,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "_project"
         },
-        "syntax_sha256": "7956c0e0afb998432b58f2c26f0fea42f91ace4a475e199024ce9ccf8c419a31"
+        "syntax_sha256": "3269bcef38833a3e86fcaa03bec4df690638220a7d0634972be267e9d81c811a"
       },
       {
         "id": "biocompiler.policy.research_project._read_file",
@@ -29067,7 +30185,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "_route"
         },
-        "syntax_sha256": "a8d357cc335ae144dfb76b0d9998207cd1c1b2dd51909ca76c503e0029019c00"
+        "syntax_sha256": "8938151491b7e260f77f4637497b61001e223ef5bb26faa64646e794745de481"
       },
       {
         "id": "biocompiler.policy.research_project._text",
@@ -31243,6 +32361,7 @@
       "src/biocompiler/policy/effects.py": "2e228309b98defa71730cac3e2b8883a9e86c9f63f0d5c25b37bf70b27a02578",
       "src/biocompiler/policy/entities.py": "f38a35089b5c5c7522b012729f95a2b17f45fd2a56c1affe168aa526fb1d7f18",
       "src/biocompiler/policy/examples.py": "36f4e4ba467ae48bc2bfb1d1f54455533a7981dcd8a2c659227d34d06807017a",
+      "src/biocompiler/policy/finite_build.py": "866cf6270f18742256043be8f4387d057efda963facdc94dea0137c7fbf9c86a",
       "src/biocompiler/policy/handoff.py": "a51200b3bb412ebc65cc43df3d69435ea37a7f48a75ba2eba5b7fbafd2479a51",
       "src/biocompiler/policy/implementation.py": "452344e7e6681d04e0018bf0ad4cb3cacd47a5022c9a41883867e4fd62db4ee8",
       "src/biocompiler/policy/inspection.py": "7eca4c5bf12aab21899bb7c9e54b64f8255bae9759e7ebd6a4858bf0f5e76caf",
@@ -31263,7 +32382,7 @@
       "src/biocompiler/policy/realization_evidence.py": "377a5180f9bb123bd30e3828ad0cd60f0b0466befdb5d9a3e2d9b7f6679f8850",
       "src/biocompiler/policy/refinement.py": "b576b28aa2813c46be1a778fa355de9fd8eb147c8ae892f7bbdfba226b84d27e",
       "src/biocompiler/policy/requirements.py": "80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b",
-      "src/biocompiler/policy/research_project.py": "c2bf6d201d183c43594cfe92dd252f0ac25c95e25d1381f6aca079289faec0b0",
+      "src/biocompiler/policy/research_project.py": "4db26b994eb3e19c4bd96bc997484060473ee6d3de91cd380a07d861a4f4c620",
       "src/biocompiler/policy/serialization.py": "d0e2feb4e8dd3fe65a10793d20c06144ad6fec396d99e6107f3485682ee570bf",
       "src/biocompiler/policy/space.py": "c32bc67b86370f471fcabe54fdb61332f746130bc23e22d5a2ce7e08666b97c9",
       "src/biocompiler/policy/state.py": "94ef54313d4475428ca678258dfe59727c8dbbe8d327e26b79ba819dcc20d22d",
@@ -31915,6 +33034,34 @@
         "syntax_sha256": "34eef5ade8b58b33addf3c46aeb0952b1c9b69c4e11c45512c2c5ea9056f5081"
       },
       {
+        "path": "src/biocompiler/policy/finite_build.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/finite_build.py",
+        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/policy/finite_build.py",
+        "syntax_sha256": "1ed6cd3628c06bd941b1208109f32ebd1223f7ac1a6cce709499855441506331"
+      },
+      {
+        "path": "src/biocompiler/policy/finite_build.py",
+        "syntax_sha256": "f7ac139c8d303f3133275c9dde8aac7adc3d0f3c3088d16b0564bad7e3a59f9c"
+      },
+      {
+        "path": "src/biocompiler/policy/finite_build.py",
+        "syntax_sha256": "06ee238bc36851d07ff9403e35d0fa66c182bb4b56724f4d5f5dd10eff1eb490"
+      },
+      {
+        "path": "src/biocompiler/policy/finite_build.py",
+        "syntax_sha256": "6b5dfc6cd619afc1cc4d940a30d27465fea7064af5b674e3f96ac31b69e1e08f"
+      },
+      {
+        "path": "src/biocompiler/policy/finite_build.py",
+        "syntax_sha256": "a0ba56845c596308c7c07c8582f1b9a9df7d0ffb02d98753fe67805a0dd95370"
+      },
+      {
         "path": "src/biocompiler/policy/handoff.py",
         "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
       },
@@ -32553,6 +33700,10 @@
       {
         "path": "src/biocompiler/policy/research_project.py",
         "syntax_sha256": "f8288fe0f13be0239bad5d02511d58992082770eda441413e44a739f2aa74af5"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "b8e55327c5fe626108424192f024646ce8cb34d505a4c073f4932f00f3245b9c"
       },
       {
         "path": "src/biocompiler/policy/research_project.py",
@@ -33752,6 +34903,70 @@
       "role": "rejection",
       "symbol": "PolicyComponentMaterialTransportTests.test_whole_wrapper_budget_ledger_and_replay_mutations_reject",
       "syntax_sha256": "bcf163e57a795418270b89c79b53e74000edafc97a78974c52c8b7b6bc9be982"
+    },
+    "finite_build.authority": {
+      "distinction": "Explicit source replacement preserves every other original and does not fabricate compatible model or material pins.",
+      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "path": "tests/test_policy_finite_build.py",
+      "role": "mixed",
+      "symbol": "FiniteBuildTests.test_explicit_source_change_does_not_normalize_repair_or_repin_authority",
+      "syntax_sha256": "2ccf196bd1f18bbb90fcadd5a1ad2e1a68888ee25d546a8d49d064b943307616"
+    },
+    "finite_build.budgets": {
+      "distinction": "Explicit typed limits reject extra or omitted fields, booleans/nonintegers and values outside the existing native ceilings; no runtime metering claim.",
+      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "path": "tests/test_policy_finite_build.py",
+      "role": "rejection",
+      "symbol": "FiniteBuildTests.test_limits_reject_unknown_omitted_noninteger_and_outside_existing_ceiling",
+      "syntax_sha256": "b7d1a1c5d02dc792b543e1e0da9b9dd80ab9391d9ff632b055a4992bdb20c7e0"
+    },
+    "finite_build.immutable": {
+      "distinction": "Caller changes to detached authority, source containers or output snapshots cannot change retained build/project originals.",
+      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "path": "tests/test_policy_finite_build.py",
+      "role": "mixed",
+      "symbol": "FiniteBuildTests.test_caller_owned_snapshots_cannot_change_frozen_build_or_project",
+      "syntax_sha256": "7d86adfd120b8776a4901357e8b5e441dc8b1269c12759c5f6e8c40ca6353350"
+    },
+    "finite_build.profiles": {
+      "distinction": "Only the exact finite component-material profile and lossless canonical typed source are structurally imported; no semantic admission claim.",
+      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "path": "tests/test_policy_finite_build.py",
+      "role": "rejection",
+      "symbol": "FiniteBuildTests.test_unsupported_material_nested_profiles_and_noncanonical_source_reject",
+      "syntax_sha256": "5e87f830153bb12c19050499496dd62e463732e15aa48f7533e3d7b5b66d2495"
+    },
+    "finite_build.roles": {
+      "distinction": "Project refuses swapped producer/verifier roles before any native call.",
+      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "path": "tests/test_policy_finite_build.py",
+      "role": "rejection",
+      "symbol": "FiniteBuildTests.test_wrong_roles_fail_before_producer_or_verifier_calls",
+      "syntax_sha256": "d8f9c4afca2777800aad58fd01f3ce7e40fac3f89a177386b9c571422c050709"
+    },
+    "finite_build.roundtrip": {
+      "distinction": "Two existing finite shapes retain complete original source and all supplied material authority through typed build and project roundtrip; pure Python, no native acceptance.",
+      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "path": "tests/test_policy_finite_build.py",
+      "role": "positive",
+      "symbol": "FiniteBuildTests.test_two_distinct_shapes_import_and_reopen_complete_original_bytes",
+      "syntax_sha256": "818ed7a353421982c9c4570794334bf42069a10b99d3dcc97c929a2115b3c36f"
+    },
+    "finite_build.scope": {
+      "distinction": "Ordered source states and transitions, nominal subjects and encounters, and effect lifecycle survive typed source import without biological interpretation.",
+      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "path": "tests/test_policy_finite_build.py",
+      "role": "positive",
+      "symbol": "FiniteBuildTests.test_source_state_order_scope_subject_and_lifecycle_remain_distinct",
+      "syntax_sha256": "a5958cb5fab6a4b3e201facfe78071c1af467d835a59a41eb62f877225ae1a15"
+    },
+    "finite_build.workflow": {
+      "distinction": "Inert native peers distinguish Core compilation from Verify export and fresh bundle verification with complete original request/limits and paired publication; not native execution evidence.",
+      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "path": "tests/test_policy_finite_build.py",
+      "role": "positive",
+      "symbol": "FiniteBuildTests.test_two_shapes_use_core_then_independent_verify_and_reopen_originals",
+      "syntax_sha256": "025e70a84adc1be962da19b12331dca365d81662f5c52c3f3a259da197d3747d"
     },
     "module_linking.closed": {
       "distinction": "Explicit module codec rejects unknown nested fields including private Ref extensions, stale complete-template pins, duplicate or unused templates, wrong record kinds and noninteger limits.",

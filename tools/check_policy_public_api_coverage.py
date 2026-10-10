@@ -35,7 +35,11 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "bdcf13e67b4fc53276b8c2f1d9bece2290999dcabd9786aa22d3605b28a6b066"
+REVIEWED_METADATA_SHA256 = "7dfbed0ecefc69a924c88a237a9d76b6ac67b6a69062c8e049cea02a0babc816"
+BEFORE_TYPED_BUILD_METADATA_SHA256 = "bdcf13e67b4fc53276b8c2f1d9bece2290999dcabd9786aa22d3605b28a6b066"
+TYPED_BUILD_PREFIX = "biocompiler.policy.finite_build."
+TYPED_BUILD_ADDITIONS = ("biocompiler.policy.research_project.ResearchProject.build",
+                         "biocompiler.policy.research_project.ResearchProject.from_build")
 BEFORE_ASSURANCE_METADATA_SHA256 = "404ab87f1e9deb42ff3c117d84bc7c3da8926036a429beade5b5b933a58737ff"
 ASSURANCE_PREFIXES = ('biocompiler.policy.quantitative_composition.', 'biocompiler.policy.quantitative_assurance.', 'biocompiler.policy.approximation.', 'biocompiler.policy.realization_evidence.', 'biocompiler.core_policy_quantitative_assurance.')
 ASSURANCE_DEPENDENCIES = ('biocompiler.core_policy_component_material.COMPOSITION_IMPLEMENTATION', 'biocompiler.core_policy_component_material.COMPOSITION_PRODUCER_PROFILE', 'biocompiler.core_policy_component_material.COMPOSITION_PROFILE', 'biocompiler.core_policy_component_material.COMPOSITION_REQUEST_PROFILE', 'biocompiler.core_policy_component_material.COMPOSITION_REQUEST_SCHEMA', 'biocompiler.core_policy_component_material.COMPOSITION_VALIDATION_SCOPE', 'biocompiler.core_policy_component_material.PolicyComponentMaterialResult.result', 'biocompiler.core_policy_component_material._composition', 'biocompiler.core_policy_component_material._document_pin', 'biocompiler.core_policy_component_material._document_same', 'biocompiler.core_policy_component_material._result_bytes', 'biocompiler.core_policy_component_material._stored_result', 'biocompiler.core_policy_component_material._wire_capability', 'biocompiler.core_policy_component_material._wire_response', 'biocompiler.core_policy_implementation.COUPLED_BINDING_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_BINDING_REPORT_SCHEMA', 'biocompiler.core_policy_implementation.COUPLED_BINDING_SCHEMA', 'biocompiler.core_policy_implementation.COUPLED_IMPLEMENTATION', 'biocompiler.core_policy_implementation.COUPLED_PRODUCER_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_REQUEST_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_REQUEST_SCHEMA', 'biocompiler.core_policy_implementation.COUPLED_VALIDATION_SCOPE', 'biocompiler.core_policy_implementation._coupled_original', 'biocompiler.policy.__dir__', 'biocompiler.policy.__getattr__', 'biocompiler.policy.refinement.__dir__', 'biocompiler.policy.refinement.__getattr__')
@@ -171,7 +175,7 @@ COMPOSITION_DEPENDENCIES = (
     'biocompiler.core_policy_implementation._two_observation_original',
 )
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
+MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples finite_build handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
 CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking", "core_policy_planning", "core_policy_quantitative_assurance")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py")
@@ -709,9 +713,17 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
-    before_assurance = {
-        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("assurance.")},
+    before_typed_build = {
+        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("finite_build.")},
         "coverage": {key: value for key, value in coverage.items()
+                     if not key.startswith(TYPED_BUILD_PREFIX) and key not in TYPED_BUILD_ADDITIONS},
+    }
+    encoded_typed_build = json.dumps(before_typed_build, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(digest(encoded_typed_build) == BEFORE_TYPED_BUILD_METADATA_SHA256,
+            "Typed finite builds must preserve every previous API evidence meaning")
+    before_assurance = {
+        "witnesses": {key: value for key, value in before_typed_build["witnesses"].items() if not key.startswith("assurance.")},
+        "coverage": {key: value for key, value in before_typed_build["coverage"].items()
                      if not key.startswith(ASSURANCE_PREFIXES) and key not in ASSURANCE_DEPENDENCIES},
     }
     encoded_assurance = json.dumps(before_assurance, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")

@@ -4,6 +4,11 @@ module M = Bioc_domain.Policy_component_material_request
 module I = Bioc_domain.Policy_implementation
 module U = Bioc_domain.Policy_implementation_binding
 module O = Bioc_domain.Policy_operational
+module Typed = Bioc_domain.Policy_admitted_ir
+module D = Bioc_domain.Policy_document
+module Source = Bioc_checker.Policy_admission
+module Lower = Bioc_compiler.Policy_implementation_lowering
+module Arrange = Bioc_compiler.Policy_component_lowering
 module F = Bioc_domain.Policy_operating_domain
 module X = Bioc_domain.Policy_component_context
 module A = Bioc_checker.Policy_realization_admission
@@ -55,6 +60,114 @@ let bind raw candidate=
   let implementation=I.of_json ~library:(R.implementation_library request)(get "implementation" candidate)
   and proposed=U.of_json(get "binding" candidate)in
   B.check ~admitted ~implementation ~proposed
+
+(* The checker's opaque handoff is tied to every original declaration and
+   occurrence. The independent literal union/RNA below remains the output
+   oracle; repeat production here tests complete deterministic serialization,
+   not a second source of semantic acceptance. *)
+let typed_controls name original candidate bound=
+  let admitted=B.admitted_inputs bound and request=M.implementation_request original in
+  let program=match A.finite_program admitted with Some value->value
+    |None->failwith "Exact finite admission discarded its fresh typed program"in
+  let instructions=Typed.instructions program and declarations=D.declarations(R.document request)in
+  require(List.length instructions=List.length declarations && List.for_all2(fun instruction(declaration:D.declaration)->
+    Typed.source_path instruction=declaration.path && Typed.name(Typed.declaration instruction)=declaration.id &&
+    Json.equal(Typed.original_declaration instruction)declaration.value &&
+    Json.equal(Typed.wire_declaration ~charge:(fun _->())instruction)declaration.value)instructions declarations)
+    "Typed finite input lost original declaration bytes, coordinates or resolved reconstruction";
+  let symbol index identity kind=
+    let declaration=List.nth declarations index in
+    require(declaration.D.id=identity && text "$type" declaration.value=kind)
+      "Typed finite symbol no longer resolves to its original ledger position"in
+  let paths=ref []in
+  let rec original_expression location raw=
+    paths:=location:: !paths;
+    List.iteri(fun index child->original_expression(location^"/args/"^string_of_int index)child)(rows "args" raw)in
+  List.iter(fun instruction->let raw=Typed.original_declaration instruction and location=Typed.source_path instruction in
+    match Typed.declaration instruction with
+    |Typed.Transition_declaration value->
+        symbol(Typed.Transition.index value.id)(Typed.Transition.name value.id)"Transition";
+        symbol(Typed.Machine.index value.machine)(Typed.Machine.name value.machine)"Machine";
+        List.iter(fun id->symbol(Typed.Effect.index id)(Typed.Effect.name id)"Effect")value.effects;
+        require(Json.equal(Typed.event_source value.on)(get "on" raw) &&
+          Json.equal(Typed.truth_source value.guard)(get "when" raw))"Typed finite roots changed original metadata";
+        (match Typed.event_term value.on with
+         |Typed.Updated id->symbol(Typed.Observation.index id)(Typed.Observation.name id)"Observation"
+         |Typed.Effect_event(id,_)->symbol(Typed.Effect.index id)(Typed.Effect.name id)"Effect"
+         |Typed.Rising value->require(Json.equal(Typed.truth_source value)(List.hd(rows "args"(get "on" raw))))
+             "Typed rising child changed original expression bytes");
+        original_expression(location^"/on")(get "on" raw);original_expression(location^"/when")(get "when" raw)
+    |Typed.Effect_declaration value->
+        List.iter2(fun(_,expression)argument->let source=match expression with
+          |Typed.Truth value->Typed.truth_source value|Typed.Integer value->Typed.integer_source value
+          |Typed.Text value->(match Typed.text_term value with
+              |Typed.Text_read(Typed.Parameter_read id)->symbol(Typed.Parameter.index id)(Typed.Parameter.name id)"Parameter"
+              |_->failwith "Finite product ceased to be a resolved fixed parameter");Typed.text_source value
+          |Typed.Quantity value->Typed.quantity_source value in
+          require(Json.equal source(get "value" argument))"Typed effect parameter lost exact original authority")
+          value.parameters(rows "parameters" raw);
+        List.iteri(fun index argument->original_expression(location^"/parameters/"^string_of_int index^"/value")
+          (get "value" argument))(rows "parameters" raw)
+    |_->())instructions;
+  let expected_paths=match name with "retry_cycle"->10|"guarded_branch"->20|"updated_fork"->9|_->assert false in
+  let graph=get "implementation" candidate in
+  require(List.length !paths=expected_paths && List.for_all(fun location->
+    List.length(List.filter(fun row->text "source_path" row=location)(rows "occurrences" graph))=1)!paths)
+    "Typed finite lowering omitted or duplicated an original executable occurrence";
+  let measuring=ref false and work=ref 0 and maximum=ref max_int in
+  let charge amount=if !measuring then (
+    Diagnostic.require(amount>=0 && amount<= !maximum- !work)"finite_typed_test_work" "Fresh typed lowering work exhausted.";
+    work:= !work+amount)in
+  let fresh=A.admit_metered ~charge ~request ~behavior:(A.behavior admitted)in
+  let library=R.implementation_library request in
+  measuring:=true;
+  let lowered=Lower.lower_metered ~charge ~admitted:fresh ~library in
+  measuring:=false;
+  let measured= !work in
+  require(measured>0)"Typed finite producer failed to charge its fresh work";
+  ignore(B.check ~admitted:fresh ~implementation:lowered.implementation ~proposed:lowered.binding);
+  let source_inputs=List.map(fun(value:M.input_binding)->value.source,value.input_id)(M.input_bindings original)in
+  let arranged=Arrange.arrange ~source_inputs ~library ~rule:(M.composition_rule original)lowered in
+  require(Canonical.encode(I.to_json arranged.implementation)=Canonical.encode(get "implementation" candidate) &&
+    Canonical.encode(U.to_json arranged.binding)=Canonical.encode(get "binding" candidate))
+    "Typed finite lowering changed complete graph or binding serialization";
+  ignore(B.check ~admitted:fresh ~implementation:arranged.implementation ~proposed:arranged.binding);
+  if name="retry_cycle"then (
+    List.iter(fun limit->work:=0;maximum:=limit;measuring:=true;
+      (match Lower.lower_metered ~charge ~admitted:fresh ~library with
+       |_->failwith "Typed finite producer returned a partial proposal after work exhaustion"
+       |exception Diagnostic.Error diagnostic->require(diagnostic.code="finite_typed_test_work")
+           "Typed finite lowering replaced its original work failure";incr controls);
+      measuring:=false)[0;measured/2;measured-1];
+    let raw=R.to_json request in
+    let mutate identity change=edit["document";"program";"declarations"](fun rows_value->a(List.map(fun row->
+      if text "id" row=identity then change row else row)(Json.array rows_value)))raw in
+    let prepare raw=
+      let request=R.of_finite_machine_json raw in
+      let source=Source.admit ~document:(R.document request) ~descriptors:(R.definitions request)in
+      let behavior=Bioc_compiler.Policy_lowering.lower source in
+      A.admit ~request ~behavior in
+    let rejects_lower label message raw=
+      let input=prepare raw in
+      require(Option.is_some(A.finite_program input))"Fresh negative source did not enter typed finite lowering";
+      match Lower.lower ~admitted:input ~library with
+      |_->failwith("Typed finite unsupported form accepted: "^label)
+      |exception Diagnostic.Error diagnostic->require(diagnostic.code="policy_staged_lowering_unsupported" && diagnostic.message=message)
+          ("Typed finite rejection boundary changed: "^label);incr controls in
+    rejects_lower "unsupported but source-valid truth equality" "Expression lacks a staged primitive interpretation."
+      (mutate "complete"(edit["when"](fun value->value|>set "op"(s "eq")|>set "value" Json.Null|>set "args"(a[value;value]))));
+    rejects_lower "source-valid integer equality retains old scalar rejection" "Staged lowering needs exact truth/event/product types."
+      (mutate "complete"(edit["when"](fun value->
+        let integer=value|>set "value"(Json.int 1)|>edit["value_type";"kind"](fun _->s "integer")in
+        value|>set "op"(s "eq")|>set "value" Json.Null|>set "args"(a[integer;integer]))));
+    rejects_lower "unsupported feedback phase" "Only completion, failure and timeout drive stage feedback."
+      (mutate "complete"(edit["on";"value"](fun _->s "requested")));
+    rejects "wrong resolved reference kind"(fun()->prepare(mutate "launch"
+      (edit["when";"ref";"kind"](fun _->s "Parameter"))));
+    rejects "typed source cannot authorize a substituted operational ledger"(fun()->
+      A.admit ~request ~behavior:(O.behavior_of_json(set "source_ledger"(a[])(O.behavior_to_json(A.behavior admitted))))));
+  Printf.printf "finite_machine: %s typed input, %d original expression occurrences, exact complete outputs, lowering work %d\n%!"
+    name expected_paths measured
 
 (* Mutate a valid supplied model and freshly pin every corresponding original
    library/bridge/graph reference. Rejection must come from actual source/graph
@@ -250,6 +363,7 @@ let case limits row=
     get "manifest_sha256" artifact=s(Canonical.sha256(Canonical.encode manifest)))"Finite manifest lost full fresh authority";
   let raw=get "implementation_request" request in
   let bound=bind raw candidate in
+  typed_controls name original candidate bound;
   let behavior=A.behavior(B.admitted_inputs bound)in
   let machine=List.hd behavior.O.machines in
   require(Json.int(List.length machine.states)=get "state_count" expected)

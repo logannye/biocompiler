@@ -41,8 +41,9 @@ REVIEWED_ADDITIONS = {
     'src/biocompiler/policy/typed.py': '8ed5ed1df21bbee620d0ba6244932282ce2a1e785b8e185baa9a205a544bd1eb',
     # Research-project authoring and the installed example stay excluded from
     # the immutable original workflow cohort and confer no historical authority.
-    'src/biocompiler/policy/research_project.py': 'c2bf6d201d183c43594cfe92dd252f0ac25c95e25d1381f6aca079289faec0b0',
-    'examples/researcher_alpha.py': '63d862d55e22de38ba633f901d37c28c7a6fab3cb77ed8604d7fc07df0aac313',
+    'src/biocompiler/policy/research_project.py': '4db26b994eb3e19c4bd96bc997484060473ee6d3de91cd380a07d861a4f4c620',
+    'src/biocompiler/policy/finite_build.py': '866cf6270f18742256043be8f4387d057efda963facdc94dea0137c7fbf9c86a',
+    'examples/researcher_alpha.py': 'cfb5bd6c445f496e68491450bb9c671c459187918fe86cbe99135ffefdadf6c0',
     'src/biocompiler/core_policy_component_selection.py': '20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9',
     'src/biocompiler/policy/component_selection.py': '10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80',
     "src/biocompiler/core_distribution.py": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459",

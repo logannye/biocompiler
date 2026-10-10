@@ -9,6 +9,7 @@ module H = Bioc_domain.Policy_provider_prerequisites
 type admitted_inputs = {
   request_value:R.t; behavior_value:O.behavior; domain_value:F.validated;
   model_values:P.t list; dependency_values:H.pending_dependency list; report_value:Json.t; charge_value:int -> unit;
+  finite_program_value:Bioc_domain.Policy_admitted_ir.t option;
 }
 module Make (Charge : sig val charge : int -> unit end) = struct
 module Meter = Policy_generation_meter.Make(Charge)
@@ -263,18 +264,20 @@ let check_network_source request document (behavior:O.behavior) =
 
 let admit ~request ~(behavior:O.behavior) =
   let document=R.document request and descriptors=R.definitions request in
-  let assessment,correspondence=if R.is_coupled request then (
+  let assessment,correspondence,finite_program_value=if R.is_coupled request then (
     (* Correspondence independently admits this same immutable original source
        before comparing every behavior field. Reuse only its freshly produced
        assessment data within this invocation, avoiding a second identical
        admission; callers cannot supply a saved report or an admitted source. *)
     let fresh=Policy_correspondence.check_fresh ~charge:Charge.charge
       ~expected_document:document ~descriptors behavior in
-    Policy_correspondence.source_assessment fresh,Policy_correspondence.report fresh)
+    Policy_correspondence.source_assessment fresh,Policy_correspondence.report fresh,None)
   else (
     let source=Policy_admission.admit_metered ~charge:Charge.charge ~document ~descriptors in
     let correspondence=Policy_correspondence.check ~charge:Charge.charge ~expected_document:document ~descriptors behavior in
-    Policy_admission.source_assessment source,correspondence)in
+    Policy_admission.source_assessment source,correspondence,
+      (if R.is_finite_machine request && not(R.is_multi_site request)
+       then Some(Policy_admission.typed source) else None))in
   (if R.is_two_observation request then
     match behavior.observations with
     | [left;right] ->
@@ -359,7 +362,8 @@ let admit ~request ~(behavior:O.behavior) =
   let report_value=obj (if prerequisite_closure then report_fields @
     ["pending_dependencies",arr(List.map H.pending_dependency_to_json dependency_values)] else report_fields) in
   Meter.preflight report_value;
-  {request_value=request;behavior_value=behavior;domain_value;model_values;dependency_values;report_value;charge_value=Charge.charge}
+  {request_value=request;behavior_value=behavior;domain_value;model_values;dependency_values;report_value;charge_value=Charge.charge;
+   finite_program_value}
 end
 let admit_metered ~charge ~request ~behavior =
   let module Admission = Make(struct let charge = charge end) in
@@ -367,6 +371,7 @@ let admit_metered ~charge ~request ~behavior =
 let admit ~request ~behavior = admit_metered ~charge:Policy_generation_meter.no_charge ~request ~behavior
 let request value = value.request_value
 let behavior value = value.behavior_value
+let finite_program value = value.finite_program_value
 let operating_domain value = value.domain_value
 let authorized_models value = value.model_values
 let pending_dependencies value = value.dependency_values

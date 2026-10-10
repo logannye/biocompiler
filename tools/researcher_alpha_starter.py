@@ -21,10 +21,13 @@ SOURCE_FILES = (
     "docs/researcher-alpha-reference-qualification.md",
     "docs/researcher-alpha-review.md",
     "docs/researcher-alpha-roadmap.md",
+    "docs/policy-finite-build-v0.1.md",
     *("data/researcher_alpha/" + name for name in (
         "staged-input.json", "comparison-input.json", "expected.json", "provenance.json",
-        "qualification.json", "negative-controls.json")),
+        "qualification.json", "negative-controls.json", "retry_cycle-input.json", "guarded_branch-input.json")),
 )
+EXAMPLE_FILES = ("staged-project.json", "comparison-project.json", "staged.zip", "comparison.zip",
+                 "retry_cycle-project.json", "guarded_branch-project.json", "retry_cycle.zip", "guarded_branch.zip")
 MAX_FILE = 128 * 1024 * 1024
 MAX_TOTAL = 300 * 1024 * 1024
 
@@ -90,17 +93,17 @@ def plan(args, comparison, natives, *, root=ROOT):
             and attempts[0]["receipt"] == {"sha256": measured_child["sha256"], "bytes": measured_child["size"]},
             "Example receipt changed after the independent installed comparison")
     files["evidence/researcher-alpha.json"] = evidence / "researcher-alpha.json"
-    for name in ("staged-project.json", "comparison-project.json", "staged.zip", "comparison.zip"):
+    for name in EXAMPLE_FILES:
         relative = "researcher-alpha/" + name
         source = evidence / relative
         measured = pin(read(source))
         require(child["files"][relative] == {"sha256": measured["sha256"], "bytes": measured["size"]},
                 "Verified example changed after checking")
         files["verified-examples/" + name] = source
-    require(len(files) == len(SOURCE_FILES) + 10, "Starter file census differs")
+    require(len(files) == len(SOURCE_FILES) + 14, "Starter file census differs")
     metadata = {name: pin(read(path)) for name, path in sorted(files.items())}
     require(sum(row["size"] for row in metadata.values()) <= MAX_TOTAL, "Starter exceeds its total byte bound")
-    manifest = {"schema_version": "biocompiler.researcher_alpha_starter.v0.1",
+    manifest = {"schema_version": "biocompiler.researcher_alpha_starter.v0.2",
         "status": "installed_candidate", "release_acceptance": "pending_overall_and_actual_main_gates",
         "empirical": "unassessed", "real_researcher_project": "unqualified",
         "source_revision": comparison["head_revision"], "tested_revision": comparison["revision"],

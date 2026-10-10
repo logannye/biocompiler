@@ -71,7 +71,7 @@ class ResearcherInstalledTests(unittest.TestCase):
         modules = installed.component.installed_source_modules(installed.ROOT)
         package = "/hosted/env/site-packages/biocompiler"
         required = installed.component.REQUIRED_MODULES | {"biocompiler.core_distribution", "biocompiler.core_policy_component_selection",
-            "biocompiler.policy.component_selection", "biocompiler.policy.research_project"}
+            "biocompiler.policy.component_selection", "biocompiler.policy.research_project", "biocompiler.policy.finite_build"}
         origins = {}
         for name in required:
             relative = name.removeprefix("biocompiler").lstrip(".").replace(".", "/")
@@ -97,8 +97,8 @@ class ResearcherInstalledTests(unittest.TestCase):
     def test_hosted_gate_and_complete_input_packet_precede_execution(self):
         with patch.dict(installed.os.environ, {}, clear=True), self.assertRaisesRegex(AssertionError, "hosted-only"):
             installed.run(SimpleNamespace())
-        self.assertEqual(len(installed.input_pins()), 8)
-        self.assertEqual(len(installed.COPY_INPUTS), 7)
+        self.assertEqual(len(installed.input_pins()), 11)
+        self.assertEqual(len(installed.COPY_INPUTS), 9)
         with self.assertRaisesRegex(AssertionError, "exact independent"):
             installed.checked_inputs(installed.ROOT, self.root / "foreign.json")
 
@@ -201,7 +201,7 @@ class ResearcherInstalledTests(unittest.TestCase):
             path.write_text(json.dumps({"system": slot[0], "machine": slot[1], "python_version": slot[2] + ".6", "run_attempt": "2"}))
             paths.append(path)
         authorities = {platform: dict(BINARIES) for platform in (("Linux", "x86_64"), ("Darwin", "arm64"))}
-        with patch.object(installed, "validate_installed", return_value={"all20": "complete identical observations"}) as checked:
+        with patch.object(installed, "validate_installed", return_value={"all38": "complete identical observations"}) as checked:
             result = installed.compare_installed(paths, self.expected, IDENTITY, authorities, expected_sources=SOURCES)
             self.assertEqual(result["status"], "pass"); self.assertEqual(checked.call_count, 4)
             self.assertFalse(result["real_researcher_project_qualified"])

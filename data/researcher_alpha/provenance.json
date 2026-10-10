@@ -59,9 +59,9 @@
       "sha256": "06511469e841fefd8de4ad1d6be84f20005d8c5fa3473571013c95a762b30f46"
     },
     {
-      "bytes": 4489,
+      "bytes": 8315,
       "path": "expected.json",
-      "sha256": "ee332f922023e535ae4360e5ed6a8a4764011e293eca39fb40424f931a641519"
+      "sha256": "f3db849923b944e2a7f996d6763d4d01e425178037c0edff2e628a5e6fb6748a"
     },
     {
       "bytes": 5206,
@@ -72,6 +72,16 @@
       "bytes": 3943,
       "path": "negative-controls.json",
       "sha256": "154b218b41c68d1672f19965d092767c8b91fbaac1ddb425cb3b0263ee2d17a0"
+    },
+    {
+      "bytes": 365144,
+      "path": "retry_cycle-input.json",
+      "sha256": "894e4d5065c9ebe04015c2b3a481fe0e9d3c97b7a9754ac701471143fa1a2eb0"
+    },
+    {
+      "bytes": 508283,
+      "path": "guarded_branch-input.json",
+      "sha256": "f69bb8997996e2cd5afc2e3d7d2bed82a793537fc87eec58e8d66987c26146a9"
     }
   ],
   "oracle_sources": [
@@ -106,5 +116,17 @@
     "seed_sha256": "d03cdf56a0a5cbbfab5ce5bdd9585ef85bf493e88464005b9147aa7dd3ecfe4a",
     "selection": "request and limits, unchanged JSON values",
     "sha256": "d764d9a8f3ca3e64998eddb43de5750cc30425fb59713b09b09cb31560f74daf"
+  },
+  "typed_finite_extension": {
+    "acceptance": false,
+    "oracle": "RNA CC + AUGGCUUAA + GG + AAAA, frame-zero MA*, half-open coordinates hand-declared. Graph inventories independently counted from supplied component fragments/links. Guarded domain110 histories/276 transitions is the retained literal oracle. Retry domain: tick2four optional-failure branches; tick4sum C(2,k)*2^(2+k)=36 histories; widths1,1,4,4,36,36 give82 transitions and83 prefixes. Fresh native checking remains required.",
+    "originals": "Complete request and shared limits copied as unchanged JSON values; no generator or native process executed.",
+    "recorded_date": "2026-10-10",
+    "selection": [
+      "retry_cycle",
+      "guarded_branch"
+    ],
+    "source_path": "core/test/data/policy_finite_machine_v01.json",
+    "source_sha256": "908215f91399c59f9bed2da6e74c6fc87526fd3e9e110e550928a44058636d16"
   }
 }

@@ -97,6 +97,11 @@ let integer_term value = value.integer_term
 let text_term value = value.text_term
 let quantity_term value = value.quantity_term
 let event_term value = value.event_term
+let truth_source value = value.truth_source
+let integer_source value = value.integer_source
+let text_source value = value.text_source
+let quantity_source value = value.quantity_source
+let event_source value = value.event_source
 let quantity_unit value = value.unit
 let name = function
   | Role_declaration id -> Role.name id
