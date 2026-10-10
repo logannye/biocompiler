@@ -1,5 +1,31 @@
 # Development roadmap
 
+The user-approved [2026-10-09 semantic compiler milestones](semantic-next-roadmap-2026-10-09.md)
+record the next four items: native checked module linking, interacting machine
+and observation networks, target capability/obligation planning, and broader
+quantitative semantics with realization evidence. Module linking is implemented
+locally in the owned semantic-foundation checkout; native validation remains pending.
+
+The [2026-10-08 core priorities](core-architecture-session-priorities-2026-10-08.md)
+order composition, executable prerequisites, source-family expansion,
+multi-member/helper closure and measured modular verification. Named instances,
+provider prerequisites, two-observation composition and two-product/member
+composition have passed focused hosted development and independent audits. The
+grounded-helper path has also passed its full development run and audit. The first bounded
+[candidate-transition congruence rule](policy-candidate-transition-congruence-v0.1.md)
+and its diagnostic measurements have also passed development validation and
+audit. Sharing remains disabled because the measured bookkeeping cost outweighed
+the saved execution. The combined integration candidate is ready for full gates. See the
+[exact-revision checkpoint](core-architecture-session-checkpoint-2026-10-08.md)
+for completed evidence and open integration/actual-main gates. Source completion
+does not transfer acceptance between these branches.
+
+The [product vision and integration roadmap](product-vision-and-integration-roadmap.md)
+sets the 2026-10-08 direction: useful standalone researcher workflows first,
+with one compiler and verification core that can later serve agents in closed-loop
+labs. Its milestones supplement the implementation plans below; laboratory
+integration is not a prerequisite for an independently complete standalone release.
+
 ## Active implementation roadmap — language migration
 
 The 2026-10-01 [language migration roadmap](language-migration-roadmap.md) is the

@@ -461,7 +461,7 @@ class ComponentConsumerTests(unittest.TestCase):
         guard.start()
         self.addCleanup(guard.stop)
 
-    def test_seven_transports_and_ten_independent_inputs_are_closed(self):
+    def test_eight_transports_and_ten_independent_inputs_are_closed(self):
         TOOL.verify_stage(self.stage, self.manifest, profile="component")
         self.assertEqual(self.manifest["schema_version"], "biocompiler.policy_component_material_consumer_worker.v0.1")
         self.assertEqual(set(self.manifest["inputs"]), {case + "." + name for case in ("A", "B") for name in ("request", "limits", "candidate", "checked", "exported")})
@@ -469,11 +469,19 @@ class ComponentConsumerTests(unittest.TestCase):
             self.assertEqual(TOOL.read_json(self.stage / "authority" / label / "request.json"), self.originals[label + ".request"])
             self.assertEqual(TOOL.read_json(self.stage / "proposal" / label / "candidate.json"), self.originals[label + ".candidate"])
         self.assertNotEqual(self.originals["A.request"], self.originals["B.request"])
-        self.assertEqual(len(list((self.stage / "transport/biocompiler").iterdir())), 7)
+        self.assertEqual(TOOL.profile_spec("material")["modules"], (
+            "__init__.py", "core_client.py", "core_policy.py", "core_policy_operational.py",
+            "core_policy_implementation.py", "core_policy_material.py"))
+        self.assertEqual(TOOL.profile_spec("component")["modules"], (
+            *TOOL.MODULE_FILES, "core_policy_component_material.py", "_policy_coupled_wire.py"))
+        self.assertEqual(len(list((self.stage / "transport/biocompiler").iterdir())), 8)
+        codec = self.stage / "transport/biocompiler/_policy_coupled_wire.py"
+        self.assertEqual(TOOL.file_digest(codec), TOOL.file_digest(ROOT / "src/biocompiler/_policy_coupled_wire.py"))
         self.assertFalse((self.stage / "bin/biocompiler-core").exists())
         with self.assertRaises(AssertionError):
             TOOL.check_manifest(self.manifest)
         for change in (lambda m: m["files"].pop("transport/biocompiler/core_policy_component_material.py"),
+                       lambda m: m["files"].pop("transport/biocompiler/_policy_coupled_wire.py"),
                        lambda m: m["inputs"].pop("B.request"),
                        lambda m: m.update(schema_version=TOOL.WORKER_SCHEMA)):
             altered = deepcopy(self.manifest)
@@ -482,6 +490,13 @@ class ComponentConsumerTests(unittest.TestCase):
                 TOOL.check_manifest(altered, profile="component")
         with self.assertRaises(AssertionError):
             TOOL.profile_spec("invented")
+
+    def test_component_codec_bytes_remain_bound_to_original_stage_manifest(self):
+        codec = self.stage / "transport/biocompiler/_policy_coupled_wire.py"
+        codec.chmod(0o600)
+        codec.write_bytes(codec.read_bytes() + b"\n# altered staged transport\n")
+        with self.assertRaisesRegex(AssertionError, "bytes differ from original installed pins"):
+            TOOL.verify_stage(self.stage, self.manifest, profile="component")
 
     def test_every_fresh_call_and_swapped_original_control_is_explicit(self):
         stub = ComponentStubVerify(self.originals)
@@ -514,6 +529,7 @@ class ComponentConsumerTests(unittest.TestCase):
         mutations = (
             lambda v: v["verify_launches"].pop(),
             lambda v: v["origins"].pop("biocompiler.core_policy_component_material"),
+            lambda v: v["origins"].pop("biocompiler._policy_coupled_wire"),
             lambda v: v["observations"].pop(6),
             lambda v: v["observations"][6]["result"]["diagnostics"][0].update(code="unrelated"),
             lambda v: v["observations"][2]["result"]["artifact"].update(fasta="changed exact bases"),
@@ -541,7 +557,10 @@ class ComponentConsumerTests(unittest.TestCase):
         self.assertEqual(command[-4:], ["--profile", "component", "--mechanism", "linux_libseccomp"])
         boundary = TOOL.ConsumerBoundary(self.stage, self.manifest, profile="component")
         self.assertIsNone(boundary.find_spec("biocompiler.core_policy_component_material"))
-        for name in ("biocompiler.policy.component_material", "biocompiler.compiler", "biocompiler_core"):
+        self.assertIsNone(boundary.find_spec("biocompiler._policy_coupled_wire"))
+        with self.assertRaises(ImportError):
+            TOOL.ConsumerBoundary(self.stage, self.manifest).find_spec("biocompiler._policy_coupled_wire")
+        for name in ("biocompiler._policy_coupled_wire.unreviewed", "biocompiler.policy.component_material", "biocompiler.compiler", "biocompiler_core"):
             with self.assertRaises(ImportError):
                 boundary.find_spec(name)
         with self.assertRaises(AssertionError):

@@ -1,7 +1,10 @@
 open Bioc_wire
 module O = Bioc_domain.Policy_operational
 let str value = Json.String value
-let check ?(charge = Policy_generation_meter.no_charge) ~expected_document ~descriptors (candidate:O.behavior) =
+type fresh = { source_assessment_value:Json.t; report_value:Json.t }
+let source_assessment value = value.source_assessment_value
+let report value = value.report_value
+let check_fresh ?(charge = Policy_generation_meter.no_charge) ~expected_document ~descriptors (candidate:O.behavior) =
   let module Meter = Policy_generation_meter.Make(struct let charge = charge end) in
   let module List = Meter.List in
   let module Json = Meter.Json in
@@ -47,4 +50,7 @@ let check ?(charge = Policy_generation_meter.no_charge) ~expected_document ~desc
     "unresolved_obligations",O.get "unresolved_obligations" assessment;
     "target_status",str "unassessed";"artifact",str "withheld"] in
   Meter.preflight result;
-  result
+  {source_assessment_value=assessment;report_value=result}
+
+let check ?charge ~expected_document ~descriptors candidate =
+  report(check_fresh ?charge ~expected_document ~descriptors candidate)

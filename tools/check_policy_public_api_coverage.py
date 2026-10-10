@@ -17,26 +17,162 @@ from typing import Any
 
 try:
     from tools.check_policy_semantic_coverage import syntax
+    from tools.migration_inventory import InventoryError, reviewed_policy_lazy_imports
 except ModuleNotFoundError as error:  # Also support isolated direct-script invocation.
     if error.name not in ("tools", "tools.check_policy_semantic_coverage"):
         raise
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from check_policy_semantic_coverage import syntax
+    from migration_inventory import InventoryError, reviewed_policy_lazy_imports
 
 ROOT = Path(__file__).resolve().parents[1]
 LEDGER = "protocol/policy-public-api-coverage-v0.1.json"
 SCHEMA = "biocompiler.policy_public_api_coverage.v0.1"
 CLAIM = "Static public-source inventory and reviewed witness links only; neither executed coverage nor semantic/native/material/release acceptance."
 RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Generated or inherited dataclass runtime protocols are represented by reviewed decorator/field/base contracts, not an exhaustive runtime-attribute census; Python record equality is not symbolic policy comparison."
-# Reviewed separately from source-body pins. This literal binds all138 witness
-# meanings/owners and all845 coverage classifications, so refreshing file/AST
+# Reviewed separately from source-body pins. This literal binds all witness
+# meanings/owners and coverage classifications, so refreshing file/AST
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "1ca37142a2beec20c09db60e709e5aa8273da2f5e2002a104ed21c228d6b7d62"
+REVIEWED_METADATA_SHA256 = "bdcf13e67b4fc53276b8c2f1d9bece2290999dcabd9786aa22d3605b28a6b066"
+BEFORE_ASSURANCE_METADATA_SHA256 = "404ab87f1e9deb42ff3c117d84bc7c3da8926036a429beade5b5b933a58737ff"
+ASSURANCE_PREFIXES = ('biocompiler.policy.quantitative_composition.', 'biocompiler.policy.quantitative_assurance.', 'biocompiler.policy.approximation.', 'biocompiler.policy.realization_evidence.', 'biocompiler.core_policy_quantitative_assurance.')
+ASSURANCE_DEPENDENCIES = ('biocompiler.core_policy_component_material.COMPOSITION_IMPLEMENTATION', 'biocompiler.core_policy_component_material.COMPOSITION_PRODUCER_PROFILE', 'biocompiler.core_policy_component_material.COMPOSITION_PROFILE', 'biocompiler.core_policy_component_material.COMPOSITION_REQUEST_PROFILE', 'biocompiler.core_policy_component_material.COMPOSITION_REQUEST_SCHEMA', 'biocompiler.core_policy_component_material.COMPOSITION_VALIDATION_SCOPE', 'biocompiler.core_policy_component_material.PolicyComponentMaterialResult.result', 'biocompiler.core_policy_component_material._composition', 'biocompiler.core_policy_component_material._document_pin', 'biocompiler.core_policy_component_material._document_same', 'biocompiler.core_policy_component_material._result_bytes', 'biocompiler.core_policy_component_material._stored_result', 'biocompiler.core_policy_component_material._wire_capability', 'biocompiler.core_policy_component_material._wire_response', 'biocompiler.core_policy_implementation.COUPLED_BINDING_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_BINDING_REPORT_SCHEMA', 'biocompiler.core_policy_implementation.COUPLED_BINDING_SCHEMA', 'biocompiler.core_policy_implementation.COUPLED_IMPLEMENTATION', 'biocompiler.core_policy_implementation.COUPLED_PRODUCER_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_REQUEST_PROFILE', 'biocompiler.core_policy_implementation.COUPLED_REQUEST_SCHEMA', 'biocompiler.core_policy_implementation.COUPLED_VALIDATION_SCOPE', 'biocompiler.core_policy_implementation._coupled_original', 'biocompiler.policy.__dir__', 'biocompiler.policy.__getattr__', 'biocompiler.policy.refinement.__dir__', 'biocompiler.policy.refinement.__getattr__')
+BEFORE_TRANSFER_NETWORK_METADATA_SHA256 = "de1b1202fcbfe2453c78be6fbe40828189fa28f32fc62eede742a0f4fe19225d"
+TRANSFER_NETWORK_PREFIXES = ('biocompiler.policy.quantitative.TransferEdge', 'biocompiler.policy.quantitative.SampledTransferNetwork')
+TRANSFER_NETWORK_DEPENDENCIES = ('biocompiler.core_policy_component_material.TRANSFER_NETWORK_IMPLEMENTATION', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_PRODUCER_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_REQUEST_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_REQUEST_SCHEMA', 'biocompiler.core_policy_component_material.TRANSFER_NETWORK_VALIDATION_SCOPE', 'biocompiler.core_policy_component_material._transfer_network')
+BEFORE_TRANSFER_PAIR_METADATA_SHA256 = "169ff67cf58f5e2d3babb3e9f8c63b55128a2613c2f04e1ad73d3c1884968874"
+TRANSFER_PAIR_PREFIXES = ('biocompiler.policy.quantitative.ReservoirCompartment', 'biocompiler.policy.quantitative.SampledTransferPair')
+TRANSFER_PAIR_DEPENDENCIES = ('biocompiler.core_policy_component_material.TRANSFER_PAIR_IMPLEMENTATION', 'biocompiler.core_policy_component_material.TRANSFER_PAIR_PRODUCER_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_PAIR_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_PAIR_REQUEST_PROFILE', 'biocompiler.core_policy_component_material.TRANSFER_PAIR_REQUEST_SCHEMA', 'biocompiler.core_policy_component_material.TRANSFER_PAIR_VALIDATION_SCOPE', 'biocompiler.core_policy_component_material._transfer_pair')
+BEFORE_STEP_QUANTITATIVE_METADATA_SHA256 = "8db45c56f118a7271e7ce6225b7a2bb0940793b3807a016a6442dd6f36c2d3d7"
+STEP_QUANTITATIVE_PREFIX = "biocompiler.policy.quantitative.SampledStepReservoir"
+STEP_QUANTITATIVE_DEPENDENCIES = ('biocompiler.core_policy_component_material.MULTI_SITE_ASSEMBLY_PROFILE', 'biocompiler.core_policy_component_material.STEP_QUANTITATIVE_IMPLEMENTATION', 'biocompiler.core_policy_component_material.STEP_QUANTITATIVE_PRODUCER_PROFILE', 'biocompiler.core_policy_component_material.STEP_QUANTITATIVE_PROFILE', 'biocompiler.core_policy_component_material.STEP_QUANTITATIVE_REQUEST_PROFILE', 'biocompiler.core_policy_component_material.STEP_QUANTITATIVE_REQUEST_SCHEMA', 'biocompiler.core_policy_component_material.STEP_QUANTITATIVE_VALIDATION_SCOPE', 'biocompiler.core_policy_component_material._multi_site', 'biocompiler.core_policy_implementation.MULTI_SITE_BINDING_PROFILE', 'biocompiler.core_policy_implementation.MULTI_SITE_BINDING_REPORT_SCHEMA', 'biocompiler.core_policy_implementation.MULTI_SITE_BINDING_SCHEMA', 'biocompiler.core_policy_implementation.MULTI_SITE_IMPLEMENTATION', 'biocompiler.core_policy_implementation.MULTI_SITE_PRESERVATION_PROFILE', 'biocompiler.core_policy_implementation.MULTI_SITE_PRODUCER_PROFILE', 'biocompiler.core_policy_implementation.MULTI_SITE_PROFILE', 'biocompiler.core_policy_implementation.MULTI_SITE_REQUEST_PROFILE', 'biocompiler.core_policy_implementation.MULTI_SITE_REQUEST_SCHEMA', 'biocompiler.core_policy_implementation.MULTI_SITE_VALIDATION_SCOPE', 'biocompiler.core_policy_implementation._multi_site_original')
+BEFORE_TARGET_PLANNING_METADATA_SHA256 = "67e9eff1bc5a45833bfa0ab2034d2b64f30d36b51e3f278ccb1c0e993bbc58ec"
+TARGET_PLANNING_PREFIXES = ("biocompiler.core_policy_planning.", "biocompiler.policy.planning.")
+BEFORE_NETWORK_METADATA_SHA256 = "fb0cae52848ceef5f8d9ee9743846a23647175dc70e8144741aee087f5ca4a40"
+NETWORK_DEPENDENCIES = (
+    'biocompiler.core_policy_component_material.NETWORK_IMPLEMENTATION',
+    'biocompiler.core_policy_component_material.NETWORK_PRODUCER_PROFILE',
+    'biocompiler.core_policy_component_material.NETWORK_PROFILE',
+    'biocompiler.core_policy_component_material.NETWORK_REQUEST_PROFILE',
+    'biocompiler.core_policy_component_material.NETWORK_REQUEST_SCHEMA',
+    'biocompiler.core_policy_component_material.NETWORK_VALIDATION_SCOPE',
+    'biocompiler.core_policy_component_material._network',
+    'biocompiler.core_policy_implementation.NETWORK_BINDING_PROFILE',
+    'biocompiler.core_policy_implementation.NETWORK_BINDING_REPORT_SCHEMA',
+    'biocompiler.core_policy_implementation.NETWORK_BINDING_SCHEMA',
+    'biocompiler.core_policy_implementation.NETWORK_IMPLEMENTATION',
+    'biocompiler.core_policy_implementation.NETWORK_PRODUCER_PROFILE',
+    'biocompiler.core_policy_implementation.NETWORK_PROFILE',
+    'biocompiler.core_policy_implementation.NETWORK_REQUEST_PROFILE',
+    'biocompiler.core_policy_implementation.NETWORK_REQUEST_SCHEMA',
+    'biocompiler.core_policy_implementation.NETWORK_VALIDATION_SCOPE',
+    'biocompiler.core_policy_implementation._network_anchors',
+    'biocompiler.core_policy_implementation._network_original',
+)
+BEFORE_MODULE_LINKING_METADATA_SHA256 = "4505ad72eaddb74c56cb7587ebbf2b719cd9b78b2e6c673b76c8820e19335bef"
+MODULE_LINKING_PREFIXES = ("biocompiler.policy.module_linking.", "biocompiler.core_policy_module_linking.")
+BEFORE_QUANTITATIVE_METADATA_SHA256 = "5bf67512edb43be299929b44a147cec8951867fc52bd7fffa169ef2aa10615ad"
+QUANTITATIVE_PREFIX = "biocompiler.policy.quantitative."
+QUANTITATIVE_DEPENDENCIES = tuple("biocompiler.core_policy_component_material." + name for name in (
+    "QUANTITATIVE_REQUEST_SCHEMA", "QUANTITATIVE_REQUEST_PROFILE", "QUANTITATIVE_IMPLEMENTATION", "QUANTITATIVE_VALIDATION_SCOPE",
+    "QUANTITATIVE_PROFILE", "QUANTITATIVE_PRODUCER_PROFILE", "_quantitative", "_quantitative_evidence"))
+BEFORE_REFINEMENT_METADATA_SHA256 = "d717a4c1f9cd7d81a90e8c3a71311d445ff46fb79b13233671a7e44fb65c99a1"
+REFINEMENT_PREFIXES = ("biocompiler.core_policy_refinement.", "biocompiler.policy.refinement.")
+BEFORE_TYPED_MODULES_METADATA_SHA256 = "2a9ce2139ab87bd5b5288357249a2433bba232c5e1a9fceef6b248c1325aab68"
+BEFORE_FINITE_MACHINE_METADATA_SHA256 = "d2f6e39a1a7078d9ca33bf1d0f7c03021b42d92a53db18e3f0fdfb6dec9f2834"
+FINITE_MACHINE_DEPENDENCIES = (
+    'biocompiler.core_policy_component_material.FINITE_MACHINE_IMPLEMENTATION',
+    'biocompiler.core_policy_component_material.FINITE_MACHINE_PRODUCER_PROFILE',
+    'biocompiler.core_policy_component_material.FINITE_MACHINE_PROFILE',
+    'biocompiler.core_policy_component_material.FINITE_MACHINE_REQUEST_PROFILE',
+    'biocompiler.core_policy_component_material.FINITE_MACHINE_REQUEST_SCHEMA',
+    'biocompiler.core_policy_component_material.FINITE_MACHINE_VALIDATION_SCOPE',
+    'biocompiler.core_policy_component_material._finite_machine',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_BINDING_PROFILE',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_BINDING_REPORT_SCHEMA',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_BINDING_SCHEMA',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_IMPLEMENTATION',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_PRODUCER_PROFILE',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_PROFILE',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_REQUEST_PROFILE',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_REQUEST_SCHEMA',
+    'biocompiler.core_policy_implementation.FINITE_MACHINE_VALIDATION_SCOPE',
+    'biocompiler.core_policy_implementation._finite_machine_anchors',
+    'biocompiler.core_policy_implementation._finite_machine_original',
+    'biocompiler.core_policy_implementation._profile_settings',
+    'biocompiler.core_policy_implementation._request',
+)
+TYPED_MODULE_PREFIXES = ("biocompiler.policy.typed.", "biocompiler.policy.modules.")
+GROUNDED_HELPER_DEPENDENCIES = (
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_ASSEMBLY_PROFILE",
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_IMPLEMENTATION",
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_PRODUCER_PROFILE",
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_PROFILE",
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_REQUEST_PROFILE",
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_REQUEST_SCHEMA",
+    "biocompiler.core_policy_component_material.GROUNDED_HELPER_VALIDATION_SCOPE",
+    "biocompiler.core_policy_component_material._grounded_helper",
+    "biocompiler.core_policy_component_material._helper_inventory",
+)
+COMPOSITION_DEPENDENCIES = (
+    *GROUNDED_HELPER_DEPENDENCIES,
+    'biocompiler.core_policy_component_material.INSTANCE_ASSEMBLY_PROFILE',
+    'biocompiler.core_policy_component_material.INSTANCE_IMPLEMENTATION',
+    'biocompiler.core_policy_component_material.INSTANCE_PRODUCER_PROFILE',
+    'biocompiler.core_policy_component_material.INSTANCE_PROFILE',
+    'biocompiler.core_policy_component_material.INSTANCE_REQUEST_PROFILE',
+    'biocompiler.core_policy_component_material.INSTANCE_REQUEST_SCHEMA',
+    'biocompiler.core_policy_component_material.INSTANCE_VALIDATION_SCOPE',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_ASSEMBLY_PROFILE',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_IMPLEMENTATION',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_PRODUCER_PROFILE',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_PROFILE',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_REQUEST_PROFILE',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_REQUEST_SCHEMA',
+    'biocompiler.core_policy_component_material.MULTI_MEMBER_VALIDATION_SCOPE',
+    'biocompiler.core_policy_component_material.PREREQUISITE_IMPLEMENTATION',
+    'biocompiler.core_policy_component_material.PREREQUISITE_PRODUCER_PROFILE',
+    'biocompiler.core_policy_component_material.PREREQUISITE_PROFILE',
+    'biocompiler.core_policy_component_material.PREREQUISITE_REQUEST_PROFILE',
+    'biocompiler.core_policy_component_material.PREREQUISITE_REQUEST_SCHEMA',
+    'biocompiler.core_policy_component_material.PREREQUISITE_VALIDATION_SCOPE',
+    'biocompiler.core_policy_component_material.TWO_OBSERVATION_IMPLEMENTATION',
+    'biocompiler.core_policy_component_material.TWO_OBSERVATION_PRODUCER_PROFILE',
+    'biocompiler.core_policy_component_material.TWO_OBSERVATION_PROFILE',
+    'biocompiler.core_policy_component_material.TWO_OBSERVATION_REQUEST_PROFILE',
+    'biocompiler.core_policy_component_material.TWO_OBSERVATION_REQUEST_SCHEMA',
+    'biocompiler.core_policy_component_material.TWO_OBSERVATION_VALIDATION_SCOPE',
+    'biocompiler.core_policy_component_material._instanced',
+    'biocompiler.core_policy_component_material._member_transport_inventory',
+    'biocompiler.core_policy_component_material._multi_member',
+    'biocompiler.core_policy_component_material._prerequisite_evidence',
+    'biocompiler.core_policy_component_material._prerequisites',
+    'biocompiler.core_policy_component_material._profile_settings',
+    'biocompiler.core_policy_component_material._two_observations',
+    'biocompiler.core_policy_implementation.MULTI_PRODUCT_BINDING_PROFILE',
+    'biocompiler.core_policy_implementation.MULTI_PRODUCT_BINDING_REPORT_SCHEMA',
+    'biocompiler.core_policy_implementation.MULTI_PRODUCT_BINDING_SCHEMA',
+    'biocompiler.core_policy_implementation.MULTI_PRODUCT_REQUEST_PROFILE',
+    'biocompiler.core_policy_implementation.MULTI_PRODUCT_REQUEST_SCHEMA',
+    'biocompiler.core_policy_implementation.PREREQUISITE_REQUEST_PROFILE',
+    'biocompiler.core_policy_implementation.PREREQUISITE_REQUEST_SCHEMA',
+    'biocompiler.core_policy_implementation.TWO_OBSERVATION_BINDING_PROFILE',
+    'biocompiler.core_policy_implementation.TWO_OBSERVATION_BINDING_REPORT_SCHEMA',
+    'biocompiler.core_policy_implementation.TWO_OBSERVATION_BINDING_SCHEMA',
+    'biocompiler.core_policy_implementation.TWO_OBSERVATION_REQUEST_PROFILE',
+    'biocompiler.core_policy_implementation.TWO_OBSERVATION_REQUEST_SCHEMA',
+    'biocompiler.core_policy_implementation._multi_product_anchors',
+    'biocompiler.core_policy_implementation._multi_product_original',
+    'biocompiler.core_policy_implementation._pending_dependencies',
+    'biocompiler.core_policy_implementation._prerequisite_original',
+    'biocompiler.core_policy_implementation._two_observation_anchors',
+    'biocompiler.core_policy_implementation._two_observation_original',
+)
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model native observations operational patterns programs requirements research_project serialization space state time validation values".split())
-CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection")
+MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
+CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking", "core_policy_planning", "core_policy_quantitative_assurance")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py")
 # These names remain compatible support surfaces, not cellular runtime APIs.
@@ -45,6 +181,13 @@ BUILDER_METHODS = tuple("__init__ qualified namespace add hole resolve executor 
 PATTERNS = tuple("bounded_response context_gate once_per_scope ordered_effects persistence_gate population_handoff".split())
 CLI = tuple("check inspect diff export-schema export-request assess-native compile-native check-lowering-native execute-native replay-execution-native compile-implementation-native check-implementation-native replay-implementation-native compile-material-native check-material-native replay-material-native export-material-native".split())
 OPERATIONS = {
+    'core_policy_quantitative_assurance.PolicyQuantitativeAssuranceClient.compile': ('compile-policy-quantitative-assurance', ('request', 'limits')),
+    'core_policy_quantitative_assurance.PolicyQuantitativeAssuranceClient.check': ('check-policy-quantitative-assurance', ('request', 'candidate', 'limits')),
+    'core_policy_quantitative_assurance.PolicyQuantitativeAssuranceClient.replay': ('replay-policy-quantitative-assurance', ('request', 'candidate', 'limits', 'report')),
+    'core_policy_quantitative_assurance.PolicyQuantitativeAssuranceClient.export': ('export-policy-quantitative-assurance', ('request', 'candidate', 'limits')),
+
+    "core_policy_planning.PolicyTargetPlanningClient.plan": ("plan-policy-target", ("request",)),
+    "core_policy_planning.PolicyTargetPlanningClient.replay": ("replay-policy-target-plan", ("request", "report")),
     "core_policy.PolicyClient.assess": ("assess-policy", ("document",)),
     "core_policy.PolicyClient.replay": ("replay-policy-assessment", ("expected_document", "assessment")),
     "core_policy_operational.OperationalPolicyClient.compile": ("compile-policy", ("document", "definitions")),
@@ -66,12 +209,20 @@ OPERATIONS = {
     "core_policy_component_selection.PolicyComponentSelectionClient.check": ("check-policy-component-selection", ("request", "candidate", "limits")),
     "core_policy_component_selection.PolicyComponentSelectionClient.replay": ("replay-policy-component-selection", ("request", "candidate", "limits", "report")),
     "core_policy_component_selection.PolicyComponentSelectionClient.export": ("export-policy-component-selection", ("request", "candidate", "limits")),
+    "core_policy_module_linking.PolicyModuleLinkingClient.check": ("check-policy-module-linking", ("modules", "program")),
+    "core_policy_module_linking.PolicyModuleLinkingClient.replay": ("replay-policy-module-linking", ("modules", "program", "report")),
+    "core_policy_module_linking.PolicyModuleMaterialClient.compile": ("compile-policy-module-material", ("modules", "request", "limits")),
+    "core_policy_module_linking.PolicyModuleMaterialClient.check": ("check-policy-module-material", ("modules", "request", "candidate", "limits")),
+    "core_policy_module_linking.PolicyModuleMaterialClient.replay": ("replay-policy-module-material", ("modules", "request", "candidate", "limits", "report")),
+    "core_policy_module_linking.PolicyModuleMaterialClient.export": ("export-policy-module-material", ("modules", "request", "candidate", "limits")),
+    "core_policy_refinement.PolicyRefinementClient.check": ("check-policy-refinement", ("request", "candidate", "limits")),
+    "core_policy_refinement.PolicyRefinementClient.replay": ("replay-policy-refinement", ("request", "candidate", "limits", "report")),
 }
 # Reviewed access names and canonical owners, independent of the ledger file pins.
 REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
   'biocompiler.policy',
-  'behavior catalog chassis coordination deployment effects entities logic observations patterns requirements '
-  'space state time values'),
+  'behavior catalog chassis coordination deployment effects entities logic module_linking modules observations patterns quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements '
+  'space state time typed values'),
  ('biocompiler.policy', 'biocompiler.policy.handoff', 'SubmissionError assess_capabilities prepare_submission'),
  ('biocompiler.policy', 'biocompiler.policy.inspection', 'diff graph inspect'),
  ('biocompiler.policy',
@@ -107,6 +258,29 @@ REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
  ('biocompiler.policy.requirements', 'biocompiler.policy.model', 'AssuranceRequest Requirement'),
  ('biocompiler.policy.space', 'biocompiler.policy.model', 'Scope SpatialScope'),
  ('biocompiler.policy.state', 'biocompiler.policy.model', 'Assignment Scope StateStore'),
+ ('biocompiler.policy.typed', 'biocompiler.policy.typed',
+  'TypedAuthoringError TruthExpr IntegerExpr TextExpr QuantityExpr EventExpr ScalarExpression EffectPhase '
+  'Observation State Parameter Assignment Effect truth unknown integer text quantity guard trigger '
+  'all_of any_of not_ rising argument truth_observation integer_observation text_observation quantity_observation '
+  'truth_state integer_state text_state quantity_state truth_parameter integer_parameter text_parameter quantity_parameter rule transition'),
+ ('biocompiler.policy.modules', 'biocompiler.policy.modules',
+  'Access ModuleError ModuleLimits InputPort OutputPort ModuleOutput ModuleBinding Footprint ModuleTemplate ModuleInstance instantiate compose_modules'),
+ ('biocompiler.core_policy_refinement', 'biocompiler.core_policy_refinement',
+  'Stage Relation PremiseKind DerivationRule StageIdentity RefinementScope RefinementClaim RefinementPremise RefinementDerivation RefinementEvidence PolicyRefinementResult PolicyRefinementClient'),
+ ('biocompiler.policy.refinement', 'biocompiler.core_policy_refinement',
+  'Stage Relation PremiseKind DerivationRule StageIdentity RefinementScope RefinementClaim RefinementPremise RefinementDerivation RefinementEvidence PolicyRefinementResult PolicyRefinementClient'),
+ ('biocompiler.policy.refinement', 'biocompiler.policy.refinement', 'check replay'),
+ ('biocompiler.policy.module_linking', 'biocompiler.policy.module_linking',
+  'ModuleLinkingLimits ModuleBundle ModuleProposal bundle_from_data prepare check replay compile_material check_material replay_material export_material'),
+ ('biocompiler.core_policy_module_linking', 'biocompiler.core_policy_module_linking',
+  'PolicyModuleLinkingResult PolicyModuleMaterialResult PolicyModuleLinkingClient PolicyModuleMaterialClient'),
+ ('biocompiler.policy.quantitative_composition', 'biocompiler.policy.quantitative_composition', 'ReservoirStateOwner CoupledTransferNetwork'),
+ ('biocompiler.policy.approximation', 'biocompiler.policy.approximation', 'RationalErrorBound ApproximationEndpoint ParameterInterval ApproximationLink ApproximationChain ApproximationContract'),
+ ('biocompiler.policy.realization_evidence', 'biocompiler.policy.realization_evidence', 'EvidenceAuthoringError ContentPin Interval Applicability Artifact Provenance Requirement Protocol Replicate Dataset AnalysisSoftware Analysis Dossier EvidenceContract fingerprint source_pin validate_assessment'),
+ ('biocompiler.policy.quantitative_assurance', 'biocompiler.policy.quantitative_assurance', 'QuantitativeAssuranceRequest compile check replay export'),
+ ('biocompiler.policy.quantitative_assurance', 'biocompiler.core_policy_quantitative_assurance', 'PolicyQuantitativeAssuranceClient PolicyQuantitativeAssuranceResult'),
+ ('biocompiler.core_policy_quantitative_assurance', 'biocompiler.core_policy_quantitative_assurance', 'PolicyQuantitativeAssuranceClient PolicyQuantitativeAssuranceResult'),
+ ('biocompiler.policy.quantitative', 'biocompiler.policy.quantitative', 'QuantitativeAuthoringError SampledReservoir SampledStepReservoir ReservoirCompartment SampledTransferPair TransferEdge SampledTransferNetwork'),
  ('biocompiler.policy.values',
   'biocompiler.policy.model',
   'EVENT INTEGER Parameter Quantity TEXT TRUTH TypeSpec Unit'),
@@ -299,7 +473,11 @@ def discover(root: Path) -> dict[str, Any]:
         bindings: dict[str, str] = {}
         local[module] = bindings
         overloads: Counter[str] = Counter()
-        for node in tree.body:
+        try:
+            lazy_imports = reviewed_policy_lazy_imports(module, tree)
+        except InventoryError as error:
+            raise ApiCoverageError(str(error)) from error
+        for node in [*tree.body, *lazy_imports]:
             if isinstance(node, ast.ImportFrom):
                 package = module if path.endswith("/__init__.py") else module.rsplit(".", 1)[0]
                 parts = package.split(".")[:len(package.split(".")) - node.level + 1] if node.level else []
@@ -391,7 +569,7 @@ def discover(root: Path) -> dict[str, Any]:
     reviewed_access = {module + "." + name: owner + "." + name
                        for module, owner, names in REVIEWED_EXPORT_GROUPS for name in names.split()}
     require(access == reviewed_access, "Reviewed export target/alias census differs")
-    require(len(exports.get("biocompiler.policy", [])) == 112 and len(access) == 163,
+    require(len(exports.get("biocompiler.policy", [])) == 121 and len(access) == 305,
             "Reviewed explicit export census differs")
     require(aliases == {"biocompiler.policy.inspection.summary": "biocompiler.policy.inspection.inspect",
                         "biocompiler.policy.inspection.render_html": "biocompiler.policy.inspection.to_html"}, "Reviewed compatibility/display aliases differ")
@@ -531,6 +709,96 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
+    before_assurance = {
+        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("assurance.")},
+        "coverage": {key: value for key, value in coverage.items()
+                     if not key.startswith(ASSURANCE_PREFIXES) and key not in ASSURANCE_DEPENDENCIES},
+    }
+    encoded_assurance = json.dumps(before_assurance, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_assurance["coverage"]) == 1439 and len(before_assurance["witnesses"]) == 200
+            and digest(encoded_assurance) == BEFORE_ASSURANCE_METADATA_SHA256,
+            "Quantitative assurance must preserve every previous API evidence meaning")
+    before_transfer_network = {
+        "witnesses": {key: value for key, value in before_assurance["witnesses"].items() if not key.startswith("transfer_network.")},
+        "coverage": {key: value for key, value in before_assurance["coverage"].items()
+                     if not key.startswith(TRANSFER_NETWORK_PREFIXES) and key not in TRANSFER_NETWORK_DEPENDENCIES},
+    }
+    encoded_network_transfer = json.dumps(before_transfer_network, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_transfer_network["coverage"]) == 1406 and len(before_transfer_network["witnesses"]) == 195
+            and digest(encoded_network_transfer) == BEFORE_TRANSFER_NETWORK_METADATA_SHA256,
+            "Transfer network authoring must preserve every previous API evidence meaning")
+    before_transfer_pair = {
+        "witnesses": {key: value for key, value in before_transfer_network["witnesses"].items() if not key.startswith("transfer_pair.")},
+        "coverage": {key: value for key, value in before_transfer_network["coverage"].items()
+                     if not key.startswith(TRANSFER_PAIR_PREFIXES) and key not in TRANSFER_PAIR_DEPENDENCIES},
+    }
+    encoded_transfer = json.dumps(before_transfer_pair, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_transfer_pair["coverage"]) == 1375 and len(before_transfer_pair["witnesses"]) == 191
+            and digest(encoded_transfer) == BEFORE_TRANSFER_PAIR_METADATA_SHA256,
+            "Transfer pair authoring must preserve every previous API evidence meaning")
+    before_step_quantitative = {
+        "witnesses": {key: value for key, value in before_transfer_pair["witnesses"].items() if not key.startswith("step_quantitative.")},
+        "coverage": {key: value for key, value in before_transfer_pair["coverage"].items()
+                     if not key.startswith(STEP_QUANTITATIVE_PREFIX) and key not in STEP_QUANTITATIVE_DEPENDENCIES},
+    }
+    encoded_step = json.dumps(before_step_quantitative, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_step_quantitative["coverage"]) == 1350 and len(before_step_quantitative["witnesses"]) == 188
+            and digest(encoded_step) == BEFORE_STEP_QUANTITATIVE_METADATA_SHA256,
+            "Step quantitative authoring must preserve every previous API evidence meaning")
+    before_target_planning = {
+        "witnesses": {key: value for key, value in before_step_quantitative["witnesses"].items() if not key.startswith("target_planning.")},
+        "coverage": {key: value for key, value in before_step_quantitative["coverage"].items() if not key.startswith(TARGET_PLANNING_PREFIXES)},
+    }
+    encoded_planning = json.dumps(before_target_planning, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_target_planning["coverage"]) == 1297 and len(before_target_planning["witnesses"]) == 174
+            and digest(encoded_planning) == BEFORE_TARGET_PLANNING_METADATA_SHA256,
+            "Target planning must preserve every previous API evidence meaning")
+    before_network = {"witnesses": before_target_planning["witnesses"],
+                      "coverage": {key: value for key, value in before_target_planning["coverage"].items() if key not in NETWORK_DEPENDENCIES}}
+    encoded_network = json.dumps(before_network, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_network["coverage"]) == 1279 and len(before_network["witnesses"]) == 174
+            and digest(encoded_network) == BEFORE_NETWORK_METADATA_SHA256,
+            "Network routing must preserve every previous API evidence meaning")
+    before_module_linking = {
+        "witnesses": {key: value for key, value in before_network["witnesses"].items() if not key.startswith("module_linking.")},
+        "coverage": {key: value for key, value in before_network["coverage"].items() if not key.startswith(MODULE_LINKING_PREFIXES)},
+    }
+    encoded_module_linking = json.dumps(before_module_linking, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_module_linking["coverage"]) == 1187 and len(before_module_linking["witnesses"]) == 164
+            and digest(encoded_module_linking) == BEFORE_MODULE_LINKING_METADATA_SHA256,
+            "Module linking must preserve every previous API evidence meaning")
+    before_quantitative = {
+        "witnesses": {key: value for key, value in before_module_linking["witnesses"].items() if not key.startswith("quantitative.")},
+        "coverage": {key: value for key, value in before_module_linking["coverage"].items()
+                     if not key.startswith(QUANTITATIVE_PREFIX) and key not in QUANTITATIVE_DEPENDENCIES},
+    }
+    encoded_quantitative = json.dumps(before_quantitative, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_quantitative["coverage"]) == 1157 and len(before_quantitative["witnesses"]) == 160
+            and digest(encoded_quantitative) == BEFORE_QUANTITATIVE_METADATA_SHA256,
+            "Quantitative authoring must preserve every previous API evidence meaning")
+    before_refinement = {
+        "witnesses": {key: value for key, value in before_quantitative["witnesses"].items() if not key.startswith("refinement.")},
+        "coverage": {key: value for key, value in before_quantitative["coverage"].items() if not key.startswith(REFINEMENT_PREFIXES)},
+    }
+    encoded_refinement = json.dumps(before_refinement, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_refinement["coverage"]) == 1083 and len(before_refinement["witnesses"]) == 152
+            and digest(encoded_refinement) == BEFORE_REFINEMENT_METADATA_SHA256,
+            "Named refinement must preserve every previous API evidence meaning")
+    before_finite = {"witnesses": before_refinement["witnesses"],
+                     "coverage": {key: value for key, value in before_refinement["coverage"].items()
+                                  if key not in FINITE_MACHINE_DEPENDENCIES}}
+    encoded_finite = json.dumps(before_finite, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(digest(encoded_finite) == BEFORE_FINITE_MACHINE_METADATA_SHA256,
+            "Finite-machine SDK must preserve every previous API evidence meaning")
+    previous = {
+        "witnesses": {key: value for key, value in before_finite["witnesses"].items()
+                      if not key.startswith(("typed.", "modules."))},
+        "coverage": {key: value for key, value in before_finite["coverage"].items()
+                     if not key.startswith(TYPED_MODULE_PREFIXES)},
+    }
+    encoded_previous = json.dumps(previous, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(previous["coverage"]) == 905 and digest(encoded_previous) == BEFORE_TYPED_MODULES_METADATA_SHA256,
+            "Typed facade and modules must preserve every previous API evidence meaning")
     return {"status": "source_inventory_checked", "claim_scope": CLAIM, "runtime_protocol_scope": RUNTIME_SCOPE, "files": len(expected["files"]),
             "entries": len(entries), "exports": len(expected["exports"]), "cli_commands": len(CLI),
             "native_operations": len(OPERATIONS), "compatibility_support": len(SUPPORT),

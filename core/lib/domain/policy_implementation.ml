@@ -5,6 +5,8 @@ let profile = "biocompiler.policy_truth_primitives.v0.1"
 let observable_profile = "biocompiler.policy_truth_observables.v0.1"
 let staged_profile = "biocompiler.policy_staged_primitives.v0.1"
 let staged_observable_profile = "biocompiler.policy_staged_observables.v0.1"
+let multi_site_profile = "biocompiler.policy_multi_site_implementation.v0.1"
+let multi_site_observable_profile = "biocompiler.policy_multi_site_observables.v0.1"
 let library_schema = "biocompiler.policy_implementation_library.v0.1"
 let model_schema = "biocompiler.policy_primitive_model.v0.1"
 let candidate_schema = "biocompiler.policy_implementation.v0.1"
@@ -25,6 +27,8 @@ type primitive =
   | Atomic_commit of { writes : int; requests : int }
   | Attempt_bank of { capacity : int; timeout_ticks : int;
       authorization : authorization; on_unknown : unknown_response }
+  | Attempt_bank_sites of { sites:int; capacity:int; timeout_ticks:int;
+      authorization:authorization; on_unknown:unknown_response }
   | Machine_bank of { states : string list; initial : string; terminal : string list;
       writers : int; retained_capacity : int }
   | Transition_gate of { source : string; correlation : correlation }
@@ -58,10 +62,12 @@ type t = { raw : Json.t; authority_value : authority; layout_value : slot_layout
 let fail message = Diagnostic.fail "policy_implementation_contract" message
 let require condition message = if not condition then fail message
 let profile_for_primitive = function
+  | Attempt_bank_sites _ -> multi_site_profile
   | Machine_bank _ | Transition_gate _ | Transition_commit _ -> staged_profile
   | _ -> profile
 let observable_profile_for value =
   if value=profile then observable_profile else if value=staged_profile then staged_observable_profile
+  else if value=multi_site_profile then multi_site_observable_profile
   else fail "Unknown implementation profile."
 let str value = Json.String value
 let obj value = Json.Object value
@@ -128,7 +134,7 @@ let primitive_name = function
   | Truth_not->"truth_not"|Truth_all _->"truth_all"|Truth_any _->"truth_any"|Truth_equal->"truth_equal"
   | Truth_register _->"truth_register"|Observed_rising->"observed_rising"|Event_select _->"event_select"
   | Activation_gate->"activation_gate"|Exclusive_arbiter _->"exclusive_arbiter"|Priority_arbiter _->"priority_arbiter"
-  | Atomic_commit _->"atomic_commit"|Attempt_bank _->"attempt_bank"
+  | Atomic_commit _->"atomic_commit"|Attempt_bank _->"attempt_bank"|Attempt_bank_sites _->"attempt_bank_sites"
   | Machine_bank _->"machine_bank"|Transition_gate _->"transition_gate"|Transition_commit _->"transition_commit"
 let configuration = function
   | Truth_constant value->obj["value",str(truth_name value)]
@@ -147,6 +153,10 @@ let configuration = function
       "correlation",str(match correlation with Unbound->"unbound"|Retained_attempt->"retained_attempt")]
   | Transition_commit{destination;writes;requests}->obj[
       "destination",str destination;"writes",Json.int writes;"requests",Json.int requests]
+  | Attempt_bank_sites{sites;capacity;timeout_ticks;authorization;on_unknown}->obj[
+      "sites",Json.int sites;"capacity",Json.int capacity;"timeout_ticks",Json.int timeout_ticks;
+      "authorization",str(match authorization with At_initiation->"initiation"|Continuous->"continuous");
+      "on_loss",str "continue";"on_unknown",str(match on_unknown with Continue->"continue"|Defer->"defer")]
   | Attempt_bank{capacity;timeout_ticks;authorization;on_unknown}->obj[
       "capacity",Json.int capacity;"timeout_ticks",Json.int timeout_ticks;
       "authorization",str(match authorization with At_initiation->"initiation"|Continuous->"continuous");
@@ -192,6 +202,13 @@ let primitive_of_json tag value =
       Transition_commit{destination=name ~maximum:256(get "destination" value);
         writes=integer ~minimum:0 ~maximum:64(get "writes" value);
         requests=integer ~minimum:0 ~maximum:16(get "requests" value)}
+  | "attempt_bank_sites"->exact["sites";"capacity";"timeout_ticks";"authorization";"on_loss";"on_unknown"]value;
+      let authorization=match text "authorization" value with "initiation"->At_initiation|"continuous"->Continuous|_->fail "Unknown attempt authorization." in
+      let on_unknown=match text "on_unknown" value with "continue"->Continue|"defer"->Defer|_->fail "Unknown attempt uncertainty response." in
+      require(text "on_loss" value="continue")"Stopping and cancellation need another primitive profile.";
+      Attempt_bank_sites{sites=integer ~minimum:1 ~maximum:32(get "sites" value);
+        capacity=integer ~minimum:1 ~maximum:1024(get "capacity" value);
+        timeout_ticks=integer ~minimum:1 ~maximum:10000(get "timeout_ticks" value);authorization;on_unknown}
   | "attempt_bank"->exact["capacity";"timeout_ticks";"authorization";"on_loss";"on_unknown"]value;
       let authorization=match text "authorization" value with "initiation"->At_initiation|"continuous"->Continuous|_->fail "Unknown attempt authorization." in
       let on_unknown=match text "on_unknown" value with "continue"->Continue|"defer"->Defer|_->fail "Unknown attempt uncertainty response." in
@@ -223,6 +240,10 @@ let ports primitive =
       ins Product_symbol "product" requests@outs Truth_write "write" writes@outs Effect_request "request" requests@
       [p Output Machine_write "machine_write"]
   | Machine_bank{writers;_}->ins Machine_write "write" writers@[p Output Machine_snapshot "snapshot"]
+  | Attempt_bank_sites{sites;_}->
+      List.concat(List.init sites(fun index->[p Input Effect_request("request"^string_of_int index);
+        p Input Truth_value("authorization"^string_of_int index)])) @
+      [p Input Feedback_batch "feedback";p Output Event_batch "events";p Output Attempt_snapshot "snapshot"]
   | Attempt_bank _->[p Input Effect_request "request";p Input Truth_value "authorization";p Input Feedback_batch "feedback";
       p Output Event_batch "events";p Output Attempt_snapshot "snapshot"]
 let model_body_to_json (value:model) = obj["schema_version",str model_schema;"profile",str(profile_for_primitive value.primitive);
@@ -232,7 +253,7 @@ let model_of_json value : model =
   exact["identity";"configuration_digest";"body"]value;
   let identity=Pinned_identity.of_json(get "identity" value)and body=get "body" value in
   exact["schema_version";"profile";"primitive";"configuration";"replication"]body;
-  require(text "schema_version" body=model_schema && List.mem(text "profile" body)[profile;staged_profile])"Unknown supplied primitive model profile.";
+  require(text "schema_version" body=model_schema && List.mem(text "profile" body)[profile;staged_profile;multi_site_profile])"Unknown supplied primitive model profile.";
   require(Pinned_identity.kind identity=Pinned_identity.Model)"Primitive model requires a Model identity.";
   let configuration_value=get "configuration" body in
   let configuration_digest=sha(get "configuration_digest" value)in
@@ -247,11 +268,12 @@ let model_of_json value : model =
   {identity;configuration_digest;primitive;replication}
 let library_of_json raw : library =
   measure raw;exact["schema_version";"profile";"id";"version";"models"]raw;
-  require(text "schema_version" raw=library_schema && List.mem(text "profile" raw)[profile;staged_profile])"Unknown implementation library profile.";
+  require(text "schema_version" raw=library_schema && List.mem(text "profile" raw)[profile;staged_profile;multi_site_profile])"Unknown implementation library profile.";
   ignore(name(get "id" raw));ignore(name(get "version" raw));
   let model_values=List.map model_of_json(bounded_list ~maximum:64(get "models" raw))in
   require(model_values<>[])"Concrete model library must not be empty.";
-  require(text "profile" raw=staged_profile || List.for_all(fun(m:model)->profile_for_primitive m.primitive=profile)model_values)
+  require(List.for_all(fun(m:model)->let actual=profile_for_primitive m.primitive in
+    actual=profile || (actual=staged_profile && text "profile" raw<>profile) || text "profile" raw=multi_site_profile)model_values)
     "Legacy library cannot contain staged primitive models.";
   unique "model id/version"(List.map(fun(m:model)->Canonical.encode(arr[str(Pinned_identity.id m.identity);str(Pinned_identity.version m.identity)]))model_values);
   {library_raw=raw;model_values}
@@ -345,7 +367,7 @@ let validate_graph (value:t) =
       unique "atomic destination" !destinations)g.commits)value.group_values;
   List.iter(fun(n:node)->match n.model.primitive with
     |Exclusive_arbiter _|Priority_arbiter _|Atomic_commit _|Transition_commit _->require(Hashtbl.mem member_groups n.node_id)"Atomic node lacks group ownership."
-    |Truth_register _|Attempt_bank _|Machine_bank _->
+    |Truth_register _|Attempt_bank _|Attempt_bank_sites _|Machine_bank _->
         let groups=value.wire_values|>List.filter_map(fun(w:wire)->if w.consumer.node_id=n.node_id &&
           (match(node w.producer.node_id).model.primitive with Atomic_commit _|Transition_commit _->true|_->false)
           then Hashtbl.find_opt member_groups w.producer.node_id else None)|>List.sort_uniq String.compare in
@@ -354,7 +376,8 @@ let validate_graph (value:t) =
   (* Only state writes and newly created attempt events cross a declared phase
      boundary. Every remaining dependency must be a DAG. *)
   let instantaneous=List.filter(fun(w:wire)->match(node w.consumer.node_id).model.primitive with
-    |Truth_register _|Machine_bank _->false|Attempt_bank _ when w.consumer.port_id="request"->false|_->true)value.wire_values in
+    |Truth_register _|Machine_bank _->false|Attempt_bank _ when w.consumer.port_id="request"->false
+    |Attempt_bank_sites _ when String.starts_with ~prefix:"request" w.consumer.port_id->false|_->true)value.wire_values in
   let done_ids=ref Names.empty in
   let rec order remaining=match remaining with []->()|_->
     let ready,blocked=List.partition(fun(n:node)->List.for_all(fun(w:wire)->w.consumer.node_id<>n.node_id||Names.mem w.producer.node_id !done_ids)instantaneous)remaining in
@@ -369,7 +392,7 @@ let validate_graph (value:t) =
   require(List.for_all(fun(n:node)->Names.mem n.node_id !covered)value.node_values)"Implementation node lacks any source occurrence disposition."
 let of_json ~library raw : t =
   measure raw;exact["schema_version";"profile";"observable_profile";"authority";"slot_layout";"nodes";"wires";"inputs";"atomic_groups";"semantic_exports";"occurrences"]raw;
-  require(text "schema_version" raw=candidate_schema && List.mem(text "profile" raw)[profile;staged_profile] &&
+  require(text "schema_version" raw=candidate_schema && List.mem(text "profile" raw)[profile;staged_profile;multi_site_profile] &&
     text "observable_profile" raw=observable_profile_for(text "profile" raw))
     "Unknown implementation or observable profile.";
   let authority_value=authority_of_json(get "authority" raw)in
@@ -385,7 +408,8 @@ let of_json ~library raw : t =
       require(layout_id=layout_value.layout_id && slots=layout_value.slots)"Model replication differs from the declared ordered slot layout.");
     {node_id;model})(bounded_list ~maximum:256(get "nodes" raw))in
   require(node_values<>[])"Implementation graph cannot be empty.";unique "node"(List.map(fun(n:node)->n.node_id)node_values);
-  require(text "profile" raw=staged_profile || List.for_all(fun(n:node)->profile_for_primitive n.model.primitive=profile)node_values)
+  require(List.for_all(fun(n:node)->let actual=profile_for_primitive n.model.primitive in
+    actual=profile || (actual=staged_profile && text "profile" raw<>profile) || text "profile" raw=multi_site_profile)node_values)
     "Legacy graph cannot contain staged primitive nodes.";
   let wire_values=List.map(fun value->exact["producer";"consumer"]value;
     {producer=endpoint_of_json(get "producer" value);consumer=endpoint_of_json(get "consumer" value)})

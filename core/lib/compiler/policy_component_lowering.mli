@@ -6,5 +6,10 @@ module A = Bioc_domain.Policy_component_assembly_rule
 module U = Bioc_domain.Policy_implementation_binding
 module Q = Bioc_domain.Policy_component_assembly_proposal
 type proposal = { implementation:I.t; binding:U.t; assembly:Q.t }
-val arrange : ?charge:(int -> unit) -> library:I.library -> rule:A.t ->
+
+(** [source_inputs] contains original source declaration/global input pairs.
+    It is mandatory for the two-observation, multi-product and finite-machine
+    families, and absent for older families.
+    It constrains the untrusted graph search without granting correspondence. *)
+val arrange : ?charge:(int -> unit) -> ?source_inputs:(string * string) list -> library:I.library -> rule:A.t ->
   Policy_implementation_lowering.proposal -> proposal

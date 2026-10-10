@@ -1,11 +1,14 @@
 open Bioc_wire
 module D = Bioc_domain.Policy_document
 module O = Bioc_domain.Policy_operational
-type t = { document_value : D.t; descriptors_value : O.descriptor_bundle; assessment_value : Json.t; report_value : Json.t }
+module Typed = Bioc_domain.Policy_admitted_ir
+type t = { document_value : D.t; descriptors_value : O.descriptor_bundle; assessment_value : Json.t; report_value : Json.t;
+  typed_value : Typed.t }
 let document (value:t) = value.document_value
 let descriptors (value:t) = value.descriptors_value
 let source_assessment (value:t) = value.assessment_value
 let report (value:t) = value.report_value
+let typed (value:t) = value.typed_value
 module Make (Charge : sig val charge : int -> unit end) = struct
 module Meter = Policy_generation_meter.Make(Charge)
 module List = Meter.List
@@ -29,12 +32,14 @@ let fail path message = Diagnostic.fail ~path "policy_operational_unsupported" m
 let require path condition message = if not condition then fail path message
 let supported_types = ["truth";"integer";"text";"quantity"]
 let expr_ops = ["literal";"observe";"state";"parameter";"all";"any";"not";"eq";"ne";"lt";"le";"gt";"ge";"updated";"rising";"effect_event"]
-let admit ~document ~descriptors =
+let admit ?assessed ~document ~descriptors () =
   (* Ingress diagnostic locations are not authored program coordinates. Every
      operational artifact uses one canonical document root, whether admission
      started through the direct API, a request envelope or a native service. *)
-  let document=D.of_json ~path:"/document" (D.to_json document) in
-  let assessment=Policy_check.check ~charge:Charge.charge document in
+  let document,assessment=match assessed with
+    |None->let document=D.of_json ~path:"/document" (D.to_json document)in
+      document,Policy_check.check ~charge:Charge.charge document
+    |Some source->Policy_check.assessed_document source,Policy_check.assessed_report source in
   Diagnostic.require ~path:"/document" (text "status" assessment = "valid") "policy_operational_source_invalid"
     "Operational admission requires a fresh valid native source assessment.";
   let declarations=D.declarations document in
@@ -157,6 +162,9 @@ let admit ~document ~descriptors =
     require path (List.mem op expr_ops) "Expression operation is outside bounded operational semantics.";
     require path (List.mem (text "kind" (get "value_type" value)) ("event"::supported_types)) "Unsupported operational expression value type.";
     if op = "literal" then require path (text "kind" (get "value_type" value) <> "event") "Literal events are not admitted.";
+    if List.mem op ["eq";"ne";"lt";"le";"gt";"ge"] then
+      require (path^"/args") (List.for_all (fun arg -> text "kind" (get "value_type" arg) <> "event") (list "args" value))
+        "Operational comparisons require scalar operands; events are triggers, not scalar values.";
     if op = "effect_event" then require path (List.mem (text "value" value) ["requested";"initiated";"completed";"failed";"timed_out"])
       "Effect phase has no supported transition semantics.";
     if op = "rising" then (
@@ -235,8 +243,11 @@ let admit ~document ~descriptors =
         bind (p^"/contract") (get "contract" v) O.Effect_abstract_attempt;
         let subject_bindings=referenced_encounters (get "subject" v) in
         let effect_binding=if Seen.is_empty subject_bindings then None else Some (Seen.choose subject_bindings) in
-        List.iter (fun argument ->
+        List.iteri (fun index argument ->
           let expression_value=get "value" argument in
+          require (p^"/parameters/"^string_of_int index^"/value")
+            (text "kind" (get "value_type" expression_value) <> "event")
+            "Operational effect arguments require scalar values; event-valued arguments have no execution semantics.";
           expression (p^"/parameters") expression_value;
           compatible_binding (p^"/parameters") effect_binding (encounter_bindings expression_value)) (list "parameters" v);
         let lifecycle=get "lifecycle" v in
@@ -296,10 +307,20 @@ let admit ~document ~descriptors =
     "profile",str O.profile;"document_artifact_digest",str (D.artifact_digest document);"descriptors_digest",str (O.descriptors_digest descriptors);
     "source_assessment",assessment;"target_status",str "unassessed";"artifact",str "withheld"] in
   Meter.preflight report_value;
-  {document_value=document;descriptors_value=descriptors;assessment_value=assessment;report_value}
+  (* All original semantic guards run first, preserving their diagnostics and
+     order. This owned representation resolves every executable reference and
+     separates scalar predicates from event triggers before a producer can run.
+     It does not reinterpret retained unsupported requirements. *)
+  Meter.preflight (D.to_json document);
+  let typed_value=Typed.elaborate ~charge:Charge.charge document in
+  {document_value=document;descriptors_value=descriptors;assessment_value=assessment;report_value;typed_value}
 
 end
 let admit_metered ~charge ~document ~descriptors =
   let module Admission = Make(struct let charge = charge end) in
-  Admission.admit ~document ~descriptors
+  Admission.admit ~document ~descriptors ()
 let admit ~document ~descriptors = admit_metered ~charge:Policy_generation_meter.no_charge ~document ~descriptors
+let admit_assessed ~source ~descriptors =
+  let document=Policy_check.assessed_document source in
+  let module Admission=Make(struct let charge=Policy_check.charge_assessed source end)in
+  Admission.admit ~assessed:source ~document ~descriptors ()

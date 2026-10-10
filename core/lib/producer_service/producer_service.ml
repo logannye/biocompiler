@@ -66,13 +66,36 @@ let capabilities executable request =
   | Protocol.Ok, Some original, [] ->
       let changed = Json.object_fields original |> List.map (fun (key, value) -> key,
           match key with
-          | "operations" -> Json.Array (Json.array value @ List.map str (operations @ ["compile-policy"; "compile-policy-implementation"; "compile-policy-material"; "compile-policy-component-material"; "compile-policy-component-selection"] @ Synthetic_producer_service.operations @ Synthetic_producer_public_service.operations @ Synthetic_inspection_service.operations))
-          | "validation_scopes" -> Json.Array (Json.array value @ List.map str (validation_scope :: Synthetic_producer_service.validation_scopes @ Synthetic_producer_public_service.validation_scopes @ Synthetic_inspection_service.validation_scopes))
-          | "profiles" -> obj (Json.object_fields value @ ["architecture_producer", profile;
+          | "operations" -> Json.Array (Json.array value @ List.map str (operations @ ["compile-policy"; "compile-policy-implementation"; "compile-policy-material"; "compile-policy-component-material"; "compile-policy-component-selection"; "compile-policy-module-material"; "compile-policy-quantitative-assurance"] @ Policy_target_planning.operations @ Synthetic_producer_service.operations @ Synthetic_producer_public_service.operations @ Synthetic_inspection_service.operations))
+          | "validation_scopes" -> Json.Array (Json.array value @ List.map str (validation_scope :: Policy_target_planning.validation_scope :: Synthetic_producer_service.validation_scopes @ Synthetic_producer_public_service.validation_scopes @ Synthetic_inspection_service.validation_scopes))
+          | "profiles" -> obj (List.map(fun(name,body)->name,
+              if name="policy_coupled_wire" then obj(List.map(fun(key,value)->key,
+                if key="operations" then Json.Array(Json.array value @
+                  List.map str ["compile-policy-component-material";"compile-policy-quantitative-assurance"])
+                else value)(Json.object_fields body)) else body)(Json.object_fields value) @ ["architecture_producer", profile;
+              "policy_target_planning", Policy_target_planning.profile;
+              "policy_quantitative_assurance_producer", Bioc_service.Policy_quantitative_assurance_service.producer_profile;
               "policy_operational_producer", Bioc_service.Policy_operational_service.producer_profile;
               "policy_implementation_producer", Bioc_service.Policy_implementation_service.producer_profile;
+              "policy_multi_site_implementation_producer", Bioc_service.Policy_implementation_service.multi_site_producer_profile;
+              "policy_coupled_implementation_producer", Bioc_service.Policy_implementation_service.coupled_producer_profile;
+              "policy_coupled_quantitative_material_producer", Bioc_service.Policy_component_material_service.composition_producer_profile;
+              "policy_transfer_network_material_producer", Bioc_service.Policy_component_material_service.transfer_network_producer_profile;
+              "policy_transfer_pair_material_producer", Bioc_service.Policy_component_material_service.transfer_pair_producer_profile;
+              "policy_step_quantitative_material_producer", Bioc_service.Policy_component_material_service.step_quantitative_producer_profile;
+              "policy_network_implementation_producer", Bioc_service.Policy_implementation_service.network_producer_profile;
+              "policy_finite_machine_implementation_producer", Bioc_service.Policy_implementation_service.finite_machine_producer_profile;
               "policy_material_producer", Bioc_service.Policy_material_service.producer_profile;
               "policy_component_material_producer", Bioc_service.Policy_component_material_service.producer_profile;
+              "policy_instance_material_producer", Bioc_service.Policy_component_material_service.instance_producer_profile;
+              "policy_prerequisite_material_producer", Bioc_service.Policy_component_material_service.prerequisite_producer_profile;
+              "policy_two_observation_material_producer", Bioc_service.Policy_component_material_service.two_observation_producer_profile;
+              "policy_multi_member_material_producer", Bioc_service.Policy_component_material_service.multi_member_producer_profile;
+              "policy_grounded_helper_material_producer", Bioc_service.Policy_component_material_service.grounded_helper_producer_profile;
+              "policy_network_material_producer", Bioc_service.Policy_component_material_service.network_producer_profile;
+              "policy_finite_machine_material_producer", Bioc_service.Policy_component_material_service.finite_machine_producer_profile;
+              "policy_quantitative_material_producer", Bioc_service.Policy_component_material_service.quantitative_producer_profile;
+              "policy_module_material_producer", Bioc_service.Policy_module_linking_service.producer_profile;
               "policy_component_selection_producer", Bioc_service.Policy_component_selection_service.producer_profile] @ Synthetic_producer_service.profiles @ Synthetic_producer_public_service.profiles @ Synthetic_inspection_service.profiles)
           | "claim_scope" -> str "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
           | _ -> value) in
@@ -86,6 +109,8 @@ let handle executable (request : Protocol.request) =
   | Protocol.Core, "compile-policy" -> Protocol.Ok, Some (Policy_operational_producer.compile request.payload), []
   | Protocol.Core, "compile-policy-implementation" -> Protocol.Ok, Some (Policy_implementation_producer.compile request.payload), []
   | Protocol.Core, "compile-policy-material" -> Protocol.Ok, Some (Policy_material_producer.compile request.payload), []
+  | Protocol.Core, "compile-policy-quantitative-assurance" -> Protocol.Ok, Some (Policy_quantitative_assurance_producer.compile request.payload), []
+  | Protocol.Core, "compile-policy-module-material" -> Protocol.Ok, Some (Policy_module_material_producer.compile request.payload), []
   | Protocol.Core, "compile-policy-component-material" -> Protocol.Ok, Some (Policy_component_material_producer.compile request.payload), []
   | Protocol.Core, "export-architecture" -> Protocol.Ok, Some (export request.payload), []
   | Protocol.Core, operation when List.mem operation Synthetic_producer_service.operations ->
@@ -97,6 +122,8 @@ let handle executable (request : Protocol.request) =
   | Protocol.Core, operation when List.mem operation Synthetic_inspection_service.operations ->
       Protocol.Ok, Some (Synthetic_inspection_service.handle ~executable ~request_id:request.request_id
           ~operation request.payload), []
+  | Protocol.Core, operation when List.mem operation Policy_target_planning.operations ->
+      Protocol.Ok, Some (Policy_target_planning.handle ~operation request.payload), []
   | Protocol.Core, _ -> Base.handle executable request
 
 let scoped_handle executable (request:Protocol.request) =

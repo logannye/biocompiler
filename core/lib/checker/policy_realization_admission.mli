@@ -20,6 +20,11 @@ val behavior : admitted_inputs -> O.behavior
 val operating_domain : admitted_inputs -> F.validated
 val authorized_models : admitted_inputs -> P.t list
 
+(** Present only in the separate prerequisite input profile. These are exact
+    original catalog obligations retained as pending, never discharged by
+    source admission or finite behavior preservation. *)
+val pending_dependencies : admitted_inputs -> Bioc_domain.Policy_provider_prerequisites.pending_dependency list
+
 (** Exact membership only; selecting a permitted model proves no correspondence. *)
 val require_model : admitted_inputs -> entry_id:string -> P.t -> unit
 val report : admitted_inputs -> Json.t

@@ -1,5 +1,17 @@
 # Architecture
 
+The [bounded policy instance profile](policy-instance-composition-v0.1.md) is the
+current core implementation increment: named component instances, typed links,
+whole-root material joins and independent whole-program checking. It preserves
+the existing one-RNA/one-product envelope. Hosted native and integration
+validation are pending at this checkpoint.
+
+The [product vision and integration roadmap](product-vision-and-integration-roadmap.md)
+defines the shared core for standalone researchers and future AI-directed labs,
+including boundaries between compilation, experimental execution, and model
+updates. It adds integration design targets without changing the supported
+profiles or their acceptance scope described here.
+
 The new [`biocompiler.policy` authoring family](policy-language-v0.1.md) supplies
 layer 3's expressive declarative documents, builders, structural checks,
 inspection, serialization and explicit compiler submissions. It is independent

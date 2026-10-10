@@ -5,8 +5,10 @@ module Set = Set.Make(String)
 
 let profile = "biocompiler.policy_primitive_execution.v0.1"
 let staged_execution_profile = "biocompiler.policy_staged_primitive_execution.v0.1"
+let multi_site_execution_profile = "biocompiler.policy_multi_site_primitive_execution.v0.1"
 let execution_profile implementation =
-  if I.implementation_profile implementation=I.staged_profile then staged_execution_profile else profile
+  if I.implementation_profile implementation=I.multi_site_profile then multi_site_execution_profile
+  else if I.implementation_profile implementation=I.staged_profile then staged_execution_profile else profile
 type reason = Missing | Stale | Invalid | Conflicting
 type truth_signal = { value : I.truth option; reasons : reason list }
 type binding = { slot : string option; generation : int }
@@ -196,11 +198,30 @@ let initialize ~implementation ~(environment:environment) ~(limits:limits) =
                  "Retained transition requires an explicit completion/failure/timeout selector.";
                let origin=input base selected.node_id "events"in
                require(origin.port_id="events" && (match(node base origin.node_id).model.primitive with
-                 |I.Attempt_bank _->true|_->false)) "unsupported" "Retained transition selector lacks an actual attempt bank.")
+                 |I.Attempt_bank _|I.Attempt_bank_sites _->true|_->false)) "unsupported" "Retained transition selector lacks an actual attempt bank.")
          |_->fail "unsupported" "Legacy and machine controls cannot interchange their commit semantics.")
     |I.Attempt_bank _->let producer=input base n.node_id "request"in
         let owner=match List.find_opt(fun(c:control)->c.commit=producer.node_id)controls with Some c->c|None->fail "unsupported" "Attempt requests need one actual initiating gate."in
         require(input base n.node_id "authorization"=input base owner.gate "guard") "unsupported" "Attempt authorization differs from the retained initiating guard endpoint."
+    |I.Attempt_bank_sites{sites;_}->
+        let owners=List.init sites(fun index->
+          let suffix=string_of_int index in
+          let producer=input base n.node_id("request"^suffix)in
+          let owner=match List.find_opt(fun(c:control)->c.commit=producer.node_id)controls with
+            |Some c->c|None->fail "unsupported" "Every request site needs an actual initiating transition."in
+          require(producer.port_id="request0" &&
+            (match(node base owner.commit).model.primitive with I.Transition_commit{requests=1;_}->true|_->false))
+            "unsupported" "Multi-site attempts require one request per original transition commit.";
+          require(input base n.node_id("authorization"^suffix)=input base owner.gate "guard")
+            "unsupported" "Request-site authorization differs from its initiating guard endpoint.";owner)in
+        unique "request-site gate"(List.map(fun(c:control)->c.gate)owners);
+        let arbiters=List.sort_uniq String.compare(List.map(fun(c:control)->c.arbiter)owners)in
+        require(List.length arbiters=1 && (match(node base(List.hd arbiters)).model.primitive with
+          |I.Exclusive_arbiter _->true|_->false)) "unsupported"
+          "Shared attempt sites require one exclusive arbiter with rejected conflicts.";
+        let machines=List.sort_uniq String.compare(List.map(fun(c:control)->
+          (destination base c.commit "machine_write").node_id)owners)in
+        require(List.length machines=1) "unsupported" "Shared effect request sites must retain one actual machine owner."
     |_->())nodes;
   let ancestry=Hashtbl.create 32 in
   let rec observed depth (e:I.endpoint)=
@@ -260,7 +281,7 @@ let event_evaluator w (snapshot:state) (events:event list) =
       charge w (1+List.length events);
       let result=match(node snapshot.plan e.node_id).model.primitive with
       |I.Event_select kind->List.filter(fun(event:event)->event.kind=Primitive_event kind)(evaluate(input snapshot.plan e.node_id "events")b)
-      |I.Evidence_bank _|I.Observed_rising|I.Attempt_bank _->List.filter(fun(event:event)->event.origin=Some e && event.binding=b)events
+      |I.Evidence_bank _|I.Observed_rising|I.Attempt_bank _|I.Attempt_bank_sites _->List.filter(fun(event:event)->event.origin=Some e && event.binding=b)events
       |_->fail "graph" "Event wire reaches a non-event primitive."in
       Hashtbl.add memo cache result;result in evaluate
 let initialize_slot w (slot:slot_state) =
@@ -362,7 +383,8 @@ let refresh_authorization w =
   let snapshot=w.current in let evaluate=evaluator w snapshot in
   let attempts=List.map(fun(a:attempt)->charge w 1;
     match(node snapshot.plan a.bank).model.primitive with
-    |I.Attempt_bank{authorization=I.Continuous;on_unknown;_}when a.status=Active->
+    |(I.Attempt_bank{authorization=I.Continuous;on_unknown;_}
+      |I.Attempt_bank_sites{authorization=I.Continuous;on_unknown;_})when a.status=Active->
         let signal=evaluate a.guard a.binding in let value=truth signal in
         if value=a.authorization then a else (
           let response=if value=I.Unknown then(match on_unknown with I.Continue->"continue"|I.Defer->"defer")else if value=I.False then "continue"else "authorized"in
@@ -457,7 +479,7 @@ let commit w (prepared:prepared list) =
     let key=cell request.bank request.activation.binding in
     let old=match Map.find_opt key !counts with Some count->count|None->
       List.fold_left(fun count(a:attempt)->if a.bank=request.bank && a.binding=request.activation.binding && a.status=Active then count+1 else count)0 w.current.attempts in
-    let capacity=match(node w.current.plan request.bank).model.primitive with I.Attempt_bank{capacity;_}->capacity|_->fail "graph" "Request does not reach an attempt bank."in
+    let capacity=match(node w.current.plan request.bank).model.primitive with I.Attempt_bank{capacity;_}|I.Attempt_bank_sites{capacity;_}->capacity|_->fail "graph" "Request does not reach an attempt bank."in
     require(old<capacity) "capacity" "Per-bank/per-slot active attempt capacity exhausted before atomic commit.";
     counts:=Map.add key(old+1)!counts)requests;
   let machine_writes=List.filter_map(fun(p:prepared)->p.machine_write)prepared in
@@ -478,7 +500,7 @@ let commit w (prepared:prepared list) =
   List.concat_map(fun(p:prepared)->
     let started=List.map(fun(_, (request:request))->
     let s=w.current in
-    let timeout=match(node s.plan request.bank).model.primitive with I.Attempt_bank{timeout_ticks;_}->timeout_ticks|_->assert false in
+    let timeout=match(node s.plan request.bank).model.primitive with I.Attempt_bank{timeout_ticks;_}|I.Attempt_bank_sites{timeout_ticks;_}->timeout_ticks|_->assert false in
     let b=request.activation.binding in
     let slot=match b.slot with Some id->find_slot s id|None->fail "scope" "Attempt cannot collapse an encounter to executor scope."in
     let ordinal=s.allocated+1 in
@@ -701,6 +723,156 @@ let state_fingerprint (value:state)=
     "registers",map(fun value->str(truth_name value))value.registers;"evidence",map retained_json value.evidence;
     "rising",map(fun value->str(truth_name value))value.rising;"attempts",arr(List.map attempt_json value.attempts);
     "observation_ids",arr(List.map str(Set.elements value.observation_ids));"feedback_ids",arr(List.map str(Set.elements value.feedback_ids))]@
-    (if I.implementation_profile value.plan.implementation=I.staged_profile then
+    (if List.mem(I.implementation_profile value.plan.implementation)[I.staged_profile;I.multi_site_profile] then
       ["machines",map machine_json value.machines]else []))in
   Canonical.sha256(Canonical.encode_bounded ~max_bytes:(8*1024*1024)raw)
+
+(* Successful deterministic transitions are private witnesses, not acceptance.
+   Keep this closed record destructuring exhaustive: a new future-read field
+   must invalidate the equality/preflight audit at compilation (warning 9). *)
+type transition_witness = { predecessor : string; successor : state;
+  observed : frame }
+type transition_session = { owner : plan; mutable witnesses : transition_witness list;
+  mutable requests : int; mutable evaluations : int; mutable reuses : int;
+  mutable bypasses : int; mutable proof_work : int; mutable resident_bytes : int;
+  mutable peak_bytes : int }
+type transition_usage = { requests : int; evaluations : int; reuses : int;
+  bypasses : int; proof_work : int; peak_bytes : int; current_entries : int }
+let transition_entry_limit = 32
+let transition_byte_limit = 8 * 1024 * 1024
+let transition_work_limit = 64 * 1024 * 1024
+let transition_key_limit = 1024 * 1024
+exception Transition_proof_bound
+let create_transition_session (initial:state) =
+  {owner=initial.plan;witnesses=[];requests=0;evaluations=0;reuses=0;
+   bypasses=0;proof_work=0;resident_bytes=0;peak_bytes=0}
+let transition_usage (session:transition_session) : transition_usage =
+  {requests=session.requests;evaluations=session.evaluations;reuses=session.reuses;
+   bypasses=session.bypasses;proof_work=session.proof_work;peak_bytes=session.peak_bytes;
+   current_entries=List.length session.witnesses}
+let proof_spend (session:transition_session) amount =
+  if amount<0 || amount>transition_work_limit-session.proof_work then (
+    session.proof_work<-transition_work_limit;raise Transition_proof_bound);
+  session.proof_work<-session.proof_work+amount
+let proof_option f = function None->()|Some value->f value
+let proof_iter (session:transition_session) f values = List.iter(fun value->proof_spend session 8;f value)values
+let proof_text (session:transition_session) value = proof_spend session (8+6*String.length value)
+let proof_binding (session:transition_session) ({slot;generation}:binding) =
+  proof_spend session 128;proof_option(proof_text session)slot;ignore generation
+let proof_endpoint (session:transition_session) ({node_id;port_id}:I.endpoint) =
+  proof_spend session 128;proof_text session node_id;proof_text session port_id
+let proof_machine (session:transition_session) ({bank;binding;state;retained_attempts}:machine_snapshot) =
+  proof_spend session 256;proof_text session bank;proof_binding session binding;
+  proof_text session state;proof_iter session (proof_text session) retained_attempts
+let proof_attempt (session:transition_session) ({attempt_id;ordinal;bank;binding;executor;subject;gate;guard;
+    causes;product;started_tick;deadline_tick;ended_tick;status;authorization;machine}:attempt) =
+  proof_spend session 1024;
+  List.iter(proof_text session)[attempt_id;bank;executor;subject;gate;product];
+  proof_binding session binding;proof_endpoint session guard;
+  proof_iter session (proof_text session) causes;proof_option(proof_text session)machine;
+  ignore(ordinal,started_tick,deadline_tick,ended_tick,status,authorization)
+let proof_state (session:transition_session) (value:state) =
+  let {plan;next;slots;registers;evidence;rising;machines;attempts;sequence;allocated;
+    work;retained;observation_ids;feedback_ids}=value in
+  proof_spend session 1024;ignore(plan,next,sequence,allocated,work,retained);
+  proof_iter session (fun ({description;generation;active;generation_start}:slot_state)->
+    let {slot_id;target;start_tick}=description in
+    proof_spend session 512;proof_text session slot_id;proof_text session target;
+    ignore(start_tick,generation,active,generation_start))slots;
+  let map f values=Map.iter(fun key value->proof_spend session 8;proof_text session key;f value)values in
+  map(fun value->proof_spend session 32;ignore value)registers;
+  map(fun ({observed;available;evidence;occurrences}:retained_evidence)->
+    proof_spend session 256;ignore(observed,available,evidence);
+    proof_iter session(proof_text session)occurrences)evidence;
+  map(fun value->proof_spend session 32;ignore value)rising;
+  map(proof_machine session)machines;
+  proof_iter session(proof_attempt session)attempts;
+  Set.iter(fun value->proof_spend session 8;proof_text session value)observation_ids;
+  Set.iter(fun value->proof_spend session 8;proof_text session value)feedback_ids
+let proof_batch (session:transition_session) ({tick;lifecycle;observations;feedback}:input_batch) =
+  proof_spend session 256;ignore tick;
+  proof_iter session(fun(slot,action)->proof_text session slot;proof_spend session 32;ignore action)lifecycle;
+  proof_iter session(fun({observation_id;input_id;slot_id;observed_tick;observer;subject;evidence}:observation)->
+    proof_spend session 512;List.iter(proof_text session)[observation_id;input_id;slot_id;observer;subject];
+    ignore(observed_tick,evidence))observations;
+  proof_iter session(fun({feedback_id;input_id;attempt_id;executor;subject;slot_id;outcome}:feedback)->
+    proof_spend session 512;List.iter(proof_text session)[feedback_id;input_id;attempt_id;executor;subject;slot_id];
+    ignore outcome)feedback
+let transition_state_json (value:state) =
+  let {plan;next;slots;registers;evidence;rising;machines;attempts;sequence;allocated;
+    work;retained;observation_ids;feedback_ids}=value in
+  (* Plan equality is physical ownership, not a graph digest. Include machines
+     even in an unstaged state; no profile-conditioned field may hide data. *)
+  ignore plan;
+  let map encode values=obj(List.map(fun(key,value)->key,encode value)(Map.bindings values))in
+  obj["next",Json.int next;"sequence",Json.int sequence;"allocated",Json.int allocated;
+    "work",Json.int work;"retained",Json.int retained;
+    "slots",arr(List.map(fun({description;generation;active;generation_start}:slot_state)->
+      let {slot_id;target;start_tick}=description in
+      obj["id",str slot_id;"target",str target;"start",Json.int start_tick;
+        "generation",Json.int generation;"active",Json.Bool active;"generation_start",Json.int generation_start])slots);
+    "registers",map(fun value->str(truth_name value))registers;"evidence",map retained_json evidence;
+    "rising",map(fun value->str(truth_name value))rising;"machines",map machine_json machines;
+    "attempts",arr(List.map attempt_json attempts);
+    "observation_ids",arr(List.map str(Set.elements observation_ids));
+    "feedback_ids",arr(List.map str(Set.elements feedback_ids))]
+let transition_batch_json ({tick;lifecycle;observations;feedback}:input_batch) =
+  let evidence_json = function Known value->obj["known",Json.Bool value]
+    |Missing_evidence->str "missing"|Invalid_evidence->str "invalid"|Conflicting_evidence->str "conflicting"in
+  obj["tick",Json.int tick;
+    "lifecycle",arr(List.map(fun(slot,action)->arr[str slot;str(match action with Reset->"reset"|End->"end")])lifecycle);
+    "observations",arr(List.map(fun({observation_id;input_id;slot_id;observed_tick;observer;subject;evidence}:observation)->
+      obj["id",str observation_id;"input",str input_id;"slot",str slot_id;"observed",Json.int observed_tick;
+        "observer",str observer;"subject",str subject;"evidence",evidence_json evidence])observations);
+    "feedback",arr(List.map(fun({feedback_id;input_id;attempt_id;executor;subject;slot_id;outcome}:feedback)->
+      obj["id",str feedback_id;"input",str input_id;"attempt",str attempt_id;"executor",str executor;
+        "subject",str subject;"slot",str slot_id;"outcome",str(match outcome with Complete->"complete"|Fail->"fail")])feedback)]
+let proof_encode (session:transition_session) maximum value =
+  let remaining=transition_work_limit-session.proof_work in
+  if remaining<=0 || maximum<=0 then raise Transition_proof_bound;
+  let ceiling=min maximum remaining in
+  match Canonical.encode_bounded ~max_bytes:ceiling value with
+  | bytes->proof_spend session(String.length bytes);bytes
+  | exception Diagnostic.Error _->proof_spend session ceiling;raise Transition_proof_bound
+let proof_key (session:transition_session) max_step_work max_step_retained state batch =
+  let start=session.proof_work in
+  proof_state session state;proof_batch session batch;proof_spend session 256;
+  if session.proof_work-start>transition_key_limit then raise Transition_proof_bound;
+  proof_encode session transition_key_limit
+    (obj["state",transition_state_json state;"batch",transition_batch_json batch;
+      "max_step_work",optional Json.int max_step_work;"max_step_retained",optional Json.int max_step_retained])
+let step_with_transition_session (session:transition_session) ?max_step_work ?max_step_retained before batch =
+  session.requests<-session.requests+1;
+  let fresh ()=session.evaluations<-session.evaluations+1;
+    step ?max_step_work ?max_step_retained before batch in
+  let bypass ()=session.bypasses<-session.bypasses+1;fresh()in
+  if before.plan != session.owner || session.proof_work>=transition_work_limit then bypass()else
+  let key=try Some(proof_key session max_step_work max_step_retained before batch)
+    with Transition_proof_bound->None in
+  match key with None->bypass()|Some key->
+    let found=try
+      Some(List.find_opt(fun witness->
+        proof_spend session(max(String.length key)(String.length witness.predecessor));
+        String.equal key witness.predecessor)session.witnesses)
+      with Transition_proof_bound->None in
+    match found with None->bypass()|Some(Some witness)->
+      session.reuses<-session.reuses+1;witness.successor,witness.observed
+    |Some None->
+      let after,frame=fresh()in
+      if List.length session.witnesses>=transition_entry_limit then session.bypasses<-session.bypasses+1
+      else (try
+        (* P.step's conservative output charge bounds construction of the
+           frame JSON before encoding. State construction has its own typed
+           structural/string preflight, independent of any claimed digest. *)
+        let start=session.proof_work in proof_state session after;
+        if session.proof_work-start>transition_key_limit then raise Transition_proof_bound;
+        let successor=proof_encode session transition_key_limit(transition_state_json after)in
+        proof_spend session(after.work-before.work);
+        let observation=proof_encode session transition_byte_limit(frame_to_json frame)in
+        let footprint=256+String.length key+String.length successor+String.length observation in
+        if footprint>transition_byte_limit-session.resident_bytes then raise Transition_proof_bound;
+        session.witnesses<-session.witnesses@[{predecessor=key;successor=after;observed=frame}];
+        session.resident_bytes<-session.resident_bytes+footprint;
+        session.peak_bytes<-max session.peak_bytes session.resident_bytes
+      with Transition_proof_bound->session.bypasses<-session.bypasses+1);
+      after,frame

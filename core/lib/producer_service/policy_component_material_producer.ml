@@ -21,7 +21,10 @@ let construct_candidate ?charge request =
   let library = S.implementation_library original in
   let lowered = Bioc_compiler.Policy_implementation_lowering.lower_metered ~charge ~admitted ~library in
   let rule = R.composition_rule request in
-  let arranged = Bioc_compiler.Policy_component_lowering.arrange ~charge ~library ~rule lowered in
+  let source_inputs = if R.is_network request || R.is_finite_machine request || R.is_two_observation request || R.is_multi_member request then Some (List.map (fun (value:R.input_binding) ->
+      charge (1+String.length value.source+String.length value.input_id); value.source,value.input_id)
+      (R.input_bindings request)) else None in
+  let arranged = Bioc_compiler.Policy_component_lowering.arrange ~charge ?source_inputs ~library ~rule lowered in
   let authority = A.material_authority rule in
   let content = Bioc_compiler.Construction_producer.construct_template ~charge
     ~member_order:(PM.member_order authority) (PM.template authority) in
@@ -41,9 +44,11 @@ let construct_candidate ?charge request =
   candidate
 
 let compile payload =
+  let payload = Service.unpack_payload ~assurance:false payload in
   let fields = Json.object_fields ~path:"/payload" payload in
   Json.exact_fields ~path:"/payload" ["request";"limits"] fields;
   let raw = Json.field "request" fields in
   let request = R.of_json raw in
   let candidate = construct_candidate request in
-  Service.check ~export:false ~request:raw ~candidate ~limits:(Json.field "limits" fields)
+  let result=Service.check ~export:false ~request:raw ~candidate ~limits:(Json.field "limits" fields)in
+  if R.is_quantitative_composition request then Service.publish_result ~coupled:true result else result

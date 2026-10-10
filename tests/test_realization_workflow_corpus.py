@@ -14,6 +14,21 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class RealizationWorkflowSourceScopeTests(unittest.TestCase):
     OPERATIONAL_MODULES = {
+        "src/biocompiler/_policy_coupled_wire.py": "biocompiler._policy_coupled_wire",
+        'src/biocompiler/core_policy_module_linking.py': 'biocompiler.core_policy_module_linking',
+        'src/biocompiler/core_policy_planning.py': 'biocompiler.core_policy_planning',
+        'src/biocompiler/core_policy_quantitative_assurance.py': 'biocompiler.core_policy_quantitative_assurance',
+        'src/biocompiler/core_policy_refinement.py': 'biocompiler.core_policy_refinement',
+        'src/biocompiler/policy/approximation.py': 'biocompiler.policy.approximation',
+        'src/biocompiler/policy/module_linking.py': 'biocompiler.policy.module_linking',
+        'src/biocompiler/policy/modules.py': 'biocompiler.policy.modules',
+        'src/biocompiler/policy/planning.py': 'biocompiler.policy.planning',
+        'src/biocompiler/policy/quantitative.py': 'biocompiler.policy.quantitative',
+        'src/biocompiler/policy/quantitative_assurance.py': 'biocompiler.policy.quantitative_assurance',
+        'src/biocompiler/policy/quantitative_composition.py': 'biocompiler.policy.quantitative_composition',
+        'src/biocompiler/policy/realization_evidence.py': 'biocompiler.policy.realization_evidence',
+        'src/biocompiler/policy/refinement.py': 'biocompiler.policy.refinement',
+        'src/biocompiler/policy/typed.py': 'biocompiler.policy.typed',
         "src/biocompiler/policy/research_project.py": "biocompiler.policy.research_project",
         "src/biocompiler/core_policy_component_selection.py": "biocompiler.core_policy_component_selection",
         "src/biocompiler/policy/component_selection.py": "biocompiler.policy.component_selection",
@@ -39,7 +54,7 @@ class RealizationWorkflowSourceScopeTests(unittest.TestCase):
         historical = {row["path"] for row in scope["historical_sources"]}
         additions = {row["path"]: row["sha256"] for row in scope["reviewed_additions"]}
         self.assertEqual(scope["historical_corpus_pin"], PIN)
-        self.assertEqual(len(additions), 62)
+        self.assertEqual(len(additions), 77)
         self.assertEqual(additions["src/biocompiler/core_workflow.py"],
                          "43b57b87a2d89db200463d8aed8b7eea7e262cf1c4ea02c772843598dbda90df")
         self.assertEqual(additions["src/biocompiler/core_artifacts.py"],
@@ -94,12 +109,8 @@ import sys
 from tools.check_realization_workflow_corpus import deny_added_modules, source_scope
 from tools.freeze_realization_workflow import source_inventory
 scope = source_scope(source_inventory())
-names = ("biocompiler.core_policy_operational", "biocompiler.policy.operational",
-         "biocompiler.core_policy_implementation", "biocompiler.policy.implementation",
-         "biocompiler.core_policy_material", "biocompiler.policy.material", "biocompiler.policy.cli",
-         "biocompiler.core_policy_component_material", "biocompiler.policy.component_material",
-         "biocompiler.core_policy_component_selection", "biocompiler.policy.component_selection",
-         "biocompiler.policy.research_project")
+import json
+names = json.loads(sys.argv[1])
 for name in names:
     assert name in scope["denied_modules"]
     for attempted in (name, name + ".unreviewed"):
@@ -130,7 +141,7 @@ for name in names:
     finally:
         del sys.modules[name]
 '''
-        result = subprocess.run([sys.executable, "-c", script], cwd=ROOT,
+        result = subprocess.run([sys.executable, "-c", script, json.dumps(sorted(self.OPERATIONAL_MODULES.values()))], cwd=ROOT,
             env={**os.environ, "PYTHONPATH": str(ROOT / "src"), "PYTHONDONTWRITEBYTECODE": "1"},
             text=True, capture_output=True, timeout=30)
         self.assertEqual(result.returncode, 0, result.stderr + result.stdout)

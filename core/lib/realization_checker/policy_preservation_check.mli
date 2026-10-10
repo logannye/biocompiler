@@ -36,6 +36,32 @@ val check_with_startup_charge : startup_charge:(startup_pass -> Json.t -> unit) 
   behavior:O.behavior -> implementation:I.t -> proposed:U.t -> limits:limits -> result
 val report : result -> Json.t
 
+type measurement = {
+  total_cpu_seconds : float;
+  source_step_cpu_seconds : float;
+  candidate_step_cpu_seconds : float;
+  correspondence_cpu_seconds : float;
+  monitor_step_cpu_seconds : float;
+  projection_encoding_cpu_seconds : float;
+  candidate_transitions : Bioc_candidate_runtime.Policy_primitives.transition_usage option;
+}
+
+(** Fresh complete checking with diagnostic CPU measurements outside canonical
+    evidence. Optional candidate transition congruence uses only private fresh
+    witnesses within this invocation; every source prefix, correspondence and
+    requirement monitor is still checked. Canonical reports and logical charges
+    must equal the unshared checker. Timings overlap neither each other nor the
+    unmeasured initialization, terminal aggregation and publication work; the
+    encoding measurement covers only the checker's explicit projection charges.
+    The caller supplies a diagnostic clock; the core never accesses a process
+    clock itself and never uses timing values in semantic decisions. A clock
+    exception propagates without a returned checked value. Ordinary entry points
+    retain the unshared algorithm pending measured hosted validation and never
+    invoke a clock. These measurements grant no additional assurance. *)
+val check_measured : clock:(unit -> float) -> share_candidate_transitions:bool -> request:R.t ->
+  behavior:O.behavior -> implementation:I.t -> proposed:U.t -> limits:limits ->
+  result * measurement
+
 (** Available only after complete finite-domain preservation and all original
     requested hard requirements pass with the profile's nonvacuity coverage.
     This grants no component/material/target/export authority. *)

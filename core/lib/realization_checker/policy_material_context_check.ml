@@ -100,7 +100,7 @@ let derive ~charge (binding:IB.checked_binding) (kernel:MC.kernel) (domain:F.t)=
       add MC.Input_rows_per_tick MC.Per_executor(MC.Input value.input_id)count)inputs;
   List.iter(fun(value:MC.local_node)->let owner=MC.Node value.local_id in
     match value.model.primitive with
-    |I.Machine_bank _|I.Transition_gate _|I.Transition_commit _->supported false "staged_requires_component_context"
+    |I.Attempt_bank_sites _|I.Machine_bank _|I.Transition_gate _|I.Transition_commit _->supported false "staged_requires_component_context"
     |I.Truth_register _->add MC.Truth_cells MC.Per_encounter_slot owner 1
     |I.Evidence_bank{freshness_ticks}->
       maximum_delta:=max !maximum_delta freshness_ticks;
@@ -240,7 +240,9 @@ let check ?parent ?(maximum=max_work) ~context ~binding ()=
          fail(Q.leq phases.arrival.latest.seconds phases.expression.earliest.seconds &&
            Q.leq phases.expression.latest.seconds phases.activation.earliest.seconds && Q.leq phases.activation.latest.seconds start)
            "causal_arrival_expression_activation";
-         supported(provider.capacities=[])"delivery_resource_supply_unimplemented");
+         supported(provider.capacities=[])"delivery_resource_supply_unimplemented"
+       |C.Transport _->supported false "transport_requires_multi_member_context"
+       |C.Helper _->supported false "helper_requires_grounded_helper_context");
       List.iter(fun(capacity:C.capacity)->available capacity.capacity_id capacity.available)provider.capacities)providers;
     List.iter(fun key->match(resolve(MC.provider_ref_of_json(get key delivery))).body with C.Delivery _->()|_->fail false("delivery_body:"^key))
       ["arrival";"expression";"activation";"contract"];

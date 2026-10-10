@@ -5,7 +5,14 @@ validation coverage and independent checks. The release workflow remains
 [Python checks](../.github/workflows/ci.yml). Development feedback has a separate
 [opt-in hosted workflow](../.github/workflows/policy-development.yml), triggered
 only by pushes to `codex/dev-policy/**`. It builds the native core once on Linux
-and runs 31 fixed staged-regimen, component, selection, generation-metering, protocol, preservation, material and construction suites.
+and runs 55 fixed suites covering admitted IR, candidate congruence, component
+composition, quantitative assurance, selection, generation metering, protocol,
+preservation, material and construction.
+The new instance-composition SDK retains 26 lifecycle observations against two
+independently supplied three-instance originals; its earlier development checkpoint passed in run `37788462656`, while complete
+integration remains pending. The prerequisite, two-observation, multi-member and grounded-helper companions each
+add 26 separately retained observations against their own complete original
+authority. Their current source registration is not execution evidence.
 The staged source witness retains 33 observations across nine literal timelines;
 the staged material witness retains 16 observations through independent checking
 and paired RNA export. Both use this same fresh native build.
@@ -54,12 +61,14 @@ Focused development uses two native-suite workers after the single successful
 build. Each suite retains its original command, fixture, source and executable
 checks, timeout and separate log. The coordinator alone publishes the fixed
 ordered result inventory and waits for every outcome. After native completion,
-two SDK lanes overlap: component then selection, and staged source then staged
-material then the 20-observation researcher-project workflow. Each lane preserves
+two SDK lanes overlap: component then selection, and instance composition, prerequisite closure, two-observation composition, multi-member composition, grounded-helper composition,
+staged source, staged material then the 20-observation researcher-project workflow. Each lane preserves
 its dependencies and existing campaign receipts.
 There are at most two workers in either phase, and no SDK calls are moved into
-unguarded worker threads inside a campaign. All 31 suites and 130 observations
-remain mandatory.
+unguarded worker threads inside a campaign. All 55 native suites and the original 260 SDK observations remain mandatory.
+A separate quantitative-assurance campaign adds 21 observations, preserving
+complete original requests, exact material, bounded approximation and supplied
+evidence gates. It follows the two original lanes and retains its own receipt.
 
 At the baseline command durations, this scheduling can remove roughly six
 minutes of serialization. That is an estimate, not a measured speedup; compare
@@ -96,9 +105,22 @@ package retaining its own required integration and release checks.
 Choose early feedback from the affected dependency surface. A staged-regimen
 change should get staged feedback promptly; edits to shared semantics, transport,
 authority, packaging or receipt accounting need broader regression coverage.
+For Python facade, transport or shared dependency changes, run both complete
+typing configurations with the pinned pure-Python tooling from
+`tools/typecheck-requirements.txt` before pushing:
+
+```sh
+python -m mypy --config-file tools/mypy-core.ini
+python -m mypy --config-file tools/mypy-policy.ini
+```
+
+Reuse the existing tooling target through `PYTHONPATH` when needed. These are
+static checks and require no native build. A focused file check does not cover
+the other configuration's imported dependency types.
+
 **Automatic profile-specific hosted routing is not implemented.** The current
-`policy-development.yml` still requires all 31 native suites and all 130 SDK
-observations. Individual witnesses or future scoped runners must report their
+`policy-development.yml` still requires all 55 native suites, all 260 original SDK
+observations and the 21-observation quantitative-assurance campaign. Individual witnesses or future scoped runners must report their
 own scope and cannot satisfy that complete census. Until explicit scoped routing
 exists, use the supported complete workflow for hosted development acceptance.
 Do not change CI triggers, required checks or final acceptance based on this
@@ -169,7 +191,7 @@ remain distinct revision boundaries.
 | `studio-browser` | Installed Python 3.11 package, Node 22 and the pinned Playwright/Chromium setup run guided workspace, construction inspection and review suites. |
 | `studio-typescript` | Pinned strict TypeScript checks, unchanged generated release assets, runtime response decoding and current migration inventory. |
 | `ocaml-build` | Build once per native platform, check library boundaries, generated policy schema/operational/material fixtures, rule coverage and both strict transport/policy type gates. Emit the independent component A/B original packet once with source/build provenance; retain the private emitter only as a test tool outside wheel contents. Retain locked inputs and exact compiled suite/role/fixture bytes, assemble candidate platform wheels and stamp their policy source authority. No test result is inferred from building a wheel. |
-| `ocaml-native-tests` | Restore the current run/platform-bound bundle, run the 22 focused policy/producer/construction checks with separately retained diagnostics, then all 166 Dune-declared suites with their original arguments and two bounded workers. The bundle binds 168 executable entries and 23 original JSON fixtures; 48 suites have explicit ordered fixture dependencies (45 operational plus three non-operational suites). The component suites retain the original A/B model fixtures. Assembly-rule and assembly-check tests share independently authored literals through a domain-only test library outside both production executable closures; expected material is declared without the construction producer. These leaf checks do not establish full composition acceptance. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
+| `ocaml-native-tests` | Restore the current run/platform-bound bundle, run the 22 focused policy/producer/construction checks with separately retained diagnostics, then all 195 Dune-declared suites with their original arguments and two bounded workers. The bundle binds 203 executable entries and 36 original JSON fixtures; 77 suites have explicit ordered fixture dependencies (74 operational plus three non-operational suites). The component suites retain the original A/B model fixtures. Assembly-rule and assembly-check tests share independently authored literals through a domain-only test library outside both production executable closures; expected material is declared without the construction producer. These leaf checks do not establish full composition acceptance. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
 | `ocaml-core` | Two workers execute all 67 original direct corpus, protocol, resource-bound and Python/OCaml conformance command groups against the same restored binaries. Commands within each group keep their original order and output paths; complete current-run group/log accounting is required before success. |
 | `architecture-sdk` | Four platform/Python jobs run concurrently. Each checks installed policy source assessment, operational execution, implementation preservation, material compilation/fresh export and Verify-only offline consumption against original fixtures and exact restored Core/Verify binaries. The selected interpreter's real console runs outside the checkout; policy reports and logs remain distinct. It then uses two isolated Python workers for all 16 architecture scenarios. Case B retains all its rejection/publication controls. The coordinator applies the unchanged independent 175-check/219-artifact architecture census before reporting success. |
 | `executable-rna-reproducibility` | Depends only on `installed-executable`; compares complete relative-file SHA-256 inventories from both Python versions. |
@@ -182,7 +204,7 @@ remain distinct revision boundaries.
 | `prebuilt-core-assembly` | Depends only on both native builds, allowing installation tests to start while other tests run. Independently checks complete platform wheels, original linked sources/notices/relink companions and final executable identities; builds and checks one pure SDK wheel containing both platform pins. |
 | `prebuilt-core-validation` | Requires all four fresh-install/lifecycle/campaign receipts, exact owned bytes, original command recipes and successful upstream assembly, all native suites/conformance, architecture SDK checks, and cross-runtime reconstruction. |
 | `policy-prebuilt-sdk` | Depends on both native builds; independently checks complete supplied native wheels and source companions, builds a pure SDK with exact platform pins, and retains the policy artifact-source stamp and release candidate. |
-| `policy-prebuilt-installed` | Four platform/Python slots install those exact SDK/native wheels outside the checkout and retain the complete original material/fresh-export and offline-consumer campaigns. The additive v0.2 profile also runs both component programs, their 26-observation SDK and 16-observation producer-free consumer, fresh owned Core/Verify resolution and component role/profile rejections. The explicit v0.3 profile preserves those gates and adds the staged SDK campaign: 16 ordered observations, the complete original 25-history domain, fresh Verify check/replay/export, eight exact rejection boundaries, and one separately retained RNA/manifest ZIP. It binds the original tracked fixture, whole installed Python package, source/run, and supplied Core/Verify bytes. Require actual OS network denial for the original offline consumers, complete owned bytes, command receipts, sidecars, all exact ZIPs and failure logs; a separate staged offline-consumer campaign is not claimed. |
+| `policy-prebuilt-installed` | Four platform/Python slots install those exact SDK/native wheels outside the checkout and retain the complete original material/fresh-export and offline-consumer campaigns. The additive v0.2 profile also runs both component programs, their 26-observation SDK and 16-observation producer-free consumer, fresh owned Core/Verify resolution and component role/profile rejections. The explicit v0.3 profile preserves those gates and adds the staged SDK campaign: 16 ordered observations, the complete original 25-history domain, fresh Verify check/replay/export, eight exact rejection boundaries, and one separately retained RNA/manifest ZIP. It binds the original tracked fixture, whole installed Python package, source/run, and supplied Core/Verify bytes. Require actual OS network denial for the original offline consumers, complete owned bytes, command receipts, sidecars, all exact ZIPs and failure logs; a separate staged offline-consumer campaign is not claimed. The additive quantitative-assurance campaign uses the same installed environment and pinned binaries for 21 observations, including coupled composition, approximation and separately gated supplied evidence, and retains complete originals/results and exact RNA/manifest bytes. |
 | `policy-prebuilt-reproducibility` | Requires the policy SDK and all four installed slots; independently rechecks original fixture authority, wheel/material ownership, release identities and complete original and component material/consumer results across every slot. Component fixtures from both native builds must have identical complete bytes and their own source/run/platform provenance. Explicit v0.3 additionally reconstructs the staged receipt from all 16 sidecars, rechecks complete protocol values and negative controls against original authority, verifies the actual paired archive, and requires full result equality across all four slots. Revalidate every sidecar and actual paired archive; no missing, duplicate or stale slot is accepted. These bounded conditional software results establish neither universal termination nor empirical function. |
 | `validation` | Final gate requires all 74 jobs, including successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms, all six reproducibility jobs and both existing prebuilt gates plus all three policy-prebuilt jobs. |
 
@@ -426,9 +448,10 @@ The deterministic longest-processing-time assignment keeps each complete
 they cannot exclude tests or substitute for execution. Every discovered class
 is assigned exactly once across the five shards for its Python version.
 
-Pure source discovery of the current union on Python 3.14.6 finds 4,039 tests
-in 428 classes. This is an inventory result, not test execution or hosted
-acceptance. Both hosted Python versions must independently rediscover and
+The 2026-10-06 source-discovery snapshot recorded in `3298b240cb` found 4,039
+tests in 428 classes on Python 3.14.6. This historical inventory is neither the
+current test census nor execution/hosted acceptance. Both hosted Python versions
+must independently rediscover and
 account for the complete current suite. Existing capture scheduling, callback,
 reference, source lineage and reconstruction controls remain alongside the
 added policy controls. Placement weights retain the historical fixture-inclusive
@@ -641,3 +664,14 @@ release identities. Source-only or mock-peer results cannot satisfy hosted
 gates. All previous native corpora, direct command groups, installed campaigns
 and release obligations remain required. Static union checks do not close
 hosted, merge or actual-main acceptance.
+
+The named-instance, prerequisite, two-observation, multi-member and grounded-helper
+profiles extend those same four installed runtime slots. Each retains its own
+26-observation campaign, complete original fixture/provenance packet, fresh
+Core/Verify checks and both paired molecular archives. Their independent
+comparators require all four runtime results, exact installed package/native
+ownership, original authority and complete output equality. These five additive
+profiles preserve the original material, component, staged and researcher gates;
+none substitutes development receipts for installed execution. The candidate
+congruence increment adds native equivalence/measurement suites without changing
+the public SDK or wire assurance profile.

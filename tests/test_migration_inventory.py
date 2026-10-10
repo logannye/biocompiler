@@ -31,6 +31,85 @@ class MigrationInventoryTests(unittest.TestCase):
                 'retain_public_project_authoring_and_supplied_inputs_with_fresh_native_verification_before_export')
             self.assertEqual(entry['migration_state'], 'legacy')
 
+    def test_module_facade_and_transport_preserve_native_authority(self):
+        entries = [entry for entry in self.actual['entries'] if entry['current_implementation']['source']
+                   in {'policy.module_linking', 'core_policy_module_linking'}]
+        self.assertEqual({entry['current_implementation']['source'] for entry in entries},
+                         {'policy.module_linking', 'core_policy_module_linking'})
+        for entry in entries:
+            contract = self.actual['contracts'][entry['contract']]
+            self.assertEqual(contract['target_owner'], 'Python')
+            self.assertEqual(contract['source_authority'],
+                'complete_original_module_bundle_and_component_authority_with_fresh_native_exact_elaboration_and_unchanged_whole_program_material_checks')
+            self.assertEqual(contract['disposition'],
+                'retain_original_module_authoring_and_explicit_transport_to_fresh_native_linking_and_conditional_paired_export')
+            self.assertEqual(entry['migration_state'], 'legacy')
+
+    def test_closed_lazy_policy_aliases_resolve_without_importing_product_code(self):
+        import sys
+        before = {name for name in sys.modules if name.startswith('biocompiler')}
+        sources = inventory.Sources(inventory.ROOT)
+        for name in ('refinement', 'quantitative', 'quantitative_assurance', 'module_linking'):
+            self.assertEqual(sources.origin('biocompiler.policy', name), ('biocompiler.policy.' + name, ''))
+        self.assertEqual(sources.origin('biocompiler.policy.refinement', 'PolicyRefinementClient'),
+                         ('biocompiler.core_policy_refinement', 'PolicyRefinementClient'))
+        self.assertEqual(sources.origin('biocompiler.policy.quantitative_assurance', 'PolicyQuantitativeAssuranceResult'),
+                         ('biocompiler.core_policy_quantitative_assurance', 'PolicyQuantitativeAssuranceResult'))
+        self.assertEqual(before, {name for name in sys.modules if name.startswith('biocompiler')})
+
+    def test_reviewed_lazy_alias_recognizer_rejects_dynamic_or_shadowed_bindings(self):
+        module = 'biocompiler.policy'
+        source = (inventory.ROOT / 'src/biocompiler/policy/__init__.py').read_text()
+        found = inventory.reviewed_policy_lazy_imports(module, ast.parse(source))
+        self.assertEqual([alias.name for node in found for alias in node.names],
+                         ['refinement', 'quantitative', 'quantitative_composition', 'module_linking',
+                          'approximation', 'realization_evidence', 'quantitative_assurance'])
+        changes = (
+            source.replace('if _TYPE_CHECKING:', 'if enabled:', 1),
+            source.replace('import_module as _import_module', 'unreviewed as _import_module', 1),
+            source.replace('return _import_module(f"{__name__}.{name}")', 'return _import_module(name)', 1),
+            source + '\nrefinement = dynamic()\n',
+            source + '\nglobals()["__getattr__"] = lambda name: None\n',
+            source + '\nglobals().update({"refinement": 7})\n',
+            source + '\nlocals()["__getattr__"] = lambda name: None\n',
+            source + '\nexec("refinement = 7")\n',
+            source + '\nsetattr(module_alias, "refinement", 7)\n',
+            source + '\ndef sneaky(value=globals().update({"refinement": 7})):\n    pass\n',
+            source + '\nclass Sneaky:\n    globals().update({"refinement": 7})\n',
+            source + '\n__getattr__ = dynamic()\n',
+            source + '\nfrozenset = dynamic()\n',
+            source + '\n_OPTIONAL_NAMESPACES = dynamic()\n',
+            source + '\n_OPTIONAL_NAMESPACES.update({"unchecked"})\n',
+            source.replace('from . import refinement, quantitative,', 'from . import quantitative, refinement,', 1),
+        )
+        for altered in changes:
+            with self.subTest(source=altered), self.assertRaises((inventory.InventoryError, SyntaxError)):
+                inventory.reviewed_policy_lazy_imports(module, ast.parse(altered))
+        self.assertEqual(inventory.reviewed_policy_lazy_imports('biocompiler.unreviewed', ast.parse(source)), [])
+
+    def test_conditional_imports_without_reviewed_runtime_exports_stay_unbound(self):
+        root = self.fixture()
+        path = root / 'src/biocompiler/policy/__init__.py'
+        path.parent.mkdir()
+        path.write_text('from typing import TYPE_CHECKING\nif TYPE_CHECKING:\n    from . import refinement\n__all__ = ["refinement"]\n')
+        (path.parent / 'refinement.py').write_text('VALUE = 1\n')
+        with self.assertRaisesRegex(inventory.InventoryError, 'no declaration'):
+            inventory.Sources(root).origin('biocompiler.policy', 'refinement')
+
+    def test_target_planning_remains_nonaccepting_authoring_and_native_transport(self):
+        entries = [entry for entry in self.actual['entries'] if entry['current_implementation']['source']
+                   in {'policy.planning', 'core_policy_planning'}]
+        self.assertEqual({entry['current_implementation']['source'] for entry in entries},
+                         {'policy.planning', 'core_policy_planning'})
+        for entry in entries:
+            contract = self.actual['contracts'][entry['contract']]
+            self.assertEqual(contract['target_owner'], 'Python')
+            self.assertEqual(contract['source_authority'],
+                'complete_original_source_and_supplied_inputs_with_fresh_native_first_blocker_diagnostics_without_execution_requirement_or_material_acceptance')
+            self.assertEqual(contract['disposition'],
+                'retain_inert_target_planning_authoring_and_fresh_native_diagnostics_without_acceptance_or_export_authority')
+            self.assertEqual(entry['migration_state'], 'legacy')
+
     def fixture(self, *, package="__version__ = '0.1.0'\n", cli=None, server=None):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)

@@ -8,7 +8,7 @@ let compile payload=
   let fields=Json.object_fields ~path:"/payload" payload in
   Json.exact_fields ~path:"/payload"["request";"limits"]fields;
   let raw_request=Json.field "request" fields in
-  let request=R.of_json raw_request in
+  let request=S.request_of_json raw_request in
   let source=Bioc_checker.Policy_admission.admit ~document:(R.document request) ~descriptors:(R.definitions request)in
   let behavior=Bioc_compiler.Policy_lowering.lower source in
   let admitted=Bioc_checker.Policy_realization_admission.admit ~request ~behavior in

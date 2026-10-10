@@ -9,6 +9,7 @@ module B = Bioc_checker.Policy_implementation_binding_check
 
 val profile : string
 val staged_profile : string
+val multi_site_profile : string
 type t
 val create : B.checked_binding -> t
 

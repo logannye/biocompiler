@@ -24,6 +24,29 @@ except ImportError:
 
 
 DEPENDENCY_FIXTURES = {
+    'test_policy_quantitative_composition': ['data/policy_quantitative_composition_v01.json', 'data/policy_quantitative_network_v01.json'],
+    'test_policy_approximation': ['data/policy_approximation_v01.json'],
+    'test_policy_realization_evidence': ['data/policy_realization_evidence_v01.json', 'data/policy_quantitative_network_v01.json'],
+    'test_policy_quantitative_assurance': ['data/policy_approximation_v01.json', 'data/policy_realization_evidence_v01.json', 'data/policy_quantitative_network_v01.json', 'data/policy_quantitative_composition_v01.json'],
+
+    "test_policy_admitted_ir": ["data/policy_operational_v01.json", "data/policy_staged_regimen_source_v01.json", "data/policy_implementation_binding_v01.json"],
+    "test_policy_finite_machine": ["data/policy_finite_machine_v01.json"],
+    "test_policy_refinement": ["data/policy_finite_machine_v01.json"],
+    "test_policy_quantitative_network": ["data/policy_quantitative_network_v01.json", "data/policy_quantitative_transfer_v01.json"],
+    "test_policy_quantitative_transfer": ["data/policy_quantitative_transfer_v01.json", "data/policy_quantitative_step_v01.json"],
+    "test_policy_quantitative_step": ["data/policy_quantitative_step_v01.json"],
+    "test_policy_multi_site": ["data/policy_quantitative_step_v01.json"],
+    "test_policy_quantitative": ["data/policy_quantitative_v01.json"],
+    "test_policy_module_linking": ["data/policy_module_linking_v01.json"],
+    "test_policy_network": ["data/policy_machine_network_v01.json"],
+    "test_policy_target_planning": ["data/policy_machine_network_v01.json", "data/policy_finite_machine_v01.json"],
+    "test_policy_provider_prerequisites": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_prerequisite_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_two_observation_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_multi_member_material_service": ["data/policy_staged_material_v01.json"],
+    "test_policy_grounded_helper_material_service": ["data/policy_staged_material_v01.json"],
+    "test_policy_instance_assembly_rule": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_instance_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
     "test_policy_staged_generation": ["data/policy_staged_realization_request_v01.json"],
     "test_policy_staged_binding": ["data/policy_staged_realization_request_v01.json"],
     "test_policy_staged_component_material": ["data/policy_staged_material_v01.json"],
@@ -48,6 +71,8 @@ DEPENDENCY_FIXTURES = {
     'test_policy_implementation_lowering': ['data/policy_implementation_binding_v01.json'],
     'test_policy_requirement_monitor': ['data/policy_implementation_binding_v01.json'],
     'test_policy_preservation_check': ['data/policy_implementation_binding_v01.json'],
+    "test_policy_candidate_congruence_check": ["data/policy_implementation_binding_v01.json"],
+    "test_policy_candidate_transition_congruence": ["data/policy_primitives_v01.json"],
     'test_construction_content': ['data/construction_content_v01.json'],
     'test_policy_mrna_structure': ['data/policy_mrna_structure_v01.json'],
     'test_policy_implementation_service': ['data/policy_implementation_request_v01.json'],
@@ -153,7 +178,12 @@ def expected_members(root):
     # The independent declaration emitter is needed by restored hosted jobs.
     # It has no producer/checker dependency and is not a native test suite.
     return {"core/_build/default/bin/core/main.exe", "core/_build/default/bin/verify/main.exe",
-            "core/_build/default/test/component_fixture_export/main.exe"} | {
+            "core/_build/default/test/component_fixture_export/main.exe",
+            "core/_build/default/test/instance_fixture_export/main.exe",
+            "core/_build/default/test/prerequisite_fixture_export/main.exe",
+            "core/_build/default/test/two_observation_fixture_export/main.exe",
+            "core/_build/default/test/multi_member_fixture_export/main.exe",
+            "core/_build/default/test/grounded_helper_fixture_export/main.exe"} | {
         "core/_build/default/test/" + row["name"] + ".exe" for row in plan} | set(dependency_members(root))
 
 

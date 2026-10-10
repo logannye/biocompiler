@@ -28,6 +28,29 @@ WORKFLOW = ".github/workflows/policy-development.yml"
 SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "data/researcher_alpha",
                 "examples/researcher_alpha.py", "pyproject.toml")
 SUITES = (
+    ('test_policy_quantitative_composition', ('data/policy_quantitative_composition_v01.json', 'data/policy_quantitative_network_v01.json')),
+    ('test_policy_approximation', ('data/policy_approximation_v01.json',)),
+    ('test_policy_realization_evidence', ('data/policy_realization_evidence_v01.json', 'data/policy_quantitative_network_v01.json')),
+    ('test_policy_quantitative_assurance', ('data/policy_approximation_v01.json', 'data/policy_realization_evidence_v01.json', 'data/policy_quantitative_network_v01.json', 'data/policy_quantitative_composition_v01.json')),
+
+    ("test_policy_admitted_ir", ('data/policy_operational_v01.json', 'data/policy_staged_regimen_source_v01.json', 'data/policy_implementation_binding_v01.json')),
+    ("test_policy_finite_machine", ('data/policy_finite_machine_v01.json',)),
+    ("test_policy_refinement", ('data/policy_finite_machine_v01.json',)),
+    ("test_policy_quantitative_network", ('data/policy_quantitative_network_v01.json', 'data/policy_quantitative_transfer_v01.json')),
+    ("test_policy_quantitative_transfer", ('data/policy_quantitative_transfer_v01.json', 'data/policy_quantitative_step_v01.json')),
+    ("test_policy_quantitative_step", ('data/policy_quantitative_step_v01.json',)),
+    ("test_policy_multi_site", ('data/policy_quantitative_step_v01.json',)),
+    ("test_policy_quantitative", ('data/policy_quantitative_v01.json',)),
+    ("test_policy_module_linking", ('data/policy_module_linking_v01.json',)),
+    ("test_policy_network", ('data/policy_machine_network_v01.json',)),
+    ("test_policy_target_planning", ('data/policy_machine_network_v01.json', 'data/policy_finite_machine_v01.json')),
+    ("test_policy_provider_prerequisites", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
+    ("test_policy_prerequisite_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
+    ("test_policy_two_observation_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
+    ("test_policy_multi_member_material_service", ("data/policy_staged_material_v01.json",)),
+    ("test_policy_grounded_helper_material_service", ("data/policy_staged_material_v01.json",)),
+    ("test_policy_instance_assembly_rule", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
+    ("test_policy_instance_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_staged_generation", ("data/policy_staged_realization_request_v01.json",)),
     ("test_policy_staged_binding", ("data/policy_staged_realization_request_v01.json",)),
     ("test_policy_staged_component_material", ("data/policy_staged_material_v01.json",)),
@@ -54,6 +77,8 @@ SUITES = (
     ("test_producer_protocol", ()),
     ("test_policy_implementation_binding", ("data/policy_implementation_binding_v01.json", "data/policy_realization_request_v01.json", "data/policy_exclusion_source_v01.json")),
     ("test_policy_preservation_check", ("data/policy_implementation_binding_v01.json",)),
+    ("test_policy_candidate_congruence_check", ("data/policy_implementation_binding_v01.json",)),
+    ("test_policy_candidate_transition_congruence", ("data/policy_primitives_v01.json",)),
     ("test_policy_material_binding", ("data/policy_material_binding_v01.json",)),
     ("test_policy_material_context", ("data/policy_material_context_v01.json",)),
     ("test_policy_material_check", ("data/policy_material_request_v01.json",)),
@@ -67,12 +92,35 @@ SELECTION_SDK_TIMEOUT_SECONDS = 1800
 PARALLEL_WORKERS = 2
 SDK_BINARIES = {
     "originals": "core/_build/default/test/component_fixture_export/main.exe",
+    "instance_originals": "core/_build/default/test/instance_fixture_export/main.exe",
+    "prerequisite_originals": "core/_build/default/test/prerequisite_fixture_export/main.exe",
+    "two_observation_originals": "core/_build/default/test/two_observation_fixture_export/main.exe",
+    "multi_member_originals": "core/_build/default/test/multi_member_fixture_export/main.exe",
+    "grounded_helper_originals": "core/_build/default/test/grounded_helper_fixture_export/main.exe",
     "core": "core/_build/default/bin/core/main.exe",
     "verify": "core/_build/default/bin/verify/main.exe",
 }
 SDK_ORIGINALS = (
     "core/test/data/policy_material_request_v01.json", "core/test/data/policy_material_state_v01.json",
     "core/test/policy_component_support/literals.ml", "core/test/policy_component_support/requests.ml",
+)
+INSTANCE_ORIGINALS = (
+    "core/test/data/policy_material_request_v01.json", "core/test/data/policy_material_state_v01.json",
+    "core/test/policy_component_support/literals.ml",
+    "core/test/policy_instance_support/literals.ml", "core/test/policy_instance_support/requests.ml",
+)
+PREREQUISITE_ORIGINALS = INSTANCE_ORIGINALS + (
+    "core/test/policy_prerequisite_support/literals.ml", "core/test/policy_prerequisite_support/requests.ml",
+)
+TWO_OBSERVATION_ORIGINALS = PREREQUISITE_ORIGINALS + (
+    "core/test/policy_two_observation_support/literals.ml", "core/test/policy_two_observation_support/requests.ml",
+)
+MULTI_MEMBER_ORIGINALS = (
+    "core/test/data/policy_staged_material_v01.json",
+    "core/test/policy_multi_member_support/literals.ml", "core/test/policy_multi_member_support/requests.ml",
+)
+GROUNDED_HELPER_ORIGINALS = MULTI_MEMBER_ORIGINALS + (
+    "core/test/policy_grounded_helper_support/literals.ml", "core/test/policy_grounded_helper_support/requests.ml",
 )
 SELECTION_ORIGINALS = (
     "core/test/data/policy_material_request_v01.json",
@@ -328,14 +376,22 @@ def validate_native_feedback(root, native, prepared):
                 "Changed native command log: " + name)
 
 
-def public_sdk(root):
+def public_sdk(root, *, instance=False, prerequisites=False, two_observations=False, multi_member=False, grounded_helper=False):
     """Use the same hosted build for original declarations and the public SDK.
 
     The domain-only helper exports independent source fixtures. Core and Verify
     subsequently check candidates; no fixture report grants acceptance.
     """
     output = root / "generated/development-feedback"
-    report = {"schema": "biocompiler.development-sdk-feedback.v0.1", "acceptance": False,
+    require(sum((instance, prerequisites, two_observations, multi_member, grounded_helper)) <= 1, "Select one SDK profile")
+    original_paths = GROUNDED_HELPER_ORIGINALS if grounded_helper else MULTI_MEMBER_ORIGINALS if multi_member else TWO_OBSERVATION_ORIGINALS if two_observations else PREREQUISITE_ORIGINALS if prerequisites else INSTANCE_ORIGINALS if instance else SDK_ORIGINALS
+    exporter = SDK_BINARIES["grounded_helper_originals" if grounded_helper else "multi_member_originals" if multi_member else "two_observation_originals" if two_observations else "prerequisite_originals" if prerequisites else "instance_originals" if instance else "originals"]
+    packet_name = "grounded-helper-originals" if grounded_helper else "multi-member-originals" if multi_member else "two-observation-originals" if two_observations else "prerequisite-originals" if prerequisites else "instance-originals" if instance else "component-originals"
+    campaign_name = "grounded-helper-sdk" if grounded_helper else "multi-member-sdk" if multi_member else "two-observation-sdk" if two_observations else "prerequisite-sdk" if prerequisites else "instance-sdk" if instance else "component-sdk"
+    report_name = "grounded-helper-sdk.json" if grounded_helper else "multi-member-sdk.json" if multi_member else "two-observation-sdk.json" if two_observations else "prerequisite-sdk.json" if prerequisites else "instance-sdk.json" if instance else "public-sdk.json"
+    witness_name = "grounded-helper-sdk-witness.json" if grounded_helper else "multi-member-sdk-witness.json" if multi_member else "two-observation-sdk-witness.json" if two_observations else "prerequisite-sdk-witness.json" if prerequisites else "instance-sdk-witness.json" if instance else "sdk-witness.json"
+    script = "tools/check_policy_grounded_helper_material.py" if grounded_helper else "tools/check_policy_multi_member_material.py" if multi_member else "tools/check_policy_two_observation_material.py" if two_observations else "tools/check_policy_prerequisite_material.py" if prerequisites else "tools/check_policy_instance_material.py" if instance else "tools/check_policy_component_material.py"
+    report = {"schema": "biocompiler.development-grounded-helper-sdk-feedback.v0.1" if grounded_helper else "biocompiler.development-multi-member-sdk-feedback.v0.1" if multi_member else "biocompiler.development-two-observation-sdk-feedback.v0.1" if two_observations else "biocompiler.development-prerequisite-sdk-feedback.v0.1" if prerequisites else "biocompiler.development-instance-sdk-feedback.v0.1" if instance else "biocompiler.development-sdk-feedback.v0.1", "acceptance": False,
               "scope": "hosted source-tree SDK feedback; installed and release acceptance remain separate",
               "status": "failed", "actions": []}
     prepared = None
@@ -354,12 +410,12 @@ def public_sdk(root):
         require(all(native["binaries"].get(path) == value for path, value in binaries.items()),
                 "SDK executable differs from the completed native build")
         report["binaries"] = binaries
-        fixture = output / "component-originals.json"
-        witness = output / "sdk-witness.json"
+        fixture = output / (packet_name + ".json")
+        witness = output / witness_name
         commands = (
-            ("component-originals", ["opam", "exec", "--", str(root / SDK_BINARIES["originals"]),
-                *(str(root / path) for path in SDK_ORIGINALS), str(fixture)]),
-            ("component-sdk", [sys.executable, "-B", str(root / "tools/check_policy_component_material.py"),
+            (packet_name, ["opam", "exec", "--", str(root / exporter),
+                *(str(root / path) for path in original_paths), str(fixture)]),
+            (campaign_name, [sys.executable, "-B", str(root / script),
                 "--fixture", str(fixture), "--core", str(root / SDK_BINARIES["core"]),
                 "--verify", str(root / SDK_BINARIES["verify"]), "--output", str(witness)]),
         )
@@ -369,7 +425,7 @@ def public_sdk(root):
                     "SDK executable changed before execution")
             row = command(root, output, name, argv)
             report["actions"].append(row)
-            save(output / "public-sdk.json", report)
+            save(output / report_name, report)
             require(row["status"] == "passed", "Public SDK " + name + " failed")
         require(fixture.stat().st_size <= 4_000_000 and witness.stat().st_size <= 1024 * 1024,
                 "SDK original or witness receipt exceeds its bound")
@@ -391,7 +447,7 @@ def public_sdk(root):
                 validate_native_feedback(root, bundle.manifest_document((output / "feedback.json").read_bytes()), prepared)
         except Exception as error:
             report.update(status="failed", source_error=str(error))
-        save(output / "public-sdk.json", report)
+        save(output / report_name, report)
         require(report["status"] == "passed", report.get("source_error", report.get("error", "Incomplete SDK feedback")))
     return report
 
@@ -652,6 +708,26 @@ def researcher_alpha_sdk(root):
     return report
 
 
+def grounded_helper_sdk(root):
+    return public_sdk(root, grounded_helper=True)
+
+
+def multi_member_sdk(root):
+    return public_sdk(root, multi_member=True)
+
+
+def two_observation_sdk(root):
+    return public_sdk(root, two_observations=True)
+
+
+def prerequisite_sdk(root):
+    return public_sdk(root, prerequisites=True)
+
+
+def instance_sdk(root):
+    return public_sdk(root, instance=True)
+
+
 def sdk_all(root):
     """Overlap two isolated SDK process lanes without sharing witness state.
 
@@ -661,7 +737,7 @@ def sdk_all(root):
     """
     lanes = (
         (("public-sdk", public_sdk), ("selection-sdk", selection_sdk)),
-        (("staged-source-sdk", staged_source_sdk), ("staged-material-sdk", staged_material_sdk),
+        (("instance-sdk", instance_sdk), ("prerequisite-sdk", prerequisite_sdk), ("two-observation-sdk", two_observation_sdk), ("multi-member-sdk", multi_member_sdk), ("grounded-helper-sdk", grounded_helper_sdk), ("staged-source-sdk", staged_source_sdk), ("staged-material-sdk", staged_material_sdk),
          ("researcher-alpha-sdk", researcher_alpha_sdk)),
     )
 
@@ -688,11 +764,11 @@ def sdk_all(root):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk", "sdk-all"))
+    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk", "instance-sdk", "prerequisite-sdk", "two-observation-sdk", "multi-member-sdk", "grounded-helper-sdk", "sdk-all"))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     try:
-        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk, "staged-material-sdk": staged_material_sdk, "researcher-alpha-sdk": researcher_alpha_sdk, "sdk-all": sdk_all}[args.command](root)
+        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk, "staged-material-sdk": staged_material_sdk, "researcher-alpha-sdk": researcher_alpha_sdk, "instance-sdk": instance_sdk, "prerequisite-sdk": prerequisite_sdk, "two-observation-sdk": two_observation_sdk, "multi-member-sdk": multi_member_sdk, "grounded-helper-sdk": grounded_helper_sdk, "sdk-all": sdk_all}[args.command](root)
     except (OSError, ValueError) as error:
         print(str(error), file=sys.stderr)
         return 1

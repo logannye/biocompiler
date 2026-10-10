@@ -174,15 +174,89 @@ def discover(root: Path) -> list[dict[str, Any]]:
 
     classes = [(path, name, node) for path, tree in trees.items()
                for name, node in symbols(tree).items() if isinstance(node, ast.ClassDef)]
-    record_names = {"Record"}
+    # Record membership belongs to a declaration, not its terminal spelling:
+    # typed.Observation is unrelated to model.Observation. Resolve each base
+    # against the bindings visible before its class statement, without imports
+    # or evaluation. This also preserves local shadowing and imported aliases.
+    module_paths = {path.removeprefix("src/").removesuffix(".py").replace("/", ".")
+                    .removesuffix(".__init__"): path for path in trees}
+    path_modules = {path: module for module, path in module_paths.items()}
+    class_identities = {path_modules[path] + "." + name: (path, name)
+                        for path, name, _ in classes}
+    exports: dict[str, dict[str, str]] = {}
+    bases: dict[tuple[str, str], list[str]] = {}
+
+    def qualified(node: ast.AST, bindings: dict[str, str]) -> str:
+        if isinstance(node, ast.Name):
+            return bindings.get(node.id, "")
+        if isinstance(node, ast.Attribute):
+            owner = qualified(node.value, bindings)
+            return owner + "." + node.attr if owner else ""
+        if isinstance(node, ast.Subscript):
+            return qualified(node.value, bindings)
+        return ""
+
+    for path, tree in trees.items():
+        module = path_modules[path]
+        package_parts = module.split(".") if path.endswith("/__init__.py") else module.split(".")[:-1]
+
+        def bind_classes(body: list[ast.stmt], bindings: dict[str, str], prefix: str = "") -> None:
+            for node in body:
+                if isinstance(node, ast.ImportFrom):
+                    require(all(item.name != "*" for item in node.names),
+                            f"Wildcard policy imports need explicit inventory support: {path}")
+                    owner = (package_parts[:len(package_parts) - node.level + 1] if node.level else [])
+                    owner += node.module.split(".") if node.module else []
+                    for item in node.names:
+                        bindings[item.asname or item.name] = ".".join(owner + [item.name])
+                elif isinstance(node, ast.Import):
+                    for item in node.names:
+                        bindings[item.asname or item.name.split(".")[0]] = item.name if item.asname else item.name.split(".")[0]
+                elif isinstance(node, (ast.Assign, ast.AnnAssign)):
+                    if isinstance(node, ast.AnnAssign) and node.value is None:
+                        continue
+                    target_nodes = node.targets if isinstance(node, ast.Assign) else [node.target]
+                    value = qualified(node.value, bindings) if node.value is not None else ""
+                    for target in target_nodes:
+                        if isinstance(target, ast.Name):
+                            bindings[target.id] = value
+                elif isinstance(node, ast.ClassDef):
+                    bases[path, prefix + node.name] = [qualified(base, bindings) for base in node.bases]
+                    # A captured class value survives later rebinding of its
+                    # exported name; imported names resolve through exports.
+                    bindings[node.name] = "class:" + module + "." + prefix + node.name
+                    bind_classes(node.body, dict(bindings), prefix + node.name + ".")
+                elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    bindings[node.name] = ""
+
+        exports[path] = {}
+        bind_classes(tree.body, exports[path])
+
+    def class_identity(name: str, seen: frozenset[str] = frozenset()) -> tuple[str, str] | None:
+        if not name or name in seen:
+            return None
+        if name.startswith("class:"):
+            return class_identities.get(name.removeprefix("class:"))
+        # Follow explicit re-exports as well as a same-file assignment alias.
+        for module, path in module_paths.items():
+            if name.startswith(module + "."):
+                symbol, _, suffix = name[len(module) + 1:].partition(".")
+                target = exports[path].get(symbol, "")
+                if target:
+                    result = class_identity(target + ("." + suffix if suffix else ""), seen | {name})
+                    if result is not None:
+                        return result
+        return None
+
+    record_classes = {(MODEL, "Record")}
     changed = True
     while changed:
         changed = False
         for path, name, node in classes:
-            if any(resolved(path, base) in record_names for base in node.bases):
+            if any(class_identity(base) in record_classes for base in bases[path, name]):
                 require("." not in name, f"Nested policy record needs explicit inventory support: {name}")
-                if name not in record_names:
-                    record_names.add(name)
+                if (path, name) not in record_classes:
+                    record_classes.add((path, name))
                     changed = True
     found: dict[str, dict[str, Any]] = {}
 
@@ -205,7 +279,7 @@ def discover(root: Path) -> list[dict[str, Any]]:
                     add(f"{kind}:{name}={suffix}", kind, path, owner, value)
 
     for path, name, node in classes:
-        if name in record_names and (name != "Record" or path == MODEL):
+        if (path, name) in record_classes:
             add("record:" + name, "record", path, name,
                 {"bases": [syntax(base) for base in node.bases],
                  "decorators": [syntax(item) for item in node.decorator_list]})

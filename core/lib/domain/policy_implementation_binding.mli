@@ -2,10 +2,22 @@
     they carry no correspondence, execution, material or export authority. *)
 open Bioc_wire
 
+val coupled_schema_version : string
+val coupled_profile : string
 val schema_version : string
 val profile : string
 val staged_schema_version : string
 val staged_profile : string
+val two_observation_schema_version : string
+val two_observation_profile : string
+val multi_product_schema_version : string
+val multi_product_profile : string
+val finite_machine_schema_version : string
+val finite_machine_profile : string
+val network_schema_version : string
+val network_profile : string
+val multi_site_schema_version : string
+val multi_site_profile : string
 type observation = { source : string; bank : string; input : string }
 type state = { source : string; register : string }
 type effect_binding = { source : string; bank : string; feedback : string }
@@ -24,3 +36,11 @@ val rules : t -> rule list
 val machines : t -> machine list
 val transitions : t -> transition list
 val is_staged : t -> bool
+val is_two_observation : t -> bool
+
+val is_multi_product : t -> bool
+
+val is_finite_machine : t -> bool
+val is_network : t -> bool
+val is_coupled : t -> bool
+val is_multi_site : t -> bool

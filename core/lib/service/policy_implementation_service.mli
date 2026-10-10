@@ -5,6 +5,22 @@ val validation_scope : string
 val candidate_schema : string
 val profile : Bioc_wire.Json.t
 val producer_profile : Bioc_wire.Json.t
+val coupled_implementation : string
+val coupled_validation_scope : string
+val coupled_profile : Bioc_wire.Json.t
+val coupled_producer_profile : Bioc_wire.Json.t
+val multi_site_implementation : string
+val multi_site_validation_scope : string
+val multi_site_profile : Bioc_wire.Json.t
+val multi_site_producer_profile : Bioc_wire.Json.t
+val network_implementation : string
+val network_validation_scope : string
+val network_profile : Bioc_wire.Json.t
+val network_producer_profile : Bioc_wire.Json.t
+val finite_machine_validation_scope : string
+val finite_machine_profile : Bioc_wire.Json.t
+val finite_machine_producer_profile : Bioc_wire.Json.t
+val request_of_json : Bioc_wire.Json.t -> Bioc_domain.Policy_realization_request.t
 
 (** Checks the complete publication, including conservative protocol-envelope
     allowance. This is a resource check only and confers no semantic authority. *)

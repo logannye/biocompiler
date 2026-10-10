@@ -9,10 +9,24 @@ module H = Molecule_chemistry
 module R = Molecular_recoding
 module PM = Policy_mrna_structure
 module Pin = Pinned_identity
+module QC = Policy_quantitative_contract
+module TC = Policy_quantitative_transfer_contract
+module NC = Policy_quantitative_network_contract
+module CC = Policy_quantitative_composition_contract
 module Names = Set.Make (String)
 
 let schema_version = "biocompiler.policy_component_material.v0.1"
 let profile = "biocompiler.policy_exact_local_material.v0.1"
+let transfer_network_schema_version = "biocompiler.policy_component_material.v0.5"
+let transfer_network_profile = "biocompiler.policy_transfer_network_local_material.v0.1"
+let transfer_pair_schema_version = "biocompiler.policy_component_material.v0.4"
+let transfer_pair_profile = "biocompiler.policy_transfer_pair_local_material.v0.1"
+let step_quantitative_schema_version = "biocompiler.policy_component_material.v0.3"
+let step_quantitative_profile = "biocompiler.policy_step_quantitative_local_material.v0.1"
+let quantitative_schema_version = "biocompiler.policy_component_material.v0.2"
+let quantitative_profile = "biocompiler.policy_quantitative_local_material.v0.1"
+let composition_schema_version = "biocompiler.policy_component_material.v0.6"
+let composition_profile = "biocompiler.policy_coupled_quantitative_local_material.v0.1"
 let max_carriers = 32768
 let max_provider_requirements = 1024
 
@@ -30,6 +44,10 @@ type t = {
   identity_value:Pin.t; fragment_value:F.t; root_value:Construction.Root_source.t;
   carrier_values:carrier list; product_values:product list;
   requirement_values:provider_requirement list;
+  quantitative_values:QC.local_contract list;
+  transfer_pair_values:TC.local_contract list;
+  transfer_network_values:NC.local_contract list;
+  composition_values:CC.local_contract list;
 }
 
 let str value = Json.String value
@@ -115,12 +133,22 @@ let requirement_of_json raw = match Json.string (get "kind" raw) with
       Capacity {id=name (get "id" raw);owner=owner_of_json (get "owner" raw);
         unit=MC.resource_unit_of_json (get "unit" raw);scope=MC.resource_scope_of_json (get "scope" raw);minimum}
   | _ -> Diagnostic.fail "policy_component_material" "Unknown local provider prerequisite."
-let body_to_json value = obj ["fragment",F.to_json value.fragment_value;
+let body_to_json value =
+  let fields=["fragment",F.to_json value.fragment_value;
   "root",Construction.Root_source.to_json value.root_value;
   "carriers",arr (List.map carrier_json value.carrier_values);
   "products",arr (List.map product_json value.product_values);
-  "provider_requirements",arr (List.map requirement_json value.requirement_values)]
-let to_json value = obj ["schema_version",str schema_version;"profile",str profile;
+  "provider_requirements",arr (List.map requirement_json value.requirement_values)] in
+  obj(if value.composition_values<>[] then fields@["quantitative_contracts",arr(List.map CC.local_to_json value.composition_values)]
+    else if value.transfer_network_values<>[] then
+    fields@["quantitative_contracts",arr(List.map NC.local_to_json value.transfer_network_values)]
+    else if value.transfer_pair_values<>[] then
+    fields@["quantitative_contracts",arr(List.map TC.local_to_json value.transfer_pair_values)]
+    else if value.quantitative_values=[] then fields else
+    fields@["quantitative_contracts",arr(List.map QC.local_to_json value.quantitative_values)])
+let is_step_quantitative value = List.exists(fun(q:QC.local_contract)->q.mechanism.multi_site)value.quantitative_values
+let to_json value = obj ["schema_version",str (if value.composition_values<>[] then composition_schema_version else if value.transfer_network_values<>[] then transfer_network_schema_version else if value.transfer_pair_values<>[] then transfer_pair_schema_version else if value.quantitative_values=[] then schema_version else if is_step_quantitative value then step_quantitative_schema_version else quantitative_schema_version);
+  "profile",str (if value.composition_values<>[] then composition_profile else if value.transfer_network_values<>[] then transfer_network_profile else if value.transfer_pair_values<>[] then transfer_pair_profile else if value.quantitative_values=[] then profile else if is_step_quantitative value then step_quantitative_profile else quantitative_profile);
   "identity",Pin.to_json value.identity_value;"body",body_to_json value]
 
 type requirement_key = Input_key of string | Capacity_key of owner * MC.resource_unit * MC.resource_scope
@@ -140,7 +168,7 @@ let static_requirements fragment =
         [per_slot MC.Machine_state_bits (bits 0 1);per_slot MC.Machine_correlation_records retained_capacity]
     | I.Evidence_bank _ -> [per_slot MC.Evidence_records 1;per_slot MC.Timer_cells 1]
     | I.Observed_rising -> [per_slot MC.Edge_history_cells 1]
-    | I.Attempt_bank {capacity=count;_} -> [per_slot MC.Active_attempt_records count;
+    | I.Attempt_bank {capacity=count;_} | I.Attempt_bank_sites {capacity=count;_} -> [per_slot MC.Active_attempt_records count;
         capacity owner MC.Retained_correlation_records MC.Per_executor 1;per_slot MC.Timer_cells count]
     | _ -> []) (F.nodes fragment)
 let check_requirements fragment requirements =
@@ -208,13 +236,21 @@ let check_products fragment root products =
 let of_json ~library raw =
   preflight raw;
   exact ["schema_version";"profile";"identity";"body"] raw;
-  require (get "schema_version" raw = str schema_version && get "profile" raw = str profile)
+  let composition=get "schema_version" raw=str composition_schema_version && get "profile" raw=str composition_profile in
+  let transfer_network=get "schema_version" raw=str transfer_network_schema_version && get "profile" raw=str transfer_network_profile in
+  let transfer_pair=get "schema_version" raw=str transfer_pair_schema_version && get "profile" raw=str transfer_pair_profile in
+  let step_quantitative=get "schema_version" raw=str step_quantitative_schema_version && get "profile" raw=str step_quantitative_profile in
+  let quantitative=composition || transfer_network || transfer_pair || step_quantitative || (get "schema_version" raw=str quantitative_schema_version && get "profile" raw=str quantitative_profile) in
+  require (quantitative || (get "schema_version" raw = str schema_version && get "profile" raw = str profile))
     "Unsupported local component material profile.";
   let identity_value = Pin.of_json (get "identity" raw) and body = get "body" raw in
-  exact ["fragment";"root";"carriers";"products";"provider_requirements"] body;
+  let fields=["fragment";"root";"carriers";"products";"provider_requirements"]in
+  exact (if quantitative then fields@["quantitative_contracts"] else fields) body;
   require (Pin.kind identity_value = Pin.Model && Pin.content_fingerprint identity_value = Canonical.fingerprint body)
     "Local component identity must pin its complete supplied body.";
   let fragment_value = F.of_json ~library (get "fragment" body) in
+  require(not (composition || transfer_pair || transfer_network) || get "profile" (get "fragment" body)=str F.multi_site_profile)
+    "A joint transfer component requires the explicit multi-site fragment family.";
   let root_value = Construction.Root_source.of_json (get "root" body) in
   let molecule = Construction.Root_source.molecule root_value in
   let space = N.space molecule in
@@ -238,7 +274,24 @@ let of_json ~library raw =
   let requirement_values = M.array ~maximum:max_provider_requirements (get "provider_requirements" body)
     |> List.map requirement_of_json in
   check_requirements fragment_value requirement_values;
-  let value = {identity_value;fragment_value;root_value;carrier_values;product_values;requirement_values} in
+  let quantitative_values=if not quantitative || composition || transfer_pair || transfer_network then [] else
+    let values=M.array ~maximum:1(get "quantitative_contracts" body) in
+    require(List.length values=1)"A quantitative local component requires exactly one complete supplied contract.";
+    List.map (fun raw->let value=QC.local_of_json raw in
+      require(value.mechanism.multi_site=step_quantitative)"Local component and quantitative law profiles must agree.";value) values in
+  let transfer_pair_values=if not transfer_pair then [] else
+    let values=M.array ~maximum:1(get "quantitative_contracts" body) in
+    require(List.length values=1)"A transfer-pair component requires exactly one complete joint contract.";
+    List.map (fun raw->TC.local_of_json raw) values in
+  let transfer_network_values=if not transfer_network then [] else
+    let values=M.array ~maximum:1(get "quantitative_contracts" body) in
+    require(List.length values=1)"A transfer network requires exactly one supplied atomic state-owner contract.";
+    List.map (fun raw->NC.local_of_json raw) values in
+  let composition_values=if not composition then [] else
+    let values=M.array ~maximum:1(get "quantitative_contracts" body)in
+    require(List.length values=1)"A coupled component has one explicit state-owner or coordinator contract.";
+    List.map(fun raw->CC.local_of_json raw)values in
+  let value = {identity_value;fragment_value;root_value;carrier_values;product_values;requirement_values;quantitative_values;transfer_pair_values;transfer_network_values;composition_values} in
   require (equal raw (to_json value)) "Local material must preserve its complete canonical typed body without normalization.";
   preflight (to_json value);value
 let fingerprint value = Canonical.fingerprint (to_json value)
@@ -249,3 +302,7 @@ let root value = value.root_value
 let carriers value = value.carrier_values
 let products value = value.product_values
 let provider_requirements value = value.requirement_values
+let quantitative_contracts value = value.quantitative_values
+let transfer_pair_contracts value = value.transfer_pair_values
+let transfer_network_contracts value = value.transfer_network_values
+let composition_contracts value = value.composition_values

@@ -47,7 +47,9 @@ MAX_EVIDENCE = 9 * 1024 * 1024
 class ComponentBoundary(MaterialBoundary):
     @staticmethod
     def allowed(name: str) -> bool:
-        return name == "biocompiler.core_policy_component_material" or MaterialBoundary.allowed(name)
+        # This exact private dependency only encodes bounded JSON transport.
+        # It grants no Python source, runtime, producer or checking authority.
+        return name in {"biocompiler.core_policy_component_material", "biocompiler._policy_coupled_wire"} or MaterialBoundary.allowed(name)
 
 
 def source_document(original: dict, state_reading: bool):
@@ -152,7 +154,8 @@ def checked_result(result: dict, case: dict) -> None:
         raise AssertionError("Complete declared cross-link projections changed")
 
 
-def exercise_cases(cases, core, verify_transport, verify, sdk, retain, artifacts, input_paths):
+def exercise_cases(cases, core, verify_transport, verify, sdk, retain, artifacts, input_paths, *,
+                   validate_result=checked_result, expected_obligations=OBLIGATIONS):
     """One unchanged 26-observation A/B witness for both explicit environments."""
     from biocompiler.core_client import CoreRejected
     def rejected(case, name, codes, action):
@@ -170,7 +173,7 @@ def exercise_cases(cases, core, verify_transport, verify, sdk, retain, artifacts
     for case, request in cases:
         label, limits = case["id"], case["limits"]
         compiled = sdk.compile(request, limits=limits, client=core)
-        checked_result(compiled.result, case)
+        validate_result(compiled.result, case)
         if compiled.artifact is not None:
             raise AssertionError("Compilation exported without a fresh export request")
         retain(label, "compile", compiled.result)
@@ -186,7 +189,7 @@ def exercise_cases(cases, core, verify_transport, verify, sdk, retain, artifacts
             input_paths=input_paths)
         if exported.report != checked.report or exported.candidate != candidate:
             raise AssertionError("Fresh atomic export changed checked source-to-material evidence")
-        checked_result(exported.result, case)
+        validate_result(exported.result, case)
         retain(label, "export-verify", exported.result)
         retain(label, "paired-publication", archive_receipt(exported.result, paired))
         for kind in ("guard", "state", "feedback", "configuration"):
@@ -198,7 +201,7 @@ def exercise_cases(cases, core, verify_transport, verify, sdk, retain, artifacts
         if (failed.status != "not_accepted" or failed.artifact is not None or failed.report["assembly_status"] != "fail"
                 or failed.report["context_status"] != "unassessed"
                 or failed.report["assembly"]["structure"]["content_outcome"] != "fail"
-                or [row["obligation"] for row in failed.report["obligations"]] != OBLIGATIONS
+                or [row["obligation"] for row in failed.report["obligations"]] != expected_obligations
                 or any(row["status"] != "unresolved" for row in failed.report["obligations"])):
             raise AssertionError("Changed material did not fail fresh exact-content checking")
         retain(label, "changed-material", failed.result)
@@ -309,7 +312,8 @@ SLOTS = {(system, machine, minor) for system, machine in (("Linux", "x86_64"), (
          for minor in ("3.11", "3.14")}
 REQUIRED_MODULES = {"biocompiler", "biocompiler.core_client", "biocompiler.core_policy", "biocompiler.core_policy_operational",
                     "biocompiler.core_policy_implementation", "biocompiler.core_policy_material",
-                    "biocompiler.core_policy_component_material", "biocompiler.policy.component_material", "biocompiler.policy.material"}
+                    "biocompiler.core_policy_component_material", "biocompiler._policy_coupled_wire",
+                    "biocompiler.policy.component_material", "biocompiler.policy.material"}
 
 
 def _require(value, message):
@@ -384,8 +388,10 @@ def fixture_authority_pins(fixture_path, provenance_path):
                for name in ("stdout.log", "stderr.log")}}
 
 
-def check_observations(observations, fixture):
+def check_observations(observations, fixture, *, validate_result=None, expected_obligations=OBLIGATIONS):
     """Check complete retained protocol values against independent originals."""
+    if validate_result is None:
+        validate_result = checked_result
     from biocompiler.core_client import CoreResponse, CORE_VERSION
     from biocompiler.core_policy_component_material import _result
     _require(type(observations) is list and all(type(row) is dict and set(row) == {"case", "name", "result"} for row in observations)
@@ -407,7 +413,7 @@ def check_observations(observations, fixture):
             result = values[name]
             _result(CoreResponse("retained-component", operation + "-policy-component-material", "ok", result, (), role, CORE_VERSION), payload)
             if name != "changed-material":
-                checked_result(result, case)
+                validate_result(result, case)
         _require(compiled == values["check-verify"] == values["replay-verify"] and compiled["artifact"] is None,
                  "Complete fresh component compile/check/replay results differ")
         exported = values["export-verify"]
@@ -417,7 +423,7 @@ def check_observations(observations, fixture):
         _require(failed["report"]["status"] == "not_accepted" and failed["artifact"] is None
                  and failed["report"]["assembly_status"] == "fail" and failed["report"]["context_status"] == "unassessed"
                  and failed["report"]["assembly"]["structure"]["content_outcome"] == "fail"
-                 and [row["obligation"] for row in failed["report"]["obligations"]] == OBLIGATIONS
+                 and [row["obligation"] for row in failed["report"]["obligations"]] == expected_obligations
                  and all(row["status"] == "unresolved" for row in failed["report"]["obligations"]),
                  "Changed component material gained or lost original authority")
         for name, code in (("changed-guard", "policy_implementation_source_binding"), ("changed-state", "policy_implementation_source_binding"),

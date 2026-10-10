@@ -20,16 +20,16 @@ Unknown export bindings, dynamic export mutations, unresolved schema/profile dec
 | `cli_command` | 67 |
 | `console_script` | 1 |
 | `example` | 38 |
-| `export` | 699 |
+| `export` | 841 |
 | `ir_operation` | 165 |
-| `module` | 234 |
-| `public_definition` | 1012 |
+| `module` | 249 |
+| `public_definition` | 1142 |
 | `schema` | 329 |
-| `serializer` | 303 |
+| `serializer` | 304 |
 | `studio_asset` | 8 |
 | `studio_endpoint` | 14 |
-| `version_literal` | 712 |
-| `version_profile` | 128 |
+| `version_literal` | 919 |
+| `version_profile` | 205 |
 
 ## CLI command index
 

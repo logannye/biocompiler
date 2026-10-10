@@ -7,6 +7,7 @@ module I = Bioc_domain.Policy_implementation
 
 val profile : string
 val staged_execution_profile : string
+val multi_site_execution_profile : string
 val execution_profile : I.t -> string
 type reason = Missing | Stale | Invalid | Conflicting
 type truth_signal = { value : I.truth option; reasons : reason list }
@@ -90,3 +91,29 @@ val step : ?max_step_work:int -> ?max_step_retained:int -> state -> input_batch 
 val creations : frame -> attempt list
 val frame_to_json : frame -> Json.t
 val state_fingerprint : state -> string
+
+(** Invocation-owned witnesses of successful deterministic transitions. The
+    original immutable plan must have the same physical owner, and complete
+    predecessor, ordered input and optional delta-guard bytes must be equal.
+    Digests and imported reports cannot create witnesses. Fresh failures are
+    never retained. Auxiliary bound exhaustion falls back to [step], preserving
+    its diagnostics and logical successor usage. These witnesses grant no source,
+    requirement, preservation, material or export acceptance. *)
+type transition_session
+
+type transition_usage = {
+  requests : int; evaluations : int; reuses : int; bypasses : int;
+  proof_work : int; peak_bytes : int; current_entries : int;
+}
+
+(** Fixed auxiliary bounds: 32 entries, 8 MiB of complete retained canonical
+    data (not heap memory), and 64 * 1024 * 1024 auxiliary accounting units.
+    Units add fixed structural/string allowances and encoded/equality byte
+    charges; they do not count all encoder visits or measure CPU work. A session
+    belongs to one checker invocation. *)
+val create_transition_session : state -> transition_session
+
+val step_with_transition_session : transition_session ->
+  ?max_step_work:int -> ?max_step_retained:int -> state -> input_batch -> state * frame
+
+val transition_usage : transition_session -> transition_usage

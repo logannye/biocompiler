@@ -30,6 +30,29 @@ POLICY_FIXTURES = ["data/policy_frontend_request.json", "data/policy_frontend_su
 
 # Literal union inventory, independent of the runner's closed allowlist.
 POLICY_OPERATIONAL_FIXTURES = {
+    'test_policy_quantitative_composition': ['data/policy_quantitative_composition_v01.json', 'data/policy_quantitative_network_v01.json'],
+    'test_policy_approximation': ['data/policy_approximation_v01.json'],
+    'test_policy_realization_evidence': ['data/policy_realization_evidence_v01.json', 'data/policy_quantitative_network_v01.json'],
+    'test_policy_quantitative_assurance': ['data/policy_approximation_v01.json', 'data/policy_realization_evidence_v01.json', 'data/policy_quantitative_network_v01.json', 'data/policy_quantitative_composition_v01.json'],
+
+    'test_policy_admitted_ir': ['data/policy_operational_v01.json', 'data/policy_staged_regimen_source_v01.json', 'data/policy_implementation_binding_v01.json'],
+    'test_policy_finite_machine': ['data/policy_finite_machine_v01.json'],
+    'test_policy_refinement': ['data/policy_finite_machine_v01.json'],
+    'test_policy_quantitative_network': ['data/policy_quantitative_network_v01.json', 'data/policy_quantitative_transfer_v01.json'],
+    'test_policy_quantitative_transfer': ['data/policy_quantitative_transfer_v01.json', 'data/policy_quantitative_step_v01.json'],
+    'test_policy_quantitative_step': ['data/policy_quantitative_step_v01.json'],
+    'test_policy_multi_site': ['data/policy_quantitative_step_v01.json'],
+    'test_policy_quantitative': ['data/policy_quantitative_v01.json'],
+    'test_policy_module_linking': ['data/policy_module_linking_v01.json'],
+    'test_policy_network': ['data/policy_machine_network_v01.json'],
+    'test_policy_target_planning': ['data/policy_machine_network_v01.json', 'data/policy_finite_machine_v01.json'],
+    "test_policy_provider_prerequisites": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_prerequisite_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_two_observation_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_multi_member_material_service": ["data/policy_staged_material_v01.json"],
+    "test_policy_grounded_helper_material_service": ["data/policy_staged_material_v01.json"],
+    "test_policy_instance_assembly_rule": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_instance_material_service": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
     "test_policy_staged_generation": ["data/policy_staged_realization_request_v01.json"],
     "test_policy_staged_binding": ["data/policy_staged_realization_request_v01.json"],
     "test_policy_staged_component_material": ["data/policy_staged_material_v01.json"],
@@ -50,6 +73,8 @@ POLICY_OPERATIONAL_FIXTURES = {
     'test_policy_implementation_lowering': ['data/policy_implementation_binding_v01.json'],
     'test_policy_requirement_monitor': ['data/policy_implementation_binding_v01.json'],
     'test_policy_preservation_check': ['data/policy_implementation_binding_v01.json'],
+    "test_policy_candidate_congruence_check": ["data/policy_implementation_binding_v01.json"],
+    "test_policy_candidate_transition_congruence": ["data/policy_primitives_v01.json"],
     'test_construction_content': ['data/construction_content_v01.json'],
     'test_policy_mrna_structure': ['data/policy_mrna_structure_v01.json'],
     'test_policy_implementation_service': ['data/policy_implementation_request_v01.json'],
@@ -105,7 +130,7 @@ class NativeBundleTests(unittest.TestCase):
 
     def test_actual_dune_suite_census_and_argument_order_are_preserved(self):
         plan = bundle.test_plan((ROOT/'core/test/dune').read_text())
-        self.assertEqual(len(plan),171)
+        self.assertEqual(len(plan),195)
         manager = next(row for row in plan if row['name']=='test_pipeline_callback_manager')
         self.assertEqual(manager['environment'], ['BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION',
             'BIOCOMPILER_PIPELINE_CONTRACT_LITERALS','BIOCOMPILER_FIXED_PIPELINE_CORPUS'])
@@ -123,11 +148,11 @@ class NativeBundleTests(unittest.TestCase):
             'test_policy_check':POLICY_FIXTURES,
             'test_policy_document':['data/policy_documents_v01.json'],
             'test_policy_service':['data/policy_documents_v01.json']})
-        self.assertEqual(len(POLICY_OPERATIONAL_FIXTURES),50)
-        self.assertEqual(len(observed),53)
-        self.assertEqual(len(bundle.dependency_members(ROOT)),26)
-        self.assertEqual(len(bundle.expected_members(ROOT)),200)
-        self.assertEqual(sum(path.endswith('.exe') for path in bundle.expected_members(ROOT)),174)
+        self.assertEqual(len(POLICY_OPERATIONAL_FIXTURES),74)
+        self.assertEqual(len(observed),77)
+        self.assertEqual(len(bundle.dependency_members(ROOT)),36)
+        self.assertEqual(len(bundle.expected_members(ROOT)),239)
+        self.assertEqual(sum(path.endswith('.exe') for path in bundle.expected_members(ROOT)),203)
         for name, relatives in POLICY_OPERATIONAL_FIXTURES.items():
             declaration = '(test (name '+name+') (modules '+name+') (libraries example) (action (run %{test} '
             arguments = ['%{dep:'+relative+'}' for relative in relatives]

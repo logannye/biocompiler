@@ -25,7 +25,8 @@ complete source/build provenance and externally pinned Core/Verify bytes; it
 reconstructs both public Python requests and runs the same 26-observation witness.
 The private emitter is never packaged or staged with the consumer.
 
-The standalone consumer stages only seven Python transport modules, the supplied
+The standalone consumer stages only eight Python transport modules, including
+the bounded coupled JSON codec, the supplied
 Verify executable and ten separate A/B original/proposal/expected-result files.
 It runs sixteen observations with thirty Verify launches and requires OS network
 denial inherited by descendants. It replays fresh complete results and rejects

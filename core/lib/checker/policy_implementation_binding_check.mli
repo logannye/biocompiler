@@ -4,9 +4,23 @@
     This first family has one executor/encounter/truth observation/product
     effect, one or two exclusive evidence-rising rules, encounter truth stores,
     no machines/predicate resets, and exactly one effect-initiating rule.
+    The separately versioned two-observation family independently binds two
+    distinct coherence groups in original declaration order to distinct banks
+    and inputs, preserving each source observation and freshness bound.
     The separate staged profile binds one encounter machine, five exact ordered
     source state labels, seven transitions and two distinct same-product effects.
-    Alternate state encodings and unbounded/generic machines are not admitted.
+    The separate finite-machine profile binds one encounter machine with two
+    to sixteen ordered source states, one to thirty-two transitions and one to
+    eight same-product effects. Branches and retry cycles preserve exact source
+    edges, terminal non-reentry, exclusive lanes and retained attempt identity.
+    Each effect has one initiating transition, with at most one request per
+    transition; separate rules/stores and alternate state encodings remain
+    outside that profile. The original staged topology is unchanged.
+    The explicit multi-site family replaces the unique-initiator restriction
+    with an ordered request-site inventory. All sites belong to the same source
+    machine and arbiter, and each attempt retains its own initiating guard.
+    The singular initiating_rule/gate/guard fields name the first site for
+    legacy callers; complete correspondence must use request_sites.
 
     A result proves only [source_graph_bound]. It does not execute a timeline,
     prove preservation or hard requirements, or authorize material/export. *)
@@ -23,8 +37,9 @@ type observation = { source : string; bank : string; input : string; observer : 
 type state = { source : string; register : string }
 (* [product_parameter] is the effect Argument.name, not the name of the fixed
    Parameter declaration from which its value was read. *)
+type effect_site = { initiating_rule : string; gate : string; guard : I.endpoint }
 type effect_binding = { source : string; bank : string; feedback : string; initiating_rule : string;
-  gate : string; guard : I.endpoint; product_parameter : string; machine : string option }
+  gate : string; guard : I.endpoint; product_parameter : string; machine : string option; request_sites : effect_site list }
 type rule = { source : string; gate : string; arbiter : string; lane : int; commit : string;
   trigger : I.endpoint; source_trigger : O.expression }
 type machine = { source : string; bank : string }
@@ -34,6 +49,12 @@ type expression = { source_path : string; source_expression : Json.t; endpoint :
 type checked_binding
 
 val check : admitted:A.admitted_inputs -> implementation:I.t -> proposed:B.t -> checked_binding
+
+(** Independent bounded network reconstruction. Preserves complete source policy
+    grouping, ordered machine/store writers and all source occurrences; the
+    local work ceiling remains enforced when [charge] is a no-op. *)
+val check_network_metered : charge:(int -> unit) -> admitted:A.admitted_inputs ->
+  implementation:I.t -> proposed:B.t -> checked_binding
 val admitted_inputs : checked_binding -> A.admitted_inputs
 val implementation : checked_binding -> I.t
 val environment : checked_binding -> environment

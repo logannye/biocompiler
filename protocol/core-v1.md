@@ -601,3 +601,80 @@ assessment, exact molecule records and paired FASTA/manifest hashes.
 Python transports and the same atomic, independently read-back ZIP publication
 used by the conditional material route. This increment adds no component CLI
 command or top-level Python re-export.
+
+
+## Instance provider prerequisites
+
+The separately negotiated `policy_prerequisite_material` profile uses the
+existing component check/replay/export operations with outer request v0.3 and
+`biocompiler.policy_instance_prerequisite_mrna.v0.1`. Core alone advertises
+`policy_prerequisite_material_producer`. The exact service implementation is
+`biocompiler.ocaml.policy_instance_prerequisite_material.v0.1`; validation scope
+is `policy-instance-prerequisite-mrna-v0.1`. The nested realization request v0.2
+uses `biocompiler.policy_prerequisite_realization_inputs.v0.1` and is reachable
+only through this outer route, not standalone realization admission.
+
+Material assessment v0.2 adds `prerequisites` and `prerequisite_status`. Context
+assessment retains its v0.1 schema with the separately negotiated profile and
+checker implementation v0.3, adding `prerequisite_closure`. The closure binds
+complete original catalog dependencies, instances, local requirements, provider
+bodies, graph, domain, clock, recipient and checked allocations. Only native
+private checked values authorize discharge; imported reports do not. Old profile
+field sets remain unchanged. See the [closed contract](../docs/policy-prerequisite-closure-v0.1.md)
+for supported relations, negative outcomes, limits and pending validation.
+
+## Two-observation instance prerequisites
+
+The separately negotiated `policy_two_observation_material` profile uses outer
+material request v0.4 and
+`biocompiler.policy_instance_two_observation_prerequisite_mrna.v0.1`. Core alone
+advertises `policy_two_observation_material_producer`. Its service implementation
+is `biocompiler.ocaml.policy_instance_two_observation_prerequisite_material.v0.1`
+and validation scope is `policy-instance-two-observation-prerequisite-mrna-v0.1`.
+Nested realization v0.3 uses
+`biocompiler.policy_two_observation_prerequisite_inputs.v0.1`; its explicit decoder
+is reachable only through the matching outer route. Source binding/report v0.3
+uses `biocompiler.policy_two_observation_source_graph.v0.1`.
+
+Material/context assessment schema versions remain v0.2/v0.1 respectively, with
+checker implementation v0.4 for this family. Each of the two original observations
+retains its ordered source/bank anchor, exact input/provider channel and freshness
+contract. Full original preservation and private prerequisite closure remain
+required before material acceptance or export. Prior profile combinations remain
+closed. See the [bounded contract and witness](../docs/policy-two-observation-composition-v0.1.md).
+
+
+## Two-product multi-member prerequisites
+
+The additive `policy_multi_member_material` capability uses original request
+v0.5 and profile `biocompiler.policy_multi_member_prerequisite_mrna.v0.1`, with
+`policy_multi_member_material_producer` on Core. The service implementation is
+`biocompiler.ocaml.policy_multi_member_prerequisite_material.v0.1` and validation
+scope is `policy-multi-member-prerequisite-mrna-v0.1`. Existing component-material
+compile/check/replay/export operations retain their separate original authority.
+
+This family pairs realization v0.4, staged source binding v0.4, assembly
+rule/proposal v0.3 and component context v0.2. It admits exactly two distinct fixed
+products and two complete RNA members, with original-bound transport providers,
+two placements, shared delivery authority and prerequisite graph/closure v0.2.
+Fresh context assessment v0.2 and material assessment v0.3 retain both member and
+transport allocations. No earlier schema/profile silently admits these inputs.
+Zero helpers are supported in this increment. See the
+[complete bounded contract](../docs/policy-multi-member-composition-v0.1.md).
+
+### Grounded helper component material profile
+
+The opt-in `policy_grounded_helper_material` capability uses request v0.6,
+implementation `biocompiler.ocaml.policy_grounded_helper_prerequisite_material.v0.1`
+and scope `policy-grounded-helper-prerequisite-mrna-v0.1`. Core alone additionally
+advertises `policy_grounded_helper_material_producer`. Both use the existing
+component-material operations; prior capabilities retain their exact profiles.
+
+The [bounded contract](../docs/policy-grounded-helper-composition-v0.1.md) adds one
+complete, independently pinned material-only helper RNA to two payload RNAs,
+under an explicit supplied capacity and source-independent bootstrap contract.
+Assembly v0.4 and context v0.3 preserve all three molecular identities, complete
+original provider dependency closure, shared-resource reservations and full
+finite source/candidate preservation. The material assessment v0.4 and private
+closure v0.3 cannot be replaced by an earlier report. A successful report retains
+biological validity and human-use suitability as unassessed.

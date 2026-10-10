@@ -13,6 +13,13 @@ from unittest.mock import patch
 from tools import check_policy_public_api_coverage as c
 
 
+INSTANCE_DEPENDENCIES = frozenset('biocompiler.core_policy_component_material.' + name for name in (
+    'INSTANCE_ASSEMBLY_PROFILE', 'INSTANCE_IMPLEMENTATION', 'INSTANCE_PRODUCER_PROFILE',
+    'INSTANCE_PROFILE', 'INSTANCE_REQUEST_PROFILE', 'INSTANCE_REQUEST_SCHEMA',
+    'INSTANCE_VALIDATION_SCOPE', '_instanced',
+))
+
+
 class PolicyPublicApiCoverageTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -40,11 +47,11 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (43, 845, 163, 17, 21))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 203,
-            'independent_expansion': 28, 'shared_invariant': 492, 'source_only': 116})
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (57, 1688, 305, 17, 35))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 595,
+            'independent_expansion': 28, 'shared_invariant': 708, 'source_only': 351})
         self.assertEqual(len(self.ledger['syntax_links']), 359)
-        self.assertEqual(len(self.ledger['witnesses']), 138)
+        self.assertEqual(len(self.ledger['witnesses']), 214)
         self.assertEqual(result['status'], 'source_inventory_checked')
         self.assertEqual(result['runtime_protocol_scope'], c.RUNTIME_SCOPE)
         self.assertIn('not an exhaustive runtime-attribute census', result['runtime_protocol_scope'])
@@ -54,14 +61,127 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
     def test_discovery_is_inert_even_for_source_with_executable_statements(self):
         before = {key for key in sys.modules if key.startswith('biocompiler')}
         marker = self.root / 'must_not_exist'
-        path = self.root / c.PACKAGE / '__init__.py'
+        path = self.root / c.PACKAGE / 'programs.py'
         with path.open('a') as stream:
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 845)
+        self.assertEqual(len(found['entries']), 1688)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
+
+    def test_reviewed_lazy_facades_preserve_all_explicit_export_targets(self):
+        before = {key for key in sys.modules if key.startswith('biocompiler')}
+        found = c.discover(self.root)
+        self.assertEqual(found['exports'], self.original['inventory']['exports'])
+        self.assertEqual(len(found['exports']), 305)
+        self.assertEqual(found['exports']['biocompiler.policy.refinement.PolicyRefinementClient'],
+                         'biocompiler.core_policy_refinement.PolicyRefinementClient')
+        self.assertEqual(found['exports']['biocompiler.policy.quantitative_assurance.PolicyQuantitativeAssuranceResult'],
+                         'biocompiler.core_policy_quantitative_assurance.PolicyQuantitativeAssuranceResult')
+        self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
+
+    def test_lazy_export_discovery_rejects_changed_hooks_aliases_and_conditions(self):
+        path = self.root / c.PACKAGE / 'refinement.py'
+        original = path.read_text()
+        changes = (
+            original.replace('if TYPE_CHECKING:', 'if True:', 1),
+            original.replace('from biocompiler.core_policy_refinement import (',
+                             'from biocompiler.core_policy_material import (', 1),
+            original.replace('return getattr(core_policy_refinement, name)', 'return object()', 1),
+            original + '\nPolicyRefinementClient = object()\n',
+            original + '\nTYPE_CHECKING = True\n',
+            original + '\ngetattr = lambda *args: None\n',
+            original + '\n_TRANSPORT_EXPORTS.add("unchecked")\n',
+            original + '\nglobals()["__getattr__"] = lambda name: None\n',
+            original + '\nglobals().update({"RefinementClaim": 7})\n',
+            original + '\nlocals()["__getattr__"] = lambda name: None\n',
+            original + '\nexec("RefinementClaim = 7")\n',
+            original + '\nsetattr(module_alias, "RefinementClaim", 7)\n',
+            original + '\ndef sneaky(value=globals().update({"RefinementClaim": 7})):\n    pass\n',
+            original + '\nclass Sneaky:\n    globals().update({"RefinementClaim": 7})\n',
+            original.replace('def check(request: JsonValue,', 'def check(request: globals().update({"RefinementClaim": 7}),', 1),
+            original.replace('def __getattr__(name: str) -> Any:', 'def unchecked(name: str) -> Any:', 1),
+        )
+        for altered in changes:
+            with self.subTest(source=altered):
+                path.write_text(altered)
+                with self.assertRaises(c.ApiCoverageError):
+                    c.discover(self.root)
+        path.write_text(original)
+
+    def test_type_checking_imports_without_closed_runtime_shim_do_not_bind_exports(self):
+        path = self.root / c.PACKAGE / '__init__.py'
+        text = path.read_text()
+        start, end = text.index('def __getattr__'), text.index('__all__ =')
+        path.write_text(text[:start] + text[end:])
+        with self.assertRaises(c.ApiCoverageError):
+            c.discover(self.root)
+
+    def test_composition_dependencies_preserve_all_previous_api_classifications_and_witness_meanings(self):
+        self.assertEqual(len(c.COMPOSITION_DEPENDENCIES), 60)
+        entries = {row['id']: row for row in self.ledger['inventory']['entries']}
+        for identity in c.COMPOSITION_DEPENDENCIES:
+            self.assertEqual(entries[identity]['scope'], 'dependency')
+            self.assertEqual(self.ledger['coverage'][identity]['status'], 'dependency')
+            self.assertEqual(self.ledger['coverage'][identity]['witnesses'], [])
+        metadata = {
+            'witnesses': {key: {name: value[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                          for key, value in self.before_typed_modules()['witnesses'].items()},
+            'coverage': {key: value for key, value in self.before_typed_modules()['coverage'].items()
+                         if key not in c.COMPOSITION_DEPENDENCIES},
+        }
+        self.assertEqual(len(metadata['coverage']), 845)
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), '1ca37142a2beec20c09db60e709e5aa8273da2f5e2002a104ed21c228d6b7d62')
+
+    def test_grounded_helper_dependencies_preserve_all_896_previous_api_meanings(self):
+        self.assertEqual(len(c.GROUNDED_HELPER_DEPENDENCIES), 9)
+        self.assertTrue(set(c.GROUNDED_HELPER_DEPENDENCIES) <= set(c.COMPOSITION_DEPENDENCIES))
+        entries = {row['id']: row for row in self.ledger['inventory']['entries']}
+        for identity in c.GROUNDED_HELPER_DEPENDENCIES:
+            self.assertEqual(entries[identity]['scope'], 'dependency')
+            self.assertEqual(self.ledger['coverage'][identity]['status'], 'dependency')
+            self.assertEqual(self.ledger['coverage'][identity]['witnesses'], [])
+        metadata = {
+            'witnesses': {key: {name: value[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                          for key, value in self.before_typed_modules()['witnesses'].items()},
+            'coverage': {key: value for key, value in self.before_typed_modules()['coverage'].items()
+                         if key not in c.GROUNDED_HELPER_DEPENDENCIES},
+        }
+        self.assertEqual(len(metadata['coverage']), 896)
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), '5cc11771578db41f60eca0aca124269cdf66cb4db3034f093151c91ebfd44b09')
+
+    def test_instance_dependencies_remain_private_in_the_combined_inventory(self):
+        # The combined ledger uses the same dependency-only scope wording for
+        # all composition profiles. The original 845 rows and all witnesses
+        # are separately pinned above; none of these eight additions has a
+        # runtime witness or an acceptance claim.
+        self.assertEqual(len(INSTANCE_DEPENDENCIES), 8)
+        self.assertTrue(INSTANCE_DEPENDENCIES <= set(c.COMPOSITION_DEPENDENCIES))
+        for identity in INSTANCE_DEPENDENCIES:
+            with self.subTest(identity=identity):
+                self.assertEqual(self.ledger['coverage'][identity], {
+                    'status': 'dependency', 'witnesses': [],
+                    'scope': 'Private implementation dependency or versioned protocol constant; '
+                             'no independent public API or executed semantic coverage claimed.',
+                })
+
+    def test_instance_dependency_cannot_gain_runtime_evidence(self):
+        row = self.ledger['coverage']['biocompiler.core_policy_component_material._instanced']
+        row.update(status='shared_invariant', witnesses=['component.routes'], scope='Native acceptance.')
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Private dependency classification changed'):
+            c.validate(self.root, self.ledger)
+
+    def test_grounded_helper_dependency_cannot_become_public_or_semantic_acceptance(self):
+        for identity in c.GROUNDED_HELPER_DEPENDENCIES:
+            ledger = copy.deepcopy(self.ledger)
+            ledger['coverage'][identity].update(status='source_only', scope='Validated helper behavior.')
+            with self.subTest(identity=identity), self.assertRaisesRegex(c.ApiCoverageError, 'Private dependency classification changed'):
+                c.validate(self.root, ledger)
 
     def test_file_census_rejects_new_module_even_with_repinned_ledger(self):
         path = c.PACKAGE + '/unreviewed.py'
@@ -115,9 +235,264 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
             c.validate(self.root, self.ledger)
 
+    def before_assurance(self):
+        projected = copy.deepcopy(self.ledger)
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                if not key.startswith(c.ASSURANCE_PREFIXES) and key not in c.ASSURANCE_DEPENDENCIES}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items() if not key.startswith('assurance.')}
+        return projected
+
+    def test_assurance_preserves_all_1439_previous_api_meanings(self):
+        previous = self.before_assurance()
+        self.assertEqual((len(previous['coverage']), len(previous['witnesses'])), (1439, 200))
+        metadata = {'coverage': previous['coverage'], 'witnesses': {
+            key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+            for key, row in previous['witnesses'].items()}}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), c.BEFORE_ASSURANCE_METADATA_SHA256)
+        self.assertEqual(c.BEFORE_ASSURANCE_METADATA_SHA256, '404ab87f1e9deb42ff3c117d84bc7c3da8926036a429beade5b5b933a58737ff')
+
+    def test_assurance_evidence_cannot_promote_native_or_empirical_acceptance(self):
+        self.ledger['coverage']['biocompiler.policy.approximation.ApproximationContract']['scope'] = 'Native and biological acceptance.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'metadata differs'):
+            c.validate(self.root, self.ledger)
+
+    def before_transfer_network(self):
+        projected = self.before_assurance()
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                if not key.startswith(c.TRANSFER_NETWORK_PREFIXES) and key not in c.TRANSFER_NETWORK_DEPENDENCIES}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items() if not key.startswith('transfer_network.')}
+        return projected
+
+    def test_transfer_network_preserves_all_1406_previous_api_meanings(self):
+        previous = self.before_transfer_network()
+        self.assertEqual((len(previous['coverage']), len(previous['witnesses'])), (1406, 195))
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in previous['witnesses'].items()}, 'coverage': previous['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), c.BEFORE_TRANSFER_NETWORK_METADATA_SHA256)
+        self.assertEqual(c.BEFORE_TRANSFER_NETWORK_METADATA_SHA256, 'de1b1202fcbfe2453c78be6fbe40828189fa28f32fc62eede742a0f4fe19225d')
+
+    def test_transfer_network_cannot_upgrade_python_expansion_to_native_acceptance(self):
+        self.ledger['coverage']['biocompiler.policy.quantitative.SampledTransferNetwork']['scope'] = 'Proves native target acceptance.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+
+    def before_transfer_pair(self):
+        projected = self.before_transfer_network()
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                if not key.startswith(c.TRANSFER_PAIR_PREFIXES) and key not in c.TRANSFER_PAIR_DEPENDENCIES}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items() if not key.startswith('transfer_pair.')}
+        return projected
+
+    def test_transfer_pair_preserves_all_1375_previous_api_meanings(self):
+        previous = self.before_transfer_pair()
+        self.assertEqual((len(previous['coverage']), len(previous['witnesses'])), (1375, 191))
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in previous['witnesses'].items()}, 'coverage': previous['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), c.BEFORE_TRANSFER_PAIR_METADATA_SHA256)
+        self.assertEqual(c.BEFORE_TRANSFER_PAIR_METADATA_SHA256, '169ff67cf58f5e2d3babb3e9f8c63b55128a2613c2f04e1ad73d3c1884968874')
+
+    def test_transfer_pair_cannot_upgrade_python_expansion_to_native_acceptance(self):
+        self.ledger['coverage']['biocompiler.policy.quantitative.SampledTransferPair']['scope'] = 'Proves native target acceptance.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+
+    def before_step_quantitative(self):
+        projected = self.before_transfer_pair()
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                if not key.startswith(c.STEP_QUANTITATIVE_PREFIX) and key not in c.STEP_QUANTITATIVE_DEPENDENCIES}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items() if not key.startswith('step_quantitative.')}
+        return projected
+
+    def test_step_quantitative_preserves_all_1350_previous_api_meanings(self):
+        previous = self.before_step_quantitative()
+        self.assertEqual((len(previous['coverage']), len(previous['witnesses'])), (1350, 188))
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in previous['witnesses'].items()}, 'coverage': previous['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), c.BEFORE_STEP_QUANTITATIVE_METADATA_SHA256)
+        self.assertEqual(c.BEFORE_STEP_QUANTITATIVE_METADATA_SHA256, '8db45c56f118a7271e7ce6225b7a2bb0940793b3807a016a6442dd6f36c2d3d7')
+
+    def test_step_quantitative_cannot_upgrade_python_expansion_to_native_acceptance(self):
+        self.ledger['coverage']['biocompiler.policy.quantitative.SampledStepReservoir']['scope'] = 'Proves native target acceptance.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+
+    def before_target_planning(self):
+        projected = self.before_step_quantitative()
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items() if not key.startswith(c.TARGET_PLANNING_PREFIXES)}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items() if not key.startswith('target_planning.')}
+        return projected
+
+    def test_target_planning_preserves_all_1297_previous_api_meanings(self):
+        previous = self.before_target_planning()
+        self.assertEqual((len(previous['coverage']), len(previous['witnesses'])), (1297, 174))
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in previous['witnesses'].items()}, 'coverage': previous['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), c.BEFORE_TARGET_PLANNING_METADATA_SHA256)
+        self.assertEqual(c.BEFORE_TARGET_PLANNING_METADATA_SHA256, '67e9eff1bc5a45833bfa0ab2034d2b64f30d36b51e3f278ccb1c0e993bbc58ec')
+
+    def test_target_planning_cannot_upgrade_diagnostics_to_native_acceptance(self):
+        self.ledger['coverage']['biocompiler.core_policy_planning.PolicyTargetPlanningClient.plan']['scope'] = 'Proves native target acceptance.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+
+    def before_network(self):
+        projected = self.before_target_planning()
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items() if key not in c.NETWORK_DEPENDENCIES}
+        return projected
+
+    def test_network_preserves_all_1279_previous_api_meanings(self):
+        previous = self.before_network()
+        self.assertEqual((len(previous['coverage']), len(previous['witnesses'])), (1279, 174))
+        self.assertEqual(len(c.NETWORK_DEPENDENCIES), 18)
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in previous['witnesses'].items()}, 'coverage': previous['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), c.BEFORE_NETWORK_METADATA_SHA256)
+        self.assertEqual(c.BEFORE_NETWORK_METADATA_SHA256, 'fb0cae52848ceef5f8d9ee9743846a23647175dc70e8144741aee087f5ca4a40')
+
+    def test_network_dependency_cannot_upgrade_transport_to_native_acceptance(self):
+        self.ledger['coverage']['biocompiler.core_policy_implementation._network_anchors']['scope'] = 'Proves native network acceptance.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+
+    def before_module_linking(self):
+        projected = self.before_network()
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                 if not key.startswith(c.MODULE_LINKING_PREFIXES)}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
+                                  if not key.startswith('module_linking.')}
+        return projected
+
+    def test_module_linking_preserves_all_1187_previous_api_meanings(self):
+        previous = self.before_module_linking()
+        self.assertEqual((len(previous['coverage']), len(previous['witnesses'])), (1187, 164))
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in previous['witnesses'].items()}, 'coverage': previous['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), c.BEFORE_MODULE_LINKING_METADATA_SHA256)
+        self.assertEqual(c.BEFORE_MODULE_LINKING_METADATA_SHA256, '4505ad72eaddb74c56cb7587ebbf2b719cd9b78b2e6c673b76c8820e19335bef')
+
+    def test_module_linking_witness_cannot_upgrade_mocked_transport_to_native_proof(self):
+        self.ledger['witnesses']['module_linking.transport']['distinction'] = 'Exact native module elaboration verified.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+
+    def before_quantitative(self):
+        projected = self.before_module_linking()
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                 if not key.startswith(c.QUANTITATIVE_PREFIX) and key not in c.QUANTITATIVE_DEPENDENCIES}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
+                                  if not key.startswith('quantitative.')}
+        return projected
+
+    def test_quantitative_preserves_all_1157_previous_api_meanings(self):
+        previous = self.before_quantitative()
+        self.assertEqual((len(previous['coverage']), len(previous['witnesses'])), (1157, 160))
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in previous['witnesses'].items()}, 'coverage': previous['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), c.BEFORE_QUANTITATIVE_METADATA_SHA256)
+        self.assertEqual(c.BEFORE_QUANTITATIVE_METADATA_SHA256, '5bf67512edb43be299929b44a147cec8951867fc52bd7fffa169ef2aa10615ad')
+
+    def test_quantitative_export_cannot_alias_untyped_source_quantity(self):
+        self.edit('src/biocompiler/policy/quantitative.py', '__all__ = [', 'from .model import Quantity as SampledReservoir\n\n__all__ = [', repin_file=True)
+        with self.assertRaisesRegex(c.ApiCoverageError, 'export target/alias census differs'):
+            c.validate(self.root, self.ledger)
+
+    def test_quantitative_witness_cannot_upgrade_authoring_to_native_proof(self):
+        self.ledger['witnesses']['quantitative.grid']['distinction'] = 'Exact native material-law acceptance.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+
+    def before_refinement(self):
+        projected = self.before_quantitative()
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                 if not key.startswith(c.REFINEMENT_PREFIXES)}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
+                                  if not key.startswith('refinement.')}
+        return projected
+
+    def test_refinement_preserves_all_1083_previous_api_meanings(self):
+        previous = self.before_refinement()
+        self.assertEqual(len(previous['coverage']), 1083)
+        self.assertEqual(len(previous['witnesses']), 152)
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in previous['witnesses'].items()}, 'coverage': previous['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), c.BEFORE_REFINEMENT_METADATA_SHA256)
+        self.assertEqual(c.BEFORE_REFINEMENT_METADATA_SHA256, 'd717a4c1f9cd7d81a90e8c3a71311d445ff46fb79b13233671a7e44fb65c99a1')
+
+    def test_refinement_replay_cannot_drop_saved_report_even_with_file_repin(self):
+        self.edit('src/biocompiler/core_policy_refinement.py',
+                  '"limits": limits, "report": report}', '"limits": limits}', repin_file=True)
+        with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
+            c.validate(self.root, self.ledger)
+
+    def test_refinement_namespace_export_cannot_target_source_check(self):
+        self.edit('src/biocompiler/policy/refinement.py',
+                  '__all__ = [', 'from .validation import check\n\n__all__ = [', repin_file=True)
+        with self.assertRaisesRegex(c.ApiCoverageError, 'export target/alias census differs'):
+            c.validate(self.root, self.ledger)
+
+    def test_refinement_witness_cannot_upgrade_to_native_proof_claim(self):
+        self.ledger['witnesses']['refinement.derivation']['distinction'] = 'Native proof established from child hashes.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+
+    def before_finite_machine(self):
+        projected = self.before_refinement()
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                 if key not in c.FINITE_MACHINE_DEPENDENCIES}
+        return projected
+
+    def test_finite_machine_preserves_all_1063_previous_api_meanings(self):
+        previous = self.before_finite_machine()
+        self.assertEqual(len(previous['coverage']), 1063)
+        self.assertEqual(len(c.FINITE_MACHINE_DEPENDENCIES), 20)
+        self.assertTrue(all(self.ledger['coverage'][key]['status'] == 'dependency'
+                            for key in c.FINITE_MACHINE_DEPENDENCIES))
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in previous['witnesses'].items()},
+                    'coverage': previous['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), c.BEFORE_FINITE_MACHINE_METADATA_SHA256)
+
+    def before_typed_modules(self):
+        projected = self.before_finite_machine()
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                 if not key.startswith(c.TYPED_MODULE_PREFIXES)}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
+                                  if not key.startswith(('typed.', 'modules.'))}
+        return projected
+
+    def test_typed_modules_preserve_all_905_previous_api_meanings(self):
+        previous = self.before_typed_modules()
+        self.assertEqual(len(previous['coverage']), 905)
+        self.assertEqual(len(previous['witnesses']), 138)
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in previous['witnesses'].items()},
+                    'coverage': previous['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), c.BEFORE_TYPED_MODULES_METADATA_SHA256)
+
+    def before_composition_profiles(self):
+        projected = self.before_typed_modules()
+        self.assertTrue(set(c.COMPOSITION_DEPENDENCIES) <= set(projected['coverage']))
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                 if key not in c.COMPOSITION_DEPENDENCIES}
+        return projected
+
     def before_research_project(self):
         """Remove only the additive researcher-project surface and its witnesses."""
-        projected = copy.deepcopy(self.ledger)
+        projected = self.before_composition_profiles()
         projected['coverage'] = {key: row for key, row in projected['coverage'].items()
                                  if not key.startswith('biocompiler.policy.research_project.')}
         projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
@@ -183,7 +558,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         original = json.dumps({'witnesses': witnesses, 'coverage': projected['coverage']}, ensure_ascii=True,
                               sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         self.assertEqual(c.digest(original), '2367be4f22a4985eb15fce30dc799abfb254a22ae86f7de665e23fdc7ed800a2')
-        self.assertEqual((len(set(c.MODULES) - {'research_project'}), len(c.CLIENTS)), (30, 6))
+        self.assertEqual((len(set(c.MODULES) - {'research_project', 'typed', 'modules', 'refinement', 'quantitative', 'module_linking', 'planning', 'quantitative_composition', 'quantitative_assurance', 'approximation', 'realization_evidence'}),
+                          len(set(c.CLIENTS) - {'core_policy_refinement', 'core_policy_module_linking', 'core_policy_planning', 'core_policy_quantitative_assurance'})), (30, 6))
         additions = {key: row for key, row in self.before_research_project()['coverage'].items()
                      if key not in projected['coverage']}
         self.assertEqual(len(additions), 50)
@@ -234,8 +610,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         original = json.dumps({'witnesses': witnesses, 'coverage': retained}, ensure_ascii=True,
                               sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         self.assertEqual(c.digest(original), 'f16a88c77afaea4f7cbae56e80e38afc8d5a4c894616ca158578b707d393bb4a')
-        self.assertEqual((len(set(c.MODULES) - {'component_selection', 'research_project'}),
-                          len(set(c.CLIENTS) - {'core_policy_component_selection'})), (29, 5))
+        self.assertEqual((len(set(c.MODULES) - {'component_selection', 'research_project', 'typed', 'modules', 'refinement', 'quantitative', 'module_linking', 'planning', 'quantitative_composition', 'quantitative_assurance', 'approximation', 'realization_evidence'}),
+                          len(set(c.CLIENTS) - {'core_policy_component_selection', 'core_policy_refinement', 'core_policy_module_linking', 'core_policy_planning', 'core_policy_quantitative_assurance'})), (29, 5))
         component_rows = [row for key, row in self.ledger['coverage'].items()
                           if key.startswith(('biocompiler.core_policy_component_material.',
                                              'biocompiler.policy.component_material.'))

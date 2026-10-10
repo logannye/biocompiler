@@ -26,7 +26,18 @@ jobs:
         with:
           python-version: '3.11.15'
       - name: Authenticate hosted push and exact sources before native setup
-        run: python -B tools/check_policy_development.py prepare
+        env:
+          PYTHONPATH: src
+        run: |
+          python -B tools/check_policy_development.py prepare
+          python -B tools/generate_policy_wire_schema.py --check
+          python -B tools/check_policy_source_context_coverage.py
+          python -B tools/check_policy_material_rule_coverage.py
+          python -B tools/check_policy_public_api_coverage.py
+          python -B tools/migration_inventory.py --check
+          python -B -m tools.generate_policy_quantitative_composition_fixture --check
+          python -B -m tools.generate_policy_approximation_fixture --check
+          python -B -m tools.generate_policy_realization_evidence_fixture --check
       - uses: ocaml/setup-ocaml@93303b622b2522e4411e295f9e77411a24912ac7
         with:
           ocaml-compiler: '5.4.0'
@@ -35,7 +46,15 @@ jobs:
             default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
       - name: Install ordinary dependencies, build once and run the fixed native suite inventory
         run: python -B tools/check_policy_development.py run
-      - name: Exercise all five complete SDK campaigns in two bounded lanes
+      - name: Exercise quantitative assurance through the same fresh native build
+        env:
+          PYTHONPATH: src
+        run: |
+          python -B tools/check_policy_quantitative_assurance.py \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output "$GITHUB_WORKSPACE/generated/development-feedback/quantitative-assurance.json"
+      - name: Exercise all ten complete SDK campaigns in two bounded lanes
         env:
           PYTHONPATH: src
         run: python -B tools/check_policy_development.py sdk-all

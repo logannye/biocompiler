@@ -60,7 +60,26 @@ from .inspection import inspect, diff, graph
 from .model import CompilationSubmission, BackendCapabilities, CapabilityAssessment
 from .handoff import prepare_submission, assess_capabilities, SubmissionError
 from .serialization import PolicySerializationError, SerializationLimits
-from . import logic, time, values, entities, chassis, observations, space, state, effects, behavior, coordination, requirements, deployment, catalog, patterns
+from . import logic, time, values, entities, chassis, observations, space, state, effects, behavior, coordination, requirements, deployment, catalog, patterns, typed, modules
+from importlib import import_module as _import_module
+from types import ModuleType as _ModuleType
+from typing import TYPE_CHECKING as _TYPE_CHECKING
+
+if _TYPE_CHECKING:
+    from . import refinement, quantitative, quantitative_composition, module_linking, approximation, realization_evidence, quantitative_assurance
+
+_OPTIONAL_NAMESPACES = frozenset({"refinement", "quantitative", "quantitative_composition", "module_linking",
+                                 "approximation", "realization_evidence", "quantitative_assurance"})
+
+
+def __getattr__(name: str) -> _ModuleType:
+    if name not in _OPTIONAL_NAMESPACES:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    return _import_module(f"{__name__}.{name}")
+
+
+def __dir__() -> list[str]:
+    return sorted(set(globals()) | _OPTIONAL_NAMESPACES)
 
 __all__ = [
     'Record',
@@ -175,4 +194,13 @@ __all__ = [
     'deployment',
     'catalog',
     'patterns',
+    'typed',
+    'modules',
+    'refinement',
+    'quantitative',
+    'quantitative_composition',
+    'module_linking',
+    'approximation',
+    'realization_evidence',
+    'quantitative_assurance',
 ]

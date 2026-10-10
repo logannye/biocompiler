@@ -20,6 +20,11 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_policy_two_observation_test_support": ("test/policy_two_observation_support/dune", {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support", "bioc_policy_prerequisite_test_support", "zarith"}, "test_support"),
+    "bioc_policy_multi_member_test_support": ("test/policy_multi_member_support/dune", {"bioc_wire", "bioc_domain", "zarith"}, "test_support"),
+    "bioc_policy_grounded_helper_test_support": ("test/policy_grounded_helper_support/dune", {"bioc_wire", "bioc_domain", "zarith", "bioc_policy_multi_member_test_support"}, "test_support"),
+    "bioc_policy_prerequisite_test_support": ("test/policy_prerequisite_support/dune", {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support"}, "test_support"),
+    "bioc_policy_instance_test_support": ("test/policy_instance_support/dune", {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "zarith"}, "test_support"),
     "bioc_policy_staged_test_support": ("test/policy_staged_support/dune", {"bioc_wire", "bioc_domain"}, "test_support"),
     "bioc_policy_component_test_support": ("test/policy_component_support/dune", {"bioc_wire", "bioc_domain"}, "test_support"),
     "bioc_reference_input": ("lib/reference_input/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
@@ -46,10 +51,32 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 PRIVATE_TEST_TOOLS = {
+    "two_observation_originals": ("test/two_observation_fixture_export/dune",
+        {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support", "bioc_policy_prerequisite_test_support", "bioc_policy_two_observation_test_support"}, "test_support"),
+    "multi_member_originals": ("test/multi_member_fixture_export/dune",
+        {"bioc_wire", "bioc_domain", "bioc_policy_multi_member_test_support"}, "test_support"),
+    "grounded_helper_originals": ("test/grounded_helper_fixture_export/dune",
+        {"bioc_wire", "bioc_domain", "bioc_policy_grounded_helper_test_support"}, "test_support"),
+    "prerequisite_originals": ("test/prerequisite_fixture_export/dune",
+        {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support", "bioc_policy_prerequisite_test_support"}, "test_support"),
     "component_originals": ("test/component_fixture_export/dune",
         {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"}, "test_support"),
+    "instance_originals": ("test/instance_fixture_export/dune",
+        {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support"}, "test_support"),
 }
 TESTS = {
+    'test_policy_quantitative_composition': {'bioc_semantics', 'bioc_service', 'bioc_candidate_runtime', 'bioc_wire', 'bioc_compiler', 'bioc_realization_checker', 'zarith', 'bioc_domain', 'bioc_checker', 'bioc_producer_service'},
+    'test_policy_approximation': {'bioc_semantics', 'bioc_service', 'bioc_candidate_runtime', 'bioc_wire', 'bioc_compiler', 'bioc_realization_checker', 'zarith', 'bioc_domain', 'bioc_checker', 'bioc_producer_service'},
+    'test_policy_realization_evidence': {'bioc_semantics', 'bioc_service', 'bioc_candidate_runtime', 'bioc_wire', 'bioc_compiler', 'bioc_realization_checker', 'zarith', 'bioc_domain', 'bioc_checker', 'bioc_producer_service'},
+    'test_policy_quantitative_assurance': {'bioc_semantics', 'bioc_service', 'bioc_candidate_runtime', 'bioc_wire', 'bioc_compiler', 'bioc_realization_checker', 'zarith', 'bioc_domain', 'bioc_checker', 'bioc_producer_service'},
+
+    "test_policy_two_observation_material_service": {"bioc_candidate_runtime", "bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_two_observation_test_support"},
+    "test_policy_multi_member_material_service": {"bioc_candidate_runtime", "bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_multi_member_test_support"},
+    "test_policy_grounded_helper_material_service": {"bioc_candidate_runtime", "bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_grounded_helper_test_support"},
+    "test_policy_provider_prerequisites": {"bioc_wire", "bioc_domain", "bioc_policy_prerequisite_test_support"},
+    "test_policy_prerequisite_material_service": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_prerequisite_test_support"},
+    "test_policy_instance_assembly_rule": {"bioc_wire", "bioc_domain", "bioc_policy_instance_test_support"},
+    "test_policy_instance_material_service": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "bioc_policy_component_test_support", "bioc_policy_instance_test_support"},
     "test_policy_staged_primitives": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "bioc_policy_staged_test_support", "zarith"},
     "test_policy_staged_regimen_source": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "bioc_semantics"},
     "test_policy_staged_binding": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_policy_staged_test_support", "zarith"},
@@ -114,6 +141,8 @@ TESTS = {
     "test_policy_implementation_lowering": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
     "test_policy_requirement_monitor": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "zarith"},
     "test_policy_preservation_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "zarith"},
+    "test_policy_candidate_congruence_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_candidate_runtime", "bioc_realization_checker", "zarith", "unix"},
+    "test_policy_candidate_transition_congruence": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "bioc_policy_staged_test_support"},
     "test_construction_content": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
     "test_policy_mrna_structure": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker"},
     "test_policy_implementation_service": {"bioc_wire", "bioc_service", "bioc_producer_service"},
@@ -126,6 +155,17 @@ TESTS = {
     "test_policy_operating_domain": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
     "test_policy_exclusion_source": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_service", "zarith"},
     "test_policy_realization_source": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_service", "zarith"},
+    "test_policy_admitted_ir": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+    "test_policy_module_linking": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "zarith"},
+    "test_policy_network": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "zarith"},
+    "test_policy_target_planning": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_producer_service", "zarith"},
+    "test_policy_quantitative_network": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "zarith"},
+    "test_policy_quantitative_transfer": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "zarith"},
+    "test_policy_quantitative_step": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "zarith"},
+    "test_policy_multi_site": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "zarith"},
+    "test_policy_quantitative": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "zarith"},
+    "test_policy_refinement": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_service", "bioc_producer_service"},
+    "test_policy_finite_machine": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_service", "bioc_producer_service"},
     "test_policy_operational": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
     "test_policy_execution": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "zarith"},
     "test_policy_operational_service": {"bioc_wire", "bioc_service", "bioc_producer_service"},
@@ -422,6 +462,8 @@ def source_boundary(path, allowed_libraries, *, owner=None):
         if token == "Unix":
             members = (ARTIFACT_UNIX if owner == "bioc_service" and path.name == "artifact_io.ml"
                        else ARTIFACT_TEST_UNIX if owner == "test:test_artifact_io"
+                       else frozenset({"gettimeofday"}) if owner == "test:test_policy_candidate_congruence_check"
+                       and path.name == "test_policy_candidate_congruence_check.ml"
                        else SELECTION_SERVICE_TEST_UNIX if owner == "test:test_policy_component_selection_service"
                        and path.name == "test_policy_component_selection_service.ml" else frozenset())
             if (tokens[index:index + 2] != ["Unix", "."] or index + 2 >= len(tokens)
@@ -429,6 +471,10 @@ def source_boundary(path, allowed_libraries, *, owner=None):
                 raise BoundaryError(f"Unreviewed native/process/dynamic-code escape Unix in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
+            if owner == "test:test_policy_candidate_congruence_check" and path.name == "test_policy_candidate_congruence_check.ml":
+                # Diagnostic timing is test-only; production gets no clock,
+                # environment or process capability from this exception.
+                reviewed.add("time")
             if owner == "test:test_policy_component_selection_service" and path.name == "test_policy_component_selection_service.ml":
                 reviewed.update(SELECTION_SERVICE_TEST_SYS)
             if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus", "test:test_synthetic_acceptance_corpus", "test:test_synthetic_producers_corpus", "test:test_realization_workflow_corpus", "test:test_reference_contracts_corpus"}:
@@ -575,11 +621,33 @@ def check_boundaries(root: Path):
                         "%{env:BIOCOMPILER_PIPELINE_SESSION_DECLARATION=missing}",
                         "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}"]]]
                 policy_fixtures = {
+                    "test_policy_two_observation_material_service": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_multi_member_material_service": ["policy_staged_material_v01.json"],
+                    "test_policy_grounded_helper_material_service": ["policy_staged_material_v01.json"],
+                    "test_policy_provider_prerequisites": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_prerequisite_material_service": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_instance_assembly_rule": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_instance_material_service": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_staged_primitives": ["policy_implementation_v01.json"],
                     "test_policy_staged_regimen_source": ["policy_staged_regimen_source_v01.json"],
                     "test_policy_staged_binding": ["policy_staged_realization_request_v01.json"],
                     "test_policy_staged_component_material": ["policy_staged_material_v01.json"],
                     "test_policy_staged_generation": ["policy_staged_realization_request_v01.json"],
+                    "test_policy_admitted_ir": ["policy_operational_v01.json", "policy_staged_regimen_source_v01.json", "policy_implementation_binding_v01.json"],
+                    "test_policy_finite_machine": ["policy_finite_machine_v01.json"],
+                    'test_policy_quantitative_composition': ['policy_quantitative_composition_v01.json', 'policy_quantitative_network_v01.json'],
+                    'test_policy_approximation': ['policy_approximation_v01.json'],
+                    'test_policy_realization_evidence': ['policy_realization_evidence_v01.json', 'policy_quantitative_network_v01.json'],
+                    'test_policy_quantitative_assurance': ['policy_approximation_v01.json', 'policy_realization_evidence_v01.json', 'policy_quantitative_network_v01.json', 'policy_quantitative_composition_v01.json'],
+                    "test_policy_refinement": ["policy_finite_machine_v01.json"],
+                    "test_policy_quantitative_network": ["policy_quantitative_network_v01.json", "policy_quantitative_transfer_v01.json"],
+                    "test_policy_quantitative_transfer": ["policy_quantitative_transfer_v01.json", "policy_quantitative_step_v01.json"],
+                    "test_policy_quantitative_step": ["policy_quantitative_step_v01.json"],
+                    "test_policy_multi_site": ["policy_quantitative_step_v01.json"],
+                    "test_policy_quantitative": ["policy_quantitative_v01.json"],
+                    "test_policy_module_linking": ["policy_module_linking_v01.json"],
+                    "test_policy_network": ["policy_machine_network_v01.json"],
+                    "test_policy_target_planning": ["policy_machine_network_v01.json", "policy_finite_machine_v01.json"],
                     "test_policy_operational": ["policy_operational_v01.json"],
                     "test_policy_execution": ["policy_operational_v01.json"],
                     "test_policy_operational_service": ["policy_operational_v01.json"],
@@ -594,6 +662,8 @@ def check_boundaries(root: Path):
                     "test_policy_implementation_lowering": ["policy_implementation_binding_v01.json"],
                     "test_policy_requirement_monitor": ["policy_implementation_binding_v01.json"],
                     "test_policy_preservation_check": ["policy_implementation_binding_v01.json"],
+                    "test_policy_candidate_congruence_check": ["policy_implementation_binding_v01.json"],
+                    "test_policy_candidate_transition_congruence": ["policy_primitives_v01.json"],
                     "test_construction_content": ["construction_content_v01.json"],
                     "test_policy_mrna_structure": ["policy_mrna_structure_v01.json"],
                     "test_policy_implementation_service": ["policy_implementation_request_v01.json"],

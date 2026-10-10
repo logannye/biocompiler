@@ -115,25 +115,25 @@ CONTEXT_IDS = ('source.context.compatibility.reference_value',
  'source.context.access.state_reset',
  'source.context.access.message_payload',
  'source.context.access.message_state_correlation')
-SOURCE_PINS = {'core/lib/checker/policy_admission.ml': '185cd8857caf6ee43461fde6b9c064745cb9a9d692ca16c848134b9777a53745',
- 'core/lib/checker/policy_check.ml': 'd8fc6d8a30ede74b89d90aca49d7ec77756761f317205e9bf96a906760ccd054',
+SOURCE_PINS = {'core/lib/checker/policy_admission.ml': '5f4418b9227fbc2db5fb86eaa668c3e407c3dcf793493d0c9018b0aaf6e4fda8',
+ 'core/lib/checker/policy_check.ml': '3f6668b35d2da76b6d4873c5e3cad1056adbb3543e0592ca07618eecf27e66cb',
  'core/lib/checker/policy_generation_meter.ml': '13c4647bc0efcb50f239af693e8fa3281fdbca4115ce4e5a84bcd4e9a4a1b965',
  'core/lib/checker/policy_generation_meter.mli': 'f1bb20416d692f4d0aa72b92028f75f6ea5ca532ae90e1d7593b424e703bf4ba',
- 'core/lib/checker/policy_implementation_binding_check.ml': '02327961ccdf3ff81a1777f19b6d3cabc9af4a7e50089a8d3bc1806d8f37e0f7',
+ 'core/lib/checker/policy_implementation_binding_check.ml': '82d57264e94313d0dbb95500bd36f0e62472152ceff33542a53632195c166664',
  'core/lib/domain/policy_document.ml': 'db2860b602d63df29d1a8240417f8632c37693b797f9561e00395bd1fd2f95dc',
- 'core/lib/domain/policy_material_context.ml': '12d4f24d00a364e5148f283d19c1b2e7fd56f031d68948941dca0950da43b2a0',
+ 'core/lib/domain/policy_material_context.ml': '00aab6a0635a99cb59fd171b120483c93035a6004cb168d7a10e2950e0ccf013',
  'core/lib/domain/policy_operating_domain.ml': 'bbdc0925c24c95852f356a513c1707f330da3b936227a24e0234730a9deb5384',
  'core/lib/domain/policy_operational.ml': 'bd5d03f8acefed68ab0a8059041774479426928266351b325535a124e3e23d34',
- 'core/lib/domain/policy_schema.ml': 'ea829a61d0584e98e4c63a3df6404988dec0d6af4bdf3faef31158420be2b2c5',
- 'core/lib/realization_checker/policy_material_context_check.ml': '670b8faccb9c5122265c718a71a6459668c7643267d000e8bfa445a8b29bc545',
+ 'core/lib/domain/policy_schema.ml': '8057ea511a25835f4e51c720ce815602f69839d0a664fc880c2f8f5bee918e78',
+ 'core/lib/realization_checker/policy_material_context_check.ml': '62190f46bc32fc648128c2efe4b88caab6375fddb0b9a78e392b0654d2b17ddb',
  'src/biocompiler/policy/model.py': '7197696399733e610b7a5c458aebf0ddc4b0df997f190cb53fa1659c419b6038',
  'src/biocompiler/policy/serialization.py': 'd0e2feb4e8dd3fe65a10793d20c06144ad6fec396d99e6107f3485682ee570bf',
  'src/biocompiler/policy/validation.py': '00be9fc170771f06ee7fae34c17ec9a47fcd1c1741efb34fd64044a114d7c5b8',
- 'tools/check_policy_semantic_coverage.py': '5ba275b0d8aac9f70aa3b8d1f28c6a8cd1d7fba62afdb7e988f5ef1957f0ddef'}
+ 'tools/check_policy_semantic_coverage.py': '5ddcaf8432b869bd2badfd5f0b0aa0179f5176e59ec53d879f502bcd7bccea47'}
 AST_PINS = {'src/biocompiler/policy/model.py': 'e2cfabc143415a86d1e3e2c42ba744892b4cad5d22ef28e7d085664159f2daf5',
  'src/biocompiler/policy/serialization.py': '3db49f534fa75ed53db36d81a0ead63fa89705226ca7108cf83bdc2fd3b83fc4',
  'src/biocompiler/policy/validation.py': '0d4d303ca4ba1991af7c523f0b09ad1117d1960b8a69c045afca86276cc65f6b',
- 'tools/check_policy_semantic_coverage.py': 'dc854464d73f62aefee48a25849b9067082a619b06f2a8a676f9d31c016a5953'}
+ 'tools/check_policy_semantic_coverage.py': 'd6d5f8fe18da607c81255eae59c2edb5754baf7a79e91259bf86bfc08022f7c6'}
 INPUT_PINS = {'core/test/data/policy_documents_v01.json': 'c4c7f3251c882ed739eb3b733bb0eea0cd2965470e02e6293196e114b0a3aded',
  'core/test/data/policy_operational_v01.json': 'bd9dfbb65c456b75fa401049341e85a6de882e8f130b4c76dfdadd9b6dd08968',
  'core/test/data/policy_realization_source_v01.json': 'fa4008fb9196ed1a318a2b293f452d19227b9562c5d1dece16183e2110ceec51'}

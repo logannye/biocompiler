@@ -13,9 +13,24 @@ module K = Bioc_domain.Construction_content
 module E = Bioc_domain.Construction_assessment
 module S = Bioc_checker.Policy_mrna_structure_check
 val implementation_version : string
+
+(** Version used only for the separately versioned named-instance profile.
+    Legacy two-slot reports retain [implementation_version]. *)
+val instance_implementation_version : string
+
+(** Version used only for the direct-root, two-member profile. *)
+val multi_member_implementation_version : string
+
+(** Version used only for two payload members and one material-only helper. *)
+val grounded_helper_implementation_version : string
+
 val max_work : int
 type result
 type checked_assembly
+
+(** Finite-machine requests retain their separately decoded source family and
+    require a named-instance staged assembly with one RNA member. The existing
+    total node/wire/occurrence and exact material checks remain conjunctive. *)
 val check : ?parent:Bioc_checker.Work_budget.t -> ?maximum:int ->
   original:R.t -> components:L.t -> rule:A.t -> implementation:P.checked_implementation ->
   proposed:Q.t -> candidate:K.t -> unit -> result

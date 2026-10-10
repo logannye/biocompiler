@@ -1,0 +1,396 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Original Biocompiler module bundle v0.1",
+  "description": "Closed representation only. Complete signature, reference, ownership, expansion, resource and source checks are additionally required by docs/policy-module-linking-v0.1.md.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "biocompiler.policy_module_bundle.v0.1"
+    },
+    "profile": {
+      "const": "biocompiler.policy_module_linking.v0.1"
+    },
+    "context": {
+      "$ref": "policy-language-v0.1.schema.json#/$defs/PolicyProgram"
+    },
+    "templates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/template"
+      },
+      "maxItems": 64
+    },
+    "instances": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/instance"
+      },
+      "maxItems": 64
+    },
+    "limits": {
+      "$ref": "#/$defs/limits"
+    }
+  },
+  "required": [
+    "schema_version",
+    "profile",
+    "context",
+    "templates",
+    "instances",
+    "limits"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "port": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+        },
+        "declaration": {
+          "oneOf": [
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Role"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Subject"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Encounter"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/SpatialScope"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Clock"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Observation"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/StateStore"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Effect"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Rule"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Machine"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Transition"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Channel"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Message"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Requirement"
+            },
+            {
+              "$ref": "policy-language-v0.1.schema.json#/$defs/Parameter"
+            }
+          ]
+        },
+        "access": {
+          "enum": [
+            "context",
+            "read",
+            "write",
+            "request"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "declaration",
+        "access"
+      ],
+      "additionalProperties": false
+    },
+    "template_pin": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "content_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "content_fingerprint"
+      ],
+      "additionalProperties": false
+    },
+    "template": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "semantics": {
+          "$ref": "policy-language-v0.1.schema.json#/$defs/SemanticBundle"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/port"
+          },
+          "maxItems": 256
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/port"
+          },
+          "maxItems": 256
+        },
+        "declarations": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Role"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Subject"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Encounter"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/SpatialScope"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Clock"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Observation"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/StateStore"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Effect"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Rule"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Machine"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Transition"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Channel"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Message"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Requirement"
+              },
+              {
+                "$ref": "policy-language-v0.1.schema.json#/$defs/Parameter"
+              }
+            ]
+          },
+          "maxItems": 4096
+        },
+        "private": {
+          "type": "array",
+          "items": {
+            "$ref": "policy-language-v0.1.schema.json#/$defs/Ref"
+          },
+          "maxItems": 4096
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "$ref": "policy-language-v0.1.schema.json#/$defs/Requirement"
+          },
+          "maxItems": 4096
+        },
+        "guarantees": {
+          "type": "array",
+          "items": {
+            "$ref": "policy-language-v0.1.schema.json#/$defs/Requirement"
+          },
+          "maxItems": 4096
+        },
+        "source_map": {
+          "type": "array",
+          "items": {
+            "$ref": "policy-language-v0.1.schema.json#/$defs/SourceSpan"
+          },
+          "maxItems": 4096
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "semantics",
+        "inputs",
+        "outputs",
+        "declarations",
+        "private",
+        "assumptions",
+        "guarantees",
+        "source_map"
+      ],
+      "additionalProperties": false
+    },
+    "instance": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+        },
+        "template": {
+          "$ref": "#/$defs/template_pin"
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "port": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+              },
+              "target": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "context"
+                      },
+                      "reference": {
+                        "$ref": "policy-language-v0.1.schema.json#/$defs/Ref"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "reference"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "output"
+                      },
+                      "instance": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+                      },
+                      "port": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "instance",
+                      "port"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "required": [
+              "port",
+              "target"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 256
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "$ref": "policy-language-v0.1.schema.json#/$defs/Requirement"
+          },
+          "maxItems": 4096
+        }
+      },
+      "required": [
+        "name",
+        "template",
+        "bindings",
+        "assumptions"
+      ],
+      "additionalProperties": false
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "max_work": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16000000
+        },
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8388608
+        },
+        "max_depth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "max_instances": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "max_declarations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        },
+        "max_ports": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 256
+        }
+      },
+      "required": [
+        "max_work",
+        "max_bytes",
+        "max_depth",
+        "max_instances",
+        "max_declarations",
+        "max_ports"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

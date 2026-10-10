@@ -260,7 +260,7 @@ module Helper = struct
       "placement_id", (let v = value.placement_id in optional (fun v -> str v) v);
       "provider_component_id", (let v = value.provider_component_id in optional (fun v -> str (Identity.Component.to_string v)) v);
       "depends_on", (let v = value.depends_on in array_json max_nodes str v)]
-  let of_json ?(path = "") raw =
+  let decode ~grounded ?(path = "") raw =
     let fields = M.record ~path schema_version ["id"; "capability"; "consumer_component_ids"; "recipient_role"; "compartment"; "availability"; "initialization"; "sharing"; "capacity"; "assumptions"; "placement_id"; "provider_component_id"; "depends_on"] raw in
     let get key = Json.field ~path:(path ^ "/" ^ key) key fields in
     let id = let raw = get "id" and path = path ^ "/id" in M.text ~path raw in
@@ -272,7 +272,8 @@ module Helper = struct
     let initialization = let raw = get "initialization" and path = path ^ "/initialization" in initialization_of_json ~path raw in
     let sharing = let raw = get "sharing" and path = path ^ "/sharing" in sharing_of_json ~path raw in
     let capacity = let raw = get "capacity" and path = path ^ "/capacity" in limit ~path ~minimum:1 ~maximum:max_nodes raw in
-    let assumptions = let raw = get "assumptions" and path = path ^ "/assumptions" in assumptions ~path raw in
+    let assumptions = let raw = get "assumptions" and path = path ^ "/assumptions" in
+      if grounded then names ~path ~maximum:64 ~nonempty:false raw else assumptions ~path raw in
     let placement_id = let raw = get "placement_id" and path = path ^ "/placement_id" in nullable (fun raw -> M.text ~path raw) raw in
     let provider_component_id = let raw = get "provider_component_id" and path = path ^ "/provider_component_id" in nullable (fun raw -> Identity.Component.of_string (M.text ~path raw)) raw in
     let depends_on = let raw = get "depends_on" and path = path ^ "/depends_on" in names ~path ~maximum:max_nodes ~nonempty:false raw in
@@ -280,6 +281,8 @@ module Helper = struct
     require ~path (Option.is_some value.placement_id = List.mem value.availability [Same_rna; Other_rna])
       "Encoded helpers require a placement; host/external helpers cannot claim one.";
     finish ~path (to_json value) value
+  let of_json ?path raw = decode ~grounded:false ?path raw
+  let of_grounded_json ?path raw = decode ~grounded:true ?path raw
   let make ~id ~capability ~consumer_component_ids ~recipient_role ~compartment ~availability ~initialization ~sharing ~capacity ~assumptions ~placement_id ~provider_component_id ~depends_on =
     of_json (to_json { id; capability; consumer_component_ids; recipient_role; compartment; availability; initialization; sharing; capacity; assumptions; placement_id; provider_component_id; depends_on })
   let fingerprint value = Canonical.fingerprint (to_json value)

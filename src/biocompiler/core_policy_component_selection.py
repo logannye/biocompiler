@@ -114,7 +114,9 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
             raise CoreProtocolError("Selection original repeats an alternative ID")
         seen.add(identity)
         _integer(row["rank"], 0, 2147483647, "Alternative rank")
-        component._original(row["request"])
+        child = component._original(row["request"])
+        if component._instanced(child):
+            raise CoreProtocolError("The legacy selection profile does not admit named-instance alternatives")
     predicate = _object(request["predicate"], {"max_total_nt"}, "Original length predicate")
     _integer(predicate["max_total_nt"], 0, 1000000, "Original length predicate")
     budgets = _object(request["budgets"], {"profile", "max_work", "max_report_bytes", "max_report_nodes"}, "Original selection budgets")

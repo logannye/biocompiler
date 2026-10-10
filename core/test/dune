@@ -950,3 +950,147 @@
  (modules test_policy_staged_generation)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler)
  (action (run %{test} %{dep:data/policy_staged_realization_request_v01.json})))
+
+(test
+ (name test_policy_instance_assembly_rule)
+ (modules test_policy_instance_assembly_rule)
+ (libraries bioc_wire bioc_domain bioc_policy_instance_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json} %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_instance_material_service)
+ (modules test_policy_instance_material_service)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker bioc_service bioc_producer_service bioc_policy_component_test_support bioc_policy_instance_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json} %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_provider_prerequisites)
+ (modules test_policy_provider_prerequisites)
+ (libraries bioc_wire bioc_domain bioc_policy_prerequisite_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json} %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_prerequisite_material_service)
+ (modules test_policy_prerequisite_material_service)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker bioc_service bioc_producer_service bioc_policy_prerequisite_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json} %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_two_observation_material_service)
+ (modules test_policy_two_observation_material_service)
+ (libraries bioc_candidate_runtime bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker bioc_service bioc_producer_service bioc_policy_two_observation_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json} %{dep:data/policy_material_state_v01.json})))
+
+(test
+ (name test_policy_multi_member_material_service)
+ (modules test_policy_multi_member_material_service)
+ (libraries bioc_candidate_runtime bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker bioc_service bioc_producer_service bioc_policy_multi_member_test_support)
+ (action (run %{test} %{dep:data/policy_staged_material_v01.json})))
+
+(test
+ (name test_policy_grounded_helper_material_service)
+ (modules test_policy_grounded_helper_material_service)
+ (libraries bioc_candidate_runtime bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker bioc_service bioc_producer_service bioc_policy_grounded_helper_test_support)
+ (action (run %{test} %{dep:data/policy_staged_material_v01.json})))
+
+(test
+ (name test_policy_candidate_congruence_check)
+ (modules test_policy_candidate_congruence_check)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_candidate_runtime bioc_realization_checker zarith unix)
+ (action (run %{test} %{dep:data/policy_implementation_binding_v01.json})))
+
+(test
+ (name test_policy_candidate_transition_congruence)
+ (modules test_policy_candidate_transition_congruence)
+ (libraries bioc_wire bioc_domain bioc_candidate_runtime bioc_policy_staged_test_support)
+ (action (run %{test} %{dep:data/policy_primitives_v01.json})))
+
+(test
+ (name test_policy_admitted_ir)
+ (modules test_policy_admitted_ir)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{dep:data/policy_operational_v01.json} %{dep:data/policy_staged_regimen_source_v01.json} %{dep:data/policy_implementation_binding_v01.json})))
+
+(test
+ (name test_policy_finite_machine)
+ (modules test_policy_finite_machine)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service)
+ (action (run %{test} %{dep:data/policy_finite_machine_v01.json})))
+
+(test
+ (name test_policy_refinement)
+ (modules test_policy_refinement)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker bioc_service bioc_producer_service)
+ (action (run %{test} %{dep:data/policy_finite_machine_v01.json})))
+
+(test
+ (name test_policy_quantitative)
+ (modules test_policy_quantitative)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_quantitative_v01.json})))
+
+(test
+ (name test_policy_module_linking)
+ (modules test_policy_module_linking)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_module_linking_v01.json})))
+
+(test
+ (name test_policy_network)
+ (modules test_policy_network)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_machine_network_v01.json})))
+
+(test
+ (name test_policy_target_planning)
+ (modules test_policy_target_planning)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_machine_network_v01.json} %{dep:data/policy_finite_machine_v01.json})))
+
+(test
+ (name test_policy_quantitative_network)
+ (modules test_policy_quantitative_network)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_quantitative_network_v01.json} %{dep:data/policy_quantitative_transfer_v01.json})))
+
+(test
+ (name test_policy_quantitative_transfer)
+ (modules test_policy_quantitative_transfer)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_quantitative_transfer_v01.json} %{dep:data/policy_quantitative_step_v01.json})))
+
+(test
+ (name test_policy_quantitative_step)
+ (modules test_policy_quantitative_step)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_quantitative_step_v01.json})))
+
+(test
+ (name test_policy_multi_site)
+ (modules test_policy_multi_site)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_quantitative_step_v01.json})))
+
+(test
+ (name test_policy_quantitative_composition)
+ (modules test_policy_quantitative_composition)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_quantitative_composition_v01.json} %{dep:data/policy_quantitative_network_v01.json})))
+
+(test
+ (name test_policy_approximation)
+ (modules test_policy_approximation)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_approximation_v01.json})))
+
+(test
+ (name test_policy_realization_evidence)
+ (modules test_policy_realization_evidence)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_realization_evidence_v01.json} %{dep:data/policy_quantitative_network_v01.json})))
+
+(test
+ (name test_policy_quantitative_assurance)
+ (modules test_policy_quantitative_assurance)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_approximation_v01.json} %{dep:data/policy_realization_evidence_v01.json} %{dep:data/policy_quantitative_network_v01.json} %{dep:data/policy_quantitative_composition_v01.json})))

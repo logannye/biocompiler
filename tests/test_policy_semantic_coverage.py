@@ -168,6 +168,67 @@ class PolicySemanticCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(CoverageError, 'missing=.*ExtendedRole'):
             validate(self.root, self.ledger)
 
+    def test_nonrecord_name_collisions_and_their_subclasses_stay_outside_census(self):
+        (self.root / SOURCE_ROOT / 'nonrecords.py').write_text(
+            'from typing import Generic, TypeVar\nT = TypeVar("T")\n'
+            'class Observation(Generic[T]):\n    unrelated: str\n'
+            'class Child(Observation[int]):\n    unrelated: str\n'
+            'class Record: pass\nclass Unrelated(Record): pass\n', encoding='utf-8')
+        (self.root / SOURCE_ROOT / 'nonrecord_imports.py').write_text(
+            'from . import nonrecords as local\nfrom .nonrecords import Observation as Parent\n'
+            'Alias = Parent\nclass Imported(Alias): pass\n'
+            'class Qualified(local.Observation[int]): pass\n', encoding='utf-8')
+        self.assertEqual(len(discover(self.root)), 612)
+
+    def test_real_record_with_an_existing_name_still_rejects_collision(self):
+        (self.root / SOURCE_ROOT / 'new_records.py').write_text(
+            'from .model import Record\nclass Observation(Record):\n    meaning: str\n', encoding='utf-8')
+        with self.assertRaisesRegex(CoverageError, 'Duplicate source distinction: record:Observation'):
+            discover(self.root)
+
+    def test_qualified_reexported_and_transitive_actual_records_are_discovered(self):
+        (self.root / SOURCE_ROOT / 'record_exports.py').write_text(
+            'from .model import Role as Parent\nAlias = Parent\n', encoding='utf-8')
+        (self.root / SOURCE_ROOT / 'new_records.py').write_text(
+            'from . import model as m\nfrom .record_exports import Alias\n'
+            'class Direct(m.Record):\n    first: str\n'
+            'class Indirect(Alias):\n    second: str\n'
+            'class Descendant(Indirect):\n    third: str\n', encoding='utf-8')
+        ids = {entry['id'] for entry in discover(self.root)}
+        self.assertTrue({'record:Direct', 'record:Indirect', 'record:Descendant'} <= ids)
+
+    def test_imported_record_name_shadowing_uses_preclass_binding(self):
+        (self.root / SOURCE_ROOT / 'shadow.py').write_text(
+            'from .model import Record\nclass Earlier(Record): pass\n'
+            'class Record: pass\nclass Later(Record): pass\n', encoding='utf-8')
+        ids = {entry['id'] for entry in discover(self.root)}
+        self.assertIn('record:Earlier', ids)
+        self.assertNotIn('record:Later', ids)
+
+    def test_wildcard_import_cannot_silently_hide_new_records(self):
+        (self.root / SOURCE_ROOT / 'new_records.py').write_text(
+            'from .model import *\nclass ActualNewRecord(Record):\n    meaning: str\n', encoding='utf-8')
+        with self.assertRaisesRegex(CoverageError, 'Wildcard policy imports need explicit inventory support'):
+            discover(self.root)
+
+    def test_annotation_only_does_not_erase_record_binding(self):
+        (self.root / SOURCE_ROOT / 'new_records.py').write_text(
+            'from .model import Record\nRecord: object\n'
+            'class ActualNewRecord(Record):\n    meaning: str\n', encoding='utf-8')
+        self.assertIn('record:ActualNewRecord', {entry['id'] for entry in discover(self.root)})
+
+    def test_rebound_export_resolves_independently_of_captured_class(self):
+        (self.root / SOURCE_ROOT / 'record_exports.py').write_text(
+            'class Parent: pass\nclass Before(Parent): pass\n'
+            'from .model import Record as Parent\nclass After(Parent): pass\n', encoding='utf-8')
+        (self.root / SOURCE_ROOT / 'new_records.py').write_text(
+            'from .record_exports import Parent\n'
+            'class ActualNewRecord(Parent):\n    meaning: str\n', encoding='utf-8')
+        ids = {entry['id'] for entry in discover(self.root)}
+        self.assertNotIn('record:Before', ids)
+        self.assertIn('record:After', ids)
+        self.assertIn('record:ActualNewRecord', ids)
+
     def test_new_field_is_not_covered_by_existing_record_disposition(self):
         self.source_edit('class Clock(Record):', 'class Clock(Record):\n    hidden_clock: str = "unclassified"')
         with self.assertRaisesRegex(CoverageError, 'missing=.*Clock.hidden_clock'):

@@ -61,15 +61,19 @@ def _original(value: JsonValue) -> dict[str, JsonValue]:
 
 
 def _preservation(response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
-                  report: dict[str, JsonValue], limits: JsonValue) -> None:
-    original = implementation._original(request["implementation_request"])
+                  report: dict[str, JsonValue], limits: JsonValue, *, prerequisites: bool = False,
+                  two_observations: bool = False, multi_product: bool = False, finite_machine: bool = False, network: bool = False, multi_site: bool = False, coupled: bool = False) -> None:
+    decoder = (implementation._coupled_original if coupled else implementation._multi_site_original if multi_site else implementation._network_original if network else implementation._finite_machine_original if finite_machine else implementation._multi_product_original if multi_product else implementation._two_observation_original if two_observations else
+               implementation._prerequisite_original if prerequisites else implementation._original)
+    original = decoder(request["implementation_request"])
     evidence = _object(report["preservation"], implementation._REPORT_FIELDS, "Complete preservation evidence")
     if (evidence["schema_version"] != "biocompiler.policy_preservation_report.v0.1"
-            or evidence["profile"] != implementation.PRESERVATION_PROFILE or not _same(evidence["limits"], limits)):
+            or evidence["profile"] != (implementation.MULTI_SITE_PRESERVATION_PROFILE if multi_site else implementation.PRESERVATION_PROFILE) or not _same(evidence["limits"], limits)):
         raise CoreProtocolError("Material checking changed original preservation profile or limits")
     _pin(evidence["request_fingerprint"], original, "Original implementation request")
     implementation._claim(evidence)
-    implementation._authority(response, original, candidate, evidence)
+    implementation._authority(response, original, candidate, evidence, prerequisites=prerequisites,
+                              two_observations=two_observations, multi_product=multi_product, finite_machine=finite_machine, network=network, multi_site=multi_site, coupled=coupled)
     implementation._evidence(original, evidence)
 
 
@@ -251,7 +255,9 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
 
 def _obligations(report: dict[str, JsonValue], *, material_key: str = "material",
                  accepted_status: str = "checked_material",
-                 conjunction_stage: str = "conditional_material_context_conjunction") -> None:
+                 conjunction_stage: str = "conditional_material_context_conjunction",
+                 prerequisite_key: str | None = None, multi_product: bool = False,
+                 finite_machine: bool = False, network: bool = False, multi_site: bool = False, coupled: bool = False, quantitative_key: str | None = None) -> None:
     preservation = _record(report["preservation"], "Preservation")
     binding = _record(preservation["binding"], "Binding")
     admission = _record(binding["source_admission"], "Admission")
@@ -265,13 +271,20 @@ def _obligations(report: dict[str, JsonValue], *, material_key: str = "material"
             if row["stage"] is not None or row["evidence"] is not None:
                 raise CoreProtocolError("Unresolved obligation carries contradictory discharge evidence")
         elif row["status"] == "discharged":
+            quantitative_fields = {quantitative_key} if quantitative_key is not None else set()
+            if quantitative_key is not None:
+                quantitative = report.get(quantitative_key)
+                if (quantitative is None or _record(quantitative, "Required quantitative report").get("outcome") != "pass"
+                        or report.get(quantitative_key + "_status") != "pass"):
+                    raise CoreProtocolError("Quantitative obligations require a fresh passing original-law correspondence")
+                _pin(_record(row["evidence"], "Quantitative obligation evidence").get(quantitative_key), quantitative, "Obligation quantitative")
             stage = row["stage"]
             if stage == "bounded_machine_semantics_and_declared_requirements":
                 evidence = _object(row["evidence"], {"preservation", "machine_binding", "state_and_terminal_semantics", "prefixes",
-                    "retained_attempt_identity", "universal_termination", "progress"}, "Bounded machine evidence")
+                    "retained_attempt_identity", "universal_termination", "progress"} | quantitative_fields, "Bounded machine evidence")
                 if (material_key != "assembly" or row["obligation"] != "machine_reachability_termination_and_progress"
-                        or binding.get("schema_version") != "biocompiler.policy_implementation_binding_report.v0.2"
-                        or binding.get("profile") != "biocompiler.policy_staged_source_graph.v0.1"
+                        or binding.get("schema_version") != (implementation.COUPLED_BINDING_REPORT_SCHEMA if coupled else implementation.MULTI_SITE_BINDING_REPORT_SCHEMA if multi_site else implementation.NETWORK_BINDING_REPORT_SCHEMA if network else implementation.FINITE_MACHINE_BINDING_REPORT_SCHEMA if finite_machine else implementation.MULTI_PRODUCT_BINDING_REPORT_SCHEMA if multi_product else "biocompiler.policy_implementation_binding_report.v0.2")
+                        or binding.get("profile") != (implementation.COUPLED_BINDING_PROFILE if coupled else implementation.MULTI_SITE_BINDING_PROFILE if multi_site else implementation.NETWORK_BINDING_PROFILE if network else implementation.FINITE_MACHINE_BINDING_PROFILE if finite_machine else implementation.MULTI_PRODUCT_BINDING_PROFILE if multi_product else "biocompiler.policy_staged_source_graph.v0.1")
                         or preservation.get("status") != "checked_implementation"
                         or any(evidence[key] != expected for key, expected in (
                             ("state_and_terminal_semantics", "exact_bounded_source_correspondence"),
@@ -283,11 +296,12 @@ def _obligations(report: dict[str, JsonValue], *, material_key: str = "material"
                 continue
             if row["obligation"] == "machine_reachability_termination_and_progress":
                 raise CoreProtocolError("Machine obligation requires its explicit bounded interpretation")
-            keys = {"bounded_implementation_preservation": ("preservation",), "declared_context": ("context",),
-                    conjunction_stage: ("preservation", material_key, "context")}
+            extra = (prerequisite_key,) if prerequisite_key is not None else ()
+            keys = {"bounded_implementation_preservation": ("preservation",), "declared_context": ("context",) + extra,
+                    conjunction_stage: ("preservation", material_key, "context") + extra}
             if type(stage) is not str or stage not in keys:
                 raise CoreProtocolError("Unknown original-obligation discharge stage")
-            evidence = _object(row["evidence"], set(keys[stage]), "Obligation evidence pins")
+            evidence = _object(row["evidence"], set(keys[stage]) | quantitative_fields, "Obligation evidence pins")
             for key in keys[stage]:
                 if report[key] is None:
                     raise CoreProtocolError("Discharged obligation lacks its checked stage")
@@ -298,6 +312,16 @@ def _obligations(report: dict[str, JsonValue], *, material_key: str = "material"
     checked = report["status"] == accepted_status
     stages = (preservation["status"] == "checked_implementation" and report["catalog"] is not None
               and report[material_key + "_status"] == "pass" and report["context_status"] == "pass")
+    if prerequisite_key is not None:
+        closure = report[prerequisite_key]
+        stages = (stages and closure is not None and _record(closure, "Required prerequisite closure").get("status") == "pass"
+                  and report.get("prerequisite_status") == "pass")
+        if not stages and any(row["status"] == "discharged" for row in rows):
+            raise CoreProtocolError("Prerequisite obligations require the complete checked context chain")
+    if quantitative_key is not None:
+        quantitative = report.get(quantitative_key)
+        stages = (stages and quantitative is not None and _record(quantitative, "Required quantitative report").get("outcome") == "pass"
+                  and report.get(quantitative_key + "_status") == "pass")
     if (type(complete) is not bool or report["status"] not in (accepted_status, "not_accepted")
             or checked != (stages and all(row["status"] == "discharged" for row in rows)) or complete != checked):
         raise CoreProtocolError("Material acceptance contradicts complete stage and obligation evidence")
@@ -308,7 +332,11 @@ def _artifact(value: JsonValue, *, operation: str, request: dict[str, JsonValue]
               export_operation: str = "export-policy-material", accepted_status: str = "checked_material",
               export_schema: str = EXPORT_SCHEMA, manifest_schema: str = "biocompiler.policy_mrna_manifest.v0.1",
               request_profile: str = REQUEST_PROFILE, claim_scope: str = "bounded_conditional_policy_to_exact_mrna",
-              premise: str = "supplied_model_to_sequence_and_provider_contracts") -> None:
+              premise: str = "supplied_model_to_sequence_and_provider_contracts",
+              document_encoder: Callable[[JsonValue], bytes] = encode_json) -> None:
+    def pin(actual: JsonValue, expected: JsonValue, label: str) -> None:
+        if actual != hashlib.sha256(document_encoder(expected)).hexdigest():
+            raise CoreProtocolError(label + " fingerprint does not match complete supplied authority")
     if operation != export_operation:
         if value is not None:
             raise CoreProtocolError("Only a fresh native export invocation may return an artifact")
@@ -320,7 +348,7 @@ def _artifact(value: JsonValue, *, operation: str, request: dict[str, JsonValue]
         raise CoreProtocolError("Export changed its exact artifact profile")
     if artifact["fasta_sha256"] != hashlib.sha256(artifact["fasta"].encode("utf-8")).hexdigest():
         raise CoreProtocolError("FASTA bytes differ from their native digest")
-    _pin(artifact["manifest_sha256"], artifact["manifest"], "Complete native manifest")
+    pin(artifact["manifest_sha256"], artifact["manifest"], "Complete native manifest")
     manifest = _object(artifact["manifest"], {"schema_version", "profile", "claim_scope", "premise", "request", "candidate", "limits",
         "assessment", "bindings", "members", "fasta_sha256", "empirical", "original_authority"}, "Complete native manifest")
     if any(manifest[key] != expected for key, expected in (
@@ -329,12 +357,12 @@ def _artifact(value: JsonValue, *, operation: str, request: dict[str, JsonValue]
             ("empirical", "unassessed"), ("original_authority", "retain_original_inputs_separately"))):
         raise CoreProtocolError("Manifest upgraded or changed its exact export claim")
     for key, expected in (("request", request), ("candidate", candidate), ("limits", limits), ("assessment", report)):
-        if not _same(manifest[key], expected):
+        if document_encoder(manifest[key]) != document_encoder(expected):
             raise CoreProtocolError("Manifest changed complete original " + key)
     bindings = _object(manifest["bindings"], {"request_fingerprint", "candidate_fingerprint", "invocation_fingerprint", "assessment_fingerprint"}, "Manifest identity bindings")
     for key, expected in (("request_fingerprint", request), ("candidate_fingerprint", candidate),
             ("invocation_fingerprint", {"request": request, "candidate": candidate, "limits": limits}), ("assessment_fingerprint", report)):
-        _pin(bindings[key], expected, "Manifest " + key)
+        pin(bindings[key], expected, "Manifest " + key)
     _artifact_members(construction=candidate["construction"], members=manifest["members"],
                       fasta=artifact["fasta"], fasta_sha256=artifact["fasta_sha256"],
                       manifest_fasta_sha256=manifest["fasta_sha256"])
@@ -444,7 +472,8 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyMate
                                 request_hash, candidate_hash, invocation_hash, report_hash, encode_json(result))
 
 
-def _publication(raw: JsonValue, maximum_bytes: int, maximum_nodes: int) -> None:
+def _publication(raw: JsonValue, maximum_bytes: int, maximum_nodes: int, *,
+                 document_encoder: Callable[[JsonValue], bytes] = encode_json) -> None:
     pending = [raw]
     nodes = 0
     while pending:
@@ -457,7 +486,7 @@ def _publication(raw: JsonValue, maximum_bytes: int, maximum_nodes: int) -> None
             pending.extend(value)
         if nodes + len(pending) > maximum_nodes:
             raise CoreProtocolError("Complete material evidence exceeds its declared node bound")
-    if len(encode_json(raw)) > maximum_bytes:
+    if len(document_encoder(raw)) > maximum_bytes:
         raise CoreProtocolError("Complete material evidence exceeds its declared publication bound")
 
 

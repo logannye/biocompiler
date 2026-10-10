@@ -48,7 +48,7 @@ def profile_spec(profile):
         files = {label + "." + name: relative.replace("/", "/" + label + "/", 1)
                  for label in ("A", "B") for name, relative in INPUT_FILES.items()}
         return {"schema": COMPONENT_SCHEMA, "worker_schema": COMPONENT_WORKER_SCHEMA,
-                "modules": (*MODULE_FILES, "core_policy_component_material.py"), "inputs": files,
+                "modules": (*MODULE_FILES, "core_policy_component_material.py", "_policy_coupled_wire.py"), "inputs": files,
                 "cases": (*CASES[:-1], "swapped-original-replay", CASES[-1]), "labels": ("A", "B"),
                 "launches": 30, "operation": "policy-component-material", "replay_code": "policy_component_material_replay"}
     raise AssertionError("Unknown closed consumer profile")

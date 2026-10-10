@@ -52,10 +52,34 @@ from biocompiler.core_policy_material import (
 from biocompiler.core_policy_component_material import (
     PROFILE as COMPONENT_MATERIAL_PROFILE, PRODUCER_PROFILE as COMPONENT_MATERIAL_PRODUCER_PROFILE,
     VALIDATION_SCOPE as COMPONENT_MATERIAL_SCOPE,
+    INSTANCE_PROFILE as INSTANCE_MATERIAL_PROFILE,
+    INSTANCE_PRODUCER_PROFILE as INSTANCE_MATERIAL_PRODUCER_PROFILE,
+    INSTANCE_VALIDATION_SCOPE as INSTANCE_MATERIAL_SCOPE,
+    PREREQUISITE_PROFILE as PREREQUISITE_MATERIAL_PROFILE,
+    PREREQUISITE_PRODUCER_PROFILE as PREREQUISITE_MATERIAL_PRODUCER_PROFILE,
+    PREREQUISITE_VALIDATION_SCOPE as PREREQUISITE_MATERIAL_SCOPE,
+    TWO_OBSERVATION_PROFILE as TWO_OBSERVATION_MATERIAL_PROFILE,
+    TWO_OBSERVATION_PRODUCER_PROFILE as TWO_OBSERVATION_MATERIAL_PRODUCER_PROFILE,
+    TWO_OBSERVATION_VALIDATION_SCOPE as TWO_OBSERVATION_MATERIAL_SCOPE,
+    MULTI_MEMBER_PROFILE as MULTI_MEMBER_MATERIAL_PROFILE,
+    MULTI_MEMBER_PRODUCER_PROFILE as MULTI_MEMBER_MATERIAL_PRODUCER_PROFILE,
+    MULTI_MEMBER_VALIDATION_SCOPE as MULTI_MEMBER_MATERIAL_SCOPE,
+    GROUNDED_HELPER_PROFILE as GROUNDED_HELPER_MATERIAL_PROFILE,
+    GROUNDED_HELPER_PRODUCER_PROFILE as GROUNDED_HELPER_MATERIAL_PRODUCER_PROFILE,
+    GROUNDED_HELPER_VALIDATION_SCOPE as GROUNDED_HELPER_MATERIAL_SCOPE,
 )
 from biocompiler.core_policy_component_selection import (
     PROFILE as COMPONENT_SELECTION_PROFILE, PRODUCER_PROFILE as COMPONENT_SELECTION_PRODUCER_PROFILE,
     VALIDATION_SCOPE as COMPONENT_SELECTION_SCOPE, COMPILE_OPERATION as COMPONENT_SELECTION_COMPILE,
+)
+from biocompiler import (
+    _policy_coupled_wire as coupled_wire,
+    core_policy_component_material as component_extensions,
+    core_policy_implementation as implementation_extensions,
+    core_policy_module_linking as module_linking,
+    core_policy_planning as target_planning,
+    core_policy_quantitative_assurance as quantitative_assurance,
+    core_policy_refinement as refinement,
 )
 from biocompiler.ir.intent import IntentProgram
 from biocompiler.compiler.request import BuildRequest
@@ -223,8 +247,8 @@ def capability_contract(role):
     operations += list(COMPONENT_SELECTION_PROFILE["operations"])
     operations += ["assess-policy", "replay-policy-assessment"] + list(REALIZATION_OPERATIONS) + list(WORKFLOW_OPERATIONS) + [AUTHORITY_OPERATION]
     workflow = workflow_profile()
-    scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE, OPERATIONAL_SCOPE, IMPLEMENTATION_SCOPE, MATERIAL_SCOPE, COMPONENT_MATERIAL_SCOPE, COMPONENT_SELECTION_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"], workflow_authority_profile()["validation_scope"]]
-    profiles = {"policy_component_selection": COMPONENT_SELECTION_PROFILE, "policy_component_material": COMPONENT_MATERIAL_PROFILE, "policy_material": MATERIAL_PROFILE, "policy_implementation": IMPLEMENTATION_PROFILE, "policy_operational": OPERATIONAL_PROFILE, "architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
+    scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE, OPERATIONAL_SCOPE, IMPLEMENTATION_SCOPE, MATERIAL_SCOPE, COMPONENT_MATERIAL_SCOPE, INSTANCE_MATERIAL_SCOPE, PREREQUISITE_MATERIAL_SCOPE, TWO_OBSERVATION_MATERIAL_SCOPE, MULTI_MEMBER_MATERIAL_SCOPE, GROUNDED_HELPER_MATERIAL_SCOPE, COMPONENT_SELECTION_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"], workflow_authority_profile()["validation_scope"]]
+    profiles = {"policy_grounded_helper_material": GROUNDED_HELPER_MATERIAL_PROFILE, "policy_multi_member_material": MULTI_MEMBER_MATERIAL_PROFILE, "policy_two_observation_material": TWO_OBSERVATION_MATERIAL_PROFILE, "policy_prerequisite_material": PREREQUISITE_MATERIAL_PROFILE, "policy_instance_material": INSTANCE_MATERIAL_PROFILE, "policy_component_selection": COMPONENT_SELECTION_PROFILE, "policy_component_material": COMPONENT_MATERIAL_PROFILE, "policy_material": MATERIAL_PROFILE, "policy_implementation": IMPLEMENTATION_PROFILE, "policy_operational": OPERATIONAL_PROFILE, "architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
                 "artifact_transport": ARTIFACT_PROFILE, "verification_workflow": workflow,
                 "verification_workflow_presentation": workflow_presentation_profile(),
                 "artifact_transport_authority": AUTHORITY_ARTIFACT_PROFILE,
@@ -250,6 +274,11 @@ def capability_contract(role):
         profiles["policy_implementation_producer"] = IMPLEMENTATION_PRODUCER_PROFILE
         profiles["policy_material_producer"] = MATERIAL_PRODUCER_PROFILE
         profiles["policy_component_material_producer"] = COMPONENT_MATERIAL_PRODUCER_PROFILE
+        profiles["policy_instance_material_producer"] = INSTANCE_MATERIAL_PRODUCER_PROFILE
+        profiles["policy_prerequisite_material_producer"] = PREREQUISITE_MATERIAL_PRODUCER_PROFILE
+        profiles["policy_two_observation_material_producer"] = TWO_OBSERVATION_MATERIAL_PRODUCER_PROFILE
+        profiles["policy_multi_member_material_producer"] = MULTI_MEMBER_MATERIAL_PRODUCER_PROFILE
+        profiles["policy_grounded_helper_material_producer"] = GROUNDED_HELPER_MATERIAL_PRODUCER_PROFILE
         profiles["policy_component_selection_producer"] = COMPONENT_SELECTION_PRODUCER_PROFILE
         claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
     return operations, scopes, profiles, claim
@@ -257,6 +286,66 @@ def capability_contract(role):
 
 def check_capabilities(capabilities, role):
     operations, scopes, profiles, claim = capability_contract(role)
+    require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
+    check_capability_fields(capabilities, scopes, profiles)
+    require(capabilities["claim_scope"] == claim, "Capabilities lost limited claim scope")
+
+
+def current_capability_contract(role):
+    """Complete current advertisement, extending the frozen historical cohort.
+
+    The historical constructor and its checksum recipes remain separate. These
+    named additions are exhaustive; advertisements are never filtered to fit it.
+    """
+    operations, scopes, profiles, claim = deepcopy(capability_contract(role))
+    i, m = implementation_extensions, component_extensions
+    families = (
+        ("policy_multi_site_implementation", i.MULTI_SITE_PROFILE, i.MULTI_SITE_PRODUCER_PROFILE),
+        ("policy_coupled_implementation", i.COUPLED_PROFILE, i.COUPLED_PRODUCER_PROFILE),
+        ("policy_network_implementation", i.NETWORK_PROFILE, i.NETWORK_PRODUCER_PROFILE),
+        ("policy_finite_machine_implementation", i.FINITE_MACHINE_PROFILE, i.FINITE_MACHINE_PRODUCER_PROFILE),
+        ("policy_step_quantitative_material", m.STEP_QUANTITATIVE_PROFILE, m.STEP_QUANTITATIVE_PRODUCER_PROFILE),
+        ("policy_transfer_pair_material", m.TRANSFER_PAIR_PROFILE, m.TRANSFER_PAIR_PRODUCER_PROFILE),
+        ("policy_transfer_network_material", m.TRANSFER_NETWORK_PROFILE, m.TRANSFER_NETWORK_PRODUCER_PROFILE),
+        ("policy_coupled_quantitative_material", m.COMPOSITION_PROFILE, m.COMPOSITION_PRODUCER_PROFILE),
+        ("policy_network_material", m.NETWORK_PROFILE, m.NETWORK_PRODUCER_PROFILE),
+        ("policy_finite_machine_material", m.FINITE_MACHINE_PROFILE, m.FINITE_MACHINE_PRODUCER_PROFILE),
+        ("policy_quantitative_material", m.QUANTITATIVE_PROFILE, m.QUANTITATIVE_PRODUCER_PROFILE),
+        ("policy_quantitative_assurance", quantitative_assurance.PROFILE, quantitative_assurance.PRODUCER_PROFILE),
+        ("policy_module_material", module_linking.MATERIAL_PROFILE, module_linking.PRODUCER_PROFILE),
+    )
+    profiles.update({name: deepcopy(profile) for name, profile, _ in families})
+    profiles.update(policy_refinement=deepcopy(refinement.PROFILE),
+                    policy_module_linking=deepcopy(module_linking.PROFILE),
+                    policy_coupled_wire=coupled_wire.profile(role),
+                    policy_coupled_assurance_export_wire=coupled_wire.export_profile())
+    at = operations.index(COMPONENT_SELECTION_PROFILE["operations"][0])
+    operations[at:at] = [*quantitative_assurance.PROFILE["operations"], *refinement.PROFILE["operations"],
+                         *module_linking.PROFILE["operations"], *module_linking.MATERIAL_PROFILE["operations"]]
+    at = scopes.index(IMPLEMENTATION_SCOPE) + 1
+    scopes[at:at] = [i.MULTI_SITE_VALIDATION_SCOPE, i.COUPLED_VALIDATION_SCOPE,
+        m.STEP_QUANTITATIVE_VALIDATION_SCOPE, m.TRANSFER_PAIR_VALIDATION_SCOPE,
+        m.TRANSFER_NETWORK_VALIDATION_SCOPE, m.COMPOSITION_VALIDATION_SCOPE,
+        i.NETWORK_VALIDATION_SCOPE, i.FINITE_MACHINE_VALIDATION_SCOPE]
+    at = scopes.index(COMPONENT_SELECTION_SCOPE)
+    scopes[at:at] = [m.NETWORK_VALIDATION_SCOPE, m.FINITE_MACHINE_VALIDATION_SCOPE,
+        quantitative_assurance.VALIDATION_SCOPE, refinement.VALIDATION_SCOPE,
+        module_linking.VALIDATION_SCOPE, module_linking.MATERIAL_SCOPE, m.QUANTITATIVE_VALIDATION_SCOPE]
+    if role == "core":
+        at = operations.index(COMPONENT_SELECTION_COMPILE) + 1
+        operations[at:at] = [*module_linking.PRODUCER_PROFILE["operations"],
+                             *quantitative_assurance.PRODUCER_PROFILE["operations"], *target_planning.PROFILE["operations"]]
+        scopes.insert(scopes.index(PRODUCER_SCOPE) + 1, target_planning.VALIDATION_SCOPE)
+        profiles.update({name + "_producer": deepcopy(producer) for name, _, producer in families})
+        profiles["policy_target_planning"] = deepcopy(target_planning.PROFILE)
+    return operations, scopes, profiles, claim
+
+
+def check_current_capabilities(capabilities, role):
+    operations, scopes, profiles, claim = current_capability_contract(role)
+    require(type(capabilities) is dict and set(capabilities) == {
+        "operations", "validation_scopes", "profiles", "claim_scope", "canonicalization",
+        "intent_schemas", "limits", "schema_version"}, "Capability contract differs: fields")
     require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
     check_capability_fields(capabilities, scopes, profiles)
     require(capabilities["claim_scope"] == claim, "Capabilities lost limited claim scope")
@@ -582,7 +671,7 @@ def run_campaign(clients, corpus, receipt, programs):
     for client in clients:
         capabilities = client.capabilities().result
         require(type(capabilities) is dict, "Missing capabilities")
-        check_capabilities(capabilities, client.role)
+        check_current_capabilities(capabilities, client.role)
         campaign.passed(client, "capabilities", "complete-advertised-contract")
         campaign.component_selection_routes(client)
         for vector in corpus["literal_vectors"]:

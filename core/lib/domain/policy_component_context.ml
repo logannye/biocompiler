@@ -8,7 +8,18 @@ module P = Pinned_identity
 module M = Molecular_record
 module AC = Architecture_contract
 let schema_version = "biocompiler.policy_component_context.v0.1"
+let multi_member_schema_version = "biocompiler.policy_component_context.v0.2"
+let multi_member_profile = "biocompiler.policy_multi_member_prerequisite_mrna.v0.1"
+let grounded_helper_schema_version = "biocompiler.policy_component_context.v0.3"
+let grounded_helper_profile = "biocompiler.policy_grounded_helper_prerequisite_mrna.v0.1"
 let profile = "biocompiler.policy_component_mrna.v0.1"
+let instance_profile = "biocompiler.policy_instance_component_mrna.v0.1"
+let instance_staged_profile = "biocompiler.policy_instance_staged_component_mrna.v0.1"
+let prerequisite_profile = "biocompiler.policy_instance_prerequisite_mrna.v0.1"
+let two_observation_profile = "biocompiler.policy_instance_two_observation_prerequisite_mrna.v0.1"
+let network_profile = "biocompiler.policy_network_component_mrna.v0.1"
+let finite_machine_profile = "biocompiler.policy_finite_machine_component_mrna.v0.1"
+let instance_union_profile = "biocompiler.policy_instance_ordered_union.v0.1"
 let record_profile = "biocompiler.policy_component_complete_records.v0.1"
 let staged_profile = "biocompiler.policy_staged_component_mrna.v0.1"
 let staged_record_profile = "biocompiler.policy_staged_component_complete_records.v0.1"
@@ -29,7 +40,7 @@ let arr encode values = Json.Array (List.map encode values)
 let get key raw = Json.field key (Json.object_fields raw)
 let exact keys raw = Json.exact_fields keys (Json.object_fields raw)
 let require condition message = Diagnostic.require condition "policy_component_context" message
-let slot_name = function A.Decision -> "decision" | A.Driver -> "driver"
+let slot_name = A.slot_name
 let reference slot node = obj ["slot",str (slot_name slot);"node",str node]
 let endpoint slot (value:I.endpoint) = obj ["slot",str (slot_name slot);"node",str value.node_id;"port",str value.port_id]
 let ordered_union_json rule =
@@ -56,10 +67,10 @@ let ordered_union_json rule =
     obj ["slot",str (slot_name row.slot);"id",str group.group_id;"arbiter",reference row.slot group.arbiter;
       "commits",arr (reference row.slot) group.commits]) (A.group_order rule) in
   let layout = A.layout rule in
-  let staged=A.is_staged rule in
-  let value = obj ["schema_version",str union_profile;"primitive_profile",str (if staged then I.staged_profile else I.profile);
-    "observable_profile",str (if staged then I.staged_observable_profile else I.observable_profile);
-    "phase_profile",str (if staged then F.staged_phase_profile else F.phase_profile);"transport_profile",str A.transport_profile;
+  let staged=A.is_staged rule and multi_site=A.is_multi_site rule in
+  let value = obj ["schema_version",str (if A.is_instanced rule then instance_union_profile else union_profile);"primitive_profile",str (if multi_site then I.multi_site_profile else if staged then I.staged_profile else I.profile);
+    "observable_profile",str (if multi_site then I.multi_site_observable_profile else if staged then I.staged_observable_profile else I.observable_profile);
+    "phase_profile",str (if multi_site then F.multi_site_phase_profile else if staged then F.staged_phase_profile else F.phase_profile);"transport_profile",str A.transport_profile;
     "slot_layout",obj ["id",str layout.layout_id;"slots",Json.int layout.slots];
     "nodes",Json.Array nodes;"wires",Json.Array wires;"inputs",Json.Array inputs;"atomic_groups",Json.Array groups;
     "semantic_exports",arr (fun (row:A.endpoint_ref) -> obj ["slot",str (slot_name row.node.slot);
@@ -102,25 +113,67 @@ let record_layout_of_json raw =
   require (Json.equal raw (record_layout_to_json value)) "Composition layout must preserve its complete supplied spelling.";
   value
 let record_layout_fingerprint value = Canonical.fingerprint (record_layout_to_json value)
-type t = {clock_value:X.clock;recipient_value:X.recipient;layout_value:record_layout;
-  placement_value:AC.Placement.t;delivery_value:X.delivery_group;provider_values:X.provider list}
-let to_json value = obj ["schema_version",str schema_version;"profile",str (if value.layout_value.staged then staged_profile else profile);
-  "clock",X.clock_to_json value.clock_value;"recipient",X.recipient_to_json value.recipient_value;
-  "record_layout",record_layout_to_json value.layout_value;"placement",AC.Placement.to_json value.placement_value;
-  "delivery_group",X.delivery_group_to_json value.delivery_value;"helpers",Json.Array [];
-  "providers",arr X.provider_to_json value.provider_values]
+type t = {instanced:bool;prerequisite_closure:bool;two_observation:bool;multi_member:bool;grounded_helper:bool;finite_machine:bool;network:bool;
+  clock_value:X.clock;recipient_value:X.recipient;layout_value:record_layout;
+  placement_values:AC.Placement.t list;helper_values:AC.Helper.t list;
+  delivery_value:X.delivery_group;provider_values:X.provider list}
+let context_profile value = if value.network then network_profile else if value.finite_machine then finite_machine_profile
+  else if value.grounded_helper then grounded_helper_profile else if value.multi_member then multi_member_profile
+  else if value.two_observation then two_observation_profile else if value.prerequisite_closure then prerequisite_profile
+  else if value.instanced then (if value.layout_value.staged then instance_staged_profile else instance_profile)
+  else if value.layout_value.staged then staged_profile else profile
+let to_json value =
+  let placement_field = if value.multi_member then "placements",arr AC.Placement.to_json value.placement_values
+    else match value.placement_values with
+      | [placement] -> "placement",AC.Placement.to_json placement
+      | _ -> assert false in
+  obj ["schema_version",str (if value.grounded_helper then grounded_helper_schema_version else if value.multi_member then multi_member_schema_version else schema_version);
+    "profile",str (context_profile value);
+    "clock",X.clock_to_json value.clock_value;"recipient",X.recipient_to_json value.recipient_value;
+    "record_layout",record_layout_to_json value.layout_value;placement_field;
+    "delivery_group",X.delivery_group_to_json value.delivery_value;"helpers",arr AC.Helper.to_json value.helper_values;
+    "providers",arr X.provider_to_json value.provider_values]
 let of_json raw =
   M.check_resources raw;
-  exact ["schema_version";"profile";"clock";"recipient";"record_layout";"placement";"delivery_group";"helpers";"providers"] raw;
-  require (get "schema_version" raw=str schema_version && List.mem (get "profile" raw) [str profile;str staged_profile])
+  let grounded_helper=get "schema_version" raw=str grounded_helper_schema_version && get "profile" raw=str grounded_helper_profile in
+  let multi_member=grounded_helper || (get "schema_version" raw=str multi_member_schema_version && get "profile" raw=str multi_member_profile) in
+  exact ["schema_version";"profile";"clock";"recipient";"record_layout";
+    (if multi_member then "placements" else "placement");"delivery_group";"helpers";"providers"] raw;
+  require (multi_member || (get "schema_version" raw=str schema_version &&
+    List.mem (get "profile" raw) [str profile;str staged_profile;str instance_profile;str instance_staged_profile;str prerequisite_profile;str two_observation_profile;str finite_machine_profile;str network_profile]))
     "Unsupported original composition context profile.";
-  require (get "helpers" raw=Json.Array []) "Composition context does not support executable or delivered helpers.";
-  let value = {clock_value=X.clock_of_json (get "clock" raw);recipient_value=X.recipient_of_json (get "recipient" raw);
-    layout_value=record_layout_of_json (get "record_layout" raw);placement_value=AC.Placement.of_json (get "placement" raw);
+  let helper_values=if grounded_helper then
+    let values=List.map AC.Helper.of_grounded_json (M.array ~maximum:1 (get "helpers" raw))in
+    require(List.length values=1)"Grounded helper context requires exactly one original helper declaration.";values
+    else (require (get "helpers" raw=Json.Array []) "Composition context does not support executable or delivered helpers.";[])in
+  let two_observation=get "profile" raw=str two_observation_profile in
+  let network=get "profile" raw=str network_profile in
+  let finite_machine=get "profile" raw=str finite_machine_profile in
+  let instanced=network || finite_machine || multi_member || two_observation || List.mem (get "profile" raw) [str instance_profile;str instance_staged_profile;str prerequisite_profile] in
+  let prerequisite_closure=network || finite_machine || multi_member || two_observation || get "profile" raw=str prerequisite_profile in
+  let placement_values=if multi_member then
+    let count=if grounded_helper then 3 else 2 in
+    let values=List.map AC.Placement.of_json (M.array ~maximum:count (get "placements" raw)) in
+    require (List.length values=count) (if grounded_helper then "Grounded helper context requires exactly three original placements."
+      else "Multi-member context requires exactly two original placements."); values
+    else [AC.Placement.of_json (get "placement" raw)] in
+  let value = {instanced;prerequisite_closure;two_observation;multi_member;grounded_helper;finite_machine;network;helper_values;
+    clock_value=X.clock_of_json (get "clock" raw);recipient_value=X.recipient_of_json (get "recipient" raw);
+    layout_value=record_layout_of_json (get "record_layout" raw);placement_values;
     delivery_value=X.delivery_group_of_json (get "delivery_group" raw);
-    provider_values=List.map X.provider_of_json (M.array ~maximum:128 (get "providers" raw))} in
+    provider_values=List.map (if grounded_helper then X.provider_with_helper_of_json else if multi_member then X.provider_with_transport_of_json else X.provider_of_json)
+      (M.array ~maximum:128 (get "providers" raw))} in
+  if network then require value.layout_value.staged "Network context requires the complete staged record profile."
+  else if finite_machine then require value.layout_value.staged "Finite-machine context requires the complete staged record profile."
+  else if multi_member then require value.layout_value.staged "Multi-member context requires the complete staged record profile."
+  else require (not prerequisite_closure || not value.layout_value.staged)
+    "Prerequisite closure requires the unchanged truth record profile.";
   let unique label values = require (List.length values=List.length (List.sort_uniq String.compare values))
     ("Duplicate composition " ^ label ^ " identity.") in
+  if multi_member then begin
+    unique "placement" (List.map AC.Placement.id value.placement_values);
+    unique "placement member" (List.map AC.Placement.member_id value.placement_values)
+  end;
   unique "provider definition" (List.map (fun (provider:X.provider) -> Canonical.encode (Policy_material_contract.provider_ref_to_json provider.definition)) value.provider_values);
   unique "provider" (List.map (fun (provider:X.provider) -> P.kind_name provider.identity ^ ":" ^ P.id provider.identity ^ ":" ^ P.version provider.identity) value.provider_values);
   unique "capacity pool" (List.concat_map (fun (provider:X.provider) -> List.map (fun (capacity:X.capacity) -> capacity.pool_id) provider.capacities) value.provider_values);
@@ -133,6 +186,18 @@ let fingerprint value = Canonical.fingerprint (to_json value)
 let clock value = value.clock_value
 let recipient value = value.recipient_value
 let record_layout value = value.layout_value
-let placement value = value.placement_value
+let placement value =
+  require (not value.multi_member) "Multi-member contexts require the complete placement inventory.";
+  match value.placement_values with [placement] -> placement | _ -> assert false
+let placements value = value.placement_values
+let helpers value = value.helper_values
 let delivery_group value = value.delivery_value
 let providers value = value.provider_values
+
+let is_instanced value = value.instanced
+let requires_prerequisite_closure value = value.prerequisite_closure
+let is_two_observation value = value.two_observation
+let is_multi_member value = value.multi_member
+let is_grounded_helper value = value.grounded_helper
+let is_network value = value.network
+let is_finite_machine value = value.finite_machine

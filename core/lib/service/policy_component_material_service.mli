@@ -4,6 +4,54 @@ open Bioc_wire
 val operations : string list
 val validation_scope : string
 val implementation : string
+val instance_implementation : string
+val instance_validation_scope : string
+val instance_profile : Json.t
+val instance_producer_profile : Json.t
+val prerequisite_implementation : string
+val prerequisite_validation_scope : string
+val prerequisite_profile : Json.t
+val prerequisite_producer_profile : Json.t
+val two_observation_implementation : string
+val two_observation_validation_scope : string
+val multi_member_implementation : string
+val multi_member_validation_scope : string
+val two_observation_profile : Json.t
+val two_observation_producer_profile : Json.t
+val multi_member_profile : Json.t
+val multi_member_producer_profile : Json.t
+val grounded_helper_implementation : string
+val grounded_helper_validation_scope : string
+val grounded_helper_profile : Json.t
+val grounded_helper_producer_profile : Json.t
+val finite_machine_implementation : string
+val network_implementation : string
+val network_validation_scope : string
+val network_profile : Bioc_wire.Json.t
+val network_producer_profile : Bioc_wire.Json.t
+val finite_machine_validation_scope : string
+val finite_machine_profile : Json.t
+val finite_machine_producer_profile : Json.t
+val composition_implementation : string
+val composition_validation_scope : string
+val composition_profile : Bioc_wire.Json.t
+val composition_producer_profile : Bioc_wire.Json.t
+val transfer_network_implementation : string
+val transfer_network_validation_scope : string
+val transfer_network_profile : Json.t
+val transfer_network_producer_profile : Json.t
+val transfer_pair_implementation : string
+val transfer_pair_validation_scope : string
+val transfer_pair_profile : Json.t
+val transfer_pair_producer_profile : Json.t
+val step_quantitative_implementation : string
+val step_quantitative_validation_scope : string
+val step_quantitative_profile : Json.t
+val step_quantitative_producer_profile : Json.t
+val quantitative_implementation : string
+val quantitative_validation_scope : string
+val quantitative_profile : Json.t
+val quantitative_producer_profile : Json.t
 val schema_version : string
 val resource_profile : string
 val candidate_schema : string
@@ -12,5 +60,21 @@ val max_result_nodes : int
 val profile : Json.t
 val producer_profile : Json.t
 val validate_publication : Json.t -> unit
+val is_coupled_request : Json.t -> bool
+
+(** Decode only an explicitly tagged operation envelope, then require the full
+    original coupled material family. Response-only paired export packets are
+    rejected. Nested authored values are never decoded. *)
+val unpack_payload : assurance:bool -> Json.t -> Json.t
+val publish_result : coupled:bool -> Json.t -> Json.t
+val replay_equal : coupled:bool -> Json.t -> Json.t -> bool
+
+(** Reuse only a fresh, opaque accepted material capability. *)
+val export_artifact : Bioc_realization_checker.Policy_component_material_check.checked_material -> Json.t -> Json.t -> Json.t
+
+(** Decode the complete originals and candidate, then repeat all checking.
+    This helper never reconstructs acceptance from serialized evidence. *)
+val fresh_check : request:Json.t -> candidate:Json.t -> limits:Json.t ->
+  Bioc_domain.Policy_component_material_request.t * Bioc_realization_checker.Policy_component_material_check.result
 val check : export:bool -> request:Json.t -> candidate:Json.t -> limits:Json.t -> Json.t
 val handle : operation:string -> Json.t -> Json.t

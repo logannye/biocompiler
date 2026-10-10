@@ -9,7 +9,7 @@ module Pin = Bioc_domain.Pinned_identity
 let str value = Json.String value
 let obj value = Json.Object value
 let arr value = Json.Array value
-let slot = function A.Decision -> "decision" | A.Driver -> "driver"
+let slot = A.slot_name
 (* Structured keys are internal matching labels, never implementation names or
    a replacement whole-graph material contract. *)
 let endpoint_json (value:I.endpoint) = obj ["node",str value.node_id;"port",str value.port_id]
@@ -19,7 +19,7 @@ let input_json (value:I.external_input) = obj ["id",str value.input_id;
   "consumer",endpoint_json value.consumer]
 type local = { reference:A.node_ref; key:string; model:I.model }
 type proposal = { implementation:I.t; binding:U.t; assembly:Q.t }
-let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~rule (lowered:Policy_implementation_lowering.proposal) =
+let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?source_inputs ~library ~rule (lowered:Policy_implementation_lowering.proposal) =
   let module Meter = Bioc_checker.Policy_generation_meter.Make (struct let charge = charge end) in
   let module List = Meter.List in
   let module String = Meter.String in
@@ -68,6 +68,28 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~r
       (F.external_slots (fragment row.slot)) in
     ({input_id=row.input_id;input_kind=input.input_kind;consumer=local_endpoint row.slot input.consumer}:I.external_input))
       (A.input_order rule) in
+  (* The new family can contain graph-symmetric evidence banks. Original source
+     channels constrain this search; matching primitive shapes alone cannot
+     decide which original observation feeds which supplied component input. *)
+  let required_inputs=match source_inputs with
+    |None->supported(not(U.is_network lowered.binding || U.is_finite_machine lowered.binding || U.is_two_observation lowered.binding || U.is_multi_product lowered.binding))
+        (if U.is_network lowered.binding then "Network arrangement requires the original source-to-input inventory."
+         else if U.is_finite_machine lowered.binding then "Finite-machine arrangement requires the original source-to-input inventory."
+         else if U.is_multi_product lowered.binding then "Multi-product arrangement requires the original source-to-input inventory."
+         else "Two-observation arrangement requires the original source-to-input inventory.");None
+    |Some requested->
+      supported(U.is_network lowered.binding || U.is_finite_machine lowered.binding || U.is_two_observation lowered.binding || U.is_multi_product lowered.binding)
+        "Original source-to-input arrangement requires an explicit observation-composition or multi-product family.";
+      let originals=List.map(fun(value:U.observation)->value.source,value.input)(U.observations lowered.binding) @
+        List.map(fun(value:U.effect_binding)->value.source,value.feedback)(U.effects lowered.binding) in
+      let names pairs=List.sort String.compare(List.map fst pairs) in
+      let targets pairs=List.sort String.compare(List.map snd pairs) in
+      supported(List.length requested=List.length originals && names requested=names originals &&
+        List.length(List.sort_uniq String.compare(List.map fst requested))=List.length requested &&
+        targets requested=List.sort String.compare(List.map(fun(value:I.external_input)->value.input_id)wanted_inputs) &&
+        List.length(List.sort_uniq String.compare(List.map snd requested))=List.length requested)
+        "Original source-to-input inventory must bind every observation and effect exactly once to the supplied complete input inventory.";
+      Some(List.map(fun(source,input)->input,List.assoc source requested)originals) in
   let wanted_groups = List.map (fun (row:A.group_ref) ->
     let group = List.find (fun (value:I.atomic_group) -> value.group_id=row.group_id)
       (F.atomic_groups (fragment row.slot)) in
@@ -81,7 +103,96 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~r
     charge (String.length encoded); encoded in
   let actual_models = List.map (fun (value:I.node) -> value,signature value.model) actual in
   let local_models = List.map (fun value -> value,signature value.model) local in
+  (* Coupled circuits can have 49 nodes: repeatedly charging every complete
+     signature, including already-used nodes, exceeds the fixed search budget
+     even on a successful path without backtracking. Exact immutable keys
+     select candidates; collisions still compare every signature byte. *)
+  let module Exact_index = Hashtbl.Make(struct
+    type t = string
+    let hash value = charge (1+Stdlib.String.length value);Hashtbl.hash value
+    let equal left right = charge (1+Stdlib.String.length left+Stdlib.String.length right);
+      Stdlib.String.equal left right
+  end) in
+  let model_index = if U.is_coupled lowered.binding then (
+    charge 64;
+    let index = Exact_index.create 64 and next_class=ref 0 and classes=ref [] in
+    List.iter (fun ((_,encoded) as entry) -> charge 2;
+      let model_class,previous=match Exact_index.find_opt index encoded with
+        |Some value->value
+        |None->let value= !next_class in incr next_class;value,[] in
+      Exact_index.replace index encoded (model_class,entry::previous);
+      classes:=model_class:: !classes) actual_models;
+    charge(List.length actual_models);
+    Some(index,Array.of_list(List.rev !classes))) else None in
   let original_wires = I.wires implementation in
+  (* Resolve immutable endpoint names once. Each index key still compares the
+     complete name or port; integer positions only name this invocation's
+     already-checked, ordered node inventories. *)
+  let module Wire_index = Hashtbl.Make(struct
+    type t = int * string * int * string
+    let hash ((_,producer_port,_,consumer_port) as value) =
+      charge (3+Stdlib.String.length producer_port+Stdlib.String.length consumer_port);
+      Hashtbl.hash value
+    let equal (a,ap,b,bp) (c,cp,d,dp) =
+      charge (4+Stdlib.String.length ap+Stdlib.String.length bp+
+        Stdlib.String.length cp+Stdlib.String.length dp);
+      a=c && b=d && Stdlib.String.equal ap cp && Stdlib.String.equal bp dp
+  end) in
+  let indexed_wires=match model_index with None->None|Some(model_table,actual_classes)->
+    charge (128+List.length wanted_wires);
+    let actual_positions=Exact_index.create 64 and local_positions=Exact_index.create 64 in
+    List.iteri(fun ordinal (value:I.node)->charge 1;Exact_index.add actual_positions value.node_id ordinal)actual;
+    List.iteri(fun ordinal value->charge 1;Exact_index.add local_positions value.key ordinal)local;
+    let position index id=match Exact_index.find_opt index id with Some value->value|None->assert false in
+    let actual_wires=List.map(fun(value:I.wire)->charge 1;
+      position actual_positions value.producer.node_id,value.producer.port_id,
+      position actual_positions value.consumer.node_id,value.consumer.port_id)original_wires in
+    let expected=Wire_index.create(List.length wanted_wires)in
+    List.iter(fun(value:I.wire)->charge 1;
+      Wire_index.replace expected
+        (position local_positions value.producer.node_id,value.producer.port_id,
+         position local_positions value.consumer.node_id,value.consumer.port_id)())wanted_wires;
+    let local_classes=List.map(fun(_,encoded)->
+      match Exact_index.find_opt model_table encoded with Some(kind,_)->kind
+      |None->Diagnostic.fail "policy_component_lowering_unsupported"
+        "A complete original component model signature is absent from the source-produced graph.")local_models in
+    charge(List.length local_classes);
+    let local_classes=Array.of_list local_classes in
+    let local_wires=List.map(fun(value:I.wire)->charge 1;
+      position local_positions value.producer.node_id,value.producer.port_id,
+      position local_positions value.consumer.node_id,value.consumer.port_id)wanted_wires in
+    (* Every complete graph bijection preserves this one-hop multiset. Model
+       classes were assigned only by complete exact signatures. Retain edge
+       direction, both ports and repeated edges; no graph authority is inferred
+       from this necessary search constraint. *)
+    let neighbors classes wires=
+      let count=Array.length classes in charge count;
+      let adjacent=Array.make count []in
+      List.iter(fun(producer,producer_port,consumer,consumer_port)->charge 6;
+        adjacent.(producer)<-(true,producer_port,consumer_port,classes.(consumer))::adjacent.(producer);
+        adjacent.(consumer)<-(false,consumer_port,producer_port,classes.(producer))::adjacent.(consumer))wires;
+      let compare_edge ((_,ap,aq,_)as left)((_,bp,bq,_)as right)=
+        charge(4+Stdlib.String.length ap+Stdlib.String.length aq+Stdlib.String.length bp+Stdlib.String.length bq);
+        Stdlib.compare left right in
+      charge count;
+      Array.mapi(fun ordinal edges->charge 2;
+        let edges=List.sort compare_edge edges in
+        let raw=arr[Json.int classes.(ordinal);arr(List.map(fun(direction,own_port,neighbor_port,kind)->charge 1;
+          arr[Json.Bool direction;str own_port;str neighbor_port;Json.int kind])edges)]in
+        let encoded=Canonical.encode raw in charge(1+String.length encoded);encoded)adjacent in
+    Some(actual_positions,local_positions,actual_wires,expected,
+      neighbors actual_classes actual_wires,neighbors local_classes local_wires)in
+  let candidates_for target wanted = match model_index,indexed_wires with
+    |None,None->actual_models
+    |Some(index,_),Some(actual_positions,local_positions,_,_,actual_neighbors,local_neighbors)->
+      let reversed=match Exact_index.find_opt index wanted with Some(_,values)->values|None->[]in
+      charge(1+List.length reversed);
+      let wanted_neighbors=local_neighbors.(Exact_index.find local_positions target.key)in
+      List.filter(fun((candidate:I.node),_)->charge 2;
+        let provided=actual_neighbors.(Exact_index.find actual_positions candidate.node_id)in
+        charge(1+String.length wanted_neighbors+String.length provided);
+        Stdlib.String.equal wanted_neighbors provided)(List.rev reversed)
+    |_->assert false in
   let lookup pairs id = charge (List.length pairs);
     List.find_map (fun (candidate,value) -> if String.equal id candidate then Some value else None) pairs in
   let same_multiset inspect left right =
@@ -93,13 +204,22 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~r
   let inspect_endpoint value = Meter.preflight (endpoint_json value) in
   let inspect_text value = outer_charge (1+String.length value) in
   let inspect_group (arbiter,commits) = inspect_text arbiter; List.iter inspect_text commits in
-  let partial pairs = List.for_all (fun (value:I.wire) -> charge 1;
-    match lookup pairs value.producer.node_id,lookup pairs value.consumer.node_id with
-    | Some producer,Some consumer ->
-      let mapped:I.wire = {producer={node_id=producer;port_id=value.producer.port_id};
-        consumer={node_id=consumer;port_id=value.consumer.port_id}} in
-      charge (List.length wanted_wires); List.exists (fun expected -> inspect_wire mapped; inspect_wire expected; mapped=expected) wanted_wires
-    | _ -> true) original_wires in
+  let partial pairs coordinates = match indexed_wires with
+    |Some(_,_,wires,expected,_,_)->
+      let count=List.length actual in charge count;
+      let mapped=Array.make count None in
+      List.iter(fun(candidate,target)->charge 1;mapped.(candidate)<-Some target)coordinates;
+      List.for_all(fun(producer,producer_port,consumer,consumer_port)->charge 3;
+        match mapped.(producer),mapped.(consumer)with
+        |Some before,Some after->Wire_index.mem expected(before,producer_port,after,consumer_port)
+        |_->true)wires
+    |None->List.for_all (fun (value:I.wire) -> charge 1;
+      match lookup pairs value.producer.node_id,lookup pairs value.consumer.node_id with
+      | Some producer,Some consumer ->
+        let mapped:I.wire = {producer={node_id=producer;port_id=value.producer.port_id};
+          consumer={node_id=consumer;port_id=value.consumer.port_id}} in
+        charge (List.length wanted_wires); List.exists (fun expected -> inspect_wire mapped; inspect_wire expected; mapped=expected) wanted_wires
+      | _ -> true) original_wires in
   let finish pairs =
     let local_id id = match lookup pairs id with Some value -> value | None -> assert false in
     let endpoint (value:I.endpoint) : I.endpoint = {node_id=local_id value.node_id;port_id=value.port_id} in
@@ -109,7 +229,8 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~r
     if not (same_multiset inspect_endpoint (List.map endpoint (I.semantic_exports implementation)) wanted_exports) then None else
     let inputs = List.filter_map (fun (value:I.external_input) ->
       let consumer = endpoint value.consumer in charge (List.length wanted_inputs);
-      match List.filter (fun (target:I.external_input) -> target.input_kind=value.input_kind && target.consumer=consumer) wanted_inputs with
+      match List.filter (fun (target:I.external_input) -> target.input_kind=value.input_kind && target.consumer=consumer &&
+        (match required_inputs with None->true|Some bindings->List.assoc_opt value.input_id bindings=Some target.input_id)) wanted_inputs with
       | [target] -> Some (value.input_id,target.input_id) | _ -> None) (I.inputs implementation) in
     if List.length inputs<>List.length (I.inputs implementation) ||
       not (same_multiset inspect_text (List.map snd inputs) (List.map (fun (value:I.external_input) -> value.input_id) wanted_inputs)) then None else
@@ -117,7 +238,7 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~r
       (I.atomic_groups implementation) in
     if not (same_multiset inspect_group groups (List.map (fun (value:I.atomic_group) -> value.arbiter,value.commits) wanted_groups)) then None
     else Some (pairs,inputs) in
-  let rec search pairs used candidates = outer_charge 1;match candidates with
+  let rec search pairs coordinates used candidates = outer_charge 1;match candidates with
     | [] -> finish pairs
     | (target,wanted)::rest ->
       let rec choose candidates = outer_charge 1;match candidates with
@@ -126,10 +247,13 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~r
           charge (1+String.length wanted+String.length provided);
           if List.exists (String.equal candidate.node_id) used || wanted<>provided then choose remaining_candidates else
           let next = (candidate.node_id,target.key)::pairs in
-          if not (partial next) then choose remaining_candidates else
-          match search next (candidate.node_id::used) rest with Some _ as result -> result | None -> choose remaining_candidates in
-      choose actual_models in
-  let pairs,input_pairs = match search [] [] local_models with Some value -> value | None ->
+          let next_coordinates=match indexed_wires with None->[]|Some(actual_positions,local_positions,_,_,_,_)->
+            charge 1;
+            (Exact_index.find actual_positions candidate.node_id,Exact_index.find local_positions target.key)::coordinates in
+          if not (partial next next_coordinates) then choose remaining_candidates else
+          match search next next_coordinates (candidate.node_id::used) rest with Some _ as result -> result | None -> choose remaining_candidates in
+      choose (candidates_for target wanted) in
+  let pairs,input_pairs = match search [] [] [] local_models with Some value -> value | None ->
     Diagnostic.fail "policy_component_lowering_unsupported"
       "No complete model, wiring, input, group and export bijection matches the original component composition." in
   let actual_id local = charge (List.length pairs);
@@ -151,7 +275,12 @@ let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~r
   let binding = binding
     |> set "observations" (arr (List.map (rename_input "input") (Json.array (get "observations" binding))))
     |> set "effects" (arr (List.map (rename_input "feedback") (Json.array (get "effects" binding)))) in
-  let assembly_raw = obj ["schema_version",str Q.schema_version;"profile",str Q.profile;
+  let assembly_raw = obj ["schema_version",str (if A.is_multi_site rule then Q.multi_site_schema_version else if A.is_grounded_helper rule then Q.grounded_helper_schema_version
+      else if A.is_multi_member rule then Q.multi_member_schema_version
+      else if A.is_instanced rule then Q.instance_schema_version else Q.schema_version);
+    "profile",str (if A.is_multi_site rule then Q.multi_site_profile else if A.is_grounded_helper rule then Q.grounded_helper_profile
+      else if A.is_multi_member rule then Q.multi_member_profile
+      else if A.is_instanced rule then A.instance_profile else Q.profile);
     "rule",Pin.to_json (A.identity rule);"nodes",arr (List.map (fun value ->
       obj ["slot",str (slot value.reference.slot);"node",str value.reference.node_id;
         "actual",str (actual_id value.key)]) local)] in

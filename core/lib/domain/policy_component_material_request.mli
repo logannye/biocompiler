@@ -1,4 +1,4 @@
-(** Closed original authority for one two-component/one-member composition.
+(** Closed original authority for one bounded component/one-member composition.
     The entire realization request remains untouched. Static catalog, provider
     and reference closure is not source admission or compilation acceptance. *)
 open Bioc_wire
@@ -7,8 +7,32 @@ module L = Policy_component_library
 module A = Policy_component_assembly_rule
 module X = Policy_component_context
 module C = Policy_material_contract
+val composition_schema_version : string
+val composition_profile : string
 val schema_version : string
 val profile : string
+val instance_schema_version : string
+val instance_profile : string
+val prerequisite_schema_version : string
+val prerequisite_profile : string
+val two_observation_schema_version : string
+val two_observation_profile : string
+val multi_member_schema_version : string
+val multi_member_profile : string
+val grounded_helper_schema_version : string
+val grounded_helper_profile : string
+val network_schema_version : string
+val network_profile : string
+val finite_machine_schema_version : string
+val finite_machine_profile : string
+val transfer_network_schema_version : string
+val transfer_network_profile : string
+val transfer_pair_schema_version : string
+val transfer_pair_profile : string
+val step_quantitative_schema_version : string
+val step_quantitative_profile : string
+val quantitative_schema_version : string
+val quantitative_profile : string
 val resource_profile : string
 type component_binding = private { slot:A.slot; component:Pinned_identity.t }
 type catalog_binding = private {
@@ -23,14 +47,32 @@ type resource_owner = Node of {slot:A.slot; node_id:string} | Input of string | 
 type resource_key = {owner:resource_owner; unit:C.resource_unit; scope:C.resource_scope}
 type resource_binding = private {key:resource_key; provider:C.provider_ref; capacity_id:string}
 
-(** Capacity keys retain decision then driver prerequisite order, followed by
-    layout generation counters, executor timer and executor control-event queue.
+(** Capacity keys retain decision then driver prerequisite order for the legacy
+    profile, or declared named-instance order for the versioned instance profile,
+    followed by layout generation counters, executor timer and executor control-event queue.
     Their quantities still require independent original-domain derivation. *)
 val resource_keys : A.t -> resource_key list
 val resource_owner_to_json : resource_owner -> Json.t
 type budgets = private {max_work:int; max_report_bytes:int; max_report_nodes:int}
 type t
+val is_quantitative_composition : t -> bool
+val composed_quantitative : t -> Policy_quantitative_composition_contract.selection option
+val is_transfer_network : t -> bool
+val is_transfer_pair : t -> bool
+val is_multi_site : t -> bool
+val is_network : t -> bool
 val of_json : ?charge:(int -> unit) -> Json.t -> t
+val is_instanced : t -> bool
+val requires_prerequisite_closure : t -> bool
+val is_two_observation : t -> bool
+val is_multi_member : t -> bool
+val is_grounded_helper : t -> bool
+val is_finite_machine : t -> bool
+val is_quantitative : t -> bool
+val quantitative : t -> Policy_quantitative_contract.selection option
+val transfer_pair_quantitative : t -> Policy_quantitative_transfer_contract.selection option
+val network_quantitative : t -> Policy_quantitative_network_contract.selection option
+val request_profile : t -> string
 val to_json : t -> Json.t
 val fingerprint : t -> string
 val decoding_work : t -> int
