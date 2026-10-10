@@ -35,7 +35,7 @@ source = SourceRecord(
     version="1",
     sha256=hashlib.sha256(original_bytes).hexdigest(),
     role="software_fixture",
-    reuse_terms="Repository license; artificial compiler regression only",
+    reuse_terms="Artificial compiler regression only; distribution terms assessed separately",
 )
 output = Path("research-output")
 output.mkdir(exist_ok=True)

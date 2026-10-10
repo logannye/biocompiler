@@ -27,10 +27,21 @@ A separate selection witness retains 35 exact observations, including metered Co
 
 The command harness keeps its 900-second default. Only the exact fixed
 `selection-sdk` command receives a 1,800-second wall-clock envelope; the workflow
-still has its 45-minute deadline. All 35 selection observations, native semantic
+has a finite 60-minute deadline. All 35 selection observations, native semantic
 work limits, publication budgets and rejection controls remain mandatory.
 A timeout retains failed feedback and any incomplete witness; it cannot produce
 complete campaign acceptance.
+
+The workflow allowance increased from 45 to 60 minutes after typed-path run
+[38078555376](https://github.com/logannye/biocompiler/actions/runs/38078555376),
+attempt 1 at `bf5f1b99862e5adbc0e829679f197c17511fdcc2`, reached the official
+45-minute job deadline. Native validation and quantitative assurance had passed;
+nine SDK campaigns completed, while the researcher campaign retained 26 of its
+required 38 observations. Its incomplete receipt remains diagnostic evidence.
+The SDK step had run for 27 minutes 56 seconds after 17 minutes 17 seconds of
+setup, native work and assurance. Retain that failure and run the corrected
+revision freshly; the additional allowance does not change command deadlines,
+two-worker bounds, any observation, checker or acceptance requirement.
 
 This adjustment follows observed hosted variability. An earlier complete
 selection witness took about 663 seconds; attempt 1 of run `37656692915` at
@@ -71,7 +82,8 @@ including typed roundtrip, fresh Core/Verify execution, paired publication and
 mutation rejection), for 278 SDK observations across the same ten campaigns.
 A separate quantitative-assurance campaign adds 21 observations, preserving
 complete original requests, exact material, bounded approximation and supplied
-evidence gates. It follows the two original lanes and retains its own receipt.
+evidence gates. It runs after the native suites and before the SDK lanes,
+retaining its own receipt.
 
 At the baseline command durations, this scheduling can remove roughly six
 minutes of serialization. That is an estimate, not a measured speedup; compare
