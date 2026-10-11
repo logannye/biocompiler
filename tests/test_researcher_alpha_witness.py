@@ -5,6 +5,8 @@ import hashlib
 import json
 from pathlib import Path
 import shutil
+import subprocess
+import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -14,6 +16,86 @@ import zipfile
 from tools import check_researcher_alpha as witness
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class ResearcherAlphaImportBoundaryTests(unittest.TestCase):
+    def test_fresh_example_import_uses_only_allowed_transport(self):
+        # Run outside the checkout with no inherited Python import cache. The
+        # child can read source, but cannot start native processes or use a
+        # network; no hosted environment or semantic acceptance is simulated.
+        script = r'''
+import importlib
+import json
+from pathlib import Path
+import sys
+
+def deny_external_work(event, args):
+    if event in {"subprocess.Popen", "os.system", "os.exec", "os.posix_spawn",
+                 "os.fork", "ctypes.dlopen"} or event.startswith("socket."):
+        raise AssertionError("Import control forbids external work: " + event)
+
+sys.addaudithook(deny_external_work)
+root = Path(sys.argv[1]).resolve()
+sys.path[:0] = [str(root), str(root / "src")]
+from tools import check_researcher_alpha as witness
+from tools import check_researcher_alpha_installed as installed
+assert not any(name == "biocompiler" or name.startswith("biocompiler.") for name in sys.modules)
+transport = "biocompiler.core_policy_expression_material"
+if sys.argv[2] == "prior-guard":
+    current = witness.ResearcherBoundary.allowed
+    witness.ResearcherBoundary.allowed = staticmethod(lambda name: name != transport and current(name))
+boundary = witness.ResearcherBoundary(root / "src/biocompiler")
+sys.meta_path.insert(0, boundary)
+sys.setprofile(boundary.trace)
+try:
+    try:
+        example = witness.load_example(root / "examples/researcher_alpha.py")
+    except ImportError as error:
+        assert sys.argv[2] == "prior-guard" and str(error) == (
+            "Native policy campaign forbids Python compiler/evaluator import: " + transport)
+        assert boundary.denied == [transport]
+        result = {"status": "reproduced_prior_failure"}
+    else:
+        assert sys.argv[2] == "current-guard" and callable(example.prepare)
+        origins = boundary.origins()
+        assert transport in origins and "biocompiler.policy.research_project" in origins
+        assert "biocompiler.policy.expression_material" in origins
+        # The installed reader uses the same exact allowlist and verifies every
+        # observed path. This is an origin check, not installed-package proof.
+        modules = {str(Path(path).relative_to(root / "src/biocompiler")): {} for path in origins.values()}
+        installed.check_origins(origins, str(root / "src/biocompiler"), modules)
+        denied = []
+        for name in ("biocompiler.compiler", "biocompiler.semantics", "biocompiler_core",
+                     transport + "_unreviewed"):
+            try:
+                importlib.import_module(name)
+            except ImportError as error:
+                assert str(error) == "Native policy campaign forbids Python compiler/evaluator import: " + name
+                denied.append(name)
+            else:
+                raise AssertionError("Semantic or unreviewed import was admitted: " + name)
+        from biocompiler.policy.validation import check
+        try:
+            check(None)
+        except AssertionError as error:
+            assert str(error) == "Native campaign forbids Python authoring-check execution"
+        else:
+            raise AssertionError("Python semantic check executed")
+        result = {"status": "transport_import_only", "origins": sorted(origins), "denied": denied}
+finally:
+    sys.setprofile(None)
+    sys.meta_path.remove(boundary)
+print(json.dumps(result, sort_keys=True))
+'''
+        with tempfile.TemporaryDirectory() as directory:
+            for mode in ("prior-guard", "current-guard"):
+                with self.subTest(mode=mode):
+                    process = subprocess.run([sys.executable, "-I", "-B", "-c", script, str(ROOT), mode],
+                        cwd=directory, capture_output=True, text=True, timeout=30, check=False)
+                    self.assertEqual(process.returncode, 0, process.stdout + process.stderr)
+                    result = json.loads(process.stdout)
+                    self.assertEqual(result["status"], "reproduced_prior_failure" if mode == "prior-guard"
+                                     else "transport_import_only")
 
 
 def inert_result(case, original, *, exported=False):
@@ -185,7 +267,8 @@ class ResearcherAlphaWitnessTests(unittest.TestCase):
 
     def test_guard_allows_transport_resolution_and_denies_semantic_execution(self):
         boundary = witness.ResearcherBoundary(ROOT / "src/biocompiler")
-        for name in ("biocompiler.core_distribution", "biocompiler.core_policy_component_selection", "biocompiler.policy.research_project"):
+        for name in ("biocompiler.core_distribution", "biocompiler.core_policy_component_selection",
+                     "biocompiler.core_policy_expression_material", "biocompiler.policy.research_project"):
             self.assertTrue(boundary.allowed(name))
         for name in ("biocompiler.compiler", "biocompiler.semantics", "biocompiler_core"):
             with self.subTest(name=name), self.assertRaises(ImportError):

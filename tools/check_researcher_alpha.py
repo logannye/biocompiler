@@ -61,7 +61,8 @@ class ResearcherBoundary(ComponentBoundary):
     """Allow public owned-package resolution without enabling Python semantics."""
     @staticmethod
     def allowed(name):
-        return name in {"biocompiler.core_distribution", "biocompiler.core_policy_component_selection"} or ComponentBoundary.allowed(name)
+        return name in {"biocompiler.core_distribution", "biocompiler.core_policy_component_selection",
+                        "biocompiler.core_policy_expression_material"} or ComponentBoundary.allowed(name)
 
 
 def tracked_inputs(root):
