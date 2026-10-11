@@ -18,6 +18,7 @@ val implementation : t -> Bioc_wire.Json.t
 val localization : t -> Bioc_wire.Json.t
 val product : t -> P.t
 val maximum_rna_nt : t -> int
+
 (** Every fresh generic source obligation plus the explicit new expression
     correspondence obligation, still unresolved by this admission token. The
     independent material checker must give every member a closed disposition. *)

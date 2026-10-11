@@ -41,6 +41,7 @@ val to_json : t -> Json.t
 val fingerprint : t -> string
 val decoding_work : t -> int
 val document : t -> D.t
+
 (** Complete inert original project metadata; no source-byte, publication,
     reuse-rights or empirical qualification is granted by this accessor. *)
 val project_context : t -> Json.t

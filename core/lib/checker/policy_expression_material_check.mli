@@ -10,6 +10,7 @@ val implementation_version : string
 type result
 type checked_expression_material
 val check : request:R.t -> candidate:K.t -> result
+
 (** Same live invocation owner for final service publication; budget access
     grants no semantic or export authority. *)
 val budget : result -> Work_budget.t
