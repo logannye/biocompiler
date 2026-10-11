@@ -18,6 +18,14 @@ BINARIES = {"biocompiler-core": "c" * 64, "biocompiler-verify": "d" * 64}
 SOURCES = {"inert-source-only": {"sha256": "e" * 64}}
 
 
+def rehearsal():
+    """Synthetic timing metadata only; never an actual timed native rehearsal."""
+    return {**installed.REHEARSAL_SCOPE, "manual_interventions": [],
+        "milestones": [{"name": name, "elapsed_ns": index + 1}
+                       for index, name in enumerate(installed.REHEARSAL_MILESTONES)],
+        "total_elapsed_ns": 4}
+
+
 def record_for(package, modules, data):
     path = Path(package).parent / "biocompiler-0.0.0.dist-info/RECORD"
     stream = io.StringIO(newline="")
@@ -85,7 +93,8 @@ class CarPayloadInstalledTests(unittest.TestCase):
             "observations": rows, "observations_fingerprint": installed.canonical_digest([{"name": name, "result": value} for name, value in values.items()]),
             "projects": {}, "publications": [], "native_actions": {key: rows[-1][key] for key in ("path", "sha256", "bytes")},
             "files": {str(path.relative_to(self.root)): installed.pin(path) for path in folder.iterdir()},
-            "python_semantic_authority": "forbidden", "empirical": "unassessed", "human_use": "unassessed", "real_researcher_project_qualified": False}, values
+            "python_semantic_authority": "forbidden", "empirical": "unassessed", "human_use": "unassessed", "real_researcher_project_qualified": False,
+            "rehearsal": rehearsal()}, values
 
     def validate(self, receipt):
         return installed.validate_installed(receipt, self.root, self.expected, IDENTITY, BINARIES,
@@ -142,6 +151,76 @@ class CarPayloadInstalledTests(unittest.TestCase):
         self.assertEqual(len(installed.car.EVIDENCE_FILES), 29)
         with self.assertRaisesRegex(AssertionError, "exact CAR oracle"):
             installed.checked_inputs(installed.ROOT, self.root / "foreign.json")
+
+    def test_rehearsal_clock_records_only_ordered_public_workflow_milestones(self):
+        with patch.object(installed.time, "monotonic_ns", side_effect=[100, 150, 160, 200, 250]) as clock:
+            timer = installed._RehearsalTimer()
+            for name in installed.car.OBSERVATIONS:
+                timer.observe(name)
+            measured = timer.finish()
+        self.assertEqual(clock.call_count, 5)
+        self.assertEqual(measured["milestones"], [
+            {"name": "paired-publication", "elapsed_ns": 50},
+            {"name": "tight-paired-publication", "elapsed_ns": 60},
+            {"name": "short-no-publication", "elapsed_ns": 100}])
+        self.assertEqual(measured["total_elapsed_ns"], 150)
+        self.assertEqual(measured["installation_timing"], "excluded")
+        self.assertEqual(measured["human_usability"], "unassessed")
+        self.assertEqual(measured["external_researcher_review"], "not_performed")
+        self.assertEqual(measured["manual_interventions"], [])
+        measured["milestones"][0]["elapsed_ns"] = 0
+        self.assertEqual(timer.milestones[0]["elapsed_ns"], 50)
+
+    def test_rehearsal_timer_rejects_missing_duplicate_reordered_and_backward_events(self):
+        with patch.object(installed.time, "monotonic_ns", return_value=100):
+            timer = installed._RehearsalTimer()
+            with self.assertRaisesRegex(AssertionError, "milestones"):
+                timer.finish()
+            with self.assertRaisesRegex(AssertionError, "reordered"):
+                timer.observe("tight-paired-publication")
+            timer.observe("paired-publication")
+            with self.assertRaisesRegex(AssertionError, "duplicated"):
+                timer.observe("paired-publication")
+        with patch.object(installed.time, "monotonic_ns", side_effect=[100, 110, 109, 120, 130]):
+            timer = installed._RehearsalTimer()
+            for name in installed.REHEARSAL_MILESTONES:
+                timer.observe(name)
+            with self.assertRaisesRegex(AssertionError, "nonmonotonic"):
+                timer.finish()
+
+    def test_rehearsal_scope_complete_census_and_integer_timings_are_required(self):
+        receipt, values = self.receipt()
+        mutations = [lambda r: r.pop("rehearsal"), lambda r: r.update(rehearsal=None),
+            lambda r: r["rehearsal"].update(unexpected=True),
+            lambda r: r["rehearsal"].pop("total_elapsed_ns"),
+            lambda r: r["rehearsal"]["milestones"].pop(),
+            lambda r: r["rehearsal"]["milestones"].reverse(),
+            lambda r: r["rehearsal"]["milestones"].append(deepcopy(r["rehearsal"]["milestones"][0])),
+            lambda r: r["rehearsal"]["milestones"][0].update(unexpected=True),
+            lambda r: r["rehearsal"]["milestones"][1].update(elapsed_ns=0),
+            lambda r: r["rehearsal"].update(total_elapsed_ns=2),
+            lambda r: r["rehearsal"].update(manual_interventions=["undocumented manual repair"]),
+            lambda r: r["rehearsal"].update(manual_interventions=())]
+        for key in installed.REHEARSAL_SCOPE:
+            mutations.append(lambda r, key=key: r["rehearsal"].update({key: "promoted_or_foreign"}))
+        for value in (-1, True, 1.0, "1", None, 2**63):
+            mutations.append(lambda r, value=value: r["rehearsal"].update(total_elapsed_ns=value))
+            mutations.append(lambda r, value=value: r["rehearsal"]["milestones"][0].update(elapsed_ns=value))
+        with patch.object(installed.car, "check_observations", return_value=values), patch.object(installed.car, "validate_files"):
+            self.assertEqual(self.validate(receipt), values)
+            for index, mutate in enumerate(mutations):
+                changed = deepcopy(receipt)
+                mutate(changed)
+                with self.subTest(index=index), self.assertRaises(AssertionError):
+                    self.validate(changed)
+            zero = deepcopy(receipt)
+            for row in zero["rehearsal"]["milestones"]:
+                row["elapsed_ns"] = 0
+            zero["rehearsal"]["total_elapsed_ns"] = 0
+            self.assertEqual(self.validate(zero), values)
+            # Runtime timings are not an independent source of semantic PASS.
+        with self.assertRaises((AssertionError, KeyError)):
+            self.validate(receipt)
 
     def test_metadata_controls_cannot_bypass_native_envelopes_or_actual_file_validation(self):
         receipt, values = self.receipt()
@@ -343,7 +422,10 @@ class CarPayloadInstalledTests(unittest.TestCase):
         for index, slot in enumerate(sorted(installed.component.SLOTS)):
             path = self.root / str(index) / installed.RECEIPT
             path.parent.mkdir()
-            path.write_text(json.dumps({"system": slot[0], "machine": slot[1], "python_version": slot[2] + ".6", "run_attempt": "2"}))
+            measured = rehearsal()
+            measured["total_elapsed_ns"] += index
+            path.write_text(json.dumps({"system": slot[0], "machine": slot[1], "python_version": slot[2] + ".6", "run_attempt": "2",
+                                       "rehearsal": measured}))
             paths.append(path)
         binaries = {platform: BINARIES.copy() for platform in (("Linux", "x86_64"), ("Darwin", "arm64"))}
         with patch.object(installed, "validate_installed", return_value={"all22": "complete inert projection"}) as checked:
@@ -352,6 +434,8 @@ class CarPayloadInstalledTests(unittest.TestCase):
             self.assertEqual([row["run_attempt"] for row in result["attempts"]], ["2"] * 4)
             self.assertEqual(result["human_use"], "unassessed")
             self.assertFalse(result["real_researcher_project_qualified"])
+            self.assertNotIn("rehearsal", result)
+            self.assertEqual(result["observations_fingerprint"], installed.canonical_digest({"all22": "complete inert projection"}))
             for call in checked.call_args_list:
                 self.assertIs(call.args[4], binaries[(call.args[0]["system"], call.args[0]["machine"])])
                 self.assertEqual(call.kwargs["expected_sources"], SOURCES)

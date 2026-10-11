@@ -34,7 +34,6 @@ module Canonical = Meter.Canonical
 module Document = Meter.Document
 module Seen = Meter.Seen
 let ( ^ ) = Meter.append_string
-let ( @ ) = List.append
 let get key value = Json.field key (Json.object_fields value)
 let text key value = Json.string (get key value)
 let list key value = Json.array (get key value)

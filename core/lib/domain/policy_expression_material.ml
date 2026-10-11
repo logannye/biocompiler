@@ -170,7 +170,7 @@ let of_json ?(charge=fun _ -> ()) raw =
   {raw; identity; decoding_work_value= !work; document_value; project_context_value; selection_value;
    contract_value; structure_value; structure_identity; budget_values}
 let to_json value = value.raw
-let fingerprint value = value.identity
+let fingerprint (value:t) = value.identity
 let decoding_work value = value.decoding_work_value
 let document value = value.document_value
 let project_context value = value.project_context_value

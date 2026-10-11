@@ -21,6 +21,7 @@ import platform
 import re
 import stat
 import sys
+import time
 
 try:
     import check_car_payload as car
@@ -47,6 +48,58 @@ DATA_PATTERNS = ("py.typed", "studio/static/*", "studio/data/*.json", "policy/da
 REQUIRED_MODULES = car.REQUIRED_MODULES | {"biocompiler", "biocompiler.core_distribution"}
 require = component._require
 pin = component.bounded_pin
+REHEARSAL_SCHEMA = "biocompiler.car_payload_installed_rehearsal.v0.1"
+REHEARSAL_MILESTONES = ("paired-publication", "tight-paired-publication", "short-no-publication")
+REHEARSAL_SCOPE = {
+    "schema_version": REHEARSAL_SCHEMA,
+    "scope": "automated_public_python_workflow_only",
+    "actor": "automated_maintainer_agent",
+    "interface": "standalone_example_public_python_functions",
+    "resolution": "owned_installed_defaults",
+    "clock": "monotonic_ns",
+    "timing_scope": "public_prepare_compile_reverify_edits_and_rejection_controls",
+    "installation_timing": "excluded",
+    "human_usability": "unassessed",
+    "external_researcher_review": "not_performed",
+}
+
+
+def check_rehearsal(value):
+    """Validate timing evidence without giving timings semantic authority."""
+    require(type(value) is dict and set(value) == set(REHEARSAL_SCOPE) | {
+        "manual_interventions", "milestones", "total_elapsed_ns"}, "Incomplete installed CAR rehearsal")
+    require(all(value[key] == expected for key, expected in REHEARSAL_SCOPE.items())
+            and type(value["manual_interventions"]) is list and value["manual_interventions"] == [],
+            "Installed CAR rehearsal scope or assistance claim differs")
+    rows = value["milestones"]
+    require(type(rows) is list and all(type(row) is dict and set(row) == {"name", "elapsed_ns"} for row in rows)
+            and tuple(row["name"] for row in rows) == REHEARSAL_MILESTONES,
+            "Incomplete, duplicate or reordered CAR rehearsal milestones")
+    elapsed = [row["elapsed_ns"] for row in rows] + [value["total_elapsed_ns"]]
+    require(all(type(amount) is int and 0 <= amount <= 2**63 - 1 for amount in elapsed)
+            and elapsed == sorted(elapsed), "Invalid or nonmonotonic CAR rehearsal timing")
+
+
+class _RehearsalTimer:
+    """One automated workflow; installation and human usability are excluded."""
+
+    def __init__(self):
+        self.start = time.monotonic_ns()
+        self.milestones = []
+
+    def observe(self, name):
+        if name in REHEARSAL_MILESTONES:
+            require(len(self.milestones) < len(REHEARSAL_MILESTONES)
+                    and name == REHEARSAL_MILESTONES[len(self.milestones)],
+                    "CAR rehearsal milestone was duplicated or reordered")
+            self.milestones.append({"name": name, "elapsed_ns": time.monotonic_ns() - self.start})
+
+    def finish(self):
+        result = {**REHEARSAL_SCOPE, "manual_interventions": [],
+                  "milestones": [dict(row) for row in self.milestones],
+                  "total_elapsed_ns": time.monotonic_ns() - self.start}
+        check_rehearsal(result)
+        return result
 
 
 def checked_inputs(root=ROOT, expected=None):
@@ -152,9 +205,10 @@ def validate_installed(receipt, evidence_root, expected_path, identity, binaries
     fields = {"schema_version", "status", "revision", "head_revision", "run_id", "run_attempt", "system", "machine", "python_version",
         "scope", "inputs", "binary_sha256", "package", "installed_modules", "installed_data", "sdk_record", "parent_imports", "source_snapshot_sha256",
         "working_directory", "runtime_inputs", "resolution", "observations", "observations_fingerprint", "projects", "publications", "native_actions", "files",
-        "python_semantic_authority", "empirical", "human_use", "real_researcher_project_qualified"}
+        "python_semantic_authority", "empirical", "human_use", "real_researcher_project_qualified", "rehearsal"}
     require(type(receipt) is dict and set(receipt) == fields and receipt["schema_version"] == SCHEMA and receipt["status"] == "pass",
             "Not a complete installed CAR receipt")
+    check_rehearsal(receipt["rehearsal"])
     require(type(receipt["python_version"]) is str and re.fullmatch(r"3\.(11|14)\.[0-9]+", receipt["python_version"]), "Invalid installed CAR runtime")
     slot = receipt["system"], receipt["machine"], ".".join(receipt["python_version"].split(".")[:2])
     require(slot in component.SLOTS and (expected_slot is None or slot == expected_slot), "Wrong installed CAR slot")
@@ -261,7 +315,9 @@ def run(args):
         "source_snapshot_sha256": canonical_digest(before), "resolution": "owned_installed_defaults", "working_directory": str(cwd),
         "runtime_inputs": {name: {"path": str(copied / name), **originals[name]} for name in COPY_INPUTS},
         "observations": [], "observations_fingerprint": None, "projects": {}, "publications": [], "native_actions": {}, "files": {},
-        "python_semantic_authority": "forbidden", "empirical": "unassessed", "human_use": "unassessed", "real_researcher_project_qualified": False}
+        "python_semantic_authority": "forbidden", "empirical": "unassessed", "human_use": "unassessed", "real_researcher_project_qualified": False,
+        "rehearsal": None}
+    rehearsal = None
     def save():
         raw = (json.dumps(result, sort_keys=True, indent=2, allow_nan=False) + "\n").encode()
         require(len(raw) <= component.MAX_RECEIPT, "CAR installed receipt exceeded its bound")
@@ -274,6 +330,8 @@ def run(args):
         with path.open("xb") as stream:
             stream.write(encode_json(value))
         result["observations"].append({"name": name, "path": str(path.relative_to(output.parent)), **pin(path)})
+        require(rehearsal is not None, "CAR observation preceded its public workflow timing")
+        rehearsal.observe(name)
         save()
     def unchanged():
         require(source_identity() == hosted and source_snapshot(ROOT) == before and input_pins() == originals
@@ -288,7 +346,9 @@ def run(args):
         from biocompiler.core_client import CoreClient
         example = car.load_example(copied / EXAMPLE)
         transports = {role: CoreClient(path, role=role, expected_sha256=binaries["biocompiler-" + role], timeout_seconds=90) for role, path in paths.items()}
+        rehearsal = _RehearsalTimer()
         fields = car.exercise(packet, example, transports["core"], transports["verify"], retain, artifacts, use_installed_defaults=True)
+        result["rehearsal"] = rehearsal.finish()
         action_row = next(row for row in result["observations"] if row["name"] == "native-actions")
         result.update(projects=fields["projects"], publications=fields["publications"],
                       native_actions={key: action_row[key] for key in ("path", "sha256", "bytes")})
