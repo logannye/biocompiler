@@ -305,8 +305,11 @@ class CarPayloadCampaignTests(unittest.TestCase):
 from pathlib import Path
 import sys,tempfile
 from unittest.mock import patch
+root=Path(sys.argv[1]).resolve()
+sys.path[:0]=[str(root/'src'),str(root)]
 from tools import check_car_payload as c
-root=Path.cwd();guard=c.CarBoundary(root/'src/biocompiler')
+assert not any(name=='biocompiler' or name.startswith('biocompiler.') for name in sys.modules)
+guard=c.CarBoundary(root/'src/biocompiler')
 sys.meta_path.insert(0,guard);sys.setprofile(guard.trace)
 try:
  with patch('subprocess.Popen',side_effect=AssertionError('no native')):
@@ -321,7 +324,8 @@ try:
 finally:sys.setprofile(None);sys.meta_path.remove(guard)
 assert len(guard.denied)==1
 """
-        completed=subprocess.run([sys.executable,"-B","-c",code],cwd=ROOT,capture_output=True,text=True,timeout=30)
+        with tempfile.TemporaryDirectory() as directory:
+            completed=subprocess.run([sys.executable,"-I","-B","-c",code,str(ROOT)],cwd=directory,capture_output=True,text=True,timeout=30)
         self.assertEqual(completed.returncode,0,completed.stderr)
 
 

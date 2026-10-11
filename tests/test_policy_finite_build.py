@@ -237,14 +237,16 @@ class FiniteBuildTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory, compile_peer, export_peer:
             output = Path(directory) / "payload.zip"
             self.project(build).compile(output=output, core=self.core, verify=self.verify)
-            mutations = [build.with_document(replace(build.document, program=replace(build.document.program, id="changed"))),
-                FiniteMachineBuild(build.document, build.authority, replace(build.limits, max_step_work=1))]
+            authority_error = "^Bundle original authority differs from the independently supplied current project$"
+            limits_error = "^Bundle limits differ from the independently supplied current project$"
+            mutations = [("document", build.with_document(replace(build.document, program=replace(build.document.program, id="changed"))), authority_error),
+                ("limits", FiniteMachineBuild(build.document, build.authority, replace(build.limits, max_step_work=1)), limits_error)]
             request = build.to_request()
             request["component_library"]["components"][0]["identity"]["content_fingerprint"] = "0" * 64
-            mutations.append(FiniteMachineBuild.from_request(request, limits=build.to_limits()))
-            for changed in mutations:
+            mutations.append(("component_authority", FiniteMachineBuild.from_request(request, limits=build.to_limits()), authority_error))
+            for name, changed, expected_error in mutations:
                 before = len(self.calls)
-                with self.subTest(change=changed), self.assertRaisesRegex(ResearchProjectError, "original authority"):
+                with self.subTest(change=name), self.assertRaisesRegex(ResearchProjectError, expected_error):
                     self.project(changed).verify_bundle(output, verify=self.verify)
                 self.assertEqual(len(self.calls), before)
             raw = bytearray(output.read_bytes())

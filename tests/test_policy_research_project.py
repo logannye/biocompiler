@@ -240,7 +240,7 @@ class ResearchProjectTests(unittest.TestCase):
             changed = project.data
             changed["limits"]["max_work"] = 1
             other = api.ResearchProject.from_data(changed)
-            with patch.object(CoreClient, "call", side_effect=AssertionError("No native process")), self.assertRaisesRegex(api.ResearchProjectError, "authority"):
+            with patch.object(CoreClient, "call", side_effect=AssertionError("No native process")), self.assertRaisesRegex(api.ResearchProjectError, "^Bundle limits differ from the independently supplied current project$"):
                 other.verify_bundle(output, verify=self.verify)
 
     def test_tampered_pair_candidate_extra_member_and_zip_metadata_are_rejected(self):

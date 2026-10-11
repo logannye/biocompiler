@@ -37209,7 +37209,7 @@
     },
     "finite_build.authority": {
       "distinction": "Explicit source replacement preserves every other original and does not fabricate compatible model or material pins.",
-      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "file_sha256": "7bf906c7a3f724fe2217ab9057de622d1aaa996af1fce4f4438a8c8172615bdb",
       "path": "tests/test_policy_finite_build.py",
       "role": "mixed",
       "symbol": "FiniteBuildTests.test_explicit_source_change_does_not_normalize_repair_or_repin_authority",
@@ -37217,7 +37217,7 @@
     },
     "finite_build.budgets": {
       "distinction": "Explicit typed limits reject extra or omitted fields, booleans/nonintegers and values outside the existing native ceilings; no runtime metering claim.",
-      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "file_sha256": "7bf906c7a3f724fe2217ab9057de622d1aaa996af1fce4f4438a8c8172615bdb",
       "path": "tests/test_policy_finite_build.py",
       "role": "rejection",
       "symbol": "FiniteBuildTests.test_limits_reject_unknown_omitted_noninteger_and_outside_existing_ceiling",
@@ -37225,7 +37225,7 @@
     },
     "finite_build.immutable": {
       "distinction": "Caller changes to detached authority, source containers or output snapshots cannot change retained build/project originals.",
-      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "file_sha256": "7bf906c7a3f724fe2217ab9057de622d1aaa996af1fce4f4438a8c8172615bdb",
       "path": "tests/test_policy_finite_build.py",
       "role": "mixed",
       "symbol": "FiniteBuildTests.test_caller_owned_snapshots_cannot_change_frozen_build_or_project",
@@ -37233,7 +37233,7 @@
     },
     "finite_build.profiles": {
       "distinction": "Only the exact finite component-material profile and lossless canonical typed source are structurally imported; no semantic admission claim.",
-      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "file_sha256": "7bf906c7a3f724fe2217ab9057de622d1aaa996af1fce4f4438a8c8172615bdb",
       "path": "tests/test_policy_finite_build.py",
       "role": "rejection",
       "symbol": "FiniteBuildTests.test_unsupported_material_nested_profiles_and_noncanonical_source_reject",
@@ -37241,7 +37241,7 @@
     },
     "finite_build.roles": {
       "distinction": "Project refuses swapped producer/verifier roles before any native call.",
-      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "file_sha256": "7bf906c7a3f724fe2217ab9057de622d1aaa996af1fce4f4438a8c8172615bdb",
       "path": "tests/test_policy_finite_build.py",
       "role": "rejection",
       "symbol": "FiniteBuildTests.test_wrong_roles_fail_before_producer_or_verifier_calls",
@@ -37249,7 +37249,7 @@
     },
     "finite_build.roundtrip": {
       "distinction": "Two existing finite shapes retain complete original source and all supplied material authority through typed build and project roundtrip; pure Python, no native acceptance.",
-      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "file_sha256": "7bf906c7a3f724fe2217ab9057de622d1aaa996af1fce4f4438a8c8172615bdb",
       "path": "tests/test_policy_finite_build.py",
       "role": "positive",
       "symbol": "FiniteBuildTests.test_two_distinct_shapes_import_and_reopen_complete_original_bytes",
@@ -37257,7 +37257,7 @@
     },
     "finite_build.scope": {
       "distinction": "Ordered source states and transitions, nominal subjects and encounters, and effect lifecycle survive typed source import without biological interpretation.",
-      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "file_sha256": "7bf906c7a3f724fe2217ab9057de622d1aaa996af1fce4f4438a8c8172615bdb",
       "path": "tests/test_policy_finite_build.py",
       "role": "positive",
       "symbol": "FiniteBuildTests.test_source_state_order_scope_subject_and_lifecycle_remain_distinct",
@@ -37265,7 +37265,7 @@
     },
     "finite_build.workflow": {
       "distinction": "Inert native peers distinguish Core compilation from Verify export and fresh bundle verification with complete original request/limits and paired publication; not native execution evidence.",
-      "file_sha256": "2d49f39dba7fa18be6f698adaf8300ae4d092f2f5ff9382902397071ebcad083",
+      "file_sha256": "7bf906c7a3f724fe2217ab9057de622d1aaa996af1fce4f4438a8c8172615bdb",
       "path": "tests/test_policy_finite_build.py",
       "role": "positive",
       "symbol": "FiniteBuildTests.test_two_shapes_use_core_then_independent_verify_and_reopen_originals",
@@ -37713,7 +37713,7 @@
     },
     "research_project.atomic": {
       "distinction": "Failed canonical project publication preserves prior bytes and removes its own staging file; no payload acceptance claim.",
-      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "file_sha256": "83b9982eef1fa993af4d2ab02edda99475abfed74c1a443122ebca3baa96c8e6",
       "path": "tests/test_policy_research_project.py",
       "role": "rejection",
       "symbol": "ResearchProjectTests.test_project_dump_failure_preserves_existing_bytes_and_cleans_stage",
@@ -37721,15 +37721,15 @@
     },
     "research_project.authority": {
       "distinction": "Embedded bundle authority cannot replace the independently supplied current project in mocked verification.",
-      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "file_sha256": "83b9982eef1fa993af4d2ab02edda99475abfed74c1a443122ebca3baa96c8e6",
       "path": "tests/test_policy_research_project.py",
       "role": "rejection",
       "symbol": "ResearchProjectTests.test_bundle_embedded_authority_cannot_replace_the_current_independent_project",
-      "syntax_sha256": "796595c7f05ff74fcb38f016d6fcea27b33dc0dbf3003ed719352876022c7b65"
+      "syntax_sha256": "96bd2e89b3e7510dbba59bf26b62ed20445a6dad0f828ef6861bcae9ca9d0419"
     },
     "research_project.diagnostics": {
       "distinction": "Native nonacceptance retains the complete detached report through a public exception in mocked transport; diagnostic accessibility is not native acceptance.",
-      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "file_sha256": "83b9982eef1fa993af4d2ab02edda99475abfed74c1a443122ebca3baa96c8e6",
       "path": "tests/test_policy_research_project.py",
       "role": "rejection",
       "symbol": "ResearchProjectTests.test_native_rejection_retains_full_immutable_diagnostics_without_publication",
@@ -37737,7 +37737,7 @@
     },
     "research_project.io": {
       "distinction": "Bounded inert canonical project JSON and loaded-original protection; no semantic admission is inferred.",
-      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "file_sha256": "83b9982eef1fa993af4d2ab02edda99475abfed74c1a443122ebca3baa96c8e6",
       "path": "tests/test_policy_research_project.py",
       "role": "mixed",
       "symbol": "ResearchProjectTests.test_json_load_dump_are_bounded_inert_canonical_and_preserve_originals",
@@ -37745,7 +37745,7 @@
     },
     "research_project.metadata": {
       "distinction": "Explicit source identity/version/reuse fields and unique ids; declared metadata does not authenticate publications or biological claims.",
-      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "file_sha256": "83b9982eef1fa993af4d2ab02edda99475abfed74c1a443122ebca3baa96c8e6",
       "path": "tests/test_policy_research_project.py",
       "role": "rejection",
       "symbol": "ResearchProjectTests.test_source_metadata_is_explicit_versioned_and_not_an_evidence_claim",
@@ -37753,7 +37753,7 @@
     },
     "research_project.originals": {
       "distinction": "Detached complete project snapshots and transport-only preflight labels; no native semantic execution or empirical assessment.",
-      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "file_sha256": "83b9982eef1fa993af4d2ab02edda99475abfed74c1a443122ebca3baa96c8e6",
       "path": "tests/test_policy_research_project.py",
       "role": "mixed",
       "symbol": "ResearchProjectTests.test_complete_originals_are_immutable_and_preflight_is_not_native_admission",
@@ -37761,7 +37761,7 @@
     },
     "research_project.roles": {
       "distinction": "Explicit incorrect Core/Verify role objects are rejected before transport; no native binary execution.",
-      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "file_sha256": "83b9982eef1fa993af4d2ab02edda99475abfed74c1a443122ebca3baa96c8e6",
       "path": "tests/test_policy_research_project.py",
       "role": "rejection",
       "symbol": "ResearchProjectTests.test_wrong_roles_are_rejected_before_any_native_work",
@@ -37769,7 +37769,7 @@
     },
     "research_project.routes": {
       "distinction": "Both project transport routes preserve supplied request/limits and separate Core/Verify operation identities under mocked transport only.",
-      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "file_sha256": "83b9982eef1fa993af4d2ab02edda99475abfed74c1a443122ebca3baa96c8e6",
       "path": "tests/test_policy_research_project.py",
       "role": "positive",
       "symbol": "ResearchProjectTests.test_both_routes_generate_with_core_and_freshly_export_and_reverify_with_verify",
@@ -37777,7 +37777,7 @@
     },
     "research_project.tamper": {
       "distinction": "Tampered paired bytes, candidate, members and ZIP metadata fail mocked-transport verification; not native/release acceptance.",
-      "file_sha256": "8106bf34a913fa1f4f35eae2232d8c88f7a271c8050a9ef2de68830063d327a5",
+      "file_sha256": "83b9982eef1fa993af4d2ab02edda99475abfed74c1a443122ebca3baa96c8e6",
       "path": "tests/test_policy_research_project.py",
       "role": "rejection",
       "symbol": "ResearchProjectTests.test_tampered_pair_candidate_extra_member_and_zip_metadata_are_rejected",
