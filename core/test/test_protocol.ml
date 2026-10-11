@@ -15,11 +15,14 @@ let () =
   require (Json.string (Json.field "schema_version" fields) = "biocompiler.core_capabilities.v1") "Capability schema missing";
   require (Json.array (Json.field "operations" fields) |> List.map Json.string =
     (["capabilities";"canonicalize";"validate-intent";"verify-lowering";"verify-architecture";"replay-architecture"] @
-     Bioc_service.Policy_service.operations @ Bioc_service.Policy_operational_service.operations @ Bioc_service.Policy_implementation_service.operations @ Bioc_service.Policy_material_service.operations @ Bioc_service.Policy_component_material_service.operations @ Bioc_service.Policy_quantitative_assurance_service.operations @ Bioc_service.Policy_refinement_service.operations @ Bioc_service.Policy_module_linking_service.operations @
+     Bioc_service.Policy_service.operations @ Bioc_service.Policy_operational_service.operations @ Bioc_service.Policy_implementation_service.operations @ Bioc_service.Policy_expression_material_service.operations @ Bioc_service.Policy_material_service.operations @ Bioc_service.Policy_component_material_service.operations @ Bioc_service.Policy_quantitative_assurance_service.operations @ Bioc_service.Policy_refinement_service.operations @ Bioc_service.Policy_module_linking_service.operations @
      ["check-policy-component-selection";"replay-policy-component-selection";"export-policy-component-selection"] @
      Bioc_service.Realization_service.operations @ Bioc_service.Verification_workflow_service.operations @
      Bioc_service.Verification_workflow_authority.operations))
     "Advertised operation census differs";
+  require (List.filter ((=) (Json.String "policy-single-expression-mrna-v0.1"))
+    (Json.array (Json.field "validation_scopes" fields)) = [Json.String "policy-single-expression-mrna-v0.1"])
+    "Expression checking scope was omitted or duplicated";
   let architecture = Json.field "architecture" (Json.object_fields (Json.field "profiles" fields)) in
   require (Json.equal architecture Bioc_service.Architecture_service.profile) "Architecture profile differs";
   List.iter (fun operation ->
@@ -59,6 +62,7 @@ let () =
         "max_part_nodes",Json.int 1000000;"max_part_bytes",Json.int 8323072;
         "operations",Json.Array[Json.String "export-policy-quantitative-assurance"]];
       "artifact_transport_authority",Bioc_service.Artifact_io.authority_profile;
+      "policy_expression_material",Bioc_service.Policy_expression_material_service.profile;
       "policy_material",Bioc_service.Policy_material_service.profile;
       "policy_component_material",Bioc_service.Policy_component_material_service.profile;
       "policy_refinement",Bioc_service.Policy_refinement_service.profile;
