@@ -7,6 +7,13 @@ module O = Bioc_domain.Policy_operational
 module R = Bioc_domain.Policy_realization_request
 module F = Bioc_domain.Policy_operating_domain
 module P = Bioc_domain.Pinned_identity
+module Typed = Bioc_domain.Policy_admitted_ir
+type finite_expression =
+  | Finite_truth of Typed.truth_expression
+  | Finite_integer of Typed.integer_expression
+  | Finite_text of Typed.text_expression
+  | Finite_quantity of Typed.quantity_expression
+  | Finite_event of Typed.event_expression
 let s value=Json.String value
 let o value=Json.Object value
 let a value=Json.Array value
@@ -32,6 +39,22 @@ let lower_metered ~charge ~admitted ~library =
     "Staged lowering needs exact truth/event/product types."in
   charge 1;
   let request=A.request admitted and behavior=A.behavior admitted in
+  let finite_program=A.finite_program admitted in
+  let typed_declaration id=match finite_program with
+    |None->None
+    |Some program->Some(Typed.declaration(List.find(fun instruction->
+        String.equal(Typed.name(Typed.declaration instruction))id)(Typed.instructions program)))in
+  let scalar_expression=function
+    |Typed.Truth value->Finite_truth value|Typed.Integer value->Finite_integer value
+    |Typed.Text value->Finite_text value|Typed.Quantity value->Finite_quantity value in
+  let typed_roots=match finite_program with None->[]|Some program->
+    List.concat_map(fun instruction->let location=Typed.source_path instruction in
+      match Typed.declaration instruction with
+      |Typed.Transition_declaration value->
+          [location^"/on",Finite_event value.on;location^"/when",Finite_truth value.guard]
+      |Typed.Effect_declaration value->List.mapi(fun index(_,value)->
+          location^"/parameters/"^string_of_int index^"/value",scalar_expression value)value.parameters
+      |_->[])(Typed.instructions program)in
   let multi_product=R.is_multi_product request and finite_machine=R.is_finite_machine request
   and multi_site=R.is_multi_site request and coupled=R.is_coupled request in
   let library_pin=Canonical.fingerprint(I.library_to_json library) in
@@ -43,7 +66,9 @@ let lower_metered ~charge ~admitted ~library =
   and observation=one "observation" behavior.observations
   and product=(if multi_product then None else Some(one "fixed product" behavior.parameters))
   and machine=one "machine" behavior.machines in
-  let transition_count=List.length behavior.transitions in
+  let transition_count=match finite_program with None->List.length behavior.transitions
+    |Some program->List.fold_left(fun count instruction->match Typed.declaration instruction with
+      |Typed.Transition_declaration _->count+1|_->count)0(Typed.instructions program)in
   (if finite_machine then (
     let states=List.length machine.states and effects=List.length behavior.effects in
     supported(behavior.rules=[] && (if coupled then List.length behavior.stores>=2 && List.length behavior.stores<=4 else behavior.stores=[]) && states>=2 && states<=16 &&
@@ -77,7 +102,10 @@ let lower_metered ~charge ~admitted ~library =
     let product_raw=source parameter.parameter_id in
     supported(text "selection" product_raw="fixed")"Staged product must be fixed.";
     absent["lower";"upper"]product_raw;type_is "text"(get "value_type" product_raw);
-    match parameter.value with O.Text value->value|_->Diagnostic.fail "policy_staged_lowering_unsupported" "Product is not text."in
+    let value=match typed_declaration parameter.parameter_id with
+      |Some(Typed.Parameter_declaration value)->value.value
+      |Some _->assert false|None->parameter.value in
+    match value with O.Text value->value|_->Diagnostic.fail "policy_staged_lowering_unsupported" "Product is not text."in
   let product_symbols=match product with
     |Some parameter->[parameter.parameter_id,validate_product parameter]
     |None->
@@ -86,17 +114,26 @@ let lower_metered ~charge ~admitted ~library =
       supported(List.length(List.sort_uniq String.compare(List.map snd pairs))=2)
         "Multi-product staged lowering requires two distinct original product symbols.";pairs in
   let product_id,product_symbol=match product_symbols with first::_->first|[]->assert false in
-  let ticks duration=let exact=Q.div duration clock.resolution in
+  let resolution=match typed_declaration clock.clock_id with
+    |Some(Typed.Clock_declaration value)->value.resolution|Some _->assert false|None->clock.resolution in
+  let ticks duration=let exact=Q.div duration resolution in
     supported(Q.sign exact>0 && Z.equal(Q.den exact)Z.one && Z.compare(Q.num exact)(Z.of_int 10000)<=0)
       "Duration is not a bounded positive exact tick count.";Z.to_int(Q.num exact)in
   let initiators effect_id=List.filter(fun(value:O.transition)->List.mem effect_id value.effects)behavior.transitions in
   let attempt_primitive (operation:O.effect_spec)=
-    let timeout_ticks=match operation.lifecycle.timeout with Some value->ticks value|None->
+    let timeout,typed_lifecycle=match typed_declaration operation.effect_id with
+      |Some(Typed.Effect_declaration value)->value.lifecycle.timeout,Some value.lifecycle
+      |Some _->assert false|None->operation.lifecycle.timeout,None in
+    let timeout_ticks=match timeout with Some value->ticks value|None->
       Diagnostic.fail "policy_staged_lowering_unsupported" "Each stage requires a finite explicit timeout."in
-    let authorization=match operation.lifecycle.authorization with "initiation"->I.At_initiation|"continuous"->I.Continuous
-      |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Unsupported authorization lifetime."in
-    let on_unknown=match operation.lifecycle.on_unknown with "defer"->I.Defer|"continue"->I.Continue
-      |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Unsupported unknown authorization behavior."in
+    let authorization=match typed_lifecycle with
+      |Some value->(match value.authorization with Typed.At_initiation->I.At_initiation|Typed.Continuous->I.Continuous)
+      |None->(match operation.lifecycle.authorization with "initiation"->I.At_initiation|"continuous"->I.Continuous
+        |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Unsupported authorization lifetime.")in
+    let on_unknown=match typed_lifecycle with
+      |Some value->(match value.on_unknown with Typed.Defer->I.Defer|Typed.Continue->I.Continue)
+      |None->(match operation.lifecycle.on_unknown with "defer"->I.Defer|"continue"->I.Continue
+        |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Unsupported unknown authorization behavior.")in
     if multi_site then I.Attempt_bank_sites{sites=List.length(initiators operation.effect_id);
       capacity=domain.logical_limits.max_source_attempts;timeout_ticks;authorization;on_unknown}
     else I.Attempt_bank{capacity=domain.logical_limits.max_source_attempts;timeout_ticks;authorization;on_unknown}in
@@ -135,9 +172,12 @@ let lower_metered ~charge ~admitted ~library =
   (* A transition replaces retained attempts only when it starts requests.
      Under this profile's one-request bound, one retained slot is sufficient,
      including retries through cycles; derive it from the actual source. *)
-  let retained_capacity=if finite_machine then
-      List.fold_left(fun capacity(value:O.transition)->max capacity(List.length value.effects))1 behavior.transitions
-    else 1 in
+  let retained_capacity=match finite_program with
+    |Some program->List.fold_left(fun capacity instruction->match Typed.declaration instruction with
+        |Typed.Transition_declaration value->max capacity(List.length value.effects)|_->capacity)1(Typed.instructions program)
+    |None->if finite_machine then
+        List.fold_left(fun capacity(value:O.transition)->max capacity(List.length value.effects))1 behavior.transitions
+      else 1 in
   let layouts=I.models library|>List.filter_map(fun(model:I.model)->match model.replication with
     |I.Encounter_slots value when value.slots=2->Some value.layout_id|_->None)|>List.sort_uniq String.compare in
   let build layout_id=
@@ -185,13 +225,21 @@ let lower_metered ~charge ~admitted ~library =
     let occurrence location role disposition targets=
       supported(List.length !occurrences<2048)"Staged occurrence bound exceeded.";
       occurrences:=o["source_path",s location;"role",s role;"disposition",s disposition;"targets",a targets]:: !occurrences in
-    let evidence=allocate "observation/0"(I.Evidence_bank{freshness_ticks=ticks observation.freshness})in
+    let freshness=match typed_declaration observation.observation_id with
+      |Some(Typed.Observation_declaration value)->value.freshness|Some _->assert false|None->observation.freshness in
+    let evidence=allocate "observation/0"(I.Evidence_bank{freshness_ticks=ticks freshness})in
     let states=List.mapi(fun index(store:O.state_store)->
       let initial=match store.initial with O.Truth value->truth value|_->assert false in
       store.state_id,allocate("state/"^string_of_int index)(I.Truth_register{initial;writers=transition_count}))behavior.stores in
-    let machine_bank=allocate "machine/0"(I.Machine_bank{states=machine.states;initial=machine.initial;terminal=machine.terminal;
+    let machine_states,machine_initial,machine_terminal=match typed_declaration machine.machine_id with
+      |Some(Typed.Machine_declaration value)->value.states,value.initial,value.terminal
+      |Some _->assert false|None->machine.states,machine.initial,machine.terminal in
+    let machine_bank=allocate "machine/0"(I.Machine_bank{states=machine_states;initial=machine_initial;terminal=machine_terminal;
       writers=transition_count;retained_capacity})in
-    let attempts=List.mapi(fun index(operation:O.effect_spec)->operation.effect_id,allocate("attempt/"^string_of_int index)(attempt_primitive operation))behavior.effects in
+    let attempts=List.mapi(fun index(operation:O.effect_spec)->
+      let identity=match typed_declaration operation.effect_id with
+        |Some(Typed.Effect_declaration value)->Typed.Effect.name value.id|Some _->assert false|None->operation.effect_id in
+      identity,allocate("attempt/"^string_of_int index)(attempt_primitive operation))behavior.effects in
     let arbiter=allocate "arbitration/0"(I.Exclusive_arbiter transition_count)in
     let expression_node primitive=let ordinal= !next in incr next;allocate("expression/"^string_of_int ordinal)primitive in
     let module Expression_keys=Hashtbl.Make(struct
@@ -291,7 +339,112 @@ let lower_metered ~charge ~admitted ~library =
             connect(out(List.assoc identity attempts)"events")(out id "events");let value=out id "selected"in memo_add key value;value)
         |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Expression lacks a staged primitive interpretation."in
       occurrence location role(if List.mem op["literal";"parameter"]then "constant"else "executable")[result];result,identity in
-    let emit role location raw=fst(emit_with_identity role location raw)in
+    (* The exact finite-machine path never decodes executable operands back
+       from JSON. Raw bodies below supply only original metadata restrictions,
+       structural sharing identity and occurrence lineage. Other profiles keep
+       their original emitter and work path above. *)
+    let finite_source=function
+      |Finite_truth value->Typed.truth_source value|Finite_integer value->Typed.integer_source value
+      |Finite_text value->Typed.text_source value|Finite_quantity value->Typed.quantity_source value
+      |Finite_event value->Typed.event_source value in
+    let finite_children=function
+      |Finite_truth value->(match Typed.truth_term value with
+        |Typed.All values|Typed.Any values->List.map(fun value->Finite_truth value)values
+        |Typed.Not value->[Finite_truth value]
+        |Typed.Truth_equal(_,left,right)->[Finite_truth left;Finite_truth right]
+        |Typed.Text_equal(_,left,right)->[Finite_text left;Finite_text right]
+        |Typed.Integer_compare(_,left,right)->[Finite_integer left;Finite_integer right]
+        |Typed.Quantity_compare(_,left,right)->[Finite_quantity left;Finite_quantity right]
+        |Typed.Truth_literal _|Typed.Truth_read _->[])
+      |Finite_event value->(match Typed.event_term value with Typed.Rising value->[Finite_truth value]
+        |Typed.Updated _|Typed.Effect_event _->[])
+      |Finite_integer _|Finite_text _|Finite_quantity _->[]in
+    let exact_observation symbol=match typed_declaration observation.observation_id with
+      |Some(Typed.Observation_declaration value)->Typed.Observation.index value.id=Typed.Observation.index symbol
+      |_->assert false in
+    let rec finite_evidence_only value=charge 1;match Typed.truth_term value with
+      |Typed.Truth_literal _|Typed.Truth_read(Typed.Observation_read _)->true
+      |Typed.Not value->finite_evidence_only value
+      |Typed.All values|Typed.Any values->List.for_all finite_evidence_only values
+      |_->false in
+    let rec finite_observed value=charge 1;match Typed.truth_term value with
+      |Typed.Truth_read(Typed.Observation_read _)->true
+      |Typed.Not value->finite_observed value
+      |Typed.All values|Typed.Any values->List.exists finite_observed values
+      |_->false in
+    let rec emit_finite role location expression=
+      charge 1;
+      let raw=finite_source expression in
+      Meter.serialization raw;
+      absent["contract";"duration";"clock";"coverage";"binding"]raw;
+      let terms=finite_children expression in
+      let children=List.mapi(fun index value->emit_finite role(location^"/args/"^string_of_int index)value)terms in
+      let key=Canonical.encode raw in charge(String.length key);
+      let new_output primitive port input_ports=match memo_find key with Some value->value|None->
+        let id=expression_node primitive in List.iter2(fun child port->connect child(out id port))children input_ports;
+        let value=out id port in memo_add key value;value in
+      let pure ()=absent["ref";"scope";"value"]raw in
+      let unsupported ()=Diagnostic.fail "policy_staged_lowering_unsupported" "Expression lacks a staged primitive interpretation."in
+      let unsupported_type kind=type_is kind(get "value_type" raw);unsupported()in
+      let unsupported_read=function
+        |Typed.Observation_read _->unsupported_type "truth"
+        |Typed.Parameter_read _->unsupported_type "text"
+        |Typed.State_read _->unsupported()in
+      let result,constant=match expression with
+        |Finite_truth value->(match Typed.truth_term value with
+          |Typed.Truth_read(Typed.Observation_read symbol)->
+              type_is "truth"(get "value_type" raw);
+              supported(exact_observation symbol && get "value" raw=Json.Null &&
+                Json.equal(get "scope" raw)(reference "Subject" subject.subject_id))"Observation identity changed.";
+              out evidence "value",false
+          |Typed.Truth_literal value->type_is "truth"(get "value_type" raw);absent["ref";"scope"]raw;
+              new_output(I.Truth_constant(truth value))"out"[],true
+          |Typed.Not _->type_is "truth"(get "value_type" raw);pure();new_output I.Truth_not "out"["in"],false
+          |Typed.All values|Typed.Any values->type_is "truth"(get "value_type" raw);pure();
+              let arity=List.length values in supported(arity>0 && arity<=64)"Truth arity.";
+              let primitive=match Typed.truth_term value with Typed.All _->I.Truth_all arity|_->I.Truth_any arity in
+              new_output primitive "out"(List.mapi(fun index _->"in"^string_of_int index)values),false
+          |Typed.Truth_read read->unsupported_read read
+          |_->unsupported())
+        |Finite_text value->(match Typed.text_term value with
+          |Typed.Text_read(Typed.Parameter_read symbol)->
+              type_is "text"(get "value_type" raw);absent["scope";"value"]raw;
+              let exact=match typed_declaration product_id with
+                |Some(Typed.Parameter_declaration parameter)->Typed.Parameter.index parameter.id=Typed.Parameter.index symbol
+                |_->assert false in
+              supported exact "Fixed product identity changed.";
+              new_output(I.Product_constant product_symbol)"out"[],true
+          |Typed.Text_literal _->unsupported_type "truth"
+          |Typed.Text_read read->unsupported_read read)
+        |Finite_event value->(match Typed.event_term value with
+          |Typed.Updated symbol->type_is "event"(get "value_type" raw);
+              supported(exact_observation symbol && get "value" raw=Json.Null &&
+                Json.equal(get "scope" raw)(reference "Subject" subject.subject_id))
+                "Observation updates require the finite-machine profile and exact original observation/subject.";
+              out evidence "updated",false
+          |Typed.Rising predicate->type_is "event"(get "value_type" raw);pure();
+              supported(finite_evidence_only predicate && finite_observed predicate)"Rising needs observed truth evidence.";
+              let value=new_output I.Observed_rising "events"["in"]in
+              if not(List.mem key !edges)then edges:=key:: !edges;value,false
+          |Typed.Effect_event(symbol,phase)->type_is "event"(get "value_type" raw);
+              let identity=Typed.Effect.name symbol in
+              supported(List.mem_assoc identity attempts &&
+                Json.equal(get "scope" raw)(reference "Subject" subject.subject_id))"Effect event identity changed.";
+              let kind=match phase with Typed.Completed->I.Completed|Typed.Failed->I.Failed|Typed.Timed_out->I.Timed_out
+                |Typed.Requested|Typed.Initiated->Diagnostic.fail "policy_staged_lowering_unsupported"
+                    "Only completion, failure and timeout drive stage feedback."in
+              let output=match memo_find key with Some value->value|None->
+                let id=expression_node(I.Event_select kind)in
+                connect(out(List.assoc identity attempts)"events")(out id "events");
+                let value=out id "selected"in memo_add key value;value in output,false)
+        |Finite_integer value->(match Typed.integer_term value with
+            |Typed.Integer_literal _->unsupported_type "truth"|Typed.Integer_read read->unsupported_read read)
+        |Finite_quantity value->(match Typed.quantity_term value with
+            |Typed.Quantity_literal _->unsupported_type "truth"|Typed.Quantity_read read->unsupported_read read)in
+      occurrence location role(if constant then "constant"else "executable")[result];result in
+    let emit role location raw=match finite_program with
+      |None->fst(emit_with_identity role location raw)
+      |Some _->emit_finite role location(snd(List.find(fun(path,_)->String.equal path location)typed_roots))in
     let anchors=ref [] and product_outputs=ref [] and product_targets=ref [] and effect_products=ref [] in
     let product_output effect_id argument=
       if not multi_site then emit "effect_parameter"(path effect_id^"/parameters/0/value")(get "value" argument)
@@ -302,9 +455,16 @@ let lower_metered ~charge ~admitted ~library =
     let commits=List.mapi(fun index(transition:O.transition)->
       let raw=source transition.transition_id and location=path transition.transition_id and prefix="transition/"^string_of_int index in
       let on=emit "predicate"(location^"/on")(get "on" raw)and guard=emit "predicate"(location^"/when")(get "when" raw)in
-      let gate=allocate(prefix^"/gate")(I.Transition_gate{source=transition.source;
-        correlation=(if transition.on.op="effect_event"then I.Retained_attempt else I.Unbound)})in
-      let commit=allocate(prefix^"/commit")(I.Transition_commit{destination=transition.destination;writes=List.length transition.assignments;requests=List.length transition.effects})in
+      let transition_id,source_state,destination,correlation,effects,writes=match typed_declaration transition.transition_id with
+        |Some(Typed.Transition_declaration value)->
+            Typed.Transition.name value.id,value.source,value.destination,
+            (match Typed.event_term value.on with Typed.Effect_event _->I.Retained_attempt|_->I.Unbound),
+            List.map Typed.Effect.name value.effects,Some(List.length value.assignments)
+        |Some _->assert false|None->transition.transition_id,transition.source,transition.destination,
+            (if transition.on.op="effect_event"then I.Retained_attempt else I.Unbound),transition.effects,None in
+      let gate=allocate(prefix^"/gate")(I.Transition_gate{source=source_state;correlation})in
+      let commit=allocate(prefix^"/commit")(I.Transition_commit{destination;
+        writes=(match writes with Some count->count|None->List.length transition.assignments);requests=List.length effects})in
       connect(out machine_bank "snapshot")(out gate "machine");connect on(out gate "on");connect guard(out gate "guard");
       connect(out gate "candidate")(out arbiter("in"^string_of_int index));connect(out arbiter("out"^string_of_int index))(out commit "grant");
       connect(out commit "machine_write")(out machine_bank("write"^string_of_int index));
@@ -331,9 +491,9 @@ let lower_metered ~charge ~admitted ~library =
           let suffix=string_of_int(index 0 ordered)in "request"^suffix,"authorization"^suffix
           else "request","authorization"in
         connect output(out commit "product0");connect(out commit "request0")(out(List.assoc effect_id attempts)request_port);
-        connect guard(out(List.assoc effect_id attempts)authorization_port))transition.effects;
+        connect guard(out(List.assoc effect_id attempts)authorization_port))effects;
       occurrence location "declaration" "executable"([out gate "candidate";out arbiter("out"^string_of_int index)]@outputs commit);
-      anchors:= !anchors@[o["source",s transition.transition_id;"gate",s gate;"arbiter",s arbiter;"lane",Json.int index;"commit",s commit]];commit)behavior.transitions in
+      anchors:= !anchors@[o["source",s transition_id;"gate",s gate;"arbiter",s arbiter;"lane",Json.int index;"commit",s commit]];commit)behavior.transitions in
     let rec obligations location raw=charge(1+String.length location);match raw with
       |Json.Object fields->(match List.assoc_opt "$type" fields with Some(Json.String "Expr")->
           supported(text "op" raw<>"rising" || List.mem(Canonical.encode raw)!edges)"Requirement adds unimplemented edge memory.";

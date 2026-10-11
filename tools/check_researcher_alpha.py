@@ -31,17 +31,21 @@ except ModuleNotFoundError:
     from tools.check_policy_component_material import ComponentBoundary, NATIVE_PATHS, MAX_RECEIPT, MAX_EVIDENCE
     from tools.check_policy_material import archive_receipt
 
-SCHEMA = "biocompiler.researcher_alpha_sdk_development.v0.1"
+SCHEMA = "biocompiler.researcher_alpha_sdk_development.v0.2"
 EXPECTED = "data/researcher_alpha/expected.json"
 OUTPUT = "generated/development-feedback/researcher-alpha-sdk-witness.json"
-ASSETS = ("staged-input.json", "comparison-input.json", "expected.json", "provenance.json", "qualification.json", "negative-controls.json")
+ASSETS = ("staged-input.json", "comparison-input.json", "expected.json", "provenance.json", "qualification.json", "negative-controls.json", "retry_cycle-input.json", "guarded_branch-input.json")
 INPUTS = tuple("data/researcher_alpha/" + name for name in ASSETS) + (
-    "examples/researcher_alpha.py", "src/biocompiler/policy/research_project.py")
-CASE_IDS = ("staged", "comparison")
+    "examples/researcher_alpha.py", "src/biocompiler/policy/research_project.py", "src/biocompiler/policy/finite_build.py")
+LEGACY_CASE_IDS = ("staged", "comparison")
+FINITE_CASE_IDS = ("retry_cycle", "guarded_branch")
+CASE_IDS = LEGACY_CASE_IDS + FINITE_CASE_IDS
 CASE_OBSERVATIONS = ("preflight", "compile-core", "export-verify", "reverify-verify", "paired-publication",
                      "changed-candidate", "changed-fasta", "changed-originals")
-OBSERVATIONS = tuple(case + "-" + name for case in CASE_IDS for name in CASE_OBSERVATIONS) + (
+LEGACY_OBSERVATIONS = tuple(case + "-" + name for case in LEGACY_CASE_IDS for name in CASE_OBSERVATIONS) + (
     "staged-insufficient-capacity", "staged-capacity-no-publication", "staged-completion-without-feedback", "incomplete-reference")
+OBSERVATIONS = LEGACY_OBSERVATIONS + tuple(case + "-" + name for case in FINITE_CASE_IDS
+    for name in ("typed-roundtrip",) + CASE_OBSERVATIONS)
 
 
 def require(condition, message):
@@ -101,7 +105,7 @@ def checked_assets(root: Path, expected_path: Path) -> dict:
     folder = root / "data/researcher_alpha"
     expected = read_json(expected_path, 128 * 1024)
     require(set(expected) == {"schema_version", "acceptance", "cases", "claim_scope", "kind", "method"}
-            and expected["schema_version"] == "biocompiler.researcher_alpha_expected.v0.1"
+            and expected["schema_version"] == "biocompiler.researcher_alpha_expected.v0.2"
             and expected["acceptance"] is False and expected["kind"] == "independently_declared_software_oracle"
             and tuple(row["id"] for row in expected["cases"]) == CASE_IDS,
             "Researcher oracle has an unexpected schema, census or acceptance claim")
@@ -186,7 +190,7 @@ def checked_result(result, case, original, *, exported=False):
 def changed_material_candidate(candidate):
     """Tamper with one emitted base, retaining well-formed candidate-owned roles.
 
-    These two artificial cases have one molecule and no complex, mapping or
+    These artificial cases have one molecule and no complex, mapping or
     amount dependencies. Repinning its roles allows independent material
     checking to reject content against unchanged original assembly authority.
     """
@@ -247,6 +251,14 @@ def completion_request(request):
     return value
 
 
+def typed_roundtrip(original):
+    """Inert identity/scope receipt; a roundtrip does not claim native acceptance."""
+    return {"status": "literal_typed_roundtrip", "build_type": "FiniteMachineBuild",
+            "document_type": "BuildRequest", "originals_sha256": canonical_digest(original),
+            "document_sha256": canonical_digest(original["request"]["implementation_request"]["document"]),
+            "native_status": "not_run", "biological_status": "unassessed"}
+
+
 def check_observations(observations, packet):
     """Audit retained native results against external originals without executing native code.
 
@@ -260,6 +272,9 @@ def check_observations(observations, packet):
     for case in packet["expected"]["cases"]:
         prefix = case["id"] + "-"
         original = packet["inputs"][case["id"]]
+        if case["id"] in FINITE_CASE_IDS:
+            require(observations[prefix + "typed-roundtrip"] == typed_roundtrip(original),
+                    "Retained typed roundtrip changed complete original authority or its scope")
         preflight = observations[prefix + "preflight"]
         require(set(preflight) == {"project_sha256", "route", "source_count", "status", "native_status", "biological_status", "provenance_status"}
                 and preflight["route"] == case["route"] and type(preflight["source_count"]) is int and preflight["source_count"] == 1
@@ -328,14 +343,22 @@ def exercise(packet, example, core, verify, retain, artifacts: Path, *, use_inst
     public_core, public_verify = (None, None) if use_installed_defaults else (core, verify)
     projects, publications = {}, []
     staged_project = None
-    for case in packet["expected"]["cases"]:
+    def exercise_case(case):
+        nonlocal staged_project
         identity, original = case["id"], packet["inputs"][case["id"]]
         prefix = identity + "-"
         project_path, output = artifacts / (identity + "-project.json"), artifacts / (identity + ".zip")
         project = example.prepare(packet["root"] / "data/researcher_alpha" / case["input"], project_path,
             project_id="software.rehearsal." + identity, title="Artificial software rehearsal: " + identity,
-            version="1", reuse_terms="Project-authored software test inputs; repository distribution terms remain separate.")
+            version="1", reuse_terms="Project-authored software test inputs; repository distribution terms remain separate.",
+            **({"typed_finite": True} if identity in FINITE_CASE_IDS else {}))
         require(project.request == original["request"] and project.limits == original["limits"], "Public preparation changed complete caller authority")
+        if identity in FINITE_CASE_IDS:
+            loaded = ResearchProject.load(project_path)
+            require(project.build.to_request() == loaded.build.to_request() == original["request"]
+                    and project.build.to_limits() == loaded.build.to_limits() == original["limits"],
+                    "Typed project dump/load changed complete source or supplied authority")
+            retain(prefix + "typed-roundtrip", typed_roundtrip(original))
         preflight = example.preflight(project_path)
         require(preflight["native_status"] == "not_run" and preflight["biological_status"] == "unassessed"
                 and preflight["status"] == "structurally_ready", "Preflight silently became native acceptance")
@@ -386,6 +409,9 @@ def exercise(packet, example, core, verify, retain, artifacts: Path, *, use_inst
         if identity == "staged":
             staged_project = project
 
+    for case in packet["expected"]["cases"]:
+        if case["id"] in LEGACY_CASE_IDS:
+            exercise_case(case)
     require(staged_project is not None, "Missing staged independent project")
     deficient = deficient_capacity(staged_project.request)
     failed = PolicyComponentMaterialClient(core).compile(deficient, staged_project.limits)
@@ -418,6 +444,9 @@ def exercise(packet, example, core, verify, retain, artifacts: Path, *, use_inst
             "missing": candidates[0]["missing"], "message": str(error), "artifact": "absent"})
     else:
         raise AssertionError("Incomplete reference metadata acquired complete project authority")
+    for case in packet["expected"]["cases"]:
+        if case["id"] in FINITE_CASE_IDS:
+            exercise_case(case)
     return {"projects": projects, "publications": publications}
 
 

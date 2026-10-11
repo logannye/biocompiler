@@ -106,7 +106,7 @@ class WorkflowCliLineageTests(unittest.TestCase):
                 "__init__", "behavior", "catalog", "chassis", "cli", "coordination", "deployment",
                 "effects", "entities", "examples", "handoff", "inspection", "logic", "model", "native",
                 "observations", "patterns", "programs", "requirements", "serialization", "space",
-                "state", "time", "validation", "values", "operational", "implementation", "material", "component_material", "component_selection", "research_project", "approximation", "module_linking", "modules",
+                "state", "time", "validation", "values", "operational", "implementation", "material", "component_material", "component_selection", "research_project", "finite_build", "approximation", "module_linking", "modules",
                 "planning", "quantitative", "quantitative_assurance", "quantitative_composition", "realization_evidence", "refinement", "typed")]]))
         self.assertEqual(receipt["schema_version"], "biocompiler.workflow_cli_source_lineage.v4")
         self.assertEqual(receipt["packaging_metadata_counterpart"], lineage.packaging.counterpart()[1])

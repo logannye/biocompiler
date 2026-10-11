@@ -432,7 +432,7 @@ class PolicyDevelopmentSelectionSDKTests(unittest.TestCase):
         self.assertLess(text.index("tools/migration_inventory.py --check"), text.index("uses: ocaml/setup-ocaml@"))
         self.assertEqual(text.count("PYTHONPATH: src"), 3)
         self.assertIn("path: generated/development-feedback/", text)
-        self.assertIn("timeout-minutes: 45", text)
+        self.assertIn("timeout-minutes: 60", text)
 
 
 class PolicyDevelopmentParallelSDKTests(unittest.TestCase):

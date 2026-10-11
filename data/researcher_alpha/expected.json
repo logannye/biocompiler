@@ -141,6 +141,144 @@
       "sequence": "CGCAUGGCUUAAGGAAAA",
       "sequence_sha256": "3243006c4f905f086aa2b5671b64155005c5b112d848d1df1fb441246d5e05b6",
       "topology": "linear"
+    },
+    {
+      "alphabet": "RNA",
+      "bounded_domain": {
+        "histories": 36,
+        "prefixes_started": 83,
+        "transitions": 82
+      },
+      "cap_accession": "artificial_cap",
+      "cap_namespace": "software_fixture.chemical",
+      "cds": "AUGGCUUAA",
+      "codons": [
+        "AUG",
+        "GCU",
+        "UAA"
+      ],
+      "declared_modifications": [],
+      "declared_tail_length": 4,
+      "difference": "Typed finite-machine source import and exact same supplied RNA contract; no biological realization or wider state-space claim.",
+      "fasta": ">rna_0001 alphabet=RNA\nCCAUGGCUUAAGGAAAA\n",
+      "fasta_sha256": "89d195a729f58d4b30cd2859c0e7f912b012a71334eb282022cfd128139e990d",
+      "genetic_code": 1,
+      "graph": {
+        "links": 6,
+        "nodes": 18,
+        "wires": 31
+      },
+      "id": "retry_cycle",
+      "input": "retry_cycle-input.json",
+      "length": 17,
+      "molecule_id": "payload",
+      "originals_sha256": "8cbb6aab300eb930a1faa668a2123b5c5801122608da4894e49b173a18bfd32f",
+      "protein": "MA*",
+      "regions": [
+        {
+          "end": 2,
+          "id": "[\"control\",\"utr5\"]",
+          "start": 0
+        },
+        {
+          "end": 11,
+          "id": "[\"actuator\",\"cds\"]",
+          "start": 2
+        },
+        {
+          "end": 13,
+          "id": "[\"actuator\",\"utr3\"]",
+          "start": 11
+        },
+        {
+          "end": 17,
+          "id": "[\"actuator\",\"poly_a\"]",
+          "start": 13
+        }
+      ],
+      "roots": [
+        {
+          "id": "leader_A",
+          "sequence": "CC"
+        },
+        {
+          "id": "driver_body",
+          "sequence": "AUGGCUUAAGGAAAA"
+        }
+      ],
+      "route": "component_material",
+      "sequence": "CCAUGGCUUAAGGAAAA",
+      "sequence_sha256": "1a4dc394c08c1e01662262ec009999cf4b1bb74aecf75c0742c87ada2edff125",
+      "topology": "linear"
+    },
+    {
+      "alphabet": "RNA",
+      "bounded_domain": {
+        "histories": 110,
+        "prefixes_started": 277,
+        "transitions": 276
+      },
+      "cap_accession": "artificial_cap",
+      "cap_namespace": "software_fixture.chemical",
+      "cds": "AUGGCUUAA",
+      "codons": [
+        "AUG",
+        "GCU",
+        "UAA"
+      ],
+      "declared_modifications": [],
+      "declared_tail_length": 4,
+      "difference": "Typed finite-machine source import and exact same supplied RNA contract; no biological realization or wider state-space claim.",
+      "fasta": ">rna_0001 alphabet=RNA\nCCAUGGCUUAAGGAAAA\n",
+      "fasta_sha256": "89d195a729f58d4b30cd2859c0e7f912b012a71334eb282022cfd128139e990d",
+      "genetic_code": 1,
+      "graph": {
+        "links": 13,
+        "nodes": 31,
+        "wires": 62
+      },
+      "id": "guarded_branch",
+      "input": "guarded_branch-input.json",
+      "length": 17,
+      "molecule_id": "payload",
+      "originals_sha256": "14c5b9c07f6ba0ab34b565f08dfec8181fdcb0bc3ffe0e99ce5b2778e5e5d7c2",
+      "protein": "MA*",
+      "regions": [
+        {
+          "end": 2,
+          "id": "[\"control\",\"utr5\"]",
+          "start": 0
+        },
+        {
+          "end": 11,
+          "id": "[\"actuator\",\"cds\"]",
+          "start": 2
+        },
+        {
+          "end": 13,
+          "id": "[\"actuator\",\"utr3\"]",
+          "start": 11
+        },
+        {
+          "end": 17,
+          "id": "[\"actuator\",\"poly_a\"]",
+          "start": 13
+        }
+      ],
+      "roots": [
+        {
+          "id": "leader_A",
+          "sequence": "CC"
+        },
+        {
+          "id": "driver_body",
+          "sequence": "AUGGCUUAAGGAAAA"
+        }
+      ],
+      "route": "component_material",
+      "sequence": "CCAUGGCUUAAGGAAAA",
+      "sequence_sha256": "1a4dc394c08c1e01662262ec009999cf4b1bb74aecf75c0742c87ada2edff125",
+      "topology": "linear"
     }
   ],
   "claim_scope": {
@@ -154,5 +292,5 @@
   },
   "kind": "independently_declared_software_oracle",
   "method": "Exact spelling, frame-zero codons and half-open coordinates were reviewed directly from original root literals; no compiler or Verify result supplies these expectations. Behavioral counts are independently declared finite-domain expectations, not newly executed evidence.",
-  "schema_version": "biocompiler.researcher_alpha_expected.v0.1"
+  "schema_version": "biocompiler.researcher_alpha_expected.v0.2"
 }

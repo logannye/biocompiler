@@ -19,6 +19,14 @@ The included examples are artificial engineering references. Their 17-base and
 See [reference qualification](researcher-alpha-reference-qualification.md) for
 their exact scope and the remaining real researcher project requirements.
 
+The source candidate also includes `retry_cycle-input.json` and
+`guarded_branch-input.json`. These two artificial finite-machine examples use
+the [typed build facade](policy-finite-build-v0.1.md) and the same independent
+project compile/export/reverification flow. The new 38-observation hosted
+campaign retains the original 20 checks and adds 18 finite-path checks; this
+source description does not claim the new revision's hosted or installed gates
+have passed.
+
 ## Installation and independent workspace
 
 The alpha handoff must supply:

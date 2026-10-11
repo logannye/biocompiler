@@ -1,5 +1,11 @@
 # Next semantic compiler milestones
 
+The subsequent user-approved work list is recorded in
+[Next compiler milestones, 2026-10-10](typed-compiler-next-milestones-2026-10-10.md).
+It begins with one typed end-to-end compiler path. The entries below preserve
+the preceding implementation history; their preparation-time validation notes
+are superseded by the exact merged-main evidence in that new work list.
+
 Recorded from the user's approved next-work list on 2026-10-09. This follows the
 five implementation increments at `0c0b79d151718b7efc6508dc35ea93dc4d023443` on
 `codex/dev-policy/semantic-foundation-v2`. Those increments passed their recorded local checks. The final quantitative

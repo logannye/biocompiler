@@ -106,6 +106,14 @@ val quantity_term : quantity_expression -> quantity_term
 val quantity_unit : quantity_expression -> Json.t
 val event_term : event_expression -> event_term
 
+(** Exact original expression bodies retained for occurrence identity and
+    profile metadata checks. These views do not reconstruct or execute terms. *)
+val truth_source : truth_expression -> Json.t
+val integer_source : integer_expression -> Json.t
+val text_source : text_expression -> Json.t
+val quantity_source : quantity_expression -> Json.t
+val event_source : event_expression -> Json.t
+
 (** Reconstruct executable fields from closed typed terms and resolved symbols,
     retaining exact source metadata and literal quantity spelling. This codec
     grants no source correspondence or candidate acceptance. *)

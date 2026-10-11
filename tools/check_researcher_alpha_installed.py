@@ -30,7 +30,7 @@ except ModuleNotFoundError:
     from tools.check_policy_material import archive_receipt
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA = "biocompiler.researcher_alpha_installed_campaign.v0.1"
+SCHEMA = "biocompiler.researcher_alpha_installed_campaign.v0.2"
 SCOPE = "installed_public_research_workflow_under_supplied_artificial_contracts"
 EXPECTED = researcher.EXPECTED
 RECEIPT = "researcher-alpha.json"
@@ -54,7 +54,7 @@ def check_origins(origins, package, modules):
     require(type(package) is str and Path(package).is_absolute() and ".." not in Path(package).parts,
             "Missing installed researcher package origin")
     required = component.REQUIRED_MODULES | {"biocompiler.core_distribution", "biocompiler.core_policy_component_selection",
-                "biocompiler.policy.component_selection", "biocompiler.policy.research_project"}
+                "biocompiler.policy.component_selection", "biocompiler.policy.research_project", "biocompiler.policy.finite_build"}
     require(type(origins) is dict and required <= set(origins), "Missing installed researcher transport origins")
     for name, origin in origins.items():
         require(researcher.ResearcherBoundary.allowed(name), "Forbidden Python semantic module in researcher campaign")

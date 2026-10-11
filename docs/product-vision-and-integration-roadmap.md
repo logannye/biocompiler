@@ -251,6 +251,13 @@ Adding authoring vocabulary alone does not complete a profile.
 
 ## Immediate planning priorities
 
+The 2026-10-10 review and user-approved next four milestones are tracked in
+[Next compiler milestones](typed-compiler-next-milestones-2026-10-10.md): a typed
+end-to-end path, behavioral composition, one qualified real component and its
+model-to-policy relation, and selection between qualified implementations.
+This is the current work sequence; the earlier priorities below retain their
+original rationale.
+
 User clarification, 2026-10-08: the current implementation priority is the core
 compiler architecture for correctness and compositionality. Standalone usefulness
 and eventual laboratory integration remain the product direction; they do not

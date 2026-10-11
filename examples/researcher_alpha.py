@@ -19,7 +19,7 @@ from biocompiler.core_client import CoreClient, decode_json
 from biocompiler.policy.research_project import MAX_PROJECT_BYTES, ResearchProject, ResearchProjectRejected, SourceRecord
 
 
-def prepare(input_path, output, *, project_id, title, version, reuse_terms):
+def prepare(input_path, output, *, project_id, title, version, reuse_terms, typed_finite=False):
     source, destination = Path(input_path), Path(output)
     if source.is_symlink() or not source.is_file():
         raise ValueError("Input must be a regular, non-symlink JSON file")
@@ -38,13 +38,20 @@ def prepare(input_path, output, *, project_id, title, version, reuse_terms):
     original = decode_json(raw)
     if type(original) is not dict or set(original) != {"request", "limits"}:
         raise ValueError("Input requires exactly the complete original request and limits")
-    project = ResearchProject.from_request(project_id=project_id, title=title,
-        request=original["request"], limits=original["limits"], sources=[SourceRecord(
+    if type(typed_finite) is not bool:
+        raise ValueError("Typed finite selection must be an explicit Boolean")
+    metadata = dict(project_id=project_id, title=title, sources=[SourceRecord(
             id="original-input", locator=source.name, version=version,
             sha256=hashlib.sha256(raw).hexdigest(), role="caller_supplied_complete_contract",
             reuse_terms=reuse_terms)], assumptions=[
                 "Supplied implementation and material contracts are premises; biological validity is unassessed.",
                 "Acceptance is limited to the exact supported native profile and supplied bounded domain."])
+    if typed_finite:
+        from biocompiler.policy.finite_build import FiniteMachineBuild
+        build = FiniteMachineBuild.from_request(original["request"], limits=original["limits"])
+        project = ResearchProject.from_build(build=build, **metadata)
+    else:
+        project = ResearchProject.from_request(request=original["request"], limits=original["limits"], **metadata)
     project.dump(destination)
     return project
 
@@ -77,6 +84,7 @@ def main(argv=None):
     create.add_argument("output", type=Path)
     for field in ("project-id", "title", "version", "reuse-terms"):
         create.add_argument("--" + field, required=True)
+    create.add_argument("--typed-finite", action="store_true", help="Import through the typed finite-machine build facade")
     inspect = commands.add_parser("preflight", help="Check transport structure without native execution")
     inspect.add_argument("project", type=Path)
     build = commands.add_parser("compile", help="Compile, independently Verify, then publish the exact pair")
@@ -93,7 +101,7 @@ def main(argv=None):
     try:
         if args.command == "prepare":
             result = asdict(prepare(args.input, args.output, project_id=args.project_id,
-                title=args.title, version=args.version, reuse_terms=args.reuse_terms).preflight())
+                title=args.title, version=args.version, reuse_terms=args.reuse_terms, typed_finite=args.typed_finite).preflight())
         elif args.command == "preflight":
             result = preflight(args.project)
         elif args.command == "compile":

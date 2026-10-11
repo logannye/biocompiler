@@ -24,6 +24,7 @@ from biocompiler import core_policy_component_material as component
 from biocompiler import core_policy_component_selection as selection
 from biocompiler.core_policy_material import PolicyMaterialResult
 from . import component_material, component_selection
+from .finite_build import FiniteMachineBuild
 from .material import _destination, _verify_staged
 
 SCHEMA = "biocompiler.research_project.v0.1"
@@ -109,7 +110,8 @@ def _route(request: JsonValue) -> Route:
     row = cast(dict[str, JsonValue], request)
     if row.get("schema_version") in (component.REQUEST_SCHEMA, component.INSTANCE_REQUEST_SCHEMA,
                                    component.PREREQUISITE_REQUEST_SCHEMA, component.TWO_OBSERVATION_REQUEST_SCHEMA,
-                                   component.MULTI_MEMBER_REQUEST_SCHEMA, component.GROUNDED_HELPER_REQUEST_SCHEMA):
+                                   component.MULTI_MEMBER_REQUEST_SCHEMA, component.GROUNDED_HELPER_REQUEST_SCHEMA,
+                                   component.FINITE_MACHINE_REQUEST_SCHEMA):
         component._original(row)
         return "component_material"
     if row.get("schema_version") == selection.REQUEST_SCHEMA:
@@ -127,6 +129,9 @@ def _project(value: JsonValue) -> dict[str, JsonValue]:
     _text(row["title"], "Project title")
     _require(row["route"] == _route(row["request"]), "Project route differs from its complete original request")
     _require(type(row["limits"]) is dict and bool(row["limits"]), "Explicit original execution limits are required")
+    request = cast(dict[str, JsonValue], row["request"])
+    if request.get("profile") == component.FINITE_MACHINE_REQUEST_PROFILE:
+        FiniteMachineBuild.from_request(request, limits=row["limits"])
     sources = row["sources"]
     _require(type(sources) is list and 1 <= len(sources) <= 128, "One to 128 independent source records are required")
     ids: set[str] = set()
@@ -202,6 +207,14 @@ class ResearchProject:
             "sources": cast(JsonValue, [asdict(source) for source in sources]), "assumptions": list(assumptions)})
 
     @classmethod
+    def from_build(cls, *, project_id: str, title: str, build: FiniteMachineBuild,
+                   sources: Sequence[SourceRecord], assumptions: Sequence[str]) -> ResearchProject:
+        """Retain a complete typed finite build without introducing or rewriting authority."""
+        _require(type(build) is FiniteMachineBuild, "Research authoring requires an explicit FiniteMachineBuild")
+        return cls.from_request(project_id=project_id, title=title, request=build.to_request(),
+            limits=build.to_limits(), sources=sources, assumptions=assumptions)
+
+    @classmethod
     def from_data(cls, value: JsonValue) -> ResearchProject:
         """Freeze an inert versioned project; this does not run semantic admission."""
         return cls(encode_json(value, limit=MAX_PROJECT_BYTES))
@@ -224,6 +237,17 @@ class ResearchProject:
     @property
     def limits(self) -> dict[str, JsonValue]:
         return cast(dict[str, JsonValue], self.data["limits"])
+
+    @property
+    def build(self) -> FiniteMachineBuild:
+        """Reopen the supported finite family's complete typed specification.
+
+        Other existing project routes keep their original JSON interface. No
+        conversion to a finite-machine profile or native admission is implied.
+        """
+        _require(self.request.get("profile") == component.FINITE_MACHINE_REQUEST_PROFILE,
+                 "This project does not use the typed finite-machine build profile")
+        return FiniteMachineBuild.from_request(self.request, limits=self.limits)
 
     @property
     def digest(self) -> str:
