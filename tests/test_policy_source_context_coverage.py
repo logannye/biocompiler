@@ -50,7 +50,7 @@ class PolicySourceContextCoverageTests(unittest.TestCase):
     def test_current_bounded_slice_leaves_full_census_and_semantics_open(self):
         result = coverage.check()
         self.assertEqual((result["rules"], result["contexts"], result["sources"]), (40, 43, 15))
-        self.assertEqual((result["syntax_rows"], result["families"]), (612, 62))
+        self.assertEqual((result["syntax_rows"], result["families"]), (614, 62))
         self.assertEqual(result["status"], "source_slice_current")
         self.assertEqual(result["whole_source_census"], "open")
         self.assertEqual(result["whole_stack_census"], "open")
@@ -58,13 +58,47 @@ class PolicySourceContextCoverageTests(unittest.TestCase):
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["native_execution"], "not_performed")
 
+    def test_new_expression_syntax_is_present_but_outside_existing_source_slice(self):
+        entries = coverage.decode(coverage.read(coverage.ROOT, coverage.SYNTAX_LEDGER))["entries"]
+        syntax_ids = {row["id"] for row in entries}
+        expression_ids = {
+            "constant:EXPRESSION_SOURCE_PROFILE",
+            'literal:AssuranceRequest.horizon="not_applicable"',
+        }
+        self.assertTrue(expression_ids <= syntax_ids)
+        mapped_ids = {syntax_id for group in ("rules", "contexts")
+                      for row in self.original[group] for syntax_id in row["syntax_ids"]}
+        self.assertTrue(expression_ids.isdisjoint(mapped_ids))
+        for group in ("rules", "contexts"):
+            for syntax_id in expression_ids:
+                with self.subTest(group=group, syntax_id=syntax_id):
+                    self.ledger = deepcopy(self.original)
+                    self.reject(lambda value: value[group][0]["syntax_ids"].append(syntax_id),
+                                "Unreviewed source predicates/contexts")
+
+    def pre_expression_projection(self):
+        projected = deepcopy(self.original)
+        context = next(row for row in projected["contexts"]
+                       if row["id"] == "source.context.duration.assurance_horizon")
+        owner = next(row for row in context["owners"]
+                     if row["path"] == "src/biocompiler/policy/validation.py")
+        self.assertEqual((owner["first_line"], owner["last_line"], owner["python_calls"]),
+                         (736, 736, ["L736C12"]))
+        self.assertEqual(owner["region_sha256"], "92db7d5476b0e3d28b4fdb665c78db00a73a997662d79e4c84f77a9b69db4af6")
+        owner.update(first_line=722, last_line=722, python_calls=["L722C12"])
+        return projected
+
+    def test_expression_reanchor_preserves_all_previous_reviewed_declarations(self):
+        self.assertEqual(coverage.digest(coverage.canonical(coverage.declarations(self.pre_expression_projection()))),
+                         "4ddf3f0558a8e202891e175a576736f22483ed3519f7b9d4342bc4b8ece2dbde")
+
     def test_metering_reanchor_preserves_all_previous_reviewed_declarations(self):
         # Only file dependencies, review metadata and native line locations
         # changed. Restore those exact reviewed differences, then require the
         # original digest of all predicates, contexts, provenance and open gaps.
         # No source hash, current helper or regenerated expected result supplies
         # the historical expected value.
-        projected = deepcopy(self.original)
+        projected = self.pre_expression_projection()
         added = {"core/lib/checker/policy_generation_meter.ml",
                  "core/lib/checker/policy_generation_meter.mli"}
         dependencies = [row for row in projected["sources"] if row["path"] in added]
@@ -285,7 +319,7 @@ class PolicySourceContextCoverageTests(unittest.TestCase):
             value = json.loads(original)
             value[key].pop()
             path.write_text(json.dumps(value))
-            with self.assertRaisesRegex(coverage.CoverageError, "Changed (612 syntax|62 family) census"):
+            with self.assertRaisesRegex(coverage.CoverageError, "Changed (614 syntax|62 family) census"):
                 coverage.check(root, self.ledger)
             path.write_bytes(original)
 

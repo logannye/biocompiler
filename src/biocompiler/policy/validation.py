@@ -701,7 +701,21 @@ class _Checker:
     def request(self) -> None:
         request = self.document
         assert isinstance(request, m.BuildRequest)
-        self.require(request.profile == m.PROFILE, "unsupported_profile", "Unsupported authoring request profile.", "/profile")
+        expression_source = request.profile == m.EXPRESSION_SOURCE_PROFILE
+        self.require(request.profile in (m.PROFILE, m.EXPRESSION_SOURCE_PROFILE), "unsupported_profile", "Unsupported authoring request profile.", "/profile")
+        if expression_source:
+            self.features.add("profile:" + m.EXPRESSION_SOURCE_PROFILE)
+            self.features.add("assurance:static_not_applicable")
+            self.obligations.add("expression_material_correspondence")
+            for index, item in enumerate(self.program.declarations):
+                allowed = isinstance(item, (m.Role, m.Parameter, m.Requirement))
+                self.require(allowed, "expression_source_dynamic", "Static expression source does not admit runtime declarations.", f"/program/declarations/{index}", item.id)
+                if isinstance(item, m.Requirement):
+                    self.require(item.kind == "objective" and all(getattr(item, field) is None for field in
+                        ("condition", "response", "trigger", "clock", "deadline", "lower", "upper", "horizon"))
+                        and not item.assumptions, "expression_source_requirement", "Static source admits only non-temporal objectives; native material checking remains required.", f"/program/declarations/{index}", item.id)
+                if isinstance(item, m.Parameter):
+                    self.require(item.selection == "fixed", "expression_source_parameter", "Static source parameters must be fixed.", f"/program/declarations/{index}", item.id)
         roles = {item.id for item in self.program.declarations if isinstance(item, m.Role)}
         supplied = [binding.role.id for binding in request.deployment.bindings]
         self.require(set(supplied) == roles and len(supplied) == len(set(supplied)), "deployment_role_coverage", "Deployment must bind every role exactly once.", "/deployment/bindings")

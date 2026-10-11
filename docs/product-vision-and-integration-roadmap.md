@@ -1,6 +1,7 @@
 # Biocompiler product vision and integration roadmap
 
-Product direction established 2026-10-08.
+Product direction established 2026-10-08; CAR-first delivery order updated
+2026-10-10 in the [CAR MVP and expansion roadmap](car-mvp-and-expansion-roadmap-2026-10-10.md).
 
 Biocompiler should be useful as a standalone tool for researchers and drug
 developers now, and become a dependable compilation layer in AI-directed,
@@ -255,8 +256,12 @@ The 2026-10-10 review and user-approved next four milestones are tracked in
 [Next compiler milestones](typed-compiler-next-milestones-2026-10-10.md): a typed
 end-to-end path, behavioral composition, one qualified real component and its
 model-to-policy relation, and selection between qualified implementations.
-This is the current work sequence; the earlier priorities below retain their
-original rationale.
+The subsequent user-approved [CAR MVP delivery order](car-mvp-and-expansion-roadmap-2026-10-10.md)
+now sequences that work around one shipped end-to-end CAR research workflow.
+Complete the in-flight typed-path closeout, qualify the first complete CAR
+implementation/material pack, close its specific compiler and usability gaps,
+and ship before broader composition and selection. The earlier priorities below
+retain their rationale without making horizontal expansion a launch prerequisite.
 
 User clarification, 2026-10-08: the current implementation priority is the core
 compiler architecture for correctness and compositionality. Standalone usefulness

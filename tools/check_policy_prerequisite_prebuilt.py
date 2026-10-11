@@ -65,7 +65,10 @@ def owned_slot(directory, identity, candidate, sdk_entries, stamp, native, args)
     """Bind the installed environment to supplied wheels, not a child's hashes."""
     baseline = read(directory / "prebuilt.json")
     require(base.prior_attempt(baseline, identity) and baseline.get("status") == "pass"
-            and baseline.get("schema_version") == base.RESEARCHER_SCHEMA,
+            and ((baseline.get("schema_version") == base.RESEARCHER_SCHEMA
+                  and baseline.get("claim") == base.RESEARCHER_CLAIM)
+                 or (baseline.get("schema_version") == base.CAR_SCHEMA
+                     and baseline.get("claim") == base.CAR_CLAIM)),
             "Prerequisite integration requires the preserved researcher prebuilt campaign")
     slot = base.consumer.slot(baseline)
     require(slot in campaign.component.SLOTS and slot[:2] in native, "Foreign prerequisite installed runtime")

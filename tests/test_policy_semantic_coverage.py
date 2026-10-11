@@ -109,12 +109,12 @@ class PolicySemanticCoverageTests(unittest.TestCase):
         self.assertEqual(report['status'], 'inventory_current')
         self.assertEqual(report['semantic_acceptance'], 'not_established')
         self.assertEqual(report['counts'], {'alias': 2, 'alternative': 18, 'argument': 3,
-                         'constant': 5, 'field': 306, 'literal': 199, 'operator': 33, 'record': 46})
-        self.assertEqual(report['total_distinctions'], 612)
-        self.assertEqual(report['without_dedicated_witnesses'], 612)
+                         'constant': 6, 'field': 306, 'literal': 200, 'operator': 33, 'record': 46})
+        self.assertEqual(report['total_distinctions'], 614)
+        self.assertEqual(report['without_dedicated_witnesses'], 614)
         self.assertEqual(set(report['stage_counts']), set(STAGES))
         for stage in ('implementation', 'material', 'export'):
-            self.assertEqual(report['stage_counts'][stage], {'unsupported': 612})
+            self.assertEqual(report['stage_counts'][stage], {'unsupported': 614})
         self.assertIn('contextual_rule_matrix', {gap['id'] for gap in report['known_gaps']})
         by_id = {row['id']: row for row in self.ledger['entries']}
         for identity in ('record:CompilationSubmission', 'field:Deployment.delivery',
@@ -122,6 +122,27 @@ class PolicySemanticCoverageTests(unittest.TestCase):
                          'literal:Effect.event.outcome="ceased"', 'literal:Message.event.phase="expired"',
                          'alternative:Declaration.SpatialScope', 'alternative:Document.BuildRequest'):
             self.assertIn(identity, by_id)
+
+    def test_expression_root_and_timeless_sentinel_do_not_widen_operational_scope(self):
+        entries = {row['id']: row for row in self.ledger['entries']}
+        identities = ('constant:EXPRESSION_SOURCE_PROFILE',
+                      'literal:AssuranceRequest.horizon="not_applicable"')
+        self.assertEqual(self.ledger['source_profile'], 'biocompiler.policy.v0.1')
+        self.assertEqual(self.ledger['operational_profile'], 'biocompiler.policy_operational.v0.1')
+        for identity in identities:
+            with self.subTest(identity=identity):
+                disposition = self.ledger['dispositions'][entries[identity]['disposition']]
+                self.assertIn('biocompiler.policy_expression_source.v0.1', disposition['condition'])
+                self.assertIn('structural assurance', disposition['condition'])
+                self.assertIn('old root and default native ingress reject', disposition['condition'])
+                self.assertFalse(disposition['witnesses']['dedicated'])
+                for stage in ('operational', 'implementation', 'material', 'export'):
+                    self.assertEqual(disposition['stages'][stage], 'unsupported')
+                missing = copy.deepcopy(self.ledger)
+                missing['entries'] = [row for row in missing['entries'] if row['id'] != identity]
+                with self.assertRaisesRegex(CoverageError, 'Coverage inventory differs: missing='):
+                    validate(self.root, missing)
+        self.assertEqual(entries['field:AssuranceRequest.horizon']['disposition'], 'deployment_retained')
 
     def test_unsupported_authoring_is_not_promoted_to_execution(self):
         entries = {row['id']: row for row in self.ledger['entries']}
@@ -141,7 +162,7 @@ class PolicySemanticCoverageTests(unittest.TestCase):
         init.write_text('raise RuntimeError("Policy must not be imported")\n', encoding='utf-8')
         with (self.root / MODEL).open('a', encoding='utf-8') as handle:
             handle.write('\nraise RuntimeError("Model must not execute")\n')
-        self.assertEqual(len(discover(self.root)), 612)
+        self.assertEqual(len(discover(self.root)), 614)
         self.assertEqual(before, {name for name in sys.modules if name.startswith('biocompiler')})
 
     def test_new_record_in_model_requires_classification(self):
@@ -178,7 +199,7 @@ class PolicySemanticCoverageTests(unittest.TestCase):
             'from . import nonrecords as local\nfrom .nonrecords import Observation as Parent\n'
             'Alias = Parent\nclass Imported(Alias): pass\n'
             'class Qualified(local.Observation[int]): pass\n', encoding='utf-8')
-        self.assertEqual(len(discover(self.root)), 612)
+        self.assertEqual(len(discover(self.root)), 614)
 
     def test_real_record_with_an_existing_name_still_rejects_collision(self):
         (self.root / SOURCE_ROOT / 'new_records.py').write_text(
@@ -351,7 +372,7 @@ class PolicySemanticCoverageTests(unittest.TestCase):
         output = io.StringIO()
         with redirect_stdout(output):
             self.assertEqual(main(['--root', str(self.root)]), 0)
-        self.assertIn('612 distinctions', output.getvalue())
+        self.assertIn('614 distinctions', output.getvalue())
         self.assertIn('Semantic acceptance not established', output.getvalue())
         self.source_edit('column: int = 0', 'column: int = 1')
         error = io.StringIO()

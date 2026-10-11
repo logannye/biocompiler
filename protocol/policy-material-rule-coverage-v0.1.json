@@ -209,6 +209,92 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/checker/policy_expression_material_check.ml",
+      "sha256": "39cd6ca68825dce59bfd6373b1d98a16d6f656f52870dfcd1c97ac5c349ee41b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_expression_material_check.v0.1": 1,
+          "biocompiler.policy_expression_material_assessment.v0.1": 1,
+          "biocompiler.policy_expression_material_candidate.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/checker/policy_expression_material_check.mli",
+      "sha256": "ef708de14cf5fe73f75e6d202371f0f147001facf2edbfbe59b1b72b9248a479",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/checker/policy_expression_source_admission.ml",
+      "sha256": "fabf1e45af490bbf37e3426f1b7b6d7f18940b73c171b07b289670afa34c30c8",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 6,
+          "Diagnostic.require": 4,
+          "unsupported": 24
+        },
+        "profile_literals": {
+          "biocompiler.policy_expression_source_admission.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/checker/policy_expression_source_admission.mli",
+      "sha256": "e79aef33e476145b54f617dace61b07abc82ef3363996dde32fc675202d5e43e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/checker/policy_expression_structure_check.ml",
+      "sha256": "d7770883412c2140950944a01f3970b636d91bf8cab88bd52cd52cc0f415d2f0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 5,
+          "supported": 14,
+          "verify": 22
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_expression_structure_check.v0.1": 1,
+          "biocompiler.policy_expression_nominal_structure.v0.1": 1,
+          "biocompiler.policy_expression_structure_assessment.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/checker/policy_expression_structure_check.mli",
+      "sha256": "01419669868b490f4be852d5731cd1d0eb4a9765a97219cb21547dcf1efbd5ab",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/checker/policy_generation_meter.ml",
       "disposition": "dependency",
       "reason": "Shared count-only generation accounting dependency; independent material rule meaning and witnesses are retained.",
@@ -1055,16 +1141,17 @@
     },
     {
       "path": "core/lib/domain/policy_document.ml",
-      "sha256": "db2860b602d63df29d1a8240417f8632c37693b797f9561e00395bd1fd2f95dc",
+      "sha256": "9b2adf9ca624942d1557e91720bac7439e0b511c1e54fe47447df77ccbeb138e",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 3,
           "Diagnostic.require": 4,
-          "require": 14
+          "require": 15
         },
         "profile_literals": {
-          "biocompiler.policy.v0.1": 1
+          "biocompiler.policy.v0.1": 1,
+          "biocompiler.policy_expression_source.v0.1": 1
         }
       },
       "disposition": "dependency",
@@ -1072,7 +1159,7 @@
     },
     {
       "path": "core/lib/domain/policy_document.mli",
-      "sha256": "61ce81ca248bdec1256e1ed4e7aaf0ca410853b58fa7a28dbe50c0dbd3fade4f",
+      "sha256": "fa2878d5da0f7f1c84531dd8828dd15f91a9155e945facc66157967ea3f800cf",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1080,6 +1167,39 @@
       },
       "disposition": "dependency",
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_expression_material.ml",
+      "sha256": "03148bb7218a9dae74114c6fd8eb41a8810db18385aad6968508e843b15a2f5c",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 2,
+          "require": 17
+        },
+        "profile_literals": {
+          "biocompiler.expression.encode.v1": 1,
+          "biocompiler.expression.nominal_translation.v1": 1,
+          "biocompiler.expression.objective.v1": 1,
+          "biocompiler.policy_expression_contract.v0.1": 1,
+          "biocompiler.policy_expression_material_request.v0.1": 1,
+          "biocompiler.policy_expression_material_resources.v0.1": 1,
+          "biocompiler.policy_single_expression_mrna.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_expression_material.mli",
+      "sha256": "df83463271198e9da6770821795762655fe9e216953933e700f2b90a31a4ef81",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
     },
     {
       "path": "core/lib/domain/policy_helper_material.ml",
@@ -1797,6 +1917,28 @@
       }
     },
     {
+      "path": "core/lib/producer_service/policy_expression_material_producer.ml",
+      "sha256": "36b2a0d8d7194c6d5d64e0deddd745639754e4b8e44444c9f552a10986d441a4",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/producer_service/policy_expression_material_producer.mli",
+      "sha256": "2446a69dbb0e20e84beb5423a7d58866791853111049546de375f7f6dd479ac1",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/producer_service/policy_implementation_producer.ml",
       "sha256": "bf31b5db2125fd03c320bc88e40a164263269f3c82dabc3167c68051e3636c44",
       "census": {
@@ -1941,7 +2083,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "e011a22c44b2a958973f77f97589c220f7623a1946c0875dfc01914fe8c41592",
+      "sha256": "ff7dcb613c41a21777cb8afb297c859941f6ccbac98871b69e604aca29cb7de7",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -2690,6 +2832,37 @@
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
+      "path": "core/lib/service/policy_expression_material_service.ml",
+      "sha256": "08566f72e8188f0e55718dc02aef0c022722969c9caf11a437331f8737ecaa81",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 6
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_expression_material.v1": 1,
+          "biocompiler.ocaml.policy_expression_material.v0.1": 1,
+          "biocompiler.policy_expression_material_candidate.v0.1": 1,
+          "biocompiler.policy_expression_mrna_export.v0.1": 1,
+          "biocompiler.policy_expression_mrna_manifest.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_expression_material_service.mli",
+      "sha256": "41d0e4b12eadcf2a223a3b3a3503cc3c129a29b5c4de98617dc8c7636a6bc719",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/service/policy_implementation_service.ml",
       "sha256": "a16f285d4a485b557d91d6fd687f45b31ba4de73dd9d53b657ad5dbbbaf7e92c",
       "census": {
@@ -2905,7 +3078,7 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "98c26122b6f53427e9e975f179167d07a90554d8d2c24550f2c0f7ed2e056b90",
+      "sha256": "50c2c03f5920c405efe0c0d3785424cdf2bf108b72431f217af861aadeca00d9",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -3226,6 +3399,42 @@
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
+      "path": "src/biocompiler/core_policy_expression_material.py",
+      "sha256": "319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 17,
+          "Raise": 1
+        },
+        "profile_literals": {
+          "biocompiler.component_identity.v0.1": 1,
+          "biocompiler.construction_content_assessment.v0.1": 1,
+          "biocompiler.construction_content_authority.v0.1": 1,
+          "biocompiler.core.policy_expression_material.v1": 1,
+          "biocompiler.ocaml.construction_content_check.v0.1": 1,
+          "biocompiler.ocaml.policy_expression_material.v0.1": 1,
+          "biocompiler.ocaml.policy_expression_material_check.v0.1": 1,
+          "biocompiler.ocaml.policy_expression_structure_check.v0.1": 1,
+          "biocompiler.policy_expression_contract.v0.1": 1,
+          "biocompiler.policy_expression_material_assessment.v0.1": 1,
+          "biocompiler.policy_expression_material_candidate.v0.1": 1,
+          "biocompiler.policy_expression_material_request.v0.1": 1,
+          "biocompiler.policy_expression_material_resources.v0.1": 1,
+          "biocompiler.policy_expression_mrna_export.v0.1": 1,
+          "biocompiler.policy_expression_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_expression_nominal_structure.v0.1": 1,
+          "biocompiler.policy_expression_source.v0.1": 1,
+          "biocompiler.policy_expression_source_admission.v0.1": 1,
+          "biocompiler.policy_expression_structure_assessment.v0.1": 1,
+          "biocompiler.policy_single_expression_mrna.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+    },
+    {
       "path": "src/biocompiler/core_policy_implementation.py",
       "disposition": "dependency",
       "reason": "Shared source-authoring or immutable implementation transport dependency; stage-specific material admission is checked separately.",
@@ -3508,6 +3717,21 @@
       },
       "disposition": "outside_route",
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/policy/expression_material.py",
+      "sha256": "2fecd744564db34e9629f981ff619d9f7aa7bef6cadf245d7e5446bc876621fe",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 3,
+          "FunctionDef": 13,
+          "Raise": 1
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
     },
     {
       "path": "src/biocompiler/policy/implementation.py",
@@ -3797,7 +4021,7 @@
     },
     {
       "path": "core/test/test_policy_mrna_structure.ml",
-      "sha256": "ce3160beb6b2f852160b341c3b0b675fddf3e24da1aeb125e3d17a073da0a7f4"
+      "sha256": "5969407ed52afacd01671b17803f7d2a90512e1bcea2bfbd9249f9b583709913"
     },
     {
       "path": "core/test/test_policy_operating_domain.ml",

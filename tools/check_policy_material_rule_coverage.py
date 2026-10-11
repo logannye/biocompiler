@@ -64,6 +64,35 @@ EXTRA_SOURCES = (
     "src/biocompiler/core_distribution.py",
     "src/biocompiler/_policy_coupled_wire.py",
 )
+# This separate static-expression route neither replaces the whole-kernel
+# profile nor upgrades its pre-existing witness meanings or gaps.
+EXPRESSION_ROUTE_SOURCES = tuple(sorted([
+    *[f"core/lib/{directory}/{name}.{suffix}" for directory, name in (
+        ("domain", "policy_expression_material"), ("checker", "policy_expression_source_admission"),
+        ("checker", "policy_expression_structure_check"), ("checker", "policy_expression_material_check"),
+        ("service", "policy_expression_material_service"), ("producer_service", "policy_expression_material_producer"),
+    ) for suffix in ("ml", "mli")],
+    "src/biocompiler/core_policy_expression_material.py", "src/biocompiler/policy/expression_material.py",
+]))
+EXPRESSION_SOURCES = tuple(sorted([*EXPRESSION_ROUTE_SOURCES,
+    "core/lib/domain/policy_document.ml", "core/lib/domain/policy_document.mli",
+    "core/lib/checker/policy_check.ml", "core/lib/checker/policy_check.mli",
+    "core/lib/checker/policy_mrna_structure_check.ml", "core/lib/checker/policy_mrna_structure_check.mli",
+    "core/lib/service/service.ml", "core/lib/producer_service/producer_service.ml",
+    "src/biocompiler/policy/model.py", "src/biocompiler/policy/serialization.py",
+    "src/biocompiler/policy/material.py", "src/biocompiler/policy/research_project.py",
+    "src/biocompiler/policy/project_sources.py", "src/biocompiler/core_client.py",
+]))
+EXPRESSION_WITNESSES = tuple(sorted([
+    "core/test/test_policy_expression_source_admission.ml", "core/test/test_policy_mrna_structure.ml",
+    "core/test/data/policy_material_request_v01.json", "core/test/data/policy_mrna_structure_v01.json",
+    "tests/test_core_policy_expression_material.py", "tests/test_policy_project_sources.py",
+]))
+EXPRESSION_RULE_IDS = ("expression.source", "expression.project_sources", "expression.nominal_structure",
+                       "expression.conjunction", "expression.production", "expression.publication", "expression.python")
+EXPRESSION_LEDGER = "protocol/policy-expression-rule-coverage-v0.1.json"
+EXPRESSION_REASON = "Separate static expression and nominal parent-base material profile; no original whole-kernel or legacy ordinary-CDS acceptance. Source-only controls are indexed in policy-expression-rule-coverage-v0.1.json."
+EXTRA_SOURCES += tuple(path for path in EXPRESSION_ROUTE_SOURCES if path.endswith(".py"))
 # Closed exceptions concern separate public routes; they are still fully pinned.
 ROUTE_EXCEPTIONS = {
     f"core/lib/{directory}/{name}.{suffix}": "Separate source/operational public route; no complete material admission authority."
@@ -72,6 +101,7 @@ ROUTE_EXCEPTIONS = {
         ("producer_service", "policy_operational_producer"),
     ) for suffix in ("ml", "mli")
 }
+ROUTE_EXCEPTIONS.update({path: EXPRESSION_REASON for path in EXPRESSION_ROUTE_SOURCES})
 
 
 # Components form a separately negotiated composition route, not the original
@@ -467,6 +497,8 @@ BEFORE_REFINEMENT_METADATA_SHA256 = "7f2f1b2ae98833e27d959117dfbc2d83de612e67021
 BEFORE_REFINEMENT_COMPONENT_METADATA_SHA256 = "7b563303ab25cec0d9c394e9113914da079155d9ce73125225e9f9a2f9b61fdd"
 BEFORE_FINITE_MACHINE_COMPONENT_METADATA_SHA256 = "394152e8ccbb347e9f272be773f44a1dab444895c6b4babd413d34c3c7a4db5b"
 COMPONENT_METADATA_SHA256 = "e525d2456aabebfbc920ab795204b848dffb3ad8b8554ab4e42d95ccc1c7afed"
+BEFORE_EXPRESSION_METADATA_SHA256 = "762793a3f0df7bef61e00eccde1aeb78609c0fd4dd32bd72d4ea539c042d6091"
+EXPRESSION_METADATA_SHA256 = "e73bf4eca535337ed36ee59aadd6086b20ebf04e7bffc6e4bdb4c2849bc91c8b"
 
 
 class CoverageError(ValueError):
@@ -635,9 +667,16 @@ def component_metadata_before_step_quantitative(ledger: dict[str, Any]) -> dict[
 
 
 def metadata_before_assured(ledger: dict[str, Any]) -> dict[str, Any]:
+    metadata = metadata_before_expression(ledger)
+    return {**metadata, "source_classifications": [row for row in metadata["source_classifications"]
+                                                   if row["path"] not in COMPONENT_ASSURED_SOURCES]}
+
+
+def metadata_before_expression(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove only the new route classifications; preserve every old meaning."""
     return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
             "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
-                                       for row in ledger["sources"] if row["path"] not in COMPONENT_ASSURED_SOURCES],
+                                       for row in ledger["sources"] if row["path"] not in EXPRESSION_ROUTE_SOURCES],
             "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
 
 
@@ -818,6 +857,54 @@ def check_component(root: Path = ROOT, ledger: Any | None = None) -> dict[str, A
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"}
 
 
+def check_expression(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
+    if ledger is None:
+        ledger = decode(read(root, EXPRESSION_LEDGER))
+    closed(ledger, {"schema_version", "profile", "claim_scope", "sources", "witness_sources", "rules", "limitations"}, "expression ledger")
+    require(ledger["schema_version"] == "biocompiler.policy_expression_rule_coverage.v0.1"
+            and ledger["profile"] == "policy-single-expression-mrna-v0.1"
+            and ledger["claim_scope"] == "reviewed_expression_route_and_witness_source_inventory_only",
+            "Changed expression coverage claim")
+    texts = {}
+    for key, expected in (("sources", EXPRESSION_SOURCES), ("witness_sources", EXPRESSION_WITNESSES)):
+        rows = ledger[key]
+        require(type(rows) is list and all(type(row) is dict for row in rows), "Expression inventory must be records")
+        require([row.get("path") for row in rows] == list(expected), "Changed expression " + key + " census")
+        for row in rows:
+            closed(row, {"path", "sha256", "census"} if key == "sources" else {"path", "sha256"}, "expression source")
+            raw = read(root, row["path"])
+            require(row["sha256"] == digest(raw), "Stale expression source hash: " + row["path"])
+            if key == "sources":
+                require(row["census"] == census(row["path"], raw), "Changed expression guard/profile census")
+            texts[row["path"]] = raw.decode("utf-8")
+    rules = ledger["rules"]
+    require(type(rules) is list and all(type(row) is dict for row in rules)
+            and [row.get("id") for row in rules] == list(EXPRESSION_RULE_IDS), "Changed expression rule census")
+    for row in rules:
+        closed(row, {"id", "owners", "positive", "negative", "scope", "limits", "evidence_scope"}, "expression rule")
+        require(row["evidence_scope"] == "source_only_not_executed_by_this_gate", "Expression witness upgraded to execution proof")
+        for key in ("scope", "limits"):
+            words(row[key], "expression " + key)
+        for key in ("owners", "positive", "negative"):
+            require(type(row[key]) is list and row[key], "Missing expression owner or distinguishing witness")
+            for pointer in row[key]:
+                closed(pointer, {"path", "anchor", "occurrence"}, "expression pointer")
+                allowed = EXPRESSION_SOURCES if key == "owners" else EXPRESSION_WITNESSES
+                require(type(pointer["path"]) is str and pointer["path"] in allowed, "Unclassified expression pointer")
+                words(pointer["anchor"], "expression anchor")
+                require(type(pointer["occurrence"]) is int and pointer["occurrence"] >= 1
+                        and texts[pointer["path"]].count(pointer["anchor"]) >= pointer["occurrence"],
+                        "Missing expression source anchor")
+    require(type(ledger["limitations"]) is list and len(ledger["limitations"]) >= 3, "Expression limitations are required")
+    for value in ledger["limitations"]:
+        words(value, "expression limitation")
+    metadata = json.dumps(component_metadata(ledger), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(metadata) == EXPRESSION_METADATA_SHA256, "Changed reviewed expression meaning/witness metadata")
+    return {"rules": len(rules), "sources": len(EXPRESSION_SOURCES), "witness_sources": len(EXPRESSION_WITNESSES),
+            "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
+            "empirical_function": "not_established", "native_acceptance": "not_established"}
+
+
 def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
     if ledger is None:
         ledger = decode(read(root, LEDGER))
@@ -941,10 +1028,14 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
                           separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(assured_previous) == BEFORE_ASSURED_METADATA_SHA256,
             "Changed pre-assured quantitative whole-kernel meaning/witness/provenance metadata")
+    expression_previous = json.dumps(metadata_before_expression(ledger), sort_keys=True,
+                                    separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(expression_previous) == BEFORE_EXPRESSION_METADATA_SHA256,
+            "Changed pre-expression original material meaning/witness/classification metadata")
     return {"schema_version": SCHEMA, "status": "source_inventory_current", "claim_scope": CLAIM,
             "rules": len(rules), "sources": len(sources), "witness_sources": len(witnesses),
             "rules_with_pending_witnesses": pending, "semantic_proof": "not_established", "test_execution": "not_performed",
-            "component_route": check_component(root)}
+            "component_route": check_component(root), "expression_route": check_expression(root)}
 
 
 def main() -> int:

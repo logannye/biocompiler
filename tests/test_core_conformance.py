@@ -868,6 +868,7 @@ class CurrentCapabilityConformanceTests(unittest.TestCase):
         "policy_network_material", "policy_finite_machine_material", "policy_quantitative_material",
         "policy_quantitative_assurance", "policy_module_material", "policy_refinement",
         "policy_module_linking", "policy_coupled_wire", "policy_coupled_assurance_export_wire",
+        "policy_expression_material",
     }
     PRODUCER_PROFILES = {
         "policy_multi_site_implementation_producer", "policy_coupled_implementation_producer",
@@ -877,15 +878,17 @@ class CurrentCapabilityConformanceTests(unittest.TestCase):
         "policy_network_material_producer", "policy_finite_machine_material_producer",
         "policy_quantitative_material_producer", "policy_quantitative_assurance_producer",
         "policy_module_material_producer", "policy_target_planning",
+        "policy_expression_material_producer",
     }
     COMMON_OPERATIONS = {
         "check-policy-quantitative-assurance", "replay-policy-quantitative-assurance",
         "export-policy-quantitative-assurance", "check-policy-refinement", "replay-policy-refinement",
         "check-policy-module-linking", "replay-policy-module-linking", "check-policy-module-material",
         "replay-policy-module-material", "export-policy-module-material",
+        "check-policy-expression-material", "replay-policy-expression-material", "export-policy-expression-material",
     }
     PRODUCER_OPERATIONS = {"compile-policy-module-material", "compile-policy-quantitative-assurance",
-                           "plan-policy-target", "replay-policy-target-plan"}
+                           "plan-policy-target", "replay-policy-target-plan", "compile-policy-expression-material"}
 
     @staticmethod
     def capabilities(role):
@@ -898,7 +901,7 @@ class CurrentCapabilityConformanceTests(unittest.TestCase):
     def test_complete_additions_preserve_every_historical_contract_byte(self):
         historical = {"verify": "676cc22223f347eb84d5ba1863c7dae3b0c1a634a8e784f7f694626baed46257",
                       "core": "d9da6c40404876601e48ff9eba7dd6599b075d873b16e195a9239e3078e03131"}
-        for role, counts in (("verify", (44, 36, 38)), ("core", (67, 43, 68))):
+        for role, counts in (("verify", (47, 37, 39)), ("core", (71, 44, 70))):
             old = ComponentCapabilityConformanceTests.capabilities(role)
             actual = self.capabilities(role)
             campaign.check_current_capabilities(actual, role)
@@ -940,7 +943,7 @@ class CurrentCapabilityConformanceTests(unittest.TestCase):
             values.append(literals[0])
         actual = self.capabilities("verify")["validation_scopes"]
         self.assertEqual(actual[3:3 + len(values)], values)
-        self.assertEqual(len(values), 26)
+        self.assertEqual(len(values), 27)
 
     def test_all_added_profiles_and_operations_reject_omission_or_unreviewed_changes(self):
         for role in ("verify", "core"):

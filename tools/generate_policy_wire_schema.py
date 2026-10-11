@@ -16,6 +16,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 SPECIFICATION = Path("protocol/policy-language-v0.1.schema.json")
+EXPRESSION_SPECIFICATION = Path("protocol/policy-expression-source-v0.1.schema.json")
 MODEL = Path("src/biocompiler/policy/model.py")
 TARGET = Path("core/lib/domain/policy_schema.ml")
 MAX_SPEC_BYTES = 512 * 1024
@@ -24,6 +25,7 @@ MAX_SPEC_NODES = 100_000
 IDENTIFIER = re.compile(r"[A-Za-z][A-Za-z0-9_]*\Z")
 LITERAL = re.compile(r"[A-Za-z][A-Za-z0-9_.:/-]*\Z")
 PROFILE = "biocompiler.policy.v0.1"
+EXPRESSION_PROFILE = "biocompiler.policy_expression_source.v0.1"
 # Supported encoding contract. An encoding change needs a new generator profile,
 # not an unreviewed metadata change beside an otherwise unchanged shape table.
 METADATA = {
@@ -190,6 +192,8 @@ def check_python_conformance(specification: dict, source: str | None = None) -> 
     alias_nodes: dict[str, ast.AnnAssign] = {}
     profiles = []
     profile_nodes = []
+    expression_profiles = []
+    expression_profile_nodes = []
     for node in tree.body:
         if isinstance(node, ast.ClassDef):
             require(node.name not in classes, "Duplicate Python class: " + node.name)
@@ -202,7 +206,11 @@ def check_python_conformance(specification: dict, source: str | None = None) -> 
         elif isinstance(node, ast.Assign) and any(isinstance(target, ast.Name) and target.id == "PROFILE" for target in node.targets):
             profiles.append(ast.literal_eval(node.value))
             profile_nodes.append(node)
+        elif isinstance(node, ast.Assign) and any(isinstance(target, ast.Name) and target.id == "EXPRESSION_SOURCE_PROFILE" for target in node.targets):
+            expression_profiles.append(ast.literal_eval(node.value))
+            expression_profile_nodes.append(node)
     require(profiles == [PROFILE], "Python profile differs from the language specification")
+    require(expression_profiles == [EXPRESSION_PROFILE], "Python expression-source profile differs from its versioned specification")
     record_names = set(specification["$defs"])
     records = {name: node for name, node in classes.items()
                if any(isinstance(base, ast.Name) and base.id in record_names | {"Record"} for base in node.bases)}
@@ -227,13 +235,13 @@ def check_python_conformance(specification: dict, source: str | None = None) -> 
             result.update(bound_names(child))
         return result
 
-    protected = record_names | set(aliases) | {"Record", "PROFILE"}
+    protected = record_names | set(aliases) | {"Record", "PROFILE", "EXPRESSION_SOURCE_PROFILE"}
     for node in tree.body:
         if isinstance(node, ast.ClassDef) and node.name in protected:
             continue
         if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) and alias_nodes.get(node.target.id) is node:
             continue
-        if node in profile_nodes:
+        if node in profile_nodes or node in expression_profile_nodes:
             continue
         require(not bound_names(node) & protected, "Python record/type alias is reassigned")
 
@@ -289,9 +297,41 @@ def check_python_conformance(specification: dict, source: str | None = None) -> 
                 identity = field.target.id
                 require(identity not in properties, "Duplicate Python field: " + name + "." + identity)
                 properties[identity] = annotation(field.annotation)
+        if name == "AssuranceRequest":
+            require(properties.get("horizon") == {"anyOf": [{"$ref": "#/$defs/Quantity"},
+                {"enum": ["unbounded_requested", "not_applicable"]}]},
+                "Python static-assurance extension differs from its exact reviewed shape")
+            # An explicit versioned branch, never regeneration of v0.1 authority.
+            properties["horizon"] = {"anyOf": [{"$ref": "#/$defs/Quantity"}, {"enum": ["unbounded_requested"]}]}
         expected = specification["$defs"][name]
         require(list(properties) == expected["required"] and properties == expected["properties"],
                 "Python fields/types differ from the language specification: " + name)
+
+
+def expression_specification(specification: dict) -> dict:
+    """Exact additive static source shape; the v0.1 table remains untouched."""
+    result = json.loads(json.dumps(validate(specification)))
+    result.pop("x-policy-language")
+    result.pop("oneOf")
+    result["$id"] = EXPRESSION_PROFILE
+    result["$ref"] = "#/$defs/BuildRequest"
+    definitions = result["$defs"]
+    for name, profile in (("BuildRequest", EXPRESSION_PROFILE), ("PolicyProgram", PROFILE), ("SemanticBundle", PROFILE)):
+        definitions[name]["properties"]["profile"] = {"const": profile}
+    assurance = definitions["AssuranceRequest"]["properties"]
+    assurance["horizon"] = {"const": "not_applicable"}
+    assurance["level"] = {"const": "structural"}
+    for key in ("assumptions", "tolerances"):
+        assurance[key]["maxItems"] = 0
+    return result
+
+
+def check_expression_specification(specification: dict) -> None:
+    raw = (ROOT / EXPRESSION_SPECIFICATION).read_bytes()
+    require(0 < len(raw) <= MAX_SPEC_BYTES, "Expression source specification exceeds its byte bound")
+    supplied = json.loads(raw, object_pairs_hook=_pairs)
+    require(supplied == expression_specification(specification),
+            "Expression source specification differs from its exact versioned v0.1 projection")
 
 
 def main() -> int:
@@ -302,6 +342,7 @@ def main() -> int:
         specification = read_specification()
         expected = render(specification)
         check_python_conformance(specification)
+        check_expression_specification(specification)
         target = ROOT / TARGET
         if args.check:
             require(target.exists() and target.read_text() == expected,

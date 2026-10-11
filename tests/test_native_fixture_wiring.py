@@ -98,7 +98,12 @@ class NativeFixtureWiringTests(unittest.TestCase):
         self.assertEqual(added, [{"name": name, "environment": [], "dependencies": dependencies}
                                 for name, dependencies in ADDED_DEPENDENCIES.items()],
                          "reviewed additive suite names, order or fixture argv changed")
-        baseline = [row for row in declared if row["name"] not in ADDED_DEPENDENCIES]
+        baseline = [dict(row) for row in declared if row["name"] not in ADDED_DEPENDENCIES]
+        expression = next(row for row in baseline if row["name"] == "test_policy_mrna_structure")
+        self.assertEqual(expression["dependencies"],
+                         ["data/policy_mrna_structure_v01.json", "data/policy_material_request_v01.json"],
+                         "reviewed expression fixture addition changed")
+        expression["dependencies"] = ["data/policy_mrna_structure_v01.json"]
         self.assertEqual(len(baseline), 158)
         self.assertEqual(sum("dependencies" in row for row in baseline), 40)
         encoded = json.dumps(baseline, sort_keys=True, separators=(",", ":")).encode()
@@ -173,6 +178,22 @@ class NativeFixtureWiringTests(unittest.TestCase):
         changed[0], changed[1] = changed[1], changed[0]
         with self.assertRaisesRegex(AssertionError, "historical"):
             self.assert_reviewed_census(changed)
+
+    def test_expression_fixture_addition_is_exact_in_both_native_routes(self):
+        root = Path(__file__).resolve().parents[1]
+        declared = self.declared_suites((root / "core/test/dune").read_text())
+        index = next(i for i, row in enumerate(declared) if row["name"] == "test_policy_mrna_structure")
+        for dependencies in (["data/policy_mrna_structure_v01.json"],
+                             ["data/policy_material_request_v01.json", "data/policy_mrna_structure_v01.json"],
+                             ["data/policy_mrna_structure_v01.json", "data/policy_unreviewed.json"]):
+            changed = json.loads(json.dumps(declared))
+            changed[index]["dependencies"] = dependencies
+            with self.subTest(dependencies=dependencies), self.assertRaises(AssertionError):
+                self.assert_reviewed_census(changed)
+        workflow = (root / ".github/workflows/ci.yml").read_text()
+        commands = re.findall(r"(?m)^\s*(core/_build/default/test/test_policy_mrna_structure\.exe[^\n]*)$", workflow)
+        self.assertEqual(commands, ["core/_build/default/test/test_policy_mrna_structure.exe "
+                                   "core/test/data/policy_mrna_structure_v01.json core/test/data/policy_material_request_v01.json"])
 
     def test_every_dune_fixture_is_bound_in_the_complete_native_suite(self):
         root = Path(__file__).resolve().parents[1]

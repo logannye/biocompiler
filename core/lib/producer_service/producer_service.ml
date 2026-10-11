@@ -66,7 +66,7 @@ let capabilities executable request =
   | Protocol.Ok, Some original, [] ->
       let changed = Json.object_fields original |> List.map (fun (key, value) -> key,
           match key with
-          | "operations" -> Json.Array (Json.array value @ List.map str (operations @ ["compile-policy"; "compile-policy-implementation"; "compile-policy-material"; "compile-policy-component-material"; "compile-policy-component-selection"; "compile-policy-module-material"; "compile-policy-quantitative-assurance"] @ Policy_target_planning.operations @ Synthetic_producer_service.operations @ Synthetic_producer_public_service.operations @ Synthetic_inspection_service.operations))
+          | "operations" -> Json.Array (Json.array value @ List.map str (operations @ ["compile-policy"; "compile-policy-implementation"; "compile-policy-expression-material"; "compile-policy-material"; "compile-policy-component-material"; "compile-policy-component-selection"; "compile-policy-module-material"; "compile-policy-quantitative-assurance"] @ Policy_target_planning.operations @ Synthetic_producer_service.operations @ Synthetic_producer_public_service.operations @ Synthetic_inspection_service.operations))
           | "validation_scopes" -> Json.Array (Json.array value @ List.map str (validation_scope :: Policy_target_planning.validation_scope :: Synthetic_producer_service.validation_scopes @ Synthetic_producer_public_service.validation_scopes @ Synthetic_inspection_service.validation_scopes))
           | "profiles" -> obj (List.map(fun(name,body)->name,
               if name="policy_coupled_wire" then obj(List.map(fun(key,value)->key,
@@ -85,6 +85,7 @@ let capabilities executable request =
               "policy_step_quantitative_material_producer", Bioc_service.Policy_component_material_service.step_quantitative_producer_profile;
               "policy_network_implementation_producer", Bioc_service.Policy_implementation_service.network_producer_profile;
               "policy_finite_machine_implementation_producer", Bioc_service.Policy_implementation_service.finite_machine_producer_profile;
+              "policy_expression_material_producer", Bioc_service.Policy_expression_material_service.producer_profile;
               "policy_material_producer", Bioc_service.Policy_material_service.producer_profile;
               "policy_component_material_producer", Bioc_service.Policy_component_material_service.producer_profile;
               "policy_instance_material_producer", Bioc_service.Policy_component_material_service.instance_producer_profile;
@@ -108,6 +109,7 @@ let handle executable (request : Protocol.request) =
   | Protocol.Core, "compile-architecture" -> Protocol.Ok, Some (compile request.payload), []
   | Protocol.Core, "compile-policy" -> Protocol.Ok, Some (Policy_operational_producer.compile request.payload), []
   | Protocol.Core, "compile-policy-implementation" -> Protocol.Ok, Some (Policy_implementation_producer.compile request.payload), []
+  | Protocol.Core, "compile-policy-expression-material" -> Protocol.Ok, Some (Policy_expression_material_producer.compile request.payload), []
   | Protocol.Core, "compile-policy-material" -> Protocol.Ok, Some (Policy_material_producer.compile request.payload), []
   | Protocol.Core, "compile-policy-quantitative-assurance" -> Protocol.Ok, Some (Policy_quantitative_assurance_producer.compile request.payload), []
   | Protocol.Core, "compile-policy-module-material" -> Protocol.Ok, Some (Policy_module_material_producer.compile request.payload), []

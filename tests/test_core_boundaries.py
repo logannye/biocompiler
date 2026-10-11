@@ -13,6 +13,52 @@ from tools import check_core_boundaries as boundaries
 
 
 class CoreBoundaryTests(unittest.TestCase):
+    def test_expression_profile_keeps_verify_separate_and_controls_in_existing_suite(self):
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        self.assertEqual(receipt["expression_profile"], {
+            "operations": ["check-policy-expression-material", "replay-policy-expression-material", "export-policy-expression-material"],
+            "producer_role": "core_only", "tokens": "separate_abstract_types",
+            "claim_scope": "static_source_tripwires_not_native_acceptance"})
+        self.assertNotIn("bioc_producer_service", receipt["transitive_dependencies"]["executable:biocompiler-verify"])
+        self.assertNotIn("bioc_compiler", receipt["transitive_dependencies"]["bioc_checker"])
+        self.assertEqual(set(receipt["native_tests"]["test_policy_mrna_structure"]), {
+            "bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "bioc_service", "bioc_producer_service", "zarith"})
+        self.assertIn("core/test/test_policy_expression_source_admission.ml", receipt["source_sha256"])
+
+    def test_expression_operations_private_tokens_and_grouped_execution_fail_closed(self):
+        root = self.copy_core()
+        changes = [
+            ("lib/service/policy_expression_material_service.ml", 'let operations=["check-policy-expression-material";',
+             'let operations=["compile-policy-expression-material";'),
+            ("lib/service/service.ml", "let capabilities =", 'let compile_route = "compile-policy-expression-material"\nlet capabilities ='),
+            ("lib/producer_service/producer_service.ml", '| Protocol.Core, "compile-policy-expression-material"',
+             '| Protocol.Verify, "compile-policy-expression-material"'),
+            ("lib/checker/policy_expression_material_check.mli", "type checked_expression_material\n", "type checked_expression_material = bool\n"),
+            ("lib/checker/policy_expression_structure_check.mli", "type checked_structure\n", "type checked_structure = Policy_mrna_structure_check.checked_structure\n"),
+            ("lib/checker/policy_expression_structure_check.ml", "Construction_check.check_template", "Legacy.check_template"),
+            ("test/test_policy_mrna_structure.ml", "Test_policy_expression_source_admission.run Sys.argv.(2)", "ignore Sys.argv.(2)"),
+        ]
+        for name, before, after in changes:
+            path = root / "core" / name
+            original = path.read_text()
+            self.assertIn(before, original)
+            path.write_text(original.replace(before, after, 1))
+            with self.subTest(name=name), self.assertRaisesRegex(boundaries.BoundaryError, "Expression boundary"):
+                boundaries.expression_boundaries(root)
+            path.write_text(original)
+
+    def test_expression_group_cannot_omit_reorder_or_add_native_test_modules(self):
+        root = self.copy_core()
+        path = root / "core/test/dune"
+        original = path.read_text()
+        before = "(modules test_policy_mrna_structure test_policy_expression_source_admission)"
+        for after in ("(modules test_policy_mrna_structure)",
+                      "(modules test_policy_expression_source_admission test_policy_mrna_structure)",
+                      "(modules test_policy_mrna_structure test_policy_expression_source_admission unreviewed)"):
+            path.write_text(original.replace(before, after))
+            with self.subTest(after=after), self.assertRaisesRegex(boundaries.BoundaryError, "Unreviewed native test stanza"):
+                boundaries.check_boundaries(root)
+
     def copy_core(self):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)

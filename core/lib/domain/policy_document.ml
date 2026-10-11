@@ -2,6 +2,7 @@ open Bioc_wire
 module S = Policy_schema
 
 let profile = "biocompiler.policy.v0.1"
+let expression_source_profile = "biocompiler.policy_expression_source.v0.1"
 let max_bytes = 2 * 1024 * 1024
 let max_nodes = 100_000
 let max_depth = 64
@@ -142,7 +143,8 @@ let nonblank_text value =
     if whitespace then visit (index + width) else true in
   visit 0
 
-let rec validate_shape ~path shape value =
+let rec validate_shape ?(expression_source=false) ~path shape value =
+  let validate_shape ~path = validate_shape ~expression_source ~path in
   let mismatch () = require ~path false "Policy value does not match its exact declared field type." in
   match shape, value with
   | S.String, Json.String _ | S.Integer, Json.Int _ | S.Boolean, Json.Bool _ | S.Null, Json.Null -> ()
@@ -165,13 +167,20 @@ let rec validate_shape ~path shape value =
       require ~path (name <> "PolicyDraft" && name <> "Hole") "Frozen policy ingress rejects drafts and unresolved holes.";
       let members = match S.find name with Some members -> members
         | None -> Diagnostic.fail ~path "policy_document" "Unknown policy record kind." in
+      let members = if expression_source && name = "AssuranceRequest" then
+        List.map (fun (key, shape) -> key, match key with
+          | "horizon" -> S.Literals ["not_applicable"]
+          | "level" -> S.Literals ["structural"]
+          | "assumptions" | "tolerances" -> S.Tuple []
+          | _ -> shape) members else members in
       let expected = "$type" :: List.map fst members in
       require ~path (List.length fields = List.length expected && List.for_all (fun key -> List.mem_assoc key fields) expected)
         "Policy declaration has unknown or missing fields.";
       require ~path (List.assoc "$type" fields = Json.String name) "Unknown or incompatible policy record tag.";
       List.iter (fun (key, shape) -> validate_shape ~path:(child path key) shape (List.assoc key fields)) members;
       if List.mem name ["PolicyProgram"; "BuildRequest"; "CompilationSubmission"; "SemanticBundle"] then
-        require ~path:(child path "profile") (List.assoc "profile" fields = Json.String profile)
+        require ~path:(child path "profile") (List.assoc "profile" fields = Json.String
+          (if expression_source && name = "BuildRequest" then expression_source_profile else profile))
           "Unsupported policy profile.";
       if name = "Unit" then ignore (exact_decimal ~path:(child path "scale") (text_field path "scale" value));
       if name = "Quantity" then (
@@ -256,13 +265,15 @@ let verify_submission ~path json request program =
   verified (child path "dependencies") (recorded = dependencies request)
     "Submission dependency pins must exactly match the sorted, unique contained dependency inventory."
 
-let of_json ?(path = "") json =
+let decode_document ~expression_source ?(path = "") json =
   measure ~path json;
   let tag = text_field path "$type" json in
   let document_kind = match tag with
     | "PolicyProgram" -> Program | "BuildRequest" -> Request | "CompilationSubmission" -> Submission
     | _ -> Diagnostic.fail ~path "policy_document" "Expected a frozen PolicyProgram, BuildRequest or CompilationSubmission." in
-  validate_shape ~path (S.Record tag) json;
+  if expression_source then require ~path (document_kind = Request)
+    "Expression source requires an explicit root BuildRequest.";
+  validate_shape ~expression_source ~path (S.Record tag) json;
   let request_json, program_json, program_path = match document_kind with
     | Program -> None, json, path
     | Request -> Some json, field path "program" json, child path "program"
@@ -278,6 +289,9 @@ let of_json ?(path = "") json =
   let document_identity = document_digest (match request_json with Some request -> request | None -> program_json) in
   let artifact_identity = Canonical.sha256 (Canonical.encode_bounded ~max_bytes json) in
   {json; document_kind; program_json; request_json; declaration_values; document_identity; artifact_identity}
+
+let of_json ?path json = decode_document ~expression_source:false ?path json
+let of_expression_json ?path json = decode_document ~expression_source:true ?path json
 
 let to_json value = value.json
 let kind value = value.document_kind

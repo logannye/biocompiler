@@ -74,7 +74,7 @@ DEPENDENCY_FIXTURES = {
     "test_policy_candidate_congruence_check": ["data/policy_implementation_binding_v01.json"],
     "test_policy_candidate_transition_congruence": ["data/policy_primitives_v01.json"],
     'test_construction_content': ['data/construction_content_v01.json'],
-    'test_policy_mrna_structure': ['data/policy_mrna_structure_v01.json'],
+    'test_policy_mrna_structure': ['data/policy_mrna_structure_v01.json', 'data/policy_material_request_v01.json'],
     'test_policy_implementation_service': ['data/policy_implementation_request_v01.json'],
     'test_policy_material_binding': ['data/policy_material_binding_v01.json'],
     'test_policy_component_fragment': ['data/policy_material_request_v01.json', 'data/policy_material_state_v01.json'],
@@ -156,7 +156,10 @@ def test_plan(text):
                 "Unsupported Dune test fields")
         require(len(fields["name"]) == 1 and re.fullmatch(r"test_[a-z0-9_]+", fields["name"][0]), "Invalid native test name")
         name = fields["name"][0]
-        require(fields["modules"] == [name] and all(isinstance(x, str) for x in fields["libraries"]), "Unsupported native test modules")
+        expected_modules = ([name, "test_policy_expression_source_admission"]
+                            if name == "test_policy_mrna_structure" else [name])
+        require(fields["modules"] == expected_modules and all(isinstance(x, str) for x in fields["libraries"]),
+                "Unsupported native test modules")
         action = fields.get("action", [["run", "%{test}"]])
         require(len(action) == 1 and isinstance(action[0], list) and action[0][:2] == ["run", "%{test}"], "Unsupported native test action")
         arguments = action[0][2:]

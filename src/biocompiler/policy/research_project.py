@@ -22,15 +22,18 @@ from biocompiler.core_client import CoreCancelled, CoreClient, CoreProtocolError
 from biocompiler.core_distribution import installed_core
 from biocompiler import core_policy_component_material as component
 from biocompiler import core_policy_component_selection as selection
+from biocompiler import core_policy_expression_material as expression
 from biocompiler.core_policy_material import PolicyMaterialResult
-from . import component_material, component_selection
+from . import component_material, component_selection, expression_material
+from .expression_material import ExpressionMaterialRequest
 from .finite_build import FiniteMachineBuild
 from .material import _destination, _verify_staged
 
 SCHEMA = "biocompiler.research_project.v0.1"
+EXPRESSION_SCHEMA = "biocompiler.research_project.v0.2"
 MAX_PROJECT_BYTES = 8 * 1024 * 1024
 MAX_BUNDLE_BYTES = 16 * 1024 * 1024
-Route = Literal["component_material", "component_selection"]
+Route = Literal["component_material", "component_selection", "expression_material"]
 
 
 class ResearchProjectError(ValueError):
@@ -117,19 +120,30 @@ def _route(request: JsonValue) -> Route:
     if row.get("schema_version") == selection.REQUEST_SCHEMA:
         selection._original(row)
         return "component_selection"
-    raise ResearchProjectError("Unsupported or incomplete original request; provide a complete component-material or component-selection contract")
+    if row.get("schema_version") == expression.REQUEST_SCHEMA:
+        expression._original(row)
+        return "expression_material"
+    raise ResearchProjectError("Unsupported or incomplete original research request")
 
 
 def _project(value: JsonValue) -> dict[str, JsonValue]:
     _require(type(value) is dict and set(value) == {"schema_version", "project_id", "title", "route", "request", "limits", "sources", "assumptions"},
              "Research project requires its complete versioned fields, original request, limits and provenance")
     row = cast(dict[str, JsonValue], value)
-    _require(row["schema_version"] == SCHEMA, "Unsupported research project schema")
+    _require(row["schema_version"] in (SCHEMA, EXPRESSION_SCHEMA), "Unsupported research project schema")
     _text(row["project_id"], "Project id", 128)
     _text(row["title"], "Project title")
     _require(row["route"] == _route(row["request"]), "Project route differs from its complete original request")
-    _require(type(row["limits"]) is dict and bool(row["limits"]), "Explicit original execution limits are required")
     request = cast(dict[str, JsonValue], row["request"])
+    if row["route"] == "expression_material":
+        _require(row["schema_version"] == EXPRESSION_SCHEMA and row["limits"] is None,
+                 "Static expression projects require v0.2 and no temporal execution limits")
+        context: dict[str, JsonValue] = {key: row[key] for key in ("project_id", "title", "sources", "assumptions")}
+        _require(encode_json(context) == encode_json(request.get("project_context")),
+                 "Complete project metadata and source records differ from native original authority")
+    else:
+        _require(row["schema_version"] == SCHEMA, "Existing component routes retain their v0.1 project contract")
+        _require(type(row["limits"]) is dict and bool(row["limits"]), "Explicit original execution limits are required")
     if request.get("profile") == component.FINITE_MACHINE_REQUEST_PROFILE:
         FiniteMachineBuild.from_request(request, limits=row["limits"])
     sources = row["sources"]
@@ -178,6 +192,7 @@ def _transport(value: CoreClient | None, role: Literal["core", "verify"], operat
 
 
 def _client(route: Route, transport: CoreClient) -> component.PolicyComponentMaterialClient | selection.PolicyComponentSelectionClient:
+    _require(route != "expression_material", "Static expression uses its separate typed client")
     return (component.PolicyComponentMaterialClient(transport) if route == "component_material"
             else selection.PolicyComponentSelectionClient(transport))
 
@@ -215,6 +230,15 @@ class ResearchProject:
             limits=build.to_limits(), sources=sources, assumptions=assumptions)
 
     @classmethod
+    def from_expression(cls, build: ExpressionMaterialRequest) -> ResearchProject:
+        """Retain a static request and its full original project/source metadata."""
+        _require(type(build) is ExpressionMaterialRequest, "An explicit typed expression request is required")
+        request = build.to_request()
+        context = cast(dict[str, JsonValue], request["project_context"])
+        return cls.from_data({"schema_version": EXPRESSION_SCHEMA, "route": "expression_material",
+            "request": request, "limits": None, **context})
+
+    @classmethod
     def from_data(cls, value: JsonValue) -> ResearchProject:
         """Freeze an inert versioned project; this does not run semantic admission."""
         return cls(encode_json(value, limit=MAX_PROJECT_BYTES))
@@ -236,7 +260,14 @@ class ResearchProject:
 
     @property
     def limits(self) -> dict[str, JsonValue]:
+        _require(self.route != "expression_material", "Static expression has no temporal execution limits")
         return cast(dict[str, JsonValue], self.data["limits"])
+
+    @property
+    def expression(self) -> ExpressionMaterialRequest:
+        """Reopen the complete static source and supplied material authority."""
+        _require(self.route == "expression_material", "This project does not use static expression material")
+        return ExpressionMaterialRequest.from_request(self.request)
 
     @property
     def build(self) -> FiniteMachineBuild:
@@ -306,11 +337,17 @@ class ResearchProject:
         _require(destination.parent.is_dir(), "Bundle output parent directory does not exist")
         _cancel(cancelled)
         route = self.route
-        suffix = "policy-component-material" if route == "component_material" else "policy-component-selection"
+        suffix = {"component_material": "policy-component-material", "component_selection": "policy-component-selection",
+                  "expression_material": "policy-expression-material"}[route]
         producer = _transport(core, "core", "compile-" + suffix, timeout_seconds)
         verifier = _transport(verify, "verify", "export-" + suffix, timeout_seconds)
-        compiled = _client(route, producer).compile(self.request, self.limits, cancelled=cancelled)
-        accepted = component.ACCEPTED_STATUS if route == "component_material" else selection.ACCEPTED_STATUS
+        compiled: PolicyMaterialResult
+        if route == "expression_material":
+            compiled = expression.PolicyExpressionMaterialClient(producer).compile(self.request, cancelled=cancelled)
+            accepted = expression.ACCEPTED_STATUS
+        else:
+            compiled = _client(route, producer).compile(self.request, self.limits, cancelled=cancelled)
+            accepted = component.ACCEPTED_STATUS if route == "component_material" else selection.ACCEPTED_STATUS
         _require(compiled.executable == "core" and compiled.operation == "compile-" + suffix,
                  "Producer result changed the requested executable role or operation")
         if compiled.status != accepted:
@@ -320,6 +357,10 @@ class ResearchProject:
         if route == "component_material":
             verified = component_material.export(self.request, candidate=compiled.candidate, limits=self.limits,
                 client=component.PolicyComponentMaterialClient(verifier), output=Path(output),
+                input_paths=self._input_paths, replace=replace, cancelled=cancelled)
+        elif route == "expression_material":
+            verified = expression_material.export(self.expression, candidate=compiled.candidate,
+                client=expression.PolicyExpressionMaterialClient(verifier), output=Path(output),
                 input_paths=self._input_paths, replace=replace, cancelled=cancelled)
         else:
             verified = component_selection.export(self.request, candidate=compiled.candidate, limits=self.limits,
@@ -353,13 +394,20 @@ class ResearchProject:
         manifest = decode_json(members[1][1])
         _require(type(manifest) is dict and "candidate" in manifest, "Bundle lacks a complete candidate")
         original = cast(dict[str, JsonValue], manifest)
-        _require(encode_json(original.get("request")) == encode_json(self.request) and
-                 encode_json(original.get("limits")) == encode_json(self.limits),
+        _require(encode_json(original.get("request")) == encode_json(self.request),
                  "Bundle original authority differs from the independently supplied current project")
         route = self.route
-        suffix = "policy-component-material" if route == "component_material" else "policy-component-selection"
+        suffix = {"component_material": "policy-component-material", "component_selection": "policy-component-selection",
+                  "expression_material": "policy-expression-material"}[route]
         verifier = _transport(verify, "verify", "export-" + suffix, timeout_seconds)
-        fresh = _client(route, verifier).export(self.request, original["candidate"], self.limits, cancelled=cancelled)
+        fresh: PolicyMaterialResult
+        if route == "expression_material":
+            _require("limits" not in original, "Static expression manifest cannot invent temporal limits")
+            fresh = expression.PolicyExpressionMaterialClient(verifier).export(self.request, original["candidate"], cancelled=cancelled)
+        else:
+            _require(encode_json(original.get("limits")) == encode_json(self.limits),
+                     "Bundle limits differ from the independently supplied current project")
+            fresh = _client(route, verifier).export(self.request, original["candidate"], self.limits, cancelled=cancelled)
         artifact = fresh.artifact
         _require(fresh.executable == "verify" and artifact is not None, "Independent Verify did not produce an accepted pair")
         artifact = cast(dict[str, JsonValue], artifact)

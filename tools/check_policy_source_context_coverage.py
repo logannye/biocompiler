@@ -120,24 +120,24 @@ SOURCE_PINS = {'core/lib/checker/policy_admission.ml': '5f4418b9227fbc2db5fb86ea
  'core/lib/checker/policy_generation_meter.ml': '13c4647bc0efcb50f239af693e8fa3281fdbca4115ce4e5a84bcd4e9a4a1b965',
  'core/lib/checker/policy_generation_meter.mli': 'f1bb20416d692f4d0aa72b92028f75f6ea5ca532ae90e1d7593b424e703bf4ba',
  'core/lib/checker/policy_implementation_binding_check.ml': '82d57264e94313d0dbb95500bd36f0e62472152ceff33542a53632195c166664',
- 'core/lib/domain/policy_document.ml': 'db2860b602d63df29d1a8240417f8632c37693b797f9561e00395bd1fd2f95dc',
+ 'core/lib/domain/policy_document.ml': '9b2adf9ca624942d1557e91720bac7439e0b511c1e54fe47447df77ccbeb138e',
  'core/lib/domain/policy_material_context.ml': '00aab6a0635a99cb59fd171b120483c93035a6004cb168d7a10e2950e0ccf013',
  'core/lib/domain/policy_operating_domain.ml': 'bbdc0925c24c95852f356a513c1707f330da3b936227a24e0234730a9deb5384',
  'core/lib/domain/policy_operational.ml': 'bd5d03f8acefed68ab0a8059041774479426928266351b325535a124e3e23d34',
  'core/lib/domain/policy_schema.ml': '8057ea511a25835f4e51c720ce815602f69839d0a664fc880c2f8f5bee918e78',
  'core/lib/realization_checker/policy_material_context_check.ml': '62190f46bc32fc648128c2efe4b88caab6375fddb0b9a78e392b0654d2b17ddb',
- 'src/biocompiler/policy/model.py': '7197696399733e610b7a5c458aebf0ddc4b0df997f190cb53fa1659c419b6038',
- 'src/biocompiler/policy/serialization.py': 'd0e2feb4e8dd3fe65a10793d20c06144ad6fec396d99e6107f3485682ee570bf',
- 'src/biocompiler/policy/validation.py': '00be9fc170771f06ee7fae34c17ec9a47fcd1c1741efb34fd64044a114d7c5b8',
+ 'src/biocompiler/policy/model.py': 'cc0430615690c0a7a5e388b8d2821d03198b14c3f3044a6443a4d6f6747b1ec6',
+ 'src/biocompiler/policy/serialization.py': '4bd1f2dee570d079290b774ea94b059907df62a27793e47927b29ed8981c94f6',
+ 'src/biocompiler/policy/validation.py': '5e4232eeea39adae63e4dadae52afca363068ca28e344161e5806ceed5558529',
  'tools/check_policy_semantic_coverage.py': '5ddcaf8432b869bd2badfd5f0b0aa0179f5176e59ec53d879f502bcd7bccea47'}
-AST_PINS = {'src/biocompiler/policy/model.py': 'e2cfabc143415a86d1e3e2c42ba744892b4cad5d22ef28e7d085664159f2daf5',
- 'src/biocompiler/policy/serialization.py': '3db49f534fa75ed53db36d81a0ead63fa89705226ca7108cf83bdc2fd3b83fc4',
- 'src/biocompiler/policy/validation.py': '0d4d303ca4ba1991af7c523f0b09ad1117d1960b8a69c045afca86276cc65f6b',
+AST_PINS = {'src/biocompiler/policy/model.py': '71e0d901dcd0daa8612367ac50f5da7a49fce0f27f24abee57d3ebebad9a1fb9',
+ 'src/biocompiler/policy/serialization.py': 'cb6cf5af995c021c8fe4dc527736a3ae0027f771ab4ff04d9baea09c2e758834',
+ 'src/biocompiler/policy/validation.py': 'b9e1064ab7d629adfcf166c8c3a9f4e9513b7730a0a7daabd1b216e32ac9e524',
  'tools/check_policy_semantic_coverage.py': 'd6d5f8fe18da607c81255eae59c2edb5754baf7a79e91259bf86bfc08022f7c6'}
 INPUT_PINS = {'core/test/data/policy_documents_v01.json': 'c4c7f3251c882ed739eb3b733bb0eea0cd2965470e02e6293196e114b0a3aded',
  'core/test/data/policy_operational_v01.json': 'bd9dfbb65c456b75fa401049341e85a6de882e8f130b4c76dfdadd9b6dd08968',
  'core/test/data/policy_realization_source_v01.json': 'fa4008fb9196ed1a318a2b293f452d19227b9562c5d1dece16183e2110ceec51'}
-REVIEWED_DECLARATIONS_SHA256 = '4ddf3f0558a8e202891e175a576736f22483ed3519f7b9d4342bc4b8ece2dbde'
+REVIEWED_DECLARATIONS_SHA256 = 'd14282bc3b056bf8552a8659d6c73f9e25cd4cfb64baa0abf9a6e43bb0a3186f'
 SYNTAX_LEDGER = "protocol/policy-semantic-coverage-v0.1.json"
 FAMILY_LEDGER = "protocol/policy-material-rule-coverage-v0.1.json"
 
@@ -311,11 +311,11 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
     require(type(syntax_ledger) is dict and syntax_ledger.get("schema_version") == "biocompiler.policy_semantic_coverage.v0.1", "Wrong syntax ledger")
     require(type(family_ledger) is dict and family_ledger.get("schema_version") == "biocompiler.policy_material_rule_coverage.v0.1", "Wrong family ledger")
     entries, families = syntax_ledger.get("entries"), family_ledger.get("rules")
-    require(type(entries) is list and len(entries) == 612 and all(type(row) is dict and type(row.get("id")) is str for row in entries), "Changed 612 syntax census")
+    require(type(entries) is list and len(entries) == 614 and all(type(row) is dict and type(row.get("id")) is str for row in entries), "Changed 614 syntax census")
     require(type(families) is list and len(families) == 62 and all(type(row) is dict and type(row.get("id")) is str for row in families), "Changed 62 family census")
     syntax_ids = {row["id"] for row in entries}
     family_ids = {row["id"] for row in families}
-    require(len(syntax_ids) == 612 and len(family_ids) == 62, "Duplicate complementary identity")
+    require(len(syntax_ids) == 614 and len(family_ids) == 62, "Duplicate complementary identity")
     structures: dict[str, dict[str, Any]] = {}
     sources = ledger["sources"]
     require(type(sources) is list and all(type(row) is dict for row in sources)

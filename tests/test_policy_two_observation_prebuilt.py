@@ -136,7 +136,7 @@ class TwoObservationPrebuiltTests(unittest.TestCase):
             companion.write(directory / "evidence" / (name + ".json"), before)
         old_rows = [{"argv": [str(origin / "env/bin/python"), "-I", "old-owned-probe"], "executable": deepcopy(INTERPRETER)}]
         companion.write(directory / "commands.json", old_rows)
-        baseline = {"schema_version": companion.base.RESEARCHER_SCHEMA, "status": "pass", **IDENTITY,
+        baseline = {"schema_version": companion.base.RESEARCHER_SCHEMA, "claim": companion.base.RESEARCHER_CLAIM, "status": "pass", **IDENTITY,
             "run_attempt": "1", **runtime, "output_root": str(origin), "checkout_root": str(self.checkout),
             "source_pins": deepcopy(SOURCES), "artifacts": self.artifacts(slot[:2]),
             "commands": companion.pin(directory / "commands.json"), "evidence": {
@@ -217,6 +217,38 @@ class TwoObservationPrebuiltTests(unittest.TestCase):
         with patch.object(companion.fixture_tool, "validate", side_effect=ValueError("independent fixture gate")):
             with self.assertRaisesRegex(ValueError, "independent fixture gate"):
                 companion.authorities(self.args, IDENTITY, 2)
+
+    def test_owned_slot_accepts_exact_parent_claim_pairs_without_weakening_ownership(self):
+        slot = SLOTS[0]
+        directory, origin, ownership = self.installed_slot(slot, completed=False)
+        path = directory / "prebuilt.json"
+        original = companion.read(path)
+        for schema, claim in ((companion.base.RESEARCHER_SCHEMA, companion.base.RESEARCHER_CLAIM),
+                              (companion.base.CAR_SCHEMA, companion.base.CAR_CLAIM)):
+            value = {**original, "schema_version": schema, "claim": claim}
+            companion.write(path, value)
+            before = path.read_bytes()
+            with self.subTest(schema=schema):
+                self.assertEqual(companion.owned_slot(directory, IDENTITY, self.candidate,
+                    self.sdk_entries, self.stamp, self.native, self.args), (slot, origin, ownership))
+                self.assertEqual(path.read_bytes(), before)
+        car = {**original, "schema_version": companion.base.CAR_SCHEMA, "claim": companion.base.CAR_CLAIM}
+        for edit in ({"schema_version": "unknown"}, {"claim": companion.base.RESEARCHER_CLAIM},
+                     {"schema_version": companion.base.RESEARCHER_SCHEMA}, {"claim": None},
+                     {"status": "failed"}, {"run_id": "other"}, {"run_attempt": "4"},
+                     {"source_pins": {}}, {"commands": {}}, {"artifacts": {}},
+                     {"output_root": str(self.checkout)}):
+            companion.write(path, {**car, **edit})
+            with self.subTest(edit=edit), self.assertRaises(ValueError):
+                companion.owned_slot(directory, IDENTITY, self.candidate,
+                    self.sdk_entries, self.stamp, self.native, self.args)
+        companion.write(path, car)
+        after = directory / "evidence/ownership-after.json"
+        companion.write(after, companion.read(after) | {"unreviewed": True})
+        with self.assertRaisesRegex(ValueError, "ownership lifecycle"):
+            companion.owned_slot(directory, IDENTITY, self.candidate,
+                self.sdk_entries, self.stamp, self.native, self.args)
+        self.popen.assert_not_called(); self.process.assert_not_called()
 
     def test_owned_slot_preserves_earlier_attempt_and_authenticates_its_ledger(self):
         directory, origin, ownership = self.installed_slot(SLOTS[0])

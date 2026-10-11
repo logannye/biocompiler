@@ -19,6 +19,14 @@ type declaration = {
 type t
 val profile : string
 val of_json : ?path:string -> Json.t -> t
+
+(** Explicit static-assurance representation only. The root must be a
+    BuildRequest under [expression_source_profile], with structural assurance
+    and horizon [not_applicable]; nested program/bundle profiles remain v0.1.
+    This neither admits objective semantics nor grants material acceptance.
+    Ordinary [of_json] continues to reject this profile and horizon. *)
+val expression_source_profile : string
+val of_expression_json : ?path:string -> Json.t -> t
 val to_json : t -> Json.t
 val kind : t -> kind
 val program : t -> Json.t

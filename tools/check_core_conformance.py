@@ -75,6 +75,7 @@ from biocompiler.core_policy_component_selection import (
 from biocompiler import (
     _policy_coupled_wire as coupled_wire,
     core_policy_component_material as component_extensions,
+    core_policy_expression_material as expression_material,
     core_policy_implementation as implementation_extensions,
     core_policy_module_linking as module_linking,
     core_policy_planning as target_planning,
@@ -313,6 +314,7 @@ def current_capability_contract(role):
         ("policy_quantitative_material", m.QUANTITATIVE_PROFILE, m.QUANTITATIVE_PRODUCER_PROFILE),
         ("policy_quantitative_assurance", quantitative_assurance.PROFILE, quantitative_assurance.PRODUCER_PROFILE),
         ("policy_module_material", module_linking.MATERIAL_PROFILE, module_linking.PRODUCER_PROFILE),
+        ("policy_expression_material", expression_material.PROFILE, expression_material.PRODUCER_PROFILE),
     )
     profiles.update({name: deepcopy(profile) for name, profile, _ in families})
     profiles.update(policy_refinement=deepcopy(refinement.PROFILE),
@@ -322,6 +324,9 @@ def current_capability_contract(role):
     at = operations.index(COMPONENT_SELECTION_PROFILE["operations"][0])
     operations[at:at] = [*quantitative_assurance.PROFILE["operations"], *refinement.PROFILE["operations"],
                          *module_linking.PROFILE["operations"], *module_linking.MATERIAL_PROFILE["operations"]]
+    at = operations.index(MATERIAL_PROFILE["operations"][0])
+    operations[at:at] = expression_material.PROFILE["operations"]
+    scopes.insert(scopes.index(MATERIAL_SCOPE), expression_material.VALIDATION_SCOPE)
     at = scopes.index(IMPLEMENTATION_SCOPE) + 1
     scopes[at:at] = [i.MULTI_SITE_VALIDATION_SCOPE, i.COUPLED_VALIDATION_SCOPE,
         m.STEP_QUANTITATIVE_VALIDATION_SCOPE, m.TRANSFER_PAIR_VALIDATION_SCOPE,
@@ -332,6 +337,8 @@ def current_capability_contract(role):
         quantitative_assurance.VALIDATION_SCOPE, refinement.VALIDATION_SCOPE,
         module_linking.VALIDATION_SCOPE, module_linking.MATERIAL_SCOPE, m.QUANTITATIVE_VALIDATION_SCOPE]
     if role == "core":
+        at = operations.index(MATERIAL_PRODUCER_PROFILE["operations"][0])
+        operations[at:at] = expression_material.PRODUCER_PROFILE["operations"]
         at = operations.index(COMPONENT_SELECTION_COMPILE) + 1
         operations[at:at] = [*module_linking.PRODUCER_PROFILE["operations"],
                              *quantitative_assurance.PRODUCER_PROFILE["operations"], *target_planning.PROFILE["operations"]]

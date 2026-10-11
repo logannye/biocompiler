@@ -19,8 +19,15 @@ CORPUS = ROOT / "tests/conformance/realization-workflow-v1.json"
 CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # Each addition requires a fresh explicit review and hash. Wildcards and amended
 # hashes for historical source files are deliberately unsupported.
-REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py", "examples/researcher_alpha.py"})
+REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py", "examples/researcher_alpha.py", "examples/car_payload.py"})
 REVIEWED_ADDITIONS = {
+    # CAR expression/project additions are explicitly excluded from original
+    # workflow authority, including the separate public example.
+    'examples/car_payload.py': '1605c8f92443a184953921df950c4c39a10b95e3420d39d361da08658e7caae0',
+    'src/biocompiler/core_policy_expression_material.py': '319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf',
+    'src/biocompiler/policy/car_reference.py': '6cecfa4f52ab8d0e8c928198bbd308525e6a0c802383616b7cd7e16c1027ee9d',
+    'src/biocompiler/policy/expression_material.py': '2fecd744564db34e9629f981ff619d9f7aa7bef6cadf245d7e5446bc876621fe',
+    'src/biocompiler/policy/project_sources.py': '19c72e4330ad3ab03fd07bb77ba7fac5c5f4510a84bb918fbc53b70a3e7430fa',
     'src/biocompiler/_policy_coupled_wire.py': 'b482ab65ce427d4b5520d4c9d37578d0c2b8993de9a5669e80eee85372ece650',
     # Semantic modules, planning, exact quantitative composition and assurance
     # are reviewed current additions only. The immutable original cohort must
@@ -41,7 +48,7 @@ REVIEWED_ADDITIONS = {
     'src/biocompiler/policy/typed.py': '8ed5ed1df21bbee620d0ba6244932282ce2a1e785b8e185baa9a205a544bd1eb',
     # Research-project authoring and the installed example stay excluded from
     # the immutable original workflow cohort and confer no historical authority.
-    'src/biocompiler/policy/research_project.py': '4db26b994eb3e19c4bd96bc997484060473ee6d3de91cd380a07d861a4f4c620',
+    'src/biocompiler/policy/research_project.py': '7345fba16805046f21f9026b610bf557aa3d4dfb3400a4fc1d59b0a2b8b919eb',
     'src/biocompiler/policy/finite_build.py': '866cf6270f18742256043be8f4387d057efda963facdc94dea0137c7fbf9c86a',
     'examples/researcher_alpha.py': 'cfb5bd6c445f496e68491450bb9c671c459187918fe86cbe99135ffefdadf6c0',
     'src/biocompiler/core_policy_component_selection.py': '20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9',
@@ -96,16 +103,16 @@ REVIEWED_ADDITIONS = {
     'src/biocompiler/policy/handoff.py': 'a51200b3bb412ebc65cc43df3d69435ea37a7f48a75ba2eba5b7fbafd2479a51',
     'src/biocompiler/policy/inspection.py': '7eca4c5bf12aab21899bb7c9e54b64f8255bae9759e7ebd6a4858bf0f5e76caf',
     'src/biocompiler/policy/logic.py': 'cc0a0fe952f9c8aa16fb5714d0cd1972296154cf1e5e5deed4e7ea9ece3ddf4f',
-    'src/biocompiler/policy/model.py': '7197696399733e610b7a5c458aebf0ddc4b0df997f190cb53fa1659c419b6038',
+    'src/biocompiler/policy/model.py': 'cc0430615690c0a7a5e388b8d2821d03198b14c3f3044a6443a4d6f6747b1ec6',
     'src/biocompiler/policy/observations.py': '24400413e0b42fad132d02d0841cfdc3f9307c452e64ec1b2283be7f389f5a26',
     'src/biocompiler/policy/patterns.py': '9640080fa505e361b09a2dd9a644938365549b37c8be3a8ce547bc1391044b48',
     'src/biocompiler/policy/programs.py': 'ef2823520e47f29f666c8c6bec8f30d43a21195ab5379ae82e0a062563f686fd',
     'src/biocompiler/policy/requirements.py': '80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b',
-    'src/biocompiler/policy/serialization.py': 'd0e2feb4e8dd3fe65a10793d20c06144ad6fec396d99e6107f3485682ee570bf',
+    'src/biocompiler/policy/serialization.py': '4bd1f2dee570d079290b774ea94b059907df62a27793e47927b29ed8981c94f6',
     'src/biocompiler/policy/space.py': 'c32bc67b86370f471fcabe54fdb61332f746130bc23e22d5a2ce7e08666b97c9',
     'src/biocompiler/policy/state.py': '94ef54313d4475428ca678258dfe59727c8dbbe8d327e26b79ba819dcc20d22d',
     'src/biocompiler/policy/time.py': '115fad72c39fa62587d1253e78a374162b0e1543ba146d8634773bab5d41b969',
-    'src/biocompiler/policy/validation.py': '00be9fc170771f06ee7fae34c17ec9a47fcd1c1741efb34fd64044a114d7c5b8',
+    'src/biocompiler/policy/validation.py': '5e4232eeea39adae63e4dadae52afca363068ca28e344161e5806ceed5558529',
     'src/biocompiler/policy/values.py': '56b36e3e4cc8d2caad0bbd26e7ef626eed0b694a50731911e537f4454555bca5',
 }
 

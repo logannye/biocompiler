@@ -10,7 +10,19 @@ attempt 1, passed its required gates; retained offline audits checked all 74 job
 the recorded revision, not to the new work below. Earlier checkpoint documents
 retain their historical preparation-time status.
 
-## Approved to-do list
+## Updated delivery order
+
+Later user direction on 2026-10-10 selects a **CAR payload** and prioritizes one
+complete usable MVP before wider therapeutic expressivity. The
+[CAR MVP and expansion roadmap](car-mvp-and-expansion-roadmap-2026-10-10.md)
+now governs delivery order: finish milestone 1's existing closeout, pull the
+first CAR-specific qualification from milestone 3 forward, complete and ship
+that user workflow, then expand composition and qualified selection as concrete
+use cases require. The list below preserves the original milestones and their
+unfinished scope; it does not require general composition before the first CAR
+release. Current validation ownership and acceptance criteria are unchanged.
+
+## Original approved to-do list
 
 - [ ] **1. Complete one typed end-to-end compiler path — in progress.** Carry
   resolved typed semantic terms through one existing lowering path and expose it

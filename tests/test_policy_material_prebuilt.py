@@ -8,6 +8,8 @@ import io
 import json
 from pathlib import Path
 import tempfile
+import sys
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -16,6 +18,17 @@ from tools import check_policy_material_prebuilt as campaign
 
 IDENTITY = {"revision": "a" * 40, "head_revision": "b" * 40, "run_id": "1234", "run_attempt": "3"}
 ENVIRONMENT = {"path": "", "loader_variables": [], "isolated": True, "dont_write_bytecode": True}
+
+
+def inert_car_module():
+    """Harness-only double; this never authenticates real CAR or native evidence."""
+    inputs = {"data/car_payload/expected.json": {"sha256": "c" * 64, "bytes": 17}}
+    def checked(root, expected):
+        campaign.require(expected == root / "data/car_payload/expected.json", "CAR exact original differs")
+        return {"inert": True}
+    return SimpleNamespace(SCHEMA="biocompiler.car_payload_installed_campaign.v0.1", SCOPE="inert_car_test_scope",
+        EXPECTED="data/car_payload/expected.json", RECEIPT="car-payload.json", FOLDER="car-payload",
+        checked_inputs=checked, input_pins=lambda: deepcopy(inputs), compare_installed=lambda *a, **kw: None)
 
 
 def record(entries, path):
@@ -718,6 +731,72 @@ class PrebuiltMaterialTests(unittest.TestCase):
                         failing[0]=name;events.clear();bundle.reset_mock();args.output_dir=self.root/('researcher-failed'+str(index))
                         with self.assertRaisesRegex(AssertionError,'mandatory '+name+' failure'):campaign.compare(args)
                         self.assertFalse(args.output_dir.exists());bundle.assert_not_called()
+                    car = inert_car_module()
+                    car_bundle = SimpleNamespace(create_starter=lambda *a: None)
+                    args.car_expected = campaign.ROOT / car.EXPECTED
+                    def car_gate(paths_value, expected_value, identity_value, binaries, **keywords):
+                        self.assertEqual(paths_value, [path / "evidence/car-payload.json" for path in paths])
+                        self.assertEqual(expected_value, args.car_expected)
+                        self.assertEqual(identity_value, IDENTITY)
+                        self.assertEqual(keywords, {"expected_sources": {}})
+                        self.assertEqual(set(binaries), set(authorities))
+                        return gate("car")
+                    with patch.dict(sys.modules, {"check_car_payload_installed": car, "car_payload_starter": car_bundle}), \
+                         patch.object(car, "compare_installed", side_effect=car_gate), patch.object(car_bundle, "create_starter") as car_copy:
+                        failing[0] = None; events.clear(); verify.reset_mock(); bundle.reset_mock(); args.output_dir = self.root / "car-out"
+                        value = campaign.compare(args)
+                        self.assertEqual(events, ["old-material", "old-offline", "component", "component-offline", "staged", "researcher", "car"])
+                        self.assertEqual(value["schema_version"], campaign.CAR_SCHEMA)
+                        self.assertEqual(value["claim"], campaign.CAR_CLAIM)
+                        self.assertEqual(value["car_originals"], car.input_pins())
+                        self.assertEqual(value["car_payload"], {"status": "inert_stub_pass", "gate": "car"})
+                        self.assertEqual(verify.call_count, 4)
+                        self.assertTrue(all(call.kwargs == {"staged_path": args.staged_fixture,
+                            "researcher_path": args.researcher_expected, "car_path": args.car_expected} for call in verify.call_args_list))
+                        self.assertEqual(bundle.call_count, 1); self.assertEqual(car_copy.call_count, 1)
+                        self.assertEqual(car_copy.call_args.args[:2], (args, value))
+                        for index, name in enumerate(("old-material", "old-offline", "component", "component-offline", "staged", "researcher", "car")):
+                            failing[0] = name; events.clear(); bundle.reset_mock(); car_copy.reset_mock()
+                            args.output_dir = self.root / ("car-failed" + str(index))
+                            with self.assertRaisesRegex(AssertionError, "mandatory " + name + " failure"):
+                                campaign.compare(args)
+                            self.assertFalse(args.output_dir.exists()); bundle.assert_not_called(); car_copy.assert_not_called()
+
+    def test_car_profile_requires_all_prior_authorities_and_exact_child_identity(self):
+        from argparse import Namespace
+        car = inert_car_module()
+        with patch.dict(sys.modules, {"check_car_payload_installed": car}):
+            self.assertIsNone(campaign.car_expected(Namespace(), None))
+            args = Namespace(car_expected=campaign.ROOT / car.EXPECTED)
+            with self.assertRaisesRegex(ValueError, "preserved researcher"):
+                campaign.car_expected(args, None)
+            self.assertEqual(campaign.car_expected(args, campaign.ROOT / "data/researcher_alpha/expected.json"), args.car_expected)
+            args.car_expected = self.root / "foreign.json"
+            with self.assertRaisesRegex(ValueError, "exact original"):
+                campaign.car_expected(args, Path("/inert-prior"))
+            slot = ("Linux", "x86_64", "3.11")
+            hashes = {"biocompiler-core": "c" * 64, "biocompiler-verify": "d" * 64}
+            own = {"sdk_root": "/hosted/env/site-packages/biocompiler"}
+            sources = {"original": "source"}
+            receipt = {"schema_version": car.SCHEMA, "status": "pass", **IDENTITY,
+                "system": slot[0], "machine": slot[1], "python_version": "3.11.15", "package": own["sdk_root"],
+                "binary_sha256": hashes, "inputs": car.input_pins(), "source_snapshot_sha256": campaign.core.canonical_digest(sources),
+                "scope": car.SCOPE, "empirical": "unassessed", "human_use": "unassessed", "python_semantic_authority": "forbidden",
+                "resolution": "owned_installed_defaults", "real_researcher_project_qualified": False}
+            campaign.car_identity(receipt, IDENTITY, hashes, slot, own, sources)
+            for key, value in (("schema_version", campaign.RESEARCHER_SCHEMA), ("status", "failed"), ("run_id", "old"),
+                               ("run_attempt", "2"), ("revision", "c" * 40), ("head_revision", "c" * 40),
+                               ("python_version", "3.14.6"), ("package", "/foreign"), ("inputs", {}),
+                               ("source_snapshot_sha256", "0" * 64), ("binary_sha256", {}), ("scope", "universal"),
+                               ("empirical", "pass"), ("human_use", "approved"), ("python_semantic_authority", "allowed"),
+                               ("resolution", "explicit_test_double"), ("real_researcher_project_qualified", True)):
+                with self.subTest(key=key), self.assertRaisesRegex(ValueError, "authority or scope"):
+                    campaign.car_identity({**receipt, key: value}, IDENTITY, hashes, slot, own, sources)
+            prior = {**IDENTITY, "run_attempt": "2"}
+            campaign.car_identity({**receipt, **prior}, prior, hashes, slot, own, sources)
+            self.assertEqual(campaign.CAR_SCHEMA, "biocompiler.policy_material_prebuilt_campaign.v0.5")
+            self.assertEqual(campaign.CAR_EVIDENCE, ("car-payload",))
+            self.assertEqual(campaign.RESEARCHER_SCHEMA, "biocompiler.policy_material_prebuilt_campaign.v0.4")
 
     def test_staged_original_is_explicit_and_never_weakens_old_modes(self):
         from argparse import Namespace
@@ -794,6 +873,35 @@ class PrebuiltMaterialTests(unittest.TestCase):
             changed=deepcopy(rows);changed.pop(index)
             with self.assertRaisesRegex(ValueError,'ledger'):
                 campaign.check_commands(self.root,changed,origin,own,fixture,receipt,**options)
+
+        car = inert_car_module()
+        with patch.dict(sys.modules, {"check_car_payload_installed": car}):
+            expected = campaign.ROOT / car.EXPECTED
+            argv = campaign.car_argv(python, checkout, origin, own, expected)
+            logs = {}
+            for suffix in ("stdout", "stderr"):
+                path = self.root / "logs" / ("car-payload." + suffix + ".log")
+                path.write_bytes(b"inert additive CAR log")
+                logs[str(path.relative_to(self.root))] = campaign.pin(path)
+            row = {"name": "car-payload", "argv": argv, "cwd": str(origin / "cwd"),
+                "executable": {"sha256": "e" * 64, "size": 123}, "returncode": 0,
+                "timeout": False, "overflow": False, "environment": "scrubbed_loaders", "logs": logs}
+            split = next(i for i, row in enumerate(rows) if row["name"] == "uninstall")
+            rows.insert(split, row); options["car_path"] = expected
+            campaign.check_commands(self.root, rows, origin, own, fixture, receipt, **options)
+            for flag, value in (("--core-sha256", "0" * 64), ("--verify", own["files"]["bin/biocompiler-core"]["path"]),
+                                ("--expected", "/foreign/original.json"), ("--output", str(origin / "evidence/researcher-alpha.json"))):
+                changed = deepcopy(rows); argv = changed[split]["argv"]; argv[argv.index(flag) + 1] = value
+                with self.subTest(flag=flag), self.assertRaisesRegex(ValueError, "CAR campaign"):
+                    campaign.check_commands(self.root, changed, origin, own, fixture, receipt, **options)
+            for mutate in (lambda rs: rs.pop(split), lambda rs: rs.insert(split, deepcopy(rs[split])),
+                           lambda rs: rs[split].update(environment="empty_path_scrubbed_loaders")):
+                changed = deepcopy(rows); mutate(changed)
+                with self.assertRaisesRegex(ValueError, "ledger|CAR campaign"):
+                    campaign.check_commands(self.root, changed, origin, own, fixture, receipt, **options)
+            with self.assertRaisesRegex(ValueError, "preserved researcher"):
+                campaign.check_commands(self.root, rows, origin, own, fixture, receipt,
+                    component_authority=authority, staged_path=options["staged_path"], car_path=expected)
 
     def test_researcher_identity_requires_owned_defaults_and_all_prior_campaigns(self):
         from argparse import Namespace
@@ -971,6 +1079,22 @@ class PrebuiltMaterialTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'incomplete prebuilt slot'):campaign.verify_slot(*args)
         expanded['schema_version']=campaign.SCHEMA;campaign.write_json(self.root/'prebuilt.json',expanded)
         with self.assertRaisesRegex(ValueError,'incomplete prebuilt slot'):campaign.verify_slot(*args,component_authority={})
+        researcher = {**expanded, "schema_version": campaign.RESEARCHER_SCHEMA, "claim": campaign.RESEARCHER_CLAIM,
+                      "staged_originals": {}, "researcher_originals": {}}
+        options = {"component_authority": {}, "staged_path": Path("/original/staged"), "researcher_path": Path("/original/researcher")}
+        campaign.write_json(self.root / "prebuilt.json", researcher)
+        with self.assertRaisesRegex(ValueError, "incomplete prebuilt slot"):
+            campaign.verify_slot(*args, **options, car_path=Path("/original/car"))
+        car = {**researcher, "schema_version": campaign.CAR_SCHEMA, "claim": campaign.CAR_CLAIM, "car_originals": {}}
+        campaign.write_json(self.root / "prebuilt.json", car)
+        with self.assertRaisesRegex(ValueError, "incomplete prebuilt slot"):
+            campaign.verify_slot(*args, **options)
+        with self.assertRaisesRegex(ValueError, "preserved researcher authority"):
+            campaign.verify_slot(*args, component_authority={}, staged_path=Path("/original/staged"), car_path=Path("/original/car"))
+        car["schema_version"] = campaign.RESEARCHER_SCHEMA
+        campaign.write_json(self.root / "prebuilt.json", car)
+        with self.assertRaisesRegex(ValueError, "incomplete prebuilt slot"):
+            campaign.verify_slot(*args, **options, car_path=Path("/original/car"))
 
 
 if __name__ == "__main__":

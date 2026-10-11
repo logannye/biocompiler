@@ -35,7 +35,21 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "7dfbed0ecefc69a924c88a237a9d76b6ac67b6a69062c8e049cea02a0babc816"
+REVIEWED_METADATA_SHA256 = "4af8785fd3710a393f53e630d8c13c570e9c81c16f8885c6062eae58af46e788"
+BEFORE_CAR_EXPRESSION_METADATA_SHA256 = "e1ddfce7015cf71ce9d82b5c9ca96520b9ecd682bd51d0fcf99f4ea4ce988bb1"
+CAR_EXPRESSION_PREFIXES = ("biocompiler.core_policy_expression_material.",
+                           "biocompiler.policy.expression_material.",
+                           "biocompiler.policy.car_reference.")
+CAR_EXPRESSION_ADDITIONS = (
+    "biocompiler.policy.model.EXPRESSION_SOURCE_PROFILE",
+    "biocompiler.policy.research_project.EXPRESSION_SCHEMA",
+    "biocompiler.policy.research_project.ResearchProject.expression",
+    "biocompiler.policy.research_project.ResearchProject.from_expression",
+    "biocompiler.policy.serialization.expression_source_schema",
+)
+MAX_WITNESSES = 275
+BEFORE_PROJECT_SOURCES_METADATA_SHA256 = "7dfbed0ecefc69a924c88a237a9d76b6ac67b6a69062c8e049cea02a0babc816"
+PROJECT_SOURCES_PREFIX = "biocompiler.policy.project_sources."
 BEFORE_TYPED_BUILD_METADATA_SHA256 = "bdcf13e67b4fc53276b8c2f1d9bece2290999dcabd9786aa22d3605b28a6b066"
 TYPED_BUILD_PREFIX = "biocompiler.policy.finite_build."
 TYPED_BUILD_ADDITIONS = ("biocompiler.policy.research_project.ResearchProject.build",
@@ -175,16 +189,20 @@ COMPOSITION_DEPENDENCIES = (
     'biocompiler.core_policy_implementation._two_observation_original',
 )
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples finite_build handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
-CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking", "core_policy_planning", "core_policy_quantitative_assurance")
+MODULES = tuple("__init__ behavior car_reference catalog chassis cli component_material component_selection coordination deployment effects entities examples expression_material finite_build handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs project_sources quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
+CLIENTS = ("core_policy_expression_material", "core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking", "core_policy_planning", "core_policy_quantitative_assurance")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
-BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py")
+BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py", "src/biocompiler/policy/data/car_rm61461_reference_v01.json")
 # These names remain compatible support surfaces, not cellular runtime APIs.
 SUPPORT = frozenset("model.declaration_ref serialization.DEFAULT_LIMITS serialization.JSONValue operational.FrozenPolicy inspection.summary examples.RATE".split())
 BUILDER_METHODS = tuple("__init__ qualified namespace add hole resolve executor subject encounter clock observe state effect rule machine transition channel require snapshot freeze".split())
 PATTERNS = tuple("bounded_response context_gate once_per_scope ordered_effects persistence_gate population_handoff".split())
 CLI = tuple("check inspect diff export-schema export-request assess-native compile-native check-lowering-native execute-native replay-execution-native compile-implementation-native check-implementation-native replay-implementation-native compile-material-native check-material-native replay-material-native export-material-native".split())
 OPERATIONS = {
+    "core_policy_expression_material.PolicyExpressionMaterialClient.compile": ("compile-policy-expression-material", ("request",)),
+    "core_policy_expression_material.PolicyExpressionMaterialClient.check": ("check-policy-expression-material", ("request", "candidate")),
+    "core_policy_expression_material.PolicyExpressionMaterialClient.replay": ("replay-policy-expression-material", ("request", "candidate", "report")),
+    "core_policy_expression_material.PolicyExpressionMaterialClient.export": ("export-policy-expression-material", ("request", "candidate")),
     'core_policy_quantitative_assurance.PolicyQuantitativeAssuranceClient.compile': ('compile-policy-quantitative-assurance', ('request', 'limits')),
     'core_policy_quantitative_assurance.PolicyQuantitativeAssuranceClient.check': ('check-policy-quantitative-assurance', ('request', 'candidate', 'limits')),
     'core_policy_quantitative_assurance.PolicyQuantitativeAssuranceClient.replay': ('replay-policy-quantitative-assurance', ('request', 'candidate', 'limits', 'report')),
@@ -644,7 +662,7 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
         require(existing[link]["source"] == entries[identity]["source"] and
                 existing[link]["kind"] == link.split(":", 1)[0], "Syntax link names another source owner")
     witnesses = ledger["witnesses"]
-    require(type(witnesses) is dict and 0 < len(witnesses) <= 256, "Missing/bounded witness inventory")
+    require(type(witnesses) is dict and 0 < len(witnesses) <= MAX_WITNESSES, "Missing/bounded witness inventory")
     witness_files: dict[str, tuple[bytes, dict[str, ast.AST]]] = {}
     witness_bytes = 0
     for identity, witness in witnesses.items():
@@ -713,9 +731,26 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
-    before_typed_build = {
-        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("finite_build.")},
+    before_car_expression = {
+        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("car_expression.")},
         "coverage": {key: value for key, value in coverage.items()
+                     if not key.startswith(CAR_EXPRESSION_PREFIXES) and key not in CAR_EXPRESSION_ADDITIONS},
+    }
+    encoded_car_expression = json.dumps(before_car_expression, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_car_expression["coverage"]) == 1767 and len(before_car_expression["witnesses"]) == 237
+            and digest(encoded_car_expression) == BEFORE_CAR_EXPRESSION_METADATA_SHA256,
+            "CAR expression must preserve every previous API evidence meaning")
+    before_project_sources = {
+        "witnesses": {key: value for key, value in before_car_expression["witnesses"].items() if not key.startswith("project_sources.")},
+        "coverage": {key: value for key, value in before_car_expression["coverage"].items() if not key.startswith(PROJECT_SOURCES_PREFIX)},
+    }
+    encoded_project_sources = json.dumps(before_project_sources, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_project_sources["coverage"]) == 1749 and len(before_project_sources["witnesses"]) == 222
+            and digest(encoded_project_sources) == BEFORE_PROJECT_SOURCES_METADATA_SHA256,
+            "Project source inspection must preserve every previous API evidence meaning")
+    before_typed_build = {
+        "witnesses": {key: value for key, value in before_project_sources["witnesses"].items() if not key.startswith("finite_build.")},
+        "coverage": {key: value for key, value in before_project_sources["coverage"].items()
                      if not key.startswith(TYPED_BUILD_PREFIX) and key not in TYPED_BUILD_ADDITIONS},
     }
     encoded_typed_build = json.dumps(before_typed_build, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
