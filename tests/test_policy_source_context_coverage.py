@@ -50,13 +50,31 @@ class PolicySourceContextCoverageTests(unittest.TestCase):
     def test_current_bounded_slice_leaves_full_census_and_semantics_open(self):
         result = coverage.check()
         self.assertEqual((result["rules"], result["contexts"], result["sources"]), (40, 43, 15))
-        self.assertEqual((result["syntax_rows"], result["families"]), (612, 62))
+        self.assertEqual((result["syntax_rows"], result["families"]), (614, 62))
         self.assertEqual(result["status"], "source_slice_current")
         self.assertEqual(result["whole_source_census"], "open")
         self.assertEqual(result["whole_stack_census"], "open")
         self.assertEqual(result["witness_sufficiency"], "not_assessed")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["native_execution"], "not_performed")
+
+    def test_new_expression_syntax_is_present_but_outside_existing_source_slice(self):
+        entries = coverage.decode(coverage.read(coverage.ROOT, coverage.SYNTAX_LEDGER))["entries"]
+        syntax_ids = {row["id"] for row in entries}
+        expression_ids = {
+            "constant:EXPRESSION_SOURCE_PROFILE",
+            'literal:AssuranceRequest.horizon="not_applicable"',
+        }
+        self.assertTrue(expression_ids <= syntax_ids)
+        mapped_ids = {syntax_id for group in ("rules", "contexts")
+                      for row in self.original[group] for syntax_id in row["syntax_ids"]}
+        self.assertTrue(expression_ids.isdisjoint(mapped_ids))
+        for group in ("rules", "contexts"):
+            for syntax_id in expression_ids:
+                with self.subTest(group=group, syntax_id=syntax_id):
+                    self.ledger = deepcopy(self.original)
+                    self.reject(lambda value: value[group][0]["syntax_ids"].append(syntax_id),
+                                "Unreviewed source predicates/contexts")
 
     def pre_expression_projection(self):
         projected = deepcopy(self.original)
@@ -301,7 +319,7 @@ class PolicySourceContextCoverageTests(unittest.TestCase):
             value = json.loads(original)
             value[key].pop()
             path.write_text(json.dumps(value))
-            with self.assertRaisesRegex(coverage.CoverageError, "Changed (612 syntax|62 family) census"):
+            with self.assertRaisesRegex(coverage.CoverageError, "Changed (614 syntax|62 family) census"):
                 coverage.check(root, self.ledger)
             path.write_bytes(original)
 

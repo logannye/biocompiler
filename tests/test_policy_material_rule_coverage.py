@@ -57,7 +57,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         self.assertEqual(result["expression_route"], {"rules": 7, "sources": 28, "witness_sources": 6,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "empirical_function": "not_established", "native_acceptance": "not_established"})
-        self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
+        self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 614)
 
     def test_omitted_duplicate_reordered_or_invented_family_is_rejected(self):
         for mutate in (

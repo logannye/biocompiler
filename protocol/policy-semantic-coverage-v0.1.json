@@ -143,6 +143,38 @@
         "text": "\"draft\", add \"holes\""
       },
       "scope": "Native document ingress explicitly rejects PolicyDraft roots."
+    },
+    "expression_source_wire": {
+      "path": "core/lib/domain/policy_document.ml",
+      "kind": "owner",
+      "anchor": {
+        "text": "let of_expression_json "
+      },
+      "scope": "Explicit bounded expression-source ingress only; default policy ingress and operational admission are not widened."
+    },
+    "expression_source_positive": {
+      "path": "tests/test_policy_expression_source.py",
+      "kind": "positive_control",
+      "anchor": {
+        "symbol": "ExpressionSourceTests.test_explicit_static_root_roundtrips_without_source_rewriting"
+      },
+      "scope": "Explicit static BuildRequest root and timeless assurance roundtrip; structural representation only, without a supplied material contract or semantic acceptance."
+    },
+    "expression_source_legacy_rejection": {
+      "path": "tests/test_policy_expression_source.py",
+      "kind": "rejection_control",
+      "anchor": {
+        "symbol": "ExpressionSourceTests.test_old_profile_cannot_smuggle_static_assurance"
+      },
+      "scope": "The old profile and standalone assurance cannot admit the new timeless sentinel; no operational profile is widened."
+    },
+    "expression_source_temporal_rejection": {
+      "path": "tests/test_policy_expression_source.py",
+      "kind": "rejection_control",
+      "anchor": {
+        "symbol": "ExpressionSourceTests.test_static_profile_rejects_temporal_or_nonstructural_assurance"
+      },
+      "scope": "Explicit new root rejects temporal horizons, nonstructural assurance, assumptions and tolerances; not proof of material or biological behavior."
     }
   },
   "dispositions": {
@@ -694,6 +726,42 @@
       "follow_up": [
         "SM-01.1"
       ]
+    },
+    "expression_source_representation": {
+      "stages": {
+        "authorable": "supported",
+        "python_structure": "contextual",
+        "native_source": "contextual",
+        "operational": "unsupported",
+        "implementation": "unsupported",
+        "material": "unsupported",
+        "export": "unsupported"
+      },
+      "condition": "These syntax distinctions belong only to an explicit BuildRequest root with profile biocompiler.policy_expression_source.v0.1 and structural assurance with horizon not_applicable, empty assumptions and empty tolerances. Nested PolicyProgram/SemanticBundle retain biocompiler.policy.v0.1; the old root and default native ingress reject the sentinel. They do not enter this ledger's biocompiler.policy_operational.v0.1 path. Downstream unsupported statuses refer to that operational path: the separate conditional expression-material route requires its own original authority and independent checks, whose coverage or acceptance is not established by these syntax rows.",
+      "owners": {
+        "source": [
+          "python_model",
+          "python_validation"
+        ],
+        "native": [
+          "expression_source_wire"
+        ]
+      },
+      "witnesses": {
+        "positive": [
+          "expression_source_positive"
+        ],
+        "rejection": [
+          "expression_source_legacy_rejection",
+          "expression_source_temporal_rejection"
+        ],
+        "dedicated": false,
+        "scope": "Referenced source-shape controls jointly exercise the profile and sentinel boundary. Their presence is not a current hosted receipt, complete contextual rule coverage, material correspondence or empirical evidence; per-distinction semantic closure remains open."
+      },
+      "follow_up": [
+        "SM-01.2",
+        "SM-08.1"
+      ]
     }
   },
   "entries": [
@@ -938,6 +1006,16 @@
       "disposition": "source_representation"
     },
     {
+      "id": "constant:EXPRESSION_SOURCE_PROFILE",
+      "kind": "constant",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "EXPRESSION_SOURCE_PROFILE"
+      },
+      "syntax_sha256": "3cd948a0dc6fbb8bae906b540cb97ce44dc711fe0cf8ce4537219235196d3cb4",
+      "disposition": "expression_source_representation"
+    },
+    {
       "id": "constant:INTEGER",
       "kind": "constant",
       "source": {
@@ -1104,7 +1182,7 @@
         "path": "src/biocompiler/policy/model.py",
         "symbol": "AssuranceRequest.horizon"
       },
-      "syntax_sha256": "eae94abe674206e15e85ab768e6ba498cae57ab8c803b30b73b787340938d8c8",
+      "syntax_sha256": "40ca8149ec1b0effc82b1242afe15f2e24f463b37d08ba82e47d26125e71b153",
       "disposition": "deployment_retained"
     },
     {
@@ -4196,6 +4274,16 @@
       },
       "syntax_sha256": "9d13b1bce40a105f17fefd9e747a8acda007392d70c2cdcb35e8227b1e9195a7",
       "disposition": "operational_contextual"
+    },
+    {
+      "id": "literal:AssuranceRequest.horizon=\"not_applicable\"",
+      "kind": "literal",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "AssuranceRequest.horizon"
+      },
+      "syntax_sha256": "0296f22b01d3da51783b5e145c24403c9066251dff0d2f86a33204d0d2b0cd38",
+      "disposition": "expression_source_representation"
     },
     {
       "id": "literal:AssuranceRequest.horizon=\"unbounded_requested\"",

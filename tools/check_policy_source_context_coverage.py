@@ -311,11 +311,11 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
     require(type(syntax_ledger) is dict and syntax_ledger.get("schema_version") == "biocompiler.policy_semantic_coverage.v0.1", "Wrong syntax ledger")
     require(type(family_ledger) is dict and family_ledger.get("schema_version") == "biocompiler.policy_material_rule_coverage.v0.1", "Wrong family ledger")
     entries, families = syntax_ledger.get("entries"), family_ledger.get("rules")
-    require(type(entries) is list and len(entries) == 612 and all(type(row) is dict and type(row.get("id")) is str for row in entries), "Changed 612 syntax census")
+    require(type(entries) is list and len(entries) == 614 and all(type(row) is dict and type(row.get("id")) is str for row in entries), "Changed 614 syntax census")
     require(type(families) is list and len(families) == 62 and all(type(row) is dict and type(row.get("id")) is str for row in families), "Changed 62 family census")
     syntax_ids = {row["id"] for row in entries}
     family_ids = {row["id"] for row in families}
-    require(len(syntax_ids) == 612 and len(family_ids) == 62, "Duplicate complementary identity")
+    require(len(syntax_ids) == 614 and len(family_ids) == 62, "Duplicate complementary identity")
     structures: dict[str, dict[str, Any]] = {}
     sources = ledger["sources"]
     require(type(sources) is list and all(type(row) is dict for row in sources)

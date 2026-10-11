@@ -90,13 +90,14 @@ class WorkflowCliLineageTests(unittest.TestCase):
             "src/biocompiler/synthetic_producer_backend.py", "src/biocompiler/synthetic_producer_cli.py",
             "src/biocompiler/workflow_backend.py",
             "src/biocompiler/workflow_cli.py",
-            "examples/expressive_policies.py", "examples/researcher_alpha.py",
+            "examples/expressive_policies.py", "examples/researcher_alpha.py", "examples/car_payload.py",
             "src/biocompiler/_policy_coupled_wire.py",
             "src/biocompiler/__init__.py", "src/biocompiler/__main__.py",
             "src/biocompiler/entrypoint.py", "src/biocompiler/core_policy.py",
             "src/biocompiler/core_policy_operational.py", "src/biocompiler/core_policy_implementation.py",
             "src/biocompiler/core_policy_material.py", "src/biocompiler/core_policy_component_material.py",
             "src/biocompiler/core_policy_component_selection.py",
+            "src/biocompiler/core_policy_expression_material.py",
             'src/biocompiler/core_policy_module_linking.py',
             'src/biocompiler/core_policy_planning.py',
             'src/biocompiler/core_policy_quantitative_assurance.py',
@@ -106,7 +107,7 @@ class WorkflowCliLineageTests(unittest.TestCase):
                 "__init__", "behavior", "catalog", "chassis", "cli", "coordination", "deployment",
                 "effects", "entities", "examples", "handoff", "inspection", "logic", "model", "native",
                 "observations", "patterns", "programs", "requirements", "serialization", "space",
-                "state", "time", "validation", "values", "operational", "implementation", "material", "component_material", "component_selection", "research_project", "finite_build", "approximation", "module_linking", "modules",
+                "state", "time", "validation", "values", "operational", "implementation", "material", "component_material", "component_selection", "research_project", "finite_build", "car_reference", "expression_material", "project_sources", "approximation", "module_linking", "modules",
                 "planning", "quantitative", "quantitative_assurance", "quantitative_composition", "realization_evidence", "refinement", "typed")]]))
         self.assertEqual(receipt["schema_version"], "biocompiler.workflow_cli_source_lineage.v4")
         self.assertEqual(receipt["packaging_metadata_counterpart"], lineage.packaging.counterpart()[1])
