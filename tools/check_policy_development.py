@@ -26,7 +26,7 @@ except ImportError:
 SCHEMA = "biocompiler.development-feedback.v0.1"
 WORKFLOW = ".github/workflows/policy-development.yml"
 SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "data/researcher_alpha",
-                "examples/researcher_alpha.py", "pyproject.toml")
+                "examples/researcher_alpha.py", "data/car_payload", "examples/car_payload.py", "pyproject.toml")
 SUITES = (
     ('test_policy_quantitative_composition', ('data/policy_quantitative_composition_v01.json', 'data/policy_quantitative_network_v01.json')),
     ('test_policy_approximation', ('data/policy_approximation_v01.json',)),
@@ -82,7 +82,7 @@ SUITES = (
     ("test_policy_material_binding", ("data/policy_material_binding_v01.json",)),
     ("test_policy_material_context", ("data/policy_material_context_v01.json",)),
     ("test_policy_material_check", ("data/policy_material_request_v01.json",)),
-    ("test_policy_mrna_structure", ("data/policy_mrna_structure_v01.json",)),
+    ("test_policy_mrna_structure", ("data/policy_mrna_structure_v01.json", "data/policy_material_request_v01.json")),
     ("test_construction_content", ("data/construction_content_v01.json",)),
 )
 DEPENDENCIES = ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"]
@@ -708,6 +708,56 @@ def researcher_alpha_sdk(root):
     return report
 
 
+def car_payload_sdk(root):
+    """Run the CAR reference task against the same authenticated native build."""
+    output = root / "generated/development-feedback"
+    report = {"schema": "biocompiler.development-car-payload-feedback.v0.1", "acceptance": False,
+              "scope": "source-tree public project workflow; installed, release and empirical acceptance remain separate",
+              "status": "failed", "actions": []}
+    prepared, binaries = None, {}
+    try:
+        prepared = bundle.manifest_document((output / "preparation.json").read_bytes())
+        require(prepared == preparation(root), "CAR SDK sources or hosted identity changed")
+        native_pin = pin(root, "generated/development-feedback/feedback.json")
+        native = bundle.manifest_document((output / "feedback.json").read_bytes())
+        validate_native_feedback(root, native, prepared)
+        binaries = {path: pin(root, path, executable=True) for path in SDK_BINARIES.values()}
+        require(all(native["binaries"].get(path) == value for path, value in binaries.items()),
+                "CAR SDK executable differs from completed native build")
+        report.update(identity=prepared["identity"], sources_before=prepared["sources"],
+                      native_feedback=native_pin, binaries=binaries)
+        witness = output / "car-payload-sdk-witness.json"
+        argv = [sys.executable, "-B", str(root / "tools/check_car_payload.py"),
+                "--expected", str(root / "data/car_payload/expected.json"),
+                "--core", str(root / SDK_BINARIES["core"]), "--verify", str(root / SDK_BINARIES["verify"]),
+                "--output", str(witness)]
+        row = command(root, output, "car-payload-sdk", argv)
+        report["actions"].append(row)
+        require(row["status"] == "passed", "CAR SDK campaign failed")
+        require(witness.stat().st_size <= 1024 * 1024, "CAR SDK receipt exceeds its bound")
+        report["outputs"] = {witness.name: pin(root, witness.relative_to(root).as_posix())}
+        report["status"] = "passed"
+    except Exception as error:
+        report.update(status="failed", error=str(error))
+        raise
+    finally:
+        try:
+            after = preparation(root)
+            report["sources_after"] = after["sources"]
+            require(prepared == after, "CAR SDK source changed during execution")
+            require({path: pin(root, path, executable=True) for path in binaries} == binaries,
+                    "CAR SDK executable changed during execution")
+            if "native_feedback" in report:
+                require(pin(root, "generated/development-feedback/feedback.json") == report["native_feedback"],
+                        "Native feedback changed during CAR SDK execution")
+                validate_native_feedback(root, bundle.manifest_document((output / "feedback.json").read_bytes()), prepared)
+        except Exception as error:
+            report.update(status="failed", source_error=str(error))
+        save(output / "car-payload-sdk.json", report)
+        require(report["status"] == "passed", report.get("source_error", report.get("error", "Incomplete CAR SDK")))
+    return report
+
+
 def grounded_helper_sdk(root):
     return public_sdk(root, grounded_helper=True)
 
@@ -764,11 +814,11 @@ def sdk_all(root):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk", "instance-sdk", "prerequisite-sdk", "two-observation-sdk", "multi-member-sdk", "grounded-helper-sdk", "sdk-all"))
+    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "researcher-alpha-sdk", "car-payload-sdk", "instance-sdk", "prerequisite-sdk", "two-observation-sdk", "multi-member-sdk", "grounded-helper-sdk", "sdk-all"))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     try:
-        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk, "staged-material-sdk": staged_material_sdk, "researcher-alpha-sdk": researcher_alpha_sdk, "instance-sdk": instance_sdk, "prerequisite-sdk": prerequisite_sdk, "two-observation-sdk": two_observation_sdk, "multi-member-sdk": multi_member_sdk, "grounded-helper-sdk": grounded_helper_sdk, "sdk-all": sdk_all}[args.command](root)
+        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk, "staged-material-sdk": staged_material_sdk, "researcher-alpha-sdk": researcher_alpha_sdk, "car-payload-sdk": car_payload_sdk, "instance-sdk": instance_sdk, "prerequisite-sdk": prerequisite_sdk, "two-observation-sdk": two_observation_sdk, "multi-member-sdk": multi_member_sdk, "grounded-helper-sdk": grounded_helper_sdk, "sdk-all": sdk_all}[args.command](root)
     except (OSError, ValueError) as error:
         print(str(error), file=sys.stderr)
         return 1

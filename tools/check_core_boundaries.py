@@ -144,7 +144,7 @@ TESTS = {
     "test_policy_candidate_congruence_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_candidate_runtime", "bioc_realization_checker", "zarith", "unix"},
     "test_policy_candidate_transition_congruence": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "bioc_policy_staged_test_support"},
     "test_construction_content": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
-    "test_policy_mrna_structure": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker"},
+    "test_policy_mrna_structure": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "bioc_service", "bioc_producer_service", "zarith"},
     "test_policy_implementation_service": {"bioc_wire", "bioc_service", "bioc_producer_service"},
     "test_policy_implementation_binding": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
     "test_policy_trace_correspondence": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "zarith"},
@@ -494,6 +494,57 @@ def source_boundary(path, allowed_libraries, *, owner=None):
     return sorted(referenced)
 
 
+EXPRESSION_TEST_MODULES = ["test_policy_mrna_structure", "test_policy_expression_source_admission"]
+
+
+def expression_boundaries(root: Path):
+    """Closed source tripwires, not proof of checker behavior or native execution."""
+    core = root / "core"
+    def text(name):
+        return (core / name).read_text(encoding="utf-8")
+    def require(condition, message):
+        if not condition:
+            raise BoundaryError("Expression boundary: " + message)
+    service = text("lib/service/policy_expression_material_service.ml")
+    operations = ["check-policy-expression-material", "replay-policy-expression-material", "export-policy-expression-material"]
+    declarations = re.findall(r'^let operations\s*=\s*\[([^\]]*)\]', service, re.M)
+    require(len(declarations) == 1 and re.findall(r'"([^"\\]*)"', declarations[0]) == operations
+            and re.sub(r'"[^"\\]*"|[;\s]', '', declarations[0]) == '',
+            "shared service must expose exactly check/replay/export operations")
+    shared = text("lib/service/service.ml")
+    require("compile-policy-expression-material" not in shared
+            and "Policy_expression_material_service.producer_profile" not in shared,
+            "Verify shared capabilities cannot publish expression production")
+    for snippet in ("Policy_expression_material_service.operations", "Policy_expression_material_service.handle ~operation request.payload",
+                    '"policy_expression_material", Policy_expression_material_service.profile'):
+        require(snippet in shared, "shared check/replay/export dispatch is missing")
+    producer = text("lib/producer_service/producer_service.ml")
+    require('| Protocol.Core, "compile-policy-expression-material" -> Protocol.Ok, Some (Policy_expression_material_producer.compile request.payload), []' in producer,
+            "expression production must retain its explicit Core role guard")
+    require(ocaml_tokens(text("bin/verify/main.ml")) ==
+            ocaml_tokens("let () = Bioc_service.Service.run Bioc_wire.Protocol.Verify"),
+            "Verify entrypoint must retain its separate shared-service role")
+    for filename, capability in (("policy_expression_source_admission.mli", "t"),
+                                  ("policy_expression_structure_check.mli", "checked_structure"),
+                                  ("policy_expression_material_check.mli", "checked_expression_material"),
+                                  ("policy_mrna_structure_check.mli", "checked_structure")):
+        tokens = ocaml_tokens(text("lib/checker/" + filename))
+        positions = [index for index in range(len(tokens)-1) if tokens[index:index+2] == ["type", capability]]
+        require(len(positions) == 1 and (positions[0]+2 == len(tokens) or tokens[positions[0]+2] in {"val", "type", "module"}),
+                filename + " must keep its capability abstract")
+    for filename in ("policy_expression_structure_check.ml", "policy_expression_structure_check.mli",
+                     "policy_expression_material_check.ml", "policy_expression_material_check.mli"):
+        require("Policy_mrna_structure_check" not in ocaml_tokens(text("lib/checker/" + filename)),
+                "new nominal interpretation cannot reuse the legacy structural token")
+    require("Construction_check.check_template" in text("lib/checker/policy_expression_structure_check.ml"),
+            "nominal structure must retain independent original-root reconstruction")
+    require("Test_policy_expression_source_admission.run Sys.argv.(2)" in text("test/test_policy_mrna_structure.ml")
+            and "let run fixture_path =" in text("test/test_policy_expression_source_admission.ml"),
+            "the grouped suite must actually call the expression controls")
+    return {"operations": operations, "producer_role": "core_only", "tokens": "separate_abstract_types",
+            "claim_scope": "static_source_tripwires_not_native_acceptance"}
+
+
 def check_boundaries(root: Path):
     root = root.resolve()
     core = root / "core"
@@ -557,7 +608,8 @@ def check_boundaries(root: Path):
                     expected_path, expected_dependencies, role = EXECUTABLES[public_name]
                     key = "executable:" + public_name
             else:
-                if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
+                modules = EXPRESSION_TEST_MODULES if name == "test_policy_mrna_structure" else [name]
+                if relative != "test/dune" or name not in TESTS or values.get("modules") != modules:
                     raise BoundaryError(f"Unreviewed native test stanza: {name}")
                 fixture_variables = {
                     "test_reference_inputs": "%{env:BIOCOMPILER_REFERENCE_INPUTS_CORPUS=missing}",
@@ -665,7 +717,7 @@ def check_boundaries(root: Path):
                     "test_policy_candidate_congruence_check": ["policy_implementation_binding_v01.json"],
                     "test_policy_candidate_transition_congruence": ["policy_primitives_v01.json"],
                     "test_construction_content": ["construction_content_v01.json"],
-                    "test_policy_mrna_structure": ["policy_mrna_structure_v01.json"],
+                    "test_policy_mrna_structure": ["policy_mrna_structure_v01.json", "policy_material_request_v01.json"],
                     "test_policy_implementation_service": ["policy_implementation_request_v01.json"],
                     "test_policy_material_binding": ["policy_material_binding_v01.json"],
                     "test_policy_component_fragment": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
@@ -733,9 +785,10 @@ def check_boundaries(root: Path):
         owner = locations.get(path.parent)
         if owner:
             allowed = set(graph[owner]) | ({owner} if owner in LIBRARIES else set())
-        elif path.parent == core / "test" and path.stem in tests:
-            allowed = set(tests[path.stem])
-            owner = "test:" + path.stem
+        elif path.parent == core / "test" and (path.stem in tests or path.stem == "test_policy_expression_source_admission"):
+            suite = "test_policy_mrna_structure" if path.stem == "test_policy_expression_source_admission" else path.stem
+            allowed = set(tests[suite])
+            owner = "test:" + suite
         else:
             raise BoundaryError(f"OCaml source has no reviewed Dune owner: {relative}")
         references[relative] = source_boundary(path, allowed, owner=owner)
@@ -752,6 +805,7 @@ def check_boundaries(root: Path):
             "shared_trusted_base": ["bioc_wire", "bioc_domain"],
             "private_modules": PRIVATE_MODULES,
             "native_tests": tests, "source_module_references": references,
+            "expression_profile": expression_boundaries(root),
             "source_sha256": dict(sorted(source_files.items()))}
 
 

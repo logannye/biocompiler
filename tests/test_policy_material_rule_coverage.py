@@ -31,9 +31,11 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         directory = tempfile.TemporaryDirectory(prefix="policy-material-rule-coverage-")
         self.addCleanup(directory.cleanup)
         root = Path(directory.name)
-        names = set(self.source_names) | {self.original["syntax_ledger"], coverage.COMPONENT_LEDGER}
+        names = set(self.source_names) | {self.original["syntax_ledger"], coverage.COMPONENT_LEDGER, coverage.EXPRESSION_LEDGER}
         names.update(row["path"] for row in self.original["witness_sources"])
         names.update(coverage.COMPONENT_WITNESSES)
+        names.update(coverage.EXPRESSION_SOURCES)
+        names.update(coverage.EXPRESSION_WITNESSES)
         for name in names:
             target = root / name
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -43,7 +45,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 227)
+        self.assertEqual(result["sources"], 241)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
@@ -52,6 +54,9 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         self.assertEqual(result["component_route"], {"rules": 40, "sources": 175, "witness_sources": 181,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
+        self.assertEqual(result["expression_route"], {"rules": 7, "sources": 28, "witness_sources": 6,
+            "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
+            "empirical_function": "not_established", "native_acceptance": "not_established"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
 
     def test_omitted_duplicate_reordered_or_invented_family_is_rejected(self):
@@ -64,6 +69,65 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
             with self.subTest(mutation=mutate):
                 self.ledger = deepcopy(self.original)
                 self.rejected(mutate, "rule census")
+
+    def test_expression_addition_preserves_all_prior_material_meanings_and_classifications(self):
+        metadata = coverage.metadata_before_expression(self.original)
+        self.assertEqual(len(metadata["source_classifications"]), 227)
+        self.assertEqual(len(metadata["rules"]), 62)
+        self.assertEqual(len(metadata["witness_paths"]), 30)
+        encoded = json.dumps(metadata, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), coverage.BEFORE_EXPRESSION_METADATA_SHA256)
+        self.assertEqual(coverage.BEFORE_EXPRESSION_METADATA_SHA256,
+                         "762793a3f0df7bef61e00eccde1aeb78609c0fd4dd32bd72d4ea539c042d6091")
+        for name in coverage.EXPRESSION_ROUTE_SOURCES:
+            row = next(row for row in self.original["sources"] if row["path"] == name)
+            self.assertEqual((row["disposition"], row["reason"]), ("outside_route", coverage.EXPRESSION_REASON))
+
+    def test_expression_census_is_closed_and_all_controls_remain_source_only(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.EXPRESSION_LEDGER))
+        for key in ("sources", "witness_sources", "rules"):
+            for change in (lambda rows: rows.pop(), lambda rows: rows.append(deepcopy(rows[0])), lambda rows: rows.reverse()):
+                ledger = deepcopy(original)
+                change(ledger[key])
+                with self.subTest(key=key), self.assertRaisesRegex(coverage.CoverageError, "census"):
+                    coverage.check_expression(coverage.ROOT, ledger)
+        for row in original["rules"]:
+            self.assertEqual(row["evidence_scope"], "source_only_not_executed_by_this_gate")
+        self.assertEqual(coverage.check_expression()["native_acceptance"], "not_established")
+        self.assertEqual(coverage.check_expression()["empirical_function"], "not_established")
+
+    def test_expression_meanings_witnesses_and_claims_cannot_be_promoted_by_repins(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.EXPRESSION_LEDGER))
+        for key, value in (("scope", "Universally demonstrated expression."), ("limits", "Biological validation is complete."),
+                           ("negative", deepcopy(original["rules"][0]["positive"])),
+                           ("evidence_scope", "native_pass")):
+            ledger = deepcopy(original)
+            ledger["rules"][0][key] = value
+            with self.subTest(key=key), self.assertRaisesRegex(coverage.CoverageError, "metadata|execution proof"):
+                coverage.check_expression(coverage.ROOT, ledger)
+        ledger = deepcopy(original)
+        ledger["rules"][0]["negative"][0]["anchor"] = "Absent distinguishing source control"
+        with self.assertRaisesRegex(coverage.CoverageError, "Missing expression source anchor"):
+            coverage.check_expression(coverage.ROOT, ledger)
+
+    def test_expression_native_source_and_witness_bytes_remain_individually_pinned(self):
+        root = self.checkout()
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.EXPRESSION_LEDGER))
+        for name in ("core/lib/checker/policy_expression_material_check.ml",
+                     "core/test/test_policy_expression_source_admission.ml"):
+            path = root / name
+            before = path.read_bytes()
+            path.write_bytes(before + b"\n(* changed reviewed source *)\n")
+            with self.subTest(name=name), self.assertRaisesRegex(coverage.CoverageError, "Stale expression source hash"):
+                coverage.check_expression(root, original)
+            path.write_bytes(before)
+        name = "core/lib/checker/policy_expression_material_check.ml"
+        path = root / name
+        path.write_bytes(path.read_bytes() + b'\nlet extra_guard x = Diagnostic.require x "extra" "extra"\n')
+        row = next(row for row in original["sources"] if row["path"] == name)
+        row["sha256"] = coverage.digest(path.read_bytes())
+        with self.assertRaisesRegex(coverage.CoverageError, "Changed expression guard/profile census"):
+            coverage.check_expression(root, original)
 
     def test_signature_compound_and_lifecycle_rows_retain_distinguishing_source_controls(self):
         rules = {row["id"]: row for row in self.original["rules"]}
@@ -785,7 +849,8 @@ let check x = Diagnostic.require x "code" "message"
             and row["path"] not in coverage.COMPONENT_TARGET_PLANNING_SOURCES
             and row["path"] not in coverage.COMPONENT_TRANSFER_SOURCES
             and row["path"] not in coverage.COMPONENT_TRANSFER_NETWORK_SOURCES
-            and row["path"] not in coverage.COMPONENT_ASSURED_SOURCES]
+            and row["path"] not in coverage.COMPONENT_ASSURED_SOURCES
+            and row["path"] not in coverage.EXPRESSION_ROUTE_SOURCES]
         projected["witness_paths"] = [row["path"] for row in self.original["witness_sources"]]
         encoded = json.dumps(projected, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),

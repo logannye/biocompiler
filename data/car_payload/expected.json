@@ -1,0 +1,1882 @@
+{
+  "acceptance": false,
+  "claim_scope": {
+    "biological_function": "unassessed",
+    "clinical": "not_established",
+    "human_in_vivo": "not_established",
+    "redistribution_or_manufacturing_rights": "not_granted",
+    "software": "conditional_exact_nominal_material_under_supplied_contracts",
+    "source_authenticity": "separate_qualified_reference_record"
+  },
+  "kind": "frozen_original_and_independent_public_literal_oracle",
+  "material": {
+    "chemistry": {
+      "cap": {
+        "identity": {
+          "accession": "m7G_5prime_ppp_5prime_2primeOMeA_pG",
+          "namespace": "WO2025096878A9.nominal_chemistry",
+          "schema_version": "biocompiler.chemical_identity.v0.1",
+          "version": "1"
+        },
+        "provenance": {
+          "authority": [
+            {
+              "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+              "id": "WO2025096878A9",
+              "kind": "source",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "2025-07-10"
+            }
+          ],
+          "locator": "current A9 [00408]",
+          "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+          "status": "declared"
+        },
+        "schema_version": "biocompiler.chemistry_claim.v0.1",
+        "status": "declared"
+      },
+      "finish_end": {
+        "identity": {
+          "accession": "3prime_hydroxyl",
+          "namespace": "design.nominal_chemistry",
+          "schema_version": "biocompiler.chemical_identity.v0.1",
+          "version": "1"
+        },
+        "provenance": {
+          "authority": [
+            {
+              "content_fingerprint": "e5688747ec57b743f818f6def232efa2db1612fd4baeb722bebdec207a259c7b",
+              "id": "car.rm61461.terminal_design",
+              "kind": "source",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "1"
+            }
+          ],
+          "locator": "original source semantic definition car.rm61461.terminal_design",
+          "reason": "Explicit designer-supplied 3prime hydroxyl; the publication's actual terminal chemistry remains unassessed.",
+          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+          "status": "declared"
+        },
+        "schema_version": "biocompiler.chemistry_claim.v0.1",
+        "status": "declared"
+      },
+      "modification_inventory_provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+            "id": "WO2025096878A9",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "2025-07-10"
+          }
+        ],
+        "locator": "current A9 [00408]",
+        "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "modification_inventory_status": "declared",
+      "modifications": [
+        {
+          "canonical_base": "U",
+          "id": "all_uridines",
+          "identity": {
+            "accession": "n1_methylpseudouridine",
+            "namespace": "biocompiler.chemical",
+            "schema_version": "biocompiler.chemical_identity.v0.1",
+            "version": "1"
+          },
+          "positions": [],
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                "id": "WO2025096878A9",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "2025-07-10"
+              }
+            ],
+            "locator": "current A9 [00408]",
+            "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.base_modification.v0.1",
+          "scope": "all_matching_bases"
+        },
+        {
+          "canonical_base": "A",
+          "id": "cap_adjacent_adenosine",
+          "identity": {
+            "accession": "2prime_O_methyladenosine",
+            "namespace": "WO2025096878A9.nominal_chemistry",
+            "schema_version": "biocompiler.chemical_identity.v0.1",
+            "version": "1"
+          },
+          "positions": [
+            0
+          ],
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                "id": "WO2025096878A9",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "2025-07-10"
+              }
+            ],
+            "locator": "current A9 [00408]",
+            "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.base_modification.v0.1",
+          "scope": "positions"
+        }
+      ],
+      "schema_version": "biocompiler.molecule_chemistry.v0.1",
+      "start_end": {
+        "identity": {
+          "accession": "m7G_5prime_ppp_5prime_2primeOMeA_pG",
+          "namespace": "WO2025096878A9.nominal_chemistry",
+          "schema_version": "biocompiler.chemical_identity.v0.1",
+          "version": "1"
+        },
+        "provenance": {
+          "authority": [
+            {
+              "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+              "id": "WO2025096878A9",
+              "kind": "source",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "2025-07-10"
+            }
+          ],
+          "locator": "current A9 [00408]",
+          "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+          "status": "declared"
+        },
+        "schema_version": "biocompiler.chemistry_claim.v0.1",
+        "status": "declared"
+      },
+      "terminal_tail": {
+        "length": {
+          "exact": 110,
+          "lower": null,
+          "mode": "exact",
+          "schema_version": "biocompiler.tail_length.v0.1",
+          "upper": null
+        },
+        "path": {
+          "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+          "space_id": "rm61461.output.frame",
+          "spans": [
+            {
+              "end": 1776,
+              "schema_version": "biocompiler.molecule_index_span.v0.1",
+              "start": 1666
+            }
+          ],
+          "strand": "+"
+        },
+        "placement": "represented_terminal",
+        "provenance": {
+          "authority": [
+            {
+              "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+              "id": "WO2025096878.sequence-listing",
+              "kind": "source",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "2024-10-28"
+            },
+            {
+              "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+              "id": "WO2025096878A9",
+              "kind": "source",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "2025-07-10"
+            }
+          ],
+          "locator": "SEQ151; current A9 Figure3C",
+          "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+          "status": "declared"
+        },
+        "schema_version": "biocompiler.tail_declaration.v0.1",
+        "status": "declared"
+      }
+    },
+    "molecule_id": "payload",
+    "protein": "MALPVTALLLPLALLLHAARPEIVLTQSPGTLSLSPGERATLSCRASQSVSSSYLAWYQQKPGQAPRLLIYGASSRATGIPDRFSGSGSGTDFTLTISRLEPEDFAVYYCQQYGSSRFTFGPGTKVDIKGSTSGSGKPGSGEGSTKGQVQLVQSGAEVKKPGSSVKVSCKDSGGTFSSYAISWVRQAPGQGLEWMGGIIPIFGTTNYAQQFQGRVTITADESTSTAYMELSSLRSEDTAVYYCAREAVAADWLDPWGQGTLVTVSSIEVMYPPPYLDNEKSNGTIIHVKGKHLCPSPLFPGPSKPFWVLVVVGGVLACYSLLVTVAFIIFWVRSKRSRLLHSDYMNMTPRRPGPTRKHYQPYAPPRDFAAYRSRVKFSRSADAPAYQQGQNQLYNELNLGRREEYDVLDKRRGRDPEMGGKPRRKNPQEGLYNELQKDKMAEAYSEIGMKGERRRGKGHDGLYQGLSTATKDTYDALHMQALPPR",
+    "protein_aa": 485,
+    "protein_sha256": "833bd17e675e9595d01865a0109c9c795d2ba8b78481ab06f12da043019e404d",
+    "regions": [
+      {
+        "end": 79,
+        "id": "utr5",
+        "start": 0
+      },
+      {
+        "end": 1540,
+        "id": "cds",
+        "start": 79
+      },
+      {
+        "end": 1666,
+        "id": "utr3",
+        "start": 1540
+      },
+      {
+        "end": 1776,
+        "id": "poly_a",
+        "start": 1666
+      }
+    ],
+    "rna": "AGCAUAAAAGUCACAUUUGCUUCUGACAUAGUUGUGUUGACUCACAACCCCAGAAACAGACAUCGAAUUCGCUGCCACCAUGGCCCUGCCCGUGACCGCCCUCCUGCUGCCCCUGGCCCUGCUCCUGCACGCCGCCCGGCCCGAGAUCGUGCUGACCCAGAGCCCCGGCACCCUGAGCCUGAGCCCCGGCGAGCGGGCCACCCUGAGCUGCCGGGCCAGCCAGAGCGUGAGCAGCAGUUACCUGGCCUGGUACCAGCAGAAGCCCGGCCAGGCCCCACGGCUGCUGAUCUACGGCGCCAGCAGCCGGGCCACCGGCAUCCCCGACCGGUUCAGCGGCUCCGGCAGCGGCACCGACUUCACCCUGACCAUCAGCCGGCUGGAGCCCGAGGACUUCGCCGUGUACUACUGCCAGCAGUACGGCAGCAGCCGGUUCACCUUCGGCCCCGGCACCAAGGUGGACAUCAAGGGCAGCACCAGCGGCAGCGGCAAGCCCGGCAGCGGCGAGGGCAGCACCAAGGGCCAGGUGCAGCUGGUGCAGAGCGGCGCCGAGGUGAAGAAGCCCGGCAGCAGCGUGAAGGUGAGCUGCAAGGACAGCGGCGGCACCUUCAGCAGCUACGCCAUCAGCUGGGUGCGGCAGGCCCCAGGCCAGGGCCUGGAGUGGAUGGGCGGCAUCAUCCCCAUCUUCGGCACCACCAACUACGCCCAGCAGUUCCAGGGCCGGGUGACCAUCACCGCCGACGAGAGCACCAGCACCGCCUACAUGGAGCUGAGCAGCCUGCGGAGCGAGGACACCGCCGUCUACUACUGCGCCCGGGAGGCCGUGGCCGCCGACUGGCUGGACCCCUGGGGCCAGGGCACCCUGGUGACCGUGAGCAGCAUCGAGGUGAUGUACCCACCACCCUACCUGGACAACGAGAAAAGCAACGGCACCAUCAUCCACGUGAAGGGCAAGCACCUGUGCCCCAGCCCACUGUUCCCCGGCCCCAGCAAGCCCUUCUGGGUGCUGGUCGUGGUGGGCGGCGUGCUGGCCUGCUACAGCCUGCUGGUGACCGUGGCCUUCAUCAUCUUCUGGGUGCGGAGCAAGCGGAGCCGGCUGCUGCACAGCGACUACAUGAACAUGACCCCACGGCGGCCCGGCCCCACCCGGAAGCACUACCAGCCCUACGCCCCACCCCGGGACUUCGCCGCCUACCGGAGCCGGGUGAAGUUCAGCCGGAGCGCCGACGCCCCAGCCUACCAGCAGGGCCAGAACCAGCUCUACAACGAGCUGAACCUGGGCCGGCGGGAGGAGUACGACGUGCUGGACAAGCGGCGGGGCCGGGACCCCGAGAUGGGCGGCAAGCCCCGGCGGAAGAACCCACAGGAGGGCCUCUACAAUGAGCUGCAGAAGGACAAGAUGGCCGAGGCCUACAGCGAGAUCGGCAUGAAGGGCGAGCGGCGGAGGGGCAAGGGCCACGACGGCCUGUACCAGGGCCUGAGCACCGCCACCAAGGACACCUACGACGCCCUGCACAUGCAGGCCCUGCCACCCCGGUGAUAAAGGAUCCGAGACUACUGUUAUUUGACCAAUGAAUUGACUUCUAAUAAAAUCUAGUGGUGAUGCAGUUCAGACUUCAAAUAGUGGCAAAUAAAAAGUGCUAUUUGUGAUGGUUUGCUUCUGUGUACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "rna_nt": 1776,
+    "rna_sha256": "7a0e872d51987d1c0064accb5197e605943d90ea2c20104d86e9f41f12617335",
+    "tail_nt": 110,
+    "terminal_stop_codons": "UGAUAA"
+  },
+  "maximum_rna_nt": {
+    "base": 1800,
+    "short": 1775,
+    "tight": 1776
+  },
+  "method": "Exact sequence/protein literals and coordinates are retained from independently byte-pinned public source records, not any compiler output. The complete authoring request is frozen for cross-platform identity; native results remain absent until an authorized hosted run.",
+  "reference_pack_sha256": "dcf0b3fe174ee48f68623785663b16ce96ce87ad2bbacbd851369e9ba1b46079",
+  "request": {
+    "budgets": {
+      "max_report_bytes": 1000000,
+      "max_report_nodes": 100000,
+      "max_work": 100000000,
+      "profile": "biocompiler.policy_expression_material_resources.v0.1"
+    },
+    "document": {
+      "$type": "BuildRequest",
+      "assurance": {
+        "$type": "AssuranceRequest",
+        "assumptions": [],
+        "horizon": "not_applicable",
+        "level": "structural",
+        "requirements": [
+          "encode_car"
+        ],
+        "tolerances": []
+      },
+      "deployment": {
+        "$type": "Deployment",
+        "bindings": [
+          {
+            "$type": "RoleBinding",
+            "chassis": {
+              "$type": "ChassisProfile",
+              "activation_states": [],
+              "capabilities": [
+                {
+                  "$type": "DefinitionRef",
+                  "digest": "e75ddaf0b90b082d93f6c836860beca942514a680b435a41b7e7ccfebfa1fbd8",
+                  "id": "car.rm61461.translation_capability",
+                  "version": "1"
+                }
+              ],
+              "differentiation_states": [],
+              "environment": [
+                {
+                  "$type": "DefinitionRef",
+                  "digest": "124fa9396003930b10dc34cb59bbc7815ced2457ba7809aebf0c320de97b4f26",
+                  "id": "car.rm61461.human_environment",
+                  "version": "1"
+                }
+              ],
+              "id": "human_t_cell",
+              "interfaces": [],
+              "lineage": "lymphoid",
+              "operational_model": {
+                "$type": "DefinitionRef",
+                "digest": "3a6b89e8ad74d35abfb4fca1b2655bf403dc3cedb0660d89624822255ae13ea4",
+                "id": "car.rm61461.human_t_cell",
+                "version": "1"
+              },
+              "recipient_class": "immune",
+              "species": "human",
+              "subtype": "T_cell",
+              "version": "1"
+            },
+            "role": {
+              "$type": "Ref",
+              "id": "recipient",
+              "kind": "Role"
+            }
+          }
+        ],
+        "delivery": {
+          "$type": "DeliveryContract",
+          "activation": {
+            "$type": "DefinitionRef",
+            "digest": "e4986d5f6b6a2716b5fdfa62a9526f3ecee621b45914d12fd53080ab458cbd90",
+            "id": "car.rm61461.delivery_premise",
+            "version": "1"
+          },
+          "arrival": {
+            "$type": "DefinitionRef",
+            "digest": "e4986d5f6b6a2716b5fdfa62a9526f3ecee621b45914d12fd53080ab458cbd90",
+            "id": "car.rm61461.delivery_premise",
+            "version": "1"
+          },
+          "assumptions": [],
+          "co_delivery": "none_required",
+          "contract": {
+            "$type": "DefinitionRef",
+            "digest": "e4986d5f6b6a2716b5fdfa62a9526f3ecee621b45914d12fd53080ab458cbd90",
+            "id": "car.rm61461.delivery_premise",
+            "version": "1"
+          },
+          "expression": {
+            "$type": "DefinitionRef",
+            "digest": "e4986d5f6b6a2716b5fdfa62a9526f3ecee621b45914d12fd53080ab458cbd90",
+            "id": "car.rm61461.delivery_premise",
+            "version": "1"
+          },
+          "id": "car.rm61461.delivery",
+          "intended_recipients": [
+            {
+              "$type": "Ref",
+              "id": "recipient",
+              "kind": "Role"
+            }
+          ]
+        },
+        "environment": [
+          {
+            "$type": "DefinitionRef",
+            "digest": "124fa9396003930b10dc34cb59bbc7815ced2457ba7809aebf0c320de97b4f26",
+            "id": "car.rm61461.human_environment",
+            "version": "1"
+          }
+        ],
+        "id": "car.rm61461.deployment",
+        "payload": {
+          "$type": "RNAConstraints",
+          "copy_number": null,
+          "design_count": 1,
+          "dose": null,
+          "effector_persistence": null,
+          "format": "RNA",
+          "helper_count": 0,
+          "member_count": 1,
+          "orf_count": 1,
+          "payload_persistence": null,
+          "product_count": 1
+        },
+        "route": "in_vivo"
+      },
+      "implementations": {
+        "$type": "ImplementationCatalogLock",
+        "id": "car.rm61461.catalog",
+        "implementations": [
+          {
+            "$type": "ImplementationBinding",
+            "chassis": [
+              "human_t_cell"
+            ],
+            "dependencies": [
+              {
+                "$type": "DefinitionRef",
+                "digest": "624602f1b346a1c996c48478b76cc71b96fabdfc318da3f6687c1d20eddc313e",
+                "id": "biocompiler.expression.nominal_translation.v1",
+                "version": "1"
+              },
+              {
+                "$type": "DefinitionRef",
+                "digest": "e5688747ec57b743f818f6def232efa2db1612fd4baeb722bebdec207a259c7b",
+                "id": "car.rm61461.terminal_design",
+                "version": "1"
+              }
+            ],
+            "evidence": [
+              {
+                "$type": "DefinitionRef",
+                "digest": "9f4f5cc4365b5afac970d8d08b76a7535256b00e69c14c43e656eddb630ec1ee",
+                "id": "car.rm61461.reference_evidence",
+                "version": "1"
+              }
+            ],
+            "id": "car.rm61461.implementation",
+            "operation": {
+              "$type": "DefinitionRef",
+              "digest": "dd335bd49a8159b03e4f3da39f78859b6bcf2adc5bf990b75a99719493b6f5ce",
+              "id": "biocompiler.expression.encode.v1",
+              "version": "1"
+            },
+            "payload_formats": [
+              "RNA"
+            ],
+            "realization": {
+              "$type": "DefinitionRef",
+              "digest": "4376bcfcd949993892c9c52abe9c8f5fd84f02eb246e96fefe571109cbc01cf9",
+              "id": "car.rm61461.expression_component",
+              "version": "1"
+            },
+            "version": "1"
+          }
+        ],
+        "version": "1"
+      },
+      "profile": "biocompiler.policy_expression_source.v0.1",
+      "program": {
+        "$type": "PolicyProgram",
+        "declarations": [
+          {
+            "$type": "Role",
+            "id": "recipient",
+            "lineage_role": false,
+            "population": null,
+            "requires": [
+              {
+                "$type": "DefinitionRef",
+                "digest": "e75ddaf0b90b082d93f6c836860beca942514a680b435a41b7e7ccfebfa1fbd8",
+                "id": "car.rm61461.translation_capability",
+                "version": "1"
+              }
+            ]
+          },
+          {
+            "$type": "Parameter",
+            "id": "product_id",
+            "lower": null,
+            "selection": "fixed",
+            "upper": null,
+            "value": "WO2025096878.CAR2.SEQ2",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "text",
+              "unit": null
+            }
+          },
+          {
+            "$type": "Parameter",
+            "id": "product_version",
+            "lower": null,
+            "selection": "fixed",
+            "upper": null,
+            "value": "1",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "text",
+              "unit": null
+            }
+          },
+          {
+            "$type": "Parameter",
+            "id": "product_sha256",
+            "lower": null,
+            "selection": "fixed",
+            "upper": null,
+            "value": "fe667a3094d7abbb925b34e53055bba92f927e8107ba389b94cd733747b3cb2e",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "text",
+              "unit": null
+            }
+          },
+          {
+            "$type": "Parameter",
+            "id": "localization",
+            "lower": null,
+            "selection": "fixed",
+            "upper": null,
+            "value": "car.rm61461.surface_localization",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "text",
+              "unit": null
+            }
+          },
+          {
+            "$type": "Parameter",
+            "id": "maximum_rna_nt",
+            "lower": null,
+            "selection": "fixed",
+            "upper": null,
+            "value": 1800,
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "integer",
+              "unit": null
+            }
+          },
+          {
+            "$type": "Requirement",
+            "applies_to": [
+              {
+                "$type": "Ref",
+                "id": "recipient",
+                "kind": "Role"
+              },
+              {
+                "$type": "Ref",
+                "id": "product_id",
+                "kind": "Parameter"
+              },
+              {
+                "$type": "Ref",
+                "id": "product_version",
+                "kind": "Parameter"
+              },
+              {
+                "$type": "Ref",
+                "id": "product_sha256",
+                "kind": "Parameter"
+              },
+              {
+                "$type": "Ref",
+                "id": "localization",
+                "kind": "Parameter"
+              },
+              {
+                "$type": "Ref",
+                "id": "maximum_rna_nt",
+                "kind": "Parameter"
+              }
+            ],
+            "assumptions": [],
+            "clock": null,
+            "condition": null,
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "418dbfb378593d54f9e37135d0caa6645de0c006aa3dc727b30da21d68b1d642",
+              "id": "biocompiler.expression.objective.v1",
+              "version": "1"
+            },
+            "deadline": null,
+            "description": "Encode the selected complete CAR2 product within the declared RNA length bound.",
+            "horizon": null,
+            "id": "encode_car",
+            "kind": "objective",
+            "lower": null,
+            "response": null,
+            "scope": {
+              "$type": "Scope",
+              "kind": "executor",
+              "subject": {
+                "$type": "Ref",
+                "id": "recipient",
+                "kind": "Role"
+              }
+            },
+            "trigger": null,
+            "upper": null
+          }
+        ],
+        "id": "car.rm61461",
+        "profile": "biocompiler.policy.v0.1",
+        "semantics": {
+          "$type": "SemanticBundle",
+          "definitions": [
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "requirement",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "biocompiler.expression.objective.v1",
+              "meaning": "Exact source-selected complete product encoding and supplied conditional localization for one declared human immune recipient; no empirical expression or therapeutic function is established.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "operation",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "biocompiler.expression.encode.v1",
+              "meaning": "Construct one complete original mRNA encoding the exact supplied product under the explicit expression/localization contract; no runtime action or biological realization is inferred.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "model",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "biocompiler.expression.nominal_translation.v1",
+              "meaning": "Decode the explicitly declared canonical parent RNA bases with the standard genetic code and the selected one or two consecutive terminal stop codons; this nominal correspondence does not establish physical translation of modified nucleotides or biological expression.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "model",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "car.rm61461.terminal_design",
+              "meaning": "Designer specifies a 3prime hydroxyl on the nominal complete RNA; this is not a qualified fact about the publication's historical physical material.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "spatial",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "car.rm61461.surface_localization",
+              "meaning": "Supplied premise: the encoded complete CAR2 product is processed and displayed on the recipient T-cell surface. Sequence correspondence alone does not establish trafficking or display.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "capability",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "car.rm61461.translation_capability",
+              "meaning": "Supplied human immune-cell translation capability; actual modified-RNA translation and expression remain empirically unassessed.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "environment",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "car.rm61461.human_environment",
+              "meaning": "Intended human in-vivo immune-cell environment. The reference experiments were ex vivo; applicability, safety and clinical effect are unresolved.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "delivery",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "car.rm61461.delivery_premise",
+              "meaning": "Conditional premise that this RNA reaches and remains accessible to the declared recipient. No delivery vehicle, dose, tissue specificity, arrival or duration guarantee is supplied.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "model",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "car.rm61461.human_t_cell",
+              "meaning": "Declared human T-cell recipient identity. Expression in source-disclosed primary human T cells is contextual evidence, not proof of this in-vivo premise.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "model",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "car.rm61461.expression_component",
+              "meaning": "Supplied conditional correspondence from exact complete RM_61461 nominal RNA to CAR2 encoding and declared surface localization; no temporal controller or antigen-dependent behavior is implemented.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "model",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "car.rm61461.reference_evidence",
+              "meaning": "Current corrected WO2025096878A9 and the pinned WIPO listing identify RM_61461, SEQ151 and CAR2 SEQ2. Human T-cell observations are patent-disclosed ex vivo; donor identity in Example3 conflicts. Full evidence/applicability limits remain in the independently pinned factual reference pack.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            }
+          ],
+          "id": "car.rm61461.definitions",
+          "profile": "biocompiler.policy.v0.1",
+          "version": "1"
+        },
+        "source_map": []
+      }
+    },
+    "expression_contract": {
+      "body": {
+        "claim_scope": "conditional_encoding_and_localization",
+        "dependencies": [
+          {
+            "$type": "DefinitionRef",
+            "digest": "624602f1b346a1c996c48478b76cc71b96fabdfc318da3f6687c1d20eddc313e",
+            "id": "biocompiler.expression.nominal_translation.v1",
+            "version": "1"
+          },
+          {
+            "$type": "DefinitionRef",
+            "digest": "e5688747ec57b743f818f6def232efa2db1612fd4baeb722bebdec207a259c7b",
+            "id": "car.rm61461.terminal_design",
+            "version": "1"
+          }
+        ],
+        "deployment": {
+          "$type": "Deployment",
+          "bindings": [
+            {
+              "$type": "RoleBinding",
+              "chassis": {
+                "$type": "ChassisProfile",
+                "activation_states": [],
+                "capabilities": [
+                  {
+                    "$type": "DefinitionRef",
+                    "digest": "e75ddaf0b90b082d93f6c836860beca942514a680b435a41b7e7ccfebfa1fbd8",
+                    "id": "car.rm61461.translation_capability",
+                    "version": "1"
+                  }
+                ],
+                "differentiation_states": [],
+                "environment": [
+                  {
+                    "$type": "DefinitionRef",
+                    "digest": "124fa9396003930b10dc34cb59bbc7815ced2457ba7809aebf0c320de97b4f26",
+                    "id": "car.rm61461.human_environment",
+                    "version": "1"
+                  }
+                ],
+                "id": "human_t_cell",
+                "interfaces": [],
+                "lineage": "lymphoid",
+                "operational_model": {
+                  "$type": "DefinitionRef",
+                  "digest": "3a6b89e8ad74d35abfb4fca1b2655bf403dc3cedb0660d89624822255ae13ea4",
+                  "id": "car.rm61461.human_t_cell",
+                  "version": "1"
+                },
+                "recipient_class": "immune",
+                "species": "human",
+                "subtype": "T_cell",
+                "version": "1"
+              },
+              "role": {
+                "$type": "Ref",
+                "id": "recipient",
+                "kind": "Role"
+              }
+            }
+          ],
+          "delivery": {
+            "$type": "DeliveryContract",
+            "activation": {
+              "$type": "DefinitionRef",
+              "digest": "e4986d5f6b6a2716b5fdfa62a9526f3ecee621b45914d12fd53080ab458cbd90",
+              "id": "car.rm61461.delivery_premise",
+              "version": "1"
+            },
+            "arrival": {
+              "$type": "DefinitionRef",
+              "digest": "e4986d5f6b6a2716b5fdfa62a9526f3ecee621b45914d12fd53080ab458cbd90",
+              "id": "car.rm61461.delivery_premise",
+              "version": "1"
+            },
+            "assumptions": [],
+            "co_delivery": "none_required",
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "e4986d5f6b6a2716b5fdfa62a9526f3ecee621b45914d12fd53080ab458cbd90",
+              "id": "car.rm61461.delivery_premise",
+              "version": "1"
+            },
+            "expression": {
+              "$type": "DefinitionRef",
+              "digest": "e4986d5f6b6a2716b5fdfa62a9526f3ecee621b45914d12fd53080ab458cbd90",
+              "id": "car.rm61461.delivery_premise",
+              "version": "1"
+            },
+            "id": "car.rm61461.delivery",
+            "intended_recipients": [
+              {
+                "$type": "Ref",
+                "id": "recipient",
+                "kind": "Role"
+              }
+            ]
+          },
+          "environment": [
+            {
+              "$type": "DefinitionRef",
+              "digest": "124fa9396003930b10dc34cb59bbc7815ced2457ba7809aebf0c320de97b4f26",
+              "id": "car.rm61461.human_environment",
+              "version": "1"
+            }
+          ],
+          "id": "car.rm61461.deployment",
+          "payload": {
+            "$type": "RNAConstraints",
+            "copy_number": null,
+            "design_count": 1,
+            "dose": null,
+            "effector_persistence": null,
+            "format": "RNA",
+            "helper_count": 0,
+            "member_count": 1,
+            "orf_count": 1,
+            "payload_persistence": null,
+            "product_count": 1
+          },
+          "route": "in_vivo"
+        },
+        "evidence": [
+          {
+            "$type": "DefinitionRef",
+            "digest": "9f4f5cc4365b5afac970d8d08b76a7535256b00e69c14c43e656eddb630ec1ee",
+            "id": "car.rm61461.reference_evidence",
+            "version": "1"
+          }
+        ],
+        "localization": {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "spatial",
+          "clauses": [],
+          "executor_kind": null,
+          "id": "car.rm61461.surface_localization",
+          "meaning": "Supplied premise: the encoded complete CAR2 product is processed and displayed on the recipient T-cell surface. Sequence correspondence alone does not establish trafficking or display.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        "material": {
+          "cds": "cds",
+          "member": "payload",
+          "structure_sha256": "a6e9caed0f870270aeed3f3f0757973008a960b1b985f774b7dcc10d56f064e3"
+        },
+        "operation": {
+          "$type": "DefinitionRef",
+          "digest": "dd335bd49a8159b03e4f3da39f78859b6bcf2adc5bf990b75a99719493b6f5ce",
+          "id": "biocompiler.expression.encode.v1",
+          "version": "1"
+        },
+        "product": {
+          "content_fingerprint": "fe667a3094d7abbb925b34e53055bba92f927e8107ba389b94cd733747b3cb2e",
+          "id": "WO2025096878.CAR2.SEQ2",
+          "kind": "reference",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        "realization": {
+          "$type": "DefinitionRef",
+          "digest": "4376bcfcd949993892c9c52abe9c8f5fd84f02eb246e96fefe571109cbc01cf9",
+          "id": "car.rm61461.expression_component",
+          "version": "1"
+        },
+        "recipient": {
+          "$type": "ChassisProfile",
+          "activation_states": [],
+          "capabilities": [
+            {
+              "$type": "DefinitionRef",
+              "digest": "e75ddaf0b90b082d93f6c836860beca942514a680b435a41b7e7ccfebfa1fbd8",
+              "id": "car.rm61461.translation_capability",
+              "version": "1"
+            }
+          ],
+          "differentiation_states": [],
+          "environment": [
+            {
+              "$type": "DefinitionRef",
+              "digest": "124fa9396003930b10dc34cb59bbc7815ced2457ba7809aebf0c320de97b4f26",
+              "id": "car.rm61461.human_environment",
+              "version": "1"
+            }
+          ],
+          "id": "human_t_cell",
+          "interfaces": [],
+          "lineage": "lymphoid",
+          "operational_model": {
+            "$type": "DefinitionRef",
+            "digest": "3a6b89e8ad74d35abfb4fca1b2655bf403dc3cedb0660d89624822255ae13ea4",
+            "id": "car.rm61461.human_t_cell",
+            "version": "1"
+          },
+          "recipient_class": "immune",
+          "species": "human",
+          "subtype": "T_cell",
+          "version": "1"
+        },
+        "schema_version": "biocompiler.policy_expression_contract.v0.1",
+        "translation": {
+          "interpretation": "nominal_canonical_parent_bases",
+          "model": {
+            "$type": "DefinitionRef",
+            "digest": "624602f1b346a1c996c48478b76cc71b96fabdfc318da3f6687c1d20eddc313e",
+            "id": "biocompiler.expression.nominal_translation.v1",
+            "version": "1"
+          },
+          "terminal_stop_codons": 2
+        }
+      },
+      "identity": {
+        "content_fingerprint": "4769871b83a30bf9489c56658f0c928f4abfc85baf9543448943a7bec768fa33",
+        "id": "car.rm61461.expression_contract",
+        "kind": "model",
+        "schema_version": "biocompiler.component_identity.v0.1",
+        "version": "1"
+      }
+    },
+    "profile": "biocompiler.policy_single_expression_mrna.v0.1",
+    "project_context": {
+      "assumptions": [
+        "Expression, localization and delivery are supplied conditional premises, not verified biological guarantees.",
+        "The 3prime hydroxyl is an explicit designer choice; published historical terminal chemistry remains unassessed.",
+        "Nominal parent-base translation does not establish actual translation of modified nucleotides.",
+        "Source observations remain ex vivo and patent-disclosed; human in-vivo and clinical applicability are unassessed."
+      ],
+      "project_id": "car.rm61461.nominal",
+      "sources": [
+        {
+          "id": "car.rm61461.reference_pack",
+          "locator": "package:biocompiler.policy/data/car_rm61461_reference_v01.json",
+          "reuse_terms": "public source access; no additional source permission inferred",
+          "role": "qualified_nominal_reference_and_separate_applicability_limits",
+          "sha256": "dcf0b3fe174ee48f68623785663b16ce96ce87ad2bbacbd851369e9ba1b46079",
+          "version": "1"
+        },
+        {
+          "id": "WO2025096878.sequence-listing",
+          "locator": "https://www.wipo.int/published_pct_sequences/publication/2025/0508/WO25_096878/WO2025-096878-TAB-20241115-001.zip#23-1871-WO_SequenceListing.xml",
+          "reuse_terms": "public WIPO source; affirmative reuse terms not identified",
+          "role": "complete_original_ST26_listing",
+          "sha256": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+          "version": "2024-10-28"
+        },
+        {
+          "id": "WO2025096878A9",
+          "locator": "https://patentimages.storage.googleapis.com/aa/28/2d/e21333e54fee5a/WO2025096878A9.pdf",
+          "reuse_terms": "public source access; patent or manufacturing permission not assessed",
+          "role": "current_corrected_publication_and_source_declared_chemistry",
+          "sha256": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+          "version": "2025-07-10"
+        },
+        {
+          "id": "car.rm61461.terminal_design",
+          "locator": "original:document/program/semantics/definitions/car.rm61461.terminal_design",
+          "reuse_terms": "user supplied nominal design premise",
+          "role": "explicit_designer_terminal_chemistry_choice",
+          "sha256": "e5688747ec57b743f818f6def232efa2db1612fd4baeb722bebdec207a259c7b",
+          "version": "1"
+        }
+      ],
+      "title": "RM_61461 CAR nominal reference design"
+    },
+    "schema_version": "biocompiler.policy_expression_material_request.v0.1",
+    "selection": {
+      "cds": "cds",
+      "implementation": {
+        "content_fingerprint": "4cdf886d75dda709dac8de947c82c89135ef3a6c4ffd5ec993992272d5a5f3c6",
+        "id": "car.rm61461.implementation",
+        "kind": "registry",
+        "schema_version": "biocompiler.component_identity.v0.1",
+        "version": "1"
+      },
+      "member": "payload",
+      "objective": "encode_car",
+      "recipient": "recipient"
+    },
+    "structure_authority": {
+      "member_order": [
+        "payload"
+      ],
+      "members": [
+        {
+          "chemistry": {
+            "cap": {
+              "identity": {
+                "accession": "m7G_5prime_ppp_5prime_2primeOMeA_pG",
+                "namespace": "WO2025096878A9.nominal_chemistry",
+                "schema_version": "biocompiler.chemical_identity.v0.1",
+                "version": "1"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                    "id": "WO2025096878A9",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "2025-07-10"
+                  }
+                ],
+                "locator": "current A9 [00408]",
+                "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.chemistry_claim.v0.1",
+              "status": "declared"
+            },
+            "finish_end": {
+              "identity": {
+                "accession": "3prime_hydroxyl",
+                "namespace": "design.nominal_chemistry",
+                "schema_version": "biocompiler.chemical_identity.v0.1",
+                "version": "1"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "e5688747ec57b743f818f6def232efa2db1612fd4baeb722bebdec207a259c7b",
+                    "id": "car.rm61461.terminal_design",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "original source semantic definition car.rm61461.terminal_design",
+                "reason": "Explicit designer-supplied 3prime hydroxyl; the publication's actual terminal chemistry remains unassessed.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.chemistry_claim.v0.1",
+              "status": "declared"
+            },
+            "modification_inventory_provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                  "id": "WO2025096878A9",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "2025-07-10"
+                }
+              ],
+              "locator": "current A9 [00408]",
+              "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "modification_inventory_status": "declared",
+            "modifications": [
+              {
+                "canonical_base": "U",
+                "id": "all_uridines",
+                "identity": {
+                  "accession": "n1_methylpseudouridine",
+                  "namespace": "biocompiler.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "positions": [],
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                      "id": "WO2025096878A9",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "2025-07-10"
+                    }
+                  ],
+                  "locator": "current A9 [00408]",
+                  "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.base_modification.v0.1",
+                "scope": "all_matching_bases"
+              },
+              {
+                "canonical_base": "A",
+                "id": "cap_adjacent_adenosine",
+                "identity": {
+                  "accession": "2prime_O_methyladenosine",
+                  "namespace": "WO2025096878A9.nominal_chemistry",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "positions": [
+                  0
+                ],
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                      "id": "WO2025096878A9",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "2025-07-10"
+                    }
+                  ],
+                  "locator": "current A9 [00408]",
+                  "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.base_modification.v0.1",
+                "scope": "positions"
+              }
+            ],
+            "schema_version": "biocompiler.molecule_chemistry.v0.1",
+            "start_end": {
+              "identity": {
+                "accession": "m7G_5prime_ppp_5prime_2primeOMeA_pG",
+                "namespace": "WO2025096878A9.nominal_chemistry",
+                "schema_version": "biocompiler.chemical_identity.v0.1",
+                "version": "1"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                    "id": "WO2025096878A9",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "2025-07-10"
+                  }
+                ],
+                "locator": "current A9 [00408]",
+                "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.chemistry_claim.v0.1",
+              "status": "declared"
+            },
+            "terminal_tail": {
+              "length": {
+                "exact": 110,
+                "lower": null,
+                "mode": "exact",
+                "schema_version": "biocompiler.tail_length.v0.1",
+                "upper": null
+              },
+              "path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "rm61461.output.frame",
+                "spans": [
+                  {
+                    "end": 1776,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 1666
+                  }
+                ],
+                "strand": "+"
+              },
+              "placement": "represented_terminal",
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+                    "id": "WO2025096878.sequence-listing",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "2024-10-28"
+                  },
+                  {
+                    "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                    "id": "WO2025096878A9",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "2025-07-10"
+                  }
+                ],
+                "locator": "SEQ151; current A9 Figure3C",
+                "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.tail_declaration.v0.1",
+              "status": "declared"
+            }
+          },
+          "id": "payload",
+          "product": {
+            "identity": {
+              "content_fingerprint": "fe667a3094d7abbb925b34e53055bba92f927e8107ba389b94cd733747b3cb2e",
+              "id": "WO2025096878.CAR2.SEQ2",
+              "kind": "reference",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+                  "id": "WO2025096878.sequence-listing",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "2024-10-28"
+                },
+                {
+                  "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                  "id": "WO2025096878A9",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "2025-07-10"
+                }
+              ],
+              "locator": "SEQ151; current A9 Figure3C",
+              "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "sequence": "MALPVTALLLPLALLLHAARPEIVLTQSPGTLSLSPGERATLSCRASQSVSSSYLAWYQQKPGQAPRLLIYGASSRATGIPDRFSGSGSGTDFTLTISRLEPEDFAVYYCQQYGSSRFTFGPGTKVDIKGSTSGSGKPGSGEGSTKGQVQLVQSGAEVKKPGSSVKVSCKDSGGTFSSYAISWVRQAPGQGLEWMGGIIPIFGTTNYAQQFQGRVTITADESTSTAYMELSSLRSEDTAVYYCAREAVAADWLDPWGQGTLVTVSSIEVMYPPPYLDNEKSNGTIIHVKGKHLCPSPLFPGPSKPFWVLVVVGGVLACYSLLVTVAFIIFWVRSKRSRLLHSDYMNMTPRRPGPTRKHYQPYAPPRDFAAYRSRVKFSRSADAPAYQQGQNQLYNELNLGRREEYDVLDKRRGRDPEMGGKPRRKNPQEGLYNELQKDKMAEAYSEIGMKGERRRGKGHDGLYQGLSTATKDTYDALHMQALPPR",
+            "translation_policy": {
+              "genetic_code": "ncbi_standard_v1",
+              "profile": "ordinary_cds",
+              "recodings": [],
+              "schema_version": "biocompiler.translation_policy.v0.1"
+            }
+          },
+          "regions": {
+            "cds": "cds",
+            "poly_a": "poly_a",
+            "utr3": "utr3",
+            "utr5": "utr5"
+          }
+        }
+      ],
+      "profile": "biocompiler.policy_mrna_completeness.v0.1",
+      "schema_version": "biocompiler.policy_mrna_structure_authority.v0.1",
+      "template": {
+        "amounts": [],
+        "complex_members": [],
+        "id": "rm61461.nominal_reference",
+        "output_members": [
+          {
+            "coding_status": "coding",
+            "form": "delivered_rna",
+            "id": "payload",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+                  "id": "WO2025096878.sequence-listing",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "2024-10-28"
+                },
+                {
+                  "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                  "id": "WO2025096878A9",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "2025-07-10"
+                }
+              ],
+              "locator": "SEQ151; current A9 Figure3C",
+              "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.construction_output_member.v0.1",
+            "sequence_extent": "complete",
+            "space_id": "rm61461.output.frame",
+            "value": {
+              "id": "rm61461.input",
+              "kind": "root",
+              "schema_version": "biocompiler.construction_value_ref.v0.1"
+            }
+          }
+        ],
+        "payload_structures": [
+          {
+            "form": "delivered_rna",
+            "member_id": "payload",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+                  "id": "WO2025096878.sequence-listing",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "2024-10-28"
+                },
+                {
+                  "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                  "id": "WO2025096878A9",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "2025-07-10"
+                }
+              ],
+              "locator": "SEQ151; current A9 Figure3C",
+              "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "regions": [
+              {
+                "feature_id": "cds",
+                "kind": "coding_sequence",
+                "schema_version": "biocompiler.required_payload_region.v0.1"
+              },
+              {
+                "feature_id": "poly_a",
+                "kind": "poly_a_tail",
+                "schema_version": "biocompiler.required_payload_region.v0.1"
+              },
+              {
+                "feature_id": "utr3",
+                "kind": "three_prime_utr",
+                "schema_version": "biocompiler.required_payload_region.v0.1"
+              },
+              {
+                "feature_id": "utr5",
+                "kind": "five_prime_utr",
+                "schema_version": "biocompiler.required_payload_region.v0.1"
+              }
+            ],
+            "schema_version": "biocompiler.payload_structure_contract.v0.1",
+            "topology": "linear"
+          }
+        ],
+        "requirements": [
+          {
+            "category": "payload",
+            "external_fingerprint": null,
+            "external_id": null,
+            "id": "rm61461.payload",
+            "member_id": "payload",
+            "roles": [
+              {
+                "compartment": "cytoplasm",
+                "id": "rm61461.rna",
+                "purpose": "requested_payload",
+                "role": "payload",
+                "schema_version": "biocompiler.construction_role_declaration.v0.1"
+              }
+            ],
+            "schema_version": "biocompiler.construction_member_requirement.v0.1"
+          }
+        ],
+        "schema_version": "biocompiler.payload_template.v0.1",
+        "sources": [
+          {
+            "id": "rm61461.input",
+            "molecule": {
+              "assembly": [
+                {
+                  "destination": {
+                    "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                    "space_id": "rm61461.root.frame",
+                    "spans": [
+                      {
+                        "end": 1776,
+                        "schema_version": "biocompiler.molecule_index_span.v0.1",
+                        "start": 0
+                      }
+                    ],
+                    "strand": "+"
+                  },
+                  "id": "rm61461.listed_origin",
+                  "provenance": {
+                    "authority": [
+                      {
+                        "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+                        "id": "WO2025096878.sequence-listing",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2024-10-28"
+                      },
+                      {
+                        "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                        "id": "WO2025096878A9",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2025-07-10"
+                      }
+                    ],
+                    "locator": "SEQ151; current A9 Figure3C",
+                    "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+                    "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                    "status": "declared"
+                  },
+                  "schema_version": "biocompiler.assembly_origin.v0.1",
+                  "source_path": {
+                    "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                    "space_id": "rm61461.listing.frame",
+                    "spans": [
+                      {
+                        "end": 1776,
+                        "schema_version": "biocompiler.molecule_index_span.v0.1",
+                        "start": 0
+                      }
+                    ],
+                    "strand": "+"
+                  },
+                  "source_space": {
+                    "alphabet": "RNA",
+                    "axis": "5prime_to_3prime",
+                    "id": "rm61461.listing.frame",
+                    "length": 1776,
+                    "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+                    "topology": "linear"
+                  }
+                }
+              ],
+              "chemistry": {
+                "cap": {
+                  "identity": {
+                    "accession": "m7G_5prime_ppp_5prime_2primeOMeA_pG",
+                    "namespace": "WO2025096878A9.nominal_chemistry",
+                    "schema_version": "biocompiler.chemical_identity.v0.1",
+                    "version": "1"
+                  },
+                  "provenance": {
+                    "authority": [
+                      {
+                        "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                        "id": "WO2025096878A9",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2025-07-10"
+                      }
+                    ],
+                    "locator": "current A9 [00408]",
+                    "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+                    "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                    "status": "declared"
+                  },
+                  "schema_version": "biocompiler.chemistry_claim.v0.1",
+                  "status": "declared"
+                },
+                "finish_end": {
+                  "identity": {
+                    "accession": "3prime_hydroxyl",
+                    "namespace": "design.nominal_chemistry",
+                    "schema_version": "biocompiler.chemical_identity.v0.1",
+                    "version": "1"
+                  },
+                  "provenance": {
+                    "authority": [
+                      {
+                        "content_fingerprint": "e5688747ec57b743f818f6def232efa2db1612fd4baeb722bebdec207a259c7b",
+                        "id": "car.rm61461.terminal_design",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "1"
+                      }
+                    ],
+                    "locator": "original source semantic definition car.rm61461.terminal_design",
+                    "reason": "Explicit designer-supplied 3prime hydroxyl; the publication's actual terminal chemistry remains unassessed.",
+                    "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                    "status": "declared"
+                  },
+                  "schema_version": "biocompiler.chemistry_claim.v0.1",
+                  "status": "declared"
+                },
+                "modification_inventory_provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                      "id": "WO2025096878A9",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "2025-07-10"
+                    }
+                  ],
+                  "locator": "current A9 [00408]",
+                  "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "modification_inventory_status": "declared",
+                "modifications": [
+                  {
+                    "canonical_base": "U",
+                    "id": "all_uridines",
+                    "identity": {
+                      "accession": "n1_methylpseudouridine",
+                      "namespace": "biocompiler.chemical",
+                      "schema_version": "biocompiler.chemical_identity.v0.1",
+                      "version": "1"
+                    },
+                    "positions": [],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                          "id": "WO2025096878A9",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "2025-07-10"
+                        }
+                      ],
+                      "locator": "current A9 [00408]",
+                      "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.base_modification.v0.1",
+                    "scope": "all_matching_bases"
+                  },
+                  {
+                    "canonical_base": "A",
+                    "id": "cap_adjacent_adenosine",
+                    "identity": {
+                      "accession": "2prime_O_methyladenosine",
+                      "namespace": "WO2025096878A9.nominal_chemistry",
+                      "schema_version": "biocompiler.chemical_identity.v0.1",
+                      "version": "1"
+                    },
+                    "positions": [
+                      0
+                    ],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                          "id": "WO2025096878A9",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "2025-07-10"
+                        }
+                      ],
+                      "locator": "current A9 [00408]",
+                      "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.base_modification.v0.1",
+                    "scope": "positions"
+                  }
+                ],
+                "schema_version": "biocompiler.molecule_chemistry.v0.1",
+                "start_end": {
+                  "identity": {
+                    "accession": "m7G_5prime_ppp_5prime_2primeOMeA_pG",
+                    "namespace": "WO2025096878A9.nominal_chemistry",
+                    "schema_version": "biocompiler.chemical_identity.v0.1",
+                    "version": "1"
+                  },
+                  "provenance": {
+                    "authority": [
+                      {
+                        "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                        "id": "WO2025096878A9",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2025-07-10"
+                      }
+                    ],
+                    "locator": "current A9 [00408]",
+                    "reason": "Source-declared Cap-AG and complete uridine replacement; not measured batch chemistry.",
+                    "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                    "status": "declared"
+                  },
+                  "schema_version": "biocompiler.chemistry_claim.v0.1",
+                  "status": "declared"
+                },
+                "terminal_tail": {
+                  "length": {
+                    "exact": 110,
+                    "lower": null,
+                    "mode": "exact",
+                    "schema_version": "biocompiler.tail_length.v0.1",
+                    "upper": null
+                  },
+                  "path": {
+                    "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                    "space_id": "rm61461.root.frame",
+                    "spans": [
+                      {
+                        "end": 1776,
+                        "schema_version": "biocompiler.molecule_index_span.v0.1",
+                        "start": 1666
+                      }
+                    ],
+                    "strand": "+"
+                  },
+                  "placement": "represented_terminal",
+                  "provenance": {
+                    "authority": [
+                      {
+                        "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+                        "id": "WO2025096878.sequence-listing",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2024-10-28"
+                      },
+                      {
+                        "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                        "id": "WO2025096878A9",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2025-07-10"
+                      }
+                    ],
+                    "locator": "SEQ151; current A9 Figure3C",
+                    "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+                    "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                    "status": "declared"
+                  },
+                  "schema_version": "biocompiler.tail_declaration.v0.1",
+                  "status": "declared"
+                }
+              },
+              "coding_status": "coding",
+              "features": [
+                {
+                  "id": "cds",
+                  "kind": "coding_sequence",
+                  "path": {
+                    "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                    "space_id": "rm61461.root.frame",
+                    "spans": [
+                      {
+                        "end": 1540,
+                        "schema_version": "biocompiler.molecule_index_span.v0.1",
+                        "start": 79
+                      }
+                    ],
+                    "strand": "+"
+                  },
+                  "provenance": {
+                    "authority": [
+                      {
+                        "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+                        "id": "WO2025096878.sequence-listing",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2024-10-28"
+                      },
+                      {
+                        "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                        "id": "WO2025096878A9",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2025-07-10"
+                      }
+                    ],
+                    "locator": "SEQ151; current A9 Figure3C",
+                    "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+                    "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                    "status": "declared"
+                  },
+                  "reading_frame": 0,
+                  "schema_version": "biocompiler.molecule_feature.v0.1"
+                },
+                {
+                  "id": "poly_a",
+                  "kind": "poly_a_tail",
+                  "path": {
+                    "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                    "space_id": "rm61461.root.frame",
+                    "spans": [
+                      {
+                        "end": 1776,
+                        "schema_version": "biocompiler.molecule_index_span.v0.1",
+                        "start": 1666
+                      }
+                    ],
+                    "strand": "+"
+                  },
+                  "provenance": {
+                    "authority": [
+                      {
+                        "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+                        "id": "WO2025096878.sequence-listing",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2024-10-28"
+                      },
+                      {
+                        "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                        "id": "WO2025096878A9",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2025-07-10"
+                      }
+                    ],
+                    "locator": "SEQ151; current A9 Figure3C",
+                    "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+                    "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                    "status": "declared"
+                  },
+                  "reading_frame": null,
+                  "schema_version": "biocompiler.molecule_feature.v0.1"
+                },
+                {
+                  "id": "utr3",
+                  "kind": "three_prime_utr",
+                  "path": {
+                    "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                    "space_id": "rm61461.root.frame",
+                    "spans": [
+                      {
+                        "end": 1666,
+                        "schema_version": "biocompiler.molecule_index_span.v0.1",
+                        "start": 1540
+                      }
+                    ],
+                    "strand": "+"
+                  },
+                  "provenance": {
+                    "authority": [
+                      {
+                        "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+                        "id": "WO2025096878.sequence-listing",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2024-10-28"
+                      },
+                      {
+                        "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                        "id": "WO2025096878A9",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2025-07-10"
+                      }
+                    ],
+                    "locator": "SEQ151; current A9 Figure3C",
+                    "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+                    "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                    "status": "declared"
+                  },
+                  "reading_frame": null,
+                  "schema_version": "biocompiler.molecule_feature.v0.1"
+                },
+                {
+                  "id": "utr5",
+                  "kind": "five_prime_utr",
+                  "path": {
+                    "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                    "space_id": "rm61461.root.frame",
+                    "spans": [
+                      {
+                        "end": 79,
+                        "schema_version": "biocompiler.molecule_index_span.v0.1",
+                        "start": 0
+                      }
+                    ],
+                    "strand": "+"
+                  },
+                  "provenance": {
+                    "authority": [
+                      {
+                        "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+                        "id": "WO2025096878.sequence-listing",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2024-10-28"
+                      },
+                      {
+                        "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                        "id": "WO2025096878A9",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "2025-07-10"
+                      }
+                    ],
+                    "locator": "SEQ151; current A9 Figure3C",
+                    "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+                    "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                    "status": "declared"
+                  },
+                  "reading_frame": null,
+                  "schema_version": "biocompiler.molecule_feature.v0.1"
+                }
+              ],
+              "form": "delivered_rna",
+              "id": "rm61461.original",
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+                    "id": "WO2025096878.sequence-listing",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "2024-10-28"
+                  },
+                  {
+                    "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                    "id": "WO2025096878A9",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "2025-07-10"
+                  }
+                ],
+                "locator": "SEQ151; current A9 Figure3C",
+                "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.circuit_molecule.v0.1",
+              "sequence": "AGCAUAAAAGUCACAUUUGCUUCUGACAUAGUUGUGUUGACUCACAACCCCAGAAACAGACAUCGAAUUCGCUGCCACCAUGGCCCUGCCCGUGACCGCCCUCCUGCUGCCCCUGGCCCUGCUCCUGCACGCCGCCCGGCCCGAGAUCGUGCUGACCCAGAGCCCCGGCACCCUGAGCCUGAGCCCCGGCGAGCGGGCCACCCUGAGCUGCCGGGCCAGCCAGAGCGUGAGCAGCAGUUACCUGGCCUGGUACCAGCAGAAGCCCGGCCAGGCCCCACGGCUGCUGAUCUACGGCGCCAGCAGCCGGGCCACCGGCAUCCCCGACCGGUUCAGCGGCUCCGGCAGCGGCACCGACUUCACCCUGACCAUCAGCCGGCUGGAGCCCGAGGACUUCGCCGUGUACUACUGCCAGCAGUACGGCAGCAGCCGGUUCACCUUCGGCCCCGGCACCAAGGUGGACAUCAAGGGCAGCACCAGCGGCAGCGGCAAGCCCGGCAGCGGCGAGGGCAGCACCAAGGGCCAGGUGCAGCUGGUGCAGAGCGGCGCCGAGGUGAAGAAGCCCGGCAGCAGCGUGAAGGUGAGCUGCAAGGACAGCGGCGGCACCUUCAGCAGCUACGCCAUCAGCUGGGUGCGGCAGGCCCCAGGCCAGGGCCUGGAGUGGAUGGGCGGCAUCAUCCCCAUCUUCGGCACCACCAACUACGCCCAGCAGUUCCAGGGCCGGGUGACCAUCACCGCCGACGAGAGCACCAGCACCGCCUACAUGGAGCUGAGCAGCCUGCGGAGCGAGGACACCGCCGUCUACUACUGCGCCCGGGAGGCCGUGGCCGCCGACUGGCUGGACCCCUGGGGCCAGGGCACCCUGGUGACCGUGAGCAGCAUCGAGGUGAUGUACCCACCACCCUACCUGGACAACGAGAAAAGCAACGGCACCAUCAUCCACGUGAAGGGCAAGCACCUGUGCCCCAGCCCACUGUUCCCCGGCCCCAGCAAGCCCUUCUGGGUGCUGGUCGUGGUGGGCGGCGUGCUGGCCUGCUACAGCCUGCUGGUGACCGUGGCCUUCAUCAUCUUCUGGGUGCGGAGCAAGCGGAGCCGGCUGCUGCACAGCGACUACAUGAACAUGACCCCACGGCGGCCCGGCCCCACCCGGAAGCACUACCAGCCCUACGCCCCACCCCGGGACUUCGCCGCCUACCGGAGCCGGGUGAAGUUCAGCCGGAGCGCCGACGCCCCAGCCUACCAGCAGGGCCAGAACCAGCUCUACAACGAGCUGAACCUGGGCCGGCGGGAGGAGUACGACGUGCUGGACAAGCGGCGGGGCCGGGACCCCGAGAUGGGCGGCAAGCCCCGGCGGAAGAACCCACAGGAGGGCCUCUACAAUGAGCUGCAGAAGGACAAGAUGGCCGAGGCCUACAGCGAGAUCGGCAUGAAGGGCGAGCGGCGGAGGGGCAAGGGCCACGACGGCCUGUACCAGGGCCUGAGCACCGCCACCAAGGACACCUACGACGCCCUGCACAUGCAGGCCCUGCCACCCCGGUGAUAAAGGAUCCGAGACUACUGUUAUUUGACCAAUGAAUUGACUUCUAAUAAAAUCUAGUGGUGAUGCAGUUCAGACUUCAAAUAGUGGCAAAUAAAAAGUGCUAUUUGUGAUGGUUUGCUUCUGUGUACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "sequence_extent": "complete",
+              "space": {
+                "alphabet": "RNA",
+                "axis": "5prime_to_3prime",
+                "id": "rm61461.root.frame",
+                "length": 1776,
+                "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+                "topology": "linear"
+              }
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+                  "id": "WO2025096878.sequence-listing",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "2024-10-28"
+                },
+                {
+                  "content_fingerprint": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+                  "id": "WO2025096878A9",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "2025-07-10"
+                }
+              ],
+              "locator": "SEQ151; current A9 Figure3C",
+              "reason": "Exact published nominal sequence and named source parts; no physical batch or human in-vivo acceptance.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.construction_root_source.v0.1"
+          }
+        ],
+        "steps": []
+      }
+    }
+  },
+  "request_sha256": "ba487dddf4f8e5bafe0d0b4aef8e82559b7a9a97e1552f0ba10730c556bb2e98",
+  "schema_version": "biocompiler.car_payload_expected.v0.1",
+  "source_objective": "encode_car"
+}

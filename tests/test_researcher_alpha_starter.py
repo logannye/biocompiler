@@ -75,6 +75,26 @@ class ResearcherStarterTests(unittest.TestCase):
         self.assertEqual(manifest["real_researcher_project"], "unqualified")
         self.assertFalse((self.output / "researcher-starter").exists())
 
+    def test_car_parent_preserves_authentic_evidence_and_separate_researcher_scope(self):
+        self.comparison.update(schema_version="biocompiler.policy_material_prebuilt_campaign.v0.5",
+            claim="supplied_prebuilt_material_component_staged_researcher_and_car_payload_profiles_only",
+            car_payload={"status": "pass"}, car_originals={"inert": {"sha256": "a" * 64}})
+        self.save_comparison()
+        files, manifest = self.plan()
+        self.assertEqual(manifest["schema_version"], "biocompiler.researcher_alpha_starter.v0.3")
+        self.assertEqual(manifest["parent_comparison_schema"], self.comparison["schema_version"])
+        self.assertEqual(manifest["content_scope"], "preserved_researcher_alpha_examples_only")
+        self.assertEqual(manifest["parent_evidence"], "authentic_v0.5_comparison_retained_without_relabeling")
+        self.assertEqual(manifest["car_payload_content"], "separate_car_starter")
+        self.assertEqual(len(files), len(starter.SOURCE_FILES) + 14)
+        self.assertEqual(json.loads(files["evidence/prebuilt-comparison.json"].read_text()), self.comparison)
+        before = deepcopy(self.comparison)
+        for key, value in (("car_payload", {"status": "failed"}), ("claim", "universal"), ("car_originals", [])):
+            self.comparison = {**before, key: value}
+            self.save_comparison()
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, "authentic complete CAR"):
+                self.plan()
+
     def test_partial_or_duplicate_slots_cannot_prepare_a_handoff(self):
         original = deepcopy(self.comparison)
         for mutate in (lambda: self.comparison.update(status="failed"),

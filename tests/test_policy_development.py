@@ -31,7 +31,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.stanzas = []
         for name, fixtures in dev.SUITES:
             action = (" (action (run %{test} " + " ".join("%{dep:" + path + "}" for path in fixtures) + "))") if fixtures else ""
-            self.stanzas.append(f"(test (name {name}) (modules {name}) (libraries bioc_wire){action})\n")
+            modules = name + (" test_policy_expression_source_admission" if name == "test_policy_mrna_structure" else "")
+            self.stanzas.append(f"(test (name {name}) (modules {modules}) (libraries bioc_wire){action})\n")
             for path in fixtures:
                 (self.root / "core/test" / path).write_text('{"independent_fixture":true}\n')
         (self.root / "core/test/dune").write_text("".join(self.stanzas))
@@ -511,6 +512,34 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.mutate = lambda called: (self.root / "examples/researcher_alpha.py").write_text("changed")
         with self.assertRaises(ValueError):
             dev.researcher_alpha_sdk(self.root)
+        self.assertEqual(json.loads(report_path.read_text())["status"], "failed")
+
+    def test_car_payload_sdk_rejects_missing_stale_and_mutated_evidence(self):
+        self.prepare_staged_sdk()
+        witness = self.sdk_output / "car-payload-sdk-witness.json"
+        report_path = self.sdk_output / "car-payload-sdk.json"
+        log = self.sdk_output / "car-payload-sdk.log"
+        with mock.patch.dict(os.environ, {"GITHUB_SHA": "3" * 40}), self.assertRaises(ValueError):
+            dev.car_payload_sdk(self.root)
+        self.assertEqual(self.calls, [])
+        with self.assertRaisesRegex(ValueError, "car-payload-sdk-witness.json"):
+            dev.car_payload_sdk(self.root)
+        self.assertEqual(json.loads(report_path.read_text())["status"], "failed")
+        log.unlink()
+        self.mutate = lambda called: witness.write_text('{"inert_only":true}\n')
+        checked = dev.car_payload_sdk(self.root)
+        self.assertEqual(checked["schema"], "biocompiler.development-car-payload-feedback.v0.1")
+        self.assertEqual(checked["status"], "passed")
+        self.assertIs(checked["acceptance"], False)
+        self.assertEqual(set(checked["outputs"]), {witness.name})
+        self.assertEqual(self.calls[-1], [dev.sys.executable, "-B", str(self.root / "tools/check_car_payload.py"),
+            "--expected", str(self.root / "data/car_payload/expected.json"),
+            "--core", str(self.root / dev.SDK_BINARIES["core"]), "--verify", str(self.root / dev.SDK_BINARIES["verify"]),
+            "--output", str(witness)])
+        log.unlink()
+        self.mutate = lambda called: (self.root / "examples/car_payload.py").write_text("changed")
+        with self.assertRaises(ValueError):
+            dev.car_payload_sdk(self.root)
         self.assertEqual(json.loads(report_path.read_text())["status"], "failed")
 
     def test_staged_material_sdk_fixed_paths_identity_and_failures_are_independent(self):

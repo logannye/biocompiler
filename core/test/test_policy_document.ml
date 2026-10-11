@@ -140,6 +140,36 @@ let read_file path =
   let input = open_in_bin path in
   Fun.protect ~finally:(fun () -> close_in input) (fun () -> really_input_string input (in_channel_length input))
 
+let expression_source_representation request =
+  (* This is a shape-only adaptation, not an admitted expression objective. *)
+  let assurance = field "assurance" request |> replace "horizon" (str "not_applicable")
+    |> replace "level" (str "structural") |> replace "assumptions" (Json.Array [])
+    |> replace "tolerances" (Json.Array []) in
+  let raw = request |> replace "profile" (str P.expression_source_profile)
+    |> replace "assurance" assurance in
+  let parsed = P.of_expression_json raw in
+  require (Json.equal (P.to_json parsed) raw) "Static source was normalized or lost authority";
+  require (P.artifact_digest parsed = Canonical.sha256 (Canonical.encode raw))
+    "Static source artifact pin omitted original fields";
+  require (P.fingerprint parsed = P.document_digest raw) "Static semantic pin changed convention";
+  rejected_code "new source on old decoder" "policy_document" (fun () -> P.of_json raw);
+  rejected_code "old source on new decoder" "policy_document" (fun () -> P.of_expression_json request);
+  rejected_code "program on new decoder" "policy_document" (fun () -> P.of_expression_json (field "program" request));
+  rejected_code "old profile static horizon" "policy_document"
+    (fun () -> P.of_json (replace "profile" (str P.profile) raw));
+  List.iter (fun (key, value) -> rejected_code ("static assurance " ^ key) "policy_document"
+    (fun () -> P.of_expression_json (replace "assurance" (replace key value assurance) raw)))
+    ["horizon", field "horizon" (field "assurance" request);
+     "horizon", str "unbounded_requested"; "level", str "bounded"; "level", str "proof";
+     "assumptions", Json.Array [str "unproved"]; "tolerances", Json.Array [Json.Null]];
+  let program = field "program" raw in
+  rejected_code "static nested profile" "policy_document" (fun () ->
+    P.of_expression_json (replace "program" (replace "profile" (str P.expression_source_profile) program) raw));
+  rejected_code "static unknown field" "policy_document" (fun () -> P.of_expression_json (add "authority" Json.Null raw));
+  rejected_code "static missing field" "policy_document" (fun () -> P.of_expression_json (remove "assurance" raw));
+  let rec cyclic = Json.Array [cyclic] in
+  rejected_code "static bounded cyclic input" "policy_document_limit" (fun () -> P.of_expression_json cyclic)
+
 let corpus path =
   let corpus = Json.parse (read_file path) in
   require (field "fixture_version" corpus = str "biocompiler.policy_native_literals.v0.1") "Wrong policy literal fixture";
@@ -173,6 +203,7 @@ let corpus path =
      | _ -> ())) cases;
   let documents = List.map (field "document") cases in
   let request = List.find (fun value -> field "$type" value = str "BuildRequest") documents in
+  expression_source_representation request;
   let program = field "program" request in
   let declarations = Json.array (field "declarations" program) in
   let role = List.hd declarations in

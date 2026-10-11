@@ -85,6 +85,14 @@ complete original requests, exact material, bounded approximation and supplied
 evidence gates. It runs after the native suites and before the SDK lanes,
 retaining its own receipt.
 
+The CAR source candidate adds a separate `car-payload-sdk` step after the ten
+preserved campaigns. It uses their same authenticated native build and a distinct
+public-reference receipt; it does not relabel the artificial researcher campaign.
+The complete original CAR request, source pack and example are included in the
+source snapshot. The installed profile requires this same task in all four
+platform/runtime slots, with exact native actions, artifacts and source-edit
+rejections. Fresh overall and main acceptance remain required.
+
 At the baseline command durations, this scheduling can remove roughly six
 minutes of serialization. That is an estimate, not a measured speedup; compare
 the next complete hosted run's wall time, command durations and total work.

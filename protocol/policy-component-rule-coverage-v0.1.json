@@ -1407,7 +1407,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "e011a22c44b2a958973f77f97589c220f7623a1946c0875dfc01914fe8c41592",
+      "sha256": "ff7dcb613c41a21777cb8afb297c859941f6ccbac98871b69e604aca29cb7de7",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -2012,7 +2012,7 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "98c26122b6f53427e9e975f179167d07a90554d8d2c24550f2c0f7ed2e056b90",
+      "sha256": "50c2c03f5920c405efe0c0d3785424cdf2bf108b72431f217af861aadeca00d9",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -3039,7 +3039,7 @@
     },
     {
       "path": "tests/test_policy_material_prebuilt.py",
-      "sha256": "c522d899ed57d769c74e5110ef5595bb722a647613b9ab3e29bd5d39997e707f"
+      "sha256": "335c0cc89bfea104036032838e3ae4f8d3e7358cbf2e0855aff8f3eff45cb0a4"
     },
     {
       "path": "tests/test_policy_module_linking.py",
@@ -3219,7 +3219,7 @@
     },
     {
       "path": "tools/check_policy_material_prebuilt.py",
-      "sha256": "a18b84da70b47a14d98ecfa200bb00cf2c0d7626bb5101b7607d53b00db01bf1"
+      "sha256": "136952b43f1a290edca4d3ca16cd5c562948e3941e3987099e55ae4e64b3f2a0"
     },
     {
       "path": "tools/check_policy_multi_member_fixture.py",

@@ -58,6 +58,10 @@ jobs:
         env:
           PYTHONPATH: src
         run: python -B tools/check_policy_development.py sdk-all
+      - name: Exercise the complete CAR reference workflow through the same build
+        env:
+          PYTHONPATH: src
+        run: python -B tools/check_policy_development.py car-payload-sdk
       - name: Retain diagnostic evidence even when native work fails
         if: always()
         uses: actions/upload-artifact@v4

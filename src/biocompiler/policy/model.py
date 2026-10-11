@@ -10,6 +10,7 @@ from decimal import Decimal, InvalidOperation
 from typing import Literal, TypeAlias
 
 PROFILE = "biocompiler.policy.v0.1"
+EXPRESSION_SOURCE_PROFILE = "biocompiler.policy_expression_source.v0.1"
 REGISTRY: dict[str, type[Record]] = {}
 
 
@@ -535,7 +536,7 @@ class ImplementationCatalogLock(Record):
 class AssuranceRequest(Record):
     requirements: tuple[str, ...]
     level: Literal["structural", "bounded", "proof"]
-    horizon: Quantity | Literal["unbounded_requested"]
+    horizon: Quantity | Literal["unbounded_requested", "not_applicable"]
     assumptions: tuple[str, ...] = ()
     tolerances: tuple[Argument, ...] = ()
 

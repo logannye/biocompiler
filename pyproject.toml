@@ -31,4 +31,4 @@ Issues = "https://github.com/logannye/biocompiler/issues"
 where = ["src"]
 
 [tool.setuptools.package-data]
-biocompiler = ["_core_release.json", "py.typed", "studio/static/*", "studio/data/*.json"]
+biocompiler = ["_core_release.json", "py.typed", "studio/static/*", "studio/data/*.json", "policy/data/*.json"]

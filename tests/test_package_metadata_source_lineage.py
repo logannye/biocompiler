@@ -26,12 +26,25 @@ class PackageMetadataSourceLineageTests(unittest.TestCase):
                          "_core_release.json")
         self.assertEqual(current["project"]["scripts"]["biocompiler"], "biocompiler.entrypoint:main")
         current["project"]["scripts"]["biocompiler"] = "biocompiler.cli:main"
+        self.assertEqual(current["tool"]["setuptools"]["package-data"]["biocompiler"].pop(), "policy/data/*.json")
         self.assertEqual(current, old)
         from tools import policy_entrypoint_source_lineage as policy
-        self.assertEqual(proof["schema_version"], "biocompiler.package_metadata_source_counterpart.v2")
+        self.assertEqual(proof["schema_version"], "biocompiler.package_metadata_source_counterpart.v3")
         self.assertEqual(proof["packaging_source_sha256"], metadata.CURRENT_SHA256)
         self.assertEqual(proof["policy_entrypoint_counterpart"]["witness_sha256"], policy.WITNESS_SHA256)
         self.assertEqual(proof["current_sha256"], metadata.sha((metadata.ROOT / metadata.PATH).read_bytes()))
+
+    def test_car_data_change_is_closed_and_does_not_authorize_other_metadata(self):
+        old, proof = metadata.counterpart()
+        raw = proof["current_source"].encode()
+        self.assertEqual(metadata.sha(raw), metadata.CAR_CURRENT_SHA256)
+        self.assertEqual(proof["car_data_changes"], [{"before": '"studio/data/*.json"]',
+                         "after": '"studio/data/*.json", "policy/data/*.json"]'}])
+        for changed in (raw.replace(b'"policy/data/*.json"', b'"policy/data/*"'),
+                        raw.replace(b'0.1.0.dev29', b'0.1.0.dev30'),
+                        raw.replace(b'dependencies = []', b'dependencies = ["unexpected"]')):
+            with self.subTest(changed=metadata.sha(changed)), self.assertRaises(ValueError):
+                metadata.counterpart(current=changed)
 
     def test_stale_changed_or_missing_current_source_is_rejected(self):
         old, proof = metadata.counterpart()

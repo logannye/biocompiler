@@ -53,9 +53,16 @@ def pin(raw):
 
 def plan(args, comparison, natives, *, root=ROOT):
     """Pure bounded copy plan; callers supply results of the complete gate."""
-    require(comparison["schema_version"] == "biocompiler.policy_material_prebuilt_campaign.v0.4"
+    parent_schema = comparison["schema_version"]
+    car_parent = parent_schema == "biocompiler.policy_material_prebuilt_campaign.v0.5"
+    require(parent_schema in {"biocompiler.policy_material_prebuilt_campaign.v0.4",
+                              "biocompiler.policy_material_prebuilt_campaign.v0.5"}
             and comparison["status"] == "pass" and comparison["researcher_project"]["status"] == "pass",
             "Starter requires the complete researcher installed comparison")
+    if car_parent:
+        require(comparison["claim"] == "supplied_prebuilt_material_component_staged_researcher_and_car_payload_profiles_only"
+                and comparison["car_payload"]["status"] == "pass" and type(comparison["car_originals"]) is dict,
+                "Researcher projection requires the authentic complete CAR parent comparison")
     require(set(natives) == {"linux-x86_64", "macos-arm64"}, "Starter requires both validated native platforms")
     expected_slots = {(system, machine, minor) for system, machine in (("Linux", "x86_64"), ("Darwin", "arm64"))
                       for minor in ("3.11", "3.14")}
@@ -111,6 +118,12 @@ def plan(args, comparison, natives, *, root=ROOT):
         "slots": [list(slot) for slot in sorted(expected_slots)], "files": metadata,
         "entrypoint": "docs/researcher-alpha-quickstart.md",
         "review": "docs/researcher-alpha-review.md"}
+    if car_parent:
+        manifest.update(schema_version="biocompiler.researcher_alpha_starter.v0.3",
+                        parent_comparison_schema=parent_schema,
+                        content_scope="preserved_researcher_alpha_examples_only",
+                        parent_evidence="authentic_v0.5_comparison_retained_without_relabeling",
+                        car_payload_content="separate_car_starter")
     return files, manifest
 
 

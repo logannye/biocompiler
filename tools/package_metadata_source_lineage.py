@@ -17,6 +17,11 @@ CHANGES = (
      'biocompiler = ["_core_release.json", "py.typed", "studio/static/*", "studio/data/*.json"]'),
 )
 
+CAR_DATA_CHANGES = (
+    ('"studio/data/*.json"]', '"studio/data/*.json", "policy/data/*.json"]'),
+)
+CAR_CURRENT_SHA256 = "75c25fee15af61614d4c60649f723fafe58bcc6d2c58357a4ec29546b8f407b4"
+
 
 def require(condition, message):
     if not condition:
@@ -64,6 +69,12 @@ def counterpart(root=ROOT, *, current=None):
     for before, after in CHANGES:
         require(composed.count(before.encode()) == 1, "Composed package metadata edit is not unique")
         composed = composed.replace(before.encode(), after.encode(), 1)
+    packaging_dispatch = composed
+    for before, after in CAR_DATA_CHANGES:
+        require(composed.count(before.encode()) == 1, "CAR package data edit is not unique")
+        composed = composed.replace(before.encode(), after.encode(), 1)
+    require(sha(composed) == CAR_CURRENT_SHA256,
+            "CAR package metadata exceeds its reviewed complete source identity")
     if current is None:
         path = root / PATH
         require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 4096,
@@ -71,9 +82,11 @@ def counterpart(root=ROOT, *, current=None):
         current = path.read_bytes()
     require(type(current) is bytes and current == composed,
             "Current package metadata differs from its exact whole-source counterpart")
-    return historical, {"schema_version": "biocompiler.package_metadata_source_counterpart.v2", "path": PATH,
+    return historical, {"schema_version": "biocompiler.package_metadata_source_counterpart.v3", "path": PATH,
         "historical_sha256": HISTORICAL_SHA256, "current_sha256": sha(current),
         "witness_sha256": WITNESS_SHA256, "current_source": current.decode(),
         "changes": entry["changes"], "packaging_source_sha256": CURRENT_SHA256,
         "policy_entrypoint_counterpart": policy_proof,
-        "composition": "exact_packaging_changes_applied_to_pinned_policy_entrypoint_source"}
+        "composition": "exact_packaging_dispatch_and_car_data_changes",
+        "packaging_dispatch_sha256": sha(packaging_dispatch),
+        "car_data_changes": [{"before": before, "after": after} for before, after in CAR_DATA_CHANGES]}

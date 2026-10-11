@@ -58,13 +58,29 @@ class PolicySourceContextCoverageTests(unittest.TestCase):
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["native_execution"], "not_performed")
 
+    def pre_expression_projection(self):
+        projected = deepcopy(self.original)
+        context = next(row for row in projected["contexts"]
+                       if row["id"] == "source.context.duration.assurance_horizon")
+        owner = next(row for row in context["owners"]
+                     if row["path"] == "src/biocompiler/policy/validation.py")
+        self.assertEqual((owner["first_line"], owner["last_line"], owner["python_calls"]),
+                         (736, 736, ["L736C12"]))
+        self.assertEqual(owner["region_sha256"], "92db7d5476b0e3d28b4fdb665c78db00a73a997662d79e4c84f77a9b69db4af6")
+        owner.update(first_line=722, last_line=722, python_calls=["L722C12"])
+        return projected
+
+    def test_expression_reanchor_preserves_all_previous_reviewed_declarations(self):
+        self.assertEqual(coverage.digest(coverage.canonical(coverage.declarations(self.pre_expression_projection()))),
+                         "4ddf3f0558a8e202891e175a576736f22483ed3519f7b9d4342bc4b8ece2dbde")
+
     def test_metering_reanchor_preserves_all_previous_reviewed_declarations(self):
         # Only file dependencies, review metadata and native line locations
         # changed. Restore those exact reviewed differences, then require the
         # original digest of all predicates, contexts, provenance and open gaps.
         # No source hash, current helper or regenerated expected result supplies
         # the historical expected value.
-        projected = deepcopy(self.original)
+        projected = self.pre_expression_projection()
         added = {"core/lib/checker/policy_generation_meter.ml",
                  "core/lib/checker/policy_generation_meter.mli"}
         dependencies = [row for row in projected["sources"] if row["path"] in added]

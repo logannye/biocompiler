@@ -76,7 +76,7 @@ POLICY_OPERATIONAL_FIXTURES = {
     "test_policy_candidate_congruence_check": ["data/policy_implementation_binding_v01.json"],
     "test_policy_candidate_transition_congruence": ["data/policy_primitives_v01.json"],
     'test_construction_content': ['data/construction_content_v01.json'],
-    'test_policy_mrna_structure': ['data/policy_mrna_structure_v01.json'],
+    'test_policy_mrna_structure': ['data/policy_mrna_structure_v01.json', 'data/policy_material_request_v01.json'],
     'test_policy_implementation_service': ['data/policy_implementation_request_v01.json'],
     'test_policy_material_binding': ['data/policy_material_binding_v01.json'],
     'test_policy_component_fragment': ['data/policy_material_request_v01.json', 'data/policy_material_state_v01.json'],
@@ -141,6 +141,16 @@ class NativeBundleTests(unittest.TestCase):
             self.assertEqual(next(row for row in plan if row['name']==name),
                              {'name':name, 'environment':[], 'dependencies':['data/policy_documents_v01.json']})
 
+    def test_expression_group_requires_both_exact_ordered_test_modules(self):
+        original = (ROOT / 'core/test/dune').read_text()
+        modules = '(modules test_policy_mrna_structure test_policy_expression_source_admission)'
+        self.assertEqual(original.count(modules), 1)
+        for changed in ('(modules test_policy_mrna_structure)',
+                        '(modules test_policy_expression_source_admission test_policy_mrna_structure)',
+                        '(modules test_policy_mrna_structure test_policy_expression_source_admission unexpected)'):
+            with self.subTest(modules=changed), self.assertRaisesRegex(ValueError, 'Unsupported native test modules'):
+                bundle.test_plan(original.replace(modules, changed))
+
     def test_every_operational_dependency_is_exact_ordered_and_source_complete(self):
         plan = bundle.test_plan((ROOT/'core/test/dune').read_text())
         observed = {row['name']:row['dependencies'] for row in plan if 'dependencies' in row}
@@ -154,7 +164,8 @@ class NativeBundleTests(unittest.TestCase):
         self.assertEqual(len(bundle.expected_members(ROOT)),239)
         self.assertEqual(sum(path.endswith('.exe') for path in bundle.expected_members(ROOT)),203)
         for name, relatives in POLICY_OPERATIONAL_FIXTURES.items():
-            declaration = '(test (name '+name+') (modules '+name+') (libraries example) (action (run %{test} '
+            modules = name + (' test_policy_expression_source_admission' if name == 'test_policy_mrna_structure' else '')
+            declaration = '(test (name '+name+') (modules '+modules+') (libraries example) (action (run %{test} '
             arguments = ['%{dep:'+relative+'}' for relative in relatives]
             for changed in ([], arguments+arguments[:1], list(reversed(arguments)) if len(arguments)>1 else ['%{dep:data/unreviewed.json}'],
                             ['%{dep:../'+relatives[0]+'}']+arguments[1:],

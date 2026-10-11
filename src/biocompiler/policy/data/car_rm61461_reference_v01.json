@@ -1,0 +1,238 @@
+{
+  "schema_version": "biocompiler.car_rm61461_reference.v0.1",
+  "reference_id": "WO2025096878A9:RM_61461:SEQ151",
+  "scope": {
+    "kind": "nominal_published_reference",
+    "publication": "WO2025096878A9",
+    "a1_equivalence": "unassessed",
+    "correction_notice_scope": "unassessed",
+    "product_target": "human_immune_cells_in_vivo",
+    "reference_antigen": "CD19",
+    "product_antigen_selection": "not_selected_by_this_reference",
+    "product_indication_selection": "not_selected_by_this_reference"
+  },
+  "sources": {
+    "pdf": {
+      "url": "https://patentimages.storage.googleapis.com/aa/28/2d/e21333e54fee5a/WO2025096878A9.pdf",
+      "bytes": 17210052,
+      "sha256": "e95bc99f5cc4f9c69d4ca4a40590fb437b17980b93f5a2f7a18e794ca5b9b2da",
+      "provenance": "public_patent_document_mirror",
+      "verified_by_this_checker": false
+    },
+    "zip": {
+      "url": "https://www.wipo.int/published_pct_sequences/publication/2025/0508/WO25_096878/WO2025-096878-TAB-20241115-001.zip",
+      "bytes": 50876,
+      "sha256": "9ea75052596054c5301fd000ea39a60cbb3b024499c0213c075428bafc417092",
+      "provenance": "official_wipo_public_sequence_archive",
+      "verified_by_this_checker": false
+    },
+    "xml": {
+      "archive_url": "https://www.wipo.int/published_pct_sequences/publication/2025/0508/WO25_096878/WO2025-096878-TAB-20241115-001.zip",
+      "member": "23-1871-WO_SequenceListing.xml",
+      "bytes": 669450,
+      "sha256": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e",
+      "provenance": "official_wipo_archive_member",
+      "source_join": "A9 paragraph [0002]: filename, 2024-10-28 creation date, 669450 bytes",
+      "verified_by_this_checker": true
+    }
+  },
+  "source_records": {
+    "2": {
+      "sequence_id": 2,
+      "moltype": "AA",
+      "length": 485,
+      "original_literal": "MALPVTALLLPLALLLHAARPEIVLTQSPGTLSLSPGERATLSCRASQSVSSSYLAWYQQKPGQAPRLLIYGASSRATGIPDRFSGSGSGTDFTLTISRLEPEDFAVYYCQQYGSSRFTFGPGTKVDIKGSTSGSGKPGSGEGSTKGQVQLVQSGAEVKKPGSSVKVSCKDSGGTFSSYAISWVRQAPGQGLEWMGGIIPIFGTTNYAQQFQGRVTITADESTSTAYMELSSLRSEDTAVYYCAREAVAADWLDPWGQGTLVTVSSIEVMYPPPYLDNEKSNGTIIHVKGKHLCPSPLFPGPSKPFWVLVVVGGVLACYSLLVTVAFIIFWVRSKRSRLLHSDYMNMTPRRPGPTRKHYQPYAPPRDFAAYRSRVKFSRSADAPAYQQGQNQLYNELNLGRREEYDVLDKRRGRDPEMGGKPRRKNPQEGLYNELQKDKMAEAYSEIGMKGERRRGKGHDGLYQGLSTATKDTYDALHMQALPPR",
+      "original_literal_sha256": "833bd17e675e9595d01865a0109c9c795d2ba8b78481ab06f12da043019e404d"
+    },
+    "11": {
+      "sequence_id": 11,
+      "moltype": "RNA",
+      "length": 79,
+      "original_literal": "agcataaaagtcacatttgcttctgacatagttgtgttgactcacaaccccagaaacagacatcgaattcgctgccacc",
+      "original_literal_sha256": "98c92e9f43c45c6519c3d3fb4b1f79f9e2e5a68937897f85899a28ee68aa884f",
+      "rna_sequence": "AGCAUAAAAGUCACAUUUGCUUCUGACAUAGUUGUGUUGACUCACAACCCCAGAAACAGACAUCGAAUUCGCUGCCACC",
+      "rna_sha256": "0f754ffb021fca9f4791eb91c7dedc8ae26285a6025d36e4971ea84bdd241544"
+    },
+    "34": {
+      "sequence_id": 34,
+      "moltype": "RNA",
+      "length": 126,
+      "original_literal": "aggatccgagactactgttatttgaccaatgaattgacttctaataaaatctagtggtgatgcagttcagacttcaaatagtggcaaataaaaagtgctatttgtgatggtttgcttctgtgtaca",
+      "original_literal_sha256": "c942e06e4e3dcf5697de9776d97fc776bff7f532abd89221caf48a579b954f49",
+      "rna_sequence": "AGGAUCCGAGACUACUGUUAUUUGACCAAUGAAUUGACUUCUAAUAAAAUCUAGUGGUGAUGCAGUUCAGACUUCAAAUAGUGGCAAAUAAAAAGUGCUAUUUGUGAUGGUUUGCUUCUGUGUACA",
+      "rna_sha256": "1beae69ea89ae065b69438bfbfdd83663c567970e59fc22aad475058f2529acd"
+    },
+    "65": {
+      "sequence_id": 65,
+      "moltype": "RNA",
+      "length": 1461,
+      "original_literal": "atggccctgcccgtgaccgccctcctgctgcccctggccctgctcctgcacgccgcccggcccgagatcgtgctgacccagagccccggcaccctgagcctgagccccggcgagcgggccaccctgagctgccgggccagccagagcgtgagcagcagttacctggcctggtaccagcagaagcccggccaggccccacggctgctgatctacggcgccagcagccgggccaccggcatccccgaccggttcagcggctccggcagcggcaccgacttcaccctgaccatcagccggctggagcccgaggacttcgccgtgtactactgccagcagtacggcagcagccggttcaccttcggccccggcaccaaggtggacatcaagggcagcaccagcggcagcggcaagcccggcagcggcgagggcagcaccaagggccaggtgcagctggtgcagagcggcgccgaggtgaagaagcccggcagcagcgtgaaggtgagctgcaaggacagcggcggcaccttcagcagctacgccatcagctgggtgcggcaggccccaggccagggcctggagtggatgggcggcatcatccccatcttcggcaccaccaactacgcccagcagttccagggccgggtgaccatcaccgccgacgagagcaccagcaccgcctacatggagctgagcagcctgcggagcgaggacaccgccgtctactactgcgcccgggaggccgtggccgccgactggctggacccctggggccagggcaccctggtgaccgtgagcagcatcgaggtgatgtacccaccaccctacctggacaacgagaaaagcaacggcaccatcatccacgtgaagggcaagcacctgtgccccagcccactgttccccggccccagcaagcccttctgggtgctggtcgtggtgggcggcgtgctggcctgctacagcctgctggtgaccgtggccttcatcatcttctgggtgcggagcaagcggagccggctgctgcacagcgactacatgaacatgaccccacggcggcccggccccacccggaagcactaccagccctacgccccaccccgggacttcgccgcctaccggagccgggtgaagttcagccggagcgccgacgccccagcctaccagcagggccagaaccagctctacaacgagctgaacctgggccggcgggaggagtacgacgtgctggacaagcggcggggccgggaccccgagatgggcggcaagccccggcggaagaacccacaggagggcctctacaatgagctgcagaaggacaagatggccgaggcctacagcgagatcggcatgaagggcgagcggcggaggggcaagggccacgacggcctgtaccagggcctgagcaccgccaccaaggacacctacgacgccctgcacatgcaggccctgccaccccggtgataa",
+      "original_literal_sha256": "1957daeb1aa469beb9734bc9b087d4808482a69c6161e774fc01305bf847ce66",
+      "rna_sequence": "AUGGCCCUGCCCGUGACCGCCCUCCUGCUGCCCCUGGCCCUGCUCCUGCACGCCGCCCGGCCCGAGAUCGUGCUGACCCAGAGCCCCGGCACCCUGAGCCUGAGCCCCGGCGAGCGGGCCACCCUGAGCUGCCGGGCCAGCCAGAGCGUGAGCAGCAGUUACCUGGCCUGGUACCAGCAGAAGCCCGGCCAGGCCCCACGGCUGCUGAUCUACGGCGCCAGCAGCCGGGCCACCGGCAUCCCCGACCGGUUCAGCGGCUCCGGCAGCGGCACCGACUUCACCCUGACCAUCAGCCGGCUGGAGCCCGAGGACUUCGCCGUGUACUACUGCCAGCAGUACGGCAGCAGCCGGUUCACCUUCGGCCCCGGCACCAAGGUGGACAUCAAGGGCAGCACCAGCGGCAGCGGCAAGCCCGGCAGCGGCGAGGGCAGCACCAAGGGCCAGGUGCAGCUGGUGCAGAGCGGCGCCGAGGUGAAGAAGCCCGGCAGCAGCGUGAAGGUGAGCUGCAAGGACAGCGGCGGCACCUUCAGCAGCUACGCCAUCAGCUGGGUGCGGCAGGCCCCAGGCCAGGGCCUGGAGUGGAUGGGCGGCAUCAUCCCCAUCUUCGGCACCACCAACUACGCCCAGCAGUUCCAGGGCCGGGUGACCAUCACCGCCGACGAGAGCACCAGCACCGCCUACAUGGAGCUGAGCAGCCUGCGGAGCGAGGACACCGCCGUCUACUACUGCGCCCGGGAGGCCGUGGCCGCCGACUGGCUGGACCCCUGGGGCCAGGGCACCCUGGUGACCGUGAGCAGCAUCGAGGUGAUGUACCCACCACCCUACCUGGACAACGAGAAAAGCAACGGCACCAUCAUCCACGUGAAGGGCAAGCACCUGUGCCCCAGCCCACUGUUCCCCGGCCCCAGCAAGCCCUUCUGGGUGCUGGUCGUGGUGGGCGGCGUGCUGGCCUGCUACAGCCUGCUGGUGACCGUGGCCUUCAUCAUCUUCUGGGUGCGGAGCAAGCGGAGCCGGCUGCUGCACAGCGACUACAUGAACAUGACCCCACGGCGGCCCGGCCCCACCCGGAAGCACUACCAGCCCUACGCCCCACCCCGGGACUUCGCCGCCUACCGGAGCCGGGUGAAGUUCAGCCGGAGCGCCGACGCCCCAGCCUACCAGCAGGGCCAGAACCAGCUCUACAACGAGCUGAACCUGGGCCGGCGGGAGGAGUACGACGUGCUGGACAAGCGGCGGGGCCGGGACCCCGAGAUGGGCGGCAAGCCCCGGCGGAAGAACCCACAGGAGGGCCUCUACAAUGAGCUGCAGAAGGACAAGAUGGCCGAGGCCUACAGCGAGAUCGGCAUGAAGGGCGAGCGGCGGAGGGGCAAGGGCCACGACGGCCUGUACCAGGGCCUGAGCACCGCCACCAAGGACACCUACGACGCCCUGCACAUGCAGGCCCUGCCACCCCGGUGAUAA",
+      "rna_sha256": "a676e1a18e7e6feb22bf660a3013e1834fec77aa98d5de10ce5d292620c2c487"
+    },
+    "101": {
+      "sequence_id": 101,
+      "moltype": "RNA",
+      "length": 1455,
+      "original_literal": "atggccctgcccgtgaccgccctcctgctgcccctggccctgctcctgcacgccgcccggcccgagatcgtgctgacccagagccccggcaccctgagcctgagccccggcgagcgggccaccctgagctgccgggccagccagagcgtgagcagcagttacctggcctggtaccagcagaagcccggccaggccccacggctgctgatctacggcgccagcagccgggccaccggcatccccgaccggttcagcggctccggcagcggcaccgacttcaccctgaccatcagccggctggagcccgaggacttcgccgtgtactactgccagcagtacggcagcagccggttcaccttcggccccggcaccaaggtggacatcaagggcagcaccagcggcagcggcaagcccggcagcggcgagggcagcaccaagggccaggtgcagctggtgcagagcggcgccgaggtgaagaagcccggcagcagcgtgaaggtgagctgcaaggacagcggcggcaccttcagcagctacgccatcagctgggtgcggcaggccccaggccagggcctggagtggatgggcggcatcatccccatcttcggcaccaccaactacgcccagcagttccagggccgggtgaccatcaccgccgacgagagcaccagcaccgcctacatggagctgagcagcctgcggagcgaggacaccgccgtctactactgcgcccgggaggccgtggccgccgactggctggacccctggggccagggcaccctggtgaccgtgagcagcatcgaggtgatgtacccaccaccctacctggacaacgagaaaagcaacggcaccatcatccacgtgaagggcaagcacctgtgccccagcccactgttccccggccccagcaagcccttctgggtgctggtcgtggtgggcggcgtgctggcctgctacagcctgctggtgaccgtggccttcatcatcttctgggtgcggagcaagcggagccggctgctgcacagcgactacatgaacatgaccccacggcggcccggccccacccggaagcactaccagccctacgccccaccccgggacttcgccgcctaccggagccgggtgaagttcagccggagcgccgacgccccagcctaccagcagggccagaaccagctctacaacgagctgaacctgggccggcgggaggagtacgacgtgctggacaagcggcggggccgggaccccgagatgggcggcaagccccggcggaagaacccacaggagggcctctacaatgagctgcagaaggacaagatggccgaggcctacagcgagatcggcatgaagggcgagcggcggaggggcaagggccacgacggcctgtaccagggcctgagcaccgccaccaaggacacctacgacgccctgcacatgcaggccctgccaccccgg",
+      "original_literal_sha256": "427ae16db5827cf3edef611b5549cfcf86dcab117596556bb9e5d0481b8a7f47",
+      "rna_sequence": "AUGGCCCUGCCCGUGACCGCCCUCCUGCUGCCCCUGGCCCUGCUCCUGCACGCCGCCCGGCCCGAGAUCGUGCUGACCCAGAGCCCCGGCACCCUGAGCCUGAGCCCCGGCGAGCGGGCCACCCUGAGCUGCCGGGCCAGCCAGAGCGUGAGCAGCAGUUACCUGGCCUGGUACCAGCAGAAGCCCGGCCAGGCCCCACGGCUGCUGAUCUACGGCGCCAGCAGCCGGGCCACCGGCAUCCCCGACCGGUUCAGCGGCUCCGGCAGCGGCACCGACUUCACCCUGACCAUCAGCCGGCUGGAGCCCGAGGACUUCGCCGUGUACUACUGCCAGCAGUACGGCAGCAGCCGGUUCACCUUCGGCCCCGGCACCAAGGUGGACAUCAAGGGCAGCACCAGCGGCAGCGGCAAGCCCGGCAGCGGCGAGGGCAGCACCAAGGGCCAGGUGCAGCUGGUGCAGAGCGGCGCCGAGGUGAAGAAGCCCGGCAGCAGCGUGAAGGUGAGCUGCAAGGACAGCGGCGGCACCUUCAGCAGCUACGCCAUCAGCUGGGUGCGGCAGGCCCCAGGCCAGGGCCUGGAGUGGAUGGGCGGCAUCAUCCCCAUCUUCGGCACCACCAACUACGCCCAGCAGUUCCAGGGCCGGGUGACCAUCACCGCCGACGAGAGCACCAGCACCGCCUACAUGGAGCUGAGCAGCCUGCGGAGCGAGGACACCGCCGUCUACUACUGCGCCCGGGAGGCCGUGGCCGCCGACUGGCUGGACCCCUGGGGCCAGGGCACCCUGGUGACCGUGAGCAGCAUCGAGGUGAUGUACCCACCACCCUACCUGGACAACGAGAAAAGCAACGGCACCAUCAUCCACGUGAAGGGCAAGCACCUGUGCCCCAGCCCACUGUUCCCCGGCCCCAGCAAGCCCUUCUGGGUGCUGGUCGUGGUGGGCGGCGUGCUGGCCUGCUACAGCCUGCUGGUGACCGUGGCCUUCAUCAUCUUCUGGGUGCGGAGCAAGCGGAGCCGGCUGCUGCACAGCGACUACAUGAACAUGACCCCACGGCGGCCCGGCCCCACCCGGAAGCACUACCAGCCCUACGCCCCACCCCGGGACUUCGCCGCCUACCGGAGCCGGGUGAAGUUCAGCCGGAGCGCCGACGCCCCAGCCUACCAGCAGGGCCAGAACCAGCUCUACAACGAGCUGAACCUGGGCCGGCGGGAGGAGUACGACGUGCUGGACAAGCGGCGGGGCCGGGACCCCGAGAUGGGCGGCAAGCCCCGGCGGAAGAACCCACAGGAGGGCCUCUACAAUGAGCUGCAGAAGGACAAGAUGGCCGAGGCCUACAGCGAGAUCGGCAUGAAGGGCGAGCGGCGGAGGGGCAAGGGCCACGACGGCCUGUACCAGGGCCUGAGCACCGCCACCAAGGACACCUACGACGCCCUGCACAUGCAGGCCCUGCCACCCCGG",
+      "rna_sha256": "7fd04e1c7ccb7623c9f152608f600d5684cbdace8b1fc8c6f8a35efb43402cc8"
+    },
+    "151": {
+      "sequence_id": 151,
+      "moltype": "RNA",
+      "length": 1776,
+      "original_literal": "agcataaaagtcacatttgcttctgacatagttgtgttgactcacaaccccagaaacagacatcgaattcgctgccaccatggccctgcccgtgaccgccctcctgctgcccctggccctgctcctgcacgccgcccggcccgagatcgtgctgacccagagccccggcaccctgagcctgagccccggcgagcgggccaccctgagctgccgggccagccagagcgtgagcagcagttacctggcctggtaccagcagaagcccggccaggccccacggctgctgatctacggcgccagcagccgggccaccggcatccccgaccggttcagcggctccggcagcggcaccgacttcaccctgaccatcagccggctggagcccgaggacttcgccgtgtactactgccagcagtacggcagcagccggttcaccttcggccccggcaccaaggtggacatcaagggcagcaccagcggcagcggcaagcccggcagcggcgagggcagcaccaagggccaggtgcagctggtgcagagcggcgccgaggtgaagaagcccggcagcagcgtgaaggtgagctgcaaggacagcggcggcaccttcagcagctacgccatcagctgggtgcggcaggccccaggccagggcctggagtggatgggcggcatcatccccatcttcggcaccaccaactacgcccagcagttccagggccgggtgaccatcaccgccgacgagagcaccagcaccgcctacatggagctgagcagcctgcggagcgaggacaccgccgtctactactgcgcccgggaggccgtggccgccgactggctggacccctggggccagggcaccctggtgaccgtgagcagcatcgaggtgatgtacccaccaccctacctggacaacgagaaaagcaacggcaccatcatccacgtgaagggcaagcacctgtgccccagcccactgttccccggccccagcaagcccttctgggtgctggtcgtggtgggcggcgtgctggcctgctacagcctgctggtgaccgtggccttcatcatcttctgggtgcggagcaagcggagccggctgctgcacagcgactacatgaacatgaccccacggcggcccggccccacccggaagcactaccagccctacgccccaccccgggacttcgccgcctaccggagccgggtgaagttcagccggagcgccgacgccccagcctaccagcagggccagaaccagctctacaacgagctgaacctgggccggcgggaggagtacgacgtgctggacaagcggcggggccgggaccccgagatgggcggcaagccccggcggaagaacccacaggagggcctctacaatgagctgcagaaggacaagatggccgaggcctacagcgagatcggcatgaagggcgagcggcggaggggcaagggccacgacggcctgtaccagggcctgagcaccgccaccaaggacacctacgacgccctgcacatgcaggccctgccaccccggtgataaaggatccgagactactgttatttgaccaatgaattgacttctaataaaatctagtggtgatgcagttcagacttcaaatagtggcaaataaaaagtgctatttgtgatggtttgcttctgtgtacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "original_literal_sha256": "6b37aa3ffd966eba206f4cc465e1f20ae62bbb2b658c0a041527cb4d12b58f0e",
+      "rna_sequence": "AGCAUAAAAGUCACAUUUGCUUCUGACAUAGUUGUGUUGACUCACAACCCCAGAAACAGACAUCGAAUUCGCUGCCACCAUGGCCCUGCCCGUGACCGCCCUCCUGCUGCCCCUGGCCCUGCUCCUGCACGCCGCCCGGCCCGAGAUCGUGCUGACCCAGAGCCCCGGCACCCUGAGCCUGAGCCCCGGCGAGCGGGCCACCCUGAGCUGCCGGGCCAGCCAGAGCGUGAGCAGCAGUUACCUGGCCUGGUACCAGCAGAAGCCCGGCCAGGCCCCACGGCUGCUGAUCUACGGCGCCAGCAGCCGGGCCACCGGCAUCCCCGACCGGUUCAGCGGCUCCGGCAGCGGCACCGACUUCACCCUGACCAUCAGCCGGCUGGAGCCCGAGGACUUCGCCGUGUACUACUGCCAGCAGUACGGCAGCAGCCGGUUCACCUUCGGCCCCGGCACCAAGGUGGACAUCAAGGGCAGCACCAGCGGCAGCGGCAAGCCCGGCAGCGGCGAGGGCAGCACCAAGGGCCAGGUGCAGCUGGUGCAGAGCGGCGCCGAGGUGAAGAAGCCCGGCAGCAGCGUGAAGGUGAGCUGCAAGGACAGCGGCGGCACCUUCAGCAGCUACGCCAUCAGCUGGGUGCGGCAGGCCCCAGGCCAGGGCCUGGAGUGGAUGGGCGGCAUCAUCCCCAUCUUCGGCACCACCAACUACGCCCAGCAGUUCCAGGGCCGGGUGACCAUCACCGCCGACGAGAGCACCAGCACCGCCUACAUGGAGCUGAGCAGCCUGCGGAGCGAGGACACCGCCGUCUACUACUGCGCCCGGGAGGCCGUGGCCGCCGACUGGCUGGACCCCUGGGGCCAGGGCACCCUGGUGACCGUGAGCAGCAUCGAGGUGAUGUACCCACCACCCUACCUGGACAACGAGAAAAGCAACGGCACCAUCAUCCACGUGAAGGGCAAGCACCUGUGCCCCAGCCCACUGUUCCCCGGCCCCAGCAAGCCCUUCUGGGUGCUGGUCGUGGUGGGCGGCGUGCUGGCCUGCUACAGCCUGCUGGUGACCGUGGCCUUCAUCAUCUUCUGGGUGCGGAGCAAGCGGAGCCGGCUGCUGCACAGCGACUACAUGAACAUGACCCCACGGCGGCCCGGCCCCACCCGGAAGCACUACCAGCCCUACGCCCCACCCCGGGACUUCGCCGCCUACCGGAGCCGGGUGAAGUUCAGCCGGAGCGCCGACGCCCCAGCCUACCAGCAGGGCCAGAACCAGCUCUACAACGAGCUGAACCUGGGCCGGCGGGAGGAGUACGACGUGCUGGACAAGCGGCGGGGCCGGGACCCCGAGAUGGGCGGCAAGCCCCGGCGGAAGAACCCACAGGAGGGCCUCUACAAUGAGCUGCAGAAGGACAAGAUGGCCGAGGCCUACAGCGAGAUCGGCAUGAAGGGCGAGCGGCGGAGGGGCAAGGGCCACGACGGCCUGUACCAGGGCCUGAGCACCGCCACCAAGGACACCUACGACGCCCUGCACAUGCAGGCCCUGCCACCCCGGUGAUAAAGGAUCCGAGACUACUGUUAUUUGACCAAUGAAUUGACUUCUAAUAAAAUCUAGUGGUGAUGCAGUUCAGACUUCAAAUAGUGGCAAAUAAAAAGUGCUAUUUGUGAUGGUUUGCUUCUGUGUACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "rna_sha256": "7a0e872d51987d1c0064accb5197e605943d90ea2c20104d86e9f41f12617335"
+    }
+  },
+  "listing_inventory": {
+    "entry_count": 401,
+    "sequence_count": 397,
+    "omitted_sequence_ids": [
+      9,
+      10,
+      244,
+      296
+    ]
+  },
+  "transcript": {
+    "source_sequence_id": 151,
+    "length": 1776,
+    "literal_conversion": "preserve_original_then_uppercase_and_replace_T_with_U",
+    "conversion_authority": "WIPO ST.26: RNA uracil is represented by t",
+    "conversion_url": "https://www.wipo.int/en/web/pct-system/w/news/2022/news_0039",
+    "coordinates": "zero_based_half_open",
+    "regions": [
+      {
+        "role": "five_prime_utr",
+        "name": "mHBB",
+        "start": 0,
+        "end": 79,
+        "sequence_id": 11
+      },
+      {
+        "role": "orf_excluding_stops",
+        "name": "CAR2-OPT4",
+        "start": 79,
+        "end": 1534,
+        "sequence_id": 101
+      },
+      {
+        "role": "double_stop",
+        "start": 1534,
+        "end": 1540,
+        "contained_in_sequence_id": 65
+      },
+      {
+        "role": "three_prime_utr",
+        "name": "PNLIP-RPS3A",
+        "start": 1540,
+        "end": 1666,
+        "sequence_id": 34
+      },
+      {
+        "role": "encoded_poly_a",
+        "start": 1666,
+        "end": 1776,
+        "length": 110
+      }
+    ],
+    "terminal_a_run": 111,
+    "terminal_a_run_explanation": "The final A of SEQ34 precedes the encoded 110-A tail."
+  },
+  "protein": {
+    "name": "CAR2",
+    "sequence_id": 2,
+    "length": 485,
+    "signal_peptide_included": true,
+    "genetic_code": "NCBI_standard_table_1",
+    "genetic_code_url": "https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#SG1",
+    "meaning": "nominal_coding_identity_only",
+    "genetic_code_table_sha256": "bef1a40d752e3d2fabb4df27de6a194c598a274be08b2b958d30632a22d18ae7"
+  },
+  "nominal_chemistry": {
+    "cap": {
+      "kind": "Cap1",
+      "source_reagent": "Cap-AG",
+      "source_structure": "m7G(5')ppp(5')(2'OMeA)pG",
+      "anchor": "A9 [00408]",
+      "provenance": "source_declared",
+      "batch_verified": false,
+      "prefix_match": "listed_transcript_already_starts_AG_no_added_initiator_bases"
+    },
+    "nucleotides": {
+      "replacement": "all_uridine_by_N1_methylpseudouridine",
+      "anchor": "A9 [00408]",
+      "provenance": "source_declared",
+      "batch_verified": false
+    },
+    "three_prime_end": {
+      "identity": null,
+      "provenance": "unreported_in_qualified_source",
+      "designer_choice": null
+    }
+  },
+  "evidence": [
+    {
+      "kind": "expression",
+      "status": "source_disclosed_not_independently_validated",
+      "context": "primary_human_T_cells_ex_vivo_expanded_and_freshly_activated",
+      "anchors": [
+        "A9 Examples 1 and 2",
+        "A9 Figure 5H"
+      ],
+      "delivery_context": "source_CD5_targeted_LNP",
+      "human_in_vivo": false
+    },
+    {
+      "kind": "function",
+      "status": "source_disclosed_with_donor_conflict",
+      "context": "human_T_cells_ex_vivo_Nalm6_coculture",
+      "anchors": [
+        "A9 Example 3",
+        "A9 Figure 10"
+      ],
+      "donor": null,
+      "donor_conflict": {
+        "donor_3": [
+          "A9 [00414]",
+          "A9 [00451]"
+        ],
+        "donor_4": [
+          "A9 [0030]"
+        ]
+      },
+      "readout": "source_labeled_residual_Nalm6_readout_not_general_efficacy",
+      "human_in_vivo": false
+    }
+  ],
+  "applicability": {
+    "human_T_cell_source_context": "source_disclosed",
+    "human_in_vivo_delivery": "unassessed",
+    "clinical_benefit": "unassessed",
+    "safety": "unassessed",
+    "physical_material_reproduction": "unassessed",
+    "raw_data_and_independent_replication": "unassessed",
+    "capping_fraction_and_tail_distribution": "unassessed",
+    "source_parts_may_have_nonhuman_origin": true
+  },
+  "access_and_reuse": {
+    "public_unauthenticated_retrieval": "observed",
+    "affirmative_content_reuse_license": "not_identified_in_this_review",
+    "patent_permission": "not_assessed",
+    "legal_conclusion": null,
+    "pdf_redistributed_in_pack": false
+  },
+  "acceptance": {
+    "compiler": false,
+    "material": false,
+    "empirical": false,
+    "clinical": false,
+    "manufacturing": false
+  }
+}

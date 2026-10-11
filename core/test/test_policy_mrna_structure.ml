@@ -204,4 +204,5 @@ let ()=
   rejected "molecular_cycle"(fun()->A.of_json cyclic);
   let rec nested count raw=if count=0 then raw else nested(count-1)(arr[raw])in
   rejected "molecular_resource_limit"(fun()->A.of_json(nested 100 Json.Null));
-  Printf.printf "policy mRNA structure: %d literal and mutation checks\n" !checks
+  Printf.printf "policy mRNA structure: %d literal and mutation checks\n" !checks;
+  Test_policy_expression_source_admission.run Sys.argv.(2)

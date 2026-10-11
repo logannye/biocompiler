@@ -1235,6 +1235,254 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.core_policy_expression_material.ACCEPTED_STATUS": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.CANDIDATE_SCHEMA": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.CLAIM": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.CONTRACT_SCHEMA": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.EXPORT_SCHEMA": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.IMPLEMENTATION": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.MANIFEST_SCHEMA": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.MAX_RESULT_BYTES": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.MAX_RESULT_NODES": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.MAX_WORK": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.PREMISE": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.PRODUCER_PROFILE": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.PROFILE": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.routes",
+        "car_expression.transport.snapshot",
+        "car_expression.transport.source_edit",
+        "car_expression.transport.forgery",
+        "car_expression.transport.accounting",
+        "car_expression.transport.export_mutation",
+        "car_expression.transport.replay",
+        "car_expression.transport.capabilities",
+        "car_expression.transport.originals",
+        "car_expression.transport.normative",
+        "car_expression.transport.fresh_context",
+        "car_expression.transport.rejection",
+        "car_expression.transport.context_bounds",
+        "car_expression.transport.typed",
+        "car_expression.transport.publication",
+        "car_expression.transport.output_bounds"
+      ]
+    },
+    "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient._call": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.check": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.routes",
+        "car_expression.transport.source_edit",
+        "car_expression.transport.forgery",
+        "car_expression.transport.accounting",
+        "car_expression.transport.normative",
+        "car_expression.transport.fresh_context",
+        "car_expression.transport.rejection",
+        "car_expression.transport.output_bounds"
+      ]
+    },
+    "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.compile": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.routes",
+        "car_expression.transport.snapshot",
+        "car_expression.transport.capabilities",
+        "car_expression.transport.originals"
+      ]
+    },
+    "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.export": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.routes",
+        "car_expression.transport.source_edit",
+        "car_expression.transport.export_mutation",
+        "car_expression.transport.publication"
+      ]
+    },
+    "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.replay": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.routes",
+        "car_expression.transport.replay",
+        "car_expression.transport.fresh_context"
+      ]
+    },
+    "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.transport": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.capabilities",
+        "car_expression.transport.rejection"
+      ]
+    },
+    "biocompiler.core_policy_expression_material.PolicyExpressionMaterialResult": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.routes",
+        "car_expression.transport.snapshot",
+        "car_expression.transport.forgery",
+        "car_expression.transport.accounting"
+      ]
+    },
+    "biocompiler.core_policy_expression_material.REPORT_SCHEMA": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.REQUEST_PROFILE": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.REQUEST_SCHEMA": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.RESOURCE_PROFILE": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.RESULT_SCHEMA": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.SOURCE_PROFILE": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material.VALIDATION_SCOPE": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material._artifact": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material._bounded_text": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material._identity": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material._integer": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material._original": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material._record": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material._require": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material._requirements_and_ledger": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material._result": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material._rows": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material._source": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_expression_material._structure": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.core_policy_implementation.CANDIDATE_SCHEMA": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
       "status": "dependency",
@@ -4099,6 +4347,70 @@
         "assurance.approximation_exact"
       ]
     },
+    "biocompiler.policy.car_reference.PROTEIN_SHA256": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.car_reference.REFERENCE_SHA256": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.car_reference.RNA_SHA256": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.car_reference._data": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.car_reference._hash": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.car_reference._material": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.car_reference._nominal_definitions": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.car_reference._pin": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.car_reference._record": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.car_reference.reference_data": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.project.reference",
+        "car_expression.project.chemistry",
+        "car_expression.project.source_budget"
+      ]
+    },
+    "biocompiler.policy.car_reference.rm61461_request": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.project.reference",
+        "car_expression.project.chemistry",
+        "car_expression.project.static_edit",
+        "car_expression.project.source_budget"
+      ]
+    },
     "biocompiler.policy.cli._json": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
       "status": "dependency",
@@ -4237,6 +4549,168 @@
       "scope": "Exact source body/signature/decorator and dependency inventory only; no per-body semantic completeness or runtime support claim.",
       "status": "source_only",
       "witnesses": []
+    },
+    "biocompiler.policy.expression_material.ExpressionBudgets": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.originals",
+        "car_expression.transport.accounting",
+        "car_expression.transport.output_bounds"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionBudgets.max_report_bytes": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.typed"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionBudgets.max_report_nodes": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.output_bounds"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionBudgets.max_work": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.originals",
+        "car_expression.transport.accounting"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionBudgets.to_data": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.typed",
+        "car_expression.transport.originals"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionMaterialRequest": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.typed",
+        "car_expression.transport.originals",
+        "car_expression.transport.context_bounds"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionMaterialRequest.__init__": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.typed",
+        "car_expression.transport.context_bounds"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionMaterialRequest._request_json": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.expression_material.ExpressionMaterialRequest.budgets": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.typed"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionMaterialRequest.document": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.typed",
+        "car_expression.source.roundtrip",
+        "car_expression.source.legacy",
+        "car_expression.source.demands",
+        "car_expression.source.nesting",
+        "car_expression.source.dynamic",
+        "car_expression.source.scope",
+        "car_expression.source.old_bytes",
+        "car_expression.source.schema",
+        "car_expression.source.projection"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionMaterialRequest.from_request": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.typed",
+        "car_expression.transport.originals",
+        "car_expression.transport.context_bounds"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionMaterialRequest.selection": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.typed"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionMaterialRequest.to_request": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.typed",
+        "car_expression.transport.publication"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionSelection": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.typed"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionSelection.__init__": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.typed"
+      ]
+    },
+    "biocompiler.policy.expression_material.ExpressionSelection._selection_json": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.expression_material.ExpressionSelection.to_data": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.typed"
+      ]
+    },
+    "biocompiler.policy.expression_material.check": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.publication"
+      ]
+    },
+    "biocompiler.policy.expression_material.compile": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.publication"
+      ]
+    },
+    "biocompiler.policy.expression_material.export": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.publication"
+      ]
+    },
+    "biocompiler.policy.expression_material.replay": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.transport.publication"
+      ]
     },
     "biocompiler.policy.finite_build.CandidateExecutionLimits": {
       "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
@@ -6312,6 +6786,11 @@
     "biocompiler.policy.model.EVENT": {
       "scope": "Exact source body/signature/decorator and dependency inventory only; no per-body semantic completeness or runtime support claim.",
       "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.model.EXPRESSION_SOURCE_PROFILE": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
       "witnesses": []
     },
     "biocompiler.policy.model.Effect": {
@@ -10020,6 +10499,164 @@
         "shared.ownership_source_maps.7"
       ]
     },
+    "biocompiler.policy.project_sources.MAX_SOURCE_BYTES": {
+      "scope": "Retained source-byte limit or validation dependency; not an acceptance capability or independently promoted runtime API.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.project_sources.MAX_TOTAL_SOURCE_BYTES": {
+      "scope": "Retained source-byte limit or validation dependency; not an acceptance capability or independently promoted runtime API.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.project_sources.ProjectSourceError": {
+      "scope": "Authored source-inspection exception declaration only; no semantic, native, biological or rights acceptance.",
+      "status": "source_only",
+      "witnesses": []
+    },
+    "biocompiler.policy.project_sources.ProjectSourceInspection": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources.ProjectSourceInspection.biological_status": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources.ProjectSourceInspection.native_status": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources.ProjectSourceInspection.project_sha256": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources.ProjectSourceInspection.publication_authenticity": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources.ProjectSourceInspection.rights_status": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources.ProjectSourceInspection.sources": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources.ProjectSourceInspection.status": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources.ProjectSourceInspection.total_bytes": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources.ProjectSourceMatch": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources.ProjectSourceMatch.byte_count": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources.ProjectSourceMatch.sha256": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources.ProjectSourceMatch.source_id": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.project_binding"
+      ]
+    },
+    "biocompiler.policy.project_sources._require": {
+      "scope": "Retained source-byte limit or validation dependency; not an acceptance capability or independently promoted runtime API.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.project_sources.inspect_project_sources": {
+      "scope": "Selected pure-Python source-byte inspection controls, linked by reviewed AST only; exact bytes match caller-declared project digests, not publication authenticity, biological qualification, rights approval or native acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "project_sources.exact",
+        "project_sources.immutable",
+        "project_sources.snapshot",
+        "project_sources.project_binding",
+        "project_sources.inventory",
+        "project_sources.mapping_inventory",
+        "project_sources.mapping_mutation",
+        "project_sources.input_types",
+        "project_sources.fresh_hashes",
+        "project_sources.distinct_ids",
+        "project_sources.empty",
+        "project_sources.byte_bounds",
+        "project_sources.iteration_bound",
+        "project_sources.project_ids",
+        "project_sources.no_io"
+      ]
+    },
     "biocompiler.policy.quantitative.QuantitativeAuthoringError": {
       "scope": "Inventoried quantitative authoring declaration; no independent runtime witness is assigned to this individual AST declaration.",
       "status": "source_only",
@@ -11446,6 +12083,11 @@
         "refinement.namespace"
       ]
     },
+    "biocompiler.policy.research_project.EXPRESSION_SCHEMA": {
+      "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.policy.research_project.MAX_BUNDLE_BYTES": {
       "scope": "Retained project transport dependency identity/body; no independent semantic or biological acceptance authority.",
       "status": "dependency",
@@ -11587,6 +12229,15 @@
         "research_project.atomic"
       ]
     },
+    "biocompiler.policy.research_project.ResearchProject.expression": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.project.roundtrip",
+        "car_expression.project.routes",
+        "car_expression.project.pipeline"
+      ]
+    },
     "biocompiler.policy.research_project.ResearchProject.from_build": {
       "scope": "Selected typed finite-build literal/orchestration controls only; no native execution, mechanism, biological or installed acceptance.",
       "status": "shared_invariant",
@@ -11602,6 +12253,25 @@
       "witnesses": [
         "research_project.originals",
         "research_project.io"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.from_expression": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.project.roundtrip",
+        "car_expression.project.context",
+        "car_expression.project.routes",
+        "car_expression.project.pipeline",
+        "car_expression.project.roles",
+        "car_expression.project.fresh",
+        "car_expression.project.bound",
+        "car_expression.project.cancel",
+        "car_expression.project.bundle",
+        "car_expression.project.reference",
+        "car_expression.project.chemistry",
+        "car_expression.project.static_edit",
+        "car_expression.project.source_budget"
       ]
     },
     "biocompiler.policy.research_project.ResearchProject.from_request": {
@@ -11913,6 +12583,21 @@
         "shared.closed_serialization.4",
         "shared.closed_serialization.5",
         "shared.closed_serialization.6"
+      ]
+    },
+    "biocompiler.policy.serialization.expression_source_schema": {
+      "scope": "Selected pure-Python representation, inert transport/publication, project orchestration or fixed nominal reference controls, linked by AST only; no native execution, empirical expression/localization, human-use, installed or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "car_expression.source.roundtrip",
+        "car_expression.source.legacy",
+        "car_expression.source.demands",
+        "car_expression.source.nesting",
+        "car_expression.source.dynamic",
+        "car_expression.source.scope",
+        "car_expression.source.old_bytes",
+        "car_expression.source.schema",
+        "car_expression.source.projection"
       ]
     },
     "biocompiler.policy.serialization.from_data": {
@@ -15050,6 +15735,446 @@
           "symbol": "_sequence"
         },
         "syntax_sha256": "ac48da790c38d003c02570f9d56b84095df42716ea9326e5667c1e47f6010b5c"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.ACCEPTED_STATUS",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "ACCEPTED_STATUS"
+        },
+        "syntax_sha256": "806cf30eb7d83494077f25f9039b02f0cd58505eb90e950e84a67617ba444680"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.CANDIDATE_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "CANDIDATE_SCHEMA"
+        },
+        "syntax_sha256": "203a890fdd7228749559a9036ac476b4d8342d2d6e3732c7e444a63a715d5acc"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.CLAIM",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "CLAIM"
+        },
+        "syntax_sha256": "451ad2768ed7b7c24931fc491fafca6bd67f210130968c895d111223a58bd235"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.CONTRACT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "CONTRACT_SCHEMA"
+        },
+        "syntax_sha256": "df772876f21177b91f22cd292c0ecd797d5804b70cec0ebf1035f7492888dfbc"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.EXPORT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "EXPORT_SCHEMA"
+        },
+        "syntax_sha256": "0c23d328b5aff59e89cce4da8a21d5638f2cdfe0d8c644312e7a4e0e4691675c"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.IMPLEMENTATION",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "IMPLEMENTATION"
+        },
+        "syntax_sha256": "002b0c6dd39ed7b29332aa04ddcb7b1296e0abd29c5a457afe5d5b81efa6ba48"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.MANIFEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "MANIFEST_SCHEMA"
+        },
+        "syntax_sha256": "490c572ad355b45b4530967ca0f40763c7e1e6e6c71a8e451c33a4cee197d4ff"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.MAX_RESULT_BYTES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "MAX_RESULT_BYTES"
+        },
+        "syntax_sha256": "532d34524e9575702524ccd780b3ed630ba19f9a666a0857487abcb43808598c"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.MAX_RESULT_NODES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "MAX_RESULT_NODES"
+        },
+        "syntax_sha256": "c381d76f006de00dbffbd6886b87036cbf21b79197db8daa8c562356b0381a63"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.MAX_WORK",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "MAX_WORK"
+        },
+        "syntax_sha256": "6891adcdb33e78f7b524d559257bcb3df1ff4245927adb932863ee96b7d4af2c"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.PREMISE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "PREMISE"
+        },
+        "syntax_sha256": "8afebf0aa83910273fbf65d27a673c777934cfc453769c4b608fbcc1df5ce863"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.PRODUCER_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {'operations': ['compile-policy-expression-material'], 'implementation': IMPLEMENTATION, 'validation_scope': VALIDATION_SCOPE}",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "PRODUCER_PROFILE"
+        },
+        "syntax_sha256": "d103f1acda128998748e1f69ac7f540056a3fa711ef0e0c415cc5cef940aa9ec"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {'operations': ['check-policy-expression-material', 'replay-policy-expression-material', 'export-policy-expression-material'], 'request_schema': REQUEST_SCHEMA, 'candidate_schema': CANDIDATE_SCHEMA, 'schema_version': RESULT_SCHEMA, 'implementation': IMPLEMENTATION, 'resource_profile': RESOURCE_PROFILE, 'validation_scope': VALIDATION_SCOPE, 'max_result_bytes': MAX_RESULT_BYTES, 'max_result_nodes': MAX_RESULT_NODES, 'artifact': 'on_fresh_export_only', 'empirical': 'unassessed'}",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "PROFILE"
+        },
+        "syntax_sha256": "db1e6681a43a4b2840fe70e460bf63eb4821f7af48231c7be165328f4de33a29"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "PolicyExpressionMaterialClient"
+        },
+        "syntax_sha256": "481b9625ec9d46cf1419c2d237429cffd14fdba9801f6aac71b34b5b68ba81fa"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient._call",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None -> PolicyExpressionMaterialResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "PolicyExpressionMaterialClient._call"
+        },
+        "syntax_sha256": "a18317916371d881f9fa19b2557485822f89508f40f74b39562ea330b3f7ddf6"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.check",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, candidate: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyExpressionMaterialResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "PolicyExpressionMaterialClient.check"
+        },
+        "syntax_sha256": "0179433b03af0a902a9fbc974c29a220e2b799edf06d0c39678ebbbff4f26d6d"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.compile",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyExpressionMaterialResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "PolicyExpressionMaterialClient.compile"
+        },
+        "syntax_sha256": "00da5cd9b19aacfe6309bf8bf05c9e55332bd353c5464863215d4d9d5dfc397c"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.export",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, candidate: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyExpressionMaterialResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "PolicyExpressionMaterialClient.export"
+        },
+        "syntax_sha256": "2d12e18dad7453238fb8e9063e0693c807dcc68a0261df74722ff63fac447174"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.replay",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, candidate: JsonValue, report: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyExpressionMaterialResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "PolicyExpressionMaterialClient.replay"
+        },
+        "syntax_sha256": "d457876f54b55900980c35e212e5bde0b432cf84e2de423acb39bcd19a8b3a77"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.transport",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "CoreClient",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "PolicyExpressionMaterialClient.transport"
+        },
+        "syntax_sha256": "1c12c2e5fa920a7d4a3b392accc30ac4494ca7f385e0c49042eefabe997d2df4"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.PolicyExpressionMaterialResult",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "PolicyExpressionMaterialResult"
+        },
+        "syntax_sha256": "086b68a92e60158ece80c90298afa892fd063867d7115a561571bdb896766c27"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.REPORT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "REPORT_SCHEMA"
+        },
+        "syntax_sha256": "ebfae5d83a8a15066d332fe9a92d055fc9cfe7a14e8350d0fa3cdb26f4214647"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.REQUEST_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "REQUEST_PROFILE"
+        },
+        "syntax_sha256": "115a9397c90f966a79c427a879ddb59f7be5dd423870dce6e1af3582b31f0fc5"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.REQUEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "REQUEST_SCHEMA"
+        },
+        "syntax_sha256": "7622ccfaddb628afb7ce84f779ff05c8a4cdf08cbefff1cc00e7315136925950"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.RESOURCE_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "RESOURCE_PROFILE"
+        },
+        "syntax_sha256": "26f210b65588e697af4087b7fc9a3bef93dcc2ed2af270b5233d7f61ff663896"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.RESULT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "RESULT_SCHEMA"
+        },
+        "syntax_sha256": "2d81a812135448e98696bae6c1413625e3ad2af79c9786f533fc135fa47757ff"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.SOURCE_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "SOURCE_PROFILE"
+        },
+        "syntax_sha256": "d8b98b0c9c61faa7372d4fa6f220d1395921b16d445ee080835f6f05dd12fd0b"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material.VALIDATION_SCOPE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "VALIDATION_SCOPE"
+        },
+        "syntax_sha256": "a30b7dfaa36e17bdf406b885255ce93ef1c9a9fd28dcc33e0c7c8c77a721efae"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material._artifact",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "raw: JsonValue, *, operation: str, request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue] -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "_artifact"
+        },
+        "syntax_sha256": "28098ed9c758abf857e6bb4bce80f3102ecd284b8ee6ec597ba2b59409fc2a9c"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material._bounded_text",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "raw: JsonValue, label: str, maximum: int -> str",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "_bounded_text"
+        },
+        "syntax_sha256": "78606300014969434401145c002642d5fea9eb8fddc530b5ed396568c4ecc06e"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material._identity",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "raw: JsonValue, kind: str -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "_identity"
+        },
+        "syntax_sha256": "8dfec571610df81e7731bb728d1e899cf440d8e9c9bf0c35b9065b507693344e"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material._integer",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "raw: JsonValue, label: str, maximum: int, *, minimum: int=0 -> int",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "_integer"
+        },
+        "syntax_sha256": "6a67f494cd235fe1e7ca71ca31255a23ce119066118f623cd771535c7a67e109"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material._original",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "raw: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "_original"
+        },
+        "syntax_sha256": "477fd8d5f2a6701d5e569bbcf813238305f6879de59270ea15f5f038f634de86"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material._record",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "raw: JsonValue, label: str -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "_record"
+        },
+        "syntax_sha256": "92a51ceab33b78a480ac7969214125fc1053b0a7cdf1cf659400cd985c007057"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: bool, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "db013ee1f3fbb0723ca9ef0828a33661ee82acb6aac6f1fa25dc2bd87ff62365"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material._requirements_and_ledger",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue], admission: dict[str, JsonValue], structure_ok: bool -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "_requirements_and_ledger"
+        },
+        "syntax_sha256": "88260465dfcdfffac7e0ede885b96f47966d27e199b0bb99e6a951367bdf2e6a"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material._result",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "response: CoreResponse, payload: dict[str, JsonValue] -> PolicyExpressionMaterialResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "_result"
+        },
+        "syntax_sha256": "d5485958306eefd34d894890eb35cf87e4557f46327c2d35800cae48bb0d92ac"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material._rows",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "raw: JsonValue, label: str -> list[JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "_rows"
+        },
+        "syntax_sha256": "99b5ccda14f31b06565365fd9282c6360335ba24cc372b23606ca5286180a9bc"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material._source",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "response: CoreResponse, request: dict[str, JsonValue], report: dict[str, JsonValue] -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "_source"
+        },
+        "syntax_sha256": "1e0b8353a8f2e8f5a46ace1f301ae04d953bb35114b0225f7e7db35c9e14dc76"
+      },
+      {
+        "id": "biocompiler.core_policy_expression_material._structure",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue] -> bool",
+        "source": {
+          "path": "src/biocompiler/core_policy_expression_material.py",
+          "symbol": "_structure"
+        },
+        "syntax_sha256": "783222d26f820da2d969143d8a902eb08d11fbf5195724b73c75a0b937c6f4bb"
       },
       {
         "id": "biocompiler.core_policy_implementation.CANDIDATE_SCHEMA",
@@ -19760,6 +20885,127 @@
         "syntax_sha256": "733bdfab81bcfef808c2a74e2808b719b7b22c8a3da82a07bf7f2b8b86b91ea4"
       },
       {
+        "id": "biocompiler.policy.car_reference.PROTEIN_SHA256",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/car_reference.py",
+          "symbol": "PROTEIN_SHA256"
+        },
+        "syntax_sha256": "ae3c0e459eb196579321ca5dccef6f46b294e7163aac7ad0133b52309d7f895e"
+      },
+      {
+        "id": "biocompiler.policy.car_reference.REFERENCE_SHA256",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/car_reference.py",
+          "symbol": "REFERENCE_SHA256"
+        },
+        "syntax_sha256": "c27e28a274a1ec14d3a090aa638156b01b0ec01b2864b528eaac2ca82096acc0"
+      },
+      {
+        "id": "biocompiler.policy.car_reference.RNA_SHA256",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/car_reference.py",
+          "symbol": "RNA_SHA256"
+        },
+        "syntax_sha256": "c37714158a5c21d6e89291f88c85e111220145ab37616d7b1f0f5745db138550"
+      },
+      {
+        "id": "biocompiler.policy.car_reference._data",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: p.Record -> JsonValue",
+        "source": {
+          "path": "src/biocompiler/policy/car_reference.py",
+          "symbol": "_data"
+        },
+        "syntax_sha256": "d4b1bf3ea9cdc2b5c846a3012101fe0f3c605a869cdffa422bfde7154b556866"
+      },
+      {
+        "id": "biocompiler.policy.car_reference._hash",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> str",
+        "source": {
+          "path": "src/biocompiler/policy/car_reference.py",
+          "symbol": "_hash"
+        },
+        "syntax_sha256": "49f4c7c49e77112fb2b05d3719b4a9c5c2e20e6a8482a665dad648692d05d70d"
+      },
+      {
+        "id": "biocompiler.policy.car_reference._material",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "reference: dict[str, JsonValue], terminal_design: p.SemanticDefinition -> tuple[dict[str, JsonValue], PinnedIdentity]",
+        "source": {
+          "path": "src/biocompiler/policy/car_reference.py",
+          "symbol": "_material"
+        },
+        "syntax_sha256": "cb6d682634b5efbcef1903c7c626245f8d6a1a40a343ce741817a53470f0f71b"
+      },
+      {
+        "id": "biocompiler.policy.car_reference._nominal_definitions",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": " -> tuple[p.SemanticDefinition, p.SemanticDefinition, p.SemanticDefinition]",
+        "source": {
+          "path": "src/biocompiler/policy/car_reference.py",
+          "symbol": "_nominal_definitions"
+        },
+        "syntax_sha256": "2ed7d15012d3ed62874d5cd93c74540fe593533329c5a147f33632b715df3d73"
+      },
+      {
+        "id": "biocompiler.policy.car_reference._pin",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "kind: str, identity: str, body: JsonValue -> PinnedIdentity",
+        "source": {
+          "path": "src/biocompiler/policy/car_reference.py",
+          "symbol": "_pin"
+        },
+        "syntax_sha256": "cb78fc5ce47f494eaa7f9573c5840897c9458b5ed220c10c575d995cc3c031b5"
+      },
+      {
+        "id": "biocompiler.policy.car_reference._record",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/car_reference.py",
+          "symbol": "_record"
+        },
+        "syntax_sha256": "f49cb7f248c7f3d1e2a693aa04ce8a00201c03be7f294064f9342ccdb0acfe90"
+      },
+      {
+        "id": "biocompiler.policy.car_reference.reference_data",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": " -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/car_reference.py",
+          "symbol": "reference_data"
+        },
+        "syntax_sha256": "f221eadd8a8be152fcd82721a4fab7c45c66fe54f10128f42beef067a29c41c3"
+      },
+      {
+        "id": "biocompiler.policy.car_reference.rm61461_request",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "*, maximum_rna_nt: int, three_prime_end: Literal['designer_supplied_hydroxyl'], budgets: ExpressionBudgets=ExpressionBudgets() -> ExpressionMaterialRequest",
+        "source": {
+          "path": "src/biocompiler/policy/car_reference.py",
+          "symbol": "rm61461_request"
+        },
+        "syntax_sha256": "48d21e9c1a3ccfd1bdf5292d9fe17bc8e71463827ca1b099881381afc94a87b3"
+      },
+      {
         "id": "biocompiler.policy.cli._json",
         "kind": "function",
         "scope": "dependency",
@@ -19989,6 +21235,237 @@
           "symbol": "semantic_bundle"
         },
         "syntax_sha256": "a0cd7c3016ad46aa129052fb0c53d15369de565854a10bfacf054be343a7ed95"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionBudgets",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionBudgets"
+        },
+        "syntax_sha256": "3616fc4774c555f193c5c6b0a82caf3b432ab9ad8a20688510d41c6d7d4a4d86"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionBudgets.max_report_bytes",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int = 1000000",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionBudgets.max_report_bytes"
+        },
+        "syntax_sha256": "f65f183b8f3722f1b51f1bed2821653c0e1dec7ccf57af4434af70b8f4d62b26"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionBudgets.max_report_nodes",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int = 100000",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionBudgets.max_report_nodes"
+        },
+        "syntax_sha256": "23e10136cc879aecf7626e278b66ab56f4da55e9ea3fe3cd42ed9219195328b4"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionBudgets.max_work",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int = 100000000",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionBudgets.max_work"
+        },
+        "syntax_sha256": "b0521e5d475f4a1716876a547cb8409692d8823904d538a9cbeacf7ea9de24c2"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionBudgets.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionBudgets.to_data"
+        },
+        "syntax_sha256": "cfd5eb33b1143663cc69a1c7eb20e8c5fb73c8c9d56a27802bc26c28ac11cfba"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionMaterialRequest",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionMaterialRequest"
+        },
+        "syntax_sha256": "188fa778ee8785141bfb160924d5c70f91c0a5cac834cdd9a11dc36f9907ba7c"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionMaterialRequest.__init__",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, *, document: BuildRequest, selection: ExpressionSelection, expression_contract: JsonValue, structure_authority: JsonValue, project_context: JsonValue, budgets: ExpressionBudgets=ExpressionBudgets() -> None",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionMaterialRequest.__init__"
+        },
+        "syntax_sha256": "f881b9a4ddf2f06b95811a40a9c94a92cb85895b9c4078ab6ce99204595f5391"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionMaterialRequest._request_json",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "bytes",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionMaterialRequest._request_json"
+        },
+        "syntax_sha256": "fba5f2e3806417e3b82b39fca54295eadd6ea21fb502e6f07f8f2b1fe7f6eb92"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionMaterialRequest.budgets",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> ExpressionBudgets",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionMaterialRequest.budgets"
+        },
+        "syntax_sha256": "6b2cadbd13d33c35044a880853910b018fde90b3d897046920cf92eac0a68cce"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionMaterialRequest.document",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> BuildRequest",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionMaterialRequest.document"
+        },
+        "syntax_sha256": "0d39c734191cd96bc8a60434eb2507d869c8f806ba772b8e8595b06efdbf1206"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionMaterialRequest.from_request",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, request: JsonValue -> ExpressionMaterialRequest",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionMaterialRequest.from_request"
+        },
+        "syntax_sha256": "98b39e52b3f867c9b965e7244822ccb94b2e98859e793ec5b66ec051712964ed"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionMaterialRequest.selection",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> ExpressionSelection",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionMaterialRequest.selection"
+        },
+        "syntax_sha256": "1705b5a794fd49642b25efae4ef9f0099cc8b1ae0861e23efb730224f1151379"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionMaterialRequest.to_request",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionMaterialRequest.to_request"
+        },
+        "syntax_sha256": "3511f459b39275f5b4705e74819d252b3244cc599d31a24f9658913b9ae7ae3b"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionSelection",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionSelection"
+        },
+        "syntax_sha256": "5fc7b29e7b700cd6e4f36aab152ec282a5fd9d525c89baeabc41300cd27cde5f"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionSelection.__init__",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, *, objective: str, recipient: str, implementation: JsonValue, member: str, cds: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionSelection.__init__"
+        },
+        "syntax_sha256": "245784211413b465ea8433149f8f0d644fb1f085a69fb9a756566dd9cc6685b5"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionSelection._selection_json",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "bytes",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionSelection._selection_json"
+        },
+        "syntax_sha256": "df631434703dff64aa589af710e75066422d6a9a25620d41ed972b954e3a7902"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.ExpressionSelection.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "ExpressionSelection.to_data"
+        },
+        "syntax_sha256": "c786a4f4ab61a789a2a6aa10fc956d1bce488586bf6f8d618b14c789711f6b0d"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.check",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: ExpressionMaterialRequest, *, candidate: JsonValue, client: PolicyExpressionMaterialClient, cancelled: Callable[[], bool] | None=None -> PolicyExpressionMaterialResult",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "check"
+        },
+        "syntax_sha256": "85afaaab8a9e59f57e1d08fb664147dcd4b01ee199b17e2c987ec6005e35299d"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.compile",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: ExpressionMaterialRequest, *, client: PolicyExpressionMaterialClient, cancelled: Callable[[], bool] | None=None -> PolicyExpressionMaterialResult",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "compile"
+        },
+        "syntax_sha256": "50648a70caad76378c5e54e57d8be477b4b26d404989813c25b1cd5365e79744"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.export",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: ExpressionMaterialRequest, *, candidate: JsonValue, client: PolicyExpressionMaterialClient, output: Path, input_paths: Iterable[Path]=(), replace: bool=False, cancelled: Callable[[], bool] | None=None -> PolicyExpressionMaterialResult",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "export"
+        },
+        "syntax_sha256": "c4e189a5167f8c14b8034b79f0ba6ac5f52feb465dd3a293510a8d5fd104293e"
+      },
+      {
+        "id": "biocompiler.policy.expression_material.replay",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: ExpressionMaterialRequest, *, candidate: JsonValue, report: JsonValue, client: PolicyExpressionMaterialClient, cancelled: Callable[[], bool] | None=None -> PolicyExpressionMaterialResult",
+        "source": {
+          "path": "src/biocompiler/policy/expression_material.py",
+          "symbol": "replay"
+        },
+        "syntax_sha256": "89d74737ab9efcdd04b4c5808efc187f86e240bcdc9bf9441bc214f2056657af"
       },
       {
         "id": "biocompiler.policy.finite_build.CandidateExecutionLimits",
@@ -21275,7 +22752,7 @@
           "path": "src/biocompiler/policy/model.py",
           "symbol": "AssuranceRequest"
         },
-        "syntax_sha256": "f74c91998b91dd13b8d898f6d82972bd54fd5a3dd921344206aecea3ef9630f7"
+        "syntax_sha256": "376f2ebb4720fa88937aab13bbde7fab9a2cfa4f0eda9378a51f52ab0b75cce7"
       },
       {
         "id": "biocompiler.policy.model.AssuranceRequest.assumptions",
@@ -21292,12 +22769,12 @@
         "id": "biocompiler.policy.model.AssuranceRequest.horizon",
         "kind": "field",
         "scope": "public_api",
-        "signature": "Quantity | Literal['unbounded_requested']",
+        "signature": "Quantity | Literal['unbounded_requested', 'not_applicable']",
         "source": {
           "path": "src/biocompiler/policy/model.py",
           "symbol": "AssuranceRequest.horizon"
         },
-        "syntax_sha256": "f3f470b1609f3aff683b497f4411683c68794266fd4dd1d7d477eb5aea5a50ac"
+        "syntax_sha256": "36107ed36a12aa5d4270866150cb9b4e8c26bb2ebc8a692259a05faca6687b02"
       },
       {
         "id": "biocompiler.policy.model.AssuranceRequest.level",
@@ -22497,6 +23974,17 @@
           "symbol": "EVENT"
         },
         "syntax_sha256": "5f8c15e8d534369298329ccdd6b5efa8d76ba55798a3d5a5e1bf26c13365862b"
+      },
+      {
+        "id": "biocompiler.policy.model.EXPRESSION_SOURCE_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "EXPRESSION_SOURCE_PROFILE"
+        },
+        "syntax_sha256": "9daec689365f2df0657fd44584955a7df4bf468a37bfdb639e3056ddba55b3a9"
       },
       {
         "id": "biocompiler.policy.model.Effect",
@@ -27108,6 +28596,204 @@
         "syntax_sha256": "b9dd9c9d0f4a01cee7889c1afb967f0c6b3b592043d4d12d6c1f0c80ed13234c"
       },
       {
+        "id": "biocompiler.policy.project_sources.MAX_SOURCE_BYTES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "MAX_SOURCE_BYTES"
+        },
+        "syntax_sha256": "7172b64e388a6ef09377cbbdd2c196b607dbabac69ab96056b561d9f91195e7c"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.MAX_TOTAL_SOURCE_BYTES",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "MAX_TOTAL_SOURCE_BYTES"
+        },
+        "syntax_sha256": "a79da0eefcf86b701ee112ebcd679f3bff6f946626ae5653ec4cd1abfba15766"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceError",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceError"
+        },
+        "syntax_sha256": "e75711f81c900edf1d5dd96a718d4bdab27926681799d7687d73e75969a11ff7"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceInspection",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceInspection"
+        },
+        "syntax_sha256": "59060eee44cfff4697684a4034e938b50a8a937d666ab8ec5c92591ec2d8929b"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceInspection.biological_status",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['unassessed'] = field(default='unassessed', init=False)",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceInspection.biological_status"
+        },
+        "syntax_sha256": "1025fe51df02a16cedad88071bf954614fb7460dd8102384906f343c2ba45ac0"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceInspection.native_status",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['not_run'] = field(default='not_run', init=False)",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceInspection.native_status"
+        },
+        "syntax_sha256": "5c4591dab92ce9a5e0b60c4a1a32827367cac63b164aa692c97ba2c2515c1c70"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceInspection.project_sha256",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceInspection.project_sha256"
+        },
+        "syntax_sha256": "c2f809641da78d270989837acdd81fb00cc5ca2dd7c4d4c8229b4548154d7641"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceInspection.publication_authenticity",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['unassessed'] = field(default='unassessed', init=False)",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceInspection.publication_authenticity"
+        },
+        "syntax_sha256": "153aac42d2e6e9dd78661fcf506ef190ad141b544f738d528e1d1c40a8d5e73e"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceInspection.rights_status",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['unassessed'] = field(default='unassessed', init=False)",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceInspection.rights_status"
+        },
+        "syntax_sha256": "789b651da54ed4fc246f124e72af005d838a23804cfff9700810f6a5e8993d89"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceInspection.sources",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[ProjectSourceMatch, ...]",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceInspection.sources"
+        },
+        "syntax_sha256": "cd90e3921e0347a786a32f1dd5e3077afd1cfe03463379fcbd217c8db00aec18"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceInspection.status",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['source_bytes_matched'] = field(default='source_bytes_matched', init=False)",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceInspection.status"
+        },
+        "syntax_sha256": "ddb69c6a5f219936768aa38f45ca378168b7fa32da60945f836ee33856837a2a"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceInspection.total_bytes",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceInspection.total_bytes"
+        },
+        "syntax_sha256": "0cf2ff521d1391263845c74b9f5bb57aec69a0d85eea8974de0639261f5cf4d1"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceMatch",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceMatch"
+        },
+        "syntax_sha256": "80e584e1fac0cb101f35cefbc60f1a1ceea1d0ba5b659a228bfa205eead5c9f3"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceMatch.byte_count",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceMatch.byte_count"
+        },
+        "syntax_sha256": "55d117d6451f3eb952db5a8919baeaf8a1847e2b6d420fd7701a06474022bee8"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceMatch.sha256",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceMatch.sha256"
+        },
+        "syntax_sha256": "e17b6753d2163dc75e89a30c415387f615690a159ef159992f0def5dcefaa2c9"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.ProjectSourceMatch.source_id",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "ProjectSourceMatch.source_id"
+        },
+        "syntax_sha256": "29a99ee13fdab06ff54726ba3cb6b2eb62f694301edf5d4652476d8e16ec35d2"
+      },
+      {
+        "id": "biocompiler.policy.project_sources._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: object, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "d94dc39bf2dd6bbae33d8c7dafe71594801a883550489fb28bcb06720734cf3d"
+      },
+      {
+        "id": "biocompiler.policy.project_sources.inspect_project_sources",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "project: ResearchProject, sources: Mapping[str, bytes] -> ProjectSourceInspection",
+        "source": {
+          "path": "src/biocompiler/policy/project_sources.py",
+          "symbol": "inspect_project_sources"
+        },
+        "syntax_sha256": "929efb368651ca975dc81b26295c9725b53d8812c174c0b99b64cb4a0f5b14c7"
+      },
+      {
         "id": "biocompiler.policy.quantitative.QuantitativeAuthoringError",
         "kind": "class",
         "scope": "public_api",
@@ -29583,6 +31269,17 @@
         "syntax_sha256": "1f19ccdd40452adbae33e5ca85ad52ef582f08d6224daa01647d056dcf966400"
       },
       {
+        "id": "biocompiler.policy.research_project.EXPRESSION_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "EXPRESSION_SCHEMA"
+        },
+        "syntax_sha256": "ee2bd148b313a1d692f8e34528cdbe7783d268c8f5324cfbec3363e169940fba"
+      },
+      {
         "id": "biocompiler.policy.research_project.MAX_BUNDLE_BYTES",
         "kind": "value",
         "scope": "dependency",
@@ -29756,7 +31453,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "ResearchProject"
         },
-        "syntax_sha256": "6417e7a9c263add8068baf3e5f9894aa7240a000413849d607b01abf7a1df6b5"
+        "syntax_sha256": "0ce7aa69b40ab9a2ca4b1b7fe06e9c6ec82d47a1f3e6ec24f9915bdb09b696d5"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.__post_init__",
@@ -29811,7 +31508,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "ResearchProject.compile"
         },
-        "syntax_sha256": "7e6c0341a79ab68ce86f43b797e2c97f1a84a983cac0f96e6e9338a161b4e583"
+        "syntax_sha256": "b6cc29e2a6b26484a192b561942605c193be07eadd8db1e69466d6a960842fa3"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.data",
@@ -29847,6 +31544,17 @@
         "syntax_sha256": "09c1aff88db630a20c5586abd0d980075d61155d12dfdecf41b6158af34299d8"
       },
       {
+        "id": "biocompiler.policy.research_project.ResearchProject.expression",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> ExpressionMaterialRequest",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.expression"
+        },
+        "syntax_sha256": "1036e5eca7c2e11e6e54f8e2c46b146890a76573ddf52dfae97dd41e517500e8"
+      },
+      {
         "id": "biocompiler.policy.research_project.ResearchProject.from_build",
         "kind": "method",
         "scope": "public_api",
@@ -29869,6 +31577,17 @@
         "syntax_sha256": "0ddd0149c5948eea7a07d63691dfe287ff45653f3a878b338361b6709740c045"
       },
       {
+        "id": "biocompiler.policy.research_project.ResearchProject.from_expression",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, build: ExpressionMaterialRequest -> ResearchProject",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.from_expression"
+        },
+        "syntax_sha256": "b4799165e53d76f8c7b7014593c65ceb59a91900aac9fcd7a6f08c550be4ea3f"
+      },
+      {
         "id": "biocompiler.policy.research_project.ResearchProject.from_request",
         "kind": "method",
         "scope": "public_api",
@@ -29888,7 +31607,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "ResearchProject.limits"
         },
-        "syntax_sha256": "0166564a111b22ed6f133ffd3347fa1f853373691921fa01f576e2b07445c446"
+        "syntax_sha256": "ce2fb11a13069c4cfd8dd95fd88fa88c53cae08be845fed88de7695a55be1059"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.load",
@@ -29943,7 +31662,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "ResearchProject.verify_bundle"
         },
-        "syntax_sha256": "7f60e9c632b3c28b9526fde30f3c30cd0e883d090111f8bf36efb0ed5569506a"
+        "syntax_sha256": "02b5100ead1d3279eb720bb67c1b9aa808a39636901e6fee847a5ab37f838c6f"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProjectError",
@@ -30020,7 +31739,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "Route"
         },
-        "syntax_sha256": "ebe62926a11ac5eadd6ffc7465253e398ca66a198852bf69c9b628742a08ec17"
+        "syntax_sha256": "69fb3c4243927804dfa0dc60194ac8afdc830bd0c0b48f4cda795a06509cb825"
       },
       {
         "id": "biocompiler.policy.research_project.SCHEMA",
@@ -30141,7 +31860,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "_client"
         },
-        "syntax_sha256": "e9cbe4651ca185fb1fa4af612c2fb2cd183bf5f180b0143257bc0e01d2c53ec5"
+        "syntax_sha256": "d8f61dc54261668dbd4c8d7abc9e0ec70c25ebbb7d919628160a16a45a3f7025"
       },
       {
         "id": "biocompiler.policy.research_project._project",
@@ -30152,7 +31871,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "_project"
         },
-        "syntax_sha256": "3269bcef38833a3e86fcaa03bec4df690638220a7d0634972be267e9d81c811a"
+        "syntax_sha256": "dc2091c190619d8456b73a75265c12ab3d78ec2693202a1ac906b6e67b18990b"
       },
       {
         "id": "biocompiler.policy.research_project._read_file",
@@ -30185,7 +31904,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "_route"
         },
-        "syntax_sha256": "8938151491b7e260f77f4637497b61001e223ef5bb26faa64646e794745de481"
+        "syntax_sha256": "d5c6f08dae869ed0f79818c165479a67669e3d1effb8edfc66545a5df99f0e6d"
       },
       {
         "id": "biocompiler.policy.research_project._text",
@@ -30367,12 +32086,12 @@
         "id": "biocompiler.policy.serialization._decode",
         "kind": "function",
         "scope": "dependency",
-        "signature": "value: Any, expected: Any, budget: _Budget, depth: int, registry: dict[str, type] -> Any",
+        "signature": "value: Any, expected: Any, budget: _Budget, depth: int, registry: dict[str, type], *, expression_source: bool=False -> Any",
         "source": {
           "path": "src/biocompiler/policy/serialization.py",
           "symbol": "_decode"
         },
-        "syntax_sha256": "aca71b04af0e72113281daf4f242d6e6ea8071c45a4912cebbf5566db14eb15a"
+        "syntax_sha256": "ac544c47187a414c0e684d95d87b47f125447f0bda04b52b9435c9a36bd33025"
       },
       {
         "id": "biocompiler.policy.serialization._encode",
@@ -30463,6 +32182,17 @@
         "syntax_sha256": "63737fba72a027ed6353d5a6657d777a2d89e8d8cb9ae508ffcdfb1d1aada398"
       },
       {
+        "id": "biocompiler.policy.serialization.expression_source_schema",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": " -> dict[str, JSONValue]",
+        "source": {
+          "path": "src/biocompiler/policy/serialization.py",
+          "symbol": "expression_source_schema"
+        },
+        "syntax_sha256": "3dbaa234f0e7d1003cc09052e9cff46be07da32d173278e94c28fc022690c62f"
+      },
+      {
         "id": "biocompiler.policy.serialization.from_data",
         "kind": "function",
         "scope": "public_api",
@@ -30471,7 +32201,7 @@
           "path": "src/biocompiler/policy/serialization.py",
           "symbol": "from_data"
         },
-        "syntax_sha256": "6f42b5f3ab0fe3e112d08c5e5a0118a4f99590dcdd36ef3e1e44182c0fc2a77f"
+        "syntax_sha256": "e8dac41cb0504b864b77a51c4d33400cb0063a9ed5525155ef96cddf5eaf77b7"
       },
       {
         "id": "biocompiler.policy.serialization.from_data@overload1",
@@ -30570,7 +32300,7 @@
           "path": "src/biocompiler/policy/serialization.py",
           "symbol": "schema"
         },
-        "syntax_sha256": "ee0d209a8ff3b7613f1ef5ee5384f712f250fc37a87e501f21dfcd48163cf53e"
+        "syntax_sha256": "ff4de2761e913ab460ff17d9fb89d4adaca960b9757c4c05e5b341eba4c2cfa3"
       },
       {
         "id": "biocompiler.policy.serialization.to_data",
@@ -30581,7 +32311,7 @@
           "path": "src/biocompiler/policy/serialization.py",
           "symbol": "to_data"
         },
-        "syntax_sha256": "66d92ba487d86b18abd498db4e4df0a044b31694f87a11db7eb65a0f2ea4b4a2"
+        "syntax_sha256": "5ea006605103b825907498ea7c4a908fa4b5a4610f97628f929e529bd8f0bfe3"
       },
       {
         "id": "biocompiler.policy.time._window",
@@ -31868,7 +33598,7 @@
           "path": "src/biocompiler/policy/validation.py",
           "symbol": "_Checker"
         },
-        "syntax_sha256": "ca5890b64cf7078fee6074cc80408449d55394bcbc929a727ce4e709b05c874b"
+        "syntax_sha256": "98ccf1641eb7268d4b4b21ed998bd64b1b03d788599acf54841fc46eec537beb"
       },
       {
         "id": "biocompiler.policy.validation._compatible",
@@ -32333,13 +34063,14 @@
       "biocompiler.policy.values.quantity": "biocompiler.policy.values.quantity"
     },
     "files": {
-      "pyproject.toml": "2a4b0285bad04a326241a78990a94bc70b8b8f2e72d417c32e2a7efb5c85b131",
+      "pyproject.toml": "75c25fee15af61614d4c60649f723fafe58bcc6d2c58357a4ec29546b8f407b4",
       "src/biocompiler/__init__.py": "983da73517b57dead27b185ebb6ea2c9c34bba9ca89a28aee7b90dae3b3de769",
       "src/biocompiler/__main__.py": "d5b809722d6dfee6e4cb84d0b4a513239d99ae898defe55c1753ac85c21a9eb4",
       "src/biocompiler/core_client.py": "c8d65a42c1f92cbd75cb5edd176a9463657e03509be8ed487496d78b17be00fc",
       "src/biocompiler/core_policy.py": "9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e",
       "src/biocompiler/core_policy_component_material.py": "152843138ccfa61f4b7dfd894eff697a919ac52964b77957c646f23b49589b51",
       "src/biocompiler/core_policy_component_selection.py": "20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9",
+      "src/biocompiler/core_policy_expression_material.py": "319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf",
       "src/biocompiler/core_policy_implementation.py": "75abd92ee9ef28a34b0a9df5ad8ea133beb6d01f60bd2ae74f2d6f9cf064ab4f",
       "src/biocompiler/core_policy_material.py": "e3b990c93130fb7d0b74462e30bf87dc5cd5f42d582a0808163f1a6ba965b5cf",
       "src/biocompiler/core_policy_module_linking.py": "8c6cb783a929dc4e4bd7f191af8d228905ef314d1c0ff3e7c9fa584f9e4fd165",
@@ -32351,23 +34082,26 @@
       "src/biocompiler/policy/__init__.py": "d9a49240172a4d9ad0bdac6f1ddce3a2c8295b51d19048e6a799279800743d3b",
       "src/biocompiler/policy/approximation.py": "df7ca7cd614cfd42b04bbd62c33174fdc3e823246825ee1b11af8ebd42fb20a8",
       "src/biocompiler/policy/behavior.py": "691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf",
+      "src/biocompiler/policy/car_reference.py": "6cecfa4f52ab8d0e8c928198bbd308525e6a0c802383616b7cd7e16c1027ee9d",
       "src/biocompiler/policy/catalog.py": "96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30",
       "src/biocompiler/policy/chassis.py": "21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1",
       "src/biocompiler/policy/cli.py": "beaff7cf4994019f24fab7361e588a3702b32bb16d357bda42e16000a5060d0f",
       "src/biocompiler/policy/component_material.py": "e23f08b6113670c73363a0852b390e6d39d0d058fdd3a7a044f2ba1c04e61da1",
       "src/biocompiler/policy/component_selection.py": "10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80",
       "src/biocompiler/policy/coordination.py": "ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9",
+      "src/biocompiler/policy/data/car_rm61461_reference_v01.json": "dcf0b3fe174ee48f68623785663b16ce96ce87ad2bbacbd851369e9ba1b46079",
       "src/biocompiler/policy/deployment.py": "cddace3d45f04ecd722a47849325c9ff6a41fc166b0e23253c2377f037eae29f",
       "src/biocompiler/policy/effects.py": "2e228309b98defa71730cac3e2b8883a9e86c9f63f0d5c25b37bf70b27a02578",
       "src/biocompiler/policy/entities.py": "f38a35089b5c5c7522b012729f95a2b17f45fd2a56c1affe168aa526fb1d7f18",
       "src/biocompiler/policy/examples.py": "36f4e4ba467ae48bc2bfb1d1f54455533a7981dcd8a2c659227d34d06807017a",
+      "src/biocompiler/policy/expression_material.py": "2fecd744564db34e9629f981ff619d9f7aa7bef6cadf245d7e5446bc876621fe",
       "src/biocompiler/policy/finite_build.py": "866cf6270f18742256043be8f4387d057efda963facdc94dea0137c7fbf9c86a",
       "src/biocompiler/policy/handoff.py": "a51200b3bb412ebc65cc43df3d69435ea37a7f48a75ba2eba5b7fbafd2479a51",
       "src/biocompiler/policy/implementation.py": "452344e7e6681d04e0018bf0ad4cb3cacd47a5022c9a41883867e4fd62db4ee8",
       "src/biocompiler/policy/inspection.py": "7eca4c5bf12aab21899bb7c9e54b64f8255bae9759e7ebd6a4858bf0f5e76caf",
       "src/biocompiler/policy/logic.py": "cc0a0fe952f9c8aa16fb5714d0cd1972296154cf1e5e5deed4e7ea9ece3ddf4f",
       "src/biocompiler/policy/material.py": "5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79",
-      "src/biocompiler/policy/model.py": "7197696399733e610b7a5c458aebf0ddc4b0df997f190cb53fa1659c419b6038",
+      "src/biocompiler/policy/model.py": "cc0430615690c0a7a5e388b8d2821d03198b14c3f3044a6443a4d6f6747b1ec6",
       "src/biocompiler/policy/module_linking.py": "87dd2eb7ffd36ff3bc76d2de4957eb3806e0da29cd58bc3c029c3f25a7a3efe2",
       "src/biocompiler/policy/modules.py": "07060e46cac6551e77c7b2f97e3956539ba39ee3a1ec009d17429ea63a7e508f",
       "src/biocompiler/policy/native.py": "956e33656d6b5ee332fae215a56d667d7b88019d7853426440aa5502777dc9f0",
@@ -32376,19 +34110,20 @@
       "src/biocompiler/policy/patterns.py": "9640080fa505e361b09a2dd9a644938365549b37c8be3a8ce547bc1391044b48",
       "src/biocompiler/policy/planning.py": "141b7236aca37e8a3bafafab87c91a1057f99e141fde9bd3c0ad9273245bc335",
       "src/biocompiler/policy/programs.py": "ef2823520e47f29f666c8c6bec8f30d43a21195ab5379ae82e0a062563f686fd",
+      "src/biocompiler/policy/project_sources.py": "19c72e4330ad3ab03fd07bb77ba7fac5c5f4510a84bb918fbc53b70a3e7430fa",
       "src/biocompiler/policy/quantitative.py": "d2e35a2ff2898f8e119f2b6eee0de931905e267717643d6548c1a645e90ec4d1",
       "src/biocompiler/policy/quantitative_assurance.py": "88edebda0748cf23624b20d8efa0e9d70f0760e43e1b9b5f52447b9a17615068",
       "src/biocompiler/policy/quantitative_composition.py": "2b331a3342d41e94390157af44497cd0e54e1cbc59ca15cdc082eae90524ab3b",
       "src/biocompiler/policy/realization_evidence.py": "377a5180f9bb123bd30e3828ad0cd60f0b0466befdb5d9a3e2d9b7f6679f8850",
       "src/biocompiler/policy/refinement.py": "b576b28aa2813c46be1a778fa355de9fd8eb147c8ae892f7bbdfba226b84d27e",
       "src/biocompiler/policy/requirements.py": "80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b",
-      "src/biocompiler/policy/research_project.py": "4db26b994eb3e19c4bd96bc997484060473ee6d3de91cd380a07d861a4f4c620",
-      "src/biocompiler/policy/serialization.py": "d0e2feb4e8dd3fe65a10793d20c06144ad6fec396d99e6107f3485682ee570bf",
+      "src/biocompiler/policy/research_project.py": "7345fba16805046f21f9026b610bf557aa3d4dfb3400a4fc1d59b0a2b8b919eb",
+      "src/biocompiler/policy/serialization.py": "4bd1f2dee570d079290b774ea94b059907df62a27793e47927b29ed8981c94f6",
       "src/biocompiler/policy/space.py": "c32bc67b86370f471fcabe54fdb61332f746130bc23e22d5a2ce7e08666b97c9",
       "src/biocompiler/policy/state.py": "94ef54313d4475428ca678258dfe59727c8dbbe8d327e26b79ba819dcc20d22d",
       "src/biocompiler/policy/time.py": "115fad72c39fa62587d1253e78a374162b0e1543ba146d8634773bab5d41b969",
       "src/biocompiler/policy/typed.py": "8ed5ed1df21bbee620d0ba6244932282ce2a1e785b8e185baa9a205a544bd1eb",
-      "src/biocompiler/policy/validation.py": "00be9fc170771f06ee7fae34c17ec9a47fcd1c1741efb34fd64044a114d7c5b8",
+      "src/biocompiler/policy/validation.py": "5e4232eeea39adae63e4dadae52afca363068ca28e344161e5806ceed5558529",
       "src/biocompiler/policy/values.py": "56b36e3e4cc8d2caad0bbd26e7ef626eed0b694a50731911e537f4454555bca5",
       "tools/check_policy_semantic_coverage.py": "5ddcaf8432b869bd2badfd5f0b0aa0179f5176e59ec53d879f502bcd7bccea47"
     },
@@ -32484,6 +34219,38 @@
       {
         "path": "src/biocompiler/core_policy_component_selection.py",
         "syntax_sha256": "5fe8dee914d2e76306667a96f507f022d1731ee6e078ebc974cdef985583825d"
+      },
+      {
+        "path": "src/biocompiler/core_policy_expression_material.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/core_policy_expression_material.py",
+        "syntax_sha256": "71fc78b8cc7a173c37a08f002882aa475cb0b6a200bc0aaffed8c3ac916dcb62"
+      },
+      {
+        "path": "src/biocompiler/core_policy_expression_material.py",
+        "syntax_sha256": "e8157a73584becff04ba142bf301a16a3e95078563bad5119c5eb01211b23c01"
+      },
+      {
+        "path": "src/biocompiler/core_policy_expression_material.py",
+        "syntax_sha256": "67ee0f2195b5dd6d32007ab0636061358254666e071561ec389ec9c59836707c"
+      },
+      {
+        "path": "src/biocompiler/core_policy_expression_material.py",
+        "syntax_sha256": "bfabd21e1685683a0b8fcd269afd5bb3887b2e54a8f1717dbb8d4e7f54e2e42d"
+      },
+      {
+        "path": "src/biocompiler/core_policy_expression_material.py",
+        "syntax_sha256": "8e9c21287bc9b997bb02d3e2216052f4c0b189b02273039d48e1c5cfb03f2cfe"
+      },
+      {
+        "path": "src/biocompiler/core_policy_expression_material.py",
+        "syntax_sha256": "6579485337a006cbd6c13352f59830cd8487c044183143d44127a8375b5ea051"
+      },
+      {
+        "path": "src/biocompiler/core_policy_expression_material.py",
+        "syntax_sha256": "44bca4417c68b5cf2bf0ab378ca9d375ad1041618434d0c66aebd0bf31d0d304"
       },
       {
         "path": "src/biocompiler/core_policy_implementation.py",
@@ -32806,6 +34573,70 @@
         "syntax_sha256": "f1de0161c65ab3f393071ef1635211da990641624c09f13266e1910e180045ee"
       },
       {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "e8157a73584becff04ba142bf301a16a3e95078563bad5119c5eb01211b23c01"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "b4c298a4fd68ef9807af856e69c317fe4a250b3d56dbb9c4d37a21299d507302"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "6c08b25ca1f4a7574279aa31a8c7e2b490a41a6db7f56175a539ba1f9c51bad1"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "f7ac139c8d303f3133275c9dde8aac7adc3d0f3c3088d16b0564bad7e3a59f9c"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "eef097c2ba0036ded826a70611e6d6a9d2f6817c7464fcb0a31cc57a92de9f50"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "96b21063f8de9a4ecba2efea9c821f1a7c7a030c857d1be958947b018c17cd13"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "755cf3d0ba3d458e2b1e0438b34c73509a14f46e0324063668da21526cb04b51"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "f343548d64ecca4883ea656717ecf0372eba820b2d505317332afacb6025bafe"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "8d756cb65c71669573e0652842efdd283cf37a980f6e09990f23fe60ac16441f"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "d776fb1161602559677762d53b3c54a5ce0b7001f53b3e1855f613571598dfee"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "808f1c751110a72069f5899c90a33598fd70a3c0ed59777bfffbde9854c3949d"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "124c21e5a3fb830d46c642bab820043f00e246e773a5909d49285fb0807d3561"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "497d8a97572ceca1ccdbc6b2b2f0a2749b05924701b91d5efcf8e2e6fee8822a"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "b52436024228c41d3698f4ba71a6bc6f62b079f1f2582488cb30fd4d9487a93b"
+      },
+      {
+        "path": "src/biocompiler/policy/car_reference.py",
+        "syntax_sha256": "ab3ec7a55419878000dc528915effb926b0d23bc432a99e1eabb579027bd706c"
+      },
+      {
         "path": "src/biocompiler/policy/catalog.py",
         "syntax_sha256": "7305b330f29a0c0e2b1ad8ed23dd2a0e217268cb7cbfe13483f6614601a77dc9"
       },
@@ -33032,6 +34863,110 @@
       {
         "path": "src/biocompiler/policy/examples.py",
         "syntax_sha256": "34eef5ade8b58b33addf3c46aeb0952b1c9b69c4e11c45512c2c5ea9056f5081"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "b57c69ae5c2ef8b591a83cb86e074c28bc51985ccdacbba23baf8bf82e12c205"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "87740c3b4e641e9788fa31ef692a70c7a4498b0fea3bfdd20866dd2cd6791039"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "a2b89c2bd5d3e26c25aa685525a4975e73ee1f9865b1a8df8b9c61b136063ceb"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "349a3c518f2b323f2c4cd1be156bc95ca8af96d3732fb8d3dc4df58520b0387a"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "6b5dfc6cd619afc1cc4d940a30d27465fea7064af5b674e3f96ac31b69e1e08f"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "d353098fa00494393f718df7a31515678d8316e0d762f6211dc6897c542854ad"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "c0736ea8b5658c40c010e80b5967820b3d26c5da64e82629312b4bce1be23e0f"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "4da9f2bf5424b1b0e7d7c8d94b0dde9ce41aed0113b66cc91383f3386c330233"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "546309d9525b0b930828e4644bcfd0208e9e28fcba66ace18115a697e313ecea"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "50385c40ecad116ef112ffb9e400d4cd722955aeda43ff2b56a2ae2009919081"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "cd81b94282cc139d5af2e352654f21c7a9fdacd72876ea08d2a95bc5610fd22b"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "d3c95aa9f4ecb32c243251046b982da33656a68f7f6d010d17b0fc928ba55ae2"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "0de3c23fe070157e2c39b5dde1758b94434e9bb7d7ad3c5e9695e54cbd2396b4"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "6b5dfc6cd619afc1cc4d940a30d27465fea7064af5b674e3f96ac31b69e1e08f"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "b52436024228c41d3698f4ba71a6bc6f62b079f1f2582488cb30fd4d9487a93b"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "d3c95aa9f4ecb32c243251046b982da33656a68f7f6d010d17b0fc928ba55ae2"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "2632c416e243f53f27b0c6fec7492b11266fe3e7ae8ad620cf1f8631a58e0039"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "6b5dfc6cd619afc1cc4d940a30d27465fea7064af5b674e3f96ac31b69e1e08f"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "06b460b5c751c8c70780a1fd12618c1022eac020a17411c5c8fc73db7ef0db5c"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "cd81b94282cc139d5af2e352654f21c7a9fdacd72876ea08d2a95bc5610fd22b"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "6b5dfc6cd619afc1cc4d940a30d27465fea7064af5b674e3f96ac31b69e1e08f"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "06b460b5c751c8c70780a1fd12618c1022eac020a17411c5c8fc73db7ef0db5c"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "349380e55501c5947824f6cd557e8e181c6e7378e4cebf0a2750b1878bb6e93e"
+      },
+      {
+        "path": "src/biocompiler/policy/expression_material.py",
+        "syntax_sha256": "349380e55501c5947824f6cd557e8e181c6e7378e4cebf0a2750b1878bb6e93e"
       },
       {
         "path": "src/biocompiler/policy/finite_build.py",
@@ -33458,6 +35393,30 @@
         "syntax_sha256": "628ce20be32563bd3325219d52eaf20f2b429aa45d2c1aed455889368798bd20"
       },
       {
+        "path": "src/biocompiler/policy/project_sources.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/project_sources.py",
+        "syntax_sha256": "9504d55417d2740bad3fd82a42301fb21a05252f7764c8953754eb17341b7406"
+      },
+      {
+        "path": "src/biocompiler/policy/project_sources.py",
+        "syntax_sha256": "55ea55d2ef13599eee8d585d56a89b62d192256ff0b1ca9d79c3dac1d330a74d"
+      },
+      {
+        "path": "src/biocompiler/policy/project_sources.py",
+        "syntax_sha256": "e8157a73584becff04ba142bf301a16a3e95078563bad5119c5eb01211b23c01"
+      },
+      {
+        "path": "src/biocompiler/policy/project_sources.py",
+        "syntax_sha256": "6c08b25ca1f4a7574279aa31a8c7e2b490a41a6db7f56175a539ba1f9c51bad1"
+      },
+      {
+        "path": "src/biocompiler/policy/project_sources.py",
+        "syntax_sha256": "99ec9cf83c2a32d3931f231efffa8ec806fd38a8e45d2aeadb30f3d881ea8b29"
+      },
+      {
         "path": "src/biocompiler/policy/quantitative.py",
         "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
       },
@@ -33695,11 +35654,19 @@
       },
       {
         "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "02022c42a8cf5e59841a91ae1c134151dab11c2860e24aec25acfb5fb9600ba1"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
         "syntax_sha256": "b046fdd156a1e027d9d825f6395dda7056bf1c212d4b690ef8c12c85c92c6e4c"
       },
       {
         "path": "src/biocompiler/policy/research_project.py",
-        "syntax_sha256": "f8288fe0f13be0239bad5d02511d58992082770eda441413e44a739f2aa74af5"
+        "syntax_sha256": "c7291a30dd7c8bde05981f0829d1643eac90f4ee383d54fca289f45c20c5b110"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "ca1685d005fff791e432b38049c1a7d996498d2efff2dc5fa50dc3f3448f8eba"
       },
       {
         "path": "src/biocompiler/policy/research_project.py",
@@ -33867,6 +35834,38 @@
       }
     ],
     "operations": [
+      {
+        "operation": "compile-policy-expression-material",
+        "owner": "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.compile",
+        "payload_fields": [
+          "request"
+        ]
+      },
+      {
+        "operation": "check-policy-expression-material",
+        "owner": "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.check",
+        "payload_fields": [
+          "request",
+          "candidate"
+        ]
+      },
+      {
+        "operation": "replay-policy-expression-material",
+        "owner": "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.replay",
+        "payload_fields": [
+          "request",
+          "candidate",
+          "report"
+        ]
+      },
+      {
+        "operation": "export-policy-expression-material",
+        "owner": "biocompiler.core_policy_expression_material.PolicyExpressionMaterialClient.export",
+        "payload_fields": [
+          "request",
+          "candidate"
+        ]
+      },
       {
         "operation": "compile-policy-quantitative-assurance",
         "owner": "biocompiler.core_policy_quantitative_assurance.PolicyQuantitativeAssuranceClient.compile",
@@ -34776,6 +36775,310 @@
       "symbol": "PolicyBuilderLiteralTests.test_add_ref_ownership_errors_are_atomic",
       "syntax_sha256": "6d3a79e676fe0d52e245b6aa3a4eb7ed29d7f8a299c4e71e0809bc80a37d8bdc"
     },
+    "car_expression.project.bound": {
+      "distinction": "A supported RNA-bound edit retains native diagnostic evidence and prevents output publication under a mocked rejection.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "rejection",
+      "symbol": "ExpressionResearchProjectTests.test_changed_maximum_rna_length_returns_diagnostics_and_no_output",
+      "syntax_sha256": "b99eb570192fb2296db67685548bdb81594fb2295855827a82136e9f7ab2aa20"
+    },
+    "car_expression.project.bundle": {
+      "distinction": "Tampered archive temporal limits or complete source context reject on fresh verification.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "rejection",
+      "symbol": "ExpressionResearchProjectTests.test_expression_bundle_cannot_add_temporal_limits_or_replace_source_context",
+      "syntax_sha256": "38b8ae7b3047aec70017e73d2b34de79cd38e0574ca428dd1db5199539a3c5b6"
+    },
+    "car_expression.project.cancel": {
+      "distinction": "Cancellation or Verify failure preserves existing output and never publishes a producer-only result.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "rejection",
+      "symbol": "ExpressionResearchProjectTests.test_cancellation_after_core_and_verify_failure_preserve_existing_output",
+      "syntax_sha256": "7d7e0bbd928eda78f598c4cb4cbe923c2d1c969357827cc63e6a2df72ddb2de6"
+    },
+    "car_expression.project.chemistry": {
+      "distinction": "Nominal source chemistry and explicit designer terminal chemistry retain distinct provenance; no default or forged designer choice is accepted.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "mixed",
+      "symbol": "ExpressionResearchProjectTests.test_real_reference_chemistry_keeps_source_and_explicit_designer_authorities_distinct",
+      "syntax_sha256": "539a4d2055a71ef830abbe45533d4a22d254d27d9a8a6c542e545add04ccf912"
+    },
+    "car_expression.project.context": {
+      "distinction": "Every outer project field and six source-record fields must equal the native original request context; coherent changes change identity.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "mixed",
+      "symbol": "ExpressionResearchProjectTests.test_every_project_context_field_and_source_record_is_original_authority",
+      "syntax_sha256": "c44dba722c7c793b3076377c1bd52724b580a1ee6a3bc3130e270506d7768740"
+    },
+    "car_expression.project.fresh": {
+      "distinction": "Coherently changing both outer and request metadata cannot authorize an old exported bundle.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "rejection",
+      "symbol": "ExpressionResearchProjectTests.test_changed_metadata_on_both_sides_cannot_reopen_old_bundle",
+      "syntax_sha256": "6864a32873e659c5ceb54fba6045e5a7869dd73da30c41c60c83d6136c2f9ce5"
+    },
+    "car_expression.project.pipeline": {
+      "distinction": "Mocked Core production, separate fresh Verify export and independent bundle reopening retain full exact originals and paired archive bytes.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "positive",
+      "symbol": "ExpressionResearchProjectTests.test_core_compile_fresh_verify_paired_export_and_reopen_use_exact_originals",
+      "syntax_sha256": "7ec5670e3470c653f9b3323d6eb426e9432202409f19379b14ac9204e7b4ad7c"
+    },
+    "car_expression.project.reference": {
+      "distinction": "CAR starter preserves independently frozen nominal RNA/protein hashes, source-part intervals, two stops and encoded tail without native checking.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "positive",
+      "symbol": "ExpressionResearchProjectTests.test_real_reference_starter_keeps_independent_bases_product_parts_and_double_stop",
+      "syntax_sha256": "95321de849d07ead4f0614719a2f9eb8fc976d4a6c544f51199f015edbbe2fe9"
+    },
+    "car_expression.project.roles": {
+      "distinction": "Explicit and installed executable selection preserve separate producer and verifier roles in inert project orchestration.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "mixed",
+      "symbol": "ExpressionResearchProjectTests.test_explicit_roles_and_installed_resolution_keep_producer_and_verifier_separate",
+      "syntax_sha256": "76e4462329c9cabb9326eeb604b9e49561b00b32286417e16f660b882b50dd72"
+    },
+    "car_expression.project.roundtrip": {
+      "distinction": "Project v0.2 typed import and canonical save/load preserve complete static source/metadata snapshots and explicitly report native not_run.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "mixed",
+      "symbol": "ExpressionResearchProjectTests.test_typed_roundtrip_and_canonical_load_save_preserve_complete_static_authority",
+      "syntax_sha256": "4e4d942f142956e020f18ae949ea1439ff1136a7afc92b0c33aed5a1426e42a9"
+    },
+    "car_expression.project.routes": {
+      "distinction": "Expression project schema/route/null temporal limits remain isolated from legacy project formats.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "rejection",
+      "symbol": "ExpressionResearchProjectTests.test_schema_route_and_timeless_limits_are_closed_without_legacy_conversion",
+      "syntax_sha256": "c58e4c9acaec5b7a04a2677324da2a6dec7b9a09cd36f6646dfad0871e3c738f"
+    },
+    "car_expression.project.source_budget": {
+      "distinction": "Complete source/assumption metadata are bound, and fixed source-inspection limits accommodate the declared public PDF without fetching or authenticating it.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "positive",
+      "symbol": "ExpressionResearchProjectTests.test_real_project_pins_complete_context_and_source_budget_fits_known_pdf_without_loading_it",
+      "syntax_sha256": "fb90ef27f19418783569d114d58ec7445acd0e10920febf29687f7fa3011e668"
+    },
+    "car_expression.project.static_edit": {
+      "distinction": "Source length edits change request identity while preserving exact material and a static, timeless seven-declaration program.",
+      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "path": "tests/test_policy_expression_research_project.py",
+      "role": "positive",
+      "symbol": "ExpressionResearchProjectTests.test_real_bound_edit_changes_source_identity_without_rewriting_material_or_adding_runtime",
+      "syntax_sha256": "c818df464ffe3daf24a2a18065756bcb8ccbf715d43ca71b09e9fbf6358a090a"
+    },
+    "car_expression.source.demands": {
+      "distinction": "Static representation rejects temporal horizons, stronger unsupported assurance and extra assumptions or tolerances.",
+      "file_sha256": "78d8fc71083f080a3ebb49b3d5c91b157f79ac5c40c1f7c3715c92c50f85693c",
+      "path": "tests/test_policy_expression_source.py",
+      "role": "rejection",
+      "symbol": "ExpressionSourceTests.test_static_profile_rejects_temporal_or_nonstructural_assurance",
+      "syntax_sha256": "a947a3a5585759738d8f5c936c505bd444ba861d115780270d3e9394d44de7d8"
+    },
+    "car_expression.source.dynamic": {
+      "distinction": "Python authoring marks dynamic declarations invalid and retains unestablished material and assurance obligations.",
+      "file_sha256": "78d8fc71083f080a3ebb49b3d5c91b157f79ac5c40c1f7c3715c92c50f85693c",
+      "path": "tests/test_policy_expression_source.py",
+      "role": "mixed",
+      "symbol": "ExpressionSourceTests.test_authoring_retains_unresolved_claims_and_rejects_dynamic_source",
+      "syntax_sha256": "42eebf39fe6b9fedf8a8711a8e53b21d678b981cb0ab367673464d3d8f1da06c"
+    },
+    "car_expression.source.legacy": {
+      "distinction": "Legacy and standalone assurance records cannot import the static not_applicable horizon sentinel.",
+      "file_sha256": "78d8fc71083f080a3ebb49b3d5c91b157f79ac5c40c1f7c3715c92c50f85693c",
+      "path": "tests/test_policy_expression_source.py",
+      "role": "rejection",
+      "symbol": "ExpressionSourceTests.test_old_profile_cannot_smuggle_static_assurance",
+      "syntax_sha256": "93619127625cc8ee58aaecc1e54ae51b15a739378b4de06a19d6b3a59773acbc"
+    },
+    "car_expression.source.nesting": {
+      "distinction": "Nested profile identities and old submission routes remain closed to the additive static root profile.",
+      "file_sha256": "78d8fc71083f080a3ebb49b3d5c91b157f79ac5c40c1f7c3715c92c50f85693c",
+      "path": "tests/test_policy_expression_source.py",
+      "role": "rejection",
+      "symbol": "ExpressionSourceTests.test_nested_profiles_and_old_submission_remain_closed",
+      "syntax_sha256": "55a70dd4330b04413f4f90c341a5bddf0e8db93bce10c994d4b0b7baaf734182"
+    },
+    "car_expression.source.old_bytes": {
+      "distinction": "Legacy language specification, generated source and complete old document/semantic digests remain exact.",
+      "file_sha256": "78d8fc71083f080a3ebb49b3d5c91b157f79ac5c40c1f7c3715c92c50f85693c",
+      "path": "tests/test_policy_expression_source.py",
+      "role": "positive",
+      "symbol": "ExpressionSourceTests.test_default_language_and_frozen_originals_are_unchanged",
+      "syntax_sha256": "1ac160316e788df504f42aaee6b287888ca91ac189e4529e47547683a59810a8"
+    },
+    "car_expression.source.projection": {
+      "distinction": "Unreviewed horizon alternatives or profile rebinding fail the inert language projection check.",
+      "file_sha256": "78d8fc71083f080a3ebb49b3d5c91b157f79ac5c40c1f7c3715c92c50f85693c",
+      "path": "tests/test_policy_expression_source.py",
+      "role": "rejection",
+      "symbol": "ExpressionSourceTests.test_python_projection_rejects_unreviewed_extension_and_profile_rebinding",
+      "syntax_sha256": "135a1fdd0ec3680e6156451ebe13411e2a4f79279d76b77fb1d5c034f29261a9"
+    },
+    "car_expression.source.roundtrip": {
+      "distinction": "The explicit static BuildRequest profile roundtrips exactly while nested program and semantics retain v0.1.",
+      "file_sha256": "78d8fc71083f080a3ebb49b3d5c91b157f79ac5c40c1f7c3715c92c50f85693c",
+      "path": "tests/test_policy_expression_source.py",
+      "role": "positive",
+      "symbol": "ExpressionSourceTests.test_explicit_static_root_roundtrips_without_source_rewriting",
+      "syntax_sha256": "bc9890143a8618f331b5d39b1edfb035e22a63a74ed28c6d899cc62aedf2b4c6"
+    },
+    "car_expression.source.schema": {
+      "distinction": "New source schema is the exact reviewed additive projection; unrelated schema broadening rejects.",
+      "file_sha256": "78d8fc71083f080a3ebb49b3d5c91b157f79ac5c40c1f7c3715c92c50f85693c",
+      "path": "tests/test_policy_expression_source.py",
+      "role": "mixed",
+      "symbol": "ExpressionSourceTests.test_new_schema_is_exact_additive_projection_and_matches_sdk",
+      "syntax_sha256": "e27581cf2fffa0bc09ca3831677d4f1c4a36555a119395900eed23dabf5fee0d"
+    },
+    "car_expression.source.scope": {
+      "distinction": "A structurally complete empty static source still grants no material admission or biological acceptance.",
+      "file_sha256": "78d8fc71083f080a3ebb49b3d5c91b157f79ac5c40c1f7c3715c92c50f85693c",
+      "path": "tests/test_policy_expression_source.py",
+      "role": "positive",
+      "symbol": "ExpressionSourceTests.test_static_empty_source_is_only_structural_not_material_admission",
+      "syntax_sha256": "aa45b5d085ceb9f72e76ce839b03956c009c711b22cc4648c4131d99f7ce085d"
+    },
+    "car_expression.transport.accounting": {
+      "distinction": "Complete request/candidate/invocation identity and exact bounded checker/outer accounting cannot be forged or reduced.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "rejection",
+      "symbol": "ExpressionMaterialTransportTests.test_rejects_complete_invocation_and_work_accounting_forgery",
+      "syntax_sha256": "291594a9603dd7321a824e5e5c8a97f4b57ecadbb201cc128072b498f2d56b4a"
+    },
+    "car_expression.transport.capabilities": {
+      "distinction": "Missing or changed profile, wrong executable role and unavailable transport reject without a fallback.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "rejection",
+      "symbol": "ExpressionMaterialTransportTests.test_capability_role_and_transport_fail_closed",
+      "syntax_sha256": "403a9a6e71a917abf2e769b568123adc77afb4c79dc9a93378b0377954440e7a"
+    },
+    "car_expression.transport.context_bounds": {
+      "distinction": "Project UTF-8 byte bounds, complete source census and hashes reject malformed inputs while preserving surrounding text exactly.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "mixed",
+      "symbol": "ExpressionMaterialTransportTests.test_exact_project_context_utf8_and_source_census_bounds",
+      "syntax_sha256": "a995e24b1793c97ce2494aab81c079a75df86944ecc8a44567466ccb2f8686f2"
+    },
+    "car_expression.transport.export_mutation": {
+      "distinction": "Rehashing a changed manifest cannot authorize substituted original authority, members, claims or FASTA bytes.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "rejection",
+      "symbol": "ExpressionMaterialTransportTests.test_rejects_export_mutation_even_with_updated_manifest_digest",
+      "syntax_sha256": "3b15886dbc4453b955ad348eb061127f35310084b3f7831fd9f3d7ba35e8175e"
+    },
+    "car_expression.transport.forgery": {
+      "distinction": "Rehashed claim, source occurrence, obligation, translation, material and requirement forgeries reject at the transport boundary.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "rejection",
+      "symbol": "ExpressionMaterialTransportTests.test_rejects_rehashed_claim_ledger_source_and_structure_forgery",
+      "syntax_sha256": "cf8caeac4c3d037ef2abf81565bcf4136f1d21a19a8e7c3142f6214780a0aa23"
+    },
+    "car_expression.transport.fresh_context": {
+      "distinction": "Changed project metadata and nominal stop interpretation cannot reuse earlier full response evidence.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "rejection",
+      "symbol": "ExpressionMaterialTransportTests.test_project_metadata_and_nominal_model_edits_invalidate_retained_results",
+      "syntax_sha256": "8013ba7077e8ea4d4df91298731e68a89544e999b2924e95656bd7f568f14040"
+    },
+    "car_expression.transport.normative": {
+      "distinction": "Exact normative definition bodies are distinguished from conditional context premises; transport cannot promote localization premises to proof.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "mixed",
+      "symbol": "ExpressionMaterialTransportTests.test_complete_normative_definitions_and_context_premises_remain_distinct",
+      "syntax_sha256": "5590d1bb7f01d468e0395a0dbfbd0d7d4cd0eed50c6eb75cf2729cbf18059ece"
+    },
+    "car_expression.transport.originals": {
+      "distinction": "Wrong request profile, unknown fields, invalid resource allowances, stale contract pins and malformed project sources reject.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "rejection",
+      "symbol": "ExpressionMaterialTransportTests.test_closed_originals_and_budget_rejections",
+      "syntax_sha256": "4fe025427d3682f8bfca4ef967356549889837e40884941173d749e9e270a066"
+    },
+    "car_expression.transport.output_bounds": {
+      "distinction": "Complete response evidence enforces original node limits and rejects unknown wrapper fields.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "rejection",
+      "symbol": "ExpressionMaterialTransportTests.test_publication_ceiling_and_unknown_field_are_not_ignored",
+      "syntax_sha256": "65f3567f74c3386619c847de0d59148549b1e279b26ac67253380947c69af67f"
+    },
+    "car_expression.transport.publication": {
+      "distinction": "Typed wrappers preserve all routes and atomically publish exact inert FASTA/manifest bytes without replacing an existing output.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "mixed",
+      "symbol": "ExpressionMaterialTransportTests.test_typed_routes_and_atomic_exact_export",
+      "syntax_sha256": "a9904136ae287a875b10c1d80e5158a4e44ae9ae0596981afc4dde04d200a85e"
+    },
+    "car_expression.transport.rejection": {
+      "distinction": "An explicit native rejection is propagated with original diagnostic identity and never becomes a Python candidate.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "rejection",
+      "symbol": "ExpressionMaterialTransportTests.test_explicit_rejection_never_becomes_a_python_candidate",
+      "syntax_sha256": "62928081eb32a4fea226264f851afc0f5365af30e97c73348f40f7e38aeb75f7"
+    },
+    "car_expression.transport.replay": {
+      "distinction": "Full-wrapper replay mismatch and publication on a non-export operation reject.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "rejection",
+      "symbol": "ExpressionMaterialTransportTests.test_rejects_forged_replay_and_nonexport_publication",
+      "syntax_sha256": "fc44b93e52f77c9352e0afb60c22d8c5a63fb898da240ee83eb5cb74a5dd4cb6"
+    },
+    "car_expression.transport.routes": {
+      "distinction": "Four inert native-wire routes retain exact originals, the complete replay wrapper and conditional export fields without temporal limits.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "positive",
+      "symbol": "ExpressionMaterialTransportTests.test_complete_compile_check_replay_export_routes",
+      "syntax_sha256": "6c95a3c1775bebde95b95d8f27e806a49badc3979241b7d5f897b17d21c7307b"
+    },
+    "car_expression.transport.snapshot": {
+      "distinction": "Request snapshot precedes negotiation; retained result reads and frozen records cannot mutate the original evidence.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "positive",
+      "symbol": "ExpressionMaterialTransportTests.test_snapshot_before_negotiation_and_detached_evidence",
+      "syntax_sha256": "641d7e7f2003e5cc2ce00d0077f45e718cc6539999308fdbaa03374d15170d4a"
+    },
+    "car_expression.transport.source_edit": {
+      "distinction": "An edited source RNA bound is retained, with failing inert evidence and export denial; no native semantic result is asserted.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "mixed",
+      "symbol": "ExpressionMaterialTransportTests.test_semantic_source_edit_is_retained_and_can_fail_without_export",
+      "syntax_sha256": "361ad0a47c6eaa15de49b4e46cd8e590671775c75bb20e4992774c42e5deb7dc"
+    },
+    "car_expression.transport.typed": {
+      "distinction": "Typed source/selection/budgets preserve complete original request snapshots; untyped source construction rejects.",
+      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "path": "tests/test_core_policy_expression_material.py",
+      "role": "mixed",
+      "symbol": "ExpressionMaterialTransportTests.test_typed_constructor_and_exact_import_are_immutable",
+      "syntax_sha256": "decc289062847621463cc5fa73923cf855b626854cb859c2e41de82be701d3e0"
+    },
     "component.archive": {
       "distinction": "Fresh synthetic native callback supplies the exact canonical FASTA/manifest pair to deterministic atomic ZIP publication.",
       "file_sha256": "9428bfc2938142adb4ea5a00fcf1f8f133ce91e11f82af495ee98a850f45b9d4",
@@ -35191,6 +37494,126 @@
       "role": "mixed",
       "symbol": "PolicyPatternTests.test_repeated_instance_name_rejects_without_rebinding_existing_declarations",
       "syntax_sha256": "1a28f7c33c8dbecef040df9cd4b573274531476481da2590877356298728cdc5"
+    },
+    "project_sources.byte_bounds": {
+      "distinction": "Per-source and total byte limits are inclusive, and oversized inventories reject before hashing.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "mixed",
+      "symbol": "ProjectSourceTests.test_source_and_total_bounds_are_inclusive_and_checked_before_hashing",
+      "syntax_sha256": "425b993e6e8c3087f659b7ebca3a52083fb27130cf8b387ac1f45188ab37b0fb"
+    },
+    "project_sources.distinct_ids": {
+      "distinction": "Distinct declared source IDs may intentionally bind identical exact bytes, with each byte count charged.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "positive",
+      "symbol": "ProjectSourceTests.test_identical_bytes_under_distinct_declared_ids_are_allowed",
+      "syntax_sha256": "0d9d37457a869854bea3a0e1ac8f5cc0043d3fb0a993da9d44a9e938e8e62f9b"
+    },
+    "project_sources.empty": {
+      "distinction": "Empty sources reject even when their declared digest matches.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "rejection",
+      "symbol": "ProjectSourceTests.test_empty_source_is_rejected_even_when_its_digest_matches",
+      "syntax_sha256": "2fd21e469199d07823b902548e849fd89809ac8390ac920ec53c8162270e0525"
+    },
+    "project_sources.exact": {
+      "distinction": "Exact declared source bytes produce project-order matches and only source_bytes_matched with publication, biology and rights unassessed and native not_run.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "positive",
+      "symbol": "ProjectSourceTests.test_complete_exact_bytes_match_in_project_order_with_narrow_claims",
+      "syntax_sha256": "ce0d9ee8f7f4f9a7ca985c469a718760b1efb671bb3f68ef7ff361fc7eed0cb6"
+    },
+    "project_sources.fresh_hashes": {
+      "distinction": "Tampered, stale, normalized or mismatched bytes reject after an earlier match; acceptance is not cached.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "rejection",
+      "symbol": "ProjectSourceTests.test_tampered_stale_and_normalized_bytes_reject_without_cached_pass",
+      "syntax_sha256": "34264f24c0b6d532f9c39c6bdbcf833e48a9b7f576bd7de63c477611c0fb3498"
+    },
+    "project_sources.immutable": {
+      "distinction": "Frozen result records retain no mutable caller mapping or project-data view.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "positive",
+      "symbol": "ProjectSourceTests.test_result_and_caller_snapshots_remain_immutable",
+      "syntax_sha256": "f0f542193b0861cf982aa6b724ea8b9456c304210b4f8f2d1ab7d8f7072b7c82"
+    },
+    "project_sources.input_types": {
+      "distinction": "Malformed project/mapping/key/value inputs and mutable byte buffers reject before inspection.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "rejection",
+      "symbol": "ProjectSourceTests.test_malformed_inputs_and_mutable_bytes_reject",
+      "syntax_sha256": "8a70a69a8e87cdd6229ff75d0bb33b5f6f955f9b9a22f952ef4103e40bbd0d92"
+    },
+    "project_sources.inventory": {
+      "distinction": "Missing, extra and substituted source IDs reject against the independent project inventory.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "rejection",
+      "symbol": "ProjectSourceTests.test_missing_extra_and_substituted_ids_reject",
+      "syntax_sha256": "1b4aa661c75442482cb1bf60b20e570de274de09ee355a3829e4b5bb055c38c1"
+    },
+    "project_sources.iteration_bound": {
+      "distinction": "Mapping iteration is bounded by the exact project source count rather than trusting the mapping length alone.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "rejection",
+      "symbol": "ProjectSourceTests.test_source_id_inventory_is_bounded_independently_of_mapping_length",
+      "syntax_sha256": "8c6409ac0744225f3a45246923d759936cd963d1007ac515d44077ab8f506de0"
+    },
+    "project_sources.mapping_inventory": {
+      "distinction": "Custom mapping iteration cannot hide duplicate or missing source IDs behind its declared length.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "rejection",
+      "symbol": "ProjectSourceTests.test_custom_mapping_cannot_hide_duplicate_or_missing_ids",
+      "syntax_sha256": "62cf260f908e3e3ce3ee3d4b2554d96b4036739a81238dea37287db00c6ffb1c"
+    },
+    "project_sources.mapping_mutation": {
+      "distinction": "A disappearing mapping entry rejects during the bounded snapshot.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "rejection",
+      "symbol": "ProjectSourceTests.test_mapping_mutation_during_snapshot_rejects",
+      "syntax_sha256": "c50df25cfc6983d2a730d026f9853c4b4a7161421cc324962dcd0d12650ffc52"
+    },
+    "project_sources.no_io": {
+      "distinction": "Source inspection performs no file, path, network, process or native transport I/O; this does not authenticate publications or prove biological function.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "positive",
+      "symbol": "ProjectSourceTests.test_inspection_performs_no_path_network_or_native_io",
+      "syntax_sha256": "03808a014dfab8e791c3a25257565f52ce8f0533f5918e3b7ac6a7f3abf59c82"
+    },
+    "project_sources.project_binding": {
+      "distinction": "Declared locators, versions, roles, reuse terms, assumptions, title and limits affect the complete project binding without authenticating those declarations.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "positive",
+      "symbol": "ProjectSourceTests.test_metadata_and_assumption_edits_change_complete_project_binding",
+      "syntax_sha256": "ed7ad7d0eb34a73618ca33040fad1f786698f2c5779e6affc62a5c0946ea69c4"
+    },
+    "project_sources.project_ids": {
+      "distinction": "The existing ResearchProject authority rejects duplicate declared source IDs.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "rejection",
+      "symbol": "ProjectSourceTests.test_duplicate_declared_source_ids_are_rejected_by_project_authority",
+      "syntax_sha256": "2089660ba2b947607307cd70f139b6287d7f7b4043c08e0f4da83046881ab60f"
+    },
+    "project_sources.snapshot": {
+      "distinction": "All mapping values are snapshotted before the first hash; later mapping changes do not alter the inspection and reject on fresh checking.",
+      "file_sha256": "6aa10329c94ca17fa94361d824f3b5748d932b1d47989bdb2254e2d61041842a",
+      "path": "tests/test_policy_project_sources.py",
+      "role": "mixed",
+      "symbol": "ProjectSourceTests.test_all_source_values_are_snapshotted_before_hashing",
+      "syntax_sha256": "9f903c130458038d44e933e4a3affe30641023d0cee520140c03dfb26846f9b2"
     },
     "quantitative.grid": {
       "distinction": "Exact fractional amount grid is independent of Decimal precision, preserves original full quantities, and does not extend the source Record registry.",

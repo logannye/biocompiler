@@ -45,6 +45,21 @@ class MigrationInventoryTests(unittest.TestCase):
                 'retain_original_module_authoring_and_explicit_transport_to_fresh_native_linking_and_conditional_paired_export')
             self.assertEqual(entry['migration_state'], 'legacy')
 
+    def test_expression_and_reference_interfaces_keep_distinct_authority(self):
+        expected = {
+            'policy.expression_material': 'complete_original_expression_source_contract_project_and_material_with_fresh_native_conditional_correspondence_and_separate_empirical_status',
+            'core_policy_expression_material': 'complete_original_expression_source_contract_project_and_material_with_fresh_native_conditional_correspondence_and_separate_empirical_status',
+            'policy.car_reference': 'caller_supplied_or_pinned_reference_bytes_and_explicit_design_premises_only_no_native_semantic_biological_or_rights_acceptance',
+            'policy.project_sources': 'caller_supplied_or_pinned_reference_bytes_and_explicit_design_premises_only_no_native_semantic_biological_or_rights_acceptance',
+        }
+        entries = [entry for entry in self.actual['entries'] if entry['current_implementation']['source'] in expected]
+        self.assertEqual({entry['current_implementation']['source'] for entry in entries}, set(expected))
+        for entry in entries:
+            contract = self.actual['contracts'][entry['contract']]
+            self.assertEqual(contract['target_owner'], 'Python')
+            self.assertEqual(contract['source_authority'], expected[entry['current_implementation']['source']])
+            self.assertEqual(entry['migration_state'], 'legacy')
+
     def test_closed_lazy_policy_aliases_resolve_without_importing_product_code(self):
         import sys
         before = {name for name in sys.modules if name.startswith('biocompiler')}

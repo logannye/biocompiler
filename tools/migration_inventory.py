@@ -576,6 +576,10 @@ def ownership(module, category):
         return "Python", ["LM-11", "LM-12", "LM-25"], "retain_opt_in_owned_prebuilt_resolution_without_semantic_or_default_routing_authority"
     if module == "biocompiler.policy.research_project":
         return "Python", ["LM-11", "LM-12", "LM-25", "LM-26"], "retain_public_project_authoring_and_supplied_inputs_with_fresh_native_verification_before_export"
+    if module in {"biocompiler.core_policy_expression_material", "biocompiler.policy.expression_material"}:
+        return "Python", ["LM-12", "LM-20", "LM-24", "LM-25", "LM-26"], "retain_typed_expression_authority_and_transport_to_fresh_native_conditional_nominal_rna_checking_and_export"
+    if module in {"biocompiler.policy.car_reference", "biocompiler.policy.project_sources"}:
+        return "Python", ["LM-11", "LM-12"], "retain_explicit_original_reference_authoring_and_bounded_source_inspection_without_acceptance_authority"
     if module in {"biocompiler.core_policy_quantitative_assurance", "biocompiler.policy.quantitative_assurance"}:
         return "Python", ["LM-12", "LM-20", "LM-21", "LM-24", "LM-25", "LM-26"], "retain_typed_original_assurance_and_fresh_native_exact_material_approximation_and_separate_supplied_evidence"
     if module in {"biocompiler.core_policy_planning", "biocompiler.policy.planning"}:
@@ -623,6 +627,10 @@ def authority(module, category):
         return "installed_sdk_release_pins_and_owned_wheel_RECORD_with_fresh_explicit_native_role_and_operation_negotiation"
     if module == "biocompiler.policy.research_project":
         return "explicit_original_project_and_supplied_component_authority_only_fresh_native_checks_authorize_conditional_paired_export"
+    if module in {"biocompiler.core_policy_expression_material", "biocompiler.policy.expression_material"}:
+        return "complete_original_expression_source_contract_project_and_material_with_fresh_native_conditional_correspondence_and_separate_empirical_status"
+    if module in {"biocompiler.policy.car_reference", "biocompiler.policy.project_sources"}:
+        return "caller_supplied_or_pinned_reference_bytes_and_explicit_design_premises_only_no_native_semantic_biological_or_rights_acceptance"
     if module in {"biocompiler.core_policy_quantitative_assurance", "biocompiler.policy.quantitative_assurance"}:
         return "complete_original_material_and_optional_contracts_with_fresh_native_conjunction_and_separate_experimental_compatibility"
     if module in {"biocompiler.core_policy_planning", "biocompiler.policy.planning"}:

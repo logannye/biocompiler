@@ -212,10 +212,19 @@ architecture, qualification and delivery references.
 
 ## Execution and progress accounting
 
-- **Immediate next new work:** write the C1 use-case card and qualify the smallest
-  complete CAR input/evidence pack. In parallel, finish the already authorized
-  C0 closeout. Repository inspection and input qualification can advance while
-  hosted acceptance runs; neither requires altering its frozen source.
+- **Current implementation checkpoint, 2026-10-11:** the
+  [C1 task](car-first-research-task.md) selects the anti-CD19 RM_61461 reference
+  for nominal RNA design under supplied expression/localization contracts. The
+  [C2 qualification](car-rm61461-qualification.md) reconciles the published RNA,
+  encoded product and source-declared chemistry, while keeping the explicitly
+  designer-supplied physical end separate. Biological applicability and permitted
+  use retain their stated unresolved status. The
+  [expression material profile](car-expression-material-profile-design.md),
+  [standalone example](../examples/car_payload.py) and
+  [quickstart](car-payload-quickstart.md) are implemented source candidates.
+  Pure Python, mock and static controls are early feedback. C0 closeout, fresh
+  CAR native/installed acceptance, the timed installed usability rehearsal and
+  C6 publication remain required; no release is claimed here.
 - **Fast feedback:** keep documentation, static/type checks and focused
   pure-Python checks local. Use hosted native validation for coherent batches,
   preserve healthy runs, and retain required integration and fresh-main gates.
