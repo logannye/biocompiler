@@ -47,7 +47,7 @@ all native work hosted under the applicable authorization.
 | RC2 | Acquisition checkpoint complete; gate open | The separately named patent pair #197/#206 has source-pinned literal fragments/products and bounded consistency checks. The authorized-input importer and two complete RNA adaptations remain open; see the acquisition assessment. |
 | RC3 | Complete for admission and finite input-domain support | Closed v0.14 original authority, native source/material/context closure, complete finite-domain enumeration, guarded read-only admission and immutable Python transport. Hosted development validation and independently audited evidence are bound to `8b4506ed5013e21b1dbb58c34e22d31cd9b84df2`; see the RC3 validation receipt. |
 | RC4 | Complete for the direct-root artificial two-RNA subset | Fresh native construction, independent full-pair reconstruction and atomic structural publication; no behavior or numeric stoichiometric-range claim. Hosted development and independently audited evidence bind `a2a1d53345987cfd339bef17e696fa5141293b76`; see the RC4 validation checkpoint. |
-| RC5 | Planned | Add activity semantics, source requirement monitors and independent model/candidate checking over the RC3 domain. |
+| RC5 | Complete for the artificial reversible-behavior subset; quantitative condition open | Independent candidate/model/source assessments, complete finite-domain checking and bounded evidence publication. Hosted development and independent audits bind `eb8f74ea2ce51c461496a5e845bc55d5e64d9edd`; see the RC5 validation receipt. |
 | RC6 | Planned | Complete ResearchProject, export/reopen and installed starter. |
 | RC7 | Planned | Coherent hosted, cross-platform, installed and artifact acceptance. |
 | RC8 | Planned | Reconcile, integrate, validate actual main and publish under its own evidence. |
@@ -59,39 +59,28 @@ do not modify MVP/E1 branches, running jobs, releases or automations.
 
 ## Next implementation slices
 
-The user explicitly selected continued software work with artificial fixtures
-on 2026-10-12; real RNA inputs will follow. Keep each fixture labeled artificial
-and retain complete original authority. Do not silently fill missing regions
-in the named patent reference or infer its activity model from requested answers.
+The user selected continued software work with artificial fixtures; complete
+real RNA inputs follow separately. RC3 admission, RC4 structural publication and
+RC5 behavior are implemented and separately checked. Preserve complete original
+authority and never infer missing regions or kinetics from desired answers.
 
-RC3 authority, admission and input-domain support are implemented and validated.
-Its typed source obligations and original correspondence are ready for later
-executable lowering; RC3 does not execute an activity model or source monitor.
-Remaining implementation slices are:
-
-1. **RC5 behavior.** Add executable activity lowering, independent candidate
-   interpretation and source requirement monitors over the complete RC3 domain.
-   Check onset, cessation and reactivation with explicit state ownership, lifecycle,
-   availability, unknowns and work bounds. Exact realization of the supplied
-   mechanism and satisfaction of source deadlines remain distinct checks.
-   Any quantitative expression/stoichiometric ranges required by the selected real
-   interaction need RC2 inputs, a versioned contract and independent RC5 checks
-   before named-case completion; current binary availability does not supply them.
-2. **RC6 joined workflow.** Join fresh behavioral and structural evidence before
-   advertising full controlled compile/check/export. Add ResearchProject v0.3,
-   independent-original Verify-only reopen, an editable starter and an installed
-   rehearsal. RC4's separate structural publication does not supply the missing
-   behavior capability or complete this joined workflow.
-3. **RC7/RC8 acceptance and release.** Complete cross-platform and installed gates,
-   integration, fresh actual-main validation and artifact audit for the joined
-   candidate. Preserve the first-MVP/E1 owner and their separate gates. RC2's real
-   reference and complete RNA adaptations remain open in parallel.
-
-Connect `policy_controlled_source` and `policy_controlled_domain` to executable
-activity lowering and independent reference interpretation without widening
-legacy profiles. Reuse RC4's exact original material binding when joining evidence;
-never manufacture private capabilities. Register new native suites and retain
-focused local pure/static feedback plus coherent hosted validation.
+1. **RC6 joined workflow.** Join fresh structural and behavioral checks under
+   the same complete originals. Complete ResearchProject v0.3, paired export,
+   independent-original Verify-only reopen, foreign-bundle rejection, an editable
+   starter and installed rehearsal. Saved independent passes cannot manufacture
+   a joined capability.
+2. **RC2 real inputs and conditional quantitative contracts.** In parallel,
+   finish the authorized importer and two complete real RNA adaptations. Where
+   the selected interaction requires expression or stoichiometric ranges, obtain
+   bounds, units and evidence or explicit assumptions, then add versioned RC5
+   contract fields and independent range/composition checks. Binary availability
+   does not supply those quantities.
+3. **RC7/RC8 acceptance and release.** Complete the joined candidate's hosted,
+   cross-platform, installed and artifact gates; reconcile separately accepted
+   MVP/E1 work, integrate, validate actual main and audit published assets.
+   Preserve protected checkouts and their owners' gates. The 41 RC1 cases remain
+   declarative distinctions requiring mapped evidence, not an executed complete
+   pipeline campaign.
 
 ## RC1 validation checkpoint
 
@@ -245,10 +234,69 @@ acceptance and RC8 integration/release remain open. The RC3 sections above retai
 their historical checkpoint statements. This later documentation update does not
 transfer native acceptance to a different implementation revision.
 
-## RC5 implementation candidate
+## RC5 behavior and validation checkpoint
 
-Behavior implementation is in progress against the independent artificial RC5
-fixtures. The [behavior contract](controlled-composition-behavior-v0.1.md) records
-the original readout authority, three independent assessments, bounded whole
-domain checking and separate material/project boundary. Native validation and
-its exact source/run audit remain pending at this editing checkpoint.
+The artificial two-member profile now supports reversible activity execution,
+source requirement monitoring and independent verification. The tested source
+is `eb8f74ea2ce51c461496a5e845bc55d5e64d9edd`, tree
+`079ca63ab7361ab525ca8ad84adfa544b1911e65`. Hosted development run
+[38316786405, attempt 1](https://github.com/logannye/biocompiler/actions/runs/38316786405) passed on Linux x86_64.
+The [RC5 validation receipt](controlled-composition-rc5-validation.json) binds
+the exact source, artifact digest, retained originals, logs, independent audits
+and protected-checkout comparison. Later documentation commits do not inherit
+this implementation's native validation.
+
+Three assessments remain separate: the candidate runtime executes its primitive
+graph; an independent interpreter executes the supplied original mechanism;
+and source monitors check the six original requirements without reading actual
+mechanism delays. The checker reconstructs original bodies, wiring and context.
+Its first composition rule joins two supplied functional-protein availability
+projections to one reversible controller and cross-checks whole-program behavior.
+It assumes declared deployment premises and supplies no measured component kinetics.
+
+The sampled endpoint is `background` or `active` activity. Executor-owned
+controller, activity and committed cessation persist across encounter reset/end;
+antigen and pending activation retain encounter generations. Restoration cannot
+postpone a committed stop. RNA loss, protein loss and unknown evidence remain
+distinct. Readout and RNA evidence are required every tick; source input evidence
+is required during activity, gate qualification or pending obligations. Missing
+evidence never rewrites physical inputs.
+
+Every admitted history retains its complete suffix. Acceptance requires exact
+model correspondence, source satisfaction, resolved demanded evidence, no pending
+transition or obligation at the horizon, and non-vacuous reversible coverage.
+The first failing or unknown history is retained without reduction or branch
+pruning; later histories can have stronger failures. A deadline failure can
+coexist with pending obligations and unknown evidence. Coverage-only rejection
+can legitimately lack a counterexample. Original budgets cover decoding through
+actual final publication; cancellation/exhaustion grants no checked capability.
+Replay performs a fresh full check before comparing saved reports.
+
+Fresh hosted validation passed all 70 native suites and 384 campaign observations:
+26 behavior observations covering 21 native calls, 14 admission, 23 material,
+21 quantitative, 278 across ten existing SDK campaigns and 22 CAR observations.
+The behavior campaign includes complete unknown/failure reports and a supplied
+10,000-tick onset against an unchanged two-tick source bound and ten-tick horizon.
+Both Core and Verify retain its pending, all-background failure. Independent
+artifact audits checked the exact source/run/attempt, complete census, originals,
+reports and diagnostics. Binary identity is limited to retained same-run pins
+where executable bytes were absent; offline auditors did not rerun native code.
+
+At the same frozen revision, 582 pure-Python tests passed on each of CPython
+3.11.15 and 3.14.3 on macOS arm64. All eight static checks and both typing
+configurations passed (43 core and 49 policy files). No native compilation or
+execution occurred locally. MVP and E1 retained their baseline HEADs, branches,
+working-tree state and planning-file hashes.
+
+Earlier failed storage, reset-test, publication-budget, categorical-transport
+and stale-test/inventory attempts remain failures with their identities and
+corrections in the receipt. The separate 19d62 checkpoint remains
+historical evidence. Independent review prompted the final delay-range and
+report-consistency correction; no prior pass substitutes for this fresh gate.
+
+Eight RC5 roadmap obligations are closed for the artificial subset. Real RNA
+inputs and any required quantitative expression/stoichiometric contracts remain
+open under RC2 and the conditional RC5 item. RC6 joined material/project/export,
+RC7 installed/cross-platform acceptance and RC8 integration/release remain open.
+Behavior reports keep material `not_joined`, empirical/human-use status
+`unassessed`, and therapeutic export withheld.

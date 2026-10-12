@@ -362,16 +362,25 @@ does not discharge that conditional obligation.
 
 ### RC5 Implement and independently verify reversible behavior
 
-- [ ] Lower the source requirements to the existing executable infrastructure
+The artificial-profile checkpoint is complete under the
+[RC5 validation receipt](controlled-composition-rc5-validation.json), bound to
+`eb8f74ea2ce51c461496a5e845bc55d5e64d9edd`, tree
+`079ca63ab7361ab525ca8ad84adfa544b1911e65`, hosted run
+[38316786405, attempt 1](https://github.com/logannye/biocompiler/actions/runs/38316786405).
+Eight obligations below are closed for that finite conditional profile. The selected real interaction's
+quantitative obligation remains open; RC6 must join material and behavior, and
+RC7/RC8 retain their installed, integration and release gates.
+
+- [x] Lower the source requirements to the existing executable infrastructure
   with the new admitted activity interpretation, explicit observations, timers,
   state, ownership and lifecycle correspondence.
-- [ ] Implement source execution, independent candidate activity primitives and
+- [x] Implement source execution, independent candidate activity primitives and
   requirement monitors for this profile. Add actual modeled cessation semantics;
   retain legacy stop/cancellation rejection outside the new admitted family.
-- [ ] Reconstruct the selected component assembly from original contracts in the
+- [x] Reconstruct the selected component assembly from original contracts in the
   checker. Candidate execution must not invoke the source evaluator, and the
   checker must not trust producer-supplied outcomes or expected material.
-- [ ] Check scoped module assumptions/guarantees and dependency wiring. Establish
+- [x] Check scoped module assumptions/guarantees and dependency wiring. Establish
   the first compositional rule against whole-program bounded checking; do not
   rely solely on each module passing in isolation.
 - [ ] When the selected real interaction requires quantitative expression or
@@ -379,18 +388,18 @@ does not discharge that conditional obligation.
   assumptions in RC2; add versioned contract fields and independent range and
   composition checks in RC5 before completing the named case. Binary availability
   and the current direct-root structural checkpoint cannot substitute for them.
-- [ ] Check activation, cessation, background limits and reactivation over the
+- [x] Check activation, cessation, background limits and reactivation over the
   complete admitted bounded domain, preserving unknowns and finite suffix rules.
   Measure coverage at the controlled activity output rather than at abstract
   effect attempts; require an inactive/active/inactive/active witness.
-- [ ] Check domain enumeration and the independent reference adapter directly:
+- [x] Check domain enumeration and the independent reference adapter directly:
   executor-scoped controller/availability survives encounter reset/end, while
   target-local engagement resets correctly. No branch is removed merely because
   it causes failure or unknown. Every explicit domain exclusion remains visible.
-- [ ] Check member-specific availability and controller exposure interpretation.
+- [x] Check member-specific availability and controller exposure interpretation.
   Distinguish missing evidence, violated deployment assumptions and modeled
   physical loss. Include every requested assumption in the result.
-- [ ] Preserve exact work/state/history accounting, cancellation and bounded
+- [x] Preserve exact work/state/history accounting, cancellation and bounded
   counterexample reporting. A reduced counterexample must retain the failure.
 
 **Exit:** independent source/candidate agreement and requirement checks over the
