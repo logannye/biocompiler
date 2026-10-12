@@ -1,5 +1,5 @@
 {
-  "candidate_sha256": "7722631fda6177f40e63638b88b537b7c0b87ac91364255b50439ac18faf162d",
+  "candidate_sha256": "a05f62ded96f91cc7a69a16ba4dede6d9c6094463df60d65592004ea75b6d3fc",
   "expected": {
     "cessation_ticks": 1,
     "onset_ticks": 1,
@@ -1320,10 +1320,10 @@
         }
       ]
     },
-    "request_fingerprint": "3e47335c411f81abd846b2b55195bdeaff4919c60571d6f339eeb68becf3b36f",
+    "request_fingerprint": "bc092d58410a465bab22d6c8f02aeb6501bb411c39b66e0cb2dd7ade7b2732dc",
     "schema_version": "biocompiler.policy_controlled_behavior_candidate.v0.1"
   },
-  "request_sha256": "3e47335c411f81abd846b2b55195bdeaff4919c60571d6f339eeb68becf3b36f",
+  "request_sha256": "bc092d58410a465bab22d6c8f02aeb6501bb411c39b66e0cb2dd7ade7b2732dc",
   "schema_version": "biocompiler.policy_controlled_behavior_literal_fixture.v0.1",
   "scope": "Independent artificial software original and literal candidate; no native acceptance or biological evidence."
 }

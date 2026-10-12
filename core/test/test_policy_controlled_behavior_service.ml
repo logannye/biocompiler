@@ -17,6 +17,10 @@ let read path =
 let rejects label action = match action () with
   | _ -> failwith (label ^ ": accepted forbidden operation")
   | exception Diagnostic.Error _ -> ()
+let rejects_code label code action = match action () with
+  | _ -> failwith (label ^ ": accepted forbidden operation")
+  | exception Diagnostic.Error diagnostic ->
+      require (diagnostic.code=code) (label ^ ": rejected at a different boundary: " ^ diagnostic.code)
 let request operation payload : Protocol.request = {request_id="rc5-original";operation;payload}
 let prepare executable request = match Producer.scoped_handle executable request with
   | Some (reply:Base.scoped_reply) ->
@@ -49,6 +53,63 @@ let () =
       (obj ["request",original;"candidate",candidate;"report",report])) in
     require (Json.equal (get "report" replay) report && get "artifact" replay=Json.Null)
       "Replay changed exact fresh assessment") [Protocol.Core;Protocol.Verify];
+  require (Json.equal (get "max_work" (get "budgets" (get "original" original))) (Json.int 20_000_000))
+    "The independent RC5 fixture must explicitly supply work for full counterexample publication";
+  let missing=update "readout_evidence" (update "samples" (fun values ->
+    Json.Array (List.mapi (fun tick value -> if tick=3 then
+      value |> set "status" (str "missing") |> set "observed_tick" Json.Null else value)
+      (Json.array values)))) original in
+  let late=update "original" (fun value ->
+    let model=update "body" (update "delays" (set "onset_ticks" (Json.int 3)))
+      (get "mechanism_model" value) in
+    let identity=set "content_fingerprint" (str (Canonical.fingerprint (get "body" model)))
+      (get "identity" model) in
+    value |> set "mechanism_model" (set "identity" identity model)
+      |> update "catalog_binding" (set "model_identity" identity)
+      |> update "source_authority" (update "control_contract"
+        (update "actual_delays" (set "onset_ticks" (Json.int 3))))) original in
+  List.iter (fun (label,altered,outcome) ->
+    (* Complete the original final-frame guard for nonaccepted semantic results,
+       including their full counterexample, on every supported public route. *)
+    let built=complete Protocol.Core (request S.producer_operation (obj ["request",altered])) in
+    let proposal=get "candidate" built and assessment=get "report" built in
+    require (text "status" assessment="not_accepted" && text "outcome" assessment=outcome &&
+      text "model_correspondence" assessment="pass" && get "artifact" built=Json.Null)
+      (label ^ ": construction lost the intended semantic result");
+    let witness=get "counterexample" assessment in
+    require (List.length (Json.array (get "trace" witness))=11 &&
+      List.length (Json.array (get "history" (get "source_monitor" witness)))=11)
+      (label ^ ": complete original counterexample suffix was omitted");
+    if label="missing readout" then
+      require (text "evidence_status" assessment="unknown") "Missing readout became a physical OFF value"
+    else (
+      let onset=List.find (fun row -> text "id" row="onset") (Json.array (get "requirements" assessment)) in
+      require (Z.sign (Json.integer (get "fail" onset))>0 && text "evidence_status" assessment="resolved")
+        "Late model lost its original source deadline failure");
+    let exercise operation extra = List.map (fun executable ->
+      let result=complete executable (request operation
+        (obj (["request",altered;"candidate",proposal] @ extra))) in
+      require (Json.equal (get "report" result) assessment && get "artifact" result=Json.Null)
+        (label ^ ": fresh checking/replay changed the complete original assessment");
+      result) [Protocol.Core;Protocol.Verify] in
+    List.iter (fun results -> match results with
+      | [core;verify] -> require (Json.equal core verify) (label ^ ": Core/Verify publication differs")
+      | _ -> failwith "Altered service test lost an executable role")
+      [exercise "check-policy-controlled-behavior" [];
+       exercise "replay-policy-controlled-behavior" ["report",assessment]])
+    ["missing readout",missing,"unknown";"late model",late,"fail"];
+  (* The prior artificial10M allowance reaches a prepared unknown report but
+     cannot publish its full frame. Keep the original budget and exact failure
+     instead of treating preparation as permission or dropping the witness. *)
+  let missing_limited=update "original" (update "budgets" (set "max_work" (Json.int 10_000_000))) missing in
+  let unknown_result,unknown_frame,unknown_guard=prepare Protocol.Core
+    (request S.producer_operation (obj ["request",missing_limited])) in
+  require (text "outcome" (get "report" unknown_result)="unknown" && get "artifact" unknown_result=Json.Null)
+    "The prior work allowance must reach preparation before its final publication regression";
+  rejects_code "original unknown final frame work exhaustion" "controlled_behavior_service_work_limit"
+    (fun () -> unknown_guard unknown_frame);
+  rejects_code "exhausted unknown frame reuse" "controlled_behavior_service_publication_guard"
+    (fun () -> unknown_guard unknown_frame);
   let forged label transform =
     let _,frame,guard=prepare Protocol.Verify (invoke "check-policy-controlled-behavior") in
     rejects label (fun () -> guard (transform frame));
