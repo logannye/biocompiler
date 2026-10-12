@@ -88,6 +88,10 @@ SUITES = (
     ("test_policy_controlled_domain", ("data/policy_controlled_domain_v01.json",)),
     ("test_policy_controlled_composition_admission", ("data/policy_controlled_request_v014.json",)),
     ("test_policy_controlled_composition_service", ("data/policy_controlled_request_v014.json",)),
+    ('test_policy_controlled_material_candidate', ('data/policy_controlled_material_v01.json',)),
+    ('test_policy_controlled_material_producer', ('data/policy_controlled_request_v014.json', 'data/policy_controlled_material_v01.json')),
+    ('test_policy_controlled_material_check', ('data/policy_controlled_request_v014.json', 'data/policy_controlled_material_v01.json')),
+    ('test_policy_controlled_material_service', ('data/policy_controlled_request_v014.json', 'data/policy_controlled_material_v01.json')),
 )
 DEPENDENCIES = ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"]
 BUILD = ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]

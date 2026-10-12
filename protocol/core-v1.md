@@ -678,3 +678,15 @@ original provider dependency closure, shared-resource reservations and full
 finite source/candidate preservation. The material assessment v0.4 and private
 closure v0.3 cannot be replaced by an earlier report. A successful report retains
 biological validity and human-use suitability as unassessed.
+
+## Controlled material structural stage (RC4)
+
+The separately negotiated `policy_controlled_composition_material` capability
+adds Core-only `construct-policy-controlled-material` and Core/Verify
+`check-policy-controlled-material` / `publish-policy-controlled-material`.
+These routes retain complete original v0.14 authority and use a distinct
+`policy-controlled-composition-material-v0.1` validation scope. Publication
+requires fresh independent two-member reconstruction and the original one-shot
+full-frame guard. It grants exact supplied RNA structure only; behavior and
+human use remain unassessed. See
+[the RC4 contract](../docs/controlled-composition-material-v0.1.md).

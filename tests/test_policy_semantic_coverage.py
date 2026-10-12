@@ -105,6 +105,16 @@ class PolicySemanticCoverageTests(unittest.TestCase):
         self.assertIn(before, original)
         destination.write_text(original.replace(before, after, 1), encoding='utf-8')
 
+    def test_rc4_structural_route_preserves_all_rc3_source_semantics(self):
+        encoded = json.dumps(self.ledger, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         '90039d57004dcfa44ec8dcb326e8d483029e836fa173e1e388a0274d85eae7ac')
+        self.assertEqual(len(self.ledger['entries']), 628)
+        controlled = self.ledger['dispositions']['controlled_source_representation']
+        self.assertEqual(controlled['stages']['native_source'], 'contextual')
+        for stage in ('operational', 'implementation', 'material', 'export'):
+            self.assertEqual(controlled['stages'][stage], 'unsupported')
+
     def test_controlled_admission_preserves_prior_meanings_without_execution_claims(self):
         disposition = self.ledger['dispositions']['controlled_source_representation']
         self.assertEqual(disposition['stages']['native_source'], 'contextual')

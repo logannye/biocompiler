@@ -2,15 +2,24 @@
 
 This preparation layer checks closed representation and reuses typed molecular
 records. It neither repairs caller pins nor constructs, executes or accepts RNA.
-Native admission is a separate operation; construction and behavior remain RC4/5.
+Native admission, construction and independent structural checking are separate
+operations. Activity execution and behavioral acceptance remain a later stage.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 import hashlib
-from typing import ClassVar, cast
+import os
+from pathlib import Path
+import tempfile
+from typing import Callable, ClassVar, Iterable, cast
+import zipfile
 
-from biocompiler.core_client import JsonValue, decode_json, encode_json
+from biocompiler.core_client import CoreCancelled, CoreProtocolError, JsonValue, decode_json, encode_json
+from biocompiler.core_policy_controlled_material import (
+    ACCEPTED_STATUS, PUBLISH, PolicyControlledMaterialClient, PolicyControlledMaterialResult,
+)
+from .material import _destination, _verify_staged
 from biocompiler.ir.component_contracts import PinnedIdentity
 from biocompiler.ir.circuit_recoding import TranslationPolicy
 from biocompiler.ir.molecule_chemistry import MoleculeChemistry
@@ -279,3 +288,73 @@ class ControlledCompositionRequest:
     @property
     def native_status(self) -> str:
         return "not_performed"
+
+
+# These wrappers carry originals to the native structural checkpoint. They do
+# not manufacture checked material or confer activity/therapeutic acceptance.
+def construct_material(request: JsonValue, *, client: PolicyControlledMaterialClient,
+                       cancelled: Callable[[], bool] | None = None) -> PolicyControlledMaterialResult:
+    return client.construct_material(request, cancelled=cancelled)
+
+
+def check_material(request: JsonValue, *, candidate: JsonValue, client: PolicyControlledMaterialClient,
+                   cancelled: Callable[[], bool] | None = None) -> PolicyControlledMaterialResult:
+    return client.check_material(request, candidate, cancelled=cancelled)
+
+
+def publish_material(request: JsonValue, *, candidate: JsonValue, client: PolicyControlledMaterialClient,
+                     output: Path, input_paths: Iterable[Path] = (), replace: bool = False,
+                     cancelled: Callable[[], bool] | None = None) -> PolicyControlledMaterialResult:
+    """Fresh independent structural checking, then one atomic two-RNA ZIP.
+
+    Publication carries no therapeutic export or behavior acceptance. The exact
+    native pair is read back before commit; existing outputs survive all earlier
+    failures, rejected material and cancellation. No retained PASS is accepted.
+    """
+    paths = tuple(Path(value) for value in input_paths)
+    output = Path(output)
+    destination = _destination(output, paths, replace=replace)
+    if cancelled is not None and cancelled():
+        raise CoreCancelled("Controlled material publication cancelled before native checking")
+    result = client.publish_material(request, candidate, cancelled=cancelled)
+    artifact = result.artifact
+    if result.operation != PUBLISH or result.status != ACCEPTED_STATUS or artifact is None:
+        raise CoreProtocolError("Publication requires fresh accepted controlled structural material")
+    fasta = artifact.get("fasta")
+    if type(fasta) is not str:
+        raise CoreProtocolError("Native publication omitted exact two-member FASTA")
+    members = (("program.fasta", fasta.encode("utf-8")), ("manifest.json", encode_json(artifact["manifest"])))
+    temporary: Path | None = None
+    try:
+        if _destination(output, paths, replace=replace) != destination:
+            raise ValueError("Controlled destination changed during checking")
+        with tempfile.NamedTemporaryFile(mode="w+b", prefix=".controlled-material-", suffix=".tmp",
+                                         dir=destination.parent, delete=False) as handle:
+            temporary = Path(handle.name)
+            with zipfile.ZipFile(handle, "w", compression=zipfile.ZIP_STORED, allowZip64=False) as archive:
+                for name, content in members:
+                    info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+                    info.compress_type = zipfile.ZIP_STORED
+                    info.create_system = 3
+                    info.external_attr = 0o100644 << 16
+                    archive.writestr(info, content)
+            handle.flush()
+            os.fsync(handle.fileno())
+        _verify_staged(temporary, members)
+        if _destination(output, paths, replace=replace) != destination:
+            raise ValueError("Controlled destination changed during publication")
+        # This checkpoint is after bounded byte-for-byte readback and immediately
+        # before the atomic filesystem operation; it covers cancellation during IO.
+        if cancelled is not None and cancelled():
+            raise CoreCancelled("Controlled material publication cancelled before atomic commit")
+        if replace:
+            os.replace(temporary, destination)
+            temporary = None
+        else:
+            os.link(temporary, destination)
+            temporary.unlink()
+            temporary = None
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+    return result

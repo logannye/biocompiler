@@ -1,0 +1,771 @@
+{
+  "candidate_sha256": "02efba9bd25817bbac0710d3a0cecf0b24ce484d466629045b55f066a333c3b9",
+  "construction_authority_sha256": "1a3a413eaa2beabc01c0890dfc00bcb9608db2e02f0bd2b3f521afbf295235fa",
+  "expected": {
+    "fasta": ">rna_0001 alphabet=RNA\nCCAUGGCUUAAGGAAAA\n>rna_0002 alphabet=RNA\nCCAUGGGUUAAGGAAAA\n",
+    "member_order": [
+      "rna-a",
+      "rna-b"
+    ],
+    "products": [
+      "MA",
+      "MG"
+    ],
+    "sequences": [
+      "CCAUGGCUUAAGGAAAA",
+      "CCAUGGGUUAAGGAAAA"
+    ],
+    "total_rna_nt": 34
+  },
+  "literal_candidate": {
+    "construction": {
+      "authority_fingerprint": "1a3a413eaa2beabc01c0890dfc00bcb9608db2e02f0bd2b3f521afbf295235fa",
+      "diagnostics": [],
+      "experimental_amounts": [],
+      "inventory": {
+        "complexes": [],
+        "form_mappings": [],
+        "id": "artificial-two-rna.molecules",
+        "molecules": [
+          {
+            "assembly": [
+              {
+                "destination": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.output.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "id": "rna-a.origin",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.assembly_origin.v0.1",
+                "source_path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "source_space": {
+                  "alphabet": "RNA",
+                  "axis": "5prime_to_3prime",
+                  "id": "rna-a.root.frame",
+                  "length": 17,
+                  "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+                  "topology": "linear"
+                }
+              }
+            ],
+            "chemistry": {
+              "cap": {
+                "identity": {
+                  "accession": "artificial_cap",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "finish_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                    "id": "artificial.notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "independently declared RC3 literal",
+                "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_status": "declared",
+              "modifications": [],
+              "schema_version": "biocompiler.molecule_chemistry.v0.1",
+              "start_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "terminal_tail": {
+                "length": {
+                  "exact": 4,
+                  "lower": null,
+                  "mode": "exact",
+                  "schema_version": "biocompiler.tail_length.v0.1",
+                  "upper": null
+                },
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.output.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 13
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "placement": "represented_terminal",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.tail_declaration.v0.1",
+                "status": "declared"
+              }
+            },
+            "coding_status": "coding",
+            "features": [
+              {
+                "id": "cds",
+                "kind": "coding_sequence",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.output.frame",
+                  "spans": [
+                    {
+                      "end": 11,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 2
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": 0,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "poly_a",
+                "kind": "poly_a_tail",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.output.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 13
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "utr3",
+                "kind": "three_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.output.frame",
+                  "spans": [
+                    {
+                      "end": 13,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 11
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "utr5",
+                "kind": "five_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.output.frame",
+                  "spans": [
+                    {
+                      "end": 2,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              }
+            ],
+            "form": "delivered_rna",
+            "id": "rna-a",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                  "id": "artificial.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independently declared RC3 literal",
+              "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.circuit_molecule.v0.1",
+            "sequence": "CCAUGGCUUAAGGAAAA",
+            "sequence_extent": "complete",
+            "space": {
+              "alphabet": "RNA",
+              "axis": "5prime_to_3prime",
+              "id": "rna-a.output.frame",
+              "length": 17,
+              "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+              "topology": "linear"
+            }
+          },
+          {
+            "assembly": [
+              {
+                "destination": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.output.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "id": "rna-b.origin",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.assembly_origin.v0.1",
+                "source_path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "source_space": {
+                  "alphabet": "RNA",
+                  "axis": "5prime_to_3prime",
+                  "id": "rna-b.root.frame",
+                  "length": 17,
+                  "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+                  "topology": "linear"
+                }
+              }
+            ],
+            "chemistry": {
+              "cap": {
+                "identity": {
+                  "accession": "artificial_cap",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "finish_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                    "id": "artificial.notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "independently declared RC3 literal",
+                "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_status": "declared",
+              "modifications": [],
+              "schema_version": "biocompiler.molecule_chemistry.v0.1",
+              "start_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "terminal_tail": {
+                "length": {
+                  "exact": 4,
+                  "lower": null,
+                  "mode": "exact",
+                  "schema_version": "biocompiler.tail_length.v0.1",
+                  "upper": null
+                },
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.output.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 13
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "placement": "represented_terminal",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.tail_declaration.v0.1",
+                "status": "declared"
+              }
+            },
+            "coding_status": "coding",
+            "features": [
+              {
+                "id": "cds",
+                "kind": "coding_sequence",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.output.frame",
+                  "spans": [
+                    {
+                      "end": 11,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 2
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": 0,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "poly_a",
+                "kind": "poly_a_tail",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.output.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 13
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "utr3",
+                "kind": "three_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.output.frame",
+                  "spans": [
+                    {
+                      "end": 13,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 11
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "utr5",
+                "kind": "five_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.output.frame",
+                  "spans": [
+                    {
+                      "end": 2,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              }
+            ],
+            "form": "delivered_rna",
+            "id": "rna-b",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                  "id": "artificial.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independently declared RC3 literal",
+              "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.circuit_molecule.v0.1",
+            "sequence": "CCAUGGGUUAAGGAAAA",
+            "sequence_extent": "complete",
+            "space": {
+              "alphabet": "RNA",
+              "axis": "5prime_to_3prime",
+              "id": "rna-b.output.frame",
+              "length": 17,
+              "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+              "topology": "linear"
+            }
+          }
+        ],
+        "role_instances": [
+          {
+            "compartment": "cytoplasm",
+            "id": "rna-a.payload",
+            "purpose": "requested_payload",
+            "role": "payload",
+            "schema_version": "biocompiler.molecule_role_instance.v0.1",
+            "subject_fingerprint": "6cfab39a92b1d18c7bb84ea4a16307936b59b428706e2353c995e5891272b321",
+            "subject_id": "rna-a"
+          },
+          {
+            "compartment": "cytoplasm",
+            "id": "rna-b.payload",
+            "purpose": "requested_payload",
+            "role": "payload",
+            "schema_version": "biocompiler.molecule_role_instance.v0.1",
+            "subject_fingerprint": "0462ff98c4748e1932dd7a05ed11a70bf988c02af5536fdd84c8af9ed1da3c18",
+            "subject_id": "rna-b"
+          }
+        ],
+        "schema_version": "biocompiler.molecular_content_inventory.v0.1"
+      },
+      "member_order": [
+        "rna-a",
+        "rna-b"
+      ],
+      "missing_members": [],
+      "schema_version": "biocompiler.construction_content.v0.1",
+      "values": []
+    },
+    "request_fingerprint": "62a37bcb07ac1e2461e8ab98e1ee51a45bc9ad2ed18801fdc89719fd57846318",
+    "schema_version": "biocompiler.policy_controlled_composition_material_candidate.v0.1"
+  },
+  "notice": "Independent direct-root artificial RNA/software literals. No native producer/checker supplied expected values; no empirical or reversible-behavior claim.",
+  "request_sha256": "62a37bcb07ac1e2461e8ab98e1ee51a45bc9ad2ed18801fdc89719fd57846318",
+  "schema_version": "biocompiler.policy_controlled_material_literals.v0.1"
+}

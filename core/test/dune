@@ -1118,3 +1118,27 @@
  (modules test_policy_controlled_composition_service)
  (libraries bioc_wire bioc_service zarith)
  (action (run %{test} %{dep:data/policy_controlled_request_v014.json})))
+
+(test
+ (name test_policy_controlled_material_candidate)
+ (modules test_policy_controlled_material_candidate)
+ (libraries bioc_wire bioc_domain)
+ (action (run %{test} %{dep:data/policy_controlled_material_v01.json})))
+
+(test
+ (name test_policy_controlled_material_producer)
+ (modules test_policy_controlled_material_producer)
+ (libraries bioc_wire bioc_domain bioc_compiler bioc_checker)
+ (action (run %{test} %{dep:data/policy_controlled_request_v014.json} %{dep:data/policy_controlled_material_v01.json})))
+
+(test
+ (name test_policy_controlled_material_check)
+ (modules test_policy_controlled_material_check)
+ (libraries bioc_wire bioc_domain bioc_checker zarith)
+ (action (run %{test} %{dep:data/policy_controlled_request_v014.json} %{dep:data/policy_controlled_material_v01.json})))
+
+(test
+ (name test_policy_controlled_material_service)
+ (modules test_policy_controlled_material_service)
+ (libraries bioc_wire bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_controlled_request_v014.json} %{dep:data/policy_controlled_material_v01.json})))

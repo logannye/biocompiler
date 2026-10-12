@@ -120,6 +120,23 @@ CONTROLLED_ADMISSION_REASON = "Separate controlled-composition RC3 source/author
 ROUTE_EXCEPTIONS.update({path: CONTROLLED_ADMISSION_REASON for path in CONTROLLED_ADMISSION_SOURCES})
 EXTRA_SOURCES += tuple(path for path in CONTROLLED_ADMISSION_SOURCES if path.endswith(".py"))
 BEFORE_CONTROLLED_ADMISSION_METADATA_SHA256 = "d42c5812339fa921f36974aa293d046f1e43c455f4896571663f32bb57b99db5"
+CONTROLLED_MATERIAL_SOURCES = tuple(sorted([
+    *[f"core/lib/{directory}/{name}.{suffix}" for directory, name in (
+        ("domain", "policy_controlled_material_candidate"),
+        ("compiler", "policy_controlled_material_producer"),
+        ("checker", "policy_controlled_material_check"),
+        ("service", "policy_controlled_material_service"),
+        ("service", "policy_controlled_material_format"),
+    ) for suffix in ("ml", "mli")],
+    "src/biocompiler/core_policy_controlled_material.py",
+]))
+CONTROLLED_MATERIAL_SHARED_SOURCES = ("src/biocompiler/policy/controlled_material.py",)
+CONTROLLED_MATERIAL_REASON = "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export."
+CONTROLLED_MATERIAL_SHARED_REASON = "Shared controlled-composition RC3 complete-authority preparation plus separate RC4 material-only transport helpers and atomic pair publication; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export."
+ROUTE_EXCEPTIONS.update({path: CONTROLLED_MATERIAL_REASON for path in CONTROLLED_MATERIAL_SOURCES})
+ROUTE_EXCEPTIONS.update({path: CONTROLLED_MATERIAL_SHARED_REASON for path in CONTROLLED_MATERIAL_SHARED_SOURCES})
+EXTRA_SOURCES += tuple(path for path in CONTROLLED_MATERIAL_SOURCES if path.endswith(".py"))
+BEFORE_CONTROLLED_MATERIAL_METADATA_SHA256 = "d531f045cfc22529ba89b836c7180bd7f1332d88ed021e41698e1a99de10b926"
 
 
 # Components form a separately negotiated composition route, not the original
@@ -691,12 +708,25 @@ def metadata_before_assured(ledger: dict[str, Any]) -> dict[str, Any]:
                                                    if row["path"] not in COMPONENT_ASSURED_SOURCES]}
 
 
+def metadata_before_controlled_material(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove RC4 additions and restore the one shared helper's RC3 scope."""
+    classifications = [
+        {key: row[key] for key in ("path", "disposition", "reason")}
+        for row in ledger["sources"] if row["path"] not in CONTROLLED_MATERIAL_SOURCES
+    ]
+    for row in classifications:
+        if row["path"] in CONTROLLED_MATERIAL_SHARED_SOURCES:
+            row["reason"] = CONTROLLED_ADMISSION_REASON
+    return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
+            "source_classifications": classifications,
+            "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+
+
 def metadata_before_controlled_admission(ledger: dict[str, Any]) -> dict[str, Any]:
     """Remove only RC3 route additions, preserving every earlier meaning."""
-    return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
-            "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
-                                       for row in ledger["sources"] if row["path"] not in CONTROLLED_ADMISSION_SOURCES],
-            "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+    metadata = metadata_before_controlled_material(ledger)
+    return {**metadata, "source_classifications": [row for row in metadata["source_classifications"]
+                                                   if row["path"] not in CONTROLLED_ADMISSION_SOURCES]}
 
 
 def metadata_before_controlled_representation(ledger: dict[str, Any]) -> dict[str, Any]:
@@ -1065,6 +1095,10 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
                                     separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(expression_previous) == BEFORE_EXPRESSION_METADATA_SHA256,
             "Changed pre-expression original material meaning/witness/classification metadata")
+    material_previous = json.dumps(metadata_before_controlled_material(ledger), sort_keys=True,
+                                   separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(material_previous) == BEFORE_CONTROLLED_MATERIAL_METADATA_SHA256,
+            "Changed pre-controlled-material meaning/witness/classification metadata")
     admission_previous = json.dumps(metadata_before_controlled_admission(ledger), sort_keys=True,
                                     separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(admission_previous) == BEFORE_CONTROLLED_ADMISSION_METADATA_SHA256,

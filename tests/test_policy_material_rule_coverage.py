@@ -45,7 +45,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 255)
+        self.assertEqual(result["sources"], 266)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
@@ -87,10 +87,33 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         for name in coverage.CONTROLLED_ADMISSION_SOURCES:
             row = next(row for row in self.original["sources"] if row["path"] == name)
             self.assertEqual((row["disposition"], row["reason"]),
-                             ("outside_route", coverage.CONTROLLED_ADMISSION_REASON))
+                             ("outside_route", coverage.CONTROLLED_MATERIAL_SHARED_REASON
+                              if name in coverage.CONTROLLED_MATERIAL_SHARED_SOURCES
+                              else coverage.CONTROLLED_ADMISSION_REASON))
             self.ledger = deepcopy(self.original)
             self.rejected(lambda value: next(row for row in value["sources"]
                 if row["path"] == name).update(disposition="rule_owner"), "Changed route exception")
+
+    def test_controlled_material_preserves_complete_rc3_metadata(self):
+        metadata = coverage.metadata_before_controlled_material(self.original)
+        self.assertEqual(len(metadata["source_classifications"]), 255)
+        self.assertEqual(len(metadata["rules"]), 62)
+        self.assertEqual(len(metadata["witness_paths"]), 30)
+        encoded = json.dumps(metadata, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "d531f045cfc22529ba89b836c7180bd7f1332d88ed021e41698e1a99de10b926")
+        self.assertEqual(len(coverage.CONTROLLED_MATERIAL_SOURCES), 11)
+        self.assertEqual(coverage.CONTROLLED_MATERIAL_SHARED_SOURCES,
+                         ("src/biocompiler/policy/controlled_material.py",))
+        for name in coverage.CONTROLLED_MATERIAL_SOURCES + coverage.CONTROLLED_MATERIAL_SHARED_SOURCES:
+            row = next(row for row in self.original["sources"] if row["path"] == name)
+            reason = (coverage.CONTROLLED_MATERIAL_SHARED_REASON
+                      if name in coverage.CONTROLLED_MATERIAL_SHARED_SOURCES else coverage.CONTROLLED_MATERIAL_REASON)
+            self.assertEqual((row["disposition"], row["reason"]), ("outside_route", reason))
+            self.ledger = deepcopy(self.original)
+            with self.subTest(name=name):
+                self.rejected(lambda value: next(row for row in value["sources"]
+                    if row["path"] == name).update(disposition="rule_owner"), "Changed route exception")
 
     def test_controlled_shape_table_bytes_still_require_review(self):
         root = self.checkout()

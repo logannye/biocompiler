@@ -33,9 +33,9 @@ class MigrationInventoryTests(unittest.TestCase):
 
     def test_controlled_admission_retains_only_native_source_and_domain_authority(self):
         entries = [entry for entry in self.actual['entries']
-                   if entry['current_implementation']['source'] in {'core_policy_controlled_composition', 'policy.controlled_material'}]
+                   if entry['current_implementation']['source'] in {'core_policy_controlled_composition'}]
         self.assertEqual({entry['current_implementation']['source'] for entry in entries},
-                         {'core_policy_controlled_composition', 'policy.controlled_material'})
+                         {'core_policy_controlled_composition'})
         for entry in entries:
             contract = self.actual['contracts'][entry['contract']]
             self.assertEqual(contract['target_owner'], 'Python')
@@ -43,6 +43,19 @@ class MigrationInventoryTests(unittest.TestCase):
                 'fresh_native_controlled_source_authority_and_complete_finite_input_domain_admission_only')
             self.assertEqual(contract['disposition'],
                 'retain_original_controlled_authority_and_read_only_native_admission_without_construction_behavior_or_export_acceptance')
+
+    def test_controlled_material_retains_only_fresh_native_structural_authority(self):
+        entries = [entry for entry in self.actual['entries']
+                   if entry['current_implementation']['source'] in {'core_policy_controlled_material', 'policy.controlled_material'}]
+        self.assertEqual({entry['current_implementation']['source'] for entry in entries},
+                         {'core_policy_controlled_material', 'policy.controlled_material'})
+        for entry in entries:
+            contract = self.actual['contracts'][entry['contract']]
+            self.assertEqual(contract['target_owner'], 'Python')
+            self.assertEqual(contract['source_authority'],
+                'complete_original_controlled_authority_and_independent_native_two_member_rna_reconstruction_only_behavior_empirical_and_human_use_unassessed')
+            self.assertEqual(contract['disposition'],
+                'retain_original_controlled_authority_and_fresh_native_two_member_structure_with_atomic_publication_without_behavior_or_therapeutic_acceptance')
 
     def test_module_facade_and_transport_preserve_native_authority(self):
         entries = [entry for entry in self.actual['entries'] if entry['current_implementation']['source']

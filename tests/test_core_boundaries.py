@@ -362,7 +362,7 @@ class CoreBoundaryTests(unittest.TestCase):
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 199)
+        self.assertEqual(len(receipt["native_tests"]), 203)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
@@ -710,10 +710,15 @@ class CoreBoundaryTests(unittest.TestCase):
             action = "(action (run %{test} %{env:" + variable + "=missing}))"
             for replacement in ("", "(action (run true))", action + "\n " + action):
                 root = self.copy_core()
-                self.change(root, "test/dune", action, replacement)
-                with self.subTest(variable=variable, replacement=replacement), self.assertRaisesRegex(
-                        boundaries.BoundaryError, "Changed native test action"):
-                    boundaries.check_boundaries(root)
+                try:
+                    self.change(root, "test/dune", action, replacement)
+                    with self.subTest(variable=variable, replacement=replacement), self.assertRaisesRegex(
+                            boundaries.BoundaryError, "Changed native test action"):
+                        boundaries.check_boundaries(root)
+                finally:
+                    # Each independent mutation is finished; keep one fixture
+                    # copy live instead of retaining all 24 until test teardown.
+                    shutil.rmtree(root)
 
     def test_new_library_missing_checker_and_implicit_transitive_dependencies_fail(self):
         root = self.copy_core()

@@ -210,6 +210,33 @@
       "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
     },
     {
+      "path": "core/lib/checker/policy_controlled_material_check.ml",
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
+      "sha256": "20c799a05b9135d24efa0221401b550e975c7fe9e782f5a21e09daaf8b6759d0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 7
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_controlled_material_check.v0.1": 1,
+          "biocompiler.policy_controlled_composition_material_assessment.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/checker/policy_controlled_material_check.mli",
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
+      "sha256": "213408c88dd26447db97a41e0d93c845f6c4cd4170aa66d1383757a371ba76a3",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/checker/policy_controlled_source.ml",
       "sha256": "d6f2311c364a576891cf035b7bf4c34b97ba85dc4feb02b3a6845912a86ffbe1",
       "census": {
@@ -551,6 +578,30 @@
       },
       "disposition": "outside_route",
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/compiler/policy_controlled_material_producer.ml",
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
+      "sha256": "6c268ee8a478b1785f439b9712085aa798266a80ff252668756a3753dd4a0be4",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {
+          "biocompiler.ocaml.policy_controlled_material_producer.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/compiler/policy_controlled_material_producer.mli",
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
+      "sha256": "b522cb4dd3242e32d235ea54e4b1d386403c45d2e459d52c16f6883ce1646312",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
     },
     {
       "path": "core/lib/compiler/policy_implementation_lowering.ml",
@@ -1252,6 +1303,32 @@
       },
       "disposition": "outside_route",
       "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_material_candidate.ml",
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
+      "sha256": "57d44f4a2725d4444b978a8f96786cc3706a020d1650d24b8c84f4e2993b1f82",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 4
+        },
+        "profile_literals": {
+          "biocompiler.policy_controlled_composition_material_candidate.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_material_candidate.mli",
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
+      "sha256": "17766693acf22db20f2df4f185ce90950764eb120fa593f45077c28dea92b34f",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
     },
     {
       "path": "core/lib/domain/policy_coupled_wire.ml",
@@ -2231,7 +2308,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "ff7dcb613c41a21777cb8afb297c859941f6ccbac98871b69e604aca29cb7de7",
+      "sha256": "ccb8b3db3ad2ed31278237f941f2c91d5aa99ba48c04446dedbd3627612b5559",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -3011,6 +3088,63 @@
       "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
     },
     {
+      "path": "core/lib/service/policy_controlled_material_format.ml",
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
+      "sha256": "fabbba66d5c56551d29e7d6ba31d704fdec25d8c9abf9795e09572251740f93b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 2
+        },
+        "profile_literals": {
+          "biocompiler.policy_controlled_composition_material_manifest.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/service/policy_controlled_material_format.mli",
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
+      "sha256": "3c2b9e17afdc6e2f221868a04b15d84db542866b017bb1a705e79776a328e3a9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/service/policy_controlled_material_service.ml",
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
+      "sha256": "3b519118c95d2b424993562f8ea7086532b99b8b5cbe0001d545ba99d5f5487c",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 8
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_controlled_material.v1": 1,
+          "biocompiler.ocaml.policy_controlled_material.v0.1": 1,
+          "biocompiler.policy_component_material_request.v0.14": 1,
+          "biocompiler.policy_controlled_composition_mrna.v0.1": 1,
+          "biocompiler.policy_controlled_composition_source.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/service/policy_controlled_material_service.mli",
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
+      "sha256": "b7aca5c1744ee79b6d541432af1f4aef2f0fdde14b7ac77397796714c90a05a8",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/service/policy_expression_material_service.ml",
       "sha256": "08566f72e8188f0e55718dc02aef0c022722969c9caf11a437331f8737ecaa81",
       "census": {
@@ -3257,11 +3391,11 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "4be8ce6d67534c368ec07b62afe0fd3e0f8321edf1491f735f75b8c6da69fd5a",
+      "sha256": "75f151fc85a60611e42f34bec9ea43f3929393086b4f532cc3ee8c328c321a15",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 2,
+          "Diagnostic.fail": 3,
           "Diagnostic.require": 9
         },
         "profile_literals": {
@@ -3603,6 +3737,36 @@
       "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
     },
     {
+      "path": "src/biocompiler/core_policy_controlled_material.py",
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
+      "sha256": "8783c81be2f6752789b57179e36a46b5dc0d9c5020270fbcb4ea23a6bcfadf9d",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 12,
+          "Raise": 3
+        },
+        "profile_literals": {
+          "biocompiler.construction_content.v0.1": 1,
+          "biocompiler.construction_content_assessment.v0.1": 1,
+          "biocompiler.construction_content_authority.v0.1": 1,
+          "biocompiler.core.policy_controlled_material.v1": 1,
+          "biocompiler.molecular_content_inventory.v0.1": 1,
+          "biocompiler.ocaml.construction_content_check.v0.1": 1,
+          "biocompiler.ocaml.policy_controlled_material.v0.1": 1,
+          "biocompiler.ocaml.policy_controlled_material_check.v0.1": 1,
+          "biocompiler.ocaml.policy_mrna_structure_check.v0.1": 1,
+          "biocompiler.policy_controlled_composition_material_assessment.v0.1": 1,
+          "biocompiler.policy_controlled_composition_material_candidate.v0.1": 1,
+          "biocompiler.policy_controlled_composition_material_manifest.v0.1": 1,
+          "biocompiler.policy_mrna_completeness.v0.1": 1,
+          "biocompiler.policy_mrna_structure_assessment.v0.1": 1
+        }
+      }
+    },
+    {
       "path": "src/biocompiler/core_policy_expression_material.py",
       "sha256": "319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf",
       "census": {
@@ -3924,12 +4088,13 @@
     },
     {
       "path": "src/biocompiler/policy/controlled_material.py",
-      "sha256": "07db7849e25cb763718414920eb8a5aaa338f0c1ba22ce7f9374ee35e72bed70",
+      "sha256": "b26ec6dc51daa8ad94d4de6b226cd3afd24d4c4bb8be2cfb0bf20f10dd5b37ea",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 20
+          "FunctionDef": 23,
+          "Raise": 6
         },
         "profile_literals": {
           "biocompiler.policy_component_material_request.v0.14": 1,
@@ -3943,7 +4108,7 @@
         }
       },
       "disposition": "outside_route",
-      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+      "reason": "Shared controlled-composition RC3 complete-authority preparation plus separate RC4 material-only transport helpers and atomic pair publication; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export."
     },
     {
       "path": "src/biocompiler/policy/expression_material.py",
@@ -5145,7 +5310,7 @@
             "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
             "occurrence": 1
           },
-          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "context": "All four initiation/continuous × continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -6211,7 +6376,7 @@
             "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
             "occurrence": 1
           },
-          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "context": "All four initiation/continuous × continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         },
         {
@@ -7037,7 +7202,7 @@
           "occurrence": 1
         }
       ],
-      "admitted_context": "PM-02\u201309 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
+      "admitted_context": "PM-02–09 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
       "outside_context": {
         "disposition": "mixed",
         "description": "Core-only/partial RNA, wrong modality, missing member or bounded/unknown unrepresented tail cannot be complete."

@@ -1429,6 +1429,174 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.core_policy_controlled_material.ACCEPTED_STATUS": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material.CANDIDATE_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material.CHECK": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material.CONSTRUCT": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material.IMPLEMENTATION": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material.MANIFEST_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material.PRODUCER_PROFILE": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material.PROFILE": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material.PUBLISH": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient": {
+      "scope": "Selected material-only transport and atomic pair publication controls; no reversible behavior, native or empirical acceptance is inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc4.transport_snapshot",
+        "controlled_rc4.transport_capability",
+        "controlled_rc4.transport_tamper",
+        "controlled_rc4.manifest_tamper"
+      ]
+    },
+    "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient._call": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient.check_material": {
+      "scope": "Selected material-only transport and atomic pair publication controls; no reversible behavior, native or empirical acceptance is inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc4.transport_snapshot",
+        "controlled_rc4.transport_capability",
+        "controlled_rc4.transport_tamper",
+        "controlled_rc4.manifest_tamper"
+      ]
+    },
+    "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient.construct_material": {
+      "scope": "Selected material-only transport and atomic pair publication controls; no reversible behavior, native or empirical acceptance is inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc4.transport_snapshot",
+        "controlled_rc4.transport_capability",
+        "controlled_rc4.transport_tamper",
+        "controlled_rc4.manifest_tamper"
+      ]
+    },
+    "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient.publish_material": {
+      "scope": "Selected material-only transport and atomic pair publication controls; no reversible behavior, native or empirical acceptance is inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc4.transport_snapshot",
+        "controlled_rc4.transport_capability",
+        "controlled_rc4.transport_tamper",
+        "controlled_rc4.manifest_tamper",
+        "controlled_rc4.publication_pair",
+        "controlled_rc4.publication_failure",
+        "controlled_rc4.publication_cancel"
+      ]
+    },
+    "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient.transport": {
+      "scope": "Selected material-only transport and atomic pair publication controls; no reversible behavior, native or empirical acceptance is inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc4.transport_snapshot",
+        "controlled_rc4.transport_capability",
+        "controlled_rc4.transport_tamper",
+        "controlled_rc4.manifest_tamper"
+      ]
+    },
+    "biocompiler.core_policy_controlled_material.PolicyControlledMaterialResult": {
+      "scope": "Selected material-only transport and atomic pair publication controls; no reversible behavior, native or empirical acceptance is inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc4.transport_snapshot",
+        "controlled_rc4.transport_capability",
+        "controlled_rc4.transport_tamper",
+        "controlled_rc4.manifest_tamper"
+      ]
+    },
+    "biocompiler.core_policy_controlled_material.REPORT_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material.RESULT_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material.VALIDATION_SCOPE": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material._admission": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material._candidate": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material._flags": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material._normalized_authority": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material._normalized_content": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material._require": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material._result": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material._structure": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.core_policy_expression_material.ACCEPTED_STATUS": {
       "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
       "status": "dependency",
@@ -5587,6 +5755,39 @@
       "scope": "Closed RC3 preparation/transport dependency; no independent source, activity, construction, material or export acceptance.",
       "status": "dependency",
       "witnesses": []
+    },
+    "biocompiler.policy.controlled_material.check_material": {
+      "scope": "Selected material-only transport and atomic pair publication controls; no reversible behavior, native or empirical acceptance is inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc4.transport_snapshot",
+        "controlled_rc4.transport_capability",
+        "controlled_rc4.transport_tamper",
+        "controlled_rc4.manifest_tamper"
+      ]
+    },
+    "biocompiler.policy.controlled_material.construct_material": {
+      "scope": "Selected material-only transport and atomic pair publication controls; no reversible behavior, native or empirical acceptance is inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc4.transport_snapshot",
+        "controlled_rc4.transport_capability",
+        "controlled_rc4.transport_tamper",
+        "controlled_rc4.manifest_tamper"
+      ]
+    },
+    "biocompiler.policy.controlled_material.publish_material": {
+      "scope": "Selected material-only transport and atomic pair publication controls; no reversible behavior, native or empirical acceptance is inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc4.transport_snapshot",
+        "controlled_rc4.transport_capability",
+        "controlled_rc4.transport_tamper",
+        "controlled_rc4.manifest_tamper",
+        "controlled_rc4.publication_pair",
+        "controlled_rc4.publication_failure",
+        "controlled_rc4.publication_cancel"
+      ]
     },
     "biocompiler.policy.examples.NAMES": {
       "scope": "Exact source body/signature/decorator and dependency inventory only; no per-body semantic completeness or runtime support claim.",
@@ -17241,6 +17442,303 @@
         "syntax_sha256": "b9d28853969cd2188667e13b9bb0adab9859987fdfc2ad082ff118e6db0ec069"
       },
       {
+        "id": "biocompiler.core_policy_controlled_material.ACCEPTED_STATUS",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "ACCEPTED_STATUS"
+        },
+        "syntax_sha256": "56a2760829c951171574ac2f967f696767342073875418b531d1e588ad4a2f92"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.CANDIDATE_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "CANDIDATE_SCHEMA"
+        },
+        "syntax_sha256": "fefefed82430381464b0f93a6b64aa4684a5e1d7ca5ccb70fc5e3c0f71dcf9ab"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.CHECK",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "CHECK"
+        },
+        "syntax_sha256": "25e58bfe330897d10f4ba057c7d7db0ef60b26ae0f6c97e0548aadd8bc90404f"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.CONSTRUCT",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "CONSTRUCT"
+        },
+        "syntax_sha256": "2655932c3ba820fa33368f989d86492bf9ded7735dcba1d68d3b489f6db4a746"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.IMPLEMENTATION",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "IMPLEMENTATION"
+        },
+        "syntax_sha256": "ca2bf4e4ce6652a60d6ce98e71018eb6ea6004bd8684eee64ce9a5e89d818eef"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.MANIFEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "MANIFEST_SCHEMA"
+        },
+        "syntax_sha256": "037ca5fbd3ef8676f1d5a5dfcd5dc9d90f288a8a3021b0b0259c7f83a9808b19"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.PRODUCER_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PROFILE, 'operations': [CHECK, PUBLISH, CONSTRUCT]}",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "PRODUCER_PROFILE"
+        },
+        "syntax_sha256": "fae3e46d4763397a44825e7f9fd069c4476945a2b471cef9db9585a4820b69f0"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**admission.PROFILE, 'operations': [CHECK, PUBLISH], 'candidate_schema': CANDIDATE_SCHEMA, 'schema_version': RESULT_SCHEMA, 'implementation': IMPLEMENTATION, 'validation_scope': VALIDATION_SCOPE, 'stage': 'material', 'artifact': 'structural_pair_only'}",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "PROFILE"
+        },
+        "syntax_sha256": "d5bb972d905bc86f27d0c79533572095767c37c9fa68304a8bc0421fca3d3c22"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.PUBLISH",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "PUBLISH"
+        },
+        "syntax_sha256": "220aad1fd7ddd946ab392162cf8a2aa50b534fd2cd80ea1f44b46d95d42f49ac"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "PolicyControlledMaterialClient"
+        },
+        "syntax_sha256": "32e6d632a59cf0070d20658a80a2f0751d227364227d6611ab01dcaeef98899f"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient._call",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None -> PolicyControlledMaterialResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "PolicyControlledMaterialClient._call"
+        },
+        "syntax_sha256": "b587bbb91e921168c6bf463f9f62ab4f64fc987330c30f05ab28f68ae87d8319"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient.check_material",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, candidate: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyControlledMaterialResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "PolicyControlledMaterialClient.check_material"
+        },
+        "syntax_sha256": "3c3a13d01b6ba2389aae71c7b007179a22d6cfa00c7d72aff630fe54e908999b"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient.construct_material",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyControlledMaterialResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "PolicyControlledMaterialClient.construct_material"
+        },
+        "syntax_sha256": "dda37eb6aad1d69280dd5f11ec2e61448ee405df3f1a1e086dcb8214bc6fb2c8"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient.publish_material",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, candidate: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyControlledMaterialResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "PolicyControlledMaterialClient.publish_material"
+        },
+        "syntax_sha256": "e8e4318553b9c97b5c3cc2fad4bdd2ce6b438488bc05d40808adc6b625dbbaf3"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient.transport",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "CoreClient",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "PolicyControlledMaterialClient.transport"
+        },
+        "syntax_sha256": "1c12c2e5fa920a7d4a3b392accc30ac4494ca7f385e0c49042eefabe997d2df4"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.PolicyControlledMaterialResult",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "PolicyControlledMaterialResult"
+        },
+        "syntax_sha256": "b3cfd146b20ff8b1361e541f8d3170e6501ba1d4f779e86721b08ba181e6dc8e"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.REPORT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "REPORT_SCHEMA"
+        },
+        "syntax_sha256": "99511dd1c983691c4eb170e0e6980b2ba8fdb931e412baeb7cc4ead5c8170b07"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.RESULT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "RESULT_SCHEMA"
+        },
+        "syntax_sha256": "313a0439ed39032fdd503e25ae3df2f1b7dba73550722f534a1078d0818e9c55"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material.VALIDATION_SCOPE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "VALIDATION_SCOPE"
+        },
+        "syntax_sha256": "48cb23e3b098bd7a310d569e9dd66ab8ebe761140ef7c58a4d530f8dde8c2e92"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material._admission",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue, original: dict[str, JsonValue], total: int, decoding: int -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "_admission"
+        },
+        "syntax_sha256": "6eb09f364a923f20beca0918bf4e28d17cbc4351b49cfba370e3c2f0594da5d8"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material._candidate",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "_candidate"
+        },
+        "syntax_sha256": "6d790ec578377cebb942fa7dd3acb18c7e33ee1e9e6b092716d7119cfc5fcc27"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material._flags",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: dict[str, JsonValue], expected: dict[str, JsonValue], label: str -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "_flags"
+        },
+        "syntax_sha256": "57de224ee1ec96b19756f025e94301f5c64cae3ec5fe863698c770b47cdd6a9b"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material._normalized_authority",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: dict[str, JsonValue] -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "_normalized_authority"
+        },
+        "syntax_sha256": "4e6ee4dec729d729deae3b2fade9449b7da01b541742da68ba8a951d47083dc1"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material._normalized_content",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: dict[str, JsonValue] -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "_normalized_content"
+        },
+        "syntax_sha256": "326206e6927787dc487d203de3b7f278ff2ad0286ff84cd123d6d4e0d7409ad7"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: bool, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "db013ee1f3fbb0723ca9ef0828a33661ee82acb6aac6f1fa25dc2bd87ff62365"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material._result",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "response: CoreResponse, payload: dict[str, JsonValue] -> PolicyControlledMaterialResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "_result"
+        },
+        "syntax_sha256": "a3c50b2ecdb8c0ee4c9e02d2391c92717150fe059a49b36d222451ce30cb845e"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material._structure",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue, original: dict[str, JsonValue], candidate: dict[str, JsonValue] -> str",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "_structure"
+        },
+        "syntax_sha256": "89b915c881834aaa1c639f1c7222992fd50069ce7770c42200b3b780a86842cf"
+      },
+      {
         "id": "biocompiler.core_policy_expression_material.ACCEPTED_STATUS",
         "kind": "value",
         "scope": "dependency",
@@ -23828,6 +24326,39 @@
           "symbol": "_validate"
         },
         "syntax_sha256": "b3b4dba99a6d0b16249efb6908d04dcfcfd29b713a64178904ef6fb2cfe73bce"
+      },
+      {
+        "id": "biocompiler.policy.controlled_material.check_material",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: JsonValue, *, candidate: JsonValue, client: PolicyControlledMaterialClient, cancelled: Callable[[], bool] | None=None -> PolicyControlledMaterialResult",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_material.py",
+          "symbol": "check_material"
+        },
+        "syntax_sha256": "7c78d1fc2d8f5fd16b35c2311716015b18ca1ddd7fe026ff54a54b5cb016de93"
+      },
+      {
+        "id": "biocompiler.policy.controlled_material.construct_material",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: JsonValue, *, client: PolicyControlledMaterialClient, cancelled: Callable[[], bool] | None=None -> PolicyControlledMaterialResult",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_material.py",
+          "symbol": "construct_material"
+        },
+        "syntax_sha256": "2bd4863e1015e406d5e2a9d0b9d85cf3db1278ac2796b75353cffbde20410ea0"
+      },
+      {
+        "id": "biocompiler.policy.controlled_material.publish_material",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: JsonValue, *, candidate: JsonValue, client: PolicyControlledMaterialClient, output: Path, input_paths: Iterable[Path]=(), replace: bool=False, cancelled: Callable[[], bool] | None=None -> PolicyControlledMaterialResult",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_material.py",
+          "symbol": "publish_material"
+        },
+        "syntax_sha256": "17b72330226e3727a1a7386191ce95793833c6845db48373c702548983292e5c"
       },
       {
         "id": "biocompiler.policy.examples.NAMES",
@@ -36886,6 +37417,7 @@
       "src/biocompiler/core_policy_component_material.py": "152843138ccfa61f4b7dfd894eff697a919ac52964b77957c646f23b49589b51",
       "src/biocompiler/core_policy_component_selection.py": "20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9",
       "src/biocompiler/core_policy_controlled_composition.py": "308ec4aa6f5bde1d58ca5cf8a0ace46432a9fa3369a9234a91d4644580a1df65",
+      "src/biocompiler/core_policy_controlled_material.py": "8783c81be2f6752789b57179e36a46b5dc0d9c5020270fbcb4ea23a6bcfadf9d",
       "src/biocompiler/core_policy_expression_material.py": "319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf",
       "src/biocompiler/core_policy_implementation.py": "75abd92ee9ef28a34b0a9df5ad8ea133beb6d01f60bd2ae74f2d6f9cf064ab4f",
       "src/biocompiler/core_policy_material.py": "e3b990c93130fb7d0b74462e30bf87dc5cd5f42d582a0808163f1a6ba965b5cf",
@@ -36905,7 +37437,7 @@
       "src/biocompiler/policy/component_material.py": "e23f08b6113670c73363a0852b390e6d39d0d058fdd3a7a044f2ba1c04e61da1",
       "src/biocompiler/policy/component_selection.py": "10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80",
       "src/biocompiler/policy/controlled_composition.py": "cdb3417943549452cd2cbba079ad4ad3ef6b73059c1dd0283af34c1dca130c18",
-      "src/biocompiler/policy/controlled_material.py": "07db7849e25cb763718414920eb8a5aaa338f0c1ba22ce7f9374ee35e72bed70",
+      "src/biocompiler/policy/controlled_material.py": "b26ec6dc51daa8ad94d4de6b226cd3afd24d4c4bb8be2cfb0bf20f10dd5b37ea",
       "src/biocompiler/policy/coordination.py": "ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9",
       "src/biocompiler/policy/data/car_rm61461_reference_v01.json": "dcf0b3fe174ee48f68623785663b16ce96ce87ad2bbacbd851369e9ba1b46079",
       "src/biocompiler/policy/deployment.py": "cddace3d45f04ecd722a47849325c9ff6a41fc166b0e23253c2377f037eae29f",
@@ -37065,6 +37597,70 @@
       {
         "path": "src/biocompiler/core_policy_controlled_composition.py",
         "syntax_sha256": "44bca4417c68b5cf2bf0ab378ca9d375ad1041618434d0c66aebd0bf31d0d304"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "e8157a73584becff04ba142bf301a16a3e95078563bad5119c5eb01211b23c01"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "67ee0f2195b5dd6d32007ab0636061358254666e071561ec389ec9c59836707c"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "9415dd7eb8e6496923d1e67bfa61dc5f52dfceda9d40a9bccfedf7acbbde100a"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "f255311127c3c735ea86b68bf62c39a57aa405985d27c9ac0c8a73e4ccd786c2"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "9f9fc31c453a43fb3d74921b4469ccba04cbc0bd67d9cee834f1cac8085687d1"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "c74f63c2a38409f6bcd706260983979e014832f6cf51aa246ddab0a125d43390"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "2014a08e2476d30621a68cc821d75cf5927d7435ea74378ea58a1b237ef20cd1"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "c32a8f8869f31f665053d7b4eb749d54002c6748f0fd9869d27204a8678f41e3"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "da9aba40f5a335f3e5dfe0c7f37b81cae43391d8c077d1407ec02d03334ffadc"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "4a8d78b0ef10934c3645c6ac3b783bda81f875820f6264045eaa6506185ac902"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "df6b658d31a6395f44b68ead5d9f407e1dc3a2d9cd98c1658b6226b2d8e2189a"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "dde56f864895f8eff468463d7e2df71067ff6fdc4cbd86a35153b56be6f060ac"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "1b6e5b4c86e1caf59e0e3697315d5627ca5e79ea0adaaaf3e4399c2ac5f3bb2f"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "2d4aea4e86ac7a64834967908436c1ddf79d28c13424603c13ab53379dd62158"
       },
       {
         "path": "src/biocompiler/core_policy_expression_material.py",
@@ -37720,11 +38316,35 @@
       },
       {
         "path": "src/biocompiler/policy/controlled_material.py",
-        "syntax_sha256": "7dfb4a497268af913df636472a7e1cef5e80d71b5514ebe97376becebf032407"
+        "syntax_sha256": "6eb9e339fad53243b8cb8839115ba0966e073d6b0b2bbf114d7b3a0a2f5b22df"
       },
       {
         "path": "src/biocompiler/policy/controlled_material.py",
-        "syntax_sha256": "f7ac139c8d303f3133275c9dde8aac7adc3d0f3c3088d16b0564bad7e3a59f9c"
+        "syntax_sha256": "b57c69ae5c2ef8b591a83cb86e074c28bc51985ccdacbba23baf8bf82e12c205"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_material.py",
+        "syntax_sha256": "511b18464d685b8902fc18255cb5c085361381e96c80d696dc6f6712f1533bed"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_material.py",
+        "syntax_sha256": "db04f19a40eeac0d91d78145f53bd1dc8f10905c7449b40ec27d94db28d4ad33"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_material.py",
+        "syntax_sha256": "55fb4ec3effdf34f7401e3637fe30b07523f1270e0fbfd6923f17be152666f7e"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_material.py",
+        "syntax_sha256": "aef1b9ae7cea3051c760806eadca8b82ab08e8cfc014306a8b7c67fc32932eb1"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_material.py",
+        "syntax_sha256": "d06617532d17dc047095ea8b421599c1436c1113d2a869362f153a1e44bde705"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_material.py",
+        "syntax_sha256": "e57aafed655f7eee9b18cd7fecf1afd0b142611d3a2b69b317ffd399d9270521"
       },
       {
         "path": "src/biocompiler/policy/controlled_material.py",
@@ -38768,6 +39388,29 @@
       }
     ],
     "operations": [
+      {
+        "operation": "construct-policy-controlled-material",
+        "owner": "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient.construct_material",
+        "payload_fields": [
+          "request"
+        ]
+      },
+      {
+        "operation": "check-policy-controlled-material",
+        "owner": "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient.check_material",
+        "payload_fields": [
+          "request",
+          "candidate"
+        ]
+      },
+      {
+        "operation": "publish-policy-controlled-material",
+        "owner": "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient.publish_material",
+        "payload_fields": [
+          "request",
+          "candidate"
+        ]
+      },
       {
         "operation": "admit-policy-component-material",
         "owner": "biocompiler.core_policy_controlled_composition.PolicyControlledCompositionClient.admit",
@@ -40254,6 +40897,62 @@
       "role": "rejection",
       "symbol": "ControlledTransportTests.test_rehashed_scope_correspondence_and_budget_tampering_rejected",
       "syntax_sha256": "05d883304dcedd4d0bc8685cfde46feff24a7495959c8aa25accac058cee14ae"
+    },
+    "controlled_rc4.manifest_tamper": {
+      "distinction": "Complete manifest originals and ordered FASTA bytes stay bound even after local rehashing.",
+      "file_sha256": "e33cbdd06f3a8bf3a2d0ae2c8424c56452201575a69020dc964f768087143c60",
+      "path": "tests/test_core_policy_controlled_material.py",
+      "role": "rejection",
+      "symbol": "ControlledMaterialTransportTests.test_rehashed_manifest_and_fasta_tampering_rejected",
+      "syntax_sha256": "055557c3c865e5a0da10edfb75ca80456bf546edbc1cfe3b37a67baccdf24d70"
+    },
+    "controlled_rc4.publication_cancel": {
+      "distinction": "Cancellation arriving during staged readback is checked before atomic commit; no partial pair replaces existing output.",
+      "file_sha256": "5fe137358447700457da021aa56789e9c9fee9afd1056ec7dd5575e02e51bec3",
+      "path": "tests/test_policy_controlled_material_publication.py",
+      "role": "rejection",
+      "symbol": "ControlledPublicationTests.test_cancellation_after_staged_readback_preserves_output_and_cleans_temp",
+      "syntax_sha256": "8bf5b77b62d732006954e5cd1cb6801ecf70d24fab3d928237408732e53403e1"
+    },
+    "controlled_rc4.publication_failure": {
+      "distinction": "Rejected or incomplete native results and staging failures preserve an existing destination.",
+      "file_sha256": "5fe137358447700457da021aa56789e9c9fee9afd1056ec7dd5575e02e51bec3",
+      "path": "tests/test_policy_controlled_material_publication.py",
+      "role": "rejection",
+      "symbol": "ControlledPublicationTests.test_native_failure_incomplete_material_and_io_failure_preserve_output",
+      "syntax_sha256": "24cafde05978190b62547ad50df0c0a3c6e72a12dda97a1fc46c409052560578"
+    },
+    "controlled_rc4.publication_pair": {
+      "distinction": "Mocked fresh native publication produces one exact deterministic two-member archive; no biological acceptance is established.",
+      "file_sha256": "5fe137358447700457da021aa56789e9c9fee9afd1056ec7dd5575e02e51bec3",
+      "path": "tests/test_policy_controlled_material_publication.py",
+      "role": "positive",
+      "symbol": "ControlledPublicationTests.test_fresh_native_pair_and_deterministic_atomic_archive",
+      "syntax_sha256": "c71c92f7ea5a89795a75876941db322a24773ca4b5f9a7900a6d2497827f790f"
+    },
+    "controlled_rc4.transport_capability": {
+      "distinction": "Exact separate material capability and executable role are required; Verify cannot construct.",
+      "file_sha256": "e33cbdd06f3a8bf3a2d0ae2c8424c56452201575a69020dc964f768087143c60",
+      "path": "tests/test_core_policy_controlled_material.py",
+      "role": "rejection",
+      "symbol": "ControlledMaterialTransportTests.test_verifier_never_constructs_and_capability_must_match_exactly",
+      "syntax_sha256": "bb67c4077d753813c897fe07c3d4c7e050e8f250ce226d73bf1548d742694b5d"
+    },
+    "controlled_rc4.transport_snapshot": {
+      "distinction": "Detached structural result snapshots retain complete originals and literal two-member correspondence; artificial peer evidence is not native acceptance.",
+      "file_sha256": "e33cbdd06f3a8bf3a2d0ae2c8424c56452201575a69020dc964f768087143c60",
+      "path": "tests/test_core_policy_controlled_material.py",
+      "role": "positive",
+      "symbol": "ControlledMaterialTransportTests.test_literal_oracle_and_immutable_result_round_trip",
+      "syntax_sha256": "e00e71a9fa286b89681f09ab861d10fa2de689f71d0ef94ac8119ecff0b7fd4d"
+    },
+    "controlled_rc4.transport_tamper": {
+      "distinction": "Rehashed material evidence cannot change original context, bindings, structural inventory or claim scope.",
+      "file_sha256": "e33cbdd06f3a8bf3a2d0ae2c8424c56452201575a69020dc964f768087143c60",
+      "path": "tests/test_core_policy_controlled_material.py",
+      "role": "rejection",
+      "symbol": "ControlledMaterialTransportTests.test_rehashed_report_original_scope_and_material_tampering_rejected",
+      "syntax_sha256": "e42a58bcfbc9dc0a2fd3cf9a52dbcc319670aa67c21fec627bb70ac35e23f977"
     },
     "finite_build.authority": {
       "distinction": "Explicit source replacement preserves every other original and does not fabricate compatible model or material pins.",

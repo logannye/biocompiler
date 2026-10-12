@@ -46,7 +46,7 @@ all native work hosted under the applicable authorization.
 | RC1 | Complete locally | Reviewed semantic decision, independent schema, typed descriptions, immutable source snapshots, literal wire fixtures and 41 declarative acceptance cases. Frozen 442-test runs passed on Python 3.11 and 3.14; both typing configurations and all seven static checks passed. Native admission and execution were outside that checkpoint. |
 | RC2 | Acquisition checkpoint complete; gate open | The separately named patent pair #197/#206 has source-pinned literal fragments/products and bounded consistency checks. The authorized-input importer and two complete RNA adaptations remain open; see the acquisition assessment. |
 | RC3 | Complete for admission and finite input-domain support | Closed v0.14 original authority, native source/material/context closure, complete finite-domain enumeration, guarded read-only admission and immutable Python transport. Hosted development validation and independently audited evidence are bound to `8b4506ed5013e21b1dbb58c34e22d31cd9b84df2`; see the RC3 validation receipt. |
-| RC4 | Planned | Construct and independently check both complete RNA members. |
+| RC4 | Implementation in progress | Separate source-neutral construction and independent complete pair checking; artificial fixtures only. Hosted validation pending for this batch. |
 | RC5 | Planned | Add activity semantics, source requirement monitors and independent model/candidate checking over the RC3 domain. |
 | RC6 | Planned | Complete ResearchProject, export/reopen and installed starter. |
 | RC7 | Planned | Coherent hosted, cross-platform, installed and artifact acceptance. |
@@ -196,3 +196,15 @@ activity-verification results. RC2 complete real RNA designs and reference
 qualification remain open; RC4 construction and RC5 behavior verification are
 next. No clinical or empirical assessment, merge or release was performed. Both
 MVP and E1 checkouts retain their baseline commits and working-tree changes.
+
+## RC4 implementation scope
+
+The [RC4 material contract](controlled-composition-material-v0.1.md) defines the
+separate structural constructor/checker/publication capability. Complete original
+authority stays immutable; the independent checker freshly admits originals and
+reconstructs the two delivered RNAs before checking geometry, translation, exact
+chemistry and actual resource limits. The ordered pair publishes as one atomic
+FASTA/manifest ZIP only after fresh checking. No legacy behavior capability is
+manufactured. Numerical stoichiometric contracts remain outside the admitted
+closed subset, and binary availability is not evidence of assembly. RC5/RC6
+remain necessary for reversible behavior and the joined workflow.
