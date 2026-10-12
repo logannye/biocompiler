@@ -327,24 +327,38 @@ MA/MG RNA fixtures support software checking only; RC2's real RNA gate stays ope
 
 ### RC4 Construct and check the complete two-member payload
 
-- [ ] Reuse staged component construction and independent material checking.
-  Preserve exact member/product/ORF mappings, every RNA region, translation,
-  chemistry, member order and total/per-member constraints.
-- [ ] Bind recognition/control/signaling ports to the supplied pair, with explicit
-  localization, resources, same-recipient placement and dependency closure.
-  Preserve supplied expression/stoichiometric operating ranges where the
-  interaction contract requires them; binary presence alone cannot prove assembly.
-- [ ] Keep physical product membership distinct from behavioral state ownership.
-  A shared controller or state must not be duplicated once per RNA.
-- [ ] Independently reconstruct both molecules from original material authority.
+- [x] Reuse source-neutral template construction and independent material checking
+  for exactly two complete supplied RNA roots. Preserve exact member/product/ORF
+  mappings, every RNA region, translation, chemistry, member order and total/per-member
+  constraints. Transforms, complexes and helper members remain outside this subset.
+- [x] Check supplied model ports, products, localization, resources,
+  same-recipient placement and catalog dependencies under the RC3 contract.
+  Bind complete originals through the full request fingerprint. The material
+  assessment retains bindings, context, resources and the RC3 subreport; the
+  supplied request and published manifest retain full model/port/catalog bodies.
+  These premises and binary availability do not establish physical assembly or
+  behavior. Numeric expression/stoichiometric fields remain unsupported here.
+- [x] Keep physical product membership distinct from behavioral state ownership.
+  Retain the shared controller and source state once in complete original authority;
+  do not duplicate them per RNA or claim that material checking executes them.
+- [x] Independently reconstruct both molecules from original material authority.
   Reject missing, extra, swapped or cross-reference members and locally repinned
   foreign candidates. Check UTR/chemistry changes even when protein is unchanged.
-- [ ] Make two-member publication atomic. Preserve existing outputs on failure,
-  cancellation, limit exhaustion or incomplete verification.
+- [x] Make fresh two-member publication atomic. Preserve existing outputs on failure,
+  cancellation, limit exhaustion or incomplete verification; publish one complete
+  FASTA/manifest pair only after independent structural checking.
 
-**Exit:** a complete structural checkpoint for the exact pair, with fresh
-independent reconstruction tests. It carries no reversible-behavior completion
-claim until RC5 and the joined RC6 path pass.
+**Exit:** complete for the admitted direct-root artificial two-RNA subset at
+`a2a1d53345987cfd339bef17e696fa5141293b76`, with fresh independent reconstruction,
+[hosted development run 38296469528, attempt 1](https://github.com/logannye/biocompiler/actions/runs/38296469528)
+and audited retained evidence. The [progress record](controlled-composition-progress.md#rc4-validation-checkpoint)
+records the exact validation scope. This structural checkpoint carries no
+reversible-behavior completion claim until RC5 and the joined RC6 path pass;
+RC2's complete real RNA inputs remain open. If the selected real interaction
+requires quantitative expression/stoichiometric ranges, acquiring that authority
+in RC2 and adding a versioned contract plus independent checks in RC5 remain
+required before named-case completion. The current binary/direct-root RC4 subset
+does not discharge that conditional obligation.
 
 ### RC5 Implement and independently verify reversible behavior
 
@@ -360,6 +374,11 @@ claim until RC5 and the joined RC6 path pass.
 - [ ] Check scoped module assumptions/guarantees and dependency wiring. Establish
   the first compositional rule against whole-program bounded checking; do not
   rely solely on each module passing in isolation.
+- [ ] When the selected real interaction requires quantitative expression or
+  stoichiometric ranges, acquire explicit bounds, units and their evidence or
+  assumptions in RC2; add versioned contract fields and independent range and
+  composition checks in RC5 before completing the named case. Binary availability
+  and the current direct-root structural checkpoint cannot substitute for them.
 - [ ] Check activation, cessation, background limits and reactivation over the
   complete admitted bounded domain, preserving unknowns and finite suffix rules.
   Measure coverage at the controlled activity output rather than at abstract

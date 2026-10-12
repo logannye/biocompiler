@@ -46,7 +46,7 @@ all native work hosted under the applicable authorization.
 | RC1 | Complete locally | Reviewed semantic decision, independent schema, typed descriptions, immutable source snapshots, literal wire fixtures and 41 declarative acceptance cases. Frozen 442-test runs passed on Python 3.11 and 3.14; both typing configurations and all seven static checks passed. Native admission and execution were outside that checkpoint. |
 | RC2 | Acquisition checkpoint complete; gate open | The separately named patent pair #197/#206 has source-pinned literal fragments/products and bounded consistency checks. The authorized-input importer and two complete RNA adaptations remain open; see the acquisition assessment. |
 | RC3 | Complete for admission and finite input-domain support | Closed v0.14 original authority, native source/material/context closure, complete finite-domain enumeration, guarded read-only admission and immutable Python transport. Hosted development validation and independently audited evidence are bound to `8b4506ed5013e21b1dbb58c34e22d31cd9b84df2`; see the RC3 validation receipt. |
-| RC4 | Implementation in progress | Separate source-neutral construction and independent complete pair checking; artificial fixtures only. Hosted validation pending for this batch. |
+| RC4 | Complete for the direct-root artificial two-RNA subset | Fresh native construction, independent full-pair reconstruction and atomic structural publication; no behavior or numeric stoichiometric-range claim. Hosted development and independently audited evidence bind `a2a1d53345987cfd339bef17e696fa5141293b76`; see the RC4 validation checkpoint. |
 | RC5 | Planned | Add activity semantics, source requirement monitors and independent model/candidate checking over the RC3 domain. |
 | RC6 | Planned | Complete ResearchProject, export/reopen and installed starter. |
 | RC7 | Planned | Coherent hosted, cross-platform, installed and artifact acceptance. |
@@ -69,28 +69,29 @@ Its typed source obligations and original correspondence are ready for later
 executable lowering; RC3 does not execute an activity model or source monitor.
 Remaining implementation slices are:
 
-1. **Parallel RC4 material and RC5 behavior.** Reuse staged construction and
-   independent reconstruction for two complete artificial RNAs. In parallel,
-   implement independent model realization and source requirement checks. Earlier
-   compliant activity can satisfy a later source deadline: exact realization of
-   the supplied mechanism and satisfaction of the source are distinct checks.
-2. **Join before publication or capabilities.** The existing assembly checker
-   requires a fresh checked implementation, and formatting requires checked
-   material. Never fabricate those private capabilities to unblock RC4. Until
-   RC5 and complete joined checking exist, structural diagnostics remain partial.
-   Advertise compile/check/export only after the full path exists. RC3 separately
-   advertises read-only admission with no candidate, artifact or behavior claim.
-3. **RC6 onward.** Bind ResearchProject v0.3, then complete fresh export/reopen,
-   hosted native and installed validation, independent artifact audit and normal
-   integration. Retain the first-MVP/E1 owner and their gates throughout.
+1. **RC5 behavior.** Add executable activity lowering, independent candidate
+   interpretation and source requirement monitors over the complete RC3 domain.
+   Check onset, cessation and reactivation with explicit state ownership, lifecycle,
+   availability, unknowns and work bounds. Exact realization of the supplied
+   mechanism and satisfaction of source deadlines remain distinct checks.
+   Any quantitative expression/stoichiometric ranges required by the selected real
+   interaction need RC2 inputs, a versioned contract and independent RC5 checks
+   before named-case completion; current binary availability does not supply them.
+2. **RC6 joined workflow.** Join fresh behavioral and structural evidence before
+   advertising full controlled compile/check/export. Add ResearchProject v0.3,
+   independent-original Verify-only reopen, an editable starter and an installed
+   rehearsal. RC4's separate structural publication does not supply the missing
+   behavior capability or complete this joined workflow.
+3. **RC7/RC8 acceptance and release.** Complete cross-platform and installed gates,
+   integration, fresh actual-main validation and artifact audit for the joined
+   candidate. Preserve the first-MVP/E1 owner and their separate gates. RC2's real
+   reference and complete RNA adaptations remain open in parallel.
 
-The next source touchpoints include the existing staged material construction
-and independent checking routes, `policy_component_assembly_rule`, and the new
-`policy_controlled_composition_request`, `policy_controlled_source` and
-`policy_controlled_domain` boundaries. Connect executable activity lowering and
-reference interpretation in RC5 without widening legacy domain profiles. Register
-new native tests in `core/test/dune` and `tools/ci_native_bundle.py`. Use focused
-local pure/static feedback and a coherent hosted batch; no local native build.
+Connect `policy_controlled_source` and `policy_controlled_domain` to executable
+activity lowering and independent reference interpretation without widening
+legacy profiles. Reuse RC4's exact original material binding when joining evidence;
+never manufacture private capabilities. Register new native suites and retain
+focused local pure/static feedback plus coherent hosted validation.
 
 ## RC1 validation checkpoint
 
@@ -208,3 +209,38 @@ FASTA/manifest ZIP only after fresh checking. No legacy behavior capability is
 manufactured. Numerical stoichiometric contracts remain outside the admitted
 closed subset, and binary availability is not evidence of assembly. RC5/RC6
 remain necessary for reversible behavior and the joined workflow.
+
+## RC4 validation checkpoint
+
+The [RC4 validation receipt](controlled-composition-rc4-validation.json) records
+the exact source, run, artifact, local checks, independent audits and protected
+checkout states for this checkpoint.
+
+The tested implementation is `a2a1d53345987cfd339bef17e696fa5141293b76`, tree
+`cc246ae062b8baf8fd49fd25ed4a6ed1040463fb`. The complete hosted development
+workflow [38296469528, attempt 1](https://github.com/logannye/biocompiler/actions/runs/38296469528)
+passed on Linux x86_64 with fresh native binaries: all 63 selected native suites,
+23 RC4 material observations, 14 controlled-admission observations, 21 quantitative
+observations, all ten existing SDK campaigns (278 observations), and the first-MVP
+CAR campaign (22 observations, 22 native actions and 29 evidence files).
+Independent audits checked the exact source/run/attempt, retained originals,
+reports, mutation diagnostics, binary/import pins and published bytes. Binary
+identity is limited to retained same-run pins where executable bytes were not
+part of the downloaded artifact; no offline auditor reran native code.
+
+At the same frozen revision, 562 pure-Python tests passed on each of CPython
+3.11.15 and 3.14.3 on macOS arm64. All eight static checks and both typing
+configurations passed (42 core transport files and 48 policy files). Local
+checks performed no native compilation or execution. The earlier run
+38294711313 at `f5d87eacda4abe028ee0a98e8da28deafa000a89` remains a failed gate;
+its three test corrections received this fresh complete validation.
+
+Completion covers exactly two direct, complete supplied artificial RNA roots,
+independent reconstruction and atomic structural publication. The literal pair
+contains two 17-nt RNAs encoding MA and MG; it supplies software evidence only.
+Numeric expression/stoichiometric ranges, physical assembly, reversible activity,
+empirical function and human use are not validated. RC2 complete real RNA designs,
+RC5 behavior, RC6 joined ResearchProject/export/reopen, RC7 installed/cross-platform
+acceptance and RC8 integration/release remain open. The RC3 sections above retain
+their historical checkpoint statements. This later documentation update does not
+transfer native acceptance to a different implementation revision.

@@ -1,0 +1,1024 @@
+{
+  "behavior": "not_performed_RC5_open",
+  "branch": "codex/dev-policy/car-controlled-composition",
+  "claim_scope": "Exact supplied direct-root artificial two-member RNA structure and atomic structural publication only.",
+  "controlled_material_evidence": {
+    "literal_members": [
+      {
+        "id": "rna-a",
+        "product": "MA",
+        "rna_nt": 17,
+        "sequence_sha256": "1a4dc394c08c1e01662262ec009999cf4b1bb74aecf75c0742c87ada2edff125"
+      },
+      {
+        "id": "rna-b",
+        "product": "MG",
+        "rna_nt": 17,
+        "sequence_sha256": "51d090763d59208013a0b3cc8a38f3ee12d16ef1b058654c73c1547a1cee1f6e"
+      }
+    ],
+    "new_native_checker_checks": 75,
+    "structural_zip": {
+      "bytes": 187554,
+      "sha256": "316f8d5b63310d8539efb6303e8d67f0c9fe0b4f60af6390629777a8a7f48fec"
+    },
+    "supplement": {
+      "bytes": 9230,
+      "path": "generated/car-controlled-composition/rc4/independent-material-hosted-evidence-a2a1d533.json",
+      "sha256": "e4d7d60f0c776aad45a6b80bf4ab44a8019b30881b6464395bb923fa9029b2c1"
+    }
+  },
+  "cross_platform_native_acceptance": "not_performed",
+  "empirical": "unassessed",
+  "hosted": {
+    "artifact": {
+      "archive_download_url": "https://api.github.com/repos/logannye/biocompiler/actions/artifacts/11769138288/zip",
+      "created_at": "2026-10-12T19:46:20Z",
+      "digest": "sha256:4914e7b77cdec3b268ebf6aa9c111ff47f6f6d4340bcb477d3ff8188a2a89b7f",
+      "expired": false,
+      "expires_at": "2026-10-19T19:46:18Z",
+      "id": 11769138288,
+      "name": "development-feedback-38296469528-1",
+      "node_id": "MDg6QXJ0aWZhY3QxMTc2OTEzODI4OA==",
+      "size_in_bytes": 11604215,
+      "updated_at": "2026-10-12T19:46:20Z",
+      "url": "https://api.github.com/repos/logannye/biocompiler/actions/artifacts/11769138288",
+      "workflow_run": {
+        "head_branch": "codex/dev-policy/car-controlled-composition",
+        "head_repository_id": 1395674522,
+        "head_sha": "a2a1d53345987cfd339bef17e696fa5141293b76",
+        "id": 38296469528,
+        "repository_id": 1395674522
+      }
+    },
+    "attempt": 1,
+    "binary_audit_limit": "The authenticated artifact contains no native executable bytes. Binary receipt pins must be matched to the native parent feedback inventory; offline auditors cannot independently rehash the executables and do not rerun them.",
+    "campaigns": {
+      "car": {
+        "observations": 22,
+        "receipt": {
+          "bytes": 21070,
+          "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/car-payload-sdk-witness.json",
+          "sha256": "271ea341c8c4a10e1daf702d513d64e9b2b89e14811f6bebc605b3078cdfd2c7"
+        }
+      },
+      "controlled_admission": {
+        "observations": 14,
+        "receipt": {
+          "bytes": 6394,
+          "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/controlled-composition.json",
+          "sha256": "1120d3fcd1da9e7162c15169f4bde89d6740f6486a466d5968e193263537e244"
+        }
+      },
+      "controlled_material": {
+        "observations": 23,
+        "receipt": {
+          "bytes": 28218,
+          "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/controlled-material.json",
+          "sha256": "f87baaee725c4b41ffcd7690c1d19678b9c89e93c5507dcf6a95b27cfd42b407"
+        }
+      },
+      "existing_sdk": {
+        "campaigns": 10,
+        "observations": 278,
+        "receipts": [
+          {
+            "bytes": 12413,
+            "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/sdk-witness.json",
+            "sha256": "ceaef934887411df286c67b5d5b28bbf92d5a254ebc50b3127b3db05150b1ae2"
+          },
+          {
+            "bytes": 15929,
+            "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/selection-sdk-witness.json",
+            "sha256": "6dc37a5d142bbe5d1bd851ffa467940156c7aae1b2eefa7a4ad9a810b501d176"
+          },
+          {
+            "bytes": 12139,
+            "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/instance-sdk-witness.json",
+            "sha256": "5cec6eb1da405b67fe3fb074c3437b1eff020380c791734aa241f012fad10c1d"
+          },
+          {
+            "bytes": 13494,
+            "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/prerequisite-sdk-witness.json",
+            "sha256": "acdfc617e72e5f2654817ea24e4100da80464ff589f9287de8153872beed7681"
+          },
+          {
+            "bytes": 13793,
+            "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/two-observation-sdk-witness.json",
+            "sha256": "323f04d7a5426bf7ec4be5e6307fe971258b7207575f3b6b3a460a040dcbba19"
+          },
+          {
+            "bytes": 13299,
+            "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/multi-member-sdk-witness.json",
+            "sha256": "c829f52359112f38fa03e97d138aee4333a358b6352a47eb46fef02cb44c9b56"
+          },
+          {
+            "bytes": 13951,
+            "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/grounded-helper-sdk-witness.json",
+            "sha256": "bb707c622721354b8612cdf2f3fd21344b436ccab47b2857f12df84c70402aed"
+          },
+          {
+            "bytes": 12739,
+            "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/staged-source-sdk-witness.json",
+            "sha256": "7010046f7eefefde5f328dda4b263b36d94c0922f272ace1d837112c4d7b717f"
+          },
+          {
+            "bytes": 10509,
+            "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/staged-material-sdk-witness.json",
+            "sha256": "d61baaab0308043405be6321b0b41c9177adf6fccb35ce9846528526b0295a98"
+          },
+          {
+            "bytes": 22077,
+            "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/researcher-alpha-sdk-witness.json",
+            "sha256": "a9d92c7f043db5ea4f9eee5e0e53af416eafcca307daeb6e29765170a7d5d6da"
+          }
+        ]
+      },
+      "quantitative": {
+        "observations": 21,
+        "receipt": {
+          "bytes": 15936,
+          "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/quantitative-assurance.json",
+          "sha256": "fc304e27423b4e63a1fe0d98159e04c2f755218f5e011ed149a8fdc6b631df2a"
+        }
+      }
+    },
+    "conclusion": "success",
+    "core_verify_pins": {
+      "core": {
+        "bytes": 27673664,
+        "sha256": "f89ce23011e3850a51abc4f3648f8af22086df7d5b83a4b2fa3ce42bda0850c7",
+        "verification": "same-run receipt inventory pin; executable bytes not downloaded"
+      },
+      "verify": {
+        "bytes": 21951224,
+        "sha256": "d3fa7f95bb4e580a8aee4497c7eb37edea3a42aa29015d1cbbcc4c41718856b2",
+        "verification": "same-run receipt inventory pin; executable bytes not downloaded"
+      }
+    },
+    "download": {
+      "archive": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1.zip",
+      "archive_bytes": 11604215,
+      "directory": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1",
+      "entries": 517,
+      "feedback_sha256": "193a3e56c82701381e4d521ee9485b03d94e194f57a545723cf3be213acf589c",
+      "github_digest_verified": true,
+      "scope": "Archive authenticated and safely extracted; no artifact contents executed.",
+      "sha256": "4914e7b77cdec3b268ebf6aa9c111ff47f6f6d4340bcb477d3ff8188a2a89b7f",
+      "uncompressed_bytes": 134755580
+    },
+    "identity": {
+      "event": "push",
+      "machine": "x86_64",
+      "ref": "refs/heads/codex/dev-policy/car-controlled-composition",
+      "repository": "logannye/biocompiler",
+      "revision": "a2a1d53345987cfd339bef17e696fa5141293b76",
+      "run_attempt": "1",
+      "run_id": "38296469528",
+      "system": "Linux",
+      "tree": "cc246ae062b8baf8fd49fd25ed4a6ed1040463fb",
+      "workflow_ref": "logannye/biocompiler/.github/workflows/policy-development.yml@refs/heads/codex/dev-policy/car-controlled-composition"
+    },
+    "metadata": [
+      {
+        "bytes": 12556,
+        "path": "generated/car-controlled-composition/rc4/hosted-38296469528-run.json",
+        "sha256": "43905751150d0eb409e05c13879afe7429ae088228da1e3e790ddcec8a9cb147"
+      },
+      {
+        "bytes": 4037,
+        "path": "generated/car-controlled-composition/rc4/hosted-38296469528-jobs.json",
+        "sha256": "0675665e3e9399d7cf68095c29ddf7909554bc6809225af9a8f88f1cdb7052df"
+      },
+      {
+        "bytes": 775,
+        "path": "generated/car-controlled-composition/rc4/hosted-38296469528-artifacts.json",
+        "sha256": "5992125bec6b1f3963ed8d5b1cea8f09312e76bdd38acfaf818f45aa98647ad1"
+      },
+      {
+        "bytes": 553,
+        "path": "generated/car-controlled-composition/rc4/hosted-38296469528-download.json",
+        "sha256": "b2ed77d9265058115d25ade33d266fd2ad7f671550bc51b8a9a5526584fbf8d6"
+      }
+    ],
+    "native": {
+      "feedback": {
+        "bytes": 797816,
+        "path": "generated/car-controlled-composition/rc4/hosted-38296469528-attempt1/feedback.json",
+        "sha256": "193a3e56c82701381e4d521ee9485b03d94e194f57a545723cf3be213acf589c"
+      },
+      "new_suites": [
+        {
+          "elapsed_seconds": 0.03185160300006373,
+          "name": "test_policy_controlled_material_candidate"
+        },
+        {
+          "elapsed_seconds": 0.27040470800000094,
+          "name": "test_policy_controlled_material_producer"
+        },
+        {
+          "completed_checks": 75,
+          "elapsed_seconds": 1.9678644839999606,
+          "name": "test_policy_controlled_material_check"
+        },
+        {
+          "elapsed_seconds": 1.3663946289999558,
+          "name": "test_policy_controlled_material_service"
+        }
+      ],
+      "suites": 63
+    },
+    "run_id": 38296469528,
+    "timing": {
+      "job_wall_seconds": 1752.0,
+      "native_and_car": {
+        "car_witness_seconds": 87.752,
+        "car_wrapper_seconds": 88.39959239199993,
+        "native_build_seconds": 31.45185143500001,
+        "native_dependencies_seconds": 27.994785909,
+        "native_suite_sum_seconds": 513.4689869380003,
+        "note": "Suite durations overlap in bounded hosted lanes; their sum is not elapsed job time."
+      },
+      "queue_and_initial_schedule_seconds": 85.0,
+      "sdk": {
+        "note": "Sums are campaign/process durations; campaigns ran in overlapping hosted lanes. They are not elapsed job time.",
+        "sum_witness_elapsed_seconds": 1787.232,
+        "sum_wrapper_action_seconds": 1796.209
+      },
+      "steps": [
+        {
+          "name": "Set up job",
+          "number": 1,
+          "seconds": 1.0
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "number": 2,
+          "seconds": 13.0
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "number": 3,
+          "seconds": 10.0
+        },
+        {
+          "name": "Authenticate hosted push and exact sources before native setup",
+          "number": 4,
+          "seconds": 12.0
+        },
+        {
+          "name": "Run ocaml/setup-ocaml@93303b622b2522e4411e295f9e77411a24912ac7",
+          "number": 5,
+          "seconds": 18.0
+        },
+        {
+          "name": "Install ordinary dependencies, build once and run the fixed native suite inventory",
+          "number": 6,
+          "seconds": 326.0
+        },
+        {
+          "name": "Exercise controlled admission through the same fresh native build",
+          "number": 7,
+          "seconds": 2.0
+        },
+        {
+          "name": "Exercise controlled structural material through the same fresh native build",
+          "number": 8,
+          "seconds": 6.0
+        },
+        {
+          "name": "Exercise quantitative assurance through the same fresh native build",
+          "number": 9,
+          "seconds": 235.0
+        },
+        {
+          "name": "Exercise all ten complete SDK campaigns in two bounded lanes",
+          "number": 10,
+          "seconds": 1034.0
+        },
+        {
+          "name": "Exercise the complete CAR reference workflow through the same build",
+          "number": 11,
+          "seconds": 89.0
+        },
+        {
+          "name": "Retain diagnostic evidence even when native work fails",
+          "number": 12,
+          "seconds": 2.0
+        },
+        {
+          "name": "Post Run ocaml/setup-ocaml@93303b622b2522e4411e295f9e77411a24912ac7",
+          "number": 22,
+          "seconds": 0.0
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "number": 23,
+          "seconds": 0.0
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "number": 24,
+          "seconds": 0.0
+        },
+        {
+          "name": "Complete job",
+          "number": 25,
+          "seconds": 0.0
+        }
+      ],
+      "workflow_wall_seconds": 1838.0
+    },
+    "total_campaign_observations": 358,
+    "url": "https://github.com/logannye/biocompiler/actions/runs/38296469528",
+    "workflow": ".github/workflows/policy-development.yml"
+  },
+  "human_use": "unassessed",
+  "independent_audits": {
+    "aggregate_hosted": {
+      "bytes": 9955,
+      "path": "generated/car-controlled-composition/rc4/independent-hosted-audit.json",
+      "sha256": "600e7aaa4ababcab7474c359f2194a13061f08b0370dab3ec19ba8a6f854e2a3"
+    },
+    "controlled_and_quantitative": {
+      "bytes": 7277,
+      "path": "generated/car-controlled-composition/rc4/controlled-quantitative-subaudit.json",
+      "sha256": "35e0c8dda2fe8844bea9f0c664d3b4fc1001e425ab14e91ce209b8e637ff0b92"
+    },
+    "controlled_material": {
+      "bytes": 2816,
+      "path": "generated/car-controlled-composition/rc4/independent-material-hosted-audit-a2a1d533.json",
+      "sha256": "31a065c7ea32f31a4267db9dbae1445d9f32d5be4f48ec7a757d64f744a5d6a2"
+    },
+    "existing_sdk": {
+      "bytes": 156184,
+      "path": "generated/car-controlled-composition/rc4/sdk-artifact-audit.json",
+      "sha256": "9822d49a5c1348d5d7d40bbd34a44ca9ffa61002c5ffe9e9eee0ee7d784a7d1b"
+    },
+    "frozen_local": {
+      "bytes": 16456,
+      "path": "generated/car-controlled-composition/rc4/independent-frozen-local-audit.json",
+      "sha256": "0d71675bd08ea3a126619c68dbe425c89597c94f543ebe4546bac092a2fa253b"
+    },
+    "hosted_identity": {
+      "bytes": 4881,
+      "path": "generated/car-controlled-composition/rc4/independent-hosted-identity-audit.json",
+      "sha256": "11ba766e4d8d387857701fd1192361ae4f165aad805b03aef01acb6ad90183ca"
+    },
+    "native_and_car": {
+      "bytes": 96100,
+      "path": "generated/car-controlled-composition/rc4/native-car-artifact-audit.json",
+      "sha256": "6d92327fcebca7c55410445e4a9152d4eb0a65d08d97e113634531bc03960bd9"
+    }
+  },
+  "installed_acceptance": "not_performed",
+  "integration_or_release": "not_performed",
+  "joined_workflow": "not_performed_RC6_open",
+  "local": {
+    "exact_commands_and_log_pins": [
+      {
+        "checks": [
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "-m",
+              "unittest",
+              "tests.test_controlled_composition_foundation",
+              "tests.test_policy_controlled_composition_source",
+              "tests.test_policy_controlled_composition_description",
+              "tests.test_policy_serialization",
+              "tests.test_policy_expression_source",
+              "tests.test_policy_language_specification",
+              "tests.test_policy_semantic_coverage",
+              "tests.test_policy_public_api_coverage",
+              "tests.test_policy_source_context_coverage",
+              "tests.test_policy_material_rule_coverage",
+              "tests.test_migration_inventory",
+              "tests.test_policy_authoring",
+              "tests.test_policy_builders",
+              "tests.test_policy_builder_boundaries",
+              "tests.test_policy_patterns",
+              "tests.test_policy_handoff",
+              "tests.test_policy_validation",
+              "tests.test_policy_module_linking",
+              "tests.test_core_policy_controlled_composition",
+              "tests.test_policy_controlled_material",
+              "tests.test_policy_controlled_composition_campaign",
+              "tests.test_ci_native_bundle",
+              "tests.test_policy_development",
+              "tests.test_core_boundaries",
+              "tests.test_core_policy_controlled_material",
+              "tests.test_policy_controlled_material_publication",
+              "tests.test_policy_controlled_material_campaign"
+            ],
+            "log": {
+              "bytes": 77921,
+              "path": "generated/car-controlled-composition/rc4/py311-frozen.log",
+              "sha256": "f3004bebdb5a97ac74fdb608feda109f601dda68dafe6ac7b8680a3615d4ee4e"
+            },
+            "name": "py311",
+            "python": "3.11.15",
+            "seconds": 321.173,
+            "tests": 562,
+            "unittest_seconds": 320.817
+          },
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.14.3-macos-aarch64-none/bin/python3.14",
+              "-B",
+              "-m",
+              "unittest",
+              "tests.test_controlled_composition_foundation",
+              "tests.test_policy_controlled_composition_source",
+              "tests.test_policy_controlled_composition_description",
+              "tests.test_policy_serialization",
+              "tests.test_policy_expression_source",
+              "tests.test_policy_language_specification",
+              "tests.test_policy_semantic_coverage",
+              "tests.test_policy_public_api_coverage",
+              "tests.test_policy_source_context_coverage",
+              "tests.test_policy_material_rule_coverage",
+              "tests.test_migration_inventory",
+              "tests.test_policy_authoring",
+              "tests.test_policy_builders",
+              "tests.test_policy_builder_boundaries",
+              "tests.test_policy_patterns",
+              "tests.test_policy_handoff",
+              "tests.test_policy_validation",
+              "tests.test_policy_module_linking",
+              "tests.test_core_policy_controlled_composition",
+              "tests.test_policy_controlled_material",
+              "tests.test_policy_controlled_composition_campaign",
+              "tests.test_ci_native_bundle",
+              "tests.test_policy_development",
+              "tests.test_core_boundaries",
+              "tests.test_core_policy_controlled_material",
+              "tests.test_policy_controlled_material_publication",
+              "tests.test_policy_controlled_material_campaign"
+            ],
+            "log": {
+              "bytes": 77921,
+              "path": "generated/car-controlled-composition/rc4/py314-frozen.log",
+              "sha256": "71c0444e6069d0a80e16375d05e898b5ed126e603748726ba19c47f8f44a3f53"
+            },
+            "name": "py314",
+            "python": "3.14.3",
+            "seconds": 296.913,
+            "tests": 562,
+            "unittest_seconds": 296.545
+          }
+        ],
+        "finished_utc": "2026-10-12T19:25:46.609895+00:00",
+        "group": "pure",
+        "receipt": {
+          "bytes": 5505,
+          "path": "generated/car-controlled-composition/rc4/pure-frozen-results.json",
+          "sha256": "dccaca4010693ab901bfdb3fccf12b28e84f09b13d7926ae502962d749b062b3"
+        },
+        "started_utc": "2026-10-12T19:15:28.184288+00:00",
+        "summed_action_seconds": 618.086,
+        "wall_seconds": 618.425607
+      },
+      {
+        "checks": [
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/generate_policy_wire_schema.py",
+              "--check"
+            ],
+            "log": {
+              "bytes": 70,
+              "path": "generated/car-controlled-composition/rc4/wire-schema-frozen.log",
+              "sha256": "445a68bf29c2f215c2089fb27b282cb327d1b501f33b8e5324da660e544db740"
+            },
+            "name": "wire-schema",
+            "retained_summary": "Language schema and Python/native clients agree on 45 closed records.",
+            "seconds": 0.072
+          },
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/check_policy_semantic_coverage.py"
+            ],
+            "log": {
+              "bytes": 121,
+              "path": "generated/car-controlled-composition/rc4/semantic-frozen.log",
+              "sha256": "cadb7bc995b9085642498b9d0cf22bc93374ee036fd7ae31a26cf2531c137ed3"
+            },
+            "name": "semantic",
+            "retained_summary": "Policy syntax inventory current: 628 distinctions; 628 require dedicated witnesses. Semantic acceptance not established.",
+            "seconds": 0.131
+          },
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/check_policy_public_api_coverage.py"
+            ],
+            "log": {
+              "bytes": 753,
+              "path": "generated/car-controlled-composition/rc4/public-api-frozen.log",
+              "sha256": "ef966a3dfe42f4a7c409cd685f27121113a9b318b1bca674a98777a39193b5d4"
+            },
+            "name": "public-api",
+            "retained_summary": "{\"claim_scope\": \"Static public-source inventory and reviewed witness links only; neither executed coverage nor semantic/native/material/release acceptance.\", \"cli_commands\": 17, \"compatibility_support\": 6, \"coverage\": {\"compatibility_support\": 6, \"dependency\": 731, \"independent_expansion\": 28, \"shared_invariant\": 905, \"source_only\": 353}, \"entries\": 2023, \"exports\": 307, \"files\": 67, \"native_operations\": 43, \"runtime_protocol_scope\": \"Entries count authored AST declarations, fields and methods. Generated or inherited dataclass runtime protocols are represented by reviewed decorator/field/base contracts, not an exhaustive runtime-attribute census; Python record equality is not symbolic policy comparison.\", \"status\": \"source_inventory_checked\"}",
+            "seconds": 0.937
+          },
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/check_policy_source_context_coverage.py"
+            ],
+            "log": {
+              "bytes": 430,
+              "path": "generated/car-controlled-composition/rc4/source-context-frozen.log",
+              "sha256": "6eb9da685de1df740e72d248f870193280e5ebdcc4f546729e7a7f8c08bdeee4"
+            },
+            "name": "source-context",
+            "retained_summary": "{\"contexts\": 43, \"counterexample_inputs\": 3, \"families\": 62, \"native_execution\": \"not_performed\", \"product_imports\": \"not_performed\", \"rules\": 40, \"schema_version\": \"biocompiler.policy_source_context_coverage_receipt.v0.1\", \"semantic_proof\": \"not_established\", \"sources\": 15, \"status\": \"source_slice_current\", \"syntax_rows\": 628, \"whole_source_census\": \"open\", \"whole_stack_census\": \"open\", \"witness_sufficiency\": \"not_assessed\"}",
+            "seconds": 0.236
+          },
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/check_policy_material_rule_coverage.py"
+            ],
+            "log": {
+              "bytes": 866,
+              "path": "generated/car-controlled-composition/rc4/material-frozen.log",
+              "sha256": "7cb828f815a02525bac122169cc0e2c231fe7dd1583093f47d68325c144e88dc"
+            },
+            "name": "material",
+            "retained_summary": "{\"claim_scope\": \"reviewed_contextual_rule_and_witness_source_inventory_only\", \"component_route\": {\"historical_feedback\": \"reference_only_not_reauthenticated_or_transferred\", \"rules\": 40, \"semantic_proof\": \"not_established\", \"sources\": 175, \"status\": \"source_inventory_current\", \"test_execution\": \"not_performed\", \"witness_sources\": 181}, \"expression_route\": {\"empirical_function\": \"not_established\", \"native_acceptance\": \"not_established\", \"rules\": 7, \"semantic_proof\": \"not_established\", \"sources\": 28, \"status\": \"source_inventory_current\", \"test_execution\": \"not_performed\", \"witness_sources\": 6}, \"rules\": 62, \"rules_with_pending_witnesses\": 16, \"schema_version\": \"biocompiler.policy_material_rule_coverage.v0.1\", \"semantic_proof\": \"not_established\", \"sources\": 266, \"status\": \"source_inventory_current\", \"test_execution\": \"not_performed\", \"witness_sources\": 30}",
+            "seconds": 1.05
+          },
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/migration_inventory.py",
+              "--check"
+            ],
+            "log": {
+              "bytes": 42,
+              "path": "generated/car-controlled-composition/rc4/migration-frozen.log",
+              "sha256": "3a53b8d527258ecf5ae4822b9e04b0febd5fa45f8ddf0eb38ba590d4d022c54a"
+            },
+            "name": "migration",
+            "retained_summary": "Migration inventory checked: 4513 entries",
+            "seconds": 3.663
+          },
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/check_controlled_composition_foundation.py"
+            ],
+            "log": {
+              "bytes": 729,
+              "path": "generated/car-controlled-composition/rc4/foundation-frozen.log",
+              "sha256": "0feca7f36b1e9c5020c636faae8976644887762e9c0ae59939007621ab90b087"
+            },
+            "name": "foundation",
+            "retained_summary": "{\"acceptance\": false, \"canonical_input_sha256\": {\"data/controlled_composition_v01/acceptance-cases.json\": \"c0915d5c641057d27e8427561b7b2350b5de86033709392319ce58ba5ea1dec3\", \"protocol/controlled-composition-profile-v0.1.json\": \"876db047b5d9f6a043fe728bfe3637107149dccfa4668348bccd460bd3e1177c\"}, \"case_count\": 41, \"claim_scope\": \"Closed declarative shape and complete named-case accounting only; expected verdicts were not executed.\", \"expected_verdict_counts\": {\"reject\": 9, \"satisfies\": 13, \"unknown\": 8, \"unsupported\": 2, \"violates\": 9}, \"native_status\": \"not_run\", \"schema_version\": \"biocompiler.controlled_composition_foundation_check.v0.1\", \"semantic_execution\": \"not_performed\", \"status\": \"declarative_inventory_checked\"}",
+            "seconds": 0.074
+          },
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/check_core_boundaries.py"
+            ],
+            "log": {
+              "bytes": 103,
+              "path": "generated/car-controlled-composition/rc4/boundaries-frozen.log",
+              "sha256": "66bebb37a4dfd5f477d6d0de5149f20c190f0c6941e4e5a13a16ec0ec4665eb0"
+            },
+            "name": "boundaries",
+            "retained_summary": "Core dependency boundaries passed: verifier/checker have no producer dependencies; shared TCB recorded",
+            "seconds": 1.214
+          }
+        ],
+        "finished_utc": "2026-10-12T19:15:35.650751+00:00",
+        "group": "static",
+        "receipt": {
+          "bytes": 9462,
+          "path": "generated/car-controlled-composition/rc4/static-frozen-results.json",
+          "sha256": "4eacf7a1e50b2dfca79964831dd84584eb497c328e92bf8940363f839bf65f32"
+        },
+        "started_utc": "2026-10-12T19:15:27.043591+00:00",
+        "summed_action_seconds": 7.377,
+        "wall_seconds": 8.60716
+      },
+      {
+        "checks": [
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "-m",
+              "mypy",
+              "--config-file",
+              "tools/mypy-core.ini",
+              "--cache-dir=/dev/null",
+              "--no-incremental"
+            ],
+            "log": {
+              "bytes": 44,
+              "path": "generated/car-controlled-composition/rc4/mypy-core-frozen.log",
+              "sha256": "e6a337f5d3c5bfc91aa5e09a3e3e6ba1ed5d06d2dac23e22cac9db017a5c00ea"
+            },
+            "name": "mypy-core",
+            "seconds": 5.476,
+            "source_files": 42
+          },
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "-m",
+              "mypy",
+              "--config-file",
+              "tools/mypy-policy.ini",
+              "--cache-dir=/dev/null",
+              "--no-incremental"
+            ],
+            "log": {
+              "bytes": 44,
+              "path": "generated/car-controlled-composition/rc4/mypy-policy-frozen.log",
+              "sha256": "a459b8765e4db93f08156e7d98399988a9b87243303f92178f28c9db897f6066"
+            },
+            "name": "mypy-policy",
+            "seconds": 4.136,
+            "source_files": 48
+          }
+        ],
+        "finished_utc": "2026-10-12T19:15:36.927665+00:00",
+        "group": "typing",
+        "receipt": {
+          "bytes": 3178,
+          "path": "generated/car-controlled-composition/rc4/typing-frozen-results.json",
+          "sha256": "29bbf7bd48e4fce8067620a8fb71dc885399375b2df52b25e9bbd4d566e52d4b"
+        },
+        "started_utc": "2026-10-12T19:15:27.043317+00:00",
+        "summed_action_seconds": 9.612,
+        "wall_seconds": 9.884348
+      }
+    ],
+    "native_build_or_execution": false,
+    "platform": {
+      "machine": "arm64",
+      "system": "Darwin"
+    },
+    "pure_python": {
+      "receipt": {
+        "bytes": 5505,
+        "path": "generated/car-controlled-composition/rc4/pure-frozen-results.json",
+        "sha256": "dccaca4010693ab901bfdb3fccf12b28e84f09b13d7926ae502962d749b062b3"
+      },
+      "tests_per_version": 562,
+      "versions": [
+        "3.11.15",
+        "3.14.3"
+      ]
+    },
+    "static": {
+      "checks": 8,
+      "receipt": {
+        "bytes": 9462,
+        "path": "generated/car-controlled-composition/rc4/static-frozen-results.json",
+        "sha256": "4eacf7a1e50b2dfca79964831dd84584eb497c328e92bf8940363f839bf65f32"
+      }
+    },
+    "typing": {
+      "configurations": 2,
+      "core_files": 42,
+      "policy_files": 48,
+      "receipt": {
+        "bytes": 3178,
+        "path": "generated/car-controlled-composition/rc4/typing-frozen-results.json",
+        "sha256": "29bbf7bd48e4fce8067620a8fb71dc885399375b2df52b25e9bbd4d566e52d4b"
+      }
+    }
+  },
+  "milestone": "RC4",
+  "protected_checkouts": {
+    "car-mvp-roadmap": {
+      "branch": "codex/dev-policy/car-installed-timeout",
+      "changed_files": {},
+      "head": "0b19ef68ad029de1c10245008fddf81a3a4bfddd",
+      "status": ""
+    },
+    "car-second-reference": {
+      "branch": "codex/dev-policy/car-second-reference",
+      "changed_files": {
+        "docs/car-composition-reversible-control-roadmap-2026-10-12.md": "592017ba0918114edc4737dd61de5f67b0f9b69dcd4e60cd3290224e7c0e39ce",
+        "docs/car-mvp-and-expansion-roadmap-2026-10-10.md": "96fdbfc1b0a784eabc85bd58a1c0c1d602f80bba5a6d064006b464c5e6fe5a7e"
+      },
+      "head": "11b6b6da94497fea9afae8dfa12dd900c7295f9f",
+      "status": " M docs/car-mvp-and-expansion-roadmap-2026-10-10.md\n?? docs/car-composition-reversible-control-roadmap-2026-10-12.md"
+    }
+  },
+  "protected_checkpoint": {
+    "bytes": 972,
+    "path": "generated/car-controlled-composition/rc4/protected-checkouts-closeout.json",
+    "sha256": "e38cf4822effea3ed326f2bf5f20ed844bfd4a14e18d54d6d776399dd0f470fd"
+  },
+  "quantitative_range_obligation": "If a selected real interaction requires expression or stoichiometric ranges, acquire the complete original inputs and add a versioned contract with independent checks before named-case completion.",
+  "real_reference_complete_rna": "not_supplied_RC2_open",
+  "recorded_utc": "2026-10-12T19:50:58.061545+00:00",
+  "release_acceptance": false,
+  "schema_version": "biocompiler.controlled_composition_rc4_validation.v0.1",
+  "status": "passed_hosted_development_and_independent_artifact_audits",
+  "superseded_failure": {
+    "conclusion": "failure",
+    "correction": "Two exact protocol expectation updates and separated request-decoder/checker budget tests; production code and artificial originals unchanged. The complete corrected hosted gate passed freshly.",
+    "receipt": {
+      "bytes": 4980,
+      "path": "generated/car-controlled-composition/rc4/hosted-38294711313-failure-receipt.json",
+      "sha256": "f32fca5b42cedef90428cc6b3e4c396aa78387114cb304604ecf3722ccd75bf8"
+    },
+    "revision": "f5d87eacda4abe028ee0a98e8da28deafa000a89",
+    "run_id": 38294711313
+  },
+  "tested_source": {
+    "base_commit": "636d6acc5a355c51972c800a23ea691e572aeeb0",
+    "changed_files": [
+      {
+        "bytes": 3840,
+        "path": ".github/workflows/policy-development.yml",
+        "sha256": "88ccc4b2bd962623382d51cb474f5a9d62a32381bd7a6cb6028c09b339e65bd4"
+      },
+      {
+        "bytes": 8504,
+        "path": "core/lib/checker/policy_controlled_material_check.ml",
+        "sha256": "20c799a05b9135d24efa0221401b550e975c7fe9e782f5a21e09daaf8b6759d0"
+      },
+      {
+        "bytes": 1827,
+        "path": "core/lib/checker/policy_controlled_material_check.mli",
+        "sha256": "213408c88dd26447db97a41e0d93c845f6c4cd4170aa66d1383757a371ba76a3"
+      },
+      {
+        "bytes": 1161,
+        "path": "core/lib/compiler/policy_controlled_material_producer.ml",
+        "sha256": "6c268ee8a478b1785f439b9712085aa798266a80ff252668756a3753dd4a0be4"
+      },
+      {
+        "bytes": 580,
+        "path": "core/lib/compiler/policy_controlled_material_producer.mli",
+        "sha256": "b522cb4dd3242e32d235ea54e4b1d386403c45d2e459d52c16f6883ce1646312"
+      },
+      {
+        "bytes": 2107,
+        "path": "core/lib/domain/policy_controlled_material_candidate.ml",
+        "sha256": "57d44f4a2725d4444b978a8f96786cc3706a020d1650d24b8c84f4e2993b1f82"
+      },
+      {
+        "bytes": 448,
+        "path": "core/lib/domain/policy_controlled_material_candidate.mli",
+        "sha256": "17766693acf22db20f2df4f185ce90950764eb120fa593f45077c28dea92b34f"
+      },
+      {
+        "bytes": 11988,
+        "path": "core/lib/producer_service/producer_service.ml",
+        "sha256": "ccb8b3db3ad2ed31278237f941f2c91d5aa99ba48c04446dedbd3627612b5559"
+      },
+      {
+        "bytes": 3373,
+        "path": "core/lib/service/policy_controlled_material_format.ml",
+        "sha256": "fabbba66d5c56551d29e7d6ba31d704fdec25d8c9abf9795e09572251740f93b"
+      },
+      {
+        "bytes": 300,
+        "path": "core/lib/service/policy_controlled_material_format.mli",
+        "sha256": "3c2b9e17afdc6e2f221868a04b15d84db542866b017bb1a705e79776a328e3a9"
+      },
+      {
+        "bytes": 8510,
+        "path": "core/lib/service/policy_controlled_material_service.ml",
+        "sha256": "3b519118c95d2b424993562f8ea7086532b99b8b5cbe0001d545ba99d5f5487c"
+      },
+      {
+        "bytes": 821,
+        "path": "core/lib/service/policy_controlled_material_service.mli",
+        "sha256": "b7aca5c1744ee79b6d541432af1f4aef2f0fdde14b7ac77397796714c90a05a8"
+      },
+      {
+        "bytes": 20162,
+        "path": "core/lib/service/service.ml",
+        "sha256": "75f151fc85a60611e42f34bec9ea43f3929393086b4f532cc3ee8c328c321a15"
+      },
+      {
+        "bytes": 33606,
+        "path": "core/test/data/policy_controlled_material_v01.json",
+        "sha256": "30f65f542126815b135e0398cfc5b407bbd07288a9918063f136a8a768d54d1e"
+      },
+      {
+        "bytes": 44119,
+        "path": "core/test/dune",
+        "sha256": "5456b722e545dfac692bd6930fbdfd5b6079c9b28fc28d9b8917acd09d3b9680"
+      },
+      {
+        "bytes": 4866,
+        "path": "core/test/test_policy_controlled_material_candidate.ml",
+        "sha256": "930647c65e2906b46d094e45be51730823f30a79b52b5fe12e3d2d67f19a64ac"
+      },
+      {
+        "bytes": 17204,
+        "path": "core/test/test_policy_controlled_material_check.ml",
+        "sha256": "64c6e9950b054c95e183c5ad6e9aeb9d6d3a556bcbebfef02673bc2af47265b3"
+      },
+      {
+        "bytes": 6621,
+        "path": "core/test/test_policy_controlled_material_producer.ml",
+        "sha256": "6e4987aae40b3be9cd0ce8962422697816119d089ee8bb7a8dbe8495330560bb"
+      },
+      {
+        "bytes": 7682,
+        "path": "core/test/test_policy_controlled_material_service.ml",
+        "sha256": "6d41bfb2035a408f3efb0a7ebbd6c39f21eb98761acfbda17cdb63bf80794376"
+      },
+      {
+        "bytes": 29598,
+        "path": "core/test/test_producer_protocol.ml",
+        "sha256": "236b13baa7ea5cb66adead4c5e7ecc3ca0fd4badf8609603e7aa089188524c68"
+      },
+      {
+        "bytes": 9775,
+        "path": "core/test/test_protocol.ml",
+        "sha256": "29734ce018cda03d8840a41cadcaf7c85c1b94d22d6a04f105a482ada535e391"
+      },
+      {
+        "bytes": 5623,
+        "path": "docs/controlled-composition-material-v0.1.md",
+        "sha256": "1d90f9245c3f82ddf1b9b3f4b04df4020000f860fe250e72e0b7b14950ae9f89"
+      },
+      {
+        "bytes": 14159,
+        "path": "docs/controlled-composition-progress.md",
+        "sha256": "11c5d6fc201b04dff3538d50cc8fcf2c1bf1221f94e7a773ecdbc2181042c72d"
+      },
+      {
+        "bytes": 57656,
+        "path": "docs/development-validation.md",
+        "sha256": "f097c27f9df15754bb5422f7e2d94bf77b7ba2d5d3bc7e75233e1babd45fe0bf"
+      },
+      {
+        "bytes": 9278,
+        "path": "docs/migration-coverage.md",
+        "sha256": "dcb31a8711f3e55834cd0482676a200868a2f7938589bc4caf97fee673b1e5f7"
+      },
+      {
+        "bytes": 42293,
+        "path": "protocol/core-v1.md",
+        "sha256": "3a4d569fe08af9f7d37a0fb95f7ae3239c7bddcffc5c7934f0c74bd4d98da8b9"
+      },
+      {
+        "bytes": 2124521,
+        "path": "protocol/migration-inventory.json",
+        "sha256": "f237c2bc3dfe2472129d5fb14f6ddfce7bd883edca1033566c050e007e0fa907"
+      },
+      {
+        "bytes": 300828,
+        "path": "protocol/policy-component-rule-coverage-v0.1.json",
+        "sha256": "3dfa38525ddb8279c8054a8ce35f9f5a5633e1bcd729889370d459ef6ee6a283"
+      },
+      {
+        "bytes": 29370,
+        "path": "protocol/policy-expression-rule-coverage-v0.1.json",
+        "sha256": "cfe0f4c7edf30051c2f0079c398bd6f91e5abcb74cc549a9a5ba7bfc9e3ce5d3"
+      },
+      {
+        "bytes": 394100,
+        "path": "protocol/policy-material-rule-coverage-v0.1.json",
+        "sha256": "dbcb37030cddf5d99bc03d026ab15e9cca239240fc9e55e08ec5df6ed76eca19"
+      },
+      {
+        "bytes": 1924215,
+        "path": "protocol/policy-public-api-coverage-v0.1.json",
+        "sha256": "22af9f37ab39953fe4d98416e31d4b2b5c5098f37c568c926bc0798d75d71ffb"
+      },
+      {
+        "bytes": 24965,
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "sha256": "8783c81be2f6752789b57179e36a46b5dc0d9c5020270fbcb4ea23a6bcfadf9d"
+      },
+      {
+        "bytes": 21453,
+        "path": "src/biocompiler/policy/controlled_material.py",
+        "sha256": "b26ec6dc51daa8ad94d4de6b226cd3afd24d4c4bb8be2cfb0bf20f10dd5b37ea"
+      },
+      {
+        "bytes": 25297,
+        "path": "tests/test_ci_native_bundle.py",
+        "sha256": "d02fc6eba82566fb90be0078894f067614dc7def8ca730c075e9a8da75fb33b2"
+      },
+      {
+        "bytes": 61034,
+        "path": "tests/test_core_boundaries.py",
+        "sha256": "cc2d3ba367883c682182838d12dd1e2305b6b87eb4ab937fc5eec2be4d264c66"
+      },
+      {
+        "bytes": 12432,
+        "path": "tests/test_core_policy_controlled_material.py",
+        "sha256": "e33cbdd06f3a8bf3a2d0ae2c8424c56452201575a69020dc964f768087143c60"
+      },
+      {
+        "bytes": 28046,
+        "path": "tests/test_migration_inventory.py",
+        "sha256": "205359215cdb0b72372ab18ddbcbff78b3af9e79103d2c675340a36af90c9d61"
+      },
+      {
+        "bytes": 3657,
+        "path": "tests/test_policy_controlled_material_campaign.py",
+        "sha256": "780219281ebde2404b6b78a8ba864fbbcfc20e8c574fe0f2d24869c54b3bd72f"
+      },
+      {
+        "bytes": 5829,
+        "path": "tests/test_policy_controlled_material_publication.py",
+        "sha256": "5fe137358447700457da021aa56789e9c9fee9afd1056ec7dd5575e02e51bec3"
+      },
+      {
+        "bytes": 34866,
+        "path": "tests/test_policy_development.py",
+        "sha256": "38c53db61ab094566b5c2f0e8f11d2c13cf57924a01805a623b7eb06b15d65eb"
+      },
+      {
+        "bytes": 102417,
+        "path": "tests/test_policy_material_rule_coverage.py",
+        "sha256": "396245ed93f5c7b83e481cd3f4bcc482915ded6a06ebd0028dec92bd84cb1ef0"
+      },
+      {
+        "bytes": 73820,
+        "path": "tests/test_policy_public_api_coverage.py",
+        "sha256": "e45d342e7cedf08b0ba41d6b2a1c7976d2101a396df72217d6b99cc87762b440"
+      },
+      {
+        "bytes": 26576,
+        "path": "tests/test_policy_semantic_coverage.py",
+        "sha256": "8e0edd8ef3b8a6ff62b3c21dbdc62c7d10eb583cdd4a3ecf1786059ee2d54a08"
+      },
+      {
+        "bytes": 71131,
+        "path": "tools/check_core_boundaries.py",
+        "sha256": "5186885eb6ac8b54bc833d6d2adad716fc294f804ee8fdca2f8f73d29592ff13"
+      },
+      {
+        "bytes": 19625,
+        "path": "tools/check_policy_controlled_material.py",
+        "sha256": "9cf469c16a81d8f336abad5479c141ac4f014e31f84c708ce0172954e63ec155"
+      },
+      {
+        "bytes": 54080,
+        "path": "tools/check_policy_development.py",
+        "sha256": "72081a6e825561fd8498bb7c118b45f072274d6acb5033c68d1c259b3459900e"
+      },
+      {
+        "bytes": 79281,
+        "path": "tools/check_policy_material_rule_coverage.py",
+        "sha256": "8fc319976dc7e47e9c51b3ac8dab048bcea6722f6db75d3bba3a1fe0eeb3ac7d"
+      },
+      {
+        "bytes": 74351,
+        "path": "tools/check_policy_public_api_coverage.py",
+        "sha256": "f13443cd820aaa4f7f1f2e390f102b348b7d49d28babf1ee0820d9c77eab08a3"
+      },
+      {
+        "bytes": 20633,
+        "path": "tools/ci_native_bundle.py",
+        "sha256": "506985ebf72f12b5997fadffeedc2181044e4f8ccbd08e0cf63ccf11016886d5"
+      },
+      {
+        "bytes": 67988,
+        "path": "tools/migration_inventory.py",
+        "sha256": "9efe4721eca41b8374700bfd819e231887827198c2561916da46e964051356eb"
+      },
+      {
+        "bytes": 2157,
+        "path": "tools/mypy-core.ini",
+        "sha256": "81927f898422057af22c35fd96faacd0e2b3ebf50a1408f04e9a1fd4a97bec7a"
+      },
+      {
+        "bytes": 959,
+        "path": "tools/mypy-policy.ini",
+        "sha256": "02dc5eecf2d5bcb2a1572e260fdff32287805f520b873b48e324a08e72f16a7f"
+      }
+    ],
+    "commit": "a2a1d53345987cfd339bef17e696fa5141293b76",
+    "manifest": {
+      "bytes": 9489,
+      "path": "generated/car-controlled-composition/rc4/frozen-source-manifest.json",
+      "sha256": "360c47f0157ca6c081c28a27477b31e2b1c870efecbe413acdedf9ac6f2f5f8a"
+    },
+    "source_binding_note": "The later documentation-only checkpoint has no new native acceptance. The implementation, tests and fixtures were frozen throughout final validation.",
+    "tree": "cc246ae062b8baf8fd49fd25ed4a6ed1040463fb"
+  },
+  "therapeutic_export": "withheld"
+}
