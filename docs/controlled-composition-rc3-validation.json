@@ -1,0 +1,1092 @@
+{
+  "branch": "codex/dev-policy/car-controlled-composition",
+  "cross_platform_native_acceptance": "not_performed",
+  "hosted": {
+    "artifact": {
+      "archive_download_url": "https://api.github.com/repos/logannye/biocompiler/actions/artifacts/11764721717/zip",
+      "created_at": "2026-10-12T18:15:53Z",
+      "digest": "sha256:0af0b5ea7044442df9132faee58cb8d758747be04249194d391030432572b18c",
+      "expired": false,
+      "expires_at": "2026-10-19T18:15:51Z",
+      "id": 11764721717,
+      "name": "development-feedback-38283992405-1",
+      "node_id": "MDg6QXJ0aWZhY3QxMTc2NDcyMTcxNw==",
+      "size_in_bytes": 11256410,
+      "updated_at": "2026-10-12T18:15:53Z",
+      "url": "https://api.github.com/repos/logannye/biocompiler/actions/artifacts/11764721717",
+      "workflow_run": {
+        "head_branch": "codex/dev-policy/car-controlled-composition",
+        "head_repository_id": 1395674522,
+        "head_sha": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+        "id": 38283992405,
+        "repository_id": 1395674522
+      }
+    },
+    "attempt": 1,
+    "binary_audit_limit": "Native executable bytes are not included in this development artifact. Independent audit verifies consistency of recorded binary pins across build and campaign receipts, not an independent rehash of missing binary bytes.",
+    "car": {
+      "evidence_files": 29,
+      "observations": 22,
+      "receipt": {
+        "bytes": 21071,
+        "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/car-payload-sdk-witness.json",
+        "sha256": "6cdc9091fb404ba9cacccd1952a567753e969fc81ecf04bd90e9b59877d123d8"
+      },
+      "scope": "conditional_exact_public_nominal_CAR_material_not_biological_function"
+    },
+    "conclusion": "success",
+    "controlled": {
+      "domain_census": {
+        "baseline": {
+          "histories": 1,
+          "prefixes": 12,
+          "transitions": 11
+        },
+        "cartesian": {
+          "histories": 12,
+          "prefixes": 114,
+          "transitions": 113
+        }
+      },
+      "observations": 14,
+      "receipt": {
+        "bytes": 6394,
+        "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/controlled-composition.json",
+        "sha256": "c2b30717294dc437798f631b5d2459c61b0e2c559258e01be13fdd51fed46863"
+      }
+    },
+    "core_verify_pins": {
+      "core": {
+        "bytes": 27552800,
+        "sha256": "6d4d94c88d7030a48b15b5f11177bc8f55972930c2244def7dbf5d92eeda691a"
+      },
+      "verify": {
+        "bytes": 21835048,
+        "sha256": "a882e089b59b586c2969e87884b64933a59b5fc59679c78b94ad19a57176ff54"
+      }
+    },
+    "download": {
+      "archive": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1.zip",
+      "archive_bytes": 11256410,
+      "directory": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1",
+      "entries": 487,
+      "github_digest_verified": true,
+      "sha256": "0af0b5ea7044442df9132faee58cb8d758747be04249194d391030432572b18c",
+      "uncompressed_bytes": 131191013
+    },
+    "existing_sdk": {
+      "campaigns": 10,
+      "receipts": [
+        {
+          "elapsed_seconds": 187.679,
+          "observations": 26,
+          "receipt": {
+            "bytes": 12414,
+            "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/sdk-witness.json",
+            "sha256": "57127ae54b628b4f491081113819de1094bd4270dbd19934415dfcb1a68ce0b4"
+          }
+        },
+        {
+          "elapsed_seconds": 189.262,
+          "observations": 26,
+          "receipt": {
+            "bytes": 12139,
+            "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/instance-sdk-witness.json",
+            "sha256": "560d0d1d29f11ed18ec061c2161d57981179a7065903f4abb98e8e1c7018acdd"
+          }
+        },
+        {
+          "elapsed_seconds": 203.917,
+          "observations": 26,
+          "receipt": {
+            "bytes": 13494,
+            "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/prerequisite-sdk-witness.json",
+            "sha256": "7083edf6fb39478a35f113c48f2babd6370665e1f913451cdfde5ef4957399cb"
+          }
+        },
+        {
+          "elapsed_seconds": 238.059,
+          "observations": 26,
+          "receipt": {
+            "bytes": 13793,
+            "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/two-observation-sdk-witness.json",
+            "sha256": "c11467f7f4ab49fc002a4ffbcd04d94ee02acbcad8f9901382830227d8e4a3fd"
+          }
+        },
+        {
+          "elapsed_seconds": 226.729,
+          "observations": 26,
+          "receipt": {
+            "bytes": 13299,
+            "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/multi-member-sdk-witness.json",
+            "sha256": "a2a9d8c0f7fb696924dce0d9898587a8611170378a4ea5eaa254ae3c28794a92"
+          }
+        },
+        {
+          "elapsed_seconds": 244.374,
+          "observations": 26,
+          "receipt": {
+            "bytes": 13953,
+            "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/grounded-helper-sdk-witness.json",
+            "sha256": "1bda9d9736994ebe40da096bebfbf5c749135135aa56bee8afaadd5c34115b0e"
+          }
+        },
+        {
+          "elapsed_seconds": 1166.739,
+          "observations": 35,
+          "receipt": {
+            "bytes": 15930,
+            "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/selection-sdk-witness.json",
+            "sha256": "2b9df3222cd80b9a292bac09e6bbf5f3bebf29b34c1d0b63b197176c1c92f8c5"
+          }
+        },
+        {
+          "elapsed_seconds": 81.462,
+          "observations": 33,
+          "receipt": {
+            "bytes": 12739,
+            "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/staged-source-sdk-witness.json",
+            "sha256": "5e6cdd35c6edeb9658e6691d20b42c822ff9f3a8cb310234e5fc52e84222335b"
+          }
+        },
+        {
+          "elapsed_seconds": 124.291,
+          "observations": 16,
+          "receipt": {
+            "bytes": 10510,
+            "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/staged-material-sdk-witness.json",
+            "sha256": "18ec62e6cbc698eb05cd0ef577d3db0612ae3f326154c15493edf349c7334b65"
+          }
+        },
+        {
+          "elapsed_seconds": 541.927,
+          "observations": 38,
+          "receipt": {
+            "bytes": 22077,
+            "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/researcher-alpha-sdk-witness.json",
+            "sha256": "4d7bc989b019f43dc42ff3d9e0b43bcc71662b0e367f250847e92416d80f4e87"
+          }
+        }
+      ],
+      "total_observations": 278
+    },
+    "identity": {
+      "event": "push",
+      "machine": "x86_64",
+      "ref": "refs/heads/codex/dev-policy/car-controlled-composition",
+      "repository": "logannye/biocompiler",
+      "revision": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+      "run_attempt": "1",
+      "run_id": "38283992405",
+      "system": "Linux",
+      "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c",
+      "workflow_ref": "logannye/biocompiler/.github/workflows/policy-development.yml@refs/heads/codex/dev-policy/car-controlled-composition"
+    },
+    "metadata": [
+      {
+        "bytes": 12522,
+        "path": "generated/car-controlled-composition/rc3/hosted-38283992405-run.json",
+        "sha256": "dc48ce762f38c471a60a7c7b05901484d7740663670dddb7c06f60d490c4e818"
+      },
+      {
+        "bytes": 3820,
+        "path": "generated/car-controlled-composition/rc3/hosted-38283992405-jobs.json",
+        "sha256": "91bc4f99ae576a17e2aa9bc9130c5b197fd055b3c80cb22c4cf3c8a3aae9659e"
+      },
+      {
+        "bytes": 775,
+        "path": "generated/car-controlled-composition/rc3/hosted-38283992405-artifacts.json",
+        "sha256": "eef8c9dcc444620a26d916421bc73ad42fbbf86d1a9619e35eae02bdcd13442f"
+      },
+      {
+        "bytes": 375,
+        "path": "generated/car-controlled-composition/rc3/hosted-38283992405-download.json",
+        "sha256": "b9a36e55037815eaf998dadc4d0b12ef211baf73155e3b4a3a22669d33a01f76"
+      }
+    ],
+    "native": {
+      "feedback": {
+        "bytes": 783537,
+        "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/feedback.json",
+        "sha256": "dd6787ae4d978497e35db35967ddbdb17edef6160e0672269d22e8b303316ed2"
+      },
+      "new_suites": [
+        "test_policy_controlled_source",
+        "test_policy_controlled_domain",
+        "test_policy_controlled_composition_admission",
+        "test_policy_controlled_composition_service"
+      ],
+      "status": "passed",
+      "suites": 59
+    },
+    "quantitative": {
+      "observations": 21,
+      "receipt": {
+        "bytes": 15936,
+        "path": "generated/car-controlled-composition/rc3/hosted-38283992405-attempt1/quantitative-assurance.json",
+        "sha256": "318dba5456f24a875feaf6dde8b423e53a2d8b715841aa8088475826d976c56c"
+      }
+    },
+    "release_acceptance": false,
+    "run_id": 38283992405,
+    "timing": {
+      "dependencies_and_build": [
+        {
+          "elapsed_seconds": 41.89808286899999,
+          "name": "dependencies",
+          "returncode": 0,
+          "status": "passed"
+        },
+        {
+          "elapsed_seconds": 45.601220203000025,
+          "name": "build",
+          "returncode": 0,
+          "status": "passed"
+        }
+      ],
+      "job_seconds": 3084.0,
+      "note": "Single measured Linux development job, not a generalized performance result or release acceptance.",
+      "phases": [
+        {
+          "name": "Install ordinary dependencies, build once and run the fixed native suite inventory",
+          "seconds": 551.0
+        },
+        {
+          "name": "Exercise controlled admission through the same fresh native build",
+          "seconds": 2.0
+        },
+        {
+          "name": "Exercise quantitative assurance through the same fresh native build",
+          "seconds": 408.0
+        },
+        {
+          "name": "Exercise all ten complete SDK campaigns in two bounded lanes",
+          "seconds": 1875.0
+        },
+        {
+          "name": "Exercise the complete CAR reference workflow through the same build",
+          "seconds": 177.0
+        },
+        {
+          "name": "Retain diagnostic evidence even when native work fails",
+          "seconds": 2.0
+        }
+      ],
+      "setup_before_dependency_build_test_seconds": 66.0
+    },
+    "url": "https://github.com/logannye/biocompiler/actions/runs/38283992405",
+    "workflow": ".github/workflows/policy-development.yml"
+  },
+  "independent_audits": {
+    "hosted": {
+      "bytes": 12214,
+      "path": "generated/car-controlled-composition/rc3/independent-hosted-audit.json",
+      "sha256": "a1a56964c67cf31eda846f2017e75fc7b8c9605ed8f073c4e42b28b897e9975e"
+    },
+    "legacy_preservation": {
+      "bytes": 20633,
+      "path": "generated/car-controlled-composition/rc3/legacy-preservation-audit.json",
+      "sha256": "45cb5c121938c893ed82f62abc57275dffaa501d65e08a6eaab2bfee8d80804d"
+    },
+    "local": {
+      "bytes": 11209,
+      "path": "generated/car-controlled-composition/rc3/independent-frozen-local-audit.json",
+      "sha256": "7ab106dad6b24866e7e784de6ac02654aeaa49dbbac0c5da72f8ecba79daa1d8"
+    }
+  },
+  "installed_acceptance": "not_performed",
+  "local": {
+    "native_build_or_execution": false,
+    "platform": {
+      "machine": "arm64",
+      "release": "25.2.0",
+      "system": "Darwin"
+    },
+    "pure_python": {
+      "receipt": {
+        "bytes": 3661,
+        "path": "generated/car-controlled-composition/rc3/pure-test-frozen-results.json",
+        "sha256": "00aaa16ac238dfc39c63a330dbe1c433435579685861546c257e6c63b62cd172"
+      },
+      "results": {
+        "after_revision": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+        "after_status": "",
+        "after_tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c",
+        "before_revision": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+        "before_tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c",
+        "results": [
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "-m",
+              "unittest",
+              "tests.test_controlled_composition_foundation",
+              "tests.test_policy_controlled_composition_source",
+              "tests.test_policy_controlled_composition_description",
+              "tests.test_policy_serialization",
+              "tests.test_policy_expression_source",
+              "tests.test_policy_language_specification",
+              "tests.test_policy_semantic_coverage",
+              "tests.test_policy_public_api_coverage",
+              "tests.test_policy_source_context_coverage",
+              "tests.test_policy_material_rule_coverage",
+              "tests.test_migration_inventory",
+              "tests.test_policy_authoring",
+              "tests.test_policy_builders",
+              "tests.test_policy_builder_boundaries",
+              "tests.test_policy_patterns",
+              "tests.test_policy_handoff",
+              "tests.test_policy_validation",
+              "tests.test_policy_module_linking",
+              "tests.test_core_policy_controlled_composition",
+              "tests.test_policy_controlled_material",
+              "tests.test_policy_controlled_composition_campaign",
+              "tests.test_ci_native_bundle",
+              "tests.test_policy_development",
+              "tests.test_core_boundaries",
+              "-q"
+            ],
+            "exit_code": 0,
+            "label": "py311",
+            "log": "generated/car-controlled-composition/rc3/py311-frozen.log",
+            "revision": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+            "seconds": 301.063,
+            "sha256": "953489b9678c01287301b5a85449d8eec19d2064733e14b2c1f83579062af3f1",
+            "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+          },
+          {
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.14.3-macos-aarch64-none/bin/python3.14",
+              "-B",
+              "-m",
+              "unittest",
+              "tests.test_controlled_composition_foundation",
+              "tests.test_policy_controlled_composition_source",
+              "tests.test_policy_controlled_composition_description",
+              "tests.test_policy_serialization",
+              "tests.test_policy_expression_source",
+              "tests.test_policy_language_specification",
+              "tests.test_policy_semantic_coverage",
+              "tests.test_policy_public_api_coverage",
+              "tests.test_policy_source_context_coverage",
+              "tests.test_policy_material_rule_coverage",
+              "tests.test_migration_inventory",
+              "tests.test_policy_authoring",
+              "tests.test_policy_builders",
+              "tests.test_policy_builder_boundaries",
+              "tests.test_policy_patterns",
+              "tests.test_policy_handoff",
+              "tests.test_policy_validation",
+              "tests.test_policy_module_linking",
+              "tests.test_core_policy_controlled_composition",
+              "tests.test_policy_controlled_material",
+              "tests.test_policy_controlled_composition_campaign",
+              "tests.test_ci_native_bundle",
+              "tests.test_policy_development",
+              "tests.test_core_boundaries",
+              "-q"
+            ],
+            "exit_code": 0,
+            "label": "py314",
+            "log": "generated/car-controlled-composition/rc3/py314-frozen.log",
+            "revision": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+            "seconds": 277.836,
+            "sha256": "c78bb009a6542a307709403634a749a8670b08c4effaf037701cd65d6ab24e44",
+            "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+          }
+        ]
+      },
+      "tests_per_version": 542
+    },
+    "static": {
+      "checks": 8,
+      "receipt": {
+        "bytes": 13007,
+        "path": "generated/car-controlled-composition/rc3/static-frozen-results.json",
+        "sha256": "2486f635e05ba11762c166968f08229f850b7251cc6081f808f66fba2168ee0c"
+      },
+      "results": {
+        "after": {
+          "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+          "tracked_clean": true,
+          "tracked_status": "",
+          "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+        },
+        "before": {
+          "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+          "tracked_clean": true,
+          "tracked_status": "",
+          "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+        },
+        "check_group": "static",
+        "claim_scope": "local_pure_static_checks_only_no_native_or_release_acceptance",
+        "command_count": 8,
+        "command_inventory_sha256": "3516a5aa754891fca6d3e8a0d2123d3bf064c8305798308381ca5e91a0856ec3",
+        "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition",
+        "expected_head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+        "finished_at": "2026-10-12T17:35:11.344134+00:00",
+        "platform": {
+          "machine": "arm64",
+          "release": "25.2.0",
+          "system": "Darwin"
+        },
+        "python": {
+          "executable": "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+          "version": "3.11.15"
+        },
+        "results": [
+          {
+            "after": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "before": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/generate_policy_wire_schema.py",
+              "--check"
+            ],
+            "command_sha256": "d3ba1e9195984f5cdabd4274067db3c3455266de251ad363e037a77e928fd7d9",
+            "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition",
+            "environment_overrides": {
+              "PYTHONDONTWRITEBYTECODE": "1",
+              "PYTHONPATH": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition"
+            },
+            "exit_code": 0,
+            "finished_at": "2026-10-12T17:35:00.396093+00:00",
+            "log": "generated/car-controlled-composition/rc3/wire-schema-frozen.log",
+            "log_bytes": 70,
+            "log_sha256": "445a68bf29c2f215c2089fb27b282cb327d1b501f33b8e5324da660e544db740",
+            "name": "wire-schema",
+            "seconds": 0.082,
+            "source_stable": true,
+            "started_at": "2026-10-12T17:35:00.313951+00:00",
+            "status": "passed",
+            "timed_out": false
+          },
+          {
+            "after": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "before": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/check_policy_semantic_coverage.py"
+            ],
+            "command_sha256": "60b958b278192efe589b6e2125a75a741f1f3201bc67388bbc22eb46b3563772",
+            "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition",
+            "environment_overrides": {
+              "PYTHONDONTWRITEBYTECODE": "1",
+              "PYTHONPATH": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition"
+            },
+            "exit_code": 0,
+            "finished_at": "2026-10-12T17:35:00.466878+00:00",
+            "log": "generated/car-controlled-composition/rc3/semantic-frozen.log",
+            "log_bytes": 121,
+            "log_sha256": "cadb7bc995b9085642498b9d0cf22bc93374ee036fd7ae31a26cf2531c137ed3",
+            "name": "semantic",
+            "seconds": 0.154,
+            "source_stable": true,
+            "started_at": "2026-10-12T17:35:00.313092+00:00",
+            "status": "passed",
+            "timed_out": false
+          },
+          {
+            "after": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "before": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/check_policy_public_api_coverage.py"
+            ],
+            "command_sha256": "0fc85845390b963af598da798a2956ea227b77190748fc0e04f877ab3cfff171",
+            "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition",
+            "environment_overrides": {
+              "PYTHONDONTWRITEBYTECODE": "1",
+              "PYTHONPATH": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition"
+            },
+            "exit_code": 0,
+            "finished_at": "2026-10-12T17:35:01.332856+00:00",
+            "log": "generated/car-controlled-composition/rc3/public-api-frozen.log",
+            "log_bytes": 753,
+            "log_sha256": "2a747b9d6eecc69575f91d2f168e3f1aee8cb0173cfeb7dc4216f4a9c2f50262",
+            "name": "public-api",
+            "seconds": 0.896,
+            "source_stable": true,
+            "started_at": "2026-10-12T17:35:00.436445+00:00",
+            "status": "passed",
+            "timed_out": false
+          },
+          {
+            "after": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "before": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/check_policy_source_context_coverage.py"
+            ],
+            "command_sha256": "46f492c5d906740c3fd9675cc4ff13efa3ee63a4894eb4809de6ed4b28ddc833",
+            "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition",
+            "environment_overrides": {
+              "PYTHONDONTWRITEBYTECODE": "1",
+              "PYTHONPATH": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition"
+            },
+            "exit_code": 0,
+            "finished_at": "2026-10-12T17:35:00.751158+00:00",
+            "log": "generated/car-controlled-composition/rc3/source-context-frozen.log",
+            "log_bytes": 430,
+            "log_sha256": "6eb9da685de1df740e72d248f870193280e5ebdcc4f546729e7a7f8c08bdeee4",
+            "name": "source-context",
+            "seconds": 0.243,
+            "source_stable": true,
+            "started_at": "2026-10-12T17:35:00.508098+00:00",
+            "status": "passed",
+            "timed_out": false
+          },
+          {
+            "after": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "before": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/check_policy_material_rule_coverage.py"
+            ],
+            "command_sha256": "0b072b71ab8794418ece83bc70a3041692c6b70c64bcb442dcd2afc25521c1ef",
+            "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition",
+            "environment_overrides": {
+              "PYTHONDONTWRITEBYTECODE": "1",
+              "PYTHONPATH": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition"
+            },
+            "exit_code": 0,
+            "finished_at": "2026-10-12T17:35:01.880438+00:00",
+            "log": "generated/car-controlled-composition/rc3/material-frozen.log",
+            "log_bytes": 866,
+            "log_sha256": "730a41a46cdd1e4d1768c68edea7cae3214d6e8ccebc00d7a9a21676a30fc3d0",
+            "name": "material",
+            "seconds": 1.085,
+            "source_stable": true,
+            "started_at": "2026-10-12T17:35:00.795369+00:00",
+            "status": "passed",
+            "timed_out": false
+          },
+          {
+            "after": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "before": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/migration_inventory.py",
+              "--check"
+            ],
+            "command_sha256": "65a04779e5559eeab07b9e79e183f760a09de9a3e2997530f6996c7e51f300c9",
+            "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition",
+            "environment_overrides": {
+              "PYTHONDONTWRITEBYTECODE": "1",
+              "PYTHONPATH": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition"
+            },
+            "exit_code": 0,
+            "finished_at": "2026-10-12T17:35:05.081064+00:00",
+            "log": "generated/car-controlled-composition/rc3/migration-frozen.log",
+            "log_bytes": 42,
+            "log_sha256": "acf0cadf926a6c1faffa75c338a279d34ea553fc627e71cd94a2a01ffdbc45e5",
+            "name": "migration",
+            "seconds": 3.709,
+            "source_stable": true,
+            "started_at": "2026-10-12T17:35:01.371613+00:00",
+            "status": "passed",
+            "timed_out": false
+          },
+          {
+            "after": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "before": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/check_controlled_composition_foundation.py"
+            ],
+            "command_sha256": "521472215a8a69bdad0e4627222825257b374d100f26a1fab3c00c592a8680b5",
+            "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition",
+            "environment_overrides": {
+              "PYTHONDONTWRITEBYTECODE": "1",
+              "PYTHONPATH": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition"
+            },
+            "exit_code": 0,
+            "finished_at": "2026-10-12T17:35:02.009816+00:00",
+            "log": "generated/car-controlled-composition/rc3/foundation-frozen.log",
+            "log_bytes": 729,
+            "log_sha256": "0feca7f36b1e9c5020c636faae8976644887762e9c0ae59939007621ab90b087",
+            "name": "foundation",
+            "seconds": 0.083,
+            "source_stable": true,
+            "started_at": "2026-10-12T17:35:01.926777+00:00",
+            "status": "passed",
+            "timed_out": false
+          },
+          {
+            "after": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "before": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "tools/check_core_boundaries.py"
+            ],
+            "command_sha256": "2661f1a34a06dca50cadb40e8551ad0693cd0dc0986a71292064452406ecde74",
+            "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition",
+            "environment_overrides": {
+              "PYTHONDONTWRITEBYTECODE": "1",
+              "PYTHONPATH": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition"
+            },
+            "exit_code": 0,
+            "finished_at": "2026-10-12T17:35:03.302360+00:00",
+            "log": "generated/car-controlled-composition/rc3/boundaries-frozen.log",
+            "log_bytes": 103,
+            "log_sha256": "66bebb37a4dfd5f477d6d0de5149f20c190f0c6941e4e5a13a16ec0ec4665eb0",
+            "name": "boundaries",
+            "seconds": 1.252,
+            "source_stable": true,
+            "started_at": "2026-10-12T17:35:02.050569+00:00",
+            "status": "passed",
+            "timed_out": false
+          }
+        ],
+        "schema_version": "biocompiler.controlled_composition_frozen_local_checks.v0.1",
+        "source_stable": true,
+        "started_at": "2026-10-12T17:35:00.266060+00:00",
+        "status": "passed"
+      }
+    },
+    "typing": {
+      "configurations": 2,
+      "core_files": 41,
+      "policy_files": 47,
+      "receipt": {
+        "bytes": 4352,
+        "path": "generated/car-controlled-composition/rc3/typing-frozen-results.json",
+        "sha256": "79fb62d2536c4d0b0a32c344f0272d168c60040bcf281b5906faad2dfcd10af3"
+      },
+      "results": {
+        "after": {
+          "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+          "tracked_clean": true,
+          "tracked_status": "",
+          "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+        },
+        "before": {
+          "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+          "tracked_clean": true,
+          "tracked_status": "",
+          "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+        },
+        "check_group": "typing",
+        "claim_scope": "local_pure_static_checks_only_no_native_or_release_acceptance",
+        "command_count": 2,
+        "command_inventory_sha256": "1c5615cdfebe6d5c0deb90a55171f028cc624632781b8146f6cc9b7e56ba8b83",
+        "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition",
+        "expected_head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+        "finished_at": "2026-10-12T17:35:11.344658+00:00",
+        "platform": {
+          "machine": "arm64",
+          "release": "25.2.0",
+          "system": "Darwin"
+        },
+        "python": {
+          "executable": "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+          "version": "3.11.15"
+        },
+        "results": [
+          {
+            "after": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "before": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "-m",
+              "mypy",
+              "--config-file",
+              "tools/mypy-core.ini",
+              "--no-incremental"
+            ],
+            "command_sha256": "fb307a5725fda56c12861a239052907eccd3c44d45f12ebc6e48c05b9efc4737",
+            "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition",
+            "environment_overrides": {
+              "PYTHONDONTWRITEBYTECODE": "1",
+              "PYTHONPATH": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/policy-material-selection/generated/typecheck"
+            },
+            "exit_code": 0,
+            "finished_at": "2026-10-12T17:35:08.990316+00:00",
+            "log": "generated/car-controlled-composition/rc3/mypy-core-frozen.log",
+            "log_bytes": 44,
+            "log_sha256": "02a88e044e14b966c27f6c162bdcba751601b93ba0a212fa2151bd889d9688ef",
+            "name": "mypy-core",
+            "seconds": 5.645,
+            "source_stable": true,
+            "started_at": "2026-10-12T17:35:03.345134+00:00",
+            "status": "passed",
+            "timed_out": false
+          },
+          {
+            "after": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "before": {
+              "head": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+              "tracked_clean": true,
+              "tracked_status": "",
+              "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+            },
+            "command": [
+              "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+              "-B",
+              "-m",
+              "mypy",
+              "--config-file",
+              "tools/mypy-policy.ini",
+              "--no-incremental"
+            ],
+            "command_sha256": "357dbb09a3ddd9c22f05005b13061dec465803384244d3162c79beab914f7ad0",
+            "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/car-controlled-composition",
+            "environment_overrides": {
+              "PYTHONDONTWRITEBYTECODE": "1",
+              "PYTHONPATH": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/policy-material-selection/generated/typecheck"
+            },
+            "exit_code": 0,
+            "finished_at": "2026-10-12T17:35:11.295975+00:00",
+            "log": "generated/car-controlled-composition/rc3/mypy-policy-frozen.log",
+            "log_bytes": 44,
+            "log_sha256": "d65cae0083d77ec23a4483dfe03fa5cbfde2ebbad3bc4205bfa20ae5ff3edceb",
+            "name": "mypy-policy",
+            "seconds": 6.172,
+            "source_stable": true,
+            "started_at": "2026-10-12T17:35:05.124150+00:00",
+            "status": "passed",
+            "timed_out": false
+          }
+        ],
+        "schema_version": "biocompiler.controlled_composition_frozen_local_checks.v0.1",
+        "source_stable": true,
+        "started_at": "2026-10-12T17:35:00.266060+00:00",
+        "status": "passed"
+      }
+    }
+  },
+  "merge": "not_performed",
+  "milestone": "RC3",
+  "prior_attempts": [
+    {
+      "attempt": 1,
+      "build_log": {
+        "bytes": 1247,
+        "path": "generated/car-controlled-composition/rc3/hosted-38282816816-attempt1/build.log",
+        "sha256": "f08b46de12ff8733bc88fabc7812b49b1bf779885edf7c8f430829d17e9c7196"
+      },
+      "conclusion": "failure",
+      "feedback": {
+        "bytes": 714218,
+        "path": "generated/car-controlled-composition/rc3/hosted-38282816816-attempt1/feedback.json",
+        "sha256": "5b5aee0c0e14940f1d8a9c1c01762a888a6bebe068242244f108e1d27401d97a"
+      },
+      "native_pass_evidence": false,
+      "reason": "OCaml warning50: ambiguous interface documentation comment.",
+      "revision": "1887be1c09bbcbb2d262a02f25ac9029ee601181",
+      "run_id": "38282816816",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/38282816816"
+    },
+    {
+      "attempt": 1,
+      "build_log": {
+        "bytes": 3483,
+        "path": "generated/car-controlled-composition/rc3/hosted-38283376884-attempt1/build.log",
+        "sha256": "79df74a121282f83416bff3ca853507fca1a642877a804ad4e38afd7b066bdb6"
+      },
+      "conclusion": "failure",
+      "feedback": {
+        "bytes": 714213,
+        "path": "generated/car-controlled-composition/rc3/hosted-38283376884-attempt1/feedback.json",
+        "sha256": "3bd3c2680a1d458b6f24999d1456861dafa30812051cadb4dd1da1eb30267c8f"
+      },
+      "native_pass_evidence": false,
+      "reason": "OCaml warning41: ambiguous record-label inference; fixed with explicit controlled record types.",
+      "revision": "646e3dfacab8d5d202c961c9e196599afdfe45a7",
+      "run_id": "38283376884",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/38283376884"
+    }
+  ],
+  "prior_local_attempts": [
+    {
+      "disposition": "Failed: four outdated inventory assertions on each Python version; retained, not final acceptance.",
+      "receipt": {
+        "bytes": 2812,
+        "path": "generated/car-controlled-composition/rc3/pure-test-results.json",
+        "sha256": "f8caa80b75aa5c26534ef9aaa2dc1fd7b06ecbde8f1870ecc5f785eed2eeb4b1"
+      }
+    },
+    {
+      "disposition": "Failed material/migration source-pin checks during editing; retained, not final acceptance.",
+      "receipt": {
+        "bytes": 3363,
+        "path": "generated/car-controlled-composition/rc3/static-results.json",
+        "sha256": "559a57524e43e440deab726aea33fb4bb04f38595da8547865aed7dbec8a7fc1"
+      }
+    },
+    {
+      "disposition": "Passed 542 tests on each version, started at646e3dfac while later native annotation edits were made. Superseded by complete frozen8b4506ed runs; not transferred as exact8b acceptance.",
+      "receipt": {
+        "bytes": 2940,
+        "path": "generated/car-controlled-composition/rc3/pure-test-corrected-results.json",
+        "sha256": "8cc1aeb8bf35aba831ed4e5b452e9690993465527541efd85f7d29dcb624676f"
+      }
+    },
+    {
+      "disposition": "Passed eight static checks at646e3dfac; superseded by the frozen8b4506ed static batch.",
+      "receipt": {
+        "bytes": 3876,
+        "path": "generated/car-controlled-composition/rc3/static-corrected-results.json",
+        "sha256": "98778b24e5d576968a064c8c9b5767ad69ce583bd91b0e13f01aaaf2e881384c"
+      }
+    }
+  ],
+  "protected_checkouts": {
+    "receipt": {
+      "bytes": 1162,
+      "path": "generated/car-controlled-composition/rc3/protected-checkouts-closeout.json",
+      "sha256": "24bed658e8cb2866779c13f0f6706528dcf965ba2a60f51d7829088a527a4ffb"
+    },
+    "results": {
+      "checkouts": {
+        "car-mvp-roadmap": {
+          "current": {
+            "branch": "codex/dev-policy/car-installed-timeout",
+            "head": "0b19ef68ad029de1c10245008fddf81a3a4bfddd",
+            "roadmap_hashes": {
+              "docs/car-mvp-and-expansion-roadmap-2026-10-10.md": "e63af015f0af6ae77d311ff5e174ee69a2f89e66db580f6f6c076bf5e95f5dd4"
+            },
+            "status": ""
+          },
+          "unchanged_since_rc3_start": true
+        },
+        "car-second-reference": {
+          "current": {
+            "branch": "codex/dev-policy/car-second-reference",
+            "head": "11b6b6da94497fea9afae8dfa12dd900c7295f9f",
+            "roadmap_hashes": {
+              "docs/car-composition-reversible-control-roadmap-2026-10-12.md": "592017ba0918114edc4737dd61de5f67b0f9b69dcd4e60cd3290224e7c0e39ce",
+              "docs/car-mvp-and-expansion-roadmap-2026-10-10.md": "96fdbfc1b0a784eabc85bd58a1c0c1d602f80bba5a6d064006b464c5e6fe5a7e"
+            },
+            "status": "M docs/car-mvp-and-expansion-roadmap-2026-10-10.md\n?? docs/car-composition-reversible-control-roadmap-2026-10-12.md"
+          },
+          "unchanged_since_rc3_start": true
+        }
+      },
+      "recorded_at_utc": "2026-10-12T18:17:29.821637+00:00"
+    }
+  },
+  "recorded_at_utc": "2026-10-12T18:22:43.421411+00:00",
+  "release": "not_performed",
+  "remaining_gates": {
+    "RC2": "Complete real RNA adaptations, authorized-input importer and qualified paired reference pack remain open.",
+    "RC4": "Construct and independently reconstruct both complete RNA members.",
+    "RC5": "Executable activity lowering, reference execution, source monitors and independent bounded behavior checking.",
+    "RC6": "Joined project, export/reopen and installed starter.",
+    "RC7": "Complete cross-platform and installed integration acceptance.",
+    "RC8": "Reconcile accepted upstream work, integrate, freshly validate actual main and release."
+  },
+  "schema_version": "biocompiler.controlled_composition.rc3_development_receipt.v0.1",
+  "scope": {
+    "activity_execution": "not_performed",
+    "behavioral_satisfaction": "not_performed",
+    "cancellation_scope": "Hosted campaign verifies prelaunch transport cancellation; native unit tests exercise domain callback cancellation. No arbitrary midflight transport cancellation claim.",
+    "claim": "Complete supplied original-authority admission and exhaustive supplied finite input-domain enumeration only.",
+    "construction": "not_performed",
+    "empirical_assessment": "unassessed",
+    "fixture": "Complete artificial MA/MG RNA roots; not the acquired patent pair and not real therapeutic RNA designs.",
+    "operation": "admit-policy-component-material",
+    "profile": "biocompiler.policy_controlled_composition_mrna.v0.1",
+    "published_artifact": null,
+    "rc1_declarative_behavior_cases": {
+      "count": 41,
+      "executed_as_behavioral_verdicts": false
+    },
+    "request_schema": "biocompiler.policy_component_material_request.v0.14",
+    "validation_scope": "policy-controlled-composition-admission-v0.1"
+  },
+  "status": "passed_development_validation",
+  "superseded_source_evidence": {
+    "initial_failed_audit": {
+      "bytes": 10851,
+      "path": "generated/car-controlled-composition/rc3/independent-frozen-local-audit-initial-stale-manifest.json",
+      "sha256": "d82085180405361cda6636d25c64d2cd27184f6930f41cb55c1dd16141d535b2"
+    },
+    "original_manifest": {
+      "bytes": 7078,
+      "path": "generated/car-controlled-composition/rc3/frozen-source-manifest.json",
+      "sha256": "915d8756aa2277064d8846312de7822714ff58b737d3ddeaeb55fda7e848775c"
+    },
+    "reason": "The initial 61-file manifest predates hosted warning fixes and census corrections. It is retained unchanged; the final 62-file Git-bound manifest and passing independent audit supersede it."
+  },
+  "tested_source": {
+    "base_commit": "6f9310d96bb8754dc745d7ddb7da9b42ad7588a3",
+    "changed_files": {
+      ".github/workflows/policy-development.yml": "24ee9febcec0cdadd476a9e64b5a55a8e0e1cf9f445d0c7e6283840ced42c961",
+      "core/lib/checker/policy_controlled_composition_admission.ml": "a44f7a8cbeb5d1da4d69a660b5f6ece8770e16575fac27dca197b74799963eea",
+      "core/lib/checker/policy_controlled_composition_admission.mli": "f9e8cd40627bc2c45ed365f66ecda5ffeaf67a01aceb8de28f101abb258df02d",
+      "core/lib/checker/policy_controlled_source.ml": "d6f2311c364a576891cf035b7bf4c34b97ba85dc4feb02b3a6845912a86ffbe1",
+      "core/lib/checker/policy_controlled_source.mli": "f188bf4dd9574592c9750d54d1426c5ce87097c0fd631ee3cd629fcaa9e3a7a3",
+      "core/lib/domain/policy_controlled_composition_request.ml": "6c15f1722f89a7aa07b3af19c8ed676f8c57f1955cf0b5903473060a7d8b2968",
+      "core/lib/domain/policy_controlled_composition_request.mli": "ca53c6917c890df00542d1f64312dbc0a8db5024862bf119461ebaa2a57097ec",
+      "core/lib/domain/policy_controlled_domain.ml": "996ea0f311fdc4fb3c624d2e4a7071c66d551b125d0bf89f2c063f803cb0fa35",
+      "core/lib/domain/policy_controlled_domain.mli": "c451c5898f2b6d0b1c9095f5f81b7d9f539a1e86cf67aec60ffab15373ab8469",
+      "core/lib/domain/policy_document.ml": "14279d83121f55af4731a6e14a0e97e58f679965e4a3776aa7bdd808835371d1",
+      "core/lib/domain/policy_document.mli": "29c3dfc5639f5bbbc43a337c94bcacce64eff981e441765852f18ceb27b146e4",
+      "core/lib/service/policy_controlled_composition_service.ml": "1841e551235326c99b10be2349467fb2c1c8e57735fe96a7722247782c71e8c9",
+      "core/lib/service/policy_controlled_composition_service.mli": "c4492ed4db8f673f3b181babb7e65a428936bfe9c8740215821e6a6b348893c9",
+      "core/lib/service/service.ml": "4be8ce6d67534c368ec07b62afe0fd3e0f8321edf1491f735f75b8c6da69fd5a",
+      "core/lib/service/service.mli": "1d8145498ef9313f482ab30d24cfc38ddc1ce8a8ec13570598465ddf1a37d2e8",
+      "core/test/data/policy_controlled_domain_v01.json": "3e41b5eacd75116a8aa83bbea254e2a21b22fc5955925404d93e912cab151de9",
+      "core/test/data/policy_controlled_request_v014.json": "b8698d2ea9a79f414ea7ec9e8284e0a14cf55f8fab9fbd1b751687f8c6d5904c",
+      "core/test/data/policy_controlled_source_v01.json": "1496ae925fa3021d7627e0848660dc79e65922fb8cb95f3538e8e791aa0c5ee6",
+      "core/test/dune": "bb732065f4f0ade199b068567b60eb402d7140e4ae130219d5055bdbd473626a",
+      "core/test/test_policy_controlled_composition_admission.ml": "e707480aa32c65e995f9a50544096fac4ee89a98e25d6b2f447f1708b0d323cd",
+      "core/test/test_policy_controlled_composition_service.ml": "eb423ebfe74e1a9a9864d05a2780555dbd18eaf1f706cfce18f56e4592a14190",
+      "core/test/test_policy_controlled_domain.ml": "f36379a99bd20d67b42c4964af42f9fa50e6db2c793bf145f274fda102f899cc",
+      "core/test/test_policy_controlled_source.ml": "da4fc015593727ca8d6868b0f4c834c796cf0eb72b3c0a26b8605229109ac705",
+      "core/test/test_protocol.ml": "cb2efcc0c1f8a4805ea5508862b3182f86982665f15a250255c945ee34c9e917",
+      "docs/controlled-composition-domain-v0.1.md": "406f2a266773f49f0358668aef57a16cfd82081a40789cea0e45f9ca375b62e3",
+      "docs/controlled-composition-native-admission-v0.1.md": "f8d5873ce2c01bfcc5a1c359c05bef26c396a68c7c40037a4e97b07a0e83126c",
+      "docs/controlled-composition-progress.md": "1f987a82362bbfbdbafbd20fcd42ab2bb64c71b13695b71a381e5a649b786f68",
+      "docs/controlled-composition-request-v0.14.md": "f980e0187416dae4b0f24009a190b46fe42765c55c364e37a372b3982310772a",
+      "docs/controlled-composition-v0.1.md": "93dec1ac1a8584fc0f93f2d5bdd47f5ec9e170577766c59bbd7ccaa804c01817",
+      "docs/development-validation.md": "133325490f86dfb6e234a88d8758e4782dbadaabb52e89737bbd4408c0a5f664",
+      "docs/migration-coverage.md": "98d8b6b5d08658ff355543bc26ece6283b5405c1110cca4d8b34c0f8309150db",
+      "protocol/controlled-composition-profile-v0.1.json": "b03ee725ad24bfd0e6bf281ce8e3ae4a1dbe84f757769714422d210a05bf99c7",
+      "protocol/migration-inventory.json": "7a1be33a60fdda77c845ed2e25d3aa65b181b71e4bab764b931fa1ddf5db5a19",
+      "protocol/policy-component-rule-coverage-v0.1.json": "e376ab6ebe20dec036b52e8248ef874c56d8130e491b8666b3281c6292ed21bd",
+      "protocol/policy-expression-rule-coverage-v0.1.json": "2b2f71862e1dd7cd0c5323c0736ac0bf0c2c8fb06ac76c78b77d680f919322aa",
+      "protocol/policy-material-rule-coverage-v0.1.json": "15775e4bc9a57e7c975d30ae216f5a87d6c462c32cfb8e7554c6bff3ef0a05b8",
+      "protocol/policy-public-api-coverage-v0.1.json": "595b647973f3b267b2d475a2283c642de75fcb90c3129f4ba4fc645dd277c694",
+      "protocol/policy-semantic-coverage-v0.1.json": "1e4dfad574eb8258c24ff272c070826b7e78079829f814920420c6968fcc5af6",
+      "protocol/policy-source-context-coverage-v0.1.json": "4b4d3f3a37b3cc190d94f6abb8394421c191f3faa246cca95384574175e60af6",
+      "src/biocompiler/core_policy_controlled_composition.py": "308ec4aa6f5bde1d58ca5cf8a0ace46432a9fa3369a9234a91d4644580a1df65",
+      "src/biocompiler/policy/controlled_material.py": "07db7849e25cb763718414920eb8a5aaa338f0c1ba22ce7f9374ee35e72bed70",
+      "tests/test_ci_native_bundle.py": "dfb0598581afc604daff2247c5eada09b6c6ebf1b91ef547481906d8186eac49",
+      "tests/test_controlled_composition_foundation.py": "cfd259f8261c72889c63289bba74e858b6e943ad7e1920532256efb2e4c43cc6",
+      "tests/test_core_boundaries.py": "e8c73e8274bb15c7f6f6d7b91267089efebce79c420e8fdadf68495bbd4596fa",
+      "tests/test_core_policy_controlled_composition.py": "a01e7c19bc076a2047097eee722916e2a2f1ea10f79339eeecd3373a155a5570",
+      "tests/test_migration_inventory.py": "f2c141c491e761e8a8d74e55861d45c919ac9fceae2a4ebc2ff6708e820fd0de",
+      "tests/test_policy_controlled_composition_campaign.py": "b0401ae19529f8ed0a52a548c823a069045c5f57202b56383fa1e48d49e287c5",
+      "tests/test_policy_controlled_material.py": "77c82d0d99297706f1fe51d7bdeacac28c2f9c0acc91b37c6c6d50f789884f90",
+      "tests/test_policy_development.py": "37e258a308da90e3a92829529c481ea4c264f7167d9701f9ce1aba85f9dbc729",
+      "tests/test_policy_material_rule_coverage.py": "a107555074bd3c884c3ffd8ecc74a66934052bd0c732af1fccfeaa95b2479056",
+      "tests/test_policy_public_api_coverage.py": "b5b532b5949c08918c38cc2499f93fc7342726c527fc5e866b2460cf32b8f782",
+      "tests/test_policy_semantic_coverage.py": "c1652f31ec13c83e4862c5d0d2641960a1efa0b57d8c4831a8f11e4d91b4ffc8",
+      "tools/check_controlled_composition_foundation.py": "59adf1fdd08636ef0623f507d5d0153c4a8f94a99abed320cb535a50ac3c5e39",
+      "tools/check_core_boundaries.py": "9d0729970c8725450dc9f61666d89766d9614709c2b97d97e68a7f279277b55e",
+      "tools/check_policy_controlled_composition.py": "23c3fc71e76ee23ce0dc1eb3ba26d42bb6ed0014da672d2aeee53b1050d465c6",
+      "tools/check_policy_development.py": "b1795c0b9720cd85dc51352c9d66e67c5ec083f0fb3c318102bd8dbfabff8474",
+      "tools/check_policy_material_rule_coverage.py": "8396f9658f44403ecaa26152a53b7c7b2f9944ec32ed83e76cc784acf20754dc",
+      "tools/check_policy_public_api_coverage.py": "4381768fd6553574e76170fa169b8b5679e3b68f4eb2f17b59186463e2b44e7c",
+      "tools/check_policy_source_context_coverage.py": "62fad3213f91cb78faeeef17e692f6c38f4972bebdb0b9ddd4f125e57f87b2c1",
+      "tools/ci_native_bundle.py": "7941d0565fe8d1e3da57db5ebb417754ae3ef22cd123d3f303a0270ae647616c",
+      "tools/migration_inventory.py": "c3d8cb9b8ff2dda4bb73236123a375d61eab5b4c347815069205558ca28b0ae2",
+      "tools/mypy-core.ini": "0f29b33c84a8a7c3db3f0a55a2e3756f5553079d548f4332b04ca9466d9ef922"
+    },
+    "commit": "8b4506ed5013e21b1dbb58c34e22d31cd9b84df2",
+    "manifest": {
+      "bytes": 8011,
+      "path": "generated/car-controlled-composition/rc3/frozen-source-manifest-8b4506ed.json",
+      "sha256": "8c2d31c542d9d05fba5c8ce6a8483f3ff204dbb51389b710b2a0246ccfc44d82"
+    },
+    "source_binding_note": "Acceptance is bound to this exact implementation revision. The later documentation-only checkpoint does not acquire fresh native validation. No tested source file was edited during final checking.",
+    "tree": "d6c7c5c5608e7436fa68a2cb16df975b9dbda82c"
+  }
+}

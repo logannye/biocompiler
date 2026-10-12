@@ -43,9 +43,9 @@ all native work hosted under the applicable authorization.
 | Milestone | State | Evidence and next action |
 | --- | --- | --- |
 | RC0 | Complete locally | Owned branch, read-only upstream refresh, protected-checkout snapshot, five static baselines, explicit reconciliation path and progress record. |
-| RC1 | Complete locally | Reviewed semantic decision, independent schema, typed descriptions, immutable source snapshots, literal wire fixtures and 41 declarative acceptance cases. Frozen 442-test runs passed on Python 3.11 and 3.14; both typing configurations and all seven static checks passed. Native admission and execution remain pending. |
+| RC1 | Complete locally | Reviewed semantic decision, independent schema, typed descriptions, immutable source snapshots, literal wire fixtures and 41 declarative acceptance cases. Frozen 442-test runs passed on Python 3.11 and 3.14; both typing configurations and all seven static checks passed. Native admission and execution were outside that checkpoint. |
 | RC2 | Acquisition checkpoint complete; gate open | The separately named patent pair #197/#206 has source-pinned literal fragments/products and bounded consistency checks. The authorized-input importer and two complete RNA adaptations remain open; see the acquisition assessment. |
-| RC3 | Implementation complete; hosted validation pending | Closed v0.14 original authority, native source/material/context closure, complete finite-domain enumeration, guarded read-only admission and immutable Python transport. Four native suites plus a separate hosted SDK campaign await execution. |
+| RC3 | Complete for admission and finite input-domain support | Closed v0.14 original authority, native source/material/context closure, complete finite-domain enumeration, guarded read-only admission and immutable Python transport. Hosted development validation and independently audited evidence are bound to `8b4506ed5013e21b1dbb58c34e22d31cd9b84df2`; see the RC3 validation receipt. |
 | RC4 | Planned | Construct and independently check both complete RNA members. |
 | RC5 | Planned | Add activity semantics, source requirement monitors and independent model/candidate checking over the RC3 domain. |
 | RC6 | Planned | Complete ResearchProject, export/reopen and installed starter. |
@@ -64,40 +64,33 @@ on 2026-10-12; real RNA inputs will follow. Keep each fixture labeled artificial
 and retain complete original authority. Do not silently fill missing regions
 in the named patent reference or infer its activity model from requested answers.
 
-1. **RC3 authority and admission.** Freeze the complete realization, domain,
-   model, assembly, context and resource record bodies and independent wire
-   fixtures before their decoders. Extend the closed v0.14 request across Python
-   transport and native request/source admission. The RC1 source snapshot is
-   only the four-field source/contract/context envelope; it is not this complete
-   native authority. Bind source definitions, ordered products and members,
-   selected model bodies, controller/readout, availability and every limit.
-2. **RC3 domain.** Add the explicit controlled branch to operating-domain
-   decoding, reference adaptation and source lowering. Existing domains attach
-   Boolean evidence to encounters, cannot restart ended slots, and have different
-   reset/end monitor behavior. Preserve them. Test executor-owned controller and
-   product persistence, evidence generations, reusable encounters, the finite
-   cutoff/suffix and unequal controller/antigen/component cessation deadlines.
-3. **Parallel RC4 material and RC5 behavior.** Reuse staged construction and
+RC3 authority, admission and input-domain support are implemented and validated.
+Its typed source obligations and original correspondence are ready for later
+executable lowering; RC3 does not execute an activity model or source monitor.
+Remaining implementation slices are:
+
+1. **Parallel RC4 material and RC5 behavior.** Reuse staged construction and
    independent reconstruction for two complete artificial RNAs. In parallel,
    implement independent model realization and source requirement checks. Earlier
    compliant activity can satisfy a later source deadline: exact realization of
    the supplied mechanism and satisfaction of the source are distinct checks.
-4. **Join before publication or capabilities.** The existing assembly checker
+2. **Join before publication or capabilities.** The existing assembly checker
    requires a fresh checked implementation, and formatting requires checked
    material. Never fabricate those private capabilities to unblock RC4. Until
    RC5 and complete joined checking exist, structural diagnostics remain partial.
    Advertise compile/check/export only after the full path exists. RC3 separately
    advertises read-only admission with no candidate, artifact or behavior claim.
-5. **RC6 onward.** Bind ResearchProject v0.3, then complete fresh export/reopen,
+3. **RC6 onward.** Bind ResearchProject v0.3, then complete fresh export/reopen,
    hosted native and installed validation, independent artifact audit and normal
    integration. Retain the first-MVP/E1 owner and their gates throughout.
 
-The next source touchpoints are `policy_component_material_request`,
-`policy_realization_request`, `policy_component_assembly_rule`,
-`policy_component_context`, `policy_document`, `policy_admission`,
-`policy_operating_domain` and `policy_domain_reference`. Register new native
-tests in `core/test/dune` and `tools/ci_native_bundle.py`. Use focused local
-pure/static feedback and a coherent hosted batch; no local native build.
+The next source touchpoints include the existing staged material construction
+and independent checking routes, `policy_component_assembly_rule`, and the new
+`policy_controlled_composition_request`, `policy_controlled_source` and
+`policy_controlled_domain` boundaries. Connect executable activity lowering and
+reference interpretation in RC5 without widening legacy domain profiles. Register
+new native tests in `core/test/dune` and `tools/ci_native_bundle.py`. Use focused
+local pure/static feedback and a coherent hosted batch; no local native build.
 
 ## RC1 validation checkpoint
 
@@ -146,7 +139,7 @@ suffix. Missing, stale, invalid and conflicting evidence cannot rewrite physical
 inputs. Every permitted prefix is retained even when states converge. A domain
 contradiction rejects the entire request; cancellation or exhaustion cannot
 produce admission. A fixed example and independent 12-history Cartesian case
-have literal native test censuses, pending hosted execution.
+passed their literal native test censuses on hosted CI.
 
 The new `admit-policy-component-material` operation is read-only on Core and
 Verify. Its capability is separate from compile/check/export. The result binds
@@ -162,3 +155,44 @@ reconstruction or translation evidence. RC4 adds independent construction and
 RC5 adds source/behavior acceptance. See the [request contract](controlled-composition-request-v0.14.md),
 [domain grammar](controlled-composition-domain-v0.1.md), and
 [admission operation](controlled-composition-native-admission-v0.1.md).
+
+## RC3 validation checkpoint
+
+The tested implementation is `8b4506ed5013e21b1dbb58c34e22d31cd9b84df2`,
+tree `d6c7c5c5608e7436fa68a2cb16df975b9dbda82c`. The complete hosted development
+workflow [38283992405, attempt 1](https://github.com/logannye/biocompiler/actions/runs/38283992405)
+passed on Linux x86_64. It built fresh native binaries once and completed all
+59 selected native suites, 14 controlled-admission observations, 21 quantitative
+observations, all ten existing SDK campaigns (278 observations), and the
+first-MVP CAR campaign (22 observations with 29 evidence files).
+
+At the same frozen revision, 542 pure-Python tests passed on each of CPython
+3.11.15 and 3.14.3 on macOS arm64, along with all eight static checks and both
+typing configurations (41 core transport files and 47 policy files). These local
+checks performed no native compilation or native execution. Independent audits
+verified local receipts, source/log hashes, historical metadata and protected
+MVP/E1 assets, followed by the complete hosted result census and retained evidence.
+
+The [RC3 validation receipt](controlled-composition-rc3-validation.json) binds
+the exact implementation tree, hosted run/attempt/artifact, complete changed-file
+manifest, local commands and logs, audit receipts and protected-checkout states.
+The later documentation checkpoint is not a new native-validated source revision.
+The two earlier hosted compiler-warning failures remain retained as failed runs;
+they provide no native pass evidence. An initial supplemental source manifest
+predated those fixes; its failed audit is preserved and explicitly superseded by
+the final 62-file manifest and passing audit.
+
+Admission remains read-only and limited to complete original authority and its
+supplied finite input domain. The fixed fixture enumerates 1 history, 11 transitions
+and 12 prefixes; the Cartesian fixture enumerates 12 histories, 113 transitions
+and 114 prefixes. No branch or converged prefix is silently dropped. Exhaustion,
+cancellation and contradictions cannot produce admission. The hosted cancellation
+campaign covers prelaunch cancellation; native unit tests separately exercise the
+domain callback. It does not establish arbitrary midflight transport cancellation.
+
+This is RC3 development validation, not cross-platform/installed or release
+acceptance. The 41 RC1 full-profile cases remain declarative rather than executed
+activity-verification results. RC2 complete real RNA designs and reference
+qualification remain open; RC4 construction and RC5 behavior verification are
+next. No clinical or empirical assessment, merge or release was performed. Both
+MVP and E1 checkouts retain their baseline commits and working-tree changes.

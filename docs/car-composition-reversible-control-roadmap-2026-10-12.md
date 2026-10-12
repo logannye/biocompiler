@@ -289,31 +289,41 @@ RNA designs leave this gate open while artificial-contract software work proceed
 If assets cannot be redistributed, supply a reproducible authorized-input import
 path with independent identity checks; do not bundle them by assumption.
 
-### RC3 Add typed admission and the native dynamic profile
+### RC3 Add typed admission and the controlled input domain
 
-- [ ] Extend Python authoring, canonical serialization and transport for the
+- [x] Extend Python authoring, canonical serialization and transport for the
   exact new profile, keeping legacy finite and static-expression paths unchanged.
-- [ ] Add native admission across original source, realization request, component
-  assembly, material context and deployment. All profile discriminants must agree.
-- [ ] Extend source document decoding, type checking, operational lowering and
-  source correspondence for the activity family and mixed observation scopes.
-  Executor-local controller exposure must not be forced into a target-local
-  antigen slot to fit the older admission shape.
-- [ ] Version the operating domain and reference adapter for finite activity/input
-  bands, executor-local inputs, encounter lifecycle and availability. Their
-  current Boolean encounter-local input assumptions cannot enumerate this new
-  domain unchanged. Test each scope and transition independently of the producer.
-- [ ] Admit the scoped antigen/controller inputs, required activity semantics,
-  finite state and two-member material together. Reject unsupported extra inputs,
-  hidden helpers, broadened encounters and unavailable primitive interpretations.
-- [ ] Add Core/Verify capability advertisement, operation dispatch and complete
-  response decoding. Unsupported binaries must reject clearly, without fallback.
-- [ ] Bind project context, controller definitions and all execution/publication
-  limits into original authority before candidate generation.
+- [x] Add native admission across complete original source, mechanism model,
+  two-member material, assembly, context and deployment. All profile
+  discriminants and original identity bindings must agree.
+- [x] Extend source document decoding, type checking, typed obligation
+  normalization and original-source correspondence for controlled activity and
+  mixed observation scopes. Executor-local controller exposure retains its
+  original owner. Executable operational lowering remains RC5.
+- [x] Version and validate the finite input domain and its physical, evidence and
+  lifecycle interpretation: executor-local controller and member availability,
+  generation-local antigen evidence, reusable encounters and bounded cutoff/
+  suffix rules. Enumerate every admitted input history without merging prefixes
+  or pruning contradictions. Activity reference execution and monitors remain RC5.
+- [x] Admit scoped antigen/controller inputs, declared activity semantics, finite
+  state authority and two complete artificial RNA roots together. Reject extra
+  inputs, hidden helpers, foreign identities and unsupported interpretations.
+- [x] Add the separately advertised read-only Core/Verify admission operation,
+  guarded dispatch and complete response decoding. Unsupported binaries reject
+  without fallback; controlled compile/check/export remain unavailable.
+- [x] Bind project context, controller/model definitions and all decoding,
+  enumeration, execution-resource and publication limits into original authority.
 
-**Exit:** complete request round-tripping and precise admission diagnostics in
-local transport/static tests, plus native test sources covering each acceptance
-boundary. A mocked peer establishes orchestration only.
+**Exit:** complete request round-tripping, precise native admission diagnostics,
+complete finite input-domain enumeration and hosted development validation at
+`8b4506ed5013e21b1dbb58c34e22d31cd9b84df2`. See the
+[RC3 validation receipt](controlled-composition-rc3-validation.json) for exact
+source, run, artifact and local evidence. The original RC3 wording grouped
+operational lowering with admission; executable activity lowering, reference
+execution and source requirement monitoring are explicitly retained in RC5.
+The separate admission operation publishes no candidate or material artifact and
+makes no construction, behavioral-satisfaction or empirical claim. Artificial
+MA/MG RNA fixtures support software checking only; RC2's real RNA gate stays open.
 
 ### RC4 Construct and check the complete two-member payload
 
