@@ -114,7 +114,7 @@ let resources value=let keys=["max_member_rna_nt";"max_total_rna_nt";"controller
   List.iter(fun key->ignore(integer(if key="max_total_rna_nt"then 2000000 else 1000000)(get key value)))keys;
   List.iter(fun(key,minimum)->require(Json.integer(get key value)>=Z.of_int minimum)"Insufficient declared controlled capacity.")
     ["controller_records",1;"evidence_records",2;"timer_cells",3;"state_bits",4]
-let of_json ?(charge=fun _->()) original=
+let of_json ?(charge=fun _->()) (original:Json.t) : t=
   let work=ref 0 and ceiling=ref 1000000000 in
   let spend amount=require(amount>=0 && amount<= !ceiling- !work)"Logical work exceeds the supplied budget.";charge amount;work:= !work+amount in
   let bytes=Old.preflight ~charge:spend original in
@@ -122,7 +122,7 @@ let of_json ?(charge=fun _->()) original=
   schema schema_version original;require(get "profile" original=str profile)"Unsupported controlled request profile.";
   let budget=get "budgets" original in exact["profile";"max_work";"max_report_bytes";"max_report_nodes"]budget;
   require(get "profile" budget=str resource_profile)"Wrong controlled budget profile.";
-  let budget={max_work=integer 1000000000(get "max_work" budget);max_report_bytes=integer 8323072(get "max_report_bytes" budget);
+  let budget:budgets={max_work=integer 1000000000(get "max_work" budget);max_report_bytes=integer 8323072(get "max_report_bytes" budget);
     max_report_nodes=integer 249968(get "max_report_nodes" budget)}in
   ceiling:=budget.max_work;require(!work<= !ceiling)"Original preflight exceeds its supplied work budget.";
   let decode decoder value=ignore(Old.preflight ~charge:spend value);decoder value in
@@ -148,11 +148,11 @@ let of_json ?(charge=fun _->()) original=
   spend bytes;let identity=Canonical.sha256 encoded in
   require(!work<=budget.max_work)"Request decode exceeds its supplied work budget.";
   {original;identity;work= !work;document_value;domain_value;material_value;budget}
-let to_json value=value.original
+let to_json (value:t)=value.original
 let raw=to_json
-let fingerprint value=value.identity
-let decoding_work value=value.work
-let document value=value.document_value
-let domain value=value.domain_value
-let material value=value.material_value
-let budgets value=value.budget
+let fingerprint (value:t)=value.identity
+let decoding_work (value:t)=value.work
+let document (value:t)=value.document_value
+let domain (value:t)=value.domain_value
+let material (value:t)=value.material_value
+let budgets (value:t)=value.budget

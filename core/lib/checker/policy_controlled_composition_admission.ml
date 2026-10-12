@@ -22,9 +22,9 @@ let require condition message=Diagnostic.require condition "controlled_authority
 let ref_ kind id=obj["$type",str "Ref";"kind",str kind;"id",str id]
 let strings values=Json.Array(List.map str values)
 let count values=Json.int(List.length values)
-let admit ~charge request=
+let admit ~charge (request:R.t) : t=
   let external_charge=charge and work=ref(R.decoding_work request)in
-  let budget=R.budgets request in
+  let budget:R.budgets=R.budgets request in
   let charge amount=require(amount>=0 && amount<=budget.max_work- !work)"Complete admission exceeds its supplied work budget.";
     external_charge amount;work:= !work+amount in
   let same first second=
@@ -39,7 +39,7 @@ let admit ~charge request=
      Source and domain validators additionally debit their own logical work. *)
   ignore(Preflight.preflight ~charge raw);
   let source=S.admit ~charge ~document:(R.document request)in
-  let typed=S.typed source in
+  let typed:S.source=S.typed source in
   let authority=get "source_authority" raw and material=R.material request in
   let document=get "document" authority in
   let program=get "program" document in
@@ -54,8 +54,8 @@ let admit ~charge request=
     |_ -> Diagnostic.fail "controlled_authority_admission" "Absent or ambiguous model/context semantic definition." in
   let contract=get "control_contract" authority and project=get "project_context" authority in
   let products=arr(get "products" contract)in
-  let product_a,product_b=typed.products in
-  let source_products=[product_a;product_b]in
+  let (product_a,product_b):S.product * S.product=typed.products in
+  let source_products:S.product list=[product_a;product_b]in
   List.iter2(fun binding (product:S.product)->
     require(same(get "product_parameter" binding)(ref_ "Parameter" product.symbol.id))"Product parameter order differs from source.";
     ignore(resolve(get "product_definition" binding)))products source_products;
@@ -65,7 +65,7 @@ let admit ~charge request=
   require(same(get "definition" controller)typed.controller.contract.reference &&
     same(get "executor" controller)(ref_ "Role" typed.executor.id))"Controller contract differs from source.";
   let requested=get "requested_deadlines" contract in
-  let deadlines=typed.deadlines in
+  let deadlines:S.deadlines=typed.deadlines in
   List.iter(fun(key,value)->require(get key requested=Json.int value)"Source deadline differs from the supplied control description.")
     ["onset_ticks",deadlines.onset_ticks;"controller_off_ticks",deadlines.controller_off_ticks;
      "antigen_off_ticks",deadlines.antigen_off_ticks;"component_off_ticks",deadlines.component_off_ticks;
@@ -153,7 +153,8 @@ let admit ~charge request=
   let member_limit=Z.to_int(Json.integer(get "max_member_rna_nt" resource)) and total_limit=Z.to_int(Json.integer(get "max_total_rna_nt" resource))in
   let total=ref 0 and used_roots=ref []in
   List.iteri(fun index (member:M.member)->
-    let output=List.nth outputs index and binding=List.nth products index and product=List.nth source_products index in
+    let output=List.nth outputs index and binding=List.nth products index in
+    let product:S.product=List.nth source_products index in
     require(C.Value_ref.kind(C.Output_member.value output)=C.Value_ref.Root)"Admission requires direct original RNA roots.";
     let root_id=C.Value_ref.id(C.Output_member.value output)in used_roots:=root_id:: !used_roots;
     let root=match List.find_opt(fun root->C.Root_source.id root=root_id)roots with Some root->root
@@ -176,7 +177,7 @@ let admit ~charge request=
       "Complete RNA authority requires declared cap, ends and modification inventory.";
     let length=String.length(N.sequence molecule)in
     require(length<=member_limit && length<=total_limit- !total)"Original RNA length exceeds supplied per-member/total resources.";total:= !total+length;
-    let regions=member.regions in
+    let regions:M.regions=member.regions in
     require(get "cds_id" binding=str regions.cds)"Supplied CDS mapping differs from material regions.";
     let features=N.features molecule in
     require(List.length features=4)"RC3 requires exactly the four explicit complete RNA regions.";
@@ -244,7 +245,7 @@ let admit ~charge request=
     antigen_off_ticks=deadlines.antigen_off_ticks;component_off_ticks=deadlines.component_off_ticks;reactivation_ticks=deadlines.reactivation_ticks}in
   let domain_value=Domain.validate_for ~charge ~bindings:domain_bindings ~resolution:typed.resolution
     ~deadlines:domain_deadlines ~horizon_ticks:typed.horizon_ticks(R.domain request)in
-  let usage=match Domain.enumerate ~charge domain_value with
+  let usage:Domain.usage=match Domain.enumerate ~charge domain_value with
     |Domain.Complete usage->usage
     |Domain.Exhausted _->Diagnostic.fail "controlled_domain_exhausted" "Complete finite-domain enumeration exceeded the supplied budget."
     |Domain.Cancelled _->Diagnostic.fail "controlled_domain_cancelled" "Cancelled finite-domain enumeration has no admission token." in
@@ -252,7 +253,7 @@ let admit ~charge request=
     "model_ports",count ports;"members",count members;"products",count products;"roots",count roots;"transforms",Json.int 0;
     "source_records",count sources;"empirical_assertions",count empirical]in
   let counters=obj["prefixes",Json.int usage.prefixes;"transitions",Json.int usage.transitions;"histories",Json.int usage.histories;"work",Json.int usage.work]in
-  let metadata=Domain.metadata(R.domain request)in
+  let metadata:Domain.metadata=Domain.metadata(R.domain request)in
   let domain_inventory=obj["fixed_input_count",Json.int metadata.fixed_input_count;
     "physical_factor_count",Json.int metadata.physical_factor_count;"evidence_factor_count",Json.int metadata.evidence_factor_count;
     "lifecycle_factor_count",Json.int metadata.lifecycle_factor_count]in
@@ -265,5 +266,5 @@ let admit ~charge request=
     "construction_status",str "not_performed";"behavior_status",str "not_performed";"empirical_status",str "unassessed"]in
   ignore(Preflight.preflight ~max_bytes:budget.max_report_bytes ~max_nodes:budget.max_report_nodes ~charge report_value);
   {report_value;domain_value}
-let report value=value.report_value
-let domain value=value.domain_value
+let report (value:t)=value.report_value
+let domain (value:t)=value.domain_value

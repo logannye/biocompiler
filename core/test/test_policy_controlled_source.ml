@@ -33,12 +33,12 @@ let repin_definitions json =
   visit json
 
 let positive json =
-  let admitted=admit json in
-  let source=S.typed admitted in
+  let admitted : S.t = admit json in
+  let source : S.source = S.typed admitted in
   require(source.executor.id="tcell" && source.target.id="target" && source.encounter.id="contact") "Resolved source owner identities differ";
   require(source.antigen.scope=S.Encounter && source.controller.scope=S.Executor) "Mixed observation ownership collapsed";
   require(source.antigen.symbol.id="antigen" && source.controller.symbol.id="controller") "Observation bindings changed";
-  let a,b=source.products in
+  let (a:S.product),(b:S.product)=source.products in
   require(a.symbol.id="product-a" && b.symbol.id="product-b") "Original product member order changed";
   require(source.deadlines.onset_ticks=2 && source.deadlines.controller_off_ticks=2 &&
     source.deadlines.antigen_off_ticks=2 && source.deadlines.component_off_ticks=2 && source.deadlines.reactivation_ticks=2)
@@ -59,11 +59,11 @@ let positive json =
   let changed=declaration "controller-off" (update "deadline" (set "amount" (str "3"))) json
     |> declaration "antigen-off" (update "deadline" (set "amount" (str "1")))
     |> declaration "component-off" (update "deadline" (set "amount" (str "4"))) in
-  let independent=S.typed(admit changed) in
+  let independent : S.source = S.typed(admit changed) in
   require(independent.deadlines.controller_off_ticks=3 && independent.deadlines.antigen_off_ticks=1 &&
     independent.deadlines.component_off_ticks=4 && independent.deadlines.onset_ticks=2) "Independent source off deadlines were conflated";
   let mapped=update "program" (update "source_map" (fun values->Json.Array(List.map(set "line"(Json.int 2))(Json.array values)))) json in
-  let modified=admit mapped in
+  let modified : S.t = admit mapped in
   require(D.controlled_fingerprint(S.document admitted)=D.controlled_fingerprint(S.document modified)) "Source-map exclusion changed legacy digest meaning";
   require(D.controlled_artifact_digest(S.document admitted)<>D.controlled_artifact_digest(S.document modified)) "Full source authority discarded source-map changes"
 

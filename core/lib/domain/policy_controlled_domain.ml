@@ -68,16 +68,16 @@ let physical_value input raw = match input,Json.string raw with
   |(Antigen|Rna_a|Rna_b|Protein_a|Protein_b),"absent"->false
   |(Antigen|Rna_a|Rna_b|Protein_a|Protein_b),"present"->true
   |_->Diagnostic.fail "policy_controlled_domain" "Physical values must use the exact input alphabet."
-let value_at physical = function Antigen->physical.antigen|Controller->physical.controller
+let value_at (physical:physical) = function Antigen->physical.antigen|Controller->physical.controller
   |Rna_a->physical.rna_a|Rna_b->physical.rna_b|Protein_a->physical.protein_a|Protein_b->physical.protein_b
-let with_value physical input value = match input with
+let with_value (physical:physical) input value = match input with
   |Antigen->{physical with antigen=value}|Controller->{physical with controller=value}
   |Rna_a->{physical with rna_a=value}|Rna_b->{physical with rna_b=value}
   |Protein_a->{physical with protein_a=value}|Protein_b->{physical with protein_b=value}
-let physical_json physical = obj(List.map(fun input->key_name input,
+let physical_json (physical:physical) = obj(List.map(fun input->key_name input,
   str(match input,value_at physical input with Controller,true->"enabled"|Controller,false->"disabled"
     |_,true->"present"|_,false->"absent"))keys)
-let physical raw = exact key_names raw;
+let physical raw : physical = exact key_names raw;
   let read input=physical_value input(get(key_name input)raw)in
   {antigen=read Antigen;controller=read Controller;rna_a=read Rna_a;rna_b=read Rna_b;
    protein_a=read Protein_a;protein_b=read Protein_b}
@@ -88,13 +88,13 @@ let quality_name = function Valid->"valid"|Missing->"missing"|Invalid->"invalid"
 let lifecycle raw = match Json.string raw with "none"->None_event|"start"->Start|"end"->End|"reset"->Reset
   |_->Diagnostic.fail "policy_controlled_domain" "Unknown controlled-domain lifecycle event."
 let lifecycle_name = function None_event->"none"|Start->"start"|End->"end"|Reset->"reset"
-let missing = {status=Missing;observed_tick=None;generation=None}
+let missing : evidence = {status=Missing;observed_tick=None;generation=None}
 let optional_int maximum = function Json.Null->None|value->Some(bounded maximum value)
 let option_json = function None->Json.Null|Some value->Json.int value
-let evidence_json value = obj["status",str(quality_name value.status);
+let evidence_json (value:evidence) = obj["status",str(quality_name value.status);
   "observed_tick",option_json value.observed_tick;"generation",option_json value.generation]
-let evidence_map_json values = obj(List.map(fun(input,value)->key_name input,evidence_json value)values)
-let evidence input ~tick raw =
+let evidence_map_json (values:(input_key * evidence) list) = obj(List.map(fun(input,value)->key_name input,evidence_json value)values)
+let evidence input ~tick raw : evidence =
   exact["status";"observed_tick";"generation"]raw;
   let status=quality(get "status" raw)and observed_tick=optional_int 64(get "observed_tick" raw)
   and generation=optional_int 16(get "generation" raw)in
@@ -106,7 +106,7 @@ let evidence input ~tick raw =
       require(observed<=tick)"Evidence cannot be future dated."
   |_->Diagnostic.fail "policy_controlled_domain" "Evidence timestamp/generation contradicts its status or owner.");
   {status;observed_tick;generation}
-let evidence_map ~tick raw = exact key_names raw;
+let evidence_map ~tick raw : (input_key * evidence) list = exact key_names raw;
   List.map(fun input->input,evidence input ~tick(get(key_name input)raw))keys
 let decimal raw = let text=Json.string raw in require(String.length text<=256)"Clock decimal exceeds its bound.";
   Policy_document.exact_decimal text
@@ -120,7 +120,7 @@ let clock_resolution raw =
     "Clock resolution requires an exact time/duration Unit with null reference.";
   require(Q.sign(decimal(get "amount" raw))>0 && Q.sign(decimal(get "scale" unit))>0)
     "Clock resolution amount and scale must be positive.";raw
-let deadlines raw =
+let deadlines raw : deadlines =
   exact["onset_ticks";"controller_off_ticks";"antigen_off_ticks";"component_off_ticks";"reactivation_ticks"]raw;
   {onset_ticks=positive 64(get "onset_ticks" raw);controller_off_ticks=positive 64(get "controller_off_ticks" raw);
    antigen_off_ticks=positive 64(get "antigen_off_ticks" raw);component_off_ticks=positive 64(get "component_off_ticks" raw);
@@ -134,7 +134,7 @@ let charged_fingerprint charge raw =
   let encoded=Canonical.encode_bounded ~max_bytes:1048576 raw in
   require(String.length encoded=bytes)"Domain canonical accounting differs from its preflight.";
   charge bytes;Canonical.sha256 encoded
-let of_json ?(charge=noop) raw =
+let of_json ?(charge=noop) raw : t =
   let decoding=ref 0 in
   let debit amount=charge amount;decoding:= !decoding+amount in
   ignore(Policy_material_request.preflight ~max_bytes:1048576 ~max_nodes:100000 ~max_depth:32 ~charge:debit raw);
@@ -208,33 +208,33 @@ let of_json ?(charge=noop) raw =
   {raw;identity;decoded_work= !decoding;bindings;resolution;deadlines;cutoff;horizon;
    freshness=List.map(fun(input,_,value)->input,value)references;initial_physical;initial_evidence;
    physical_factors;evidence_factors;lifecycle_factors;fixed_inputs;limits}
-let to_json domain = domain.raw
-let fingerprint domain = domain.identity
-let decoding_work domain = domain.decoded_work
-let metadata domain = {domain_fingerprint=domain.identity;fixed_input_count=List.length domain.fixed_inputs;
+let to_json (domain:t) = domain.raw
+let fingerprint (domain:t) = domain.identity
+let decoding_work (domain:t) = domain.decoded_work
+let metadata (domain:t) : metadata = {domain_fingerprint=domain.identity;fixed_input_count=List.length domain.fixed_inputs;
   physical_factor_count=List.length domain.physical_factors;evidence_factor_count=List.length domain.evidence_factors;
   lifecycle_factor_count=List.length domain.lifecycle_factors}
-let validate_for ?(charge=noop) ~bindings ~resolution ~deadlines ~horizon_ticks domain =
+let validate_for ?(charge=noop) ~(bindings:bindings) ~resolution ~(deadlines:deadlines) ~horizon_ticks (domain:t) =
   charge 1;
   Diagnostic.require(domain.bindings=bindings && Json.equal domain.resolution resolution &&
     domain.deadlines=deadlines && domain.horizon=horizon_ticks)"policy_controlled_domain_binding"
     "Controlled domain differs from the independently admitted source/context bindings, clock or five deadline bounds.";
   Validated domain
 let specification(Validated domain) = domain
-let initial ?(charge=noop) (Validated domain) = charge 1;
+let initial ?(charge=noop) (Validated domain) : cursor = charge 1;
   {domain=domain.identity;lineage=domain.identity;next_tick=0;c_live=false;c_generation=0;c_generation_started_tick=0;
    c_physical=domain.initial_physical;c_evidence=domain.initial_evidence}
-let cursor_tick cursor = cursor.next_tick
-let check_cursor domain cursor = Diagnostic.require(cursor.domain=domain.identity)"policy_controlled_domain_cursor" "Foreign controlled-domain cursor."
-let finished (Validated domain) cursor = check_cursor domain cursor;cursor.next_tick>domain.horizon
+let cursor_tick (cursor:cursor) = cursor.next_tick
+let check_cursor (domain:t) (cursor:cursor) = Diagnostic.require(cursor.domain=domain.identity)"policy_controlled_domain_cursor" "Foreign controlled-domain cursor."
+let finished (Validated domain) (cursor:cursor) = check_cursor domain cursor;cursor.next_tick>domain.horizon
 (* The immutable cursor lineage commits to the complete domain and every prior
    complete input frame, even when different histories converge physically. *)
-let cursor_identity cursor = cursor.lineage
-let batch_to_json batch = obj["tick",Json.int batch.tick;"event",str(lifecycle_name batch.event);"live",Json.Bool batch.live;
+let cursor_identity (cursor:cursor) = cursor.lineage
+let batch_to_json (batch:input_batch) = obj["tick",Json.int batch.tick;"event",str(lifecycle_name batch.event);"live",Json.Bool batch.live;
   "generation",Json.int batch.generation;"generation_started_tick",Json.int batch.generation_started_tick;
   "physical",physical_json batch.physical;"evidence",evidence_map_json batch.evidence]
-let eligible cursor = function None_event->true|Start->not cursor.c_live|End|Reset->cursor.c_live
-let event_state domain cursor event =
+let eligible (cursor:cursor) = function None_event->true|Start->not cursor.c_live|End|Reset->cursor.c_live
+let event_state (domain:t) (cursor:cursor) event =
   contradiction(eligible cursor event)"Fixed lifecycle event is invalid for a reachable prefix.";
   let generation=match event with Start|Reset->cursor.c_generation+1|None_event|End->cursor.c_generation in
   Diagnostic.require(generation<=domain.limits.max_generations)"policy_controlled_domain_generation_bound"
@@ -243,18 +243,18 @@ let event_state domain cursor event =
   let started=match event with Start|Reset->cursor.next_tick|None_event|End->cursor.c_generation_started_tick in
   let physical=match event with End|Reset->{cursor.c_physical with antigen=false}|None_event|Start->cursor.c_physical in
   live,generation,started,physical
-let check_batch domain cursor batch =
+let check_batch (domain:t) (cursor:cursor) (batch:input_batch) =
   contradiction((batch.live || not batch.physical.antigen) &&
     ((batch.event<>End && batch.event<>Reset)||not batch.physical.antigen))
     "Physical antigen contradicts an idle or end/reset boundary on a reachable prefix.";
   contradiction(cursor.next_tick<=domain.cutoff || (batch.event=None_event && batch.physical=cursor.c_physical))
     "A fixed suffix frame changes a held physical input.";
-  List.iter(fun(input,value)->match input,value.generation with
+  List.iter(fun(input,(value:evidence))->match input,value.generation with
     |Antigen,Some generation->contradiction(generation<=batch.generation)"Antigen evidence refers to a future generation."
     |_->())batch.evidence
-let effective_evidence (Validated domain) batch input =
+let effective_evidence (Validated domain) (batch:input_batch) input =
   Diagnostic.require(batch.origin_domain=domain.identity)"policy_controlled_domain_cursor" "Foreign controlled-domain evidence batch.";
-  let value=List.assoc input batch.evidence in
+  let (value:evidence)=List.assoc input batch.evidence in
   match value.status,value.observed_tick with Missing,_->Fresh Missing
   |_,Some observed when batch.tick-observed>List.assoc input domain.freshness->Stale
   |_,Some observed when input=Antigen && (not batch.live || value.generation<>Some batch.generation || observed<batch.generation_started_tick)->Stale
@@ -267,7 +267,7 @@ let rec product charge options = function
   |input::rest->flat_map(fun value->
       let tail=product charge options rest in
       Seq.map(fun rows->charge 1;(input,value)::rows)tail)(List.to_seq(options input))
-let choices ?(charge=noop) (Validated domain) cursor =
+let choices ?(charge=noop) (Validated domain) (cursor:cursor) : input_batch Seq.t =
   check_cursor domain cursor;
   if cursor.next_tick>domain.horizon then Seq.empty else
   let tick=cursor.next_tick in
@@ -308,7 +308,7 @@ let choices ?(charge=noop) (Validated domain) cursor =
             (product charge physical_options keys)) (List.to_seq actions)in
         sequence()
   in start
-let advance ?(charge=noop) (Validated domain) cursor batch =
+let advance ?(charge=noop) (Validated domain) (cursor:cursor) (batch:input_batch) : cursor =
   charge 1;check_cursor domain cursor;
   Diagnostic.require(cursor.next_tick<=domain.horizon && batch.tick=cursor.next_tick && batch.origin=cursor_identity cursor)
     "policy_controlled_domain_cursor" "Input batch belongs to a different domain or prefix.";
@@ -317,19 +317,19 @@ let advance ?(charge=noop) (Validated domain) cursor batch =
    c_generation_started_tick=batch.generation_started_tick;c_physical=batch.physical;c_evidence=batch.evidence}
 let enumerate ?(charge=noop) ?(cancelled=fun()->false) ?(on_history=fun _->()) ((Validated domain)as validated) =
   let exception Local_exhausted in let exception Local_cancelled in
-  let usage=ref{prefixes=0;transitions=0;histories=0;work=0}in
+  let usage:usage ref=ref{prefixes=0;transitions=0;histories=0;work=0}in
   let debit amount=
     if cancelled()then raise Local_cancelled;
     if amount>domain.limits.max_work-(!usage).work then raise Local_exhausted;
     charge amount;usage:={!usage with work=(!usage).work+amount}in
-  let rec visit cursor history =
+  let rec visit (cursor:cursor) (history:input_batch list) =
     debit 1;
     if (!usage).prefixes>=domain.limits.max_prefixes then raise Local_exhausted;
     usage:={!usage with prefixes=(!usage).prefixes+1};
     if finished validated cursor then begin
       if (!usage).histories>=domain.limits.max_histories then raise Local_exhausted;
       usage:={!usage with histories=(!usage).histories+1};on_history(List.rev history)
-    end else Seq.iter(fun batch->
+    end else Seq.iter(fun(batch:input_batch)->
       debit 1;
       if (!usage).transitions>=domain.limits.max_transitions then raise Local_exhausted;
       usage:={!usage with transitions=(!usage).transitions+1};

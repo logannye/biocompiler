@@ -212,7 +212,7 @@
       "path": "core/lib/checker/policy_controlled_source.ml",
       "kind": "owner",
       "anchor": {
-        "text": "let admit ~document ="
+        "text": "let admit ~(document:D.controlled) : t ="
       },
       "scope": "Closed controlled source admission and original occurrence correspondence only; no activity execution or material realization."
     },

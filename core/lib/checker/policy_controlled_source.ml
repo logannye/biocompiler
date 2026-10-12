@@ -21,10 +21,10 @@ type source = {
 type t = { document_value : D.controlled; source_value : source;
   report_value : Json.t; correspondence_value : Json.t }
 let schema_version = "biocompiler.policy_controlled_composition_source_admission.v0.1"
-let document value = value.document_value
-let typed value = value.source_value
-let report value = value.report_value
-let correspondence value = value.correspondence_value
+let document (value:t) = value.document_value
+let typed (value:t) = value.source_value
+let report (value:t) = value.report_value
+let correspondence (value:t) = value.correspondence_value
 let obligation_tag = function
   | No_unauthorized_activation -> "no_unauthorized_activation"
   | Initial_activation -> "initial_activation"
@@ -69,7 +69,7 @@ let expr op kind ?(args=[]) ?(reference=Json.Null) ?(scope=Json.Null) ?(value=Js
     "clock",Json.Null;"coverage",Json.Null;"binding",Json.Null]
 let marker semantic = expr "literal" "text" ~value:(str ("biocompiler.controlled_source." ^ semantic ^ ".v0.1")) ()
 
-let admit ~document =
+let admit ~(document:D.controlled) : t =
   let raw = D.controlled_to_json document in
   Meter.preflight raw;
   (* The decoder measures/canonicalizes the full original twice, fingerprints
@@ -83,27 +83,27 @@ let admit ~document =
   let declarations = list pp "declarations" program in
   require (pp ^ "/declarations") (List.length declarations = 15)
     "Controlled source requires precisely its fifteen declarations, including all six obligations.";
-  let symbols = List.mapi (fun index original ->
+  let symbols : symbol list = List.mapi (fun index original ->
     let path = pp ^ "/declarations/" ^ string_of_int index in
     let id = text path "id" original in identifier (path ^ "/id") id;
     ({id;path;index;original} : symbol)) declarations in
-  let index = List.fold_left (fun table (symbol:symbol) ->
+  let index : symbol Names.t = List.fold_left (fun table (symbol:symbol) ->
     require symbol.path (not (Names.mem symbol.id table)) "Duplicate controlled source declaration.";
     Names.add symbol.id symbol table) Names.empty symbols in
-  let of_kind kind = List.filter (fun (symbol:symbol) -> text symbol.path "$type" symbol.original = kind) symbols in
-  let one kind = match of_kind kind with
+  let of_kind kind : symbol list = List.filter (fun (symbol:symbol) -> text symbol.path "$type" symbol.original = kind) symbols in
+  let one kind : symbol = match of_kind kind with
     | [symbol] -> symbol | _ -> fail (pp ^ "/declarations") ("Expected exactly one " ^ kind ^ " declaration.") in
-  let resolve path kind value =
+  let resolve path kind value : symbol =
     require path (text path "kind" value = kind) "Reference names the wrong declaration kind.";
     let identity = text path "id" value in
     match Names.find_opt identity index with
-    | Some symbol when text symbol.path "$type" symbol.original = kind -> symbol
+    | Some (symbol:symbol) when text symbol.path "$type" symbol.original = kind -> symbol
     | _ -> fail path "Reference does not resolve to its original declaration." in
   let bind path kind (symbol:symbol) value =
-    let resolved = resolve path kind value in
+    let resolved : symbol = resolve path kind value in
     require path (resolved.id = symbol.id) "Source reference resolves to another executor, encounter or endpoint." in
-  let executor = one "Role" and target = one "Subject" and encounter = one "Encounter"
-  and clock = one "Clock" and activity = one "ControlledActivity" in
+  let executor : symbol = one "Role" and target : symbol = one "Subject" and encounter : symbol = one "Encounter"
+  and clock : symbol = one "Clock" and activity : symbol = one "ControlledActivity" in
   require (pp ^ "/declarations") (List.length (of_kind "Observation") = 2 &&
     List.length (of_kind "Parameter") = 2 && List.length (of_kind "Requirement") = 6)
     "Extra observations, products, requirements or executable features are unsupported.";
@@ -114,7 +114,7 @@ let admit ~document =
   let definitions = list sp "definitions" semantics in
   require (sp ^ "/definitions") (List.length definitions <= 128)
     "Controlled source definition census exceeds its closed bound.";
-  let definition_index = List.mapi (fun position body ->
+  let definition_index : definition Names.t = List.mapi (fun position body ->
     let path = sp ^ "/definitions/" ^ string_of_int position in
     let identity = text path "id" body in
     identifier (path ^ "/id") identity; nonblank (path ^ "/version") (text path "version" body);
@@ -128,9 +128,9 @@ let admit ~document =
       require definition.path (not (Names.mem definition.identity table)) "Duplicate semantic definition identity.";
       Names.add definition.identity definition table) Names.empty in
   let used = ref Seen.empty in
-  let definition path value =
+  let definition path value : definition =
     let identity = text path "id" value in
-    let original = match Names.find_opt identity definition_index with
+    let original : definition = match Names.find_opt identity definition_index with
       | Some original -> original | None -> fail path "Complete original semantic definition body is absent." in
     exact path value original.reference "Definition reference differs from the full original body/version/digest.";
     used := Seen.add identity !used; original in
@@ -148,8 +148,8 @@ let admit ~document =
   require (sp ^ "/definitions") (Seen.cardinal !used = Names.cardinal definition_index)
     "Unused semantic definitions are outside this closed source family.";
   let interpreted = ref Seen.empty in
-  let semantic path value ~category ~meaning ~result =
-    let original = definition path value in
+  let semantic path value ~category ~meaning ~result : definition =
+    let original : definition = definition path value in
     empty original.path ["parameters"] original.body;
     require path (text original.path "category" original.body = category) "Semantic category differs from this source use.";
     exact (original.path ^ "/result") (get original.path "result" original.body) result "Semantic result type differs from the fixed operation/readout.";
@@ -162,12 +162,12 @@ let admit ~document =
            "Semantic clause does not supply the exact controlled source interpretation."
      | _ -> fail (original.path ^ "/clauses") "Exactly one interpreted clause is required; extra clauses cannot be discarded.");
     interpreted := Seen.add original.identity !interpreted; original in
-  let definition_use (symbol:symbol) key category meaning result =
+  let definition_use (symbol:symbol) key category meaning result : definition =
     semantic (symbol.path ^ "/" ^ key) (get symbol.path key symbol.original) ~category ~meaning ~result in
   nulls executor.path ["population"] executor.original;
   exact (executor.path ^ "/lineage_role") (get executor.path "lineage_role" executor.original) (Json.Bool false)
     "Population/lineage execution is outside the one-executor profile.";
-  let capability = match list executor.path "requires" executor.original with
+  let capability : definition = match list executor.path "requires" executor.original with
     | [pin] -> semantic (executor.path ^ "/requires/0") pin ~category:"capability" ~meaning:"human_t_cell" ~result:Json.Null
     | _ -> fail (executor.path ^ "/requires") "Exactly the interpreted human T-cell capability is required." in
   require target.path (text target.path "entity_kind" target.original = "cell" &&
@@ -202,7 +202,7 @@ let admit ~document =
   empty ap ["assumptions";"tolerances"] assurance;
   let horizon = get ap "horizon" assurance in
   let horizon_ticks = ticks (ap ^ "/horizon") horizon in
-  let observed = List.map (fun (symbol:symbol) ->
+  let observed : observation list = List.map (fun (symbol:symbol) ->
     bind (symbol.path ^ "/observer") "Role" executor (get symbol.path "observer" symbol.original);
     bind (symbol.path ^ "/clock") "Clock" clock (get symbol.path "clock" symbol.original);
     exact (symbol.path ^ "/value_type") (get symbol.path "value_type" symbol.original) (scalar "truth") "Gate observations must be truth-valued.";
@@ -216,40 +216,40 @@ let admit ~document =
     let scope, meaning = if Json.equal subject (reference "Role" executor.id) then Executor,"controller"
       else if Json.equal subject (reference "Subject" target.id) then Encounter,"antigen"
       else fail (symbol.path ^ "/subject") "Observation uses the wrong executor/encounter scope." in
-    let contract = definition_use symbol "contract" "observation" meaning (scalar "truth") in
+    let contract : definition = definition_use symbol "contract" "observation" meaning (scalar "truth") in
     let freshness_ticks = ticks (symbol.path ^ "/freshness") (get symbol.path "freshness" symbol.original) in
     ({symbol;scope;contract;freshness_ticks} : observation)) (of_kind "Observation") in
-  let observation scope = match List.filter (fun (value:observation) -> value.scope = scope) observed with
+  let observation scope : observation = match List.filter (fun (value:observation) -> value.scope = scope) observed with
     | [value] -> value | _ -> fail (pp ^ "/declarations") "Exactly one antigen and one executor-local controller observation are required." in
-  let antigen = observation Encounter and controller = observation Executor in
+  let antigen : observation = observation Encounter and controller : observation = observation Executor in
   bind (activity.path ^ "/executor") "Role" executor (get activity.path "executor" activity.original);
   bind (activity.path ^ "/subject") "Subject" target (get activity.path "subject" activity.original);
   bind (activity.path ^ "/clock") "Clock" clock (get activity.path "clock" activity.original);
-  let operation = definition_use activity "contract" "operation" "activity" Json.Null in
-  let readout = definition_use activity "readout" "observation" "readout" (scalar "text") in
+  let operation : definition = definition_use activity "contract" "operation" "activity" Json.Null in
+  let readout : definition = definition_use activity "readout" "observation" "readout" (scalar "text") in
   let antigen_expr = expr "observe" "truth" ~reference:(reference "Observation" antigen.symbol.id) ~scope:(reference "Subject" target.id) () in
   let controller_expr = expr "observe" "truth" ~reference:(reference "Observation" controller.symbol.id) ~scope:(reference "Role" executor.id) () in
   let gate = get activity.path "gate" activity.original in
   require (activity.path ^ "/gate") (Json.equal gate (expr "all" "truth" ~args:[antigen_expr;controller_expr] ()) ||
     Json.equal gate (expr "all" "truth" ~args:[controller_expr;antigen_expr] ()))
     "Activity gate must be exactly antigen AND executor-local controller, with no ignored expression fields.";
-  let products = list activity.path "products" activity.original |> List.mapi (fun position value ->
+  let products : product list = list activity.path "products" activity.original |> List.mapi (fun position value ->
     let path = activity.path ^ "/products/" ^ string_of_int position in
-    let symbol = resolve path "Parameter" value in
+    let symbol : symbol = resolve path "Parameter" value in
     exact (symbol.path ^ "/value_type") (get symbol.path "value_type" symbol.original) (scalar "text") "Product identity must be a text parameter.";
     require symbol.path (text symbol.path "selection" symbol.original = "fixed") "Product selection must retain the fixed original identity.";
     nulls symbol.path ["lower";"upper"] symbol.original;
     let product_identity = text symbol.path "value" symbol.original in
     nonblank (symbol.path ^ "/value") product_identity; ({symbol;product_identity} : product)) in
-  let products = match products with
-    | [a;b] when a.symbol.id <> b.symbol.id && a.product_identity <> b.product_identity -> a,b
+  let products : product * product = match products with
+    | [(a:product);(b:product)] when a.symbol.id <> b.symbol.id && a.product_identity <> b.product_identity -> a,b
     | _ -> fail (activity.path ^ "/products") "Exactly two distinct original product parameters are required." in
   let band value = expr "eq" "truth" ~args:[expr "activity_band" "text"
     ~reference:(reference "ControlledActivity" activity.id) ~scope:(reference "Subject" target.id) ();
     expr "literal" "text" ~value:(str value) ()] () in
   let all_kinds = [No_unauthorized_activation;Initial_activation;Controller_cessation;
     Antigen_cessation;Component_cessation;Reactivation] in
-  let obligations = List.map (fun (symbol:symbol) ->
+  let obligations : obligation list = List.map (fun (symbol:symbol) ->
     nonblank (symbol.path ^ "/description") (text symbol.path "description" symbol.original);
     exact (symbol.path ^ "/scope") (get symbol.path "scope" symbol.original)
       (obj ["$type",str "Scope";"kind",str "executor";"subject",reference "Role" executor.id]) "Every activity obligation requires the sole executor scope.";
@@ -260,12 +260,12 @@ let admit ~document =
     empty symbol.path ["assumptions"] symbol.original;
     require (symbol.path ^ "/horizon") (ticks (symbol.path ^ "/horizon") (get symbol.path "horizon" symbol.original) = horizon_ticks)
       "Each source obligation must preserve the complete original assurance horizon.";
-    let raw_definition = definition (symbol.path ^ "/contract") (get symbol.path "contract" symbol.original) in
+    let raw_definition : definition = definition (symbol.path ^ "/contract") (get symbol.path "contract" symbol.original) in
     let clause = match list raw_definition.path "clauses" raw_definition.body with
       | [clause] -> clause | _ -> fail raw_definition.path "Requirement needs one explicit interpreted clause." in
     let kind = match List.filter (fun kind -> Json.equal (get raw_definition.path "expression" clause) (marker (obligation_tag kind))) all_kinds with
       | [kind] -> kind | _ -> fail raw_definition.path "Unsupported requirement clause; no source obligation may be dropped." in
-    let contract = definition_use symbol "contract" "requirement" (obligation_tag kind) Json.Null in
+    let contract : definition = definition_use symbol "contract" "requirement" (obligation_tag kind) Json.Null in
     let deadline_ticks = if kind = No_unauthorized_activation then (
       require symbol.path (text symbol.path "kind" symbol.original = "safety") "Unauthorized activation is a safety obligation.";
       nulls symbol.path ["response";"deadline"] symbol.original; None)
@@ -284,7 +284,7 @@ let admit ~document =
     (List.map (fun (item:obligation) -> item.symbol.id) obligations)) "Assurance requirements must preserve the exact complete source obligation set.";
   let bound kind = match (List.find (fun (item:obligation) -> item.kind = kind) obligations).deadline_ticks with
     | Some value -> value | None -> fail ap "Missing timed source obligation." in
-  let deadlines = {onset_ticks=bound Initial_activation;controller_off_ticks=bound Controller_cessation;
+  let deadlines : deadlines = {onset_ticks=bound Initial_activation;controller_off_ticks=bound Controller_cessation;
     antigen_off_ticks=bound Antigen_cessation;component_off_ticks=bound Component_cessation;
     reactivation_ticks=bound Reactivation} in
   let dp = root ^ "/deployment" in
@@ -340,7 +340,7 @@ let admit ~document =
             [0,"product_identity";1,"product_version";2,"product_sha256"] parameters in
           (match values with
            | [identity;_version;digest] ->
-               let a,b = products in
+               let (a:product),(b:product) = products in
                require definition.path (identity = a.product_identity || identity = b.product_identity)
                  "Supplied product descriptor does not name either original source product.";
                require definition.path (not (Seen.mem identity !supplied_products))
@@ -356,7 +356,7 @@ let admit ~document =
     let path = pp ^ "/source_map/" ^ string_of_int i in
     require path (Names.mem (text path "declaration_id" span) index) "Source map refers to an absent declaration.";
     nonblank (path ^ "/file") (text path "file" span)) (list pp "source_map" program);
-  let source_value = {executor;target;encounter;clock;tick_resolution;tick_unit;resolution;horizon_ticks;
+  let source_value : source = {executor;target;encounter;clock;tick_resolution;tick_unit;resolution;horizon_ticks;
     antigen;controller;products;activity;operation;readout;obligations;deadlines;selected_implementation} in
   let symbol_json (symbol:symbol) = obj ["id",str symbol.id;"source_path",str symbol.path;
     "source_index",Json.int symbol.index;"kind",get symbol.path "$type" symbol.original;"original",symbol.original] in
@@ -378,6 +378,6 @@ let admit ~document =
   {document_value=document;source_value;report_value;correspondence_value}
 end
 
-let admit ~charge ~document =
+let admit ~charge ~(document:D.controlled) : t =
   let module Admission = Make(struct let charge = charge end) in
   Admission.admit ~document
