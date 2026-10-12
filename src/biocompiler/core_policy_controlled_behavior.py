@@ -227,7 +227,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
         for raw, aggregate, authority in zip(monitored_rows, requirements, source_requirements):
             row = _object(raw, set("id source_path kind status deadline_ticks source_declaration contract events".split()), "Counterexample source obligation")
             for key in ("id", "kind", "source_path", "deadline_ticks"):
-                _require(row[key] == authority[key], "Counterexample source correspondence changed")
+                _require(_same(row[key], authority[key]), "Counterexample source correspondence changed")
             _require(row["status"] in ("pass", "fail", "unknown", "not_exercised") and aggregate[cast(str, row["status"])] != 0,
                      "Counterexample source status contradicts aggregate")
             _require(_same(row["source_declaration"], aggregate["original"]), "Counterexample source body changed")
@@ -240,7 +240,8 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
                 event = _record(raw_event)
                 if event.get("action") == "violation":
                     _object(event, {"tick", "action", "reason"}, "Source violation event")
-                    _require(type(event["reason"]) is str and bool(event["reason"]), "Source violation lacks reason")
+                    _require(event["reason"] in ("activation_without_uninterrupted_qualified_response",
+                        "active_episode_changed_generation_without_background"), "Unknown source violation reason")
                 else:
                     _object(event, {"tick", "action", "trigger_tick", "deadline_tick", "generation"}, "Source deadline event")
                     _require(event["action"] in ("triggered", "cancelled", "discharged", "deadline_missed"), "Unknown source deadline action")
@@ -266,15 +267,22 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
             _count(inputs["generation_started_tick"], tick)
             input_keys = {"antigen", "controller", "rna_a", "rna_b", "protein_a", "protein_b"}
             physical = _object(inputs["physical"], input_keys, "Original physical frame")
-            _require(all(type(value) is bool for value in physical.values()), "Physical bands must remain booleans")
+            for key, band in physical.items():
+                alphabet = ("enabled", "disabled") if key == "controller" else ("present", "absent")
+                _require(type(band) is str and band in alphabet, "Physical input changed its native categorical alphabet")
             evidence = _object(inputs["evidence"], input_keys, "Original evidence frame")
-            for raw_evidence in evidence.values():
+            for key, raw_evidence in evidence.items():
                 observation = _object(raw_evidence, {"status", "observed_tick", "generation"}, "Original channel evidence")
                 _require(observation["status"] in ("valid", "missing", "invalid", "conflicting"), "Evidence quality changed")
-                if observation["observed_tick"] is not None:
+                if observation["status"] == "missing":
+                    _require(observation["observed_tick"] is None and observation["generation"] is None,
+                             "Missing channel evidence cannot claim a timestamp or generation")
+                else:
                     _count(observation["observed_tick"], tick)
-                if observation["generation"] is not None:
-                    _count(observation["generation"], generation)
+                    if key == "antigen":
+                        _count(observation["generation"], generation)
+                    else:
+                        _require(observation["generation"] is None, "Executor evidence cannot claim encounter ownership")
             history = _object(raw_history, {"input", "activity", "readout_evidence", "qualified_gate", "inputs_required"}, "Original monitored frame")
             _require(_same(history["input"], inputs) and _same(history["activity"], frame["candidate"]), "Source monitoring used different physical history")
             _require(history["readout_evidence"] in ("valid", "stale", "missing", "invalid", "conflicting")
@@ -291,7 +299,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
                 _require(_count(sample["tick"], 64) == tick and sample["band"] in ("background", "active"), "Activity sample changed physical bands")
                 sample_generation = sample["activation_generation"]
                 if sample_generation is not None:
-                    _count(sample_generation, 65, 1)
+                    _count(sample_generation, generation, 1)
                 _require((sample_generation is None) == (sample["band"] == "background"), "Activity generation contradicts physical band")
             _require(frame["corresponds"] == _same(frame["candidate"], frame["model_reference"]), "Counterexample correspondence contradicts retained exact samples")
     _require(report["outcome"] in ("pass", "fail", "unknown"), "Unknown behavioral outcome")

@@ -84,6 +84,71 @@ def peer_result(request, proposal):
             'request_decoding_work':1000,'publication':'requires_original_one_shot_frame_guard'}}
 
 
+def counterexample_peer(*, late=False):
+    """Literal serializer-shaped retained values, not a Python activity evaluator."""
+    raw=original()
+    if late:
+        authority=raw['original'];model=authority['mechanism_model']
+        model['body']['delays']['onset_ticks']=3
+        model['identity']['content_fingerprint']=api._fingerprint(model['body'])
+        authority['catalog_binding']['model_identity']=deepcopy(model['identity'])
+        authority['source_authority']['control_contract']['actual_delays']['onset_ticks']=3
+    else:
+        raw['readout_evidence']['samples'][3].update(status='missing',observed_tick=None)
+    proposal=candidate(raw);value=peer_result(raw,proposal);report=value['report']
+    report.update(status='not_accepted',outcome='fail' if late else 'unknown',
+        evidence_status='resolved' if late else 'unknown')
+    # Independently declared first (held-controller) history. Native Domain's
+    # serializer uses these strings even though its internal state uses bools.
+    bands=('background','background','background','active','active','active','background','active','active','active','active') if late else (
+        'background','active','active','active','active','active','background','active','active','active','active')
+    deadline_events={
+        'safety':[],
+        'onset':[(0,'triggered',0,2),*([(2,'deadline_missed',0,2)] if late else []),(3 if late else 1,'discharged',0,2)],
+        'controller-off':[],
+        'antigen-off':[(5,'triggered',5,7),(6,'discharged',5,7)],
+        'component-off':[(5,'triggered',5,7),(6,'discharged',5,7)],
+        'reactivation':[(6,'triggered',6,8),(7,'discharged',6,8)]}
+    late_counts={'safety':(2,0,0),'onset':(0,2,0),'controller-off':(0,0,2),
+        'antigen-off':(1,0,1),'component-off':(1,0,1),'reactivation':(1,0,1)}
+    rows=[];definitions=report['source_correspondence']['definitions']
+    for aggregate,authority in zip(report['requirements'],report['admission']['source_admission']['requirements']):
+        identity=aggregate['id'];passed,failed,unexercised=late_counts[identity] if late else (0,0,0)
+        aggregate.update(**{'pass':passed,'fail':failed,'unknown':0 if late else 2,'not_exercised':unexercised})
+        reference=aggregate['original']['contract']
+        definition=next(row for row in definitions if row['reference']['id']==reference['id'])
+        status=('fail' if identity=='onset' else 'not_exercised' if identity=='controller-off' else 'pass') if late else 'unknown'
+        rows.append({'id':identity,'kind':aggregate['kind'],'source_path':aggregate['source_path'],
+            'status':status,'deadline_ticks':authority['deadline_ticks'],'source_declaration':deepcopy(aggregate['original']),
+            'contract':{'identity':reference['id'],'path':definition['source_path'],
+                'reference':deepcopy(reference),'body':deepcopy(aggregate['contract'])},
+            'events':[{'tick':tick,'action':action,'trigger_tick':trigger,'deadline_tick':deadline,'generation':1}
+                for tick,action,trigger,deadline in deadline_events[identity]]})
+    trace=[];history=[]
+    for tick,band in enumerate(bands):
+        physical={'antigen':'present','controller':'enabled','rna_a':'present','rna_b':'present',
+            'protein_a':'present','protein_b':'present'}
+        if tick==5:
+            for key in ('antigen','rna_a','rna_b','protein_a','protein_b'):physical[key]='absent'
+        inputs={'tick':tick,'event':'start' if tick==0 else 'none','live':True,'generation':1,
+            'generation_started_tick':0,'physical':physical,'evidence':{
+                key:{'status':'valid','observed_tick':1 if tick==2 else tick,'generation':1 if key=='antigen' else None}
+                for key in physical}}
+        sample={'tick':tick,'band':band,'activation_generation':1 if band=='active' else None}
+        trace.append({'input':deepcopy(inputs),'candidate':deepcopy(sample),'model_reference':deepcopy(sample),'corresponds':True})
+        history.append({'input':inputs,'activity':sample,'readout_evidence':'missing' if tick==3 and not late else 'valid',
+            'qualified_gate':tick!=5,'inputs_required':True})
+    monitor={'schema_version':'biocompiler.policy_controlled_source_monitor.v0.1','profile':api.admission.REQUEST_PROFILE,
+        'complete':True,'outcome':'fail' if late else 'unknown','horizon_ticks':10,'last_tick':10,'pending':False,
+        'evidence_policy':'biocompiler.controlled_evidence.conservative.v0.1','requirements':rows,
+        'coverage':{**report['coverage'],'controller_disabled_antigen_present':False},
+        'evidence_gaps':[] if late else [{'tick':3,'channel':'activity','status':'missing'}],'history':history}
+    report['counterexample']={'history_index':1,'reduction':'none_complete_original_history',
+        'model_correspondence':True,'pending_at_horizon':False,'deployment_evidence_unknown':False,'source_monitor':monitor,'trace':trace}
+    value['report_fingerprint']=api._fingerprint(report)
+    return raw,proposal,value
+
+
 class Peer:
     def __init__(self,role='verify',mutate=None,profile=None):
         self.role=role;self.mutate=mutate;self.calls=[]
@@ -158,7 +223,7 @@ class ControlledBehaviorTransportTests(unittest.TestCase):
             lambda r:r['report']['availability'][0].update(rna_absent_frames=23),
             lambda r:r['report']['source_correspondence']['declarations'].pop(),
             lambda r:r['report']['assumptions'].clear(),lambda r:r['report'].update(extra={}),
-            lambda r:r['usage'].update(preparation_charged_work=10000001)]
+            lambda r:r['usage'].update(preparation_charged_work=r['report']['budgets']['max_work']+1)]
         for mutate in mutations:
             def forge(result):
                 mutate(result);result['report_fingerprint']=api._fingerprint(result['report'])
@@ -166,50 +231,98 @@ class ControlledBehaviorTransportTests(unittest.TestCase):
                 api.PolicyControlledBehaviorClient(Peer(mutate=forge)).check_behavior(original(),candidate(original()))
 
     def test_unknown_counterexample_retains_complete_original_monitor_and_history(self):
-        raw=original();raw['readout_evidence']['samples'][3].update(status='missing',observed_tick=None)
-        proposal=candidate(raw);value=peer_result(raw,proposal);report=value['report']
-        report.update(status='not_accepted',outcome='unknown',evidence_status='unknown')
-        rows=[];definitions=report['source_correspondence']['definitions']
-        for aggregate,authority in zip(report['requirements'],report['admission']['source_admission']['requirements']):
-            aggregate.update(**{'pass':0,'unknown':2})
-            reference=aggregate['original']['contract']
-            definition=next(row for row in definitions if row['reference']['id']==reference['id'])
-            rows.append({'id':aggregate['id'],'kind':aggregate['kind'],'source_path':aggregate['source_path'],
-                'status':'unknown','deadline_ticks':authority['deadline_ticks'],'source_declaration':deepcopy(aggregate['original']),
-                'contract':{'identity':reference['id'],'path':definition['source_path'],
-                    'reference':deepcopy(reference),'body':deepcopy(aggregate['contract'])},'events':[]})
-        trace=[];history=[]
-        for tick in range(11):
-            physical={key:True for key in ('antigen','controller','rna_a','rna_b','protein_a','protein_b')}
-            physical['controller']=tick!=2
-            if tick==5:
-                for key in ('antigen','rna_a','rna_b','protein_a','protein_b'):physical[key]=False
-            inputs={'tick':tick,'event':'start' if tick==0 else 'none','live':True,'generation':1,
-                'generation_started_tick':0,'physical':physical,'evidence':{
-                    key:{'status':'valid','observed_tick':tick,'generation':1 if key=='antigen' else None} for key in physical}}
-            active=tick not in (0,3,6)
-            sample={'tick':tick,'band':'active' if active else 'background','activation_generation':1 if active else None}
-            trace.append({'input':deepcopy(inputs),'candidate':deepcopy(sample),'model_reference':deepcopy(sample),'corresponds':True})
-            history.append({'input':inputs,'activity':sample,'readout_evidence':'missing' if tick==3 else 'valid',
-                'qualified_gate':tick not in (2,5),'inputs_required':True})
-        monitor={'schema_version':'biocompiler.policy_controlled_source_monitor.v0.1','profile':api.admission.REQUEST_PROFILE,
-            'complete':True,'outcome':'unknown','horizon_ticks':10,'last_tick':10,'pending':False,
-            'evidence_policy':'biocompiler.controlled_evidence.conservative.v0.1','requirements':rows,
-            'coverage':deepcopy(report['coverage']),'evidence_gaps':[{'tick':3,'channel':'activity','status':'missing'}],'history':history}
-        report['counterexample']={'history_index':1,'reduction':'none_complete_original_history',
-            'model_correspondence':True,'pending_at_horizon':False,'deployment_evidence_unknown':False,'source_monitor':monitor,'trace':trace}
-        value['report_fingerprint']=api._fingerprint(report)
+        raw,proposal,value=counterexample_peer()
         response=CoreResponse('peer',api.CHECK,'ok',value,(),'verify',CORE_VERSION)
         decoded=api._result(response,{'request':raw,'candidate':proposal})
         self.assertEqual(decoded.status,'not_accepted');self.assertEqual(decoded.report['outcome'],'unknown')
+        retained=decoded.report['counterexample'];self.assertEqual(retained,value['report']['counterexample'])
+        self.assertEqual(retained['trace'][2]['input']['evidence']['antigen']['observed_tick'],1)
+        self.assertEqual(retained['trace'][2]['input']['physical']['controller'],'enabled')
+        self.assertEqual(retained['trace'][5]['input']['physical']['rna_a'],'absent')
+        self.assertFalse(retained['source_monitor']['coverage']['controller_disabled_antigen_present'])
         mutations=[lambda r:r['counterexample']['trace'].pop(),
             lambda r:r['counterexample']['source_monitor']['requirements'][0]['contract'].update(identity='foreign'),
             lambda r:r['counterexample']['source_monitor']['history'][0]['activity'].update(band='active'),
-            lambda r:r['counterexample']['source_monitor'].update(complete=1)]
+            lambda r:r['counterexample']['source_monitor'].update(complete=1),
+            lambda r:r['counterexample']['source_monitor']['history'][0].update(qualified_gate=1),
+            lambda r:r['counterexample']['source_monitor']['history'][0].update(inputs_required='true'),
+            lambda r:r['counterexample']['source_monitor']['requirements'][1].update(deadline_ticks=2.0),
+            lambda r:r['counterexample']['source_monitor']['requirements'][0]['events'].append({'tick':1,'action':'violation','reason':'invented'}),
+            lambda r:r['counterexample']['source_monitor']['requirements'][1]['events'][0].update(action='invented'),
+            lambda r:r['counterexample']['source_monitor']['requirements'][1]['events'][0].update(deadline_tick=True),
+            lambda r:r['counterexample']['source_monitor']['requirements'][1]['events'][0].update(generation=True),
+            lambda r:r['counterexample']['source_monitor']['requirements'][1]['events'][0].update(extra=None),
+            lambda r:r['counterexample']['source_monitor']['evidence_gaps'][0].update(status='valid'),
+            lambda r:r['counterexample']['source_monitor']['evidence_gaps'][0].update(channel='rna_a')]
         for mutate in mutations:
             altered=deepcopy(value);mutate(altered['report']);altered['report_fingerprint']=api._fingerprint(altered['report'])
             with self.subTest(mutate=mutate),self.assertRaises(CoreProtocolError):
                 api._result(CoreResponse('peer',api.CHECK,'ok',altered,(),'verify',CORE_VERSION),{'request':raw,'candidate':proposal})
+
+    def test_counterexample_native_physical_alphabets_and_evidence_ownership(self):
+        raw,proposal,value=counterexample_peer()
+        def decode_input(mutate):
+            altered=deepcopy(value);retained=altered['report']['counterexample']
+            mutate(retained['trace'][2]['input'])
+            retained['source_monitor']['history'][2]['input']=deepcopy(retained['trace'][2]['input'])
+            altered['report_fingerprint']=api._fingerprint(altered['report'])
+            return api._result(CoreResponse('peer',api.CHECK,'ok',altered,(),'verify',CORE_VERSION),{'request':raw,'candidate':proposal})
+        for channel in ('antigen','controller','rna_a','rna_b','protein_a','protein_b'):
+            for malformed in (True,False,0,1,None,{},[], 'available','unavailable',
+                              'present' if channel=='controller' else 'enabled'):
+                with self.subTest(channel=channel,physical=malformed),self.assertRaisesRegex(CoreProtocolError,'categorical alphabet'):
+                    decode_input(lambda inputs:inputs['physical'].update({channel:malformed}))
+            # All four authored qualities use native status/timestamp/owner
+            # shapes. Stale is derived, so never appears as authored quality.
+            for status in ('valid','missing','invalid','conflicting'):
+                observation={'status':status,'observed_tick':None if status=='missing' else 1,
+                    'generation':1 if channel=='antigen' and status!='missing' else None}
+                result=decode_input(lambda inputs:inputs['evidence'].update({channel:observation}))
+                self.assertEqual(result.report['counterexample']['trace'][2]['input']['evidence'][channel],observation)
+            bad_observations=[{'status':'stale','observed_tick':1,'generation':None},
+                {'status':'missing','observed_tick':1,'generation':None},
+                {'status':'missing','observed_tick':None,'generation':1},
+                {'status':'valid','observed_tick':None,'generation':1 if channel=='antigen' else None},
+                {'status':'valid','observed_tick':True,'generation':1 if channel=='antigen' else None},
+                {'status':'valid','observed_tick':3,'generation':1 if channel=='antigen' else None},
+                {'status':'valid','observed_tick':1,'generation':None if channel=='antigen' else 1},
+                {'status':'valid','observed_tick':1,'generation':True},
+                {'status':'valid','observed_tick':1,'generation':2},
+                {'status':'valid','observed_tick':1,'generation':1 if channel=='antigen' else None,'extra':None}]
+            for observation in bad_observations:
+                with self.subTest(channel=channel,evidence=observation),self.assertRaises(CoreProtocolError):
+                    decode_input(lambda inputs:inputs['evidence'].update({channel:observation}))
+        for field,malformed in [('tick',True),('event','stop'),('live',1),('generation',True),
+                                ('generation_started_tick',3),('extra',None)]:
+            with self.subTest(field=field,value=malformed),self.assertRaises(CoreProtocolError):
+                decode_input(lambda inputs:inputs.update({field:malformed}))
+        for field in ('physical','evidence'):
+            for mutation in (lambda row:row.pop('antigen'),lambda row:row.update(extra=None)):
+                with self.subTest(field=field,mutation=mutation),self.assertRaises(CoreProtocolError):
+                    decode_input(lambda inputs:mutation(inputs[field]))
+        for sample_key in ('candidate','model_reference'):
+            for field,malformed in [('tick',True),('band','unknown'),('activation_generation',True),
+                                    ('activation_generation',0),('activation_generation',2),('activation_generation',None),('extra',None)]:
+                altered=deepcopy(value);retained=altered['report']['counterexample']
+                retained['trace'][2][sample_key][field]=malformed
+                retained['source_monitor']['history'][2]['activity']=deepcopy(retained['trace'][2]['candidate'])
+                altered['report_fingerprint']=api._fingerprint(altered['report'])
+                with self.subTest(sample_key=sample_key,field=field,value=malformed),self.assertRaises(CoreProtocolError):
+                    api._result(CoreResponse('peer',api.CHECK,'ok',altered,(),'verify',CORE_VERSION),{'request':raw,'candidate':proposal})
+
+    def test_late_model_counterexample_keeps_deadline_failure_and_exact_wire_history(self):
+        raw,proposal,value=counterexample_peer(late=True)
+        decoded=api._result(CoreResponse('peer',api.CHECK,'ok',value,(),'verify',CORE_VERSION),{'request':raw,'candidate':proposal})
+        report=decoded.report;retained=report['counterexample']
+        self.assertEqual((report['outcome'],report['evidence_status'],report['model_correspondence']),('fail','resolved','pass'))
+        self.assertEqual(retained,value['report']['counterexample'])
+        self.assertEqual([row['candidate']['band'] for row in retained['trace']],
+            ['background','background','background','active','active','active','background','active','active','active','active'])
+        onset=next(row for row in retained['source_monitor']['requirements'] if row['id']=='onset')
+        self.assertEqual(onset['status'],'fail')
+        self.assertEqual(onset['events'][1],{'tick':2,'action':'deadline_missed','trigger_tick':0,'deadline_tick':2,'generation':1})
+        self.assertEqual(raw['original']['source_authority']['control_contract']['requested_deadlines']['onset_ticks'],2)
+        self.assertEqual(raw['original']['mechanism_model']['body']['delays']['onset_ticks'],3)
 
     def test_full_candidate_and_replay_report_substitution_rejected(self):
         def change(result):
