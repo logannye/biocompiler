@@ -35,10 +35,12 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "3ddb6801d34af794807a2798660eafd0c21ed3c90f39be17f328cb571d225eed"
+REVIEWED_METADATA_SHA256 = "fb1502f84b66fd2e3c64800741fc86b36d4b4b77d11bc330235ab526571ec061"
 BEFORE_CONTROLLED_METADATA_SHA256 = "4af8785fd3710a393f53e630d8c13c570e9c81c16f8885c6062eae58af46e788"
 BEFORE_CONTROLLED_ADMISSION_METADATA_SHA256 = "3ee1abd8fd3009416d3c6fe2f11c4fa3d22f62c0e8276ceec98536576d615f9e"
 BEFORE_CONTROLLED_MATERIAL_METADATA_SHA256 = "9d2e6fa9338a8ff650ec33d00a85c2b3398c1796eb5145a36d7ea54fb359cd6f"
+BEFORE_CONTROLLED_BEHAVIOR_METADATA_SHA256 = "3ddb6801d34af794807a2798660eafd0c21ed3c90f39be17f328cb571d225eed"
+CONTROLLED_BEHAVIOR_PREFIXES = ("biocompiler.core_policy_controlled_behavior.", "biocompiler.policy.controlled_behavior.")
 CONTROLLED_MATERIAL_PREFIXES = ("biocompiler.core_policy_controlled_material.",)
 CONTROLLED_MATERIAL_ADDITIONS = frozenset("biocompiler.policy.controlled_material." + name for name in (
     "construct_material", "check_material", "publish_material"))
@@ -202,8 +204,8 @@ COMPOSITION_DEPENDENCIES = (
     'biocompiler.core_policy_implementation._two_observation_original',
 )
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior car_reference catalog chassis cli component_material component_selection controlled_composition controlled_material coordination deployment effects entities examples expression_material finite_build handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs project_sources quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
-CLIENTS = ("core_policy_controlled_material", "core_policy_controlled_composition", "core_policy_expression_material", "core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking", "core_policy_planning", "core_policy_quantitative_assurance")
+MODULES = tuple("__init__ behavior car_reference catalog chassis cli component_material component_selection controlled_composition controlled_material controlled_behavior coordination deployment effects entities examples expression_material finite_build handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs project_sources quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
+CLIENTS = ("core_policy_controlled_behavior", "core_policy_controlled_material", "core_policy_controlled_composition", "core_policy_expression_material", "core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking", "core_policy_planning", "core_policy_quantitative_assurance")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py", "src/biocompiler/policy/data/car_rm61461_reference_v01.json")
 # These names remain compatible support surfaces, not cellular runtime APIs.
@@ -212,6 +214,9 @@ BUILDER_METHODS = tuple("__init__ qualified namespace add hole resolve executor 
 PATTERNS = tuple("bounded_response context_gate once_per_scope ordered_effects persistence_gate population_handoff".split())
 CLI = tuple("check inspect diff export-schema export-request assess-native compile-native check-lowering-native execute-native replay-execution-native compile-implementation-native check-implementation-native replay-implementation-native compile-material-native check-material-native replay-material-native export-material-native".split())
 OPERATIONS = {
+    "core_policy_controlled_behavior.PolicyControlledBehaviorClient.construct_behavior": ("construct-policy-controlled-behavior", ("request",)),
+    "core_policy_controlled_behavior.PolicyControlledBehaviorClient.check_behavior": ("check-policy-controlled-behavior", ("request", "candidate")),
+    "core_policy_controlled_behavior.PolicyControlledBehaviorClient.replay_behavior": ("replay-policy-controlled-behavior", ("request", "candidate", "report")),
     "core_policy_controlled_material.PolicyControlledMaterialClient.construct_material": ("construct-policy-controlled-material", ("request",)),
     "core_policy_controlled_material.PolicyControlledMaterialClient.check_material": ("check-policy-controlled-material", ("request", "candidate")),
     "core_policy_controlled_material.PolicyControlledMaterialClient.publish_material": ("publish-policy-controlled-material", ("request", "candidate")),
@@ -760,10 +765,21 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
-    before_material = {
+    before_behavior = {
         "witnesses": {key: value for key, value in metadata["witnesses"].items()
-                      if not key.startswith("controlled_rc4.")},
+                      if not key.startswith("controlled_rc5.")},
         "coverage": {key: value for key, value in coverage.items()
+                     if not key.startswith(CONTROLLED_BEHAVIOR_PREFIXES)},
+    }
+    encoded_behavior = json.dumps(before_behavior, ensure_ascii=True, sort_keys=True,
+        separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_behavior["coverage"]) == 2023 and len(before_behavior["witnesses"]) == 294
+            and digest(encoded_behavior) == BEFORE_CONTROLLED_BEHAVIOR_METADATA_SHA256,
+            "Controlled behavior must preserve every prior API evidence meaning")
+    before_material = {
+        "witnesses": {key: value for key, value in before_behavior["witnesses"].items()
+                      if not key.startswith("controlled_rc4.")},
+        "coverage": {key: value for key, value in before_behavior["coverage"].items()
                      if not key.startswith(CONTROLLED_MATERIAL_PREFIXES) and key not in CONTROLLED_MATERIAL_ADDITIONS},
     }
     encoded_material = json.dumps(before_material, ensure_ascii=True, sort_keys=True,

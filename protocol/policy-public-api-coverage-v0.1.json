@@ -1235,6 +1235,163 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.core_policy_controlled_behavior.ACCEPTED_STATUS": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior.CANDIDATE_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior.CHECK": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior.CONSTRUCT": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior.IMPLEMENTATION": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior.PRODUCER_PROFILE": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior.PROFILE": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient._call": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient.check_behavior": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient.construct_behavior": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient.replay_behavior": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient.transport": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorResult": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.core_policy_controlled_behavior.REPLAY": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior.REPORT_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior.REQUEST_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior.RESULT_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior.VALIDATION_SCOPE": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior._candidate": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior._original": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior._require": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_behavior._result": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.core_policy_controlled_composition.IMPLEMENTATION": {
       "scope": "Closed RC3 preparation/transport dependency; no independent source, activity, construction, material or export acceptance.",
       "status": "dependency",
@@ -4880,6 +5037,143 @@
       "status": "shared_invariant",
       "witnesses": [
         "selection.sdk_routes"
+      ]
+    },
+    "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest._json": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.from_original": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.from_request": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.native_status": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.original": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.schema_version": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.sha256": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.to_request": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.policy.controlled_behavior.check_behavior": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.policy.controlled_behavior.construct_behavior": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
+      ]
+    },
+    "biocompiler.policy.controlled_behavior.replay_behavior": {
+      "scope": "Selected original-bound behavior-only transport controls; native source requirement and model execution, joined material/project and empirical acceptance are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc5.authority",
+        "controlled_rc5.routes",
+        "controlled_rc5.evidence",
+        "controlled_rc5.capability",
+        "controlled_rc5.report",
+        "controlled_rc5.substitution"
       ]
     },
     "biocompiler.policy.controlled_composition.ActivityDeadlines": {
@@ -17112,6 +17406,259 @@
         "syntax_sha256": "ac48da790c38d003c02570f9d56b84095df42716ea9326e5667c1e47f6010b5c"
       },
       {
+        "id": "biocompiler.core_policy_controlled_behavior.ACCEPTED_STATUS",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "ACCEPTED_STATUS"
+        },
+        "syntax_sha256": "4cf94e6c6a3b9a9aa2ce66bcc3c67fbc533709c18b2346a039a79b91f744c3c5"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.CANDIDATE_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "CANDIDATE_SCHEMA"
+        },
+        "syntax_sha256": "68c8ab52682e1dc0f29ffc632fa76cdef13a5eebf0e3bdeee8247b5466f334d7"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.CHECK",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "CHECK"
+        },
+        "syntax_sha256": "fccff30511bf173d57d84b4027372bac0d9204e95caae7de5333dc84031ad8aa"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.CONSTRUCT",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "CONSTRUCT"
+        },
+        "syntax_sha256": "018e547f661215bbb17df661ae812a5ebbfefc1a6ef872c0461c4e14dc4fa476"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.IMPLEMENTATION",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "IMPLEMENTATION"
+        },
+        "syntax_sha256": "711b192ad6d6e90286da1fc05d4f658437acc6d4d0bc9ba746375196339398fb"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.PRODUCER_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PROFILE, 'operations': [CHECK, REPLAY, CONSTRUCT]}",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "PRODUCER_PROFILE"
+        },
+        "syntax_sha256": "5816644d992efefc6511f5b93285b4680420aa05b7b04728ce55c167648fa521"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**admission.PROFILE, 'operations': [CHECK, REPLAY], 'request_schema': REQUEST_SCHEMA, 'candidate_schema': CANDIDATE_SCHEMA, 'schema_version': RESULT_SCHEMA, 'implementation': IMPLEMENTATION, 'validation_scope': VALIDATION_SCOPE, 'stage': 'behavior', 'artifact': 'none', 'material': 'not_joined'}",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "PROFILE"
+        },
+        "syntax_sha256": "955286855c711f226d902809004039929d67d02afd321ea3494d1176463e363b"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "PolicyControlledBehaviorClient"
+        },
+        "syntax_sha256": "8071b0a4653f1f79ceccea1d4ac85510043c5603339a87d5194fbf084a69d241"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient._call",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None -> PolicyControlledBehaviorResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "PolicyControlledBehaviorClient._call"
+        },
+        "syntax_sha256": "c3af8b4fd66121c4caae6ea911079c1d234f6f55e8ef4d9e043214f3ec7dfd23"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient.check_behavior",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, candidate: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyControlledBehaviorResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "PolicyControlledBehaviorClient.check_behavior"
+        },
+        "syntax_sha256": "fc4208170031b363a5bc2cae5bd2ca70fe13b9824d26eae3339afdea1ce35b09"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient.construct_behavior",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyControlledBehaviorResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "PolicyControlledBehaviorClient.construct_behavior"
+        },
+        "syntax_sha256": "7c87aa31825836902d09e178822e24d20a300522ce8241eb965271333b7bf8c3"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient.replay_behavior",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, candidate: JsonValue, report: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyControlledBehaviorResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "PolicyControlledBehaviorClient.replay_behavior"
+        },
+        "syntax_sha256": "73de8cbaeecdee59a91354e56b4c85fbfdad98dc45b6430e1c56cf83e015bd15"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient.transport",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "CoreClient",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "PolicyControlledBehaviorClient.transport"
+        },
+        "syntax_sha256": "1c12c2e5fa920a7d4a3b392accc30ac4494ca7f385e0c49042eefabe997d2df4"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorResult",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "PolicyControlledBehaviorResult"
+        },
+        "syntax_sha256": "761016cc0e51c4b36e3278e102b0d87efb2ebe7a4b27d3bcd6f071f2008839bb"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.REPLAY",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "REPLAY"
+        },
+        "syntax_sha256": "35001ddc3155c507081c5f40a4ed75e73d625099fc151fe03f9c5904f5ce0deb"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.REPORT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "REPORT_SCHEMA"
+        },
+        "syntax_sha256": "5df3e92cfc05cc9a26d5553634ef4cc0366de42cfdca53dc6e8b0bb3a642db44"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.REQUEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "REQUEST_SCHEMA"
+        },
+        "syntax_sha256": "311012caf8c7d50f00a047b8c7cbd564735aec4e501e24f59e8de28fa8cc5628"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.RESULT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "RESULT_SCHEMA"
+        },
+        "syntax_sha256": "4d440e45619c0da3e7b209b244614d19da96bf10ecaa22caeb85c6fcb5cb3ba2"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior.VALIDATION_SCOPE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "VALIDATION_SCOPE"
+        },
+        "syntax_sha256": "bda3095edd7ac906e8911d68012c64774122717a3fe767c9db028ff874b9fbba"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior._candidate",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "_candidate"
+        },
+        "syntax_sha256": "1fd5bd09aee107015cdf047900b9e141ebe7267faad4c0cd791bea2d9d3ab881"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior._original",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "_original"
+        },
+        "syntax_sha256": "633b2af45a3a150c0ce6584803c7152dabbdbfca51819483287fb7d4214a85e4"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: bool, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "db013ee1f3fbb0723ca9ef0828a33661ee82acb6aac6f1fa25dc2bd87ff62365"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior._result",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "response: CoreResponse, payload: dict[str, JsonValue] -> PolicyControlledBehaviorResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "_result"
+        },
+        "syntax_sha256": "2ce0d3e8be7435f2b092ddaaddf42d5e84d11e7437ba52e118a9ac328a5d270b"
+      },
+      {
         "id": "biocompiler.core_policy_controlled_composition.IMPLEMENTATION",
         "kind": "value",
         "scope": "dependency",
@@ -23171,6 +23718,138 @@
           "symbol": "replay"
         },
         "syntax_sha256": "ed79ab7c0e6c81546656d1f47a61ae8e584b750e686b8fde9645698466e64dd8"
+      },
+      {
+        "id": "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_behavior.py",
+          "symbol": "ControlledBehaviorRequest"
+        },
+        "syntax_sha256": "f1f2e87fc45d7a0a71900e8d41be2963f58cc04061d792f36cc6f2cf13251561"
+      },
+      {
+        "id": "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest._json",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "bytes",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_behavior.py",
+          "symbol": "ControlledBehaviorRequest._json"
+        },
+        "syntax_sha256": "63a3a2ddaadf5a73736870745782248d5e282639c5108317f7b22e8f736eecff"
+      },
+      {
+        "id": "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.from_original",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, original: ControlledCompositionRequest, *, readout_evidence: JsonValue -> ControlledBehaviorRequest",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_behavior.py",
+          "symbol": "ControlledBehaviorRequest.from_original"
+        },
+        "syntax_sha256": "ad0147cd91d0cb5094647633eed0240480acb5ee7af079586fdcc23305e0ebfd"
+      },
+      {
+        "id": "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.from_request",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, request: JsonValue -> ControlledBehaviorRequest",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_behavior.py",
+          "symbol": "ControlledBehaviorRequest.from_request"
+        },
+        "syntax_sha256": "faab88b6cc328051e75388f0f2a2847a9c61f2e2d217904cec92176bb2135317"
+      },
+      {
+        "id": "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.native_status",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> str",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_behavior.py",
+          "symbol": "ControlledBehaviorRequest.native_status"
+        },
+        "syntax_sha256": "010fcf4155c5cd40b60be828f4c74f03cac43a3ac07343f600920e2b9624fcde"
+      },
+      {
+        "id": "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.original",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> ControlledCompositionRequest",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_behavior.py",
+          "symbol": "ControlledBehaviorRequest.original"
+        },
+        "syntax_sha256": "7b41fe397dc3c11d9b4b882244e7f99b46cda193765578c49d23d5421a1bc7b5"
+      },
+      {
+        "id": "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.schema_version",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "ClassVar[str] = REQUEST_SCHEMA",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_behavior.py",
+          "symbol": "ControlledBehaviorRequest.schema_version"
+        },
+        "syntax_sha256": "e0c042404c1418c2c610f3f8730aabe87a755a028da6c7efa5f5712e3a11764a"
+      },
+      {
+        "id": "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.sha256",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> str",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_behavior.py",
+          "symbol": "ControlledBehaviorRequest.sha256"
+        },
+        "syntax_sha256": "de844a26abc765ea4d8924cc4af6a699614e10a5091cbce58e3eb44f35e57ad1"
+      },
+      {
+        "id": "biocompiler.policy.controlled_behavior.ControlledBehaviorRequest.to_request",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_behavior.py",
+          "symbol": "ControlledBehaviorRequest.to_request"
+        },
+        "syntax_sha256": "aa9287eb6a682a9a0f15340e3dfad533410a8043fe5774aebe23813ea1798f34"
+      },
+      {
+        "id": "biocompiler.policy.controlled_behavior.check_behavior",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: ControlledBehaviorRequest, *, candidate: JsonValue, client: PolicyControlledBehaviorClient, cancelled: Callable[[], bool] | None=None -> PolicyControlledBehaviorResult",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_behavior.py",
+          "symbol": "check_behavior"
+        },
+        "syntax_sha256": "c311e1ef5529b15a2947f3110acc9b07eb1fb4c25b1193e68c8f645aa065fd9a"
+      },
+      {
+        "id": "biocompiler.policy.controlled_behavior.construct_behavior",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: ControlledBehaviorRequest, *, client: PolicyControlledBehaviorClient, cancelled: Callable[[], bool] | None=None -> PolicyControlledBehaviorResult",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_behavior.py",
+          "symbol": "construct_behavior"
+        },
+        "syntax_sha256": "5d4712b1a72c01e6e70a9bfedcf65f2b51bf0e53c212e8581291e6bb2fed8b73"
+      },
+      {
+        "id": "biocompiler.policy.controlled_behavior.replay_behavior",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: ControlledBehaviorRequest, *, candidate: JsonValue, report: JsonValue, client: PolicyControlledBehaviorClient, cancelled: Callable[[], bool] | None=None -> PolicyControlledBehaviorResult",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_behavior.py",
+          "symbol": "replay_behavior"
+        },
+        "syntax_sha256": "d99ad52a66e305bbfb0216cac7d304382ee7ae61912447be37cc8091a664ae32"
       },
       {
         "id": "biocompiler.policy.controlled_composition.ActivityDeadlines",
@@ -37416,6 +38095,7 @@
       "src/biocompiler/core_policy.py": "9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e",
       "src/biocompiler/core_policy_component_material.py": "152843138ccfa61f4b7dfd894eff697a919ac52964b77957c646f23b49589b51",
       "src/biocompiler/core_policy_component_selection.py": "20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9",
+      "src/biocompiler/core_policy_controlled_behavior.py": "6310322e13a0fde27c9a5334635c46f966ab88b9b5a185bf7c5bc3a75eec01b5",
       "src/biocompiler/core_policy_controlled_composition.py": "308ec4aa6f5bde1d58ca5cf8a0ace46432a9fa3369a9234a91d4644580a1df65",
       "src/biocompiler/core_policy_controlled_material.py": "8783c81be2f6752789b57179e36a46b5dc0d9c5020270fbcb4ea23a6bcfadf9d",
       "src/biocompiler/core_policy_expression_material.py": "319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf",
@@ -37436,6 +38116,7 @@
       "src/biocompiler/policy/cli.py": "beaff7cf4994019f24fab7361e588a3702b32bb16d357bda42e16000a5060d0f",
       "src/biocompiler/policy/component_material.py": "e23f08b6113670c73363a0852b390e6d39d0d058fdd3a7a044f2ba1c04e61da1",
       "src/biocompiler/policy/component_selection.py": "10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80",
+      "src/biocompiler/policy/controlled_behavior.py": "0c3436546edf867965a6ade48cbae4f4b211e10c4bacaa4ea4d4d03f8b7146a9",
       "src/biocompiler/policy/controlled_composition.py": "cdb3417943549452cd2cbba079ad4ad3ef6b73059c1dd0283af34c1dca130c18",
       "src/biocompiler/policy/controlled_material.py": "b26ec6dc51daa8ad94d4de6b226cd3afd24d4c4bb8be2cfb0bf20f10dd5b37ea",
       "src/biocompiler/policy/coordination.py": "ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9",
@@ -37569,6 +38250,38 @@
       {
         "path": "src/biocompiler/core_policy_component_selection.py",
         "syntax_sha256": "5fe8dee914d2e76306667a96f507f022d1731ee6e078ebc974cdef985583825d"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_behavior.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_behavior.py",
+        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_behavior.py",
+        "syntax_sha256": "67ee0f2195b5dd6d32007ab0636061358254666e071561ec389ec9c59836707c"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_behavior.py",
+        "syntax_sha256": "9415dd7eb8e6496923d1e67bfa61dc5f52dfceda9d40a9bccfedf7acbbde100a"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_behavior.py",
+        "syntax_sha256": "f255311127c3c735ea86b68bf62c39a57aa405985d27c9ac0c8a73e4ccd786c2"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_behavior.py",
+        "syntax_sha256": "785e72be82c7eebe807384a33702c639397d3faccc1d320a5e0c015fc95e0d29"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_behavior.py",
+        "syntax_sha256": "f8bf06adb0dc59681910609a754132867dc67fc2d14ca1e60c71863ce356d2d9"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_behavior.py",
+        "syntax_sha256": "c74f63c2a38409f6bcd706260983979e014832f6cf51aa246ddab0a125d43390"
       },
       {
         "path": "src/biocompiler/core_policy_controlled_composition.py",
@@ -38269,6 +38982,34 @@
       {
         "path": "src/biocompiler/policy/component_selection.py",
         "syntax_sha256": "d353098fa00494393f718df7a31515678d8316e0d762f6211dc6897c542854ad"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_behavior.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_behavior.py",
+        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_behavior.py",
+        "syntax_sha256": "e8157a73584becff04ba142bf301a16a3e95078563bad5119c5eb01211b23c01"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_behavior.py",
+        "syntax_sha256": "493b8cb9ef52d7fc644a2539dd6c6628bb4bb3cecc1515d8a15b2fbbfc7eada6"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_behavior.py",
+        "syntax_sha256": "d16755c9de3842bd1f0a25a2e135640660c28824017d81a1fc6e557dcff43332"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_behavior.py",
+        "syntax_sha256": "793a897436f5cc32e107101d17560c8c81701e597be6ee39c14834b618b49fac"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_behavior.py",
+        "syntax_sha256": "a5e226632a86eda4b977fc650d3651d23cbc94c19eb9b3ba3562f9df6cf0c5bc"
       },
       {
         "path": "src/biocompiler/policy/controlled_composition.py",
@@ -39388,6 +40129,30 @@
       }
     ],
     "operations": [
+      {
+        "operation": "construct-policy-controlled-behavior",
+        "owner": "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient.construct_behavior",
+        "payload_fields": [
+          "request"
+        ]
+      },
+      {
+        "operation": "check-policy-controlled-behavior",
+        "owner": "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient.check_behavior",
+        "payload_fields": [
+          "request",
+          "candidate"
+        ]
+      },
+      {
+        "operation": "replay-policy-controlled-behavior",
+        "owner": "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient.replay_behavior",
+        "payload_fields": [
+          "request",
+          "candidate",
+          "report"
+        ]
+      },
       {
         "operation": "construct-policy-controlled-material",
         "owner": "biocompiler.core_policy_controlled_material.PolicyControlledMaterialClient.construct_material",
@@ -40953,6 +41718,54 @@
       "role": "rejection",
       "symbol": "ControlledMaterialTransportTests.test_rehashed_report_original_scope_and_material_tampering_rejected",
       "syntax_sha256": "e42a58bcfbc9dc0a2fd3cf9a52dbcc319670aa67c21fec627bb70ac35e23f977"
+    },
+    "controlled_rc5.authority": {
+      "distinction": "Complete original authority and explicit readout evidence stay detached and immutable; data construction confers no acceptance.",
+      "file_sha256": "a7b37e00a1094454aeb8af0bb5998fc07d0affd665866d2884787ab6173388b7",
+      "path": "tests/test_core_policy_controlled_behavior.py",
+      "role": "positive",
+      "symbol": "ControlledBehaviorTransportTests.test_original_wrapper_is_immutable_closed_and_keeps_typed_original",
+      "syntax_sha256": "c444f72f826d9eafb1ed1646514e0774e56ba02b45817ac671d20183aea2f5b8"
+    },
+    "controlled_rc5.capability": {
+      "distinction": "Exact scoped capabilities and executable roles are required; independent Verify cannot construct candidates.",
+      "file_sha256": "a7b37e00a1094454aeb8af0bb5998fc07d0affd665866d2884787ab6173388b7",
+      "path": "tests/test_core_policy_controlled_behavior.py",
+      "role": "rejection",
+      "symbol": "ControlledBehaviorTransportTests.test_verify_cannot_construct_or_accept_another_profile",
+      "syntax_sha256": "d1ee2c559a92e10e82d2e2a2378ef8222f719c309575eba08fd64628a9d4ed12"
+    },
+    "controlled_rc5.evidence": {
+      "distinction": "Malformed, incomplete, future-dated or falsely authored readout authority rejects at the inert transport boundary.",
+      "file_sha256": "a7b37e00a1094454aeb8af0bb5998fc07d0affd665866d2884787ab6173388b7",
+      "path": "tests/test_core_policy_controlled_behavior.py",
+      "role": "rejection",
+      "symbol": "ControlledBehaviorTransportTests.test_missing_stale_boolean_and_future_readout_authority_rejected",
+      "syntax_sha256": "bf8b6ae686fca93db7a2d1701777660c8c9e4373fd0a3bb1d9b3d008c3b9fe2d"
+    },
+    "controlled_rc5.report": {
+      "distinction": "Rehashed report scope, complete history counters, original identities and omitted requirements cannot bypass transport correspondence.",
+      "file_sha256": "a7b37e00a1094454aeb8af0bb5998fc07d0affd665866d2884787ab6173388b7",
+      "path": "tests/test_core_policy_controlled_behavior.py",
+      "role": "rejection",
+      "symbol": "ControlledBehaviorTransportTests.test_rehashed_scope_counter_binding_and_omission_forgery_rejected",
+      "syntax_sha256": "c6dd11452673de526c0483492ad07d716813401f7444ef19bf64ae5e8a78f1b1"
+    },
+    "controlled_rc5.routes": {
+      "distinction": "All three behavior-only operations preserve the complete original request, candidate and replay report; mocked execution is not native evidence.",
+      "file_sha256": "a7b37e00a1094454aeb8af0bb5998fc07d0affd665866d2884787ab6173388b7",
+      "path": "tests/test_core_policy_controlled_behavior.py",
+      "role": "positive",
+      "symbol": "ControlledBehaviorTransportTests.test_typed_wrappers_route_all_three_exact_operations",
+      "syntax_sha256": "c2d84548882e2aa3738cdbb4c33090e8bead844b695668f49ed49b762648901a"
+    },
+    "controlled_rc5.substitution": {
+      "distinction": "Candidate and saved report substitution are rejected against independently supplied originals; replay requires a new native check.",
+      "file_sha256": "a7b37e00a1094454aeb8af0bb5998fc07d0affd665866d2884787ab6173388b7",
+      "path": "tests/test_core_policy_controlled_behavior.py",
+      "role": "rejection",
+      "symbol": "ControlledBehaviorTransportTests.test_full_candidate_and_replay_report_substitution_rejected",
+      "syntax_sha256": "0b06dc1f128ba2988968258b923651de4fca553eeaffe62bc2dcfa9ef35f5e6a"
     },
     "finite_build.authority": {
       "distinction": "Explicit source replacement preserves every other original and does not fabricate compatible model or material pins.",

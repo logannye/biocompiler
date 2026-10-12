@@ -24,6 +24,14 @@ except ImportError:
 
 
 DEPENDENCY_FIXTURES = {
+    'test_policy_controlled_behavior_candidate': ['data/policy_controlled_behavior_candidate_v01.json'],
+    'test_policy_controlled_behavior_producer': ['data/policy_controlled_behavior_v01.json', 'data/policy_controlled_behavior_candidate_v01.json'],
+    'test_policy_controlled_activity': ['data/policy_controlled_domain_v01.json', 'data/policy_controlled_behavior_candidate_v01.json'],
+    'test_policy_controlled_source_monitor': ['data/policy_controlled_behavior_v01.json'],
+    'test_policy_controlled_model_reference': ['data/policy_controlled_behavior_v01.json'],
+    'test_policy_controlled_behavior_check': ['data/policy_controlled_behavior_v01.json'],
+    'test_policy_controlled_behavior_service': ['data/policy_controlled_behavior_v01.json'],
+
     "test_policy_controlled_source": ["data/policy_controlled_source_v01.json"],
     "test_policy_controlled_domain": ["data/policy_controlled_domain_v01.json"],
     "test_policy_controlled_composition_admission": ["data/policy_controlled_request_v014.json"],

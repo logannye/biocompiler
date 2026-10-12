@@ -65,6 +65,14 @@ PRIVATE_TEST_TOOLS = {
         {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support"}, "test_support"),
 }
 TESTS = {
+    'test_policy_controlled_behavior_candidate': {'bioc_wire', 'bioc_domain', 'zarith'},
+    'test_policy_controlled_behavior_producer': {'bioc_wire', 'bioc_domain', 'bioc_compiler', 'zarith'},
+    'test_policy_controlled_activity': {'bioc_wire', 'bioc_domain', 'bioc_candidate_runtime', 'zarith'},
+    'test_policy_controlled_source_monitor': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'zarith'},
+    'test_policy_controlled_model_reference': {'bioc_wire', 'bioc_domain', 'bioc_semantics', 'bioc_checker', 'zarith'},
+    'test_policy_controlled_behavior_check': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_compiler', 'bioc_realization_checker', 'zarith'},
+    'test_policy_controlled_behavior_service': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_realization_checker', 'bioc_service', 'bioc_producer_service', 'zarith'},
+
     "test_policy_controlled_source": {'bioc_domain', 'bioc_wire', 'bioc_checker', 'zarith'},
     "test_policy_controlled_domain": {'bioc_domain', 'bioc_wire', 'zarith'},
     "test_policy_controlled_composition_admission": {'bioc_domain', 'bioc_wire', 'bioc_checker', 'zarith'},
@@ -682,6 +690,14 @@ def check_boundaries(root: Path):
                         "%{env:BIOCOMPILER_PIPELINE_SESSION_DECLARATION=missing}",
                         "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}"]]]
                 policy_fixtures = {
+                    'test_policy_controlled_behavior_candidate': ['policy_controlled_behavior_candidate_v01.json'],
+                    'test_policy_controlled_behavior_producer': ['policy_controlled_behavior_v01.json', 'policy_controlled_behavior_candidate_v01.json'],
+                    'test_policy_controlled_activity': ['policy_controlled_domain_v01.json', 'policy_controlled_behavior_candidate_v01.json'],
+                    'test_policy_controlled_source_monitor': ['policy_controlled_behavior_v01.json'],
+                    'test_policy_controlled_model_reference': ['policy_controlled_behavior_v01.json'],
+                    'test_policy_controlled_behavior_check': ['policy_controlled_behavior_v01.json'],
+                    'test_policy_controlled_behavior_service': ['policy_controlled_behavior_v01.json'],
+
                     "test_policy_two_observation_material_service": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_multi_member_material_service": ["policy_staged_material_v01.json"],
                     "test_policy_grounded_helper_material_service": ["policy_staged_material_v01.json"],

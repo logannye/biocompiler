@@ -5,7 +5,7 @@ validation coverage and independent checks. The release workflow remains
 [Python checks](../.github/workflows/ci.yml). Development feedback has a separate
 [opt-in hosted workflow](../.github/workflows/policy-development.yml), triggered
 only by pushes to `codex/dev-policy/**`. It builds the native core once on Linux
-and runs 63 fixed suites covering admitted IR, candidate congruence, component
+and runs 70 fixed suites covering admitted IR, candidate congruence, component
 composition, quantitative assurance, selection, generation metering, protocol,
 preservation, material and construction.
 The new instance-composition SDK retains 26 lifecycle observations against two
@@ -76,9 +76,12 @@ two SDK lanes overlap: component then selection, and instance composition, prere
 staged source, staged material then the 38-observation researcher-project workflow. Each lane preserves
 its dependencies and existing campaign receipts.
 There are at most two workers in either phase, and no SDK calls are moved into
-unguarded worker threads inside a campaign. All 63 native suites and the complete 278-observation SDK census remain mandatory.
+unguarded worker threads inside a campaign. All 70 native suites and the complete 278-observation SDK census remain mandatory.
 The separate RC3 admission and RC4 structural material campaigns retain their
 own original inputs, actual-binary evidence and complete observation inventories.
+RC5 adds seven fixed native suites and a separate 23-observation reversible
+behavior campaign against the same fresh binaries. The prior 63 suites and all
+existing SDK, admission, material, quantitative and CAR observations remain.
 The typed finite path adds 18 researcher observations (two complete shapes,
 including typed roundtrip, fresh Core/Verify execution, paired publication and
 mutation rejection), for 278 SDK observations across the same ten campaigns.

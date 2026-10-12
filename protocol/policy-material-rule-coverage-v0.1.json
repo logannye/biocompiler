@@ -36,6 +36,28 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/candidate_runtime/policy_controlled_activity.ml",
+      "sha256": "22e3f1440680cef1888d5fef55402e5c0de7036a8074c65d8b057f594ece0cb0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/candidate_runtime/policy_controlled_activity.mli",
+      "sha256": "dbbebd232fff322855247f5494b2c8519cfdf2e7316b01d8079fc60afdaf9407",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
       "path": "core/lib/candidate_runtime/policy_primitives.ml",
       "sha256": "b196f0b41daa8dc63d21855fe535755ca80e1f63ee48db373943ea17488aa1f9",
       "census": {
@@ -264,6 +286,35 @@
       },
       "disposition": "outside_route",
       "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+    },
+    {
+      "path": "core/lib/checker/policy_controlled_source_monitor.ml",
+      "sha256": "735fc54b32ec17f186d325d9ab26da5950ad0420d8528eba6b6e0e4b406e7257",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1
+        },
+        "profile_literals": {
+          "biocompiler.controlled_evidence.conservative.v0.1": 1,
+          "biocompiler.policy_controlled_composition_mrna.v0.1": 1,
+          "biocompiler.policy_controlled_source_monitor.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/checker/policy_controlled_source_monitor.mli",
+      "sha256": "8e5b41ef733d6fde7fffb82299bf861cb0004889295a2178ad1ede49bc21e05e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
     },
     {
       "path": "core/lib/checker/policy_correspondence.ml",
@@ -578,6 +629,30 @@
       },
       "disposition": "outside_route",
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/compiler/policy_controlled_behavior_producer.ml",
+      "sha256": "883350bae7f46405c0b9f7da6ab3257152a26926d092456e60206cdc5f28dbd5",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {
+          "biocompiler.ocaml.policy_controlled_behavior_producer.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/compiler/policy_controlled_behavior_producer.mli",
+      "sha256": "c19d51314a8ed7fd4605028707900c8a6ebd63f6806050eb0f1450d00e08a783",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
     },
     {
       "path": "core/lib/compiler/policy_controlled_material_producer.ml",
@@ -1213,6 +1288,109 @@
       },
       "disposition": "outside_route",
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_activity_implementation.ml",
+      "sha256": "d699b61f98e6c04f0ef80b75b337803d72ec1ef0393fcf29be7cf3638c9e89e7",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 2,
+          "require": 9
+        },
+        "profile_literals": {
+          "biocompiler.policy_controlled_activity_implementation.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_activity_implementation.mli",
+      "sha256": "66e2fe004faaa4700d58b2aadf58ad0a5c47342be37b5afc6763dc2eed711367",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_activity_sample.ml",
+      "sha256": "c536114ad36b22e218be8e3728ecbce88b662f94b37c09812311689235054bb7",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_activity_sample.mli",
+      "sha256": "a5a1466d740213e730c617adcd2ed26aea1cbd9c4ddd9a9dca23fde268b78ddf",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_behavior_candidate.ml",
+      "sha256": "821be333c0675f18e9554a33f3e476e9401d0a5b90e8b0b2036c4d61864b4fb4",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 4
+        },
+        "profile_literals": {
+          "biocompiler.policy_controlled_behavior_candidate.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_behavior_candidate.mli",
+      "sha256": "a7fef008b49a1ca1a65b77c70e1ecc365422395af43d0f8cd57fa5cd49bec3bc",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_behavior_request.ml",
+      "sha256": "804434d05795c126cbbc459057c62d78efda4ab08fb35910991d176e8c711472",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 1,
+          "require": 10
+        },
+        "profile_literals": {
+          "biocompiler.policy_controlled_behavior_request.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_behavior_request.mli",
+      "sha256": "521d3c363cccd7ae3c7f11d73d3e7a27734794337ba6dfc00ba423b0dadb0a3d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
     },
     {
       "path": "core/lib/domain/policy_controlled_composition_request.ml",
@@ -2308,7 +2486,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "ccb8b3db3ad2ed31278237f941f2c91d5aa99ba48c04446dedbd3627612b5559",
+      "sha256": "795538de5c55def28919e4dbf18256baaeeb669c26c0b7c2a03f480d16c3612a",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -2545,6 +2723,35 @@
       },
       "disposition": "outside_route",
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_controlled_behavior_check.ml",
+      "sha256": "235a53ff07f6161aa93dee10cb7792010ab09af74d70404f7071c7956fdc1ac8",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 11
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_controlled_behavior_check.v0.1": 1,
+          "biocompiler.policy_controlled_activity_implementation.v0.1": 1,
+          "biocompiler.policy_controlled_behavior_assessment.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_controlled_behavior_check.mli",
+      "sha256": "68f7c35310893ac3b195a5bf1306d9bd96ffa011816d77696f3e56a2d5ce6e6e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
     },
     {
       "path": "core/lib/realization_checker/policy_material_binding_check.ml",
@@ -2897,6 +3104,31 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/semantics/policy_controlled_model_reference.ml",
+      "sha256": "c8023e3860f658318d6e2fc18929f1e805969271d6396e381e697c2e8a971916",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 3
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/semantics/policy_controlled_model_reference.mli",
+      "sha256": "f69fa90807dafe103880326f2a5d7a384d3a9070ae37dc031f3240d797e7cd81",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
       "path": "core/lib/semantics/policy_domain_reference.ml",
       "sha256": "4e522afe0bafdd82c171fe6764a67a840e97d06d3f498409d0f48ccb00d58809",
       "census": {
@@ -3055,6 +3287,37 @@
       },
       "disposition": "outside_route",
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_controlled_behavior_service.ml",
+      "sha256": "1c1c973341f72ab8cb9433c0348f05716f4c30da6bc06597dca0a71ebb307d37",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 8
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_controlled_behavior.v1": 1,
+          "biocompiler.ocaml.policy_controlled_behavior.v0.1": 1,
+          "biocompiler.policy_controlled_behavior_request.v0.1": 1,
+          "biocompiler.policy_controlled_composition_mrna.v0.1": 1,
+          "biocompiler.policy_controlled_composition_source.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/service/policy_controlled_behavior_service.mli",
+      "sha256": "c08bc438b3fe9c37c23be2dabcbc6fc314fce771009d339f607530b1bfa6221f",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
     },
     {
       "path": "core/lib/service/policy_controlled_composition_service.ml",
@@ -3391,11 +3654,11 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "75f151fc85a60611e42f34bec9ea43f3929393086b4f532cc3ee8c328c321a15",
+      "sha256": "23c7c0b504aebf4219c170973b90f7aaf94e406adbedd93c0f8d126f19de73d1",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 3,
+          "Diagnostic.fail": 4,
           "Diagnostic.require": 9
         },
         "profile_literals": {
@@ -3710,6 +3973,31 @@
       },
       "disposition": "outside_route",
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/core_policy_controlled_behavior.py",
+      "sha256": "6310322e13a0fde27c9a5334635c46f966ab88b9b5a185bf7c5bc3a75eec01b5",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 8,
+          "Raise": 1
+        },
+        "profile_literals": {
+          "biocompiler.controlled_evidence.conservative.v0.1": 1,
+          "biocompiler.core.policy_controlled_behavior.v1": 1,
+          "biocompiler.ocaml.policy_controlled_behavior.v0.1": 1,
+          "biocompiler.ocaml.policy_controlled_behavior_check.v0.1": 1,
+          "biocompiler.policy_controlled_activity_implementation.v0.1": 1,
+          "biocompiler.policy_controlled_behavior_assessment.v0.1": 1,
+          "biocompiler.policy_controlled_behavior_candidate.v0.1": 1,
+          "biocompiler.policy_controlled_behavior_request.v0.1": 1,
+          "biocompiler.policy_controlled_source_monitor.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
     },
     {
       "path": "src/biocompiler/core_policy_controlled_composition.py",
@@ -4085,6 +4373,20 @@
       },
       "disposition": "outside_route",
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/policy/controlled_behavior.py",
+      "sha256": "0c3436546edf867965a6ade48cbae4f4b211e10c4bacaa4ea4d4d03f8b7146a9",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 1,
+          "FunctionDef": 9
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
     },
     {
       "path": "src/biocompiler/policy/controlled_material.py",
@@ -5310,7 +5612,7 @@
             "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
             "occurrence": 1
           },
-          "context": "All four initiation/continuous × continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -6376,7 +6678,7 @@
             "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
             "occurrence": 1
           },
-          "context": "All four initiation/continuous × continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         },
         {
@@ -7202,7 +7504,7 @@
           "occurrence": 1
         }
       ],
-      "admitted_context": "PM-02–09 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
+      "admitted_context": "PM-02\u201309 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
       "outside_context": {
         "disposition": "mixed",
         "description": "Core-only/partial RNA, wrong modality, missing member or bounded/unknown unrepresented tail cannot be complete."

@@ -566,6 +566,8 @@ def cli_commands(source: Source, registration="main"):
 
 
 def ownership(module, category):
+    if module in {"biocompiler.core_policy_controlled_behavior", "biocompiler.policy.controlled_behavior"}:
+        return "Python", ["LM-12", "LM-20", "LM-25"], "retain_original_readout_authority_and_fresh_native_bounded_behavior_checks_without_material_project_or_empirical_acceptance"
     if module in {"biocompiler.core_policy_controlled_material", "biocompiler.policy.controlled_material"}:
         return "Python", ["LM-12", "LM-20", "LM-24", "LM-25", "LM-26"], "retain_original_controlled_authority_and_fresh_native_two_member_structure_with_atomic_publication_without_behavior_or_therapeutic_acceptance"
     if module == "biocompiler.core_policy_controlled_composition":
@@ -623,6 +625,8 @@ def ownership(module, category):
 
 
 def authority(module, category):
+    if module in {"biocompiler.core_policy_controlled_behavior", "biocompiler.policy.controlled_behavior"}:
+        return "fresh_independent_native_model_execution_source_requirements_and_complete_finite_domain_only_under_original_assumptions"
     if module in {"biocompiler.core_policy_controlled_material", "biocompiler.policy.controlled_material"}:
         return "complete_original_controlled_authority_and_independent_native_two_member_rna_reconstruction_only_behavior_empirical_and_human_use_unassessed"
     if module == "biocompiler.core_policy_controlled_composition":

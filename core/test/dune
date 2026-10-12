@@ -1142,3 +1142,45 @@
  (modules test_policy_controlled_material_service)
  (libraries bioc_wire bioc_service bioc_producer_service zarith)
  (action (run %{test} %{dep:data/policy_controlled_request_v014.json} %{dep:data/policy_controlled_material_v01.json})))
+
+(test
+ (name test_policy_controlled_behavior_candidate)
+ (modules test_policy_controlled_behavior_candidate)
+ (libraries bioc_wire bioc_domain zarith)
+ (action (run %{test} %{dep:data/policy_controlled_behavior_candidate_v01.json})))
+
+(test
+ (name test_policy_controlled_behavior_producer)
+ (modules test_policy_controlled_behavior_producer)
+ (libraries bioc_wire bioc_domain bioc_compiler zarith)
+ (action (run %{test} %{dep:data/policy_controlled_behavior_v01.json} %{dep:data/policy_controlled_behavior_candidate_v01.json})))
+
+(test
+ (name test_policy_controlled_activity)
+ (modules test_policy_controlled_activity)
+ (libraries bioc_wire bioc_domain bioc_candidate_runtime zarith)
+ (action (run %{test} %{dep:data/policy_controlled_domain_v01.json} %{dep:data/policy_controlled_behavior_candidate_v01.json})))
+
+(test
+ (name test_policy_controlled_source_monitor)
+ (modules test_policy_controlled_source_monitor)
+ (libraries bioc_wire bioc_domain bioc_checker zarith)
+ (action (run %{test} %{dep:data/policy_controlled_behavior_v01.json})))
+
+(test
+ (name test_policy_controlled_model_reference)
+ (modules test_policy_controlled_model_reference)
+ (libraries bioc_wire bioc_domain bioc_semantics bioc_checker zarith)
+ (action (run %{test} %{dep:data/policy_controlled_behavior_v01.json})))
+
+(test
+ (name test_policy_controlled_behavior_check)
+ (modules test_policy_controlled_behavior_check)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker zarith)
+ (action (run %{test} %{dep:data/policy_controlled_behavior_v01.json})))
+
+(test
+ (name test_policy_controlled_behavior_service)
+ (modules test_policy_controlled_behavior_service)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_controlled_behavior_v01.json})))

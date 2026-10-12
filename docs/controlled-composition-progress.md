@@ -244,3 +244,11 @@ RC5 behavior, RC6 joined ResearchProject/export/reopen, RC7 installed/cross-plat
 acceptance and RC8 integration/release remain open. The RC3 sections above retain
 their historical checkpoint statements. This later documentation update does not
 transfer native acceptance to a different implementation revision.
+
+## RC5 implementation candidate
+
+Behavior implementation is in progress against the independent artificial RC5
+fixtures. The [behavior contract](controlled-composition-behavior-v0.1.md) records
+the original readout authority, three independent assessments, bounded whole
+domain checking and separate material/project boundary. Native validation and
+its exact source/run audit remain pending at this editing checkpoint.

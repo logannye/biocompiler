@@ -139,6 +139,26 @@ EXTRA_SOURCES += tuple(path for path in CONTROLLED_MATERIAL_SOURCES if path.ends
 BEFORE_CONTROLLED_MATERIAL_METADATA_SHA256 = "d531f045cfc22529ba89b836c7180bd7f1332d88ed021e41698e1a99de10b926"
 
 
+CONTROLLED_BEHAVIOR_SOURCES = tuple(sorted([
+    *[f"core/lib/{directory}/{name}.{suffix}" for directory, name in (
+        ("domain", "policy_controlled_behavior_request"),
+        ("domain", "policy_controlled_activity_sample"),
+        ("domain", "policy_controlled_activity_implementation"),
+        ("domain", "policy_controlled_behavior_candidate"),
+        ("compiler", "policy_controlled_behavior_producer"),
+        ("candidate_runtime", "policy_controlled_activity"),
+        ("semantics", "policy_controlled_model_reference"),
+        ("checker", "policy_controlled_source_monitor"),
+        ("realization_checker", "policy_controlled_behavior_check"),
+        ("service", "policy_controlled_behavior_service"),
+    ) for suffix in ("ml", "mli")],
+    "src/biocompiler/core_policy_controlled_behavior.py", "src/biocompiler/policy/controlled_behavior.py",
+]))
+CONTROLLED_BEHAVIOR_REASON = "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+ROUTE_EXCEPTIONS.update({path: CONTROLLED_BEHAVIOR_REASON for path in CONTROLLED_BEHAVIOR_SOURCES})
+EXTRA_SOURCES += tuple(path for path in CONTROLLED_BEHAVIOR_SOURCES if path.endswith(".py"))
+BEFORE_CONTROLLED_BEHAVIOR_METADATA_SHA256 = "9acb8edfeb5f5995ac379d2ea21fd6681184d765ed9967d6260aeb70442b8b68"
+
 # Components form a separately negotiated composition route, not the original
 # whole-kernel profile. Keep this path census closed and independently reviewed.
 COMPONENT_MODULES = (
@@ -708,11 +728,19 @@ def metadata_before_assured(ledger: dict[str, Any]) -> dict[str, Any]:
                                                    if row["path"] not in COMPONENT_ASSURED_SOURCES]}
 
 
+def metadata_before_controlled_behavior(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove only RC5 route additions, preserving the complete RC4 meanings."""
+    return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
+            "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
+                for row in ledger["sources"] if row["path"] not in CONTROLLED_BEHAVIOR_SOURCES],
+            "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+
+
 def metadata_before_controlled_material(ledger: dict[str, Any]) -> dict[str, Any]:
     """Remove RC4 additions and restore the one shared helper's RC3 scope."""
     classifications = [
         {key: row[key] for key in ("path", "disposition", "reason")}
-        for row in ledger["sources"] if row["path"] not in CONTROLLED_MATERIAL_SOURCES
+        for row in ledger["sources"] if row["path"] not in CONTROLLED_MATERIAL_SOURCES + CONTROLLED_BEHAVIOR_SOURCES
     ]
     for row in classifications:
         if row["path"] in CONTROLLED_MATERIAL_SHARED_SOURCES:
@@ -1095,6 +1123,10 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
                                     separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(expression_previous) == BEFORE_EXPRESSION_METADATA_SHA256,
             "Changed pre-expression original material meaning/witness/classification metadata")
+    behavior_previous = json.dumps(metadata_before_controlled_behavior(ledger), sort_keys=True,
+                                   separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(behavior_previous) == BEFORE_CONTROLLED_BEHAVIOR_METADATA_SHA256,
+            "Changed pre-controlled-behavior meaning/witness/classification metadata")
     material_previous = json.dumps(metadata_before_controlled_material(ledger), sort_keys=True,
                                    separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(material_previous) == BEFORE_CONTROLLED_MATERIAL_METADATA_SHA256,
