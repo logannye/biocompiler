@@ -1,0 +1,376 @@
+{
+  "branch": "codex/dev-policy/car-controlled-composition",
+  "declarative_corpus": {
+    "cases": 41,
+    "checker_scope": "closed bounded structure and complete named-case inventory only",
+    "expected_verdicts_executed": false
+  },
+  "empirical_assessment": "not_performed",
+  "frozen_source_manifest": {
+    "base_commit": "0b19ef68ad029de1c10245008fddf81a3a4bfddd",
+    "files": {
+      "core/lib/domain/policy_controlled_composition_schema.ml": "ca5fd3b1fcf4672a2eb6ece3223b110e00be286cb2fb6403e16bdd348e0fe4a1",
+      "core/lib/domain/policy_controlled_composition_schema.mli": "5e6a465acc8d4b2a23554ab53c5fc26ed2fbe6b3c02f859132b8939d7b68fc14",
+      "data/controlled_composition_v01/acceptance-cases.json": "72320878f7856926534e5310c29b0645ae729ac2a1f87614a2ddc586b0a2c803",
+      "data/controlled_composition_v01/source-wire/README.md": "adeb26871165d72c36ca87ef5a841b7bf50e3e3c48f862cf1d6f174bed30ef58",
+      "data/controlled_composition_v01/source-wire/negative-mutations.json": "cfda91f6bd400850c7fef3315f124090b245dd5d706289e5f4366f4c13c6473f",
+      "data/controlled_composition_v01/source-wire/source-shape.json": "9776ee3d0a0305c392b71798a32f0d12030bb4ae41e552f20a47f02128c0b55d",
+      "docs/migration-coverage.md": "88177502f8d15acb089c3fc238612986af82336296999847dadde797557b548a",
+      "protocol/controlled-composition-profile-v0.1.json": "7e3d6623272bee8161f893c577fc8dc8b8004a028755a7637c13f3c7615167ca",
+      "protocol/migration-inventory.json": "b675f024fbd6ae04c9dc35d8be1fbf3d1e0e4a96dc9a5f6f01fc8f9f98d6d826",
+      "protocol/policy-component-rule-coverage-v0.1.json": "953239f86752a148e5c0bbddb829d3508babcbcf009adef7af7a8c818735cfb8",
+      "protocol/policy-controlled-composition-source-v0.1.schema.json": "5dfbe9a16850dc8af2eaab89bc358e9332b9aeda64ae4a8e0eaa06741fe26c1a",
+      "protocol/policy-expression-rule-coverage-v0.1.json": "b0d4182055349d0ceb121a3c28f1931844e4b4fbd7eda61ba7572781b601827d",
+      "protocol/policy-material-rule-coverage-v0.1.json": "c88ca6f1e22164a5f9ee90e8292214f0a95532b0f1245bd3e308624a29896a20",
+      "protocol/policy-public-api-coverage-v0.1.json": "6382d549dd4dfdfc955cc77ed5b10f9895e41483c211244ec363d330dbc95a10",
+      "protocol/policy-semantic-coverage-v0.1.json": "b50e9bfafc34734985b5dff190f557da39cdb1232c7484dd5bd3cf790bce2b73",
+      "protocol/policy-source-context-coverage-v0.1.json": "1100d328901d22c02138be1c4d4f38715d5f938b2126c80b36bc3f758ff77e99",
+      "src/biocompiler/policy/__init__.py": "72afe7b9339f4781622bcec48e6458d2f33daf8dcc25a7c6498e2c64a1e808b2",
+      "src/biocompiler/policy/controlled_composition.py": "cdb3417943549452cd2cbba079ad4ad3ef6b73059c1dd0283af34c1dca130c18",
+      "src/biocompiler/policy/model.py": "5671c5626a56ac4b9f623fc170cc64cafea874a285132f6ae8dfd53e95e4832c",
+      "src/biocompiler/policy/module_linking.py": "4ccd772982fec32bd9042d1c80ba43af36df57c328e0d403c3b51b6c5473fb29",
+      "src/biocompiler/policy/serialization.py": "d1b9c0b7f54a379cfb106febdfb88e1553a401b049e9e3b3c49f4d9a85601c70",
+      "src/biocompiler/policy/validation.py": "444066210976c54acfc295fb96d689e3fe54fb2d8655c9a6b55562f79034a6f9",
+      "tests/test_controlled_composition_foundation.py": "20519b3ff7a546ed3af1fa65e1ac802557afc8e07ebe648f7fe35f442dc107e8",
+      "tests/test_policy_controlled_composition_description.py": "a5c049e7936eb33cf5f0ecc76f85b6a002f9d9e26417b939ab263c711ee290fc",
+      "tests/test_policy_controlled_composition_source.py": "8df0f0962939cef8222a84e6c2ce50795611fa654c81ca533de68d08fa58f474",
+      "tests/test_policy_material_rule_coverage.py": "02e8b1e8fbb8eb39b418a4efab4ce40f61a6c2a4e1e84c155a1114c3623fe38a",
+      "tests/test_policy_module_linking.py": "5c40d7da262875dd4ee2b1eae4921b62b86f95498c832a0a09fe15d75fece9e9",
+      "tests/test_policy_public_api_coverage.py": "e3b0cc1facf97aee7cb970cd4c444aba6b93e5e15c1fdea2f568929b4b52ba80",
+      "tests/test_policy_semantic_coverage.py": "75369c64d278e0c1cba0e2db3bd04c3f6e23f522749be84f82616c2ac2c86577",
+      "tests/test_policy_serialization.py": "886c29e7b904ce20597e5c7e4690dfcc121125b36c17ad3df12853e53e38f3a1",
+      "tests/test_policy_source_context_coverage.py": "6efb7d31118e6f211300873b6069865a957087fc324e3e693148738d474ffd36",
+      "tools/check_controlled_composition_foundation.py": "6b545561f0a92158ebae79be5c8a9e434051e4f36228d9d25885136b519d75a0",
+      "tools/check_policy_material_rule_coverage.py": "2248b8fec2b61bbbd17d64b1b1207896be8dbc6bf9dcf1340c408812836c5805",
+      "tools/check_policy_public_api_coverage.py": "67180da6d5c296cd14efeb0dd16991223c95fa6a2c4cdeb8a93817c290ea4493",
+      "tools/check_policy_source_context_coverage.py": "304bd0ffe313d85ba6981f63df9cb50b84cac72084347904ec4da02bbc13f5dc",
+      "tools/generate_policy_wire_schema.py": "2d7d82bcb060b6b06d7c11ab758634c1172211d39c164f8b9f4c24d5f5e54ba2"
+    }
+  },
+  "frozen_source_manifest_canonical_sha256": "63dc29f4ca73e986788860f3ae1f4eeb6a9c6d75bf7b91a4a9df5937f4d328f2",
+  "hosted_validation": "not_performed",
+  "installed_acceptance": "not_performed",
+  "milestones": [
+    "RC0",
+    "RC1"
+  ],
+  "native_build_and_execution": "not_performed",
+  "next_milestone": "RC3 complete native original authority, controlled source admission and domain using explicit artificial fixtures; RC2 complete real RNA inputs remain open",
+  "platform": {
+    "machine": "arm64",
+    "release": "25.2.0",
+    "system": "Darwin"
+  },
+  "prior_attempts": [
+    {
+      "attempt": 1,
+      "disposition": "retained_not_final_acceptance",
+      "logs": [
+        {
+          "bytes": 20404,
+          "path": "generated/car-controlled-composition/rc1/attempt1-frozen-local-py311.log",
+          "sha256": "ff1b5159806c91bd26a47c860f54198ecbe43a88a5ca99c53ce41571c20ea062"
+        },
+        {
+          "bytes": 22508,
+          "path": "generated/car-controlled-composition/rc1/attempt1-frozen-local-py314.log",
+          "sha256": "88dec1ff1364dc5dc7048fca432a9d39e08c1f757b9943eb7aa3edc4210f610f"
+        }
+      ],
+      "note": "26 outdated test/inventory assertions failed on each Python version; repaired without weakening original historical hashes or coverage dispositions.",
+      "source_manifest": {
+        "bytes": 4333,
+        "path": "generated/car-controlled-composition/rc1/attempt1-source-manifest.json",
+        "sha256": "d9a717f452421d4b9af0bed6b4a0dfff557e04b67be180bbae09dd0bbde27c37"
+      }
+    },
+    {
+      "attempt": 2,
+      "disposition": "retained_not_final_acceptance",
+      "logs": [
+        {
+          "bytes": 101,
+          "path": "generated/car-controlled-composition/rc1/attempt2-frozen-local-py311.log",
+          "sha256": "093739babc51dbe0724b67a40a9e60dfe205bff500b5620ce0de62d24e17c93d"
+        },
+        {
+          "bytes": 101,
+          "path": "generated/car-controlled-composition/rc1/attempt2-frozen-local-py314.log",
+          "sha256": "96e237b8ef5798ed1fb14df69be6b7eb3ac7119c6d5a32f1b9f8cf1a07bd0341"
+        }
+      ],
+      "note": "442 tests passed on each Python version; separate migration inventory static check failed stale generation. Inventory regenerated before final complete batch.",
+      "source_manifest": {
+        "bytes": 4444,
+        "path": "generated/car-controlled-composition/rc1/attempt2-source-manifest.json",
+        "sha256": "bbde4ec82fe2333efdb71f3ec2d1798bf65e0bcaabcb047876d40819cb7dd6e5"
+      }
+    }
+  ],
+  "protected_checkouts": {
+    "checkouts": {
+      "car-mvp-roadmap": {
+        "current": {
+          "branch": "codex/dev-policy/car-installed-timeout",
+          "head": "0b19ef68ad029de1c10245008fddf81a3a4bfddd",
+          "roadmap_hashes": {
+            "docs/car-mvp-and-expansion-roadmap-2026-10-10.md": "e63af015f0af6ae77d311ff5e174ee69a2f89e66db580f6f6c076bf5e95f5dd4"
+          },
+          "status": ""
+        },
+        "unchanged_since_rc0": true
+      },
+      "car-second-reference": {
+        "current": {
+          "branch": "codex/dev-policy/car-second-reference",
+          "head": "11b6b6da94497fea9afae8dfa12dd900c7295f9f",
+          "roadmap_hashes": {
+            "docs/car-composition-reversible-control-roadmap-2026-10-12.md": "592017ba0918114edc4737dd61de5f67b0f9b69dcd4e60cd3290224e7c0e39ce",
+            "docs/car-mvp-and-expansion-roadmap-2026-10-10.md": "96fdbfc1b0a784eabc85bd58a1c0c1d602f80bba5a6d064006b464c5e6fe5a7e"
+          },
+          "status": "M docs/car-mvp-and-expansion-roadmap-2026-10-10.md\n?? docs/car-composition-reversible-control-roadmap-2026-10-12.md"
+        },
+        "unchanged_since_rc0": true
+      }
+    },
+    "recorded_at": "2026-10-12T15:05:11.136918+00:00"
+  },
+  "recorded_at_utc": "2026-10-12T15:10:02.385725+00:00",
+  "release": "not_performed",
+  "remote_mutations": "not_performed",
+  "schema_version": "biocompiler.controlled_composition.local_foundation_receipt.v0.1",
+  "scope_limit": "No native source admission, execution, behavioral proof, complete RNA admission, installed acceptance or release claim. Declarative expected cases were not executed as mechanism behavior.",
+  "source_binding_note": "Tests ran on frozen working-tree bytes; every listed byte was compared with this subsequent local commit. Later documentation-only checkpoints do not alter the tested source files.",
+  "static_checks": {
+    "recorded_at": "2026-10-12T15:03:54.012367+00:00",
+    "results": [
+      {
+        "check": "wire-schema",
+        "command": [
+          "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+          "-B",
+          "tools/generate_policy_wire_schema.py",
+          "--check"
+        ],
+        "exit_code": 0,
+        "log": "generated/car-controlled-composition/rc1/attempt3-wire-schema.log",
+        "log_sha256": "445a68bf29c2f215c2089fb27b282cb327d1b501f33b8e5324da660e544db740",
+        "seconds": 0.041
+      },
+      {
+        "check": "semantic-inventory",
+        "command": [
+          "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+          "-B",
+          "tools/check_policy_semantic_coverage.py"
+        ],
+        "exit_code": 0,
+        "log": "generated/car-controlled-composition/rc1/attempt3-semantic-inventory.log",
+        "log_sha256": "cadb7bc995b9085642498b9d0cf22bc93374ee036fd7ae31a26cf2531c137ed3",
+        "seconds": 0.104
+      },
+      {
+        "check": "api-inventory",
+        "command": [
+          "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+          "-B",
+          "tools/check_policy_public_api_coverage.py"
+        ],
+        "exit_code": 0,
+        "log": "generated/car-controlled-composition/rc1/attempt3-api-inventory.log",
+        "log_sha256": "a22288d929589577ecef93b14da5d13e92fd4007d9b379bc168be6119431114c",
+        "seconds": 0.734
+      },
+      {
+        "check": "source-context-inventory",
+        "command": [
+          "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+          "-B",
+          "tools/check_policy_source_context_coverage.py"
+        ],
+        "exit_code": 0,
+        "log": "generated/car-controlled-composition/rc1/attempt3-source-context-inventory.log",
+        "log_sha256": "6eb9da685de1df740e72d248f870193280e5ebdcc4f546729e7a7f8c08bdeee4",
+        "seconds": 0.185
+      },
+      {
+        "check": "material-inventory",
+        "command": [
+          "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+          "-B",
+          "tools/check_policy_material_rule_coverage.py"
+        ],
+        "exit_code": 0,
+        "log": "generated/car-controlled-composition/rc1/attempt3-material-inventory.log",
+        "log_sha256": "9a43c37636b7987d5dab050fadec62d0384657d70b49566e630b256c064a732d",
+        "seconds": 0.932
+      },
+      {
+        "check": "migration-inventory",
+        "command": [
+          "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+          "-B",
+          "tools/migration_inventory.py",
+          "--check"
+        ],
+        "exit_code": 0,
+        "log": "generated/car-controlled-composition/rc1/attempt3-migration-inventory.log",
+        "log_sha256": "b838335c7dcf6a09c9f3a7060ff067b3ead4ac47941ea281ed2d8a2f2a8c82fa",
+        "seconds": 3.405
+      },
+      {
+        "check": "foundation",
+        "command": [
+          "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+          "-B",
+          "tools/check_controlled_composition_foundation.py"
+        ],
+        "exit_code": 0,
+        "log": "generated/car-controlled-composition/rc1/attempt3-foundation.log",
+        "log_sha256": "5f07cb0b6e1bd7c8a3170118de7c7d0bb6d0fc8132956c4579d34091256252bd",
+        "seconds": 0.038
+      }
+    ]
+  },
+  "status": "local_representation_and_foundation_checks_passed",
+  "test_suites": [
+    {
+      "command": [
+        "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_controlled_composition_foundation",
+        "tests.test_policy_controlled_composition_source",
+        "tests.test_policy_controlled_composition_description",
+        "tests.test_policy_serialization",
+        "tests.test_policy_expression_source",
+        "tests.test_policy_language_specification",
+        "tests.test_policy_semantic_coverage",
+        "tests.test_policy_public_api_coverage",
+        "tests.test_policy_source_context_coverage",
+        "tests.test_policy_material_rule_coverage",
+        "tests.test_migration_inventory",
+        "tests.test_policy_authoring",
+        "tests.test_policy_builders",
+        "tests.test_policy_builder_boundaries",
+        "tests.test_policy_patterns",
+        "tests.test_policy_handoff",
+        "tests.test_policy_validation",
+        "tests.test_policy_module_linking",
+        "-q"
+      ],
+      "count": 442,
+      "environment": {
+        "PYTHONPATH": "src"
+      },
+      "executable": "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+      "exit_code": 0,
+      "log": {
+        "bytes": 101,
+        "path": "generated/car-controlled-composition/rc1/frozen-local-py311.log",
+        "sha256": "3d5b5a489f56d88e454f10ca3ba2572b60dae87ca8ec601e144d6c4b1a14e1e6"
+      },
+      "python_version": "3.11.15",
+      "result": "PASS",
+      "seconds": 177.709
+    },
+    {
+      "command": [
+        "/Users/logannye/.local/share/uv/python/cpython-3.14.3-macos-aarch64-none/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_controlled_composition_foundation",
+        "tests.test_policy_controlled_composition_source",
+        "tests.test_policy_controlled_composition_description",
+        "tests.test_policy_serialization",
+        "tests.test_policy_expression_source",
+        "tests.test_policy_language_specification",
+        "tests.test_policy_semantic_coverage",
+        "tests.test_policy_public_api_coverage",
+        "tests.test_policy_source_context_coverage",
+        "tests.test_policy_material_rule_coverage",
+        "tests.test_migration_inventory",
+        "tests.test_policy_authoring",
+        "tests.test_policy_builders",
+        "tests.test_policy_builder_boundaries",
+        "tests.test_policy_patterns",
+        "tests.test_policy_handoff",
+        "tests.test_policy_validation",
+        "tests.test_policy_module_linking",
+        "-q"
+      ],
+      "count": 442,
+      "environment": {
+        "PYTHONPATH": "src"
+      },
+      "executable": "/Users/logannye/.local/share/uv/python/cpython-3.14.3-macos-aarch64-none/bin/python3.14",
+      "exit_code": 0,
+      "log": {
+        "bytes": 101,
+        "path": "generated/car-controlled-composition/rc1/frozen-local-py314.log",
+        "sha256": "c29edce5aa799d43773e03f6a5c45e8c93e7de4f79700a3870e249982753deb4"
+      },
+      "python_version": "3.14.3",
+      "result": "PASS",
+      "seconds": 160.161
+    }
+  ],
+  "tested_source_commit": "060666350ed40dc4f6e75084a04091fcbd694d93",
+  "tested_source_tree": "7bbc87fd12ee1a2deacaa0a9d4ee791a160f455b",
+  "typing_checks": [
+    {
+      "checked_source_files": 40,
+      "command": [
+        "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+        "-B",
+        "-m",
+        "mypy",
+        "--config-file",
+        "tools/mypy-core.ini",
+        "--cache-dir=/dev/null"
+      ],
+      "configuration": "tools/mypy-core.ini",
+      "environment": {
+        "PYTHONPATH": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/policy-material-selection/generated/typecheck:src"
+      },
+      "exit_code": 0,
+      "log": {
+        "bytes": 44,
+        "path": "generated/car-controlled-composition/rc1/final-mypy-core.log",
+        "sha256": "ecc16c0564b42e826048bd3cc3026ed6f52b5dc94d3419716c4a1f1ab458ac8d"
+      },
+      "mypy_version": "1.18.2",
+      "result": "PASS",
+      "source_binding": "Fresh static run on tested_source_commit after the frozen regression batch; all manifest file hashes remain unchanged.",
+      "tool_modules": "compatible installed pure-Python typecheck environment reused read-only from sibling policy-material-selection/generated/typecheck"
+    },
+    {
+      "checked_source_files": 46,
+      "command": [
+        "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11",
+        "-B",
+        "-m",
+        "mypy",
+        "--config-file",
+        "tools/mypy-policy.ini",
+        "--cache-dir=/dev/null"
+      ],
+      "configuration": "tools/mypy-policy.ini",
+      "environment": {
+        "PYTHONPATH": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/policy-material-selection/generated/typecheck:src"
+      },
+      "exit_code": 0,
+      "log": {
+        "bytes": 44,
+        "path": "generated/car-controlled-composition/rc1/final-mypy-policy.log",
+        "sha256": "a97cee1ee1bdb5e2d1ca7098f7b33a6c6a21263225643192fdeb78654687ed89"
+      },
+      "mypy_version": "1.18.2",
+      "result": "PASS",
+      "source_binding": "Fresh static run on tested_source_commit after the frozen regression batch; all manifest file hashes remain unchanged.",
+      "tool_modules": "compatible installed pure-Python typecheck environment reused read-only from sibling policy-material-selection/generated/typecheck"
+    }
+  ]
+}

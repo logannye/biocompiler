@@ -124,3 +124,7 @@ capability advertisement. The 41 expected cases are declarative and unexecuted;
 their corpus checker is structural only. The legacy 45-record schema retains its
 exact bytes, and legacy authoring rejects controlled activity. MVP and E1 HEADs,
 branches, working-tree status and planning-file hashes match the RC0 snapshot.
+
+Local RC1 source checkpoint: `060666350ed40dc4f6e75084a04091fcbd694d93`.
+The accompanying acquisition metadata and validation receipt are a separate local
+documentation checkpoint; no push, PR, hosted run or release was performed.

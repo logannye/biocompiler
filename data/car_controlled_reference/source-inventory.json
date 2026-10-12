@@ -1,0 +1,1186 @@
+{
+  "schema": "biocompiler.car_controlled_reference.source_inventory.v0.1",
+  "inventory_kind": "provenance_metadata_only",
+  "assessment_date": "2026-10-12",
+  "rc2_status": "partial_manual_patent_material_consistency_checked_complete_rna_designs_open",
+  "reference_candidate": {
+    "publication_doi": "10.1126/science.aab4077",
+    "pmcid": "PMC4721629",
+    "publication_pair": [
+      "I.b",
+      "II.d"
+    ],
+    "related_filing": "WO2014127261A1"
+  },
+  "scope": {
+    "intended_recipient": "human T cell",
+    "intended_delivery": "in vivo RNA",
+    "proposed_rna_members": 2,
+    "original_experiment": "Patent pair reported cell assays with engineered human T cells; separate Wu mouse evidence is not transferred.",
+    "original_engineering": "lentiviral expression",
+    "in_vivo_human_two_rna_applicability": "unassessed"
+  },
+  "admission": {
+    "is_molecular_reference_pack": false,
+    "contains_sequences": false,
+    "complete_rna_records_verified": false,
+    "software_conditional_check_requires_empirical_validation": false,
+    "asset_distribution_status": "unassessed",
+    "patent_numbered_pairing_verified": true,
+    "publication_to_patent_pair_identity_verified": false,
+    "printed_sequence_listing_acquired": true,
+    "original_machine_readable_sequence_listing_acquired": false,
+    "original_deposited_full_products_verified": false,
+    "literal_domain_product_material_consistency_verified": true,
+    "independent_person_transcription_review": false,
+    "manual_source_reading_is_trusted_acquisition_step": true,
+    "tracked_inventory_contains_sequences": false,
+    "sequence_material_location": "ignored_local_only"
+  },
+  "storage": {
+    "originals_root": "generated/car-controlled-composition/reference-acquisition",
+    "ignored_by_rule": "/generated/",
+    "total_limit_bytes": 26214400,
+    "retained_bytes_at_inventory": 25607408,
+    "per_request_limits_bytes": [
+      131072,
+      262144,
+      786432,
+      1048576,
+      2097152,
+      5242880,
+      8388608,
+      10485760
+    ],
+    "derivative_cleanup_record": "generated/car-controlled-composition/reference-acquisition/derivative-cleanup.json",
+    "regenerable_derivative_bytes_removed": 1413210
+  },
+  "sources": [
+    {
+      "id": "wu-2015-pmc.html",
+      "requested_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4721629/",
+      "retrieved_at_utc": "2026-10-12T14:23:31.508370+00:00",
+      "final_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4721629/",
+      "http_status": 200,
+      "media_type": "text/html; charset=utf-8",
+      "size_bytes": 206529,
+      "sha256": "89bad8a5539434627e8a6c674d15a2eba84c98cd2dd4f00e0f461927f6a1d79f",
+      "retrieval_status": "retrieved_primary_article_html",
+      "content_role": "original_source",
+      "distribution_status": "unassessed_not_bundled",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/wu-2015-pmc.html"
+    },
+    {
+      "id": "wu-2015-author.pdf",
+      "requested_url": "https://limlab.ucsf.edu/pdfs/cyw2015_2.pdf",
+      "retrieved_at_utc": "2026-10-12T14:23:31.860783+00:00",
+      "final_url": "https://limlab.ucsf.edu/pdfs/cyw2015_2.pdf",
+      "http_status": 200,
+      "media_type": "application/pdf",
+      "size_bytes": 2583457,
+      "sha256": "f5b970fbc6b6174589535a2aeabf839160b04057d5f93f28e2e3b58f205cf259",
+      "retrieval_status": "retrieved_author_hosted_publication_pdf",
+      "content_role": "original_source",
+      "distribution_status": "unassessed_not_bundled",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/wu-2015-author.pdf",
+      "pdf_pages": 11
+    },
+    {
+      "id": "wu-2015-supplement",
+      "requested_url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/4721629/bin/NIHMS751362-supplement-Supplementary.pdf",
+      "retrieved_at_utc": "2026-10-12T14:23:47.016585+00:00",
+      "final_url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/4721629/bin/NIHMS751362-supplement-Supplementary.pdf",
+      "http_status": 200,
+      "media_type": "text/html; charset=utf-8",
+      "size_bytes": 21438,
+      "sha256": "17fbab82220bc983cfa25b35a2afbf36cc032a6e936c912657e0e53c61dbdeef",
+      "pdf_signature": false,
+      "retrieval_status": "browser_challenge_not_pdf",
+      "content_role": "failure_diagnostic",
+      "distribution_status": "unassessed_not_bundled",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/wu-2015-supplement-response.html"
+    },
+    {
+      "id": "wu-2015-europepmc-supplements.zip",
+      "requested_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4721629/supplementaryFiles",
+      "retrieved_at_utc": "2026-10-12T14:24:58.953299+00:00",
+      "final_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4721629/supplementaryFiles",
+      "http_status": 200,
+      "media_type": "application/xml",
+      "size_bytes": 296,
+      "sha256": "c3f93cb7976701f7116a65f673863a19def60254c4338aa4aacc10ac2691fcb0",
+      "payload_status": "error_xml_not_supplement_archive",
+      "retrieval_status": "repository_error_not_supplement_archive",
+      "content_role": "failure_diagnostic",
+      "distribution_status": "unassessed_not_bundled",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/wu-2015-europepmc-supplements-response.xml"
+    },
+    {
+      "id": "wu-2015-pmc-oa-status.xml",
+      "requested_url": "https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=PMC4721629",
+      "retrieved_at_utc": "2026-10-12T14:24:58.953664+00:00",
+      "error": "HTTP Error 404: Not Found",
+      "retrieval_status": "http_404",
+      "content_role": "failure_diagnostic",
+      "distribution_status": "unassessed_not_bundled"
+    },
+    {
+      "id": "wu-linked-patent-WO2014127261A1.html",
+      "requested_url": "https://patents.google.com/patent/WO2014127261A1/en",
+      "retrieved_at_utc": "2026-10-12T14:24:58.953747+00:00",
+      "final_url": "https://patents.google.com/patent/WO2014127261A1/en",
+      "http_status": 200,
+      "media_type": "text/html",
+      "size_bytes": 1299195,
+      "sha256": "c507932c815e06fb116ea5452960b37276d4d19ee52fc2626cde1949e5536b42",
+      "retrieval_status": "retrieved_primary_filing_record_html",
+      "content_role": "original_source",
+      "distribution_status": "unassessed_not_bundled",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/wu-linked-patent-WO2014127261A1.html"
+    },
+    {
+      "id": "wu-linked-patent-WO2014127261A1.pdf",
+      "requested_url": "https://patentimages.storage.googleapis.com/dc/45/bb/47ebf39f4192c4/WO2014127261A1.pdf",
+      "retrieved_at_utc": "2026-10-12T14:26:20.003582+00:00",
+      "final_url": "https://patentimages.storage.googleapis.com/dc/45/bb/47ebf39f4192c4/WO2014127261A1.pdf",
+      "http_status": 200,
+      "media_type": "application/pdf",
+      "size_bytes": 6392682,
+      "sha256": "324d9d765144de730d1fa898abf57b4b516260ed0e2d8d82eedab4f541e2e397",
+      "pdf_signature": true,
+      "retrieval_status": "retrieved_primary_filing_pdf",
+      "content_role": "original_source",
+      "distribution_status": "unassessed_not_bundled",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/wu-linked-patent-WO2014127261A1.pdf",
+      "pdf_pages": 142,
+      "sequence_text_extraction_status": "scanned_pages_no_verified_sequence_transcription"
+    },
+    {
+      "id": "wu-2015-publisher-supplement-page.html",
+      "requested_url": "https://www.science.org/doi/suppl/10.1126/science.aab4077/suppl_file/wu.sm.pdf",
+      "retrieved_at_utc": "2026-10-12T14:26:20.501900+00:00",
+      "error": "HTTP Error 403: Forbidden",
+      "retrieval_status": "http_403_unconfirmed_file_locator",
+      "content_role": "failure_diagnostic",
+      "distribution_status": "unassessed_not_bundled",
+      "locator_origin": "conventional_publisher_path_not_confirmed_by_source_link"
+    },
+    {
+      "id": "patent-us-publication.html",
+      "requested_url": "https://patents.google.com/patent/US20150368342A1/en",
+      "retrieved_at_utc": "2026-10-12T14:35:23.379942+00:00",
+      "final_url": "https://patents.google.com/patent/US20150368342A1/en",
+      "http_status": 200,
+      "media_type": "text/html",
+      "size_bytes": 1250267,
+      "sha256": "150d4092d7137401c14195ed0518eca00599ff73a1709ba6b7e1572ffbd20a19",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/patent-us-publication.html",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "original_source",
+      "retrieval_status": "retrieved_related_us_primary_filing"
+    },
+    {
+      "id": "psips-home.html",
+      "requested_url": "https://seqdata.uspto.gov/",
+      "retrieved_at_utc": "2026-10-12T14:35:23.380447+00:00",
+      "final_url": "https://seqdata.uspto.gov/",
+      "http_status": 200,
+      "media_type": "text/html",
+      "size_bytes": 5497,
+      "sha256": "fb3c66e5f39b39baf408277561233ddd961e203609555d44b822f6440d6cc508",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/psips-home.html",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "public_service_metadata",
+      "retrieval_status": "retrieved_official_service_page_or_client",
+      "supplies_molecular_authority": false
+    },
+    {
+      "id": "ncbi-wo-nucleotide-search.json",
+      "requested_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=WO2014127261&retmode=json&retmax=20",
+      "retrieved_at_utc": "2026-10-12T14:35:23.380525+00:00",
+      "final_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=WO2014127261&retmode=json&retmax=20",
+      "http_status": 200,
+      "media_type": "application/json; charset=UTF-8",
+      "size_bytes": 353,
+      "sha256": "d1560c400ac09bf7318cd286f3c05f690962dd6f34695e9b25f6823cbc05bed1",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/ncbi-wo-nucleotide-search.json",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "search_diagnostic",
+      "retrieval_status": "index_query_zero_returned_records",
+      "search_count": 0
+    },
+    {
+      "id": "ncbi-us-nucleotide-search.json",
+      "requested_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=US20150368342&retmode=json&retmax=20",
+      "retrieved_at_utc": "2026-10-12T14:35:23.614448+00:00",
+      "final_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=US20150368342&retmode=json&retmax=20",
+      "http_status": 200,
+      "media_type": "application/json; charset=UTF-8",
+      "size_bytes": 355,
+      "sha256": "fda939925a55505ea456f9478f5a53d159d1241200802d25c0f29c01f1e2caa4",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/ncbi-us-nucleotide-search.json",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "search_diagnostic",
+      "retrieval_status": "index_query_zero_returned_records",
+      "search_count": 0
+    },
+    {
+      "id": "patent-us-publication.pdf",
+      "requested_url": "https://patentimages.storage.googleapis.com/7c/60/2a/2304fe104f883f/US20150368342A1.pdf",
+      "retrieved_at_utc": "2026-10-12T14:36:49.878556+00:00",
+      "per_request_limit_bytes": 8388608,
+      "final_url": "https://patentimages.storage.googleapis.com/7c/60/2a/2304fe104f883f/US20150368342A1.pdf",
+      "http_status": 200,
+      "media_type": "application/pdf",
+      "size_bytes": 8210417,
+      "sha256": "87565b78e73ad5778d6efabc1783e69daa53e25682f615f9b162954f78d96bb5",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/patent-us-publication.pdf",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "original_source",
+      "retrieval_status": "retrieved_related_us_primary_filing",
+      "pdf_pages": 157,
+      "pdf_signature": true,
+      "printed_sequence_listing": {
+        "pdf_start_page_one_based": 93,
+        "declared_sequence_count": 145,
+        "visually_inspected_listing_pages_one_based": [
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103
+        ]
+      },
+      "sequence_text_extraction_status": "partial_noisy_ocr_layer_not_sequence_authority"
+    },
+    {
+      "id": "psips-main.js",
+      "requested_url": "https://seqdata.uspto.gov/main-ULCSHBWV.js",
+      "retrieved_at_utc": "2026-10-12T14:36:49.878995+00:00",
+      "per_request_limit_bytes": 1048576,
+      "final_url": "https://seqdata.uspto.gov/main-ULCSHBWV.js",
+      "http_status": 200,
+      "media_type": "application/javascript",
+      "size_bytes": 243165,
+      "sha256": "75f1cdefeb56b46aef22713d0a37c2e920d6837e6d0c76e08f1570c7250a6881",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/psips-main.js",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "public_service_metadata",
+      "retrieval_status": "retrieved_official_service_page_or_client",
+      "supplies_molecular_authority": false
+    },
+    {
+      "id": "ncbi-us-grant-protein-search.json",
+      "requested_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=protein&term=9821012&retmode=json&retmax=20",
+      "retrieved_at_utc": "2026-10-12T14:36:50.362893+00:00",
+      "per_request_limit_bytes": 1048576,
+      "final_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=protein&term=9821012&retmode=json&retmax=20",
+      "http_status": 200,
+      "media_type": "application/json; charset=UTF-8",
+      "size_bytes": 158,
+      "sha256": "e55d39cb426703c60b071a7cfe41d2635dbff3a65b86f126d5c70c169073bb3f",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/ncbi-us-grant-protein-search.json",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "search_diagnostic",
+      "retrieval_status": "index_query_zero_returned_records",
+      "search_count": 0,
+      "query_limitation": "empty_querytranslation_not_evidence_of_patent_record_absence"
+    },
+    {
+      "id": "ncbi-wo-number-nucleotide-search.json",
+      "requested_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=2014127261&retmode=json&retmax=20",
+      "retrieved_at_utc": "2026-10-12T14:36:50.496019+00:00",
+      "per_request_limit_bytes": 1048576,
+      "final_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=2014127261&retmode=json&retmax=20",
+      "http_status": 200,
+      "media_type": "application/json; charset=UTF-8",
+      "size_bytes": 158,
+      "sha256": "e55d39cb426703c60b071a7cfe41d2635dbff3a65b86f126d5c70c169073bb3f",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/ncbi-wo-number-nucleotide-search.json",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "search_diagnostic",
+      "retrieval_status": "index_query_zero_returned_records",
+      "search_count": 0,
+      "query_limitation": "empty_querytranslation_not_evidence_of_patent_record_absence"
+    },
+    {
+      "id": "psips-us-publication-details.json",
+      "requested_url": "https://seqdata.uspto.gov/viewservice/api/documents/details?documentId=US20150368342A1",
+      "retrieved_at_utc": "2026-10-12T14:37:37.999034+00:00",
+      "per_request_limit_bytes": 131072,
+      "error": "HTTP Error 404: ",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "failure_diagnostic",
+      "retrieval_status": "request_failed_or_size_cap_exceeded"
+    },
+    {
+      "id": "psips-us-grant-details.json",
+      "requested_url": "https://seqdata.uspto.gov/viewservice/api/documents/details?documentId=US09821012B2",
+      "retrieved_at_utc": "2026-10-12T14:37:37.999408+00:00",
+      "per_request_limit_bytes": 131072,
+      "error": "HTTP Error 404: ",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "failure_diagnostic",
+      "retrieval_status": "request_failed_or_size_cap_exceeded"
+    },
+    {
+      "id": "ncbi-wo-patent-field-search.json",
+      "requested_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=WO+2014127261%5BPatent%5D&retmode=json&retmax=20",
+      "retrieved_at_utc": "2026-10-12T14:37:38.271311+00:00",
+      "per_request_limit_bytes": 131072,
+      "final_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=WO+2014127261%5BPatent%5D&retmode=json&retmax=20",
+      "http_status": 200,
+      "media_type": "application/json; charset=UTF-8",
+      "size_bytes": 367,
+      "sha256": "83369e733e50aff625eb5208705eeaa8319f21ee979eae948e022512e4523ed5",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/ncbi-wo-patent-field-search.json",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "search_diagnostic",
+      "retrieval_status": "index_query_zero_returned_records",
+      "search_count": 0
+    },
+    {
+      "id": "ncbi-us-patent-field-search.json",
+      "requested_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=US+20150368342%5BPatent%5D&retmode=json&retmax=20",
+      "retrieved_at_utc": "2026-10-12T14:37:38.279042+00:00",
+      "per_request_limit_bytes": 131072,
+      "final_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=US+20150368342%5BPatent%5D&retmode=json&retmax=20",
+      "http_status": 200,
+      "media_type": "application/json; charset=UTF-8",
+      "size_bytes": 369,
+      "sha256": "dbdd9f23fd0bc58f2eea5fd6674b0a8a9f5f73b7ab5e4446499792ee98e5481a",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/ncbi-us-patent-field-search.json",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "search_diagnostic",
+      "retrieval_status": "index_query_zero_returned_records",
+      "search_count": 0
+    },
+    {
+      "id": "epo-ep14751227-doclist.html",
+      "requested_url": "https://register.epo.org/application?number=EP14751227&tab=doclist",
+      "retrieved_at_utc": "2026-10-12T14:38:16.370672+00:00",
+      "per_request_limit_bytes": 262144,
+      "error": "HTTP Error 403: Forbidden",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "failure_diagnostic",
+      "retrieval_status": "request_failed_or_size_cap_exceeded"
+    },
+    {
+      "id": "wipo-patent-page.html",
+      "requested_url": "https://patentscope.wipo.int/search/en/WO2014127261",
+      "retrieved_at_utc": "2026-10-12T14:38:17.438868+00:00",
+      "per_request_limit_bytes": 262144,
+      "error": "perfile cap exceeded",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "failure_diagnostic",
+      "retrieval_status": "request_failed_or_size_cap_exceeded"
+    },
+    {
+      "id": "wipo-patent-page.html-attempt-2",
+      "requested_url": "https://patentscope.wipo.int/search/en/WO2014127261",
+      "retrieved_at_utc": "2026-10-12T14:39:09.979316+00:00",
+      "per_request_limit_bytes": 786432,
+      "final_url": "https://patentscope.wipo.int/search/en/WO2014127261",
+      "http_status": 200,
+      "media_type": "text/html;charset=UTF-8",
+      "size_bytes": 397090,
+      "sha256": "f0ef611bedb6a9ae380af3f96470fe9fa847fdb949122a2f37cec5178bf1204e",
+      "local_path": "generated/car-controlled-composition/reference-acquisition/wipo-patent-page.html",
+      "distribution_status": "unassessed_not_bundled",
+      "content_role": "failure_diagnostic",
+      "retrieval_status": "browser_challenge_no_sequence_listing_link"
+    }
+  ],
+  "observed_sequence_bearing_records": [
+    {
+      "source_id": "wu-linked-patent-WO2014127261A1.pdf",
+      "construct": "197",
+      "pdf_pages_one_based": [
+        90,
+        91
+      ],
+      "printed_sheets": [
+        "15/64",
+        "16/64"
+      ],
+      "figures": [
+        "8A",
+        "8B"
+      ],
+      "record_kind": "labeled_domain_nucleotide_and_protein_blocks",
+      "visual_inspection": "confirmed",
+      "whole_orf_translation_check": "literal_stop_free_coding_fragment_translation_pass; complete RNA/CDS termination not supplied",
+      "paper_label_join": "unconfirmed_candidate_for_I.b",
+      "ordered_figure_blocks": [
+        {
+          "label": "signal peptide",
+          "dna_seq_id": 1,
+          "protein_seq_id": 2
+        },
+        {
+          "label": "Myc epitope tag",
+          "dna_seq_id": 3,
+          "protein_seq_id": 4
+        },
+        {
+          "label": "anti-human CD19 scFv",
+          "dna_seq_id": 5,
+          "protein_seq_id": 6
+        },
+        {
+          "label": "human CD8alpha hinge and transmembrane domain",
+          "dna_seq_id": 7,
+          "protein_seq_id": 8
+        },
+        {
+          "label": "short Ser-Leu linker",
+          "dna_seq_id": null,
+          "protein_seq_id": null,
+          "authority": "explicit unnumbered DNA and peptide block in Figure 8B",
+          "distinct_dna_from_construct_206_linker": true
+        },
+        {
+          "label": "4-1BB intracellular chain",
+          "dna_seq_id": 23,
+          "protein_seq_id": 24
+        },
+        {
+          "label": "linker",
+          "dna_seq_id": 19,
+          "protein_seq_id": 20
+        },
+        {
+          "label": "FKBP",
+          "dna_seq_id": 11,
+          "protein_seq_id": 12
+        }
+      ],
+      "terminal_stop_codon_in_final_figure_block": "not_shown",
+      "complete_vector_record": false,
+      "transcription_status": "same_operator_double_entry_with_source_pixel_review_and_separate_DNA_protein_checks",
+      "literal_reconstruction": {
+        "dna_nt": 1512,
+        "protein_aa": 504,
+        "dna_sha256": "9db5b2beadc78efbdcc32ac5e0a5d98b93cc6edd5fc094262d28dba3abe2ddea",
+        "protein_sha256": "15c4999ca0be97c3bdf1180bdf1bd3d43a3d812f08b25651e17b840fc6e29513",
+        "spans": [
+          {
+            "block_id": "1",
+            "dna_start_zero_based": 0,
+            "dna_end_exclusive": 63
+          },
+          {
+            "block_id": "3",
+            "dna_start_zero_based": 63,
+            "dna_end_exclusive": 93
+          },
+          {
+            "block_id": "5",
+            "dna_start_zero_based": 93,
+            "dna_end_exclusive": 819
+          },
+          {
+            "block_id": "7",
+            "dna_start_zero_based": 819,
+            "dna_end_exclusive": 1026
+          },
+          {
+            "block_id": "197-short-linker",
+            "dna_start_zero_based": 1026,
+            "dna_end_exclusive": 1032
+          },
+          {
+            "block_id": "23",
+            "dna_start_zero_based": 1032,
+            "dna_end_exclusive": 1158
+          },
+          {
+            "block_id": "19",
+            "dna_start_zero_based": 1158,
+            "dna_end_exclusive": 1188
+          },
+          {
+            "block_id": "11",
+            "dna_start_zero_based": 1188,
+            "dna_end_exclusive": 1512
+          }
+        ],
+        "stop_codon_present": false
+      }
+    },
+    {
+      "source_id": "wu-linked-patent-WO2014127261A1.pdf",
+      "construct": "206",
+      "pdf_pages_one_based": [
+        92,
+        93,
+        94
+      ],
+      "printed_sheets": [
+        "17/64",
+        "18/64",
+        "19/64"
+      ],
+      "figures": [
+        "9A",
+        "9B",
+        "9C"
+      ],
+      "record_kind": "labeled_domain_nucleotide_and_protein_blocks",
+      "visual_inspection": "confirmed",
+      "whole_orf_translation_check": "literal_stop_free_coding_fragment_translation_pass; complete RNA/CDS termination not supplied",
+      "paper_label_join": "unconfirmed_candidate_for_II.d",
+      "ordered_figure_blocks": [
+        {
+          "label": "DAP10 signal sequence and extracellular domain",
+          "dna_seq_id": 27,
+          "protein_seq_id": 28
+        },
+        {
+          "label": "human CD8alpha transmembrane domain",
+          "dna_seq_id": 29,
+          "protein_seq_id": 30
+        },
+        {
+          "label": "short Ser-Leu linker",
+          "dna_seq_id": null,
+          "protein_seq_id": null,
+          "authority": "explicit unnumbered DNA and peptide block in Figure 9A",
+          "distinct_dna_from_construct_197_linker": true
+        },
+        {
+          "label": "4-1BB intracellular chain",
+          "dna_seq_id": 23,
+          "protein_seq_id": 24
+        },
+        {
+          "label": "linker",
+          "dna_seq_id": 31,
+          "protein_seq_id": 32
+        },
+        {
+          "label": "FRB",
+          "dna_seq_id": 33,
+          "protein_seq_id": 34
+        },
+        {
+          "label": "linker",
+          "dna_seq_id": 15,
+          "protein_seq_id": 16
+        },
+        {
+          "label": "CD3zeta intracellular chain",
+          "dna_seq_id": 17,
+          "protein_seq_id": 18
+        },
+        {
+          "label": "linker",
+          "dna_seq_id": 19,
+          "protein_seq_id": 20
+        },
+        {
+          "label": "mCherry",
+          "dna_seq_id": 21,
+          "protein_seq_id": 22
+        }
+      ],
+      "terminal_stop_codon_in_final_figure_block": "not_shown",
+      "complete_vector_record": false,
+      "transcription_status": "same_operator_double_entry_with_source_pixel_review_and_separate_DNA_protein_checks",
+      "literal_reconstruction": {
+        "dna_nt": 1779,
+        "protein_aa": 593,
+        "dna_sha256": "55b4858cd32d96f421206bdb68256176d03d19652b72034625226c487b579299",
+        "protein_sha256": "86d60b35c58fa5562df9fd780a5d9914eec45510febc67e54cece2a040b7f472",
+        "spans": [
+          {
+            "block_id": "27",
+            "dna_start_zero_based": 0,
+            "dna_end_exclusive": 144
+          },
+          {
+            "block_id": "29",
+            "dna_start_zero_based": 144,
+            "dna_end_exclusive": 216
+          },
+          {
+            "block_id": "206-short-linker",
+            "dna_start_zero_based": 216,
+            "dna_end_exclusive": 222
+          },
+          {
+            "block_id": "23",
+            "dna_start_zero_based": 222,
+            "dna_end_exclusive": 348
+          },
+          {
+            "block_id": "31",
+            "dna_start_zero_based": 348,
+            "dna_end_exclusive": 396
+          },
+          {
+            "block_id": "33",
+            "dna_start_zero_based": 396,
+            "dna_end_exclusive": 675
+          },
+          {
+            "block_id": "15",
+            "dna_start_zero_based": 675,
+            "dna_end_exclusive": 705
+          },
+          {
+            "block_id": "17",
+            "dna_start_zero_based": 705,
+            "dna_end_exclusive": 1041
+          },
+          {
+            "block_id": "19",
+            "dna_start_zero_based": 1041,
+            "dna_end_exclusive": 1071
+          },
+          {
+            "block_id": "21",
+            "dna_start_zero_based": 1071,
+            "dna_end_exclusive": 1779
+          }
+        ],
+        "stop_codon_present": false
+      }
+    },
+    {
+      "source_id": "wu-linked-patent-WO2014127261A1.pdf",
+      "construct_pair": [
+        "197",
+        "206"
+      ],
+      "pdf_pages_one_based": [
+        107
+      ],
+      "printed_sheets": [
+        "32/64"
+      ],
+      "figures": [
+        "18B"
+      ],
+      "record_kind": "explicit_paired_architecture_diagram",
+      "visual_inspection": "confirmed",
+      "join_to_publication_pair": "architectural_inference_only_not_exact_identity"
+    },
+    {
+      "source_id": "wu-linked-patent-WO2014127261A1.html",
+      "locator": "description paragraph [0003]",
+      "referenced_file": "UCSF-464WO SeqList_ST25.txt",
+      "reported_file_date": "2014-02-13",
+      "reported_size_label": "153 KB",
+      "retrieval_status": "original_text_not_acquired_related_us_printed_listing_acquired",
+      "original_text_available_locally": false,
+      "related_printed_listing_source_id": "patent-us-publication.pdf"
+    }
+  ],
+  "control_evidence": {
+    "source_id": "wu-2015-author.pdf",
+    "pair": "I.b + II.d",
+    "controller": "AP21967",
+    "interaction": "FKBP/FRB* drug-dependent assembly",
+    "logical_inputs": [
+      "cognate antigen engagement",
+      "controller availability"
+    ],
+    "reversal_readout": "target-cell killing",
+    "withdrawal_readdition_stage_hours": 36,
+    "rapid_signaling_cessation_bound": "unconfirmed",
+    "universal_zero_leakage_contract": "not_established",
+    "complete_two_rna_design": "not_verified",
+    "model_numerical_parameters_supplied_by_this_inventory": false,
+    "applicability_to_patent_pair": "not_transferred_without_exact_variant_mapping"
+  },
+  "open_obligations": [
+    {
+      "id": "RC2-PAPER-PAIR-JOIN",
+      "status": "open_only_if_using_wu_paper_identity_or_transferring_its_specific_assay_evidence",
+      "needed": "Authoritative I.b/II.d mapping to exact molecular and assay-variant records; not required for separately named patent #197/#206 reference."
+    },
+    {
+      "id": "RC2-EXACT-PAIR-MATERIAL",
+      "status": "bounded_manual_material_checks_complete_authorized_import_open",
+      "needed": "Preserve original pins, same-operator manual-input scope, all literal joins and fresh reconstruction in later authorized-input import; no complete RNA/CDS termination authority supplied here."
+    },
+    {
+      "id": "RC2-COMPLETE-RNAS",
+      "status": "open",
+      "needed": "Exact per-member and shared inputs enumerated in outstanding_rna_design_inputs; two designer-supplied RNA adaptations remain required."
+    },
+    {
+      "id": "RC2-ASSET-RIGHTS",
+      "status": "open",
+      "needed": "Verified asset redistribution terms or authorized-input import path; public availability is insufficient."
+    },
+    {
+      "id": "RC2-CONTROL-MODEL",
+      "status": "open",
+      "needed": "Independent supplied behavior/observation/availability contracts with measured, source-derived, assumed and unknown values separately labeled."
+    },
+    {
+      "id": "RC2-EMPIRICAL-APPLICABILITY",
+      "status": "unassessed_separate_from_software_acceptance",
+      "needed": "Deployment-specific evidence assessed separately; no inference from source context or conditional software checking."
+    }
+  ],
+  "allowed_fallback": {
+    "software_work": "Complete clearly artificial fixture authority may support conditional admission/construction/behavior development.",
+    "named_reference_case": "Selected WO2014127261A1-197-206 has checked literal paired source material; authorized import and complete designer-supplied RNA inputs with conditional contracts remain open. No Wu cross-label join or empirical validation required for that identity.",
+    "forbidden_promotions": [
+      "diagram_to_exact_sequence",
+      "patent_architectural_match_to_paper_identity",
+      "assumed_contract_to_measured_evidence",
+      "transient_rna_to_reversible_activity",
+      "same_population_to_same_recipient",
+      "patent_generic_RNA_embodiment_to_complete_tested_transcript"
+    ]
+  },
+  "assessment_document": "docs/car-controlled-reference-acquisition.md",
+  "reference_options": [
+    {
+      "id": "wu-2015-I.b-II.d",
+      "source_id": "wu-2015-author.pdf",
+      "pair": [
+        "I.b",
+        "II.d"
+      ],
+      "pairing_verified": true,
+      "exact_material_join_verified": false,
+      "chosen_for_molecular_admission": false,
+      "chosen_for_acquisition": false
+    },
+    {
+      "id": "WO2014127261A1-197-206",
+      "source_id": "wu-linked-patent-WO2014127261A1.pdf",
+      "pair": [
+        "197",
+        "206"
+      ],
+      "pairing_verified": true,
+      "pairing_locator": "Figure 18B; PDF page 107; Figure 15 and description paragraph [00282]",
+      "paper_identity_join_required_for_this_name": false,
+      "exact_material_join_verified": true,
+      "chosen_for_molecular_admission": false,
+      "recommendation": "selected_acquisition_path",
+      "chosen_for_acquisition": true,
+      "material_join_scope": "Literal printed domain reconstruction only; no complete RNA or original deposited plasmid identity."
+    }
+  ],
+  "sequence_reconciliation_status": {
+    "original_digital_text": "not_acquired",
+    "printed_domain_and_listing_authority": "available_and_used_for_manual_acquisition",
+    "full_transcription": "16_figure_DNA_protein_blocks_and14_separate_listing_DNA_records_entered",
+    "whole_product_translation": "two_literal_stop_free_concatenations_pass",
+    "construction": "literal_source_domain_concatenation_only_no_added_bases",
+    "rna_design": "not_performed_complete_inputs_required",
+    "source_order_and_junctions": "explicit_figure_order_preserved; unnumbered_linkers_retained_separately",
+    "observed_sequence_discrepancy": "No unresolved source discrepancy found; three manual-entry errors corrected only by source rereading.",
+    "independence_limit": "One operator, separately entered printed records; not independent-person review or automated pixel identity proof."
+  },
+  "patent_pair_control_evidence": {
+    "source_id": "wu-linked-patent-WO2014127261A1.html",
+    "pair": [
+      "197",
+      "206"
+    ],
+    "locator": "Figure 15 and description paragraph [00282]",
+    "context": "lentivirally engineered human primary CD8 T cells with cognate/noncognate target-cell comparison",
+    "controller_label_in_source": "rapalog",
+    "readout": "drug-dependent cytotoxicity",
+    "withdrawal_readdition_bound": "not_verified_for_this_pair",
+    "rna_delivery_evidence": "not_verified",
+    "model_numerical_parameters_supplied_by_this_inventory": false
+  },
+  "selected_acquisition_reference": "WO2014127261A1-197-206",
+  "selection_scope": "Separately named patent pair, with Wu as inspiration; no paper identity or assay-evidence transfer.",
+  "local_material_artifacts": [
+    {
+      "path": "generated/car-controlled-composition/reference-acquisition/transcribe_figure_blocks.py",
+      "role": "manual_source_entry_script",
+      "size_bytes": 6701,
+      "sha256": "5d1c09ccbbd8dfccd127c2c25c6ce111022b7b8ee8f40f528b2b3ee98ee8b719",
+      "distribution_status": "unassessed_local_authorized_input_only",
+      "is_packaged": false
+    },
+    {
+      "path": "generated/car-controlled-composition/reference-acquisition/transcribe_listing_blocks.py",
+      "role": "second_manual_source_entry_script",
+      "size_bytes": 4705,
+      "sha256": "cd543cd739d12b7a3ccb967090a3925b6ffcbb9d81f8e80e51348a0c634cdfe0",
+      "distribution_status": "unassessed_local_authorized_input_only",
+      "is_packaged": false
+    },
+    {
+      "path": "generated/car-controlled-composition/reference-acquisition/patent-domain-transcription.json",
+      "role": "literal_figure_DNA_and_protein_input",
+      "size_bytes": 13656,
+      "sha256": "4e5436388a7ad3e299c7bc3fcc231c2613c6e4629d0c5dca0f1b143989fe97f4",
+      "distribution_status": "unassessed_local_authorized_input_only",
+      "is_packaged": false
+    },
+    {
+      "path": "generated/car-controlled-composition/reference-acquisition/patent-listing-transcription.json",
+      "role": "separately_entered_printed_listing_DNA_input",
+      "size_bytes": 8979,
+      "sha256": "90b5d45632af7685df893d8ddec77e0a6700ee268a04310395dda1cedd54b2ec",
+      "distribution_status": "unassessed_local_authorized_input_only",
+      "is_packaged": false
+    },
+    {
+      "path": "generated/car-controlled-composition/reference-acquisition/check_patent_transcription.py",
+      "role": "bounded_offline_standard_library_checker",
+      "size_bytes": 9397,
+      "sha256": "1ff2206e99e28e3ddaf21305022022afdcaab758ed640863684dfdec08bc7186",
+      "distribution_status": "unassessed_local_authorized_input_only",
+      "is_packaged": false
+    },
+    {
+      "path": "generated/car-controlled-composition/reference-acquisition/patent-transcription-check.json",
+      "role": "derived_material_consistency_receipt",
+      "size_bytes": 8896,
+      "sha256": "66911bc3c8292cec264dadefbb9fcd9ddd4511d1423f499ec557b17df87b0dee",
+      "distribution_status": "unassessed_local_authorized_input_only",
+      "is_packaged": false
+    },
+    {
+      "path": "generated/car-controlled-composition/reference-acquisition/patent-pair-coding-fragments.fasta",
+      "role": "derived_two_record_stop_free_coding_fragments_not_RNA",
+      "size_bytes": 3393,
+      "sha256": "1822d4cb56f8a51821f8fedf55bf20570f7ad11d8a562b7c374b28f9840954b6",
+      "distribution_status": "unassessed_local_authorized_input_only",
+      "is_packaged": false
+    },
+    {
+      "path": "generated/car-controlled-composition/reference-acquisition/patent-pair-products.fasta",
+      "role": "derived_two_record_literal_products",
+      "size_bytes": 1183,
+      "sha256": "ac8d48a84eec03f4b4853977527a872f96ecfb02ff16ab24a95c4ae60fac3eae",
+      "distribution_status": "unassessed_local_authorized_input_only",
+      "is_packaged": false
+    },
+    {
+      "path": "generated/car-controlled-composition/reference-acquisition/transcription-corrections.json",
+      "role": "manual_entry_corrections_with_source_locations",
+      "size_bytes": 1697,
+      "sha256": "bb4fa2ee694a459b2814cbdb314dd4234cce173d114211754ffa0cfdf3092079",
+      "distribution_status": "unassessed_local_authorized_input_only",
+      "is_packaged": false
+    }
+  ],
+  "material_check_result": {
+    "status": "PASS_manual_source_material_consistency_only",
+    "is_rna_design": false,
+    "is_admitted_molecular_pack": false,
+    "is_independent_person_review": false,
+    "authority_limit": "Manual entries and visual source review remain trusted acquisition steps; consistency checks cannot prove pixel transcription identity.",
+    "components": [
+      {
+        "id": "1",
+        "dna_nt": 63,
+        "protein_aa": 21,
+        "dna_sha256": "3be697f1fc2a3a7bc59e7f8c2b766d41360dec572a3fd3e02271239c041a88de",
+        "protein_sha256": "31aa145acb2035d3becea2f116236315e7db48fd6d5b24403748f2d2c2bb1315"
+      },
+      {
+        "id": "3",
+        "dna_nt": 30,
+        "protein_aa": 10,
+        "dna_sha256": "0e965262103ecc0310afcc3bee26f0bc94e25f8f3d43ecb4a722474f2c2604a8",
+        "protein_sha256": "74c97f36bfb5e316537effdccafba0774d92df327b2f120e87bec43f81db31bc"
+      },
+      {
+        "id": "5",
+        "dna_nt": 726,
+        "protein_aa": 242,
+        "dna_sha256": "053db3142c1065aa8e97c1094e9524e98a75d2fe59a59ed4db34913abfa7a0e9",
+        "protein_sha256": "ffea97ca9cc7afd65a3877c836c188b772dd34b52b56d9a400026e42177b3a0f"
+      },
+      {
+        "id": "7",
+        "dna_nt": 207,
+        "protein_aa": 69,
+        "dna_sha256": "22a72df40e0eaaef5ab8c43d82447b5aed9ba9fb5a97735175281c483b5be791",
+        "protein_sha256": "2255a09ced900e95307f9eba93c43d2c67b2bd76d5babbbd0ddfadc3fe641afe"
+      },
+      {
+        "id": "23",
+        "dna_nt": 126,
+        "protein_aa": 42,
+        "dna_sha256": "646acbad025e71fabb6ffb2d02d1ecc430e33b6ceb423ae11662c078044c42d4",
+        "protein_sha256": "9401d918da8382947fba7d5353615441331dbd39b39b19679f70f96a2961716f"
+      },
+      {
+        "id": "19",
+        "dna_nt": 30,
+        "protein_aa": 10,
+        "dna_sha256": "b8e45cd20004ad312d67acdf406b5ef1c665c3dfe0c6386ca39c277fad8db853",
+        "protein_sha256": "07e53a480a832c16915349d4e2dac350270e174f6657e29aa96261dcfb09c157"
+      },
+      {
+        "id": "11",
+        "dna_nt": 324,
+        "protein_aa": 108,
+        "dna_sha256": "9cb2a28158a8c16d193f9d555d9368bfb6695b5ddc0f61ec1c203841639f1e6a",
+        "protein_sha256": "7c2c9a4005a08f9f8ed2ce2e3b7d9432dd39547abafef80ffab6adbb89753b2c"
+      },
+      {
+        "id": "27",
+        "dna_nt": 144,
+        "protein_aa": 48,
+        "dna_sha256": "ead325f258865188cbbe227a215f0be0d3e22f672b41ccd76545f5df7778381a",
+        "protein_sha256": "9bdb094258eecdb7f87ba0e6d76c315e37974cef2ff63749fadc602cd6ed35d5"
+      },
+      {
+        "id": "29",
+        "dna_nt": 72,
+        "protein_aa": 24,
+        "dna_sha256": "17107ac69d99f57db4b4c078868fbbf22311339e66c0228e0dd29fbb9503000d",
+        "protein_sha256": "522fb0a3950d0fb07b8d94167992a18878012043960ec25c7f36a33c47b41ed3"
+      },
+      {
+        "id": "31",
+        "dna_nt": 48,
+        "protein_aa": 16,
+        "dna_sha256": "c4dd6d1a25ff33862e07595bfe26f071222e90025986ad91cfddd1e5c6fc3acd",
+        "protein_sha256": "4545730f5f43d63e228df5ef88bee228f616cb5c956bf524142785c455ef1d23"
+      },
+      {
+        "id": "33",
+        "dna_nt": 279,
+        "protein_aa": 93,
+        "dna_sha256": "a23d20a8fe8339d59853c61d625ed65d1d6fb7f9ac63a82f06a741ab1effd9c3",
+        "protein_sha256": "923bbe1e9f32a8a36ca60909b95f99d8386e48c778b1475864a015bad011328f"
+      },
+      {
+        "id": "15",
+        "dna_nt": 30,
+        "protein_aa": 10,
+        "dna_sha256": "ae5163d72a6cb1238c58725cba0ab9458bd4faa44ed90f36239aede60abfcca0",
+        "protein_sha256": "1fe7bee53888d141fb9c7dabde9fc2ba7c1612a31416e121eb0a6774c01b3bd1"
+      },
+      {
+        "id": "17",
+        "dna_nt": 336,
+        "protein_aa": 112,
+        "dna_sha256": "bc09c5e48896ba5c196d8f010e80000ca98b4b47fb3561deb447ec1cc19dd384",
+        "protein_sha256": "27f8fddc3e10ba0c468ce8fc5b2573313f8265e9abbe49d2700162288261491f"
+      },
+      {
+        "id": "21",
+        "dna_nt": 708,
+        "protein_aa": 236,
+        "dna_sha256": "0f112cc6264b10a298eb590b0a686d3a43a7181997f127bf7039c5e6057ad8d5",
+        "protein_sha256": "546a4455d8d339f47fb7721c17b4593ee5ffb243f6011f436005d63c8b2357a5"
+      },
+      {
+        "id": "197-short-linker",
+        "dna_nt": 6,
+        "protein_aa": 2,
+        "dna_sha256": "b0a774f09e6bea16f6223702f5f816a7d2e32c2303342af4efaaaa95bd1a2973",
+        "protein_sha256": "fabdf4b0dd1714974fe83c3b1f010ffaf367bf3abba007f17ddc4356bea29ceb"
+      },
+      {
+        "id": "206-short-linker",
+        "dna_nt": 6,
+        "protein_aa": 2,
+        "dna_sha256": "c48b3d7a11a8236138f3b06e714c4b9bc6d42de8131f95055074464c8439df36",
+        "protein_sha256": "fabdf4b0dd1714974fe83c3b1f010ffaf367bf3abba007f17ddc4356bea29ceb"
+      }
+    ],
+    "products": [
+      {
+        "construct": "197",
+        "dna_nt": 1512,
+        "protein_aa": 504,
+        "dna_sha256": "9db5b2beadc78efbdcc32ac5e0a5d98b93cc6edd5fc094262d28dba3abe2ddea",
+        "protein_sha256": "15c4999ca0be97c3bdf1180bdf1bd3d43a3d812f08b25651e17b840fc6e29513",
+        "spans": [
+          {
+            "block_id": "1",
+            "dna_start_zero_based": 0,
+            "dna_end_exclusive": 63
+          },
+          {
+            "block_id": "3",
+            "dna_start_zero_based": 63,
+            "dna_end_exclusive": 93
+          },
+          {
+            "block_id": "5",
+            "dna_start_zero_based": 93,
+            "dna_end_exclusive": 819
+          },
+          {
+            "block_id": "7",
+            "dna_start_zero_based": 819,
+            "dna_end_exclusive": 1026
+          },
+          {
+            "block_id": "197-short-linker",
+            "dna_start_zero_based": 1026,
+            "dna_end_exclusive": 1032
+          },
+          {
+            "block_id": "23",
+            "dna_start_zero_based": 1032,
+            "dna_end_exclusive": 1158
+          },
+          {
+            "block_id": "19",
+            "dna_start_zero_based": 1158,
+            "dna_end_exclusive": 1188
+          },
+          {
+            "block_id": "11",
+            "dna_start_zero_based": 1188,
+            "dna_end_exclusive": 1512
+          }
+        ],
+        "stop_codon_present": false
+      },
+      {
+        "construct": "206",
+        "dna_nt": 1779,
+        "protein_aa": 593,
+        "dna_sha256": "55b4858cd32d96f421206bdb68256176d03d19652b72034625226c487b579299",
+        "protein_sha256": "86d60b35c58fa5562df9fd780a5d9914eec45510febc67e54cece2a040b7f472",
+        "spans": [
+          {
+            "block_id": "27",
+            "dna_start_zero_based": 0,
+            "dna_end_exclusive": 144
+          },
+          {
+            "block_id": "29",
+            "dna_start_zero_based": 144,
+            "dna_end_exclusive": 216
+          },
+          {
+            "block_id": "206-short-linker",
+            "dna_start_zero_based": 216,
+            "dna_end_exclusive": 222
+          },
+          {
+            "block_id": "23",
+            "dna_start_zero_based": 222,
+            "dna_end_exclusive": 348
+          },
+          {
+            "block_id": "31",
+            "dna_start_zero_based": 348,
+            "dna_end_exclusive": 396
+          },
+          {
+            "block_id": "33",
+            "dna_start_zero_based": 396,
+            "dna_end_exclusive": 675
+          },
+          {
+            "block_id": "15",
+            "dna_start_zero_based": 675,
+            "dna_end_exclusive": 705
+          },
+          {
+            "block_id": "17",
+            "dna_start_zero_based": 705,
+            "dna_end_exclusive": 1041
+          },
+          {
+            "block_id": "19",
+            "dna_start_zero_based": 1041,
+            "dna_end_exclusive": 1071
+          },
+          {
+            "block_id": "21",
+            "dna_start_zero_based": 1071,
+            "dna_end_exclusive": 1779
+          }
+        ],
+        "stop_codon_present": false
+      }
+    ],
+    "negative_controls": [
+      {
+        "control": "synonymous_DNA_substitution",
+        "result": "rejected",
+        "diagnostic": "3: figure/listing DNA disagreement"
+      },
+      {
+        "control": "omitted_explicit_junction",
+        "result": "rejected",
+        "diagnostic": "explicit source order"
+      },
+      {
+        "control": "unshown_termination_added",
+        "result": "rejected",
+        "diagnostic": "11: printed protein translation"
+      },
+      {
+        "control": "protein_authority_changed",
+        "result": "rejected",
+        "diagnostic": "33: printed protein translation"
+      }
+    ]
+  },
+  "authorized_input_import_contract": {
+    "implementation_status": "planned_for_separate_coherent_RC2_batch_not_implemented_here",
+    "original_authority": [
+      "wu-linked-patent-WO2014127261A1.pdf",
+      "patent-us-publication.pdf",
+      "patent-domain-transcription.json",
+      "patent-listing-transcription.json"
+    ],
+    "required_checks": [
+      "exact pinned bytes before parsing",
+      "bounded regular files without symlinks or path escape",
+      "fresh offline material reconstruction and translation",
+      "exact14 numbered DNA records and2 explicit unnumbered figure linkers",
+      "preserve all tags and exact figure order",
+      "separate complete two-RNA design authority",
+      "report same-operator manual acquisition limitation",
+      "record authorized input scope and distribution status"
+    ],
+    "forbidden_inference": [
+      "no new bases or junctions",
+      "no stop insertion",
+      "no tag removal",
+      "no codon optimization",
+      "no transcript defaults",
+      "no saved PASS substitution",
+      "no Wu evidence transfer"
+    ]
+  },
+  "outstanding_rna_design_inputs": {
+    "member_count": 2,
+    "members": [
+      "197",
+      "206"
+    ],
+    "per_member_required": [
+      "stable member identity and exact complete transcript region ordering",
+      "explicit sequences of every emitted region",
+      "untranslated regions and initiation context",
+      "explicit termination codon and CDS coordinates",
+      "specified tail",
+      "cap and end chemistry",
+      "nucleotide modifications and all supported manifest-only features, including explicit absence",
+      "exact expected product mapping and declared adaptations to tags, linkers or coding bases"
+    ],
+    "shared_required": [
+      "human T-cell recipient and same-recipient co-delivery assignment",
+      "member-specific availability assumptions",
+      "independent activity, controller exposure and observation contracts"
+    ],
+    "controller_is_rna_member": false,
+    "empirical_validation_required_for_conditional_software_check": false
+  }
+}
