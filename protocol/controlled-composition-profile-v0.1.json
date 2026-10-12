@@ -207,5 +207,17 @@
     "reference_fidelity",
     "empirical_applicability",
     "human_use"
-  ]
+  ],
+  "admission_stage": {
+    "milestone": "RC3",
+    "operation": "admit-policy-component-material",
+    "capability": "policy_controlled_composition_admission",
+    "validation_scope": "policy-controlled-composition-admission-v0.1",
+    "claim_scope": "supplied_authority_and_complete_finite_domain_only",
+    "artifact": "none",
+    "construction": "not_performed",
+    "behavior": "not_performed",
+    "empirical": "unassessed",
+    "validation_evidence": "separate_exact_source_bound_hosted_receipt"
+  }
 }

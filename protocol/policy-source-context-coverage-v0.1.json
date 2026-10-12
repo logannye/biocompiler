@@ -62,7 +62,7 @@
     },
     {
       "path": "core/lib/domain/policy_document.ml",
-      "sha256": "9b2adf9ca624942d1557e91720bac7439e0b511c1e54fe47447df77ccbeb138e",
+      "sha256": "14279d83121f55af4731a6e14a0e97e58f679965e4a3776aa7bdd808835371d1",
       "disposition": "source_codec_dependency",
       "ast": null
     },

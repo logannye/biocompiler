@@ -45,7 +45,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 243)
+        self.assertEqual(result["sources"], 255)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
@@ -76,6 +76,21 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
                 with self.subTest(name=name, disposition=disposition):
                     self.rejected(lambda value: next(row for row in value["sources"]
                         if row["path"] == name).update(disposition=disposition), "Changed route exception")
+
+    def test_controlled_admission_preserves_all_rc1_material_classifications(self):
+        metadata = coverage.metadata_before_controlled_admission(self.original)
+        self.assertEqual(len(metadata["source_classifications"]), 243)
+        encoded = json.dumps(metadata, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "d42c5812339fa921f36974aa293d046f1e43c455f4896571663f32bb57b99db5")
+        self.assertEqual(len(coverage.CONTROLLED_ADMISSION_SOURCES), 12)
+        for name in coverage.CONTROLLED_ADMISSION_SOURCES:
+            row = next(row for row in self.original["sources"] if row["path"] == name)
+            self.assertEqual((row["disposition"], row["reason"]),
+                             ("outside_route", coverage.CONTROLLED_ADMISSION_REASON))
+            self.ledger = deepcopy(self.original)
+            self.rejected(lambda value: next(row for row in value["sources"]
+                if row["path"] == name).update(disposition="rule_owner"), "Changed route exception")
 
     def test_controlled_shape_table_bytes_still_require_review(self):
         root = self.checkout()

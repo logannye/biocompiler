@@ -1,0 +1,4048 @@
+{
+  "assembly": {
+    "helper_members": [],
+    "member_order": [
+      "rna-a",
+      "rna-b"
+    ],
+    "policy": "supplied_template_only",
+    "product_bindings": [
+      {
+        "cds_id": "cds",
+        "member_id": "rna-a",
+        "product_definition": {
+          "$type": "DefinitionRef",
+          "digest": "1799db79ac7561387fb048d456a65cc47fbf630bc69cd3b12320d4d09365f3d5",
+          "id": "artificial.product-a",
+          "version": "1"
+        },
+        "product_identity": {
+          "content_fingerprint": "c7434883f345ffc2100dd9e3750afbbee436ba7535cf5fb26b9be706ce413c9b",
+          "id": "artificial-product-a",
+          "kind": "source",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        "product_parameter": {
+          "$type": "Ref",
+          "id": "product-a",
+          "kind": "Parameter"
+        }
+      },
+      {
+        "cds_id": "cds",
+        "member_id": "rna-b",
+        "product_definition": {
+          "$type": "DefinitionRef",
+          "digest": "457fcd25c48e2f427c003dff0aba817ff2cbf54e88ba2d1e6730a802316fb6a9",
+          "id": "artificial.product-b",
+          "version": "1"
+        },
+        "product_identity": {
+          "content_fingerprint": "92da7113336e1f9d1cebbb5cfa4ec68ddf5b8ac989f1b6399856e44b100e76a9",
+          "id": "artificial-product-b",
+          "kind": "source",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        "product_parameter": {
+          "$type": "Ref",
+          "id": "product-b",
+          "kind": "Parameter"
+        }
+      }
+    ],
+    "schema_version": "biocompiler.policy_controlled_composition_assembly.v0.1"
+  },
+  "budgets": {
+    "max_report_bytes": 1000000,
+    "max_report_nodes": 100000,
+    "max_work": 10000000,
+    "profile": "biocompiler.policy_controlled_composition_resources.v0.1"
+  },
+  "catalog_binding": {
+    "component_ids": [
+      "component-a",
+      "component-b"
+    ],
+    "entry": {
+      "$type": "ImplementationBinding",
+      "chassis": [
+        "artificial-human-tcell"
+      ],
+      "dependencies": [
+        {
+          "$type": "DefinitionRef",
+          "digest": "1799db79ac7561387fb048d456a65cc47fbf630bc69cd3b12320d4d09365f3d5",
+          "id": "artificial.product-a",
+          "version": "1"
+        },
+        {
+          "$type": "DefinitionRef",
+          "digest": "457fcd25c48e2f427c003dff0aba817ff2cbf54e88ba2d1e6730a802316fb6a9",
+          "id": "artificial.product-b",
+          "version": "1"
+        },
+        {
+          "$type": "DefinitionRef",
+          "digest": "788f926b23e88b8d640409f7cbd683c62e4155eb1d9314f1cf0ca83795b319a1",
+          "id": "contract.controller",
+          "version": "1"
+        },
+        {
+          "$type": "DefinitionRef",
+          "digest": "86f1a0a3571aae5ac147750366de087dff8c560b75c0b002ee20418aace6decb",
+          "id": "artificial.localization",
+          "version": "1"
+        }
+      ],
+      "evidence": [],
+      "id": "artificial-supplied-implementation",
+      "operation": {
+        "$type": "DefinitionRef",
+        "digest": "8a0ea43e1142c118ba093d49342afe15f4dfb45f9c97557cd692f888dcb36904",
+        "id": "contract.activity",
+        "version": "1"
+      },
+      "payload_formats": [
+        "RNA"
+      ],
+      "realization": {
+        "$type": "DefinitionRef",
+        "digest": "90a57123f30400fa292fa90caaf189b457cde863f9e0edcafb90730819f59466",
+        "id": "context.mechanism",
+        "version": "1"
+      },
+      "version": "1"
+    },
+    "model_identity": {
+      "content_fingerprint": "802fd31eb9af777045a2bae458c499c1cd21731eecd1b6d9bcb730b1717b3dc1",
+      "id": "artificial.controlled-delay",
+      "kind": "model",
+      "schema_version": "biocompiler.component_identity.v0.1",
+      "version": "1"
+    }
+  },
+  "context": {
+    "availability": [
+      {
+        "member_id": "rna-a",
+        "product": "domain",
+        "rna": "domain",
+        "scope": "executor"
+      },
+      {
+        "member_id": "rna-b",
+        "product": "domain",
+        "rna": "domain",
+        "scope": "executor"
+      }
+    ],
+    "co_delivery": {
+      "assumptions": [
+        "Artificial co-delivery to one human T-cell executor is supplied, not demonstrated."
+      ],
+      "members": [
+        "rna-a",
+        "rna-b"
+      ],
+      "mode": "same_recipient"
+    },
+    "controller": {
+      "definition": {
+        "$type": "DefinitionRef",
+        "digest": "788f926b23e88b8d640409f7cbd683c62e4155eb1d9314f1cf0ca83795b319a1",
+        "id": "contract.controller",
+        "version": "1"
+      },
+      "executor": {
+        "$type": "Ref",
+        "id": "tcell",
+        "kind": "Role"
+      },
+      "scope": "executor"
+    },
+    "deployment": {
+      "$type": "Deployment",
+      "bindings": [
+        {
+          "$type": "RoleBinding",
+          "chassis": {
+            "$type": "ChassisProfile",
+            "activation_states": [
+              "unspecified"
+            ],
+            "capabilities": [
+              {
+                "$type": "DefinitionRef",
+                "digest": "bbb9426372a84b7d558d76329e6e0dda21ad5d2d15f856dfbf5a7abb373b1074",
+                "id": "contract.capability",
+                "version": "1"
+              }
+            ],
+            "differentiation_states": [
+              "unspecified"
+            ],
+            "environment": [],
+            "id": "artificial-human-tcell",
+            "interfaces": [],
+            "lineage": "T_cell",
+            "operational_model": {
+              "$type": "DefinitionRef",
+              "digest": "8c247b8a758eb2125b8e4cc8843deb5dfeae3a92dc4a5b7cb9d77bd2b9e4cd32",
+              "id": "context.chassis",
+              "version": "1"
+            },
+            "recipient_class": "immune",
+            "species": "human",
+            "subtype": "artificial",
+            "version": "1"
+          },
+          "role": {
+            "$type": "Ref",
+            "id": "tcell",
+            "kind": "Role"
+          }
+        }
+      ],
+      "delivery": {
+        "$type": "DeliveryContract",
+        "activation": {
+          "$type": "DefinitionRef",
+          "digest": "9d8c3769ed2cd75451097e18302b9fd59871ce2901e6faaa8af18649376a047a",
+          "id": "context.activation",
+          "version": "1"
+        },
+        "arrival": {
+          "$type": "DefinitionRef",
+          "digest": "62fc34dff55e0795b86e552e2b5414b7e7542d79ea2b77983eb1ea8ec3d59e87",
+          "id": "context.arrival",
+          "version": "1"
+        },
+        "assumptions": [],
+        "co_delivery": "same_recipient",
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "c104f2257c21d79a9eb3deb78018aa1bb69715e24d7130c016aa3807a0bfed6c",
+          "id": "artificial.delivery",
+          "version": "1"
+        },
+        "expression": {
+          "$type": "DefinitionRef",
+          "digest": "6306813a976c060ee6e3153ebe540f79713fdd64e83e706a9cae964a61906ba8",
+          "id": "context.expression",
+          "version": "1"
+        },
+        "id": "artificial-two-rna-delivery",
+        "intended_recipients": [
+          {
+            "$type": "Ref",
+            "id": "tcell",
+            "kind": "Role"
+          }
+        ]
+      },
+      "environment": [],
+      "id": "artificial-in-vivo-deployment",
+      "payload": {
+        "$type": "RNAConstraints",
+        "copy_number": null,
+        "design_count": 1,
+        "dose": null,
+        "effector_persistence": null,
+        "format": "RNA",
+        "helper_count": 0,
+        "member_count": 2,
+        "orf_count": 2,
+        "payload_persistence": null,
+        "product_count": 2
+      },
+      "route": "in_vivo"
+    },
+    "empirical_assertions": [
+      {
+        "claim": "Intended human in-vivo applicability is unassessed; fixture data establishes no biological function.",
+        "id": "human-in-vivo",
+        "source_ids": [
+          "artificial.notice"
+        ],
+        "status": "unassessed"
+      }
+    ],
+    "executor_identity": "fixture.executor",
+    "localizations": [
+      {
+        "definition": {
+          "$type": "DefinitionRef",
+          "digest": "86f1a0a3571aae5ac147750366de087dff8c560b75c0b002ee20418aace6decb",
+          "id": "artificial.localization",
+          "version": "1"
+        },
+        "member_id": "rna-a",
+        "product_compartment": "cell_surface",
+        "rna_compartment": "cytoplasm"
+      },
+      {
+        "definition": {
+          "$type": "DefinitionRef",
+          "digest": "86f1a0a3571aae5ac147750366de087dff8c560b75c0b002ee20418aace6decb",
+          "id": "artificial.localization",
+          "version": "1"
+        },
+        "member_id": "rna-b",
+        "product_compartment": "cell_surface",
+        "rna_compartment": "cytoplasm"
+      }
+    ],
+    "schema_version": "biocompiler.policy_controlled_composition_context.v0.1",
+    "slot": "fixture.encounter"
+  },
+  "material_authority": {
+    "member_order": [
+      "rna-a",
+      "rna-b"
+    ],
+    "members": [
+      {
+        "chemistry": {
+          "cap": {
+            "identity": {
+              "accession": "artificial_cap",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                  "id": "artificial.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independently declared RC3 literal",
+              "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "finish_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                  "id": "artificial.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independently declared RC3 literal",
+              "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                "id": "artificial.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independently declared RC3 literal",
+            "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_status": "declared",
+          "modifications": [],
+          "schema_version": "biocompiler.molecule_chemistry.v0.1",
+          "start_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                  "id": "artificial.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independently declared RC3 literal",
+              "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "terminal_tail": {
+            "length": {
+              "exact": 4,
+              "lower": null,
+              "mode": "exact",
+              "schema_version": "biocompiler.tail_length.v0.1",
+              "upper": null
+            },
+            "path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "rna-a.output.frame",
+              "spans": [
+                {
+                  "end": 17,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 13
+                }
+              ],
+              "strand": "+"
+            },
+            "placement": "represented_terminal",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                  "id": "artificial.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independently declared RC3 literal",
+              "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.tail_declaration.v0.1",
+            "status": "declared"
+          }
+        },
+        "id": "rna-a",
+        "product": {
+          "identity": {
+            "content_fingerprint": "c7434883f345ffc2100dd9e3750afbbee436ba7535cf5fb26b9be706ce413c9b",
+            "id": "artificial-product-a",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                "id": "artificial.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independently declared RC3 literal",
+            "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "sequence": "MA",
+          "translation_policy": {
+            "genetic_code": "ncbi_standard_v1",
+            "profile": "ordinary_cds",
+            "recodings": [],
+            "schema_version": "biocompiler.translation_policy.v0.1"
+          }
+        },
+        "regions": {
+          "cds": "cds",
+          "poly_a": "poly_a",
+          "utr3": "utr3",
+          "utr5": "utr5"
+        }
+      },
+      {
+        "chemistry": {
+          "cap": {
+            "identity": {
+              "accession": "artificial_cap",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                  "id": "artificial.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independently declared RC3 literal",
+              "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "finish_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                  "id": "artificial.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independently declared RC3 literal",
+              "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                "id": "artificial.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independently declared RC3 literal",
+            "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_status": "declared",
+          "modifications": [],
+          "schema_version": "biocompiler.molecule_chemistry.v0.1",
+          "start_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                  "id": "artificial.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independently declared RC3 literal",
+              "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "terminal_tail": {
+            "length": {
+              "exact": 4,
+              "lower": null,
+              "mode": "exact",
+              "schema_version": "biocompiler.tail_length.v0.1",
+              "upper": null
+            },
+            "path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "rna-b.output.frame",
+              "spans": [
+                {
+                  "end": 17,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 13
+                }
+              ],
+              "strand": "+"
+            },
+            "placement": "represented_terminal",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                  "id": "artificial.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independently declared RC3 literal",
+              "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.tail_declaration.v0.1",
+            "status": "declared"
+          }
+        },
+        "id": "rna-b",
+        "product": {
+          "identity": {
+            "content_fingerprint": "92da7113336e1f9d1cebbb5cfa4ec68ddf5b8ac989f1b6399856e44b100e76a9",
+            "id": "artificial-product-b",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                "id": "artificial.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independently declared RC3 literal",
+            "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "sequence": "MG",
+          "translation_policy": {
+            "genetic_code": "ncbi_standard_v1",
+            "profile": "ordinary_cds",
+            "recodings": [],
+            "schema_version": "biocompiler.translation_policy.v0.1"
+          }
+        },
+        "regions": {
+          "cds": "cds",
+          "poly_a": "poly_a",
+          "utr3": "utr3",
+          "utr5": "utr5"
+        }
+      }
+    ],
+    "profile": "biocompiler.policy_mrna_completeness.v0.1",
+    "schema_version": "biocompiler.policy_mrna_structure_authority.v0.1",
+    "template": {
+      "amounts": [],
+      "complex_members": [],
+      "id": "artificial-two-rna",
+      "output_members": [
+        {
+          "coding_status": "coding",
+          "form": "delivered_rna",
+          "id": "rna-a",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                "id": "artificial.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independently declared RC3 literal",
+            "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.construction_output_member.v0.1",
+          "sequence_extent": "complete",
+          "space_id": "rna-a.output.frame",
+          "value": {
+            "id": "rna-a.root",
+            "kind": "root",
+            "schema_version": "biocompiler.construction_value_ref.v0.1"
+          }
+        },
+        {
+          "coding_status": "coding",
+          "form": "delivered_rna",
+          "id": "rna-b",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                "id": "artificial.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independently declared RC3 literal",
+            "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.construction_output_member.v0.1",
+          "sequence_extent": "complete",
+          "space_id": "rna-b.output.frame",
+          "value": {
+            "id": "rna-b.root",
+            "kind": "root",
+            "schema_version": "biocompiler.construction_value_ref.v0.1"
+          }
+        }
+      ],
+      "payload_structures": [
+        {
+          "form": "delivered_rna",
+          "member_id": "rna-a",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                "id": "artificial.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independently declared RC3 literal",
+            "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "regions": [
+            {
+              "feature_id": "utr5",
+              "kind": "five_prime_utr",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "cds",
+              "kind": "coding_sequence",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "utr3",
+              "kind": "three_prime_utr",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "poly_a",
+              "kind": "poly_a_tail",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            }
+          ],
+          "schema_version": "biocompiler.payload_structure_contract.v0.1",
+          "topology": "linear"
+        },
+        {
+          "form": "delivered_rna",
+          "member_id": "rna-b",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                "id": "artificial.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independently declared RC3 literal",
+            "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "regions": [
+            {
+              "feature_id": "utr5",
+              "kind": "five_prime_utr",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "cds",
+              "kind": "coding_sequence",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "utr3",
+              "kind": "three_prime_utr",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "poly_a",
+              "kind": "poly_a_tail",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            }
+          ],
+          "schema_version": "biocompiler.payload_structure_contract.v0.1",
+          "topology": "linear"
+        }
+      ],
+      "requirements": [
+        {
+          "category": "payload",
+          "external_fingerprint": null,
+          "external_id": null,
+          "id": "rna-a.requirement",
+          "member_id": "rna-a",
+          "roles": [
+            {
+              "compartment": "cytoplasm",
+              "id": "rna-a.payload",
+              "purpose": "requested_payload",
+              "role": "payload",
+              "schema_version": "biocompiler.construction_role_declaration.v0.1"
+            }
+          ],
+          "schema_version": "biocompiler.construction_member_requirement.v0.1"
+        },
+        {
+          "category": "payload",
+          "external_fingerprint": null,
+          "external_id": null,
+          "id": "rna-b.requirement",
+          "member_id": "rna-b",
+          "roles": [
+            {
+              "compartment": "cytoplasm",
+              "id": "rna-b.payload",
+              "purpose": "requested_payload",
+              "role": "payload",
+              "schema_version": "biocompiler.construction_role_declaration.v0.1"
+            }
+          ],
+          "schema_version": "biocompiler.construction_member_requirement.v0.1"
+        }
+      ],
+      "schema_version": "biocompiler.payload_template.v0.1",
+      "sources": [
+        {
+          "id": "rna-a.root",
+          "molecule": {
+            "assembly": [
+              {
+                "destination": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "id": "rna-a.self",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.assembly_origin.v0.1",
+                "source_path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "source_space": {
+                  "alphabet": "RNA",
+                  "axis": "5prime_to_3prime",
+                  "id": "rna-a.root.frame",
+                  "length": 17,
+                  "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+                  "topology": "linear"
+                }
+              }
+            ],
+            "chemistry": {
+              "cap": {
+                "identity": {
+                  "accession": "artificial_cap",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "finish_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                    "id": "artificial.notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "independently declared RC3 literal",
+                "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_status": "declared",
+              "modifications": [],
+              "schema_version": "biocompiler.molecule_chemistry.v0.1",
+              "start_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "terminal_tail": {
+                "length": {
+                  "exact": 4,
+                  "lower": null,
+                  "mode": "exact",
+                  "schema_version": "biocompiler.tail_length.v0.1",
+                  "upper": null
+                },
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 13
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "placement": "represented_terminal",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.tail_declaration.v0.1",
+                "status": "declared"
+              }
+            },
+            "coding_status": "coding",
+            "features": [
+              {
+                "id": "utr5",
+                "kind": "five_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.root.frame",
+                  "spans": [
+                    {
+                      "end": 2,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "cds",
+                "kind": "coding_sequence",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.root.frame",
+                  "spans": [
+                    {
+                      "end": 11,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 2
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": 0,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "utr3",
+                "kind": "three_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.root.frame",
+                  "spans": [
+                    {
+                      "end": 13,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 11
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "poly_a",
+                "kind": "poly_a_tail",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-a.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 13
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              }
+            ],
+            "form": "delivered_rna",
+            "id": "rna-a.original",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                  "id": "artificial.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independently declared RC3 literal",
+              "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.circuit_molecule.v0.1",
+            "sequence": "CCAUGGCUUAAGGAAAA",
+            "sequence_extent": "complete",
+            "space": {
+              "alphabet": "RNA",
+              "axis": "5prime_to_3prime",
+              "id": "rna-a.root.frame",
+              "length": 17,
+              "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+              "topology": "linear"
+            }
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                "id": "artificial.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independently declared RC3 literal",
+            "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.construction_root_source.v0.1"
+        },
+        {
+          "id": "rna-b.root",
+          "molecule": {
+            "assembly": [
+              {
+                "destination": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "id": "rna-b.self",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.assembly_origin.v0.1",
+                "source_path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "source_space": {
+                  "alphabet": "RNA",
+                  "axis": "5prime_to_3prime",
+                  "id": "rna-b.root.frame",
+                  "length": 17,
+                  "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+                  "topology": "linear"
+                }
+              }
+            ],
+            "chemistry": {
+              "cap": {
+                "identity": {
+                  "accession": "artificial_cap",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "finish_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                    "id": "artificial.notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "independently declared RC3 literal",
+                "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_status": "declared",
+              "modifications": [],
+              "schema_version": "biocompiler.molecule_chemistry.v0.1",
+              "start_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "terminal_tail": {
+                "length": {
+                  "exact": 4,
+                  "lower": null,
+                  "mode": "exact",
+                  "schema_version": "biocompiler.tail_length.v0.1",
+                  "upper": null
+                },
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 13
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "placement": "represented_terminal",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.tail_declaration.v0.1",
+                "status": "declared"
+              }
+            },
+            "coding_status": "coding",
+            "features": [
+              {
+                "id": "utr5",
+                "kind": "five_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.root.frame",
+                  "spans": [
+                    {
+                      "end": 2,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "cds",
+                "kind": "coding_sequence",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.root.frame",
+                  "spans": [
+                    {
+                      "end": 11,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 2
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": 0,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "utr3",
+                "kind": "three_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.root.frame",
+                  "spans": [
+                    {
+                      "end": 13,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 11
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "poly_a",
+                "kind": "poly_a_tail",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "rna-b.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 13
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                      "id": "artificial.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independently declared RC3 literal",
+                  "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              }
+            ],
+            "form": "delivered_rna",
+            "id": "rna-b.original",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                  "id": "artificial.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independently declared RC3 literal",
+              "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.circuit_molecule.v0.1",
+            "sequence": "CCAUGGGUUAAGGAAAA",
+            "sequence_extent": "complete",
+            "space": {
+              "alphabet": "RNA",
+              "axis": "5prime_to_3prime",
+              "id": "rna-b.root.frame",
+              "length": 17,
+              "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+              "topology": "linear"
+            }
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+                "id": "artificial.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independently declared RC3 literal",
+            "reason": "Artificial paired RNA/software premise; not empirical evidence or a biological design.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.construction_root_source.v0.1"
+        }
+      ],
+      "steps": []
+    }
+  },
+  "mechanism_model": {
+    "body": {
+      "assumptions": [
+        "Artificial co-delivery to one human T-cell executor is supplied, not demonstrated.",
+        "Artificial products follow the supplied physical activity model; RNA and protein availability remain separate factors."
+      ],
+      "clock": {
+        "$type": "Ref",
+        "id": "clock",
+        "kind": "Clock"
+      },
+      "components": [
+        {
+          "id": "component-a",
+          "localization": {
+            "$type": "DefinitionRef",
+            "digest": "86f1a0a3571aae5ac147750366de087dff8c560b75c0b002ee20418aace6decb",
+            "id": "artificial.localization",
+            "version": "1"
+          },
+          "member_id": "rna-a",
+          "model": {
+            "$type": "DefinitionRef",
+            "digest": "90a57123f30400fa292fa90caaf189b457cde863f9e0edcafb90730819f59466",
+            "id": "context.mechanism",
+            "version": "1"
+          },
+          "product_definition": {
+            "$type": "DefinitionRef",
+            "digest": "1799db79ac7561387fb048d456a65cc47fbf630bc69cd3b12320d4d09365f3d5",
+            "id": "artificial.product-a",
+            "version": "1"
+          }
+        },
+        {
+          "id": "component-b",
+          "localization": {
+            "$type": "DefinitionRef",
+            "digest": "86f1a0a3571aae5ac147750366de087dff8c560b75c0b002ee20418aace6decb",
+            "id": "artificial.localization",
+            "version": "1"
+          },
+          "member_id": "rna-b",
+          "model": {
+            "$type": "DefinitionRef",
+            "digest": "90a57123f30400fa292fa90caaf189b457cde863f9e0edcafb90730819f59466",
+            "id": "context.mechanism",
+            "version": "1"
+          },
+          "product_definition": {
+            "$type": "DefinitionRef",
+            "digest": "457fcd25c48e2f427c003dff0aba817ff2cbf54e88ba2d1e6730a802316fb6a9",
+            "id": "artificial.product-b",
+            "version": "1"
+          }
+        }
+      ],
+      "controller": {
+        "$type": "DefinitionRef",
+        "digest": "788f926b23e88b8d640409f7cbd683c62e4155eb1d9314f1cf0ca83795b319a1",
+        "id": "contract.controller",
+        "version": "1"
+      },
+      "delays": {
+        "cessation_ticks": 1,
+        "onset_ticks": 1,
+        "reactivation_ticks": 1
+      },
+      "initial_activity": "background",
+      "operation": {
+        "$type": "DefinitionRef",
+        "digest": "8a0ea43e1142c118ba093d49342afe15f4dfb45f9c97557cd692f888dcb36904",
+        "id": "contract.activity",
+        "version": "1"
+      },
+      "ports": [
+        {
+          "direction": "input",
+          "id": "antigen",
+          "reference": {
+            "$type": "Ref",
+            "id": "antigen",
+            "kind": "Observation"
+          },
+          "scope": "encounter_generation",
+          "signal": "physical_antigen"
+        },
+        {
+          "direction": "input",
+          "id": "controller",
+          "reference": {
+            "$type": "Ref",
+            "id": "controller",
+            "kind": "Observation"
+          },
+          "scope": "executor",
+          "signal": "physical_controller"
+        },
+        {
+          "direction": "input",
+          "id": "component-a",
+          "reference": {
+            "$type": "Ref",
+            "id": "product-a",
+            "kind": "Parameter"
+          },
+          "scope": "executor",
+          "signal": "component_available"
+        },
+        {
+          "direction": "input",
+          "id": "component-b",
+          "reference": {
+            "$type": "Ref",
+            "id": "product-b",
+            "kind": "Parameter"
+          },
+          "scope": "executor",
+          "signal": "component_available"
+        },
+        {
+          "direction": "output",
+          "id": "activity",
+          "reference": {
+            "$type": "Ref",
+            "id": "activity",
+            "kind": "ControlledActivity"
+          },
+          "scope": "executor",
+          "signal": "activity_band"
+        }
+      ],
+      "products": [
+        {
+          "$type": "DefinitionRef",
+          "digest": "1799db79ac7561387fb048d456a65cc47fbf630bc69cd3b12320d4d09365f3d5",
+          "id": "artificial.product-a",
+          "version": "1"
+        },
+        {
+          "$type": "DefinitionRef",
+          "digest": "457fcd25c48e2f427c003dff0aba817ff2cbf54e88ba2d1e6730a802316fb6a9",
+          "id": "artificial.product-b",
+          "version": "1"
+        }
+      ],
+      "readout": {
+        "$type": "DefinitionRef",
+        "digest": "8630b28c0010e32a4d421d1e25abb9a489dfe65b98dfee74496e6b6ec49a2f9f",
+        "id": "contract.readout",
+        "version": "1"
+      }
+    },
+    "identity": {
+      "content_fingerprint": "802fd31eb9af777045a2bae458c499c1cd21731eecd1b6d9bcb730b1717b3dc1",
+      "id": "artificial.controlled-delay",
+      "kind": "model",
+      "schema_version": "biocompiler.component_identity.v0.1",
+      "version": "1"
+    },
+    "schema_version": "biocompiler.policy_controlled_activity_model.v0.1"
+  },
+  "operating_domain": {
+    "clock": {
+      "id": "clock",
+      "resolution": {
+        "$type": "Quantity",
+        "amount": "1",
+        "unit": {
+          "$type": "Unit",
+          "dimension": "time",
+          "id": "second",
+          "quantity_kind": "duration",
+          "reference": null,
+          "scale": "1"
+        }
+      }
+    },
+    "encounter": {
+      "declaration": "contact",
+      "slot": "fixture.encounter",
+      "subject": "target"
+    },
+    "evidence_factors": [],
+    "executor": {
+      "identity": "fixture.executor",
+      "role": "tcell"
+    },
+    "fixed_inputs": [
+      {
+        "event": "start",
+        "evidence": {
+          "antigen": {
+            "generation": 1,
+            "observed_tick": 0,
+            "status": "valid"
+          },
+          "controller": {
+            "generation": null,
+            "observed_tick": 0,
+            "status": "valid"
+          },
+          "protein_a": {
+            "generation": null,
+            "observed_tick": 0,
+            "status": "valid"
+          },
+          "protein_b": {
+            "generation": null,
+            "observed_tick": 0,
+            "status": "valid"
+          },
+          "rna_a": {
+            "generation": null,
+            "observed_tick": 0,
+            "status": "valid"
+          },
+          "rna_b": {
+            "generation": null,
+            "observed_tick": 0,
+            "status": "valid"
+          }
+        },
+        "physical": {
+          "antigen": "present",
+          "controller": "enabled",
+          "protein_a": "present",
+          "protein_b": "present",
+          "rna_a": "present",
+          "rna_b": "present"
+        },
+        "tick": 0
+      },
+      {
+        "event": "none",
+        "evidence": {
+          "antigen": {
+            "generation": 1,
+            "observed_tick": 3,
+            "status": "valid"
+          },
+          "controller": {
+            "generation": null,
+            "observed_tick": 3,
+            "status": "valid"
+          },
+          "protein_a": {
+            "generation": null,
+            "observed_tick": 3,
+            "status": "valid"
+          },
+          "protein_b": {
+            "generation": null,
+            "observed_tick": 3,
+            "status": "valid"
+          },
+          "rna_a": {
+            "generation": null,
+            "observed_tick": 3,
+            "status": "valid"
+          },
+          "rna_b": {
+            "generation": null,
+            "observed_tick": 3,
+            "status": "valid"
+          }
+        },
+        "physical": {
+          "antigen": "present",
+          "controller": "disabled",
+          "protein_a": "present",
+          "protein_b": "present",
+          "rna_a": "present",
+          "rna_b": "present"
+        },
+        "tick": 3
+      },
+      {
+        "event": "none",
+        "evidence": {
+          "antigen": {
+            "generation": 1,
+            "observed_tick": 6,
+            "status": "valid"
+          },
+          "controller": {
+            "generation": null,
+            "observed_tick": 6,
+            "status": "valid"
+          },
+          "protein_a": {
+            "generation": null,
+            "observed_tick": 6,
+            "status": "valid"
+          },
+          "protein_b": {
+            "generation": null,
+            "observed_tick": 6,
+            "status": "valid"
+          },
+          "rna_a": {
+            "generation": null,
+            "observed_tick": 6,
+            "status": "valid"
+          },
+          "rna_b": {
+            "generation": null,
+            "observed_tick": 6,
+            "status": "valid"
+          }
+        },
+        "physical": {
+          "antigen": "present",
+          "controller": "enabled",
+          "protein_a": "present",
+          "protein_b": "present",
+          "rna_a": "present",
+          "rna_b": "present"
+        },
+        "tick": 6
+      }
+    ],
+    "horizon_tick": 10,
+    "initial": {
+      "evidence": {
+        "antigen": {
+          "generation": null,
+          "observed_tick": null,
+          "status": "missing"
+        },
+        "controller": {
+          "generation": null,
+          "observed_tick": null,
+          "status": "missing"
+        },
+        "protein_a": {
+          "generation": null,
+          "observed_tick": null,
+          "status": "missing"
+        },
+        "protein_b": {
+          "generation": null,
+          "observed_tick": null,
+          "status": "missing"
+        },
+        "rna_a": {
+          "generation": null,
+          "observed_tick": null,
+          "status": "missing"
+        },
+        "rna_b": {
+          "generation": null,
+          "observed_tick": null,
+          "status": "missing"
+        }
+      },
+      "physical": {
+        "antigen": "absent",
+        "controller": "disabled",
+        "protein_a": "present",
+        "protein_b": "present",
+        "rna_a": "present",
+        "rna_b": "present"
+      }
+    },
+    "inputs": [
+      {
+        "freshness_ticks": 1,
+        "key": "antigen",
+        "reference": {
+          "$type": "Ref",
+          "id": "antigen",
+          "kind": "Observation"
+        },
+        "scope": "encounter"
+      },
+      {
+        "freshness_ticks": 1,
+        "key": "controller",
+        "reference": {
+          "$type": "Ref",
+          "id": "controller",
+          "kind": "Observation"
+        },
+        "scope": "executor"
+      },
+      {
+        "freshness_ticks": 10,
+        "key": "rna_a",
+        "reference": {
+          "$type": "Ref",
+          "id": "rna-a",
+          "kind": "MaterialMember"
+        },
+        "scope": "executor"
+      },
+      {
+        "freshness_ticks": 10,
+        "key": "rna_b",
+        "reference": {
+          "$type": "Ref",
+          "id": "rna-b",
+          "kind": "MaterialMember"
+        },
+        "scope": "executor"
+      },
+      {
+        "freshness_ticks": 10,
+        "key": "protein_a",
+        "reference": {
+          "$type": "Ref",
+          "id": "product-a",
+          "kind": "Parameter"
+        },
+        "scope": "executor"
+      },
+      {
+        "freshness_ticks": 10,
+        "key": "protein_b",
+        "reference": {
+          "$type": "Ref",
+          "id": "product-b",
+          "kind": "Parameter"
+        },
+        "scope": "executor"
+      }
+    ],
+    "intervention_cutoff_tick": 6,
+    "lifecycle_factors": [],
+    "limits": {
+      "max_generations": 4,
+      "max_histories": 256,
+      "max_prefixes": 10000,
+      "max_transitions": 10000,
+      "max_work": 1000000
+    },
+    "physical_factors": [],
+    "profile": "biocompiler.policy_controlled_composition_mrna.v0.1",
+    "schema_version": "biocompiler.policy_controlled_composition_domain.v0.1",
+    "source_deadlines": {
+      "antigen_off_ticks": 2,
+      "component_off_ticks": 2,
+      "controller_off_ticks": 2,
+      "onset_ticks": 2,
+      "reactivation_ticks": 2
+    },
+    "suffix_policy": "hold_last_physical_inputs_no_encounter_events"
+  },
+  "profile": "biocompiler.policy_controlled_composition_mrna.v0.1",
+  "resources": {
+    "controller_records": 1,
+    "evidence_records": 2,
+    "max_member_rna_nt": 100,
+    "max_total_rna_nt": 200,
+    "schema_version": "biocompiler.policy_controlled_composition_resources.v0.1",
+    "state_bits": 4,
+    "timer_cells": 3
+  },
+  "schema_version": "biocompiler.policy_component_material_request.v0.14",
+  "source_authority": {
+    "control_contract": {
+      "actual_delays": {
+        "cessation_ticks": 1,
+        "onset_ticks": 1,
+        "reactivation_ticks": 1
+      },
+      "controller": {
+        "definition": {
+          "$type": "DefinitionRef",
+          "digest": "788f926b23e88b8d640409f7cbd683c62e4155eb1d9314f1cf0ca83795b319a1",
+          "id": "contract.controller",
+          "version": "1"
+        },
+        "executor": {
+          "$type": "Ref",
+          "id": "tcell",
+          "kind": "Role"
+        },
+        "scope": "executor"
+      },
+      "initial_activity": "background",
+      "mechanism": "deterministic_delay",
+      "products": [
+        {
+          "cds_id": "cds",
+          "member_id": "rna-a",
+          "product_definition": {
+            "$type": "DefinitionRef",
+            "digest": "1799db79ac7561387fb048d456a65cc47fbf630bc69cd3b12320d4d09365f3d5",
+            "id": "artificial.product-a",
+            "version": "1"
+          },
+          "product_parameter": {
+            "$type": "Ref",
+            "id": "product-a",
+            "kind": "Parameter"
+          }
+        },
+        {
+          "cds_id": "cds",
+          "member_id": "rna-b",
+          "product_definition": {
+            "$type": "DefinitionRef",
+            "digest": "457fcd25c48e2f427c003dff0aba817ff2cbf54e88ba2d1e6730a802316fb6a9",
+            "id": "artificial.product-b",
+            "version": "1"
+          },
+          "product_parameter": {
+            "$type": "Ref",
+            "id": "product-b",
+            "kind": "Parameter"
+          }
+        }
+      ],
+      "profile": "biocompiler.policy_controlled_composition_mrna.v0.1",
+      "readout": {
+        "activity": {
+          "$type": "Ref",
+          "id": "activity",
+          "kind": "ControlledActivity"
+        },
+        "definition": {
+          "$type": "DefinitionRef",
+          "digest": "8630b28c0010e32a4d421d1e25abb9a489dfe65b98dfee74496e6b6ec49a2f9f",
+          "id": "contract.readout",
+          "version": "1"
+        },
+        "physical_bands": [
+          "background",
+          "active"
+        ]
+      },
+      "requested_deadlines": {
+        "antigen_off_ticks": 2,
+        "component_off_ticks": 2,
+        "controller_off_ticks": 2,
+        "onset_ticks": 2,
+        "reactivation_ticks": 2
+      },
+      "schema_version": "biocompiler.policy_controlled_composition_contract.v0.1"
+    },
+    "document": {
+      "$type": "BuildRequest",
+      "assurance": {
+        "$type": "AssuranceRequest",
+        "assumptions": [],
+        "horizon": {
+          "$type": "Quantity",
+          "amount": "10",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "level": "bounded",
+        "requirements": [
+          "safety",
+          "onset",
+          "controller-off",
+          "antigen-off",
+          "component-off",
+          "reactivation"
+        ],
+        "tolerances": []
+      },
+      "deployment": {
+        "$type": "Deployment",
+        "bindings": [
+          {
+            "$type": "RoleBinding",
+            "chassis": {
+              "$type": "ChassisProfile",
+              "activation_states": [
+                "unspecified"
+              ],
+              "capabilities": [
+                {
+                  "$type": "DefinitionRef",
+                  "digest": "bbb9426372a84b7d558d76329e6e0dda21ad5d2d15f856dfbf5a7abb373b1074",
+                  "id": "contract.capability",
+                  "version": "1"
+                }
+              ],
+              "differentiation_states": [
+                "unspecified"
+              ],
+              "environment": [],
+              "id": "artificial-human-tcell",
+              "interfaces": [],
+              "lineage": "T_cell",
+              "operational_model": {
+                "$type": "DefinitionRef",
+                "digest": "8c247b8a758eb2125b8e4cc8843deb5dfeae3a92dc4a5b7cb9d77bd2b9e4cd32",
+                "id": "context.chassis",
+                "version": "1"
+              },
+              "recipient_class": "immune",
+              "species": "human",
+              "subtype": "artificial",
+              "version": "1"
+            },
+            "role": {
+              "$type": "Ref",
+              "id": "tcell",
+              "kind": "Role"
+            }
+          }
+        ],
+        "delivery": {
+          "$type": "DeliveryContract",
+          "activation": {
+            "$type": "DefinitionRef",
+            "digest": "9d8c3769ed2cd75451097e18302b9fd59871ce2901e6faaa8af18649376a047a",
+            "id": "context.activation",
+            "version": "1"
+          },
+          "arrival": {
+            "$type": "DefinitionRef",
+            "digest": "62fc34dff55e0795b86e552e2b5414b7e7542d79ea2b77983eb1ea8ec3d59e87",
+            "id": "context.arrival",
+            "version": "1"
+          },
+          "assumptions": [],
+          "co_delivery": "same_recipient",
+          "contract": {
+            "$type": "DefinitionRef",
+            "digest": "c104f2257c21d79a9eb3deb78018aa1bb69715e24d7130c016aa3807a0bfed6c",
+            "id": "artificial.delivery",
+            "version": "1"
+          },
+          "expression": {
+            "$type": "DefinitionRef",
+            "digest": "6306813a976c060ee6e3153ebe540f79713fdd64e83e706a9cae964a61906ba8",
+            "id": "context.expression",
+            "version": "1"
+          },
+          "id": "artificial-two-rna-delivery",
+          "intended_recipients": [
+            {
+              "$type": "Ref",
+              "id": "tcell",
+              "kind": "Role"
+            }
+          ]
+        },
+        "environment": [],
+        "id": "artificial-in-vivo-deployment",
+        "payload": {
+          "$type": "RNAConstraints",
+          "copy_number": null,
+          "design_count": 1,
+          "dose": null,
+          "effector_persistence": null,
+          "format": "RNA",
+          "helper_count": 0,
+          "member_count": 2,
+          "orf_count": 2,
+          "payload_persistence": null,
+          "product_count": 2
+        },
+        "route": "in_vivo"
+      },
+      "implementations": {
+        "$type": "ImplementationCatalogLock",
+        "id": "artificial-catalog",
+        "implementations": [
+          {
+            "$type": "ImplementationBinding",
+            "chassis": [
+              "artificial-human-tcell"
+            ],
+            "dependencies": [
+              {
+                "$type": "DefinitionRef",
+                "digest": "1799db79ac7561387fb048d456a65cc47fbf630bc69cd3b12320d4d09365f3d5",
+                "id": "artificial.product-a",
+                "version": "1"
+              },
+              {
+                "$type": "DefinitionRef",
+                "digest": "457fcd25c48e2f427c003dff0aba817ff2cbf54e88ba2d1e6730a802316fb6a9",
+                "id": "artificial.product-b",
+                "version": "1"
+              },
+              {
+                "$type": "DefinitionRef",
+                "digest": "788f926b23e88b8d640409f7cbd683c62e4155eb1d9314f1cf0ca83795b319a1",
+                "id": "contract.controller",
+                "version": "1"
+              },
+              {
+                "$type": "DefinitionRef",
+                "digest": "86f1a0a3571aae5ac147750366de087dff8c560b75c0b002ee20418aace6decb",
+                "id": "artificial.localization",
+                "version": "1"
+              }
+            ],
+            "evidence": [],
+            "id": "artificial-supplied-implementation",
+            "operation": {
+              "$type": "DefinitionRef",
+              "digest": "8a0ea43e1142c118ba093d49342afe15f4dfb45f9c97557cd692f888dcb36904",
+              "id": "contract.activity",
+              "version": "1"
+            },
+            "payload_formats": [
+              "RNA"
+            ],
+            "realization": {
+              "$type": "DefinitionRef",
+              "digest": "90a57123f30400fa292fa90caaf189b457cde863f9e0edcafb90730819f59466",
+              "id": "context.mechanism",
+              "version": "1"
+            },
+            "version": "1"
+          }
+        ],
+        "version": "1"
+      },
+      "profile": "biocompiler.policy_controlled_composition_source.v0.1",
+      "program": {
+        "$type": "PolicyProgram",
+        "declarations": [
+          {
+            "$type": "Role",
+            "id": "tcell",
+            "lineage_role": false,
+            "population": null,
+            "requires": [
+              {
+                "$type": "DefinitionRef",
+                "digest": "bbb9426372a84b7d558d76329e6e0dda21ad5d2d15f856dfbf5a7abb373b1074",
+                "id": "contract.capability",
+                "version": "1"
+              }
+            ]
+          },
+          {
+            "$type": "Subject",
+            "domain": null,
+            "encounter": {
+              "$type": "Ref",
+              "id": "contact",
+              "kind": "Encounter"
+            },
+            "entity_kind": "cell",
+            "executor": {
+              "$type": "Ref",
+              "id": "tcell",
+              "kind": "Role"
+            },
+            "id": "target",
+            "identity": "encounter"
+          },
+          {
+            "$type": "Encounter",
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "2d1ee0daa9e5f4691fe1160c0c838158ab37847b9641aabab4e748b44cfc35f3",
+              "id": "contract.encounter",
+              "version": "1"
+            },
+            "executor": {
+              "$type": "Ref",
+              "id": "tcell",
+              "kind": "Role"
+            },
+            "id": "contact",
+            "target": {
+              "$type": "Ref",
+              "id": "target",
+              "kind": "Subject"
+            },
+            "termination": "explicit_event"
+          },
+          {
+            "$type": "Clock",
+            "basis": "logical",
+            "id": "clock",
+            "resolution": {
+              "$type": "Quantity",
+              "amount": "1",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "simultaneous": "atomic_batch"
+          },
+          {
+            "$type": "Observation",
+            "access": "cell",
+            "clock": {
+              "$type": "Ref",
+              "id": "clock",
+              "kind": "Clock"
+            },
+            "coherence": "atomic_frame",
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "21b34bb1c5b00c7191014f5d651614b3d72c4bfed338abd2609d4c594017c2fd",
+              "id": "contract.antigen",
+              "version": "1"
+            },
+            "coverage": "sampled",
+            "freshness": {
+              "$type": "Quantity",
+              "amount": "1",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "id": "antigen",
+            "invalidity": [
+              "missing",
+              "stale",
+              "invalid",
+              "conflicting"
+            ],
+            "observer": {
+              "$type": "Ref",
+              "id": "tcell",
+              "kind": "Role"
+            },
+            "spatial_scope": null,
+            "subject": {
+              "$type": "Ref",
+              "id": "target",
+              "kind": "Subject"
+            },
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            }
+          },
+          {
+            "$type": "Observation",
+            "access": "cell",
+            "clock": {
+              "$type": "Ref",
+              "id": "clock",
+              "kind": "Clock"
+            },
+            "coherence": "atomic_frame",
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "788f926b23e88b8d640409f7cbd683c62e4155eb1d9314f1cf0ca83795b319a1",
+              "id": "contract.controller",
+              "version": "1"
+            },
+            "coverage": "sampled",
+            "freshness": {
+              "$type": "Quantity",
+              "amount": "1",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "id": "controller",
+            "invalidity": [
+              "missing",
+              "stale",
+              "invalid",
+              "conflicting"
+            ],
+            "observer": {
+              "$type": "Ref",
+              "id": "tcell",
+              "kind": "Role"
+            },
+            "spatial_scope": null,
+            "subject": {
+              "$type": "Ref",
+              "id": "tcell",
+              "kind": "Role"
+            },
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            }
+          },
+          {
+            "$type": "Parameter",
+            "id": "product-a",
+            "lower": null,
+            "selection": "fixed",
+            "upper": null,
+            "value": "artificial-product-a",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "text",
+              "unit": null
+            }
+          },
+          {
+            "$type": "Parameter",
+            "id": "product-b",
+            "lower": null,
+            "selection": "fixed",
+            "upper": null,
+            "value": "artificial-product-b",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "text",
+              "unit": null
+            }
+          },
+          {
+            "$type": "ControlledActivity",
+            "clock": {
+              "$type": "Ref",
+              "id": "clock",
+              "kind": "Clock"
+            },
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "8a0ea43e1142c118ba093d49342afe15f4dfb45f9c97557cd692f888dcb36904",
+              "id": "contract.activity",
+              "version": "1"
+            },
+            "executor": {
+              "$type": "Ref",
+              "id": "tcell",
+              "kind": "Role"
+            },
+            "gate": {
+              "$type": "Expr",
+              "args": [
+                {
+                  "$type": "Expr",
+                  "args": [],
+                  "binding": null,
+                  "clock": null,
+                  "contract": null,
+                  "coverage": null,
+                  "duration": null,
+                  "op": "observe",
+                  "ref": {
+                    "$type": "Ref",
+                    "id": "antigen",
+                    "kind": "Observation"
+                  },
+                  "scope": {
+                    "$type": "Ref",
+                    "id": "target",
+                    "kind": "Subject"
+                  },
+                  "value": null,
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "truth",
+                    "unit": null
+                  }
+                },
+                {
+                  "$type": "Expr",
+                  "args": [],
+                  "binding": null,
+                  "clock": null,
+                  "contract": null,
+                  "coverage": null,
+                  "duration": null,
+                  "op": "observe",
+                  "ref": {
+                    "$type": "Ref",
+                    "id": "controller",
+                    "kind": "Observation"
+                  },
+                  "scope": {
+                    "$type": "Ref",
+                    "id": "tcell",
+                    "kind": "Role"
+                  },
+                  "value": null,
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "truth",
+                    "unit": null
+                  }
+                }
+              ],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "all",
+              "ref": null,
+              "scope": null,
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "truth",
+                "unit": null
+              }
+            },
+            "id": "activity",
+            "products": [
+              {
+                "$type": "Ref",
+                "id": "product-a",
+                "kind": "Parameter"
+              },
+              {
+                "$type": "Ref",
+                "id": "product-b",
+                "kind": "Parameter"
+              }
+            ],
+            "readout": {
+              "$type": "DefinitionRef",
+              "digest": "8630b28c0010e32a4d421d1e25abb9a489dfe65b98dfee74496e6b6ec49a2f9f",
+              "id": "contract.readout",
+              "version": "1"
+            },
+            "subject": {
+              "$type": "Ref",
+              "id": "target",
+              "kind": "Subject"
+            }
+          },
+          {
+            "$type": "Requirement",
+            "applies_to": [
+              {
+                "$type": "Ref",
+                "id": "activity",
+                "kind": "ControlledActivity"
+              }
+            ],
+            "assumptions": [],
+            "clock": {
+              "$type": "Ref",
+              "id": "clock",
+              "kind": "Clock"
+            },
+            "condition": null,
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "444f94e9a32f26e7a7d95959bc5d8e7cf2e80d056bc9e5b56feb8c92b542efd6",
+              "id": "requirement.safety",
+              "version": "1"
+            },
+            "deadline": null,
+            "description": "Require no_unauthorized_activation.",
+            "horizon": {
+              "$type": "Quantity",
+              "amount": "10",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "id": "safety",
+            "kind": "safety",
+            "lower": null,
+            "response": null,
+            "scope": {
+              "$type": "Scope",
+              "kind": "executor",
+              "subject": {
+                "$type": "Ref",
+                "id": "tcell",
+                "kind": "Role"
+              }
+            },
+            "trigger": null,
+            "upper": null
+          },
+          {
+            "$type": "Requirement",
+            "applies_to": [
+              {
+                "$type": "Ref",
+                "id": "activity",
+                "kind": "ControlledActivity"
+              }
+            ],
+            "assumptions": [],
+            "clock": {
+              "$type": "Ref",
+              "id": "clock",
+              "kind": "Clock"
+            },
+            "condition": null,
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "d8301d433c9989535262e3d1e7b245db02d259554c900eb3af85613717bc67e1",
+              "id": "requirement.onset",
+              "version": "1"
+            },
+            "deadline": {
+              "$type": "Quantity",
+              "amount": "2",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "description": "Require initial_activation.",
+            "horizon": {
+              "$type": "Quantity",
+              "amount": "10",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "id": "onset",
+            "kind": "progress",
+            "lower": null,
+            "response": {
+              "$type": "Expr",
+              "args": [
+                {
+                  "$type": "Expr",
+                  "args": [],
+                  "binding": null,
+                  "clock": null,
+                  "contract": null,
+                  "coverage": null,
+                  "duration": null,
+                  "op": "activity_band",
+                  "ref": {
+                    "$type": "Ref",
+                    "id": "activity",
+                    "kind": "ControlledActivity"
+                  },
+                  "scope": {
+                    "$type": "Ref",
+                    "id": "target",
+                    "kind": "Subject"
+                  },
+                  "value": null,
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                },
+                {
+                  "$type": "Expr",
+                  "args": [],
+                  "binding": null,
+                  "clock": null,
+                  "contract": null,
+                  "coverage": null,
+                  "duration": null,
+                  "op": "literal",
+                  "ref": null,
+                  "scope": null,
+                  "value": "active",
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                }
+              ],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "eq",
+              "ref": null,
+              "scope": null,
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "truth",
+                "unit": null
+              }
+            },
+            "scope": {
+              "$type": "Scope",
+              "kind": "executor",
+              "subject": {
+                "$type": "Ref",
+                "id": "tcell",
+                "kind": "Role"
+              }
+            },
+            "trigger": null,
+            "upper": null
+          },
+          {
+            "$type": "Requirement",
+            "applies_to": [
+              {
+                "$type": "Ref",
+                "id": "activity",
+                "kind": "ControlledActivity"
+              }
+            ],
+            "assumptions": [],
+            "clock": {
+              "$type": "Ref",
+              "id": "clock",
+              "kind": "Clock"
+            },
+            "condition": null,
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "a847772530d707269d8e9c7a30a63012e165dee638cddbd8579d3b8257a16040",
+              "id": "requirement.controller-off",
+              "version": "1"
+            },
+            "deadline": {
+              "$type": "Quantity",
+              "amount": "2",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "description": "Require controller_cessation.",
+            "horizon": {
+              "$type": "Quantity",
+              "amount": "10",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "id": "controller-off",
+            "kind": "progress",
+            "lower": null,
+            "response": {
+              "$type": "Expr",
+              "args": [
+                {
+                  "$type": "Expr",
+                  "args": [],
+                  "binding": null,
+                  "clock": null,
+                  "contract": null,
+                  "coverage": null,
+                  "duration": null,
+                  "op": "activity_band",
+                  "ref": {
+                    "$type": "Ref",
+                    "id": "activity",
+                    "kind": "ControlledActivity"
+                  },
+                  "scope": {
+                    "$type": "Ref",
+                    "id": "target",
+                    "kind": "Subject"
+                  },
+                  "value": null,
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                },
+                {
+                  "$type": "Expr",
+                  "args": [],
+                  "binding": null,
+                  "clock": null,
+                  "contract": null,
+                  "coverage": null,
+                  "duration": null,
+                  "op": "literal",
+                  "ref": null,
+                  "scope": null,
+                  "value": "background",
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                }
+              ],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "eq",
+              "ref": null,
+              "scope": null,
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "truth",
+                "unit": null
+              }
+            },
+            "scope": {
+              "$type": "Scope",
+              "kind": "executor",
+              "subject": {
+                "$type": "Ref",
+                "id": "tcell",
+                "kind": "Role"
+              }
+            },
+            "trigger": null,
+            "upper": null
+          },
+          {
+            "$type": "Requirement",
+            "applies_to": [
+              {
+                "$type": "Ref",
+                "id": "activity",
+                "kind": "ControlledActivity"
+              }
+            ],
+            "assumptions": [],
+            "clock": {
+              "$type": "Ref",
+              "id": "clock",
+              "kind": "Clock"
+            },
+            "condition": null,
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "add0e74b11e277735b97a8bc68aaee5ee7680eb7d47b69f0be3fc013f906d9e8",
+              "id": "requirement.antigen-off",
+              "version": "1"
+            },
+            "deadline": {
+              "$type": "Quantity",
+              "amount": "2",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "description": "Require antigen_cessation.",
+            "horizon": {
+              "$type": "Quantity",
+              "amount": "10",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "id": "antigen-off",
+            "kind": "progress",
+            "lower": null,
+            "response": {
+              "$type": "Expr",
+              "args": [
+                {
+                  "$type": "Expr",
+                  "args": [],
+                  "binding": null,
+                  "clock": null,
+                  "contract": null,
+                  "coverage": null,
+                  "duration": null,
+                  "op": "activity_band",
+                  "ref": {
+                    "$type": "Ref",
+                    "id": "activity",
+                    "kind": "ControlledActivity"
+                  },
+                  "scope": {
+                    "$type": "Ref",
+                    "id": "target",
+                    "kind": "Subject"
+                  },
+                  "value": null,
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                },
+                {
+                  "$type": "Expr",
+                  "args": [],
+                  "binding": null,
+                  "clock": null,
+                  "contract": null,
+                  "coverage": null,
+                  "duration": null,
+                  "op": "literal",
+                  "ref": null,
+                  "scope": null,
+                  "value": "background",
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                }
+              ],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "eq",
+              "ref": null,
+              "scope": null,
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "truth",
+                "unit": null
+              }
+            },
+            "scope": {
+              "$type": "Scope",
+              "kind": "executor",
+              "subject": {
+                "$type": "Ref",
+                "id": "tcell",
+                "kind": "Role"
+              }
+            },
+            "trigger": null,
+            "upper": null
+          },
+          {
+            "$type": "Requirement",
+            "applies_to": [
+              {
+                "$type": "Ref",
+                "id": "activity",
+                "kind": "ControlledActivity"
+              }
+            ],
+            "assumptions": [],
+            "clock": {
+              "$type": "Ref",
+              "id": "clock",
+              "kind": "Clock"
+            },
+            "condition": null,
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "ec8998c6fad7fd05779e6cf12e204148db5c86a4fb76dbab31dbd58ab12add6c",
+              "id": "requirement.component-off",
+              "version": "1"
+            },
+            "deadline": {
+              "$type": "Quantity",
+              "amount": "2",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "description": "Require component_cessation.",
+            "horizon": {
+              "$type": "Quantity",
+              "amount": "10",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "id": "component-off",
+            "kind": "progress",
+            "lower": null,
+            "response": {
+              "$type": "Expr",
+              "args": [
+                {
+                  "$type": "Expr",
+                  "args": [],
+                  "binding": null,
+                  "clock": null,
+                  "contract": null,
+                  "coverage": null,
+                  "duration": null,
+                  "op": "activity_band",
+                  "ref": {
+                    "$type": "Ref",
+                    "id": "activity",
+                    "kind": "ControlledActivity"
+                  },
+                  "scope": {
+                    "$type": "Ref",
+                    "id": "target",
+                    "kind": "Subject"
+                  },
+                  "value": null,
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                },
+                {
+                  "$type": "Expr",
+                  "args": [],
+                  "binding": null,
+                  "clock": null,
+                  "contract": null,
+                  "coverage": null,
+                  "duration": null,
+                  "op": "literal",
+                  "ref": null,
+                  "scope": null,
+                  "value": "background",
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                }
+              ],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "eq",
+              "ref": null,
+              "scope": null,
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "truth",
+                "unit": null
+              }
+            },
+            "scope": {
+              "$type": "Scope",
+              "kind": "executor",
+              "subject": {
+                "$type": "Ref",
+                "id": "tcell",
+                "kind": "Role"
+              }
+            },
+            "trigger": null,
+            "upper": null
+          },
+          {
+            "$type": "Requirement",
+            "applies_to": [
+              {
+                "$type": "Ref",
+                "id": "activity",
+                "kind": "ControlledActivity"
+              }
+            ],
+            "assumptions": [],
+            "clock": {
+              "$type": "Ref",
+              "id": "clock",
+              "kind": "Clock"
+            },
+            "condition": null,
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "e6929505917ed3a60d9f0561d53121276e5097b05b843eb163788862ed68811b",
+              "id": "requirement.reactivation",
+              "version": "1"
+            },
+            "deadline": {
+              "$type": "Quantity",
+              "amount": "2",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "description": "Require reactivation.",
+            "horizon": {
+              "$type": "Quantity",
+              "amount": "10",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "second",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            },
+            "id": "reactivation",
+            "kind": "progress",
+            "lower": null,
+            "response": {
+              "$type": "Expr",
+              "args": [
+                {
+                  "$type": "Expr",
+                  "args": [],
+                  "binding": null,
+                  "clock": null,
+                  "contract": null,
+                  "coverage": null,
+                  "duration": null,
+                  "op": "activity_band",
+                  "ref": {
+                    "$type": "Ref",
+                    "id": "activity",
+                    "kind": "ControlledActivity"
+                  },
+                  "scope": {
+                    "$type": "Ref",
+                    "id": "target",
+                    "kind": "Subject"
+                  },
+                  "value": null,
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                },
+                {
+                  "$type": "Expr",
+                  "args": [],
+                  "binding": null,
+                  "clock": null,
+                  "contract": null,
+                  "coverage": null,
+                  "duration": null,
+                  "op": "literal",
+                  "ref": null,
+                  "scope": null,
+                  "value": "active",
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                }
+              ],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "eq",
+              "ref": null,
+              "scope": null,
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "truth",
+                "unit": null
+              }
+            },
+            "scope": {
+              "$type": "Scope",
+              "kind": "executor",
+              "subject": {
+                "$type": "Ref",
+                "id": "tcell",
+                "kind": "Role"
+              }
+            },
+            "trigger": null,
+            "upper": null
+          }
+        ],
+        "id": "artificial-controlled-source",
+        "profile": "biocompiler.policy_controlled_composition_source.v0.1",
+        "semantics": {
+          "$type": "SemanticBundle",
+          "definitions": [
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "capability",
+              "clauses": [
+                {
+                  "$type": "ContractClause",
+                  "description": "Normative controlled source interpretation.",
+                  "expression": {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "literal",
+                    "ref": null,
+                    "scope": null,
+                    "value": "biocompiler.controlled_source.human_t_cell.v0.1",
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "text",
+                      "unit": null
+                    }
+                  },
+                  "kind": "postcondition"
+                }
+              ],
+              "executor_kind": null,
+              "id": "contract.capability",
+              "meaning": "Supplied artificial contract.capability contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "encounter",
+              "clauses": [
+                {
+                  "$type": "ContractClause",
+                  "description": "Normative controlled source interpretation.",
+                  "expression": {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "literal",
+                    "ref": null,
+                    "scope": null,
+                    "value": "biocompiler.controlled_source.encounter.v0.1",
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "text",
+                      "unit": null
+                    }
+                  },
+                  "kind": "postcondition"
+                }
+              ],
+              "executor_kind": null,
+              "id": "contract.encounter",
+              "meaning": "Supplied artificial contract.encounter contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "observation",
+              "clauses": [
+                {
+                  "$type": "ContractClause",
+                  "description": "Normative controlled source interpretation.",
+                  "expression": {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "literal",
+                    "ref": null,
+                    "scope": null,
+                    "value": "biocompiler.controlled_source.antigen.v0.1",
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "text",
+                      "unit": null
+                    }
+                  },
+                  "kind": "postcondition"
+                }
+              ],
+              "executor_kind": null,
+              "id": "contract.antigen",
+              "meaning": "Supplied artificial contract.antigen contract; no biological evidence.",
+              "parameters": [],
+              "result": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "truth",
+                "unit": null
+              },
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "observation",
+              "clauses": [
+                {
+                  "$type": "ContractClause",
+                  "description": "Normative controlled source interpretation.",
+                  "expression": {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "literal",
+                    "ref": null,
+                    "scope": null,
+                    "value": "biocompiler.controlled_source.controller.v0.1",
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "text",
+                      "unit": null
+                    }
+                  },
+                  "kind": "postcondition"
+                }
+              ],
+              "executor_kind": null,
+              "id": "contract.controller",
+              "meaning": "Supplied artificial contract.controller contract; no biological evidence.",
+              "parameters": [],
+              "result": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "truth",
+                "unit": null
+              },
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "operation",
+              "clauses": [
+                {
+                  "$type": "ContractClause",
+                  "description": "Normative controlled source interpretation.",
+                  "expression": {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "literal",
+                    "ref": null,
+                    "scope": null,
+                    "value": "biocompiler.controlled_source.activity.v0.1",
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "text",
+                      "unit": null
+                    }
+                  },
+                  "kind": "postcondition"
+                }
+              ],
+              "executor_kind": null,
+              "id": "contract.activity",
+              "meaning": "Supplied artificial contract.activity contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "observation",
+              "clauses": [
+                {
+                  "$type": "ContractClause",
+                  "description": "Normative controlled source interpretation.",
+                  "expression": {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "literal",
+                    "ref": null,
+                    "scope": null,
+                    "value": "biocompiler.controlled_source.readout.v0.1",
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "text",
+                      "unit": null
+                    }
+                  },
+                  "kind": "postcondition"
+                }
+              ],
+              "executor_kind": null,
+              "id": "contract.readout",
+              "meaning": "Supplied artificial contract.readout contract; no biological evidence.",
+              "parameters": [],
+              "result": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              },
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "requirement",
+              "clauses": [
+                {
+                  "$type": "ContractClause",
+                  "description": "Normative controlled source interpretation.",
+                  "expression": {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "literal",
+                    "ref": null,
+                    "scope": null,
+                    "value": "biocompiler.controlled_source.no_unauthorized_activation.v0.1",
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "text",
+                      "unit": null
+                    }
+                  },
+                  "kind": "postcondition"
+                }
+              ],
+              "executor_kind": null,
+              "id": "requirement.safety",
+              "meaning": "Supplied artificial requirement.safety contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "requirement",
+              "clauses": [
+                {
+                  "$type": "ContractClause",
+                  "description": "Normative controlled source interpretation.",
+                  "expression": {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "literal",
+                    "ref": null,
+                    "scope": null,
+                    "value": "biocompiler.controlled_source.initial_activation.v0.1",
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "text",
+                      "unit": null
+                    }
+                  },
+                  "kind": "postcondition"
+                }
+              ],
+              "executor_kind": null,
+              "id": "requirement.onset",
+              "meaning": "Supplied artificial requirement.onset contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "requirement",
+              "clauses": [
+                {
+                  "$type": "ContractClause",
+                  "description": "Normative controlled source interpretation.",
+                  "expression": {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "literal",
+                    "ref": null,
+                    "scope": null,
+                    "value": "biocompiler.controlled_source.controller_cessation.v0.1",
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "text",
+                      "unit": null
+                    }
+                  },
+                  "kind": "postcondition"
+                }
+              ],
+              "executor_kind": null,
+              "id": "requirement.controller-off",
+              "meaning": "Supplied artificial requirement.controller-off contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "requirement",
+              "clauses": [
+                {
+                  "$type": "ContractClause",
+                  "description": "Normative controlled source interpretation.",
+                  "expression": {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "literal",
+                    "ref": null,
+                    "scope": null,
+                    "value": "biocompiler.controlled_source.antigen_cessation.v0.1",
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "text",
+                      "unit": null
+                    }
+                  },
+                  "kind": "postcondition"
+                }
+              ],
+              "executor_kind": null,
+              "id": "requirement.antigen-off",
+              "meaning": "Supplied artificial requirement.antigen-off contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "requirement",
+              "clauses": [
+                {
+                  "$type": "ContractClause",
+                  "description": "Normative controlled source interpretation.",
+                  "expression": {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "literal",
+                    "ref": null,
+                    "scope": null,
+                    "value": "biocompiler.controlled_source.component_cessation.v0.1",
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "text",
+                      "unit": null
+                    }
+                  },
+                  "kind": "postcondition"
+                }
+              ],
+              "executor_kind": null,
+              "id": "requirement.component-off",
+              "meaning": "Supplied artificial requirement.component-off contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "requirement",
+              "clauses": [
+                {
+                  "$type": "ContractClause",
+                  "description": "Normative controlled source interpretation.",
+                  "expression": {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "literal",
+                    "ref": null,
+                    "scope": null,
+                    "value": "biocompiler.controlled_source.reactivation.v0.1",
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "text",
+                      "unit": null
+                    }
+                  },
+                  "kind": "postcondition"
+                }
+              ],
+              "executor_kind": null,
+              "id": "requirement.reactivation",
+              "meaning": "Supplied artificial requirement.reactivation contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "model",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "context.chassis",
+              "meaning": "Supplied artificial context.chassis contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "delivery",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "context.arrival",
+              "meaning": "Supplied artificial context.arrival contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "model",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "context.expression",
+              "meaning": "Supplied artificial context.expression contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "model",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "context.activation",
+              "meaning": "Supplied artificial context.activation contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "delivery",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "artificial.delivery",
+              "meaning": "Supplied artificial context.delivery contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "model",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "context.mechanism",
+              "meaning": "Supplied artificial context.mechanism contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "model",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "artificial.product-a",
+              "meaning": "Supplied artificial context.product-a contract; no biological evidence.",
+              "parameters": [
+                {
+                  "$type": "Parameter",
+                  "id": "product_identity",
+                  "lower": null,
+                  "selection": "fixed",
+                  "upper": null,
+                  "value": "artificial-product-a",
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                },
+                {
+                  "$type": "Parameter",
+                  "id": "product_version",
+                  "lower": null,
+                  "selection": "fixed",
+                  "upper": null,
+                  "value": "1",
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                },
+                {
+                  "$type": "Parameter",
+                  "id": "product_sha256",
+                  "lower": null,
+                  "selection": "fixed",
+                  "upper": null,
+                  "value": "c7434883f345ffc2100dd9e3750afbbee436ba7535cf5fb26b9be706ce413c9b",
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                }
+              ],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "model",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "artificial.product-b",
+              "meaning": "Supplied artificial context.product-b contract; no biological evidence.",
+              "parameters": [
+                {
+                  "$type": "Parameter",
+                  "id": "product_identity",
+                  "lower": null,
+                  "selection": "fixed",
+                  "upper": null,
+                  "value": "artificial-product-b",
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                },
+                {
+                  "$type": "Parameter",
+                  "id": "product_version",
+                  "lower": null,
+                  "selection": "fixed",
+                  "upper": null,
+                  "value": "1",
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                },
+                {
+                  "$type": "Parameter",
+                  "id": "product_sha256",
+                  "lower": null,
+                  "selection": "fixed",
+                  "upper": null,
+                  "value": "92da7113336e1f9d1cebbb5cfa4ec68ddf5b8ac989f1b6399856e44b100e76a9",
+                  "value_type": {
+                    "$type": "TypeSpec",
+                    "entity_kind": null,
+                    "kind": "text",
+                    "unit": null
+                  }
+                }
+              ],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            },
+            {
+              "$type": "SemanticDefinition",
+              "assumptions": [],
+              "category": "interface",
+              "clauses": [],
+              "executor_kind": null,
+              "id": "artificial.localization",
+              "meaning": "Supplied artificial localization contract; no biological evidence.",
+              "parameters": [],
+              "result": null,
+              "subject_kind": null,
+              "version": "1"
+            }
+          ],
+          "id": "artificial-semantics",
+          "profile": "biocompiler.policy.v0.1",
+          "version": "1"
+        },
+        "source_map": [
+          {
+            "$type": "SourceSpan",
+            "column": 0,
+            "declaration_id": "activity",
+            "file": "artificial_controlled_source.py",
+            "line": 1,
+            "pattern": null
+          }
+        ]
+      }
+    },
+    "project_context": {
+      "assumptions": [
+        "Artificial co-delivery to one human T-cell executor is supplied, not demonstrated.",
+        "Artificial products follow the supplied physical activity model; RNA and protein availability remain separate factors."
+      ],
+      "project_id": "artificial-controlled-admission",
+      "sources": [
+        {
+          "id": "artificial.notice",
+          "locator": "core/test/data/policy_controlled_request_v014.json#artificial-notice",
+          "reuse_terms": "repository fixture; no patent sequence material",
+          "role": "artificial software authority",
+          "sha256": "f58f9fecb3e93c36f5f7fb9cae76dcc666b6da5a7240ccad4d33c28b48bcf75f",
+          "version": "1"
+        }
+      ],
+      "title": "Artificial original authority for RC3 software admission"
+    },
+    "schema_version": "biocompiler.policy_controlled_composition_source_authority.v0.1"
+  }
+}

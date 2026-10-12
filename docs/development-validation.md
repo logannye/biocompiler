@@ -5,7 +5,7 @@ validation coverage and independent checks. The release workflow remains
 [Python checks](../.github/workflows/ci.yml). Development feedback has a separate
 [opt-in hosted workflow](../.github/workflows/policy-development.yml), triggered
 only by pushes to `codex/dev-policy/**`. It builds the native core once on Linux
-and runs 55 fixed suites covering admitted IR, candidate congruence, component
+and runs 59 fixed suites covering admitted IR, candidate congruence, component
 composition, quantitative assurance, selection, generation metering, protocol,
 preservation, material and construction.
 The new instance-composition SDK retains 26 lifecycle observations against two
@@ -76,7 +76,7 @@ two SDK lanes overlap: component then selection, and instance composition, prere
 staged source, staged material then the 38-observation researcher-project workflow. Each lane preserves
 its dependencies and existing campaign receipts.
 There are at most two workers in either phase, and no SDK calls are moved into
-unguarded worker threads inside a campaign. All 55 native suites and the original 260 SDK observations remain mandatory.
+unguarded worker threads inside a campaign. All 59 native suites and the original 260 SDK observations remain mandatory.
 The typed finite path adds 18 researcher observations (two complete shapes,
 including typed roundtrip, fresh Core/Verify execution, paired publication and
 mutation rejection), for 278 SDK observations across the same ten campaigns.
@@ -84,6 +84,12 @@ A separate quantitative-assurance campaign adds 21 observations, preserving
 complete original requests, exact material, bounded approximation and supplied
 evidence gates. It runs after the native suites and before the SDK lanes,
 retaining its own receipt.
+
+The controlled-composition RC3 branch adds four native suites and a separate
+hosted SDK campaign for complete original admission and finite input enumeration.
+It reuses the same fresh binaries and retains Core/Verify results, adversarial
+rejections and exact source/run identities. Its scope excludes construction,
+behavioral acceptance and empirical function. All existing campaigns remain.
 
 The CAR source candidate adds a separate `car-payload-sdk` step after the ten
 preserved campaigns. It uses their same authenticated native build and a distinct

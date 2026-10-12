@@ -1,0 +1,286 @@
+{
+  "schema_version": "biocompiler.policy_controlled_composition_domain.v0.1",
+  "profile": "biocompiler.policy_controlled_composition_mrna.v0.1",
+  "clock": {
+    "id": "clock",
+    "resolution": {
+      "$type": "Quantity",
+      "amount": "1",
+      "unit": {
+        "$type": "Unit",
+        "id": "second",
+        "dimension": "time",
+        "quantity_kind": "duration",
+        "scale": "1",
+        "reference": null
+      }
+    }
+  },
+  "executor": {
+    "role": "tcell",
+    "identity": "fixture.executor"
+  },
+  "encounter": {
+    "slot": "fixture.encounter",
+    "declaration": "contact",
+    "subject": "target"
+  },
+  "inputs": [
+    {
+      "key": "antigen",
+      "reference": {
+        "$type": "Ref",
+        "id": "antigen",
+        "kind": "Observation"
+      },
+      "scope": "encounter",
+      "freshness_ticks": 1
+    },
+    {
+      "key": "controller",
+      "reference": {
+        "$type": "Ref",
+        "id": "controller",
+        "kind": "Observation"
+      },
+      "scope": "executor",
+      "freshness_ticks": 1
+    },
+    {
+      "key": "rna_a",
+      "reference": {
+        "$type": "Ref",
+        "id": "rna-a",
+        "kind": "MaterialMember"
+      },
+      "scope": "executor",
+      "freshness_ticks": 10
+    },
+    {
+      "key": "rna_b",
+      "reference": {
+        "$type": "Ref",
+        "id": "rna-b",
+        "kind": "MaterialMember"
+      },
+      "scope": "executor",
+      "freshness_ticks": 10
+    },
+    {
+      "key": "protein_a",
+      "reference": {
+        "$type": "Ref",
+        "id": "product-a",
+        "kind": "Parameter"
+      },
+      "scope": "executor",
+      "freshness_ticks": 10
+    },
+    {
+      "key": "protein_b",
+      "reference": {
+        "$type": "Ref",
+        "id": "product-b",
+        "kind": "Parameter"
+      },
+      "scope": "executor",
+      "freshness_ticks": 10
+    }
+  ],
+  "source_deadlines": {
+    "onset_ticks": 2,
+    "controller_off_ticks": 2,
+    "antigen_off_ticks": 2,
+    "component_off_ticks": 2,
+    "reactivation_ticks": 2
+  },
+  "intervention_cutoff_tick": 6,
+  "horizon_tick": 10,
+  "suffix_policy": "hold_last_physical_inputs_no_encounter_events",
+  "initial": {
+    "physical": {
+      "antigen": "absent",
+      "controller": "disabled",
+      "rna_a": "present",
+      "rna_b": "present",
+      "protein_a": "present",
+      "protein_b": "present"
+    },
+    "evidence": {
+      "antigen": {
+        "status": "missing",
+        "observed_tick": null,
+        "generation": null
+      },
+      "controller": {
+        "status": "missing",
+        "observed_tick": null,
+        "generation": null
+      },
+      "rna_a": {
+        "status": "missing",
+        "observed_tick": null,
+        "generation": null
+      },
+      "rna_b": {
+        "status": "missing",
+        "observed_tick": null,
+        "generation": null
+      },
+      "protein_a": {
+        "status": "missing",
+        "observed_tick": null,
+        "generation": null
+      },
+      "protein_b": {
+        "status": "missing",
+        "observed_tick": null,
+        "generation": null
+      }
+    }
+  },
+  "physical_factors": [],
+  "evidence_factors": [],
+  "lifecycle_factors": [],
+  "fixed_inputs": [
+    {
+      "tick": 0,
+      "event": "start",
+      "physical": {
+        "antigen": "present",
+        "controller": "enabled",
+        "rna_a": "present",
+        "rna_b": "present",
+        "protein_a": "present",
+        "protein_b": "present"
+      },
+      "evidence": {
+        "antigen": {
+          "status": "valid",
+          "observed_tick": 0,
+          "generation": 1
+        },
+        "controller": {
+          "status": "valid",
+          "observed_tick": 0,
+          "generation": null
+        },
+        "rna_a": {
+          "status": "valid",
+          "observed_tick": 0,
+          "generation": null
+        },
+        "rna_b": {
+          "status": "valid",
+          "observed_tick": 0,
+          "generation": null
+        },
+        "protein_a": {
+          "status": "valid",
+          "observed_tick": 0,
+          "generation": null
+        },
+        "protein_b": {
+          "status": "valid",
+          "observed_tick": 0,
+          "generation": null
+        }
+      }
+    },
+    {
+      "tick": 3,
+      "event": "none",
+      "physical": {
+        "antigen": "present",
+        "controller": "disabled",
+        "rna_a": "present",
+        "rna_b": "present",
+        "protein_a": "present",
+        "protein_b": "present"
+      },
+      "evidence": {
+        "antigen": {
+          "status": "valid",
+          "observed_tick": 3,
+          "generation": 1
+        },
+        "controller": {
+          "status": "valid",
+          "observed_tick": 3,
+          "generation": null
+        },
+        "rna_a": {
+          "status": "valid",
+          "observed_tick": 3,
+          "generation": null
+        },
+        "rna_b": {
+          "status": "valid",
+          "observed_tick": 3,
+          "generation": null
+        },
+        "protein_a": {
+          "status": "valid",
+          "observed_tick": 3,
+          "generation": null
+        },
+        "protein_b": {
+          "status": "valid",
+          "observed_tick": 3,
+          "generation": null
+        }
+      }
+    },
+    {
+      "tick": 6,
+      "event": "none",
+      "physical": {
+        "antigen": "present",
+        "controller": "enabled",
+        "rna_a": "present",
+        "rna_b": "present",
+        "protein_a": "present",
+        "protein_b": "present"
+      },
+      "evidence": {
+        "antigen": {
+          "status": "valid",
+          "observed_tick": 6,
+          "generation": 1
+        },
+        "controller": {
+          "status": "valid",
+          "observed_tick": 6,
+          "generation": null
+        },
+        "rna_a": {
+          "status": "valid",
+          "observed_tick": 6,
+          "generation": null
+        },
+        "rna_b": {
+          "status": "valid",
+          "observed_tick": 6,
+          "generation": null
+        },
+        "protein_a": {
+          "status": "valid",
+          "observed_tick": 6,
+          "generation": null
+        },
+        "protein_b": {
+          "status": "valid",
+          "observed_tick": 6,
+          "generation": null
+        }
+      }
+    }
+  ],
+  "limits": {
+    "max_generations": 4,
+    "max_prefixes": 10000,
+    "max_transitions": 10000,
+    "max_histories": 256,
+    "max_work": 1000000
+  }
+}

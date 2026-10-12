@@ -182,6 +182,63 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/checker/policy_controlled_composition_admission.ml",
+      "sha256": "a3fbe16baa21659a4c3fddcf1df933ee793fc65d7795bbaac0a31eadddddceb2",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 10,
+          "Diagnostic.require": 1,
+          "require": 55
+        },
+        "profile_literals": {
+          "biocompiler.policy_controlled_composition_assessment.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+    },
+    {
+      "path": "core/lib/checker/policy_controlled_composition_admission.mli",
+      "sha256": "f9e8cd40627bc2c45ed365f66ecda5ffeaf67a01aceb8de28f101abb258df02d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+    },
+    {
+      "path": "core/lib/checker/policy_controlled_source.ml",
+      "sha256": "c8417137583e912f385f7593bd4a50c26ccf5eda5466113b5f3dd92ba1bbf783",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "fail": 15,
+          "require": 39
+        },
+        "profile_literals": {
+          "biocompiler.controlled_source.": 1,
+          "biocompiler.policy_controlled_composition_source_admission.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+    },
+    {
+      "path": "core/lib/checker/policy_controlled_source.mli",
+      "sha256": "d4422d7b0e0314a447842abaf0a453f48f7cd8da5a2de935a6a08d6d2b23df8d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+    },
+    {
       "path": "core/lib/checker/policy_correspondence.ml",
       "sha256": "381de9983ce713e563f1297d6607b9b42f3a26f6e53216ecbbd06b1d8412a4d7",
       "census": {
@@ -1107,6 +1164,40 @@
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
+      "path": "core/lib/domain/policy_controlled_composition_request.ml",
+      "sha256": "14e3c6f4889048ec1d4f0fd8f582ab2ab818fc1079cf418d5b8a2923d8a7d2a9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 36
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_material_request.v0.14": 1,
+          "biocompiler.policy_controlled_activity_model.v0.1": 1,
+          "biocompiler.policy_controlled_composition_assembly.v0.1": 1,
+          "biocompiler.policy_controlled_composition_context.v0.1": 1,
+          "biocompiler.policy_controlled_composition_contract.v0.1": 1,
+          "biocompiler.policy_controlled_composition_mrna.v0.1": 1,
+          "biocompiler.policy_controlled_composition_resources.v0.1": 1,
+          "biocompiler.policy_controlled_composition_source_authority.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_composition_request.mli",
+      "sha256": "ca53c6917c890df00542d1f64312dbc0a8db5024862bf119461ebaa2a57097ec",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+    },
+    {
       "path": "core/lib/domain/policy_controlled_composition_schema.ml",
       "sha256": "ca5fd3b1fcf4672a2eb6ece3223b110e00be286cb2fb6403e16bdd348e0fe4a1",
       "census": {
@@ -1132,6 +1223,35 @@
       },
       "disposition": "outside_route",
       "reason": "Additive controlled-composition source shape table only; no native source admission, execution, realization, material or publication authority."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_domain.ml",
+      "sha256": "c642738e10d9a0d54c0f2e2bc3b248309ae56f7186ddd363a3a770082bbf3d65",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 5,
+          "Diagnostic.require": 7,
+          "require": 31
+        },
+        "profile_literals": {
+          "biocompiler.policy_controlled_composition_domain.v0.1": 1,
+          "biocompiler.policy_controlled_composition_mrna.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_domain.mli",
+      "sha256": "37f030c5c2763d620568a09efa2b499a7d7a085a36dbe33fb40d3b3cb66675bf",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
     },
     {
       "path": "core/lib/domain/policy_coupled_wire.ml",
@@ -1168,16 +1288,17 @@
     },
     {
       "path": "core/lib/domain/policy_document.ml",
-      "sha256": "9b2adf9ca624942d1557e91720bac7439e0b511c1e54fe47447df77ccbeb138e",
+      "sha256": "14279d83121f55af4731a6e14a0e97e58f679965e4a3776aa7bdd808835371d1",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 3,
           "Diagnostic.require": 4,
-          "require": 15
+          "require": 16
         },
         "profile_literals": {
           "biocompiler.policy.v0.1": 1,
+          "biocompiler.policy_controlled_composition_source.v0.1": 1,
           "biocompiler.policy_expression_source.v0.1": 1
         }
       },
@@ -1186,7 +1307,7 @@
     },
     {
       "path": "core/lib/domain/policy_document.mli",
-      "sha256": "fa2878d5da0f7f1c84531dd8828dd15f91a9155e945facc66157967ea3f800cf",
+      "sha256": "42ea181068a7cee3722c2601958e1a91ad098b1b6b8b8e6669c338783b8cd23c",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -2859,6 +2980,37 @@
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
+      "path": "core/lib/service/policy_controlled_composition_service.ml",
+      "sha256": "1841e551235326c99b10be2349467fb2c1c8e57735fe96a7722247782c71e8c9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 8
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_controlled_composition.v1": 1,
+          "biocompiler.ocaml.policy_controlled_composition.v0.1": 1,
+          "biocompiler.policy_component_material_request.v0.14": 1,
+          "biocompiler.policy_controlled_composition_mrna.v0.1": 1,
+          "biocompiler.policy_controlled_composition_resources.v0.1": 1,
+          "biocompiler.policy_controlled_composition_source.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+    },
+    {
+      "path": "core/lib/service/policy_controlled_composition_service.mli",
+      "sha256": "7660c72121bcaa42293fbeeabf9b1e8d03dfc970ed0e09d453208fc26df108b4",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+    },
+    {
       "path": "core/lib/service/policy_expression_material_service.ml",
       "sha256": "08566f72e8188f0e55718dc02aef0c022722969c9caf11a437331f8737ecaa81",
       "census": {
@@ -3105,11 +3257,11 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "50c2c03f5920c405efe0c0d3785424cdf2bf108b72431f217af861aadeca00d9",
+      "sha256": "4be8ce6d67534c368ec07b62afe0fd3e0f8321edf1491f735f75b8c6da69fd5a",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 1,
+          "Diagnostic.fail": 2,
           "Diagnostic.require": 9
         },
         "profile_literals": {
@@ -3124,7 +3276,7 @@
     },
     {
       "path": "core/lib/service/service.mli",
-      "sha256": "854e6c2ef8a060791bf72610fe8e9beb68bb2303de278c45cd5eb15c3310e603",
+      "sha256": "1d8145498ef9313f482ab30d24cfc38ddc1ce8a8ec13570598465ddf1a37d2e8",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -3424,6 +3576,31 @@
       },
       "disposition": "outside_route",
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/core_policy_controlled_composition.py",
+      "sha256": "308ec4aa6f5bde1d58ca5cf8a0ace46432a9fa3369a9234a91d4644580a1df65",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 9,
+          "Raise": 23
+        },
+        "profile_literals": {
+          "biocompiler.controlled_source.": 1,
+          "biocompiler.core.policy_controlled_composition.v1": 1,
+          "biocompiler.ocaml.policy_controlled_composition.v0.1": 1,
+          "biocompiler.policy_component_material_request.v0.14": 1,
+          "biocompiler.policy_controlled_composition_assessment.v0.1": 1,
+          "biocompiler.policy_controlled_composition_mrna.v0.1": 1,
+          "biocompiler.policy_controlled_composition_resources.v0.1": 1,
+          "biocompiler.policy_controlled_composition_source.v0.1": 1,
+          "biocompiler.policy_controlled_composition_source_admission.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
     },
     {
       "path": "src/biocompiler/core_policy_expression_material.py",
@@ -3744,6 +3921,29 @@
       },
       "disposition": "outside_route",
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/policy/controlled_material.py",
+      "sha256": "07db7849e25cb763718414920eb8a5aaa338f0c1ba22ce7f9374ee35e72bed70",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 20
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_material_request.v0.14": 1,
+          "biocompiler.policy_controlled_activity_model.v0.1": 1,
+          "biocompiler.policy_controlled_composition_assembly.v0.1": 1,
+          "biocompiler.policy_controlled_composition_context.v0.1": 1,
+          "biocompiler.policy_controlled_composition_domain.v0.1": 1,
+          "biocompiler.policy_controlled_composition_resources.v0.1": 1,
+          "biocompiler.policy_mrna_completeness.v0.1": 1,
+          "biocompiler.policy_mrna_structure_authority.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
     },
     {
       "path": "src/biocompiler/policy/expression_material.py",
@@ -4945,7 +5145,7 @@
             "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
             "occurrence": 1
           },
-          "context": "All four initiation/continuous × continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -6011,7 +6211,7 @@
             "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
             "occurrence": 1
           },
-          "context": "All four initiation/continuous × continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         },
         {
@@ -6837,7 +7037,7 @@
           "occurrence": 1
         }
       ],
-      "admitted_context": "PM-02–09 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
+      "admitted_context": "PM-02\u201309 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
       "outside_context": {
         "disposition": "mixed",
         "description": "Core-only/partial RNA, wrong modality, missing member or bounded/unknown unrepresented tail cannot be complete."

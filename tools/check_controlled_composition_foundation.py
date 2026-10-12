@@ -245,6 +245,14 @@ def validate(profile: dict[str, Any], corpus: dict[str, Any]) -> dict[str, Any]:
     require(profile.get("status") == "specification_only" and profile.get("native_validation") == "not_run"
             and profile.get("native_admission") == "not_implemented_by_this_specification",
             "Foundation specification cannot claim native acceptance")
+    require(profile.get("admission_stage") == {
+        "milestone": "RC3", "operation": "admit-policy-component-material",
+        "capability": "policy_controlled_composition_admission",
+        "validation_scope": "policy-controlled-composition-admission-v0.1",
+        "claim_scope": "supplied_authority_and_complete_finite_domain_only",
+        "artifact": "none", "construction": "not_performed", "behavior": "not_performed",
+        "empirical": "unassessed", "validation_evidence": "separate_exact_source_bound_hosted_receipt",
+    }, "Separate native admission must not upgrade the declarative behavioral corpus")
     require(profile["activity"]["physical_bands"] == list(BANDS)
             and profile["activity"]["unknown_is_physical_band"] is False,
             "Physical activity and unknown evidence must remain distinct")

@@ -3,6 +3,7 @@ module S = Policy_schema
 
 let profile = "biocompiler.policy.v0.1"
 let expression_source_profile = "biocompiler.policy_expression_source.v0.1"
+let controlled_source_profile = "biocompiler.policy_controlled_composition_source.v0.1"
 let max_bytes = 2 * 1024 * 1024
 let max_nodes = 100_000
 let max_depth = 64
@@ -143,8 +144,21 @@ let nonblank_text value =
     if whitespace then visit (index + width) else true in
   visit 0
 
-let rec validate_shape ?(expression_source=false) ~path shape value =
-  let validate_shape ~path = validate_shape ~expression_source ~path in
+(* The controlled shape table is independently generated. Convert only its
+   shape algebra; the ordinary document codec still uses the legacy table. *)
+let rec controlled_shape = function
+  | Policy_controlled_composition_schema.String -> S.String
+  | Policy_controlled_composition_schema.Integer -> S.Integer
+  | Policy_controlled_composition_schema.Boolean -> S.Boolean
+  | Policy_controlled_composition_schema.Null -> S.Null
+  | Policy_controlled_composition_schema.Literals values -> S.Literals values
+  | Policy_controlled_composition_schema.Record name -> S.Record name
+  | Policy_controlled_composition_schema.Many shape -> S.Many (controlled_shape shape)
+  | Policy_controlled_composition_schema.Tuple shapes -> S.Tuple (List.map controlled_shape shapes)
+  | Policy_controlled_composition_schema.Union shapes -> S.Union (List.map controlled_shape shapes)
+
+let rec validate_shape ?(expression_source=false) ?(controlled_source=false) ~path shape value =
+  let validate_shape ~path = validate_shape ~expression_source ~controlled_source ~path in
   let mismatch () = require ~path false "Policy value does not match its exact declared field type." in
   match shape, value with
   | S.String, Json.String _ | S.Integer, Json.Int _ | S.Boolean, Json.Bool _ | S.Null, Json.Null -> ()
@@ -165,7 +179,11 @@ let rec validate_shape ?(expression_source=false) ~path shape value =
       choose choices
   | S.Record name, Json.Object fields ->
       require ~path (name <> "PolicyDraft" && name <> "Hole") "Frozen policy ingress rejects drafts and unresolved holes.";
-      let members = match S.find name with Some members -> members
+      let found = if controlled_source then
+          Option.map (List.map (fun (key, shape) -> key, controlled_shape shape))
+            (Policy_controlled_composition_schema.find name)
+        else S.find name in
+      let members = match found with Some members -> members
         | None -> Diagnostic.fail ~path "policy_document" "Unknown policy record kind." in
       let members = if expression_source && name = "AssuranceRequest" then
         List.map (fun (key, shape) -> key, match key with
@@ -180,7 +198,8 @@ let rec validate_shape ?(expression_source=false) ~path shape value =
       List.iter (fun (key, shape) -> validate_shape ~path:(child path key) shape (List.assoc key fields)) members;
       if List.mem name ["PolicyProgram"; "BuildRequest"; "CompilationSubmission"; "SemanticBundle"] then
         require ~path:(child path "profile") (List.assoc "profile" fields = Json.String
-          (if expression_source && name = "BuildRequest" then expression_source_profile else profile))
+          (if controlled_source && List.mem name ["BuildRequest"; "PolicyProgram"] then controlled_source_profile
+           else if expression_source && name = "BuildRequest" then expression_source_profile else profile))
           "Unsupported policy profile.";
       if name = "Unit" then ignore (exact_decimal ~path:(child path "scale") (text_field path "scale" value));
       if name = "Quantity" then (
@@ -300,3 +319,18 @@ let request value = value.request_json
 let declarations value = value.declaration_values
 let fingerprint value = value.document_identity
 let artifact_digest value = value.artifact_identity
+
+(* A distinct representation token prevents the new record family from entering
+   legacy source checking or operational elaboration through a widened D.t. *)
+type controlled = { controlled_json : Json.t; controlled_identity : string;
+  controlled_artifact_identity : string }
+let of_controlled_json ?(path = "") json =
+  measure ~path json;
+  require ~path (text_field path "$type" json = "BuildRequest")
+    "Controlled source requires an explicit root BuildRequest.";
+  validate_shape ~controlled_source:true ~path (S.Record "BuildRequest") json;
+  { controlled_json = json; controlled_identity = document_digest json;
+    controlled_artifact_identity = Canonical.sha256 (Canonical.encode_bounded ~max_bytes json) }
+let controlled_to_json value = value.controlled_json
+let controlled_fingerprint value = value.controlled_identity
+let controlled_artifact_digest value = value.controlled_artifact_identity

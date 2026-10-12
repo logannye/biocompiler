@@ -108,6 +108,18 @@ CONTROLLED_REPRESENTATION_SOURCES = (
 )
 CONTROLLED_REPRESENTATION_REASON = "Additive controlled-composition source shape table only; no native source admission, execution, realization, material or publication authority."
 ROUTE_EXCEPTIONS.update({path: CONTROLLED_REPRESENTATION_REASON for path in CONTROLLED_REPRESENTATION_SOURCES})
+CONTROLLED_ADMISSION_SOURCES = tuple(sorted([
+    *[f"core/lib/{directory}/{name}.{suffix}" for directory, name in (
+        ("domain", "policy_controlled_domain"), ("domain", "policy_controlled_composition_request"),
+        ("checker", "policy_controlled_source"), ("checker", "policy_controlled_composition_admission"),
+        ("service", "policy_controlled_composition_service"),
+    ) for suffix in ("ml", "mli")],
+    "src/biocompiler/core_policy_controlled_composition.py", "src/biocompiler/policy/controlled_material.py",
+]))
+CONTROLLED_ADMISSION_REASON = "Separate controlled-composition RC3 source/authority and complete finite input-domain admission only; no construction, activity execution, requirement satisfaction, material or export acceptance."
+ROUTE_EXCEPTIONS.update({path: CONTROLLED_ADMISSION_REASON for path in CONTROLLED_ADMISSION_SOURCES})
+EXTRA_SOURCES += tuple(path for path in CONTROLLED_ADMISSION_SOURCES if path.endswith(".py"))
+BEFORE_CONTROLLED_ADMISSION_METADATA_SHA256 = "d42c5812339fa921f36974aa293d046f1e43c455f4896571663f32bb57b99db5"
 
 
 # Components form a separately negotiated composition route, not the original
@@ -679,12 +691,19 @@ def metadata_before_assured(ledger: dict[str, Any]) -> dict[str, Any]:
                                                    if row["path"] not in COMPONENT_ASSURED_SOURCES]}
 
 
-def metadata_before_controlled_representation(ledger: dict[str, Any]) -> dict[str, Any]:
-    """Remove only two inert schema classifications, preserving all old meaning."""
+def metadata_before_controlled_admission(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove only RC3 route additions, preserving every earlier meaning."""
     return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
             "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
-                                       for row in ledger["sources"] if row["path"] not in CONTROLLED_REPRESENTATION_SOURCES],
+                                       for row in ledger["sources"] if row["path"] not in CONTROLLED_ADMISSION_SOURCES],
             "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+
+
+def metadata_before_controlled_representation(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove only two inert schema classifications, preserving all old meaning."""
+    metadata = metadata_before_controlled_admission(ledger)
+    return {**metadata, "source_classifications": [row for row in metadata["source_classifications"]
+                                                   if row["path"] not in CONTROLLED_REPRESENTATION_SOURCES]}
 
 
 def metadata_before_expression(ledger: dict[str, Any]) -> dict[str, Any]:
@@ -1046,6 +1065,10 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
                                     separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(expression_previous) == BEFORE_EXPRESSION_METADATA_SHA256,
             "Changed pre-expression original material meaning/witness/classification metadata")
+    admission_previous = json.dumps(metadata_before_controlled_admission(ledger), sort_keys=True,
+                                    separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(admission_previous) == BEFORE_CONTROLLED_ADMISSION_METADATA_SHA256,
+            "Changed pre-controlled-admission material meaning/witness/classification metadata")
     controlled_previous = json.dumps(metadata_before_controlled_representation(ledger), sort_keys=True,
                                     separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(controlled_previous) == BEFORE_CONTROLLED_REPRESENTATION_METADATA_SHA256,

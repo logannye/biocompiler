@@ -105,9 +105,11 @@ class PolicySemanticCoverageTests(unittest.TestCase):
         self.assertIn(before, original)
         destination.write_text(original.replace(before, after, 1), encoding='utf-8')
 
-    def test_controlled_representation_preserves_prior_meanings_without_native_claims(self):
+    def test_controlled_admission_preserves_prior_meanings_without_execution_claims(self):
         disposition = self.ledger['dispositions']['controlled_source_representation']
-        for stage in ('native_source', 'operational', 'implementation', 'material', 'export'):
+        self.assertEqual(disposition['stages']['native_source'], 'contextual')
+        self.assertIn('controlled_native_admission', disposition['owners']['native'])
+        for stage in ('operational', 'implementation', 'material', 'export'):
             self.assertEqual(disposition['stages'][stage], 'unsupported')
         additions = [row for row in self.ledger['entries']
                      if row['disposition'] == 'controlled_source_representation']
@@ -125,7 +127,9 @@ class PolicySemanticCoverageTests(unittest.TestCase):
     def test_complete_legacy_ledger_projects_to_original_authority(self):
         previous = copy.deepcopy(self.ledger)
         for key in ('controlled_source_codec', 'controlled_native_shapes',
-                    'controlled_source_positive', 'controlled_source_rejection'):
+                    'controlled_source_positive', 'controlled_source_rejection',
+                    'controlled_native_admission', 'controlled_native_admission_positive',
+                    'controlled_native_admission_rejection'):
             del previous['references'][key]
         del previous['dispositions']['controlled_source_representation']
         previous['entries'] = [row for row in previous['entries']

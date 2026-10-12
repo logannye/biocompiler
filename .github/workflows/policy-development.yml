@@ -46,6 +46,14 @@ jobs:
             default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
       - name: Install ordinary dependencies, build once and run the fixed native suite inventory
         run: python -B tools/check_policy_development.py run
+      - name: Exercise controlled admission through the same fresh native build
+        env:
+          PYTHONPATH: src
+        run: |
+          python -B tools/check_policy_controlled_composition.py \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output "$GITHUB_WORKSPACE/generated/development-feedback/controlled-composition.json"
       - name: Exercise quantitative assurance through the same fresh native build
         env:
           PYTHONPATH: src

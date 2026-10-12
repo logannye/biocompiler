@@ -566,6 +566,8 @@ def cli_commands(source: Source, registration="main"):
 
 
 def ownership(module, category):
+    if module in {"biocompiler.core_policy_controlled_composition", "biocompiler.policy.controlled_material"}:
+        return "Python", ["LM-12", "LM-20", "LM-25"], "retain_original_controlled_authority_and_read_only_native_admission_without_construction_behavior_or_export_acceptance"
     if module == "biocompiler._policy_coupled_wire":
         return "Python", ["LM-12", "LM-25"], "retain_bounded_lossless_coupled_transport_without_semantic_acceptance_authority"
     if category == "studio_asset":
@@ -619,6 +621,8 @@ def ownership(module, category):
 
 
 def authority(module, category):
+    if module in {"biocompiler.core_policy_controlled_composition", "biocompiler.policy.controlled_material"}:
+        return "fresh_native_controlled_source_authority_and_complete_finite_input_domain_admission_only"
     if module == "biocompiler._policy_coupled_wire":
         return "canonical_original_document_identity_only_fresh_native_checks_remain_required_for_acceptance"
     if category in {"example", "studio_asset"}:

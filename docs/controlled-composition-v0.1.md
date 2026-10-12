@@ -252,6 +252,12 @@ unresolved evidence cannot be reclassified as satisfied by an unrelated model.
 
 ## 7. Complete finite domain, suffix and non-vacuity
 
+The RC3 [closed operating-domain grammar](controlled-composition-domain-v0.1.md)
+specifies the original typed inputs, fixed restrictions and finite Cartesian
+factors. Its native cursor enumerates input histories without evaluating the
+activity mechanism. Receipts distinguish complete enumeration, exhaustion and
+cancellation, and retain the domain fingerprint and fixed/factor census.
+
 The original domain declares a decision cutoff `C`, positive source deadlines,
 and an inclusive final horizon `H`. Every admitted physical/evidence/lifecycle
 choice through tick `C` is explored. After `C`, the suffix has no start/end/reset

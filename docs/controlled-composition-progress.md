@@ -45,9 +45,9 @@ all native work hosted under the applicable authorization.
 | RC0 | Complete locally | Owned branch, read-only upstream refresh, protected-checkout snapshot, five static baselines, explicit reconciliation path and progress record. |
 | RC1 | Complete locally | Reviewed semantic decision, independent schema, typed descriptions, immutable source snapshots, literal wire fixtures and 41 declarative acceptance cases. Frozen 442-test runs passed on Python 3.11 and 3.14; both typing configurations and all seven static checks passed. Native admission and execution remain pending. |
 | RC2 | Acquisition checkpoint complete; gate open | The separately named patent pair #197/#206 has source-pinned literal fragments/products and bounded consistency checks. The authorized-input importer and two complete RNA adaptations remain open; see the acquisition assessment. |
-| RC3 | Representation started; admission pending | New Python declaration/serialization and generated native shape table are present. Complete request/domain/model/material admission and capability dispatch remain open. |
+| RC3 | Implementation complete; hosted validation pending | Closed v0.14 original authority, native source/material/context closure, complete finite-domain enumeration, guarded read-only admission and immutable Python transport. Four native suites plus a separate hosted SDK campaign await execution. |
 | RC4 | Planned | Construct and independently check both complete RNA members. |
-| RC5 | Planned | Add activity semantics, source requirements, domain enumeration and independent model/candidate checking. |
+| RC5 | Planned | Add activity semantics, source requirement monitors and independent model/candidate checking over the RC3 domain. |
 | RC6 | Planned | Complete ResearchProject, export/reopen and installed starter. |
 | RC7 | Planned | Coherent hosted, cross-platform, installed and artifact acceptance. |
 | RC8 | Planned | Reconcile, integrate, validate actual main and publish under its own evidence. |
@@ -86,7 +86,8 @@ in the named patent reference or infer its activity model from requested answers
    requires a fresh checked implementation, and formatting requires checked
    material. Never fabricate those private capabilities to unblock RC4. Until
    RC5 and complete joined checking exist, structural diagnostics remain partial.
-   Advertise the native controlled profile only after its full path exists.
+   Advertise compile/check/export only after the full path exists. RC3 separately
+   advertises read-only admission with no candidate, artifact or behavior claim.
 5. **RC6 onward.** Bind ResearchProject v0.3, then complete fresh export/reopen,
    hosted native and installed validation, independent artifact audit and normal
    integration. Retain the first-MVP/E1 owner and their gates throughout.
@@ -128,3 +129,36 @@ branches, working-tree status and planning-file hashes match the RC0 snapshot.
 Local RC1 source checkpoint: `060666350ed40dc4f6e75084a04091fcbd694d93`.
 The accompanying acquisition metadata and validation receipt are a separate local
 documentation checkpoint; no push, PR, hosted run or release was performed.
+
+## RC3 implementation checkpoint
+
+The user authorized artificial fixtures and hosted native validation on
+2026-10-12. RC3 is an additive native admission route, separate from all existing
+MVP/E1 source and material profiles. The original request is closed v0.14 and
+retains complete source definitions, model, two complete artificial MA/MG RNA
+roots, expected products, context, assembly, domain and resource authority. No
+real reference RNA design has been inferred from the acquired fragments.
+
+The controlled domain is a factorized Cartesian grammar with explicit fixed
+frames, executor-owned controller/availability, generation-owned antigen
+evidence, reusable encounters, a finite intervention cutoff and a hold-physical
+suffix. Missing, stale, invalid and conflicting evidence cannot rewrite physical
+inputs. Every permitted prefix is retained even when states converge. A domain
+contradiction rejects the entire request; cancellation or exhaustion cannot
+produce admission. A fixed example and independent 12-history Cartesian case
+have literal native test censuses, pending hosted execution.
+
+The new `admit-policy-component-material` operation is read-only on Core and
+Verify. Its capability is separate from compile/check/export. The result binds
+the complete originals and full source correspondence, includes grammar and
+traversal counts, and reports construction/behavior as `not_performed` and
+empirical status as `unassessed`. A one-shot native guard owns the work budget
+through publication of the exact complete protocol response.
+
+RC3 initially admits exactly two direct complete supplied roots, explicit RNA
+regions and chemistry, one declared product per member and no transforms,
+complexes or helpers. This is an explicit admission restriction, not material
+reconstruction or translation evidence. RC4 adds independent construction and
+RC5 adds source/behavior acceptance. See the [request contract](controlled-composition-request-v0.14.md),
+[domain grammar](controlled-composition-domain-v0.1.md), and
+[admission operation](controlled-composition-native-admission-v0.1.md).

@@ -65,6 +65,11 @@ PRIVATE_TEST_TOOLS = {
         {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support"}, "test_support"),
 }
 TESTS = {
+    "test_policy_controlled_source": {'bioc_domain', 'bioc_wire', 'bioc_checker', 'zarith'},
+    "test_policy_controlled_domain": {'bioc_domain', 'bioc_wire', 'zarith'},
+    "test_policy_controlled_composition_admission": {'bioc_domain', 'bioc_wire', 'bioc_checker', 'zarith'},
+    "test_policy_controlled_composition_service": {'bioc_wire', 'zarith', 'bioc_service'},
+
     'test_policy_quantitative_composition': {'bioc_semantics', 'bioc_service', 'bioc_candidate_runtime', 'bioc_wire', 'bioc_compiler', 'bioc_realization_checker', 'zarith', 'bioc_domain', 'bioc_checker', 'bioc_producer_service'},
     'test_policy_approximation': {'bioc_semantics', 'bioc_service', 'bioc_candidate_runtime', 'bioc_wire', 'bioc_compiler', 'bioc_realization_checker', 'zarith', 'bioc_domain', 'bioc_checker', 'bioc_producer_service'},
     'test_policy_realization_evidence': {'bioc_semantics', 'bioc_service', 'bioc_candidate_runtime', 'bioc_wire', 'bioc_compiler', 'bioc_realization_checker', 'zarith', 'bioc_domain', 'bioc_checker', 'bioc_producer_service'},
@@ -691,6 +696,10 @@ def check_boundaries(root: Path):
                     'test_policy_approximation': ['policy_approximation_v01.json'],
                     'test_policy_realization_evidence': ['policy_realization_evidence_v01.json', 'policy_quantitative_network_v01.json'],
                     'test_policy_quantitative_assurance': ['policy_approximation_v01.json', 'policy_realization_evidence_v01.json', 'policy_quantitative_network_v01.json', 'policy_quantitative_composition_v01.json'],
+                    "test_policy_controlled_source": ["policy_controlled_source_v01.json"],
+                    "test_policy_controlled_domain": ["policy_controlled_domain_v01.json"],
+                    "test_policy_controlled_composition_admission": ["policy_controlled_request_v014.json"],
+                    "test_policy_controlled_composition_service": ["policy_controlled_request_v014.json"],
                     "test_policy_refinement": ["policy_finite_machine_v01.json"],
                     "test_policy_quantitative_network": ["policy_quantitative_network_v01.json", "policy_quantitative_transfer_v01.json"],
                     "test_policy_quantitative_transfer": ["policy_quantitative_transfer_v01.json", "policy_quantitative_step_v01.json"],

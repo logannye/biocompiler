@@ -1,0 +1,1896 @@
+{
+  "$type": "BuildRequest",
+  "assurance": {
+    "$type": "AssuranceRequest",
+    "assumptions": [],
+    "horizon": {
+      "$type": "Quantity",
+      "amount": "10",
+      "unit": {
+        "$type": "Unit",
+        "dimension": "time",
+        "id": "second",
+        "quantity_kind": "duration",
+        "reference": null,
+        "scale": "1"
+      }
+    },
+    "level": "bounded",
+    "requirements": [
+      "safety",
+      "onset",
+      "controller-off",
+      "antigen-off",
+      "component-off",
+      "reactivation"
+    ],
+    "tolerances": []
+  },
+  "deployment": {
+    "$type": "Deployment",
+    "bindings": [
+      {
+        "$type": "RoleBinding",
+        "chassis": {
+          "$type": "ChassisProfile",
+          "activation_states": [
+            "unspecified"
+          ],
+          "capabilities": [
+            {
+              "$type": "DefinitionRef",
+              "digest": "bbb9426372a84b7d558d76329e6e0dda21ad5d2d15f856dfbf5a7abb373b1074",
+              "id": "contract.capability",
+              "version": "1"
+            }
+          ],
+          "differentiation_states": [
+            "unspecified"
+          ],
+          "environment": [],
+          "id": "artificial-human-tcell",
+          "interfaces": [],
+          "lineage": "T_cell",
+          "operational_model": {
+            "$type": "DefinitionRef",
+            "digest": "8c247b8a758eb2125b8e4cc8843deb5dfeae3a92dc4a5b7cb9d77bd2b9e4cd32",
+            "id": "context.chassis",
+            "version": "1"
+          },
+          "recipient_class": "immune",
+          "species": "human",
+          "subtype": "artificial",
+          "version": "1"
+        },
+        "role": {
+          "$type": "Ref",
+          "id": "tcell",
+          "kind": "Role"
+        }
+      }
+    ],
+    "delivery": {
+      "$type": "DeliveryContract",
+      "activation": {
+        "$type": "DefinitionRef",
+        "digest": "9d8c3769ed2cd75451097e18302b9fd59871ce2901e6faaa8af18649376a047a",
+        "id": "context.activation",
+        "version": "1"
+      },
+      "arrival": {
+        "$type": "DefinitionRef",
+        "digest": "62fc34dff55e0795b86e552e2b5414b7e7542d79ea2b77983eb1ea8ec3d59e87",
+        "id": "context.arrival",
+        "version": "1"
+      },
+      "assumptions": [],
+      "co_delivery": "same_recipient",
+      "contract": {
+        "$type": "DefinitionRef",
+        "digest": "c104f2257c21d79a9eb3deb78018aa1bb69715e24d7130c016aa3807a0bfed6c",
+        "id": "artificial.delivery",
+        "version": "1"
+      },
+      "expression": {
+        "$type": "DefinitionRef",
+        "digest": "6306813a976c060ee6e3153ebe540f79713fdd64e83e706a9cae964a61906ba8",
+        "id": "context.expression",
+        "version": "1"
+      },
+      "id": "artificial-two-rna-delivery",
+      "intended_recipients": [
+        {
+          "$type": "Ref",
+          "id": "tcell",
+          "kind": "Role"
+        }
+      ]
+    },
+    "environment": [],
+    "id": "artificial-in-vivo-deployment",
+    "payload": {
+      "$type": "RNAConstraints",
+      "copy_number": null,
+      "design_count": 1,
+      "dose": null,
+      "effector_persistence": null,
+      "format": "RNA",
+      "helper_count": 0,
+      "member_count": 2,
+      "orf_count": 2,
+      "payload_persistence": null,
+      "product_count": 2
+    },
+    "route": "in_vivo"
+  },
+  "implementations": {
+    "$type": "ImplementationCatalogLock",
+    "id": "artificial-catalog",
+    "implementations": [
+      {
+        "$type": "ImplementationBinding",
+        "chassis": [
+          "artificial-human-tcell"
+        ],
+        "dependencies": [
+          {
+            "$type": "DefinitionRef",
+            "digest": "1799db79ac7561387fb048d456a65cc47fbf630bc69cd3b12320d4d09365f3d5",
+            "id": "artificial.product-a",
+            "version": "1"
+          },
+          {
+            "$type": "DefinitionRef",
+            "digest": "457fcd25c48e2f427c003dff0aba817ff2cbf54e88ba2d1e6730a802316fb6a9",
+            "id": "artificial.product-b",
+            "version": "1"
+          },
+          {
+            "$type": "DefinitionRef",
+            "digest": "788f926b23e88b8d640409f7cbd683c62e4155eb1d9314f1cf0ca83795b319a1",
+            "id": "contract.controller",
+            "version": "1"
+          },
+          {
+            "$type": "DefinitionRef",
+            "digest": "86f1a0a3571aae5ac147750366de087dff8c560b75c0b002ee20418aace6decb",
+            "id": "artificial.localization",
+            "version": "1"
+          }
+        ],
+        "evidence": [],
+        "id": "artificial-supplied-implementation",
+        "operation": {
+          "$type": "DefinitionRef",
+          "digest": "8a0ea43e1142c118ba093d49342afe15f4dfb45f9c97557cd692f888dcb36904",
+          "id": "contract.activity",
+          "version": "1"
+        },
+        "payload_formats": [
+          "RNA"
+        ],
+        "realization": {
+          "$type": "DefinitionRef",
+          "digest": "90a57123f30400fa292fa90caaf189b457cde863f9e0edcafb90730819f59466",
+          "id": "context.mechanism",
+          "version": "1"
+        },
+        "version": "1"
+      }
+    ],
+    "version": "1"
+  },
+  "profile": "biocompiler.policy_controlled_composition_source.v0.1",
+  "program": {
+    "$type": "PolicyProgram",
+    "declarations": [
+      {
+        "$type": "Role",
+        "id": "tcell",
+        "lineage_role": false,
+        "population": null,
+        "requires": [
+          {
+            "$type": "DefinitionRef",
+            "digest": "bbb9426372a84b7d558d76329e6e0dda21ad5d2d15f856dfbf5a7abb373b1074",
+            "id": "contract.capability",
+            "version": "1"
+          }
+        ]
+      },
+      {
+        "$type": "Subject",
+        "domain": null,
+        "encounter": {
+          "$type": "Ref",
+          "id": "contact",
+          "kind": "Encounter"
+        },
+        "entity_kind": "cell",
+        "executor": {
+          "$type": "Ref",
+          "id": "tcell",
+          "kind": "Role"
+        },
+        "id": "target",
+        "identity": "encounter"
+      },
+      {
+        "$type": "Encounter",
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "2d1ee0daa9e5f4691fe1160c0c838158ab37847b9641aabab4e748b44cfc35f3",
+          "id": "contract.encounter",
+          "version": "1"
+        },
+        "executor": {
+          "$type": "Ref",
+          "id": "tcell",
+          "kind": "Role"
+        },
+        "id": "contact",
+        "target": {
+          "$type": "Ref",
+          "id": "target",
+          "kind": "Subject"
+        },
+        "termination": "explicit_event"
+      },
+      {
+        "$type": "Clock",
+        "basis": "logical",
+        "id": "clock",
+        "resolution": {
+          "$type": "Quantity",
+          "amount": "1",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "simultaneous": "atomic_batch"
+      },
+      {
+        "$type": "Observation",
+        "access": "cell",
+        "clock": {
+          "$type": "Ref",
+          "id": "clock",
+          "kind": "Clock"
+        },
+        "coherence": "atomic_frame",
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "21b34bb1c5b00c7191014f5d651614b3d72c4bfed338abd2609d4c594017c2fd",
+          "id": "contract.antigen",
+          "version": "1"
+        },
+        "coverage": "sampled",
+        "freshness": {
+          "$type": "Quantity",
+          "amount": "1",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "id": "antigen",
+        "invalidity": [
+          "missing",
+          "stale",
+          "invalid",
+          "conflicting"
+        ],
+        "observer": {
+          "$type": "Ref",
+          "id": "tcell",
+          "kind": "Role"
+        },
+        "spatial_scope": null,
+        "subject": {
+          "$type": "Ref",
+          "id": "target",
+          "kind": "Subject"
+        },
+        "value_type": {
+          "$type": "TypeSpec",
+          "entity_kind": null,
+          "kind": "truth",
+          "unit": null
+        }
+      },
+      {
+        "$type": "Observation",
+        "access": "cell",
+        "clock": {
+          "$type": "Ref",
+          "id": "clock",
+          "kind": "Clock"
+        },
+        "coherence": "atomic_frame",
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "788f926b23e88b8d640409f7cbd683c62e4155eb1d9314f1cf0ca83795b319a1",
+          "id": "contract.controller",
+          "version": "1"
+        },
+        "coverage": "sampled",
+        "freshness": {
+          "$type": "Quantity",
+          "amount": "1",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "id": "controller",
+        "invalidity": [
+          "missing",
+          "stale",
+          "invalid",
+          "conflicting"
+        ],
+        "observer": {
+          "$type": "Ref",
+          "id": "tcell",
+          "kind": "Role"
+        },
+        "spatial_scope": null,
+        "subject": {
+          "$type": "Ref",
+          "id": "tcell",
+          "kind": "Role"
+        },
+        "value_type": {
+          "$type": "TypeSpec",
+          "entity_kind": null,
+          "kind": "truth",
+          "unit": null
+        }
+      },
+      {
+        "$type": "Parameter",
+        "id": "product-a",
+        "lower": null,
+        "selection": "fixed",
+        "upper": null,
+        "value": "artificial-product-a",
+        "value_type": {
+          "$type": "TypeSpec",
+          "entity_kind": null,
+          "kind": "text",
+          "unit": null
+        }
+      },
+      {
+        "$type": "Parameter",
+        "id": "product-b",
+        "lower": null,
+        "selection": "fixed",
+        "upper": null,
+        "value": "artificial-product-b",
+        "value_type": {
+          "$type": "TypeSpec",
+          "entity_kind": null,
+          "kind": "text",
+          "unit": null
+        }
+      },
+      {
+        "$type": "ControlledActivity",
+        "clock": {
+          "$type": "Ref",
+          "id": "clock",
+          "kind": "Clock"
+        },
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "8a0ea43e1142c118ba093d49342afe15f4dfb45f9c97557cd692f888dcb36904",
+          "id": "contract.activity",
+          "version": "1"
+        },
+        "executor": {
+          "$type": "Ref",
+          "id": "tcell",
+          "kind": "Role"
+        },
+        "gate": {
+          "$type": "Expr",
+          "args": [
+            {
+              "$type": "Expr",
+              "args": [],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "observe",
+              "ref": {
+                "$type": "Ref",
+                "id": "antigen",
+                "kind": "Observation"
+              },
+              "scope": {
+                "$type": "Ref",
+                "id": "target",
+                "kind": "Subject"
+              },
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "truth",
+                "unit": null
+              }
+            },
+            {
+              "$type": "Expr",
+              "args": [],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "observe",
+              "ref": {
+                "$type": "Ref",
+                "id": "controller",
+                "kind": "Observation"
+              },
+              "scope": {
+                "$type": "Ref",
+                "id": "tcell",
+                "kind": "Role"
+              },
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "truth",
+                "unit": null
+              }
+            }
+          ],
+          "binding": null,
+          "clock": null,
+          "contract": null,
+          "coverage": null,
+          "duration": null,
+          "op": "all",
+          "ref": null,
+          "scope": null,
+          "value": null,
+          "value_type": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "truth",
+            "unit": null
+          }
+        },
+        "id": "activity",
+        "products": [
+          {
+            "$type": "Ref",
+            "id": "product-a",
+            "kind": "Parameter"
+          },
+          {
+            "$type": "Ref",
+            "id": "product-b",
+            "kind": "Parameter"
+          }
+        ],
+        "readout": {
+          "$type": "DefinitionRef",
+          "digest": "8630b28c0010e32a4d421d1e25abb9a489dfe65b98dfee74496e6b6ec49a2f9f",
+          "id": "contract.readout",
+          "version": "1"
+        },
+        "subject": {
+          "$type": "Ref",
+          "id": "target",
+          "kind": "Subject"
+        }
+      },
+      {
+        "$type": "Requirement",
+        "applies_to": [
+          {
+            "$type": "Ref",
+            "id": "activity",
+            "kind": "ControlledActivity"
+          }
+        ],
+        "assumptions": [],
+        "clock": {
+          "$type": "Ref",
+          "id": "clock",
+          "kind": "Clock"
+        },
+        "condition": null,
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "444f94e9a32f26e7a7d95959bc5d8e7cf2e80d056bc9e5b56feb8c92b542efd6",
+          "id": "requirement.safety",
+          "version": "1"
+        },
+        "deadline": null,
+        "description": "Require no_unauthorized_activation.",
+        "horizon": {
+          "$type": "Quantity",
+          "amount": "10",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "id": "safety",
+        "kind": "safety",
+        "lower": null,
+        "response": null,
+        "scope": {
+          "$type": "Scope",
+          "kind": "executor",
+          "subject": {
+            "$type": "Ref",
+            "id": "tcell",
+            "kind": "Role"
+          }
+        },
+        "trigger": null,
+        "upper": null
+      },
+      {
+        "$type": "Requirement",
+        "applies_to": [
+          {
+            "$type": "Ref",
+            "id": "activity",
+            "kind": "ControlledActivity"
+          }
+        ],
+        "assumptions": [],
+        "clock": {
+          "$type": "Ref",
+          "id": "clock",
+          "kind": "Clock"
+        },
+        "condition": null,
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "d8301d433c9989535262e3d1e7b245db02d259554c900eb3af85613717bc67e1",
+          "id": "requirement.onset",
+          "version": "1"
+        },
+        "deadline": {
+          "$type": "Quantity",
+          "amount": "2",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "description": "Require initial_activation.",
+        "horizon": {
+          "$type": "Quantity",
+          "amount": "10",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "id": "onset",
+        "kind": "progress",
+        "lower": null,
+        "response": {
+          "$type": "Expr",
+          "args": [
+            {
+              "$type": "Expr",
+              "args": [],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "activity_band",
+              "ref": {
+                "$type": "Ref",
+                "id": "activity",
+                "kind": "ControlledActivity"
+              },
+              "scope": {
+                "$type": "Ref",
+                "id": "target",
+                "kind": "Subject"
+              },
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            },
+            {
+              "$type": "Expr",
+              "args": [],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "literal",
+              "ref": null,
+              "scope": null,
+              "value": "active",
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            }
+          ],
+          "binding": null,
+          "clock": null,
+          "contract": null,
+          "coverage": null,
+          "duration": null,
+          "op": "eq",
+          "ref": null,
+          "scope": null,
+          "value": null,
+          "value_type": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "truth",
+            "unit": null
+          }
+        },
+        "scope": {
+          "$type": "Scope",
+          "kind": "executor",
+          "subject": {
+            "$type": "Ref",
+            "id": "tcell",
+            "kind": "Role"
+          }
+        },
+        "trigger": null,
+        "upper": null
+      },
+      {
+        "$type": "Requirement",
+        "applies_to": [
+          {
+            "$type": "Ref",
+            "id": "activity",
+            "kind": "ControlledActivity"
+          }
+        ],
+        "assumptions": [],
+        "clock": {
+          "$type": "Ref",
+          "id": "clock",
+          "kind": "Clock"
+        },
+        "condition": null,
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "a847772530d707269d8e9c7a30a63012e165dee638cddbd8579d3b8257a16040",
+          "id": "requirement.controller-off",
+          "version": "1"
+        },
+        "deadline": {
+          "$type": "Quantity",
+          "amount": "2",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "description": "Require controller_cessation.",
+        "horizon": {
+          "$type": "Quantity",
+          "amount": "10",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "id": "controller-off",
+        "kind": "progress",
+        "lower": null,
+        "response": {
+          "$type": "Expr",
+          "args": [
+            {
+              "$type": "Expr",
+              "args": [],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "activity_band",
+              "ref": {
+                "$type": "Ref",
+                "id": "activity",
+                "kind": "ControlledActivity"
+              },
+              "scope": {
+                "$type": "Ref",
+                "id": "target",
+                "kind": "Subject"
+              },
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            },
+            {
+              "$type": "Expr",
+              "args": [],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "literal",
+              "ref": null,
+              "scope": null,
+              "value": "background",
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            }
+          ],
+          "binding": null,
+          "clock": null,
+          "contract": null,
+          "coverage": null,
+          "duration": null,
+          "op": "eq",
+          "ref": null,
+          "scope": null,
+          "value": null,
+          "value_type": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "truth",
+            "unit": null
+          }
+        },
+        "scope": {
+          "$type": "Scope",
+          "kind": "executor",
+          "subject": {
+            "$type": "Ref",
+            "id": "tcell",
+            "kind": "Role"
+          }
+        },
+        "trigger": null,
+        "upper": null
+      },
+      {
+        "$type": "Requirement",
+        "applies_to": [
+          {
+            "$type": "Ref",
+            "id": "activity",
+            "kind": "ControlledActivity"
+          }
+        ],
+        "assumptions": [],
+        "clock": {
+          "$type": "Ref",
+          "id": "clock",
+          "kind": "Clock"
+        },
+        "condition": null,
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "add0e74b11e277735b97a8bc68aaee5ee7680eb7d47b69f0be3fc013f906d9e8",
+          "id": "requirement.antigen-off",
+          "version": "1"
+        },
+        "deadline": {
+          "$type": "Quantity",
+          "amount": "2",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "description": "Require antigen_cessation.",
+        "horizon": {
+          "$type": "Quantity",
+          "amount": "10",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "id": "antigen-off",
+        "kind": "progress",
+        "lower": null,
+        "response": {
+          "$type": "Expr",
+          "args": [
+            {
+              "$type": "Expr",
+              "args": [],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "activity_band",
+              "ref": {
+                "$type": "Ref",
+                "id": "activity",
+                "kind": "ControlledActivity"
+              },
+              "scope": {
+                "$type": "Ref",
+                "id": "target",
+                "kind": "Subject"
+              },
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            },
+            {
+              "$type": "Expr",
+              "args": [],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "literal",
+              "ref": null,
+              "scope": null,
+              "value": "background",
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            }
+          ],
+          "binding": null,
+          "clock": null,
+          "contract": null,
+          "coverage": null,
+          "duration": null,
+          "op": "eq",
+          "ref": null,
+          "scope": null,
+          "value": null,
+          "value_type": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "truth",
+            "unit": null
+          }
+        },
+        "scope": {
+          "$type": "Scope",
+          "kind": "executor",
+          "subject": {
+            "$type": "Ref",
+            "id": "tcell",
+            "kind": "Role"
+          }
+        },
+        "trigger": null,
+        "upper": null
+      },
+      {
+        "$type": "Requirement",
+        "applies_to": [
+          {
+            "$type": "Ref",
+            "id": "activity",
+            "kind": "ControlledActivity"
+          }
+        ],
+        "assumptions": [],
+        "clock": {
+          "$type": "Ref",
+          "id": "clock",
+          "kind": "Clock"
+        },
+        "condition": null,
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "ec8998c6fad7fd05779e6cf12e204148db5c86a4fb76dbab31dbd58ab12add6c",
+          "id": "requirement.component-off",
+          "version": "1"
+        },
+        "deadline": {
+          "$type": "Quantity",
+          "amount": "2",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "description": "Require component_cessation.",
+        "horizon": {
+          "$type": "Quantity",
+          "amount": "10",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "id": "component-off",
+        "kind": "progress",
+        "lower": null,
+        "response": {
+          "$type": "Expr",
+          "args": [
+            {
+              "$type": "Expr",
+              "args": [],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "activity_band",
+              "ref": {
+                "$type": "Ref",
+                "id": "activity",
+                "kind": "ControlledActivity"
+              },
+              "scope": {
+                "$type": "Ref",
+                "id": "target",
+                "kind": "Subject"
+              },
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            },
+            {
+              "$type": "Expr",
+              "args": [],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "literal",
+              "ref": null,
+              "scope": null,
+              "value": "background",
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            }
+          ],
+          "binding": null,
+          "clock": null,
+          "contract": null,
+          "coverage": null,
+          "duration": null,
+          "op": "eq",
+          "ref": null,
+          "scope": null,
+          "value": null,
+          "value_type": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "truth",
+            "unit": null
+          }
+        },
+        "scope": {
+          "$type": "Scope",
+          "kind": "executor",
+          "subject": {
+            "$type": "Ref",
+            "id": "tcell",
+            "kind": "Role"
+          }
+        },
+        "trigger": null,
+        "upper": null
+      },
+      {
+        "$type": "Requirement",
+        "applies_to": [
+          {
+            "$type": "Ref",
+            "id": "activity",
+            "kind": "ControlledActivity"
+          }
+        ],
+        "assumptions": [],
+        "clock": {
+          "$type": "Ref",
+          "id": "clock",
+          "kind": "Clock"
+        },
+        "condition": null,
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "e6929505917ed3a60d9f0561d53121276e5097b05b843eb163788862ed68811b",
+          "id": "requirement.reactivation",
+          "version": "1"
+        },
+        "deadline": {
+          "$type": "Quantity",
+          "amount": "2",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "description": "Require reactivation.",
+        "horizon": {
+          "$type": "Quantity",
+          "amount": "10",
+          "unit": {
+            "$type": "Unit",
+            "dimension": "time",
+            "id": "second",
+            "quantity_kind": "duration",
+            "reference": null,
+            "scale": "1"
+          }
+        },
+        "id": "reactivation",
+        "kind": "progress",
+        "lower": null,
+        "response": {
+          "$type": "Expr",
+          "args": [
+            {
+              "$type": "Expr",
+              "args": [],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "activity_band",
+              "ref": {
+                "$type": "Ref",
+                "id": "activity",
+                "kind": "ControlledActivity"
+              },
+              "scope": {
+                "$type": "Ref",
+                "id": "target",
+                "kind": "Subject"
+              },
+              "value": null,
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            },
+            {
+              "$type": "Expr",
+              "args": [],
+              "binding": null,
+              "clock": null,
+              "contract": null,
+              "coverage": null,
+              "duration": null,
+              "op": "literal",
+              "ref": null,
+              "scope": null,
+              "value": "active",
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            }
+          ],
+          "binding": null,
+          "clock": null,
+          "contract": null,
+          "coverage": null,
+          "duration": null,
+          "op": "eq",
+          "ref": null,
+          "scope": null,
+          "value": null,
+          "value_type": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "truth",
+            "unit": null
+          }
+        },
+        "scope": {
+          "$type": "Scope",
+          "kind": "executor",
+          "subject": {
+            "$type": "Ref",
+            "id": "tcell",
+            "kind": "Role"
+          }
+        },
+        "trigger": null,
+        "upper": null
+      }
+    ],
+    "id": "artificial-controlled-source",
+    "profile": "biocompiler.policy_controlled_composition_source.v0.1",
+    "semantics": {
+      "$type": "SemanticBundle",
+      "definitions": [
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "capability",
+          "clauses": [
+            {
+              "$type": "ContractClause",
+              "description": "Normative controlled source interpretation.",
+              "expression": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "literal",
+                "ref": null,
+                "scope": null,
+                "value": "biocompiler.controlled_source.human_t_cell.v0.1",
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              },
+              "kind": "postcondition"
+            }
+          ],
+          "executor_kind": null,
+          "id": "contract.capability",
+          "meaning": "Supplied artificial contract.capability contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "encounter",
+          "clauses": [
+            {
+              "$type": "ContractClause",
+              "description": "Normative controlled source interpretation.",
+              "expression": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "literal",
+                "ref": null,
+                "scope": null,
+                "value": "biocompiler.controlled_source.encounter.v0.1",
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              },
+              "kind": "postcondition"
+            }
+          ],
+          "executor_kind": null,
+          "id": "contract.encounter",
+          "meaning": "Supplied artificial contract.encounter contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "observation",
+          "clauses": [
+            {
+              "$type": "ContractClause",
+              "description": "Normative controlled source interpretation.",
+              "expression": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "literal",
+                "ref": null,
+                "scope": null,
+                "value": "biocompiler.controlled_source.antigen.v0.1",
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              },
+              "kind": "postcondition"
+            }
+          ],
+          "executor_kind": null,
+          "id": "contract.antigen",
+          "meaning": "Supplied artificial contract.antigen contract; no biological evidence.",
+          "parameters": [],
+          "result": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "truth",
+            "unit": null
+          },
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "observation",
+          "clauses": [
+            {
+              "$type": "ContractClause",
+              "description": "Normative controlled source interpretation.",
+              "expression": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "literal",
+                "ref": null,
+                "scope": null,
+                "value": "biocompiler.controlled_source.controller.v0.1",
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              },
+              "kind": "postcondition"
+            }
+          ],
+          "executor_kind": null,
+          "id": "contract.controller",
+          "meaning": "Supplied artificial contract.controller contract; no biological evidence.",
+          "parameters": [],
+          "result": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "truth",
+            "unit": null
+          },
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "operation",
+          "clauses": [
+            {
+              "$type": "ContractClause",
+              "description": "Normative controlled source interpretation.",
+              "expression": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "literal",
+                "ref": null,
+                "scope": null,
+                "value": "biocompiler.controlled_source.activity.v0.1",
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              },
+              "kind": "postcondition"
+            }
+          ],
+          "executor_kind": null,
+          "id": "contract.activity",
+          "meaning": "Supplied artificial contract.activity contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "observation",
+          "clauses": [
+            {
+              "$type": "ContractClause",
+              "description": "Normative controlled source interpretation.",
+              "expression": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "literal",
+                "ref": null,
+                "scope": null,
+                "value": "biocompiler.controlled_source.readout.v0.1",
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              },
+              "kind": "postcondition"
+            }
+          ],
+          "executor_kind": null,
+          "id": "contract.readout",
+          "meaning": "Supplied artificial contract.readout contract; no biological evidence.",
+          "parameters": [],
+          "result": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "text",
+            "unit": null
+          },
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "requirement",
+          "clauses": [
+            {
+              "$type": "ContractClause",
+              "description": "Normative controlled source interpretation.",
+              "expression": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "literal",
+                "ref": null,
+                "scope": null,
+                "value": "biocompiler.controlled_source.no_unauthorized_activation.v0.1",
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              },
+              "kind": "postcondition"
+            }
+          ],
+          "executor_kind": null,
+          "id": "requirement.safety",
+          "meaning": "Supplied artificial requirement.safety contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "requirement",
+          "clauses": [
+            {
+              "$type": "ContractClause",
+              "description": "Normative controlled source interpretation.",
+              "expression": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "literal",
+                "ref": null,
+                "scope": null,
+                "value": "biocompiler.controlled_source.initial_activation.v0.1",
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              },
+              "kind": "postcondition"
+            }
+          ],
+          "executor_kind": null,
+          "id": "requirement.onset",
+          "meaning": "Supplied artificial requirement.onset contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "requirement",
+          "clauses": [
+            {
+              "$type": "ContractClause",
+              "description": "Normative controlled source interpretation.",
+              "expression": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "literal",
+                "ref": null,
+                "scope": null,
+                "value": "biocompiler.controlled_source.controller_cessation.v0.1",
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              },
+              "kind": "postcondition"
+            }
+          ],
+          "executor_kind": null,
+          "id": "requirement.controller-off",
+          "meaning": "Supplied artificial requirement.controller-off contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "requirement",
+          "clauses": [
+            {
+              "$type": "ContractClause",
+              "description": "Normative controlled source interpretation.",
+              "expression": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "literal",
+                "ref": null,
+                "scope": null,
+                "value": "biocompiler.controlled_source.antigen_cessation.v0.1",
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              },
+              "kind": "postcondition"
+            }
+          ],
+          "executor_kind": null,
+          "id": "requirement.antigen-off",
+          "meaning": "Supplied artificial requirement.antigen-off contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "requirement",
+          "clauses": [
+            {
+              "$type": "ContractClause",
+              "description": "Normative controlled source interpretation.",
+              "expression": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "literal",
+                "ref": null,
+                "scope": null,
+                "value": "biocompiler.controlled_source.component_cessation.v0.1",
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              },
+              "kind": "postcondition"
+            }
+          ],
+          "executor_kind": null,
+          "id": "requirement.component-off",
+          "meaning": "Supplied artificial requirement.component-off contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "requirement",
+          "clauses": [
+            {
+              "$type": "ContractClause",
+              "description": "Normative controlled source interpretation.",
+              "expression": {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "literal",
+                "ref": null,
+                "scope": null,
+                "value": "biocompiler.controlled_source.reactivation.v0.1",
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "text",
+                  "unit": null
+                }
+              },
+              "kind": "postcondition"
+            }
+          ],
+          "executor_kind": null,
+          "id": "requirement.reactivation",
+          "meaning": "Supplied artificial requirement.reactivation contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "model",
+          "clauses": [],
+          "executor_kind": null,
+          "id": "context.chassis",
+          "meaning": "Supplied artificial context.chassis contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "delivery",
+          "clauses": [],
+          "executor_kind": null,
+          "id": "context.arrival",
+          "meaning": "Supplied artificial context.arrival contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "model",
+          "clauses": [],
+          "executor_kind": null,
+          "id": "context.expression",
+          "meaning": "Supplied artificial context.expression contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "model",
+          "clauses": [],
+          "executor_kind": null,
+          "id": "context.activation",
+          "meaning": "Supplied artificial context.activation contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "delivery",
+          "clauses": [],
+          "executor_kind": null,
+          "id": "artificial.delivery",
+          "meaning": "Supplied artificial context.delivery contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "model",
+          "clauses": [],
+          "executor_kind": null,
+          "id": "context.mechanism",
+          "meaning": "Supplied artificial context.mechanism contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "model",
+          "clauses": [],
+          "executor_kind": null,
+          "id": "artificial.product-a",
+          "meaning": "Supplied artificial context.product-a contract; no biological evidence.",
+          "parameters": [
+            {
+              "$type": "Parameter",
+              "id": "product_identity",
+              "lower": null,
+              "selection": "fixed",
+              "upper": null,
+              "value": "artificial-product-a",
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            },
+            {
+              "$type": "Parameter",
+              "id": "product_version",
+              "lower": null,
+              "selection": "fixed",
+              "upper": null,
+              "value": "1",
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            },
+            {
+              "$type": "Parameter",
+              "id": "product_sha256",
+              "lower": null,
+              "selection": "fixed",
+              "upper": null,
+              "value": "c7434883f345ffc2100dd9e3750afbbee436ba7535cf5fb26b9be706ce413c9b",
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            }
+          ],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "model",
+          "clauses": [],
+          "executor_kind": null,
+          "id": "artificial.product-b",
+          "meaning": "Supplied artificial context.product-b contract; no biological evidence.",
+          "parameters": [
+            {
+              "$type": "Parameter",
+              "id": "product_identity",
+              "lower": null,
+              "selection": "fixed",
+              "upper": null,
+              "value": "artificial-product-b",
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            },
+            {
+              "$type": "Parameter",
+              "id": "product_version",
+              "lower": null,
+              "selection": "fixed",
+              "upper": null,
+              "value": "1",
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            },
+            {
+              "$type": "Parameter",
+              "id": "product_sha256",
+              "lower": null,
+              "selection": "fixed",
+              "upper": null,
+              "value": "92da7113336e1f9d1cebbb5cfa4ec68ddf5b8ac989f1b6399856e44b100e76a9",
+              "value_type": {
+                "$type": "TypeSpec",
+                "entity_kind": null,
+                "kind": "text",
+                "unit": null
+              }
+            }
+          ],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        },
+        {
+          "$type": "SemanticDefinition",
+          "assumptions": [],
+          "category": "interface",
+          "clauses": [],
+          "executor_kind": null,
+          "id": "artificial.localization",
+          "meaning": "Supplied artificial localization contract; no biological evidence.",
+          "parameters": [],
+          "result": null,
+          "subject_kind": null,
+          "version": "1"
+        }
+      ],
+      "id": "artificial-semantics",
+      "profile": "biocompiler.policy.v0.1",
+      "version": "1"
+    },
+    "source_map": [
+      {
+        "$type": "SourceSpan",
+        "column": 0,
+        "declaration_id": "activity",
+        "file": "artificial_controlled_source.py",
+        "line": 1,
+        "pattern": null
+      }
+    ]
+  }
+}

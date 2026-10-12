@@ -190,7 +190,7 @@
       "anchor": {
         "text": "let records ="
       },
-      "scope": "Generated additive native shape vocabulary only; not wired to native admission."
+      "scope": "Generated additive native shape vocabulary; contextual admission remains owned by the separate controlled source checker."
     },
     "controlled_source_positive": {
       "path": "tests/test_policy_controlled_composition_source.py",
@@ -207,6 +207,30 @@
         "symbol": "ControlledCompositionSourceTests.test_old_profiles_and_standalone_new_records_remain_closed"
       },
       "scope": "Old profiles and standalone roots reject new activity declarations and the controlled source root; no native execution."
+    },
+    "controlled_native_admission": {
+      "path": "core/lib/checker/policy_controlled_source.ml",
+      "kind": "owner",
+      "anchor": {
+        "text": "let admit ~document ="
+      },
+      "scope": "Closed controlled source admission and original occurrence correspondence only; no activity execution or material realization."
+    },
+    "controlled_native_admission_positive": {
+      "path": "core/test/test_policy_controlled_source.ml",
+      "kind": "positive_control",
+      "anchor": {
+        "text": "\"Mixed observation ownership collapsed\""
+      },
+      "scope": "Literal source admission preserves executor versus encounter ownership and exact clock/deadlines; presence is not a hosted test receipt."
+    },
+    "controlled_native_admission_rejection": {
+      "path": "core/test/test_policy_controlled_source.ml",
+      "kind": "rejection_control",
+      "anchor": {
+        "text": "\"controller encounter scope\""
+      },
+      "scope": "Targeted original source scope and authority rejection controls; no behavioral or material acceptance."
     }
   },
   "dispositions": {
@@ -799,13 +823,13 @@
       "stages": {
         "authorable": "supported",
         "python_structure": "contextual",
-        "native_source": "unsupported",
+        "native_source": "contextual",
         "operational": "unsupported",
         "implementation": "unsupported",
         "material": "unsupported",
         "export": "unsupported"
       },
-      "condition": "ControlledActivity and activity_band are shape-checked only within a bounded BuildRequest using the explicit controlled-composition source profile. The additive native shape table is not native admission. Legacy source entry points remain closed; source semantics, realization, material and publication are not implemented by this representation increment.",
+      "condition": "ControlledActivity and activity_band enter only the explicit bounded controlled-composition BuildRequest and closed RC3 source checker. Complete original definitions, typed scope, exact clock/freshness, six requirement forms and source correspondence are admitted contextually; legacy entry points remain closed. RC3 finite input-domain enumeration establishes no activity execution, requirement satisfaction, construction, material acceptance or export.",
       "owners": {
         "source": [
           "python_model",
@@ -813,21 +837,24 @@
         ],
         "native": [
           "controlled_native_shapes",
-          "native_wire"
+          "native_wire",
+          "controlled_native_admission"
         ]
       },
       "witnesses": {
         "positive": [
-          "controlled_source_positive"
+          "controlled_source_positive",
+          "controlled_native_admission_positive"
         ],
         "rejection": [
-          "controlled_source_rejection"
+          "controlled_source_rejection",
+          "controlled_native_admission_rejection"
         ],
         "dedicated": false,
-        "scope": "Shared profile/shape controls only; not per-field semantic witnesses or current hosted acceptance."
+        "scope": "Shared source/profile/admission controls only; not per-field semantic witnesses, behavioral/material proof or a current hosted execution receipt."
       },
       "follow_up": [
-        "SM-RC3",
+        "SM-RC4",
         "SM-RC5",
         "SM-RC7"
       ]
@@ -7148,8 +7175,8 @@
     },
     {
       "id": "controlled_composition_native",
-      "task": "SM-RC3",
-      "description": "The controlled source increment adds inert representation and generated shapes only. Source admission, independent execution, original-authority material bridge and native/installed acceptance remain pending RC3 through RC7."
+      "task": "SM-RC4",
+      "description": "RC3 source/authority and complete bounded input enumeration are separate from construction, independent activity execution, requirement monitoring and native/installed release acceptance, which remain RC4 through RC7 obligations."
     }
   ]
 }

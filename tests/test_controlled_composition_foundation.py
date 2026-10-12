@@ -40,6 +40,12 @@ class ControlledCompositionFoundationTests(unittest.TestCase):
         self.assertEqual(result["native_status"], "not_run")
         self.assertGreater(result["expected_verdict_counts"]["violates"], 0)
 
+    def test_separate_native_admission_cannot_upgrade_behavioral_corpus(self):
+        profile = deepcopy(self.profile)
+        profile["admission_stage"]["behavior"] = "pass"
+        with self.assertRaises(foundation.FoundationError):
+            foundation.validate(profile, self.corpus)
+
     def test_semantically_wrong_candidate_is_still_a_valid_negative_specification(self):
         case = next(row for row in self.corpus["cases"] if row["id"] == "constant_on")
         self.assertEqual(case["expected_verdict"], "violates")

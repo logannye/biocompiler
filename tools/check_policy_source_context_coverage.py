@@ -121,7 +121,7 @@ SOURCE_PINS = {'core/lib/checker/policy_admission.ml': '5f4418b9227fbc2db5fb86ea
  'core/lib/checker/policy_generation_meter.ml': '13c4647bc0efcb50f239af693e8fa3281fdbca4115ce4e5a84bcd4e9a4a1b965',
  'core/lib/checker/policy_generation_meter.mli': 'f1bb20416d692f4d0aa72b92028f75f6ea5ca532ae90e1d7593b424e703bf4ba',
  'core/lib/checker/policy_implementation_binding_check.ml': '82d57264e94313d0dbb95500bd36f0e62472152ceff33542a53632195c166664',
- 'core/lib/domain/policy_document.ml': '9b2adf9ca624942d1557e91720bac7439e0b511c1e54fe47447df77ccbeb138e',
+ 'core/lib/domain/policy_document.ml': '14279d83121f55af4731a6e14a0e97e58f679965e4a3776aa7bdd808835371d1',
  'core/lib/domain/policy_material_context.ml': '00aab6a0635a99cb59fd171b120483c93035a6004cb168d7a10e2950e0ccf013',
  'core/lib/domain/policy_operating_domain.ml': 'bbdc0925c24c95852f356a513c1707f330da3b936227a24e0234730a9deb5384',
  'core/lib/domain/policy_operational.ml': 'bd5d03f8acefed68ab0a8059041774479426928266351b325535a124e3e23d34',
@@ -359,7 +359,11 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
     require(CONTROLLED_SYNTAX_IDS <= syntax_ids and len(syntax_ids - CONTROLLED_SYNTAX_IDS) == 614,
             "Changed pre-controlled syntax census")
     require(all(row.get("disposition") == "controlled_source_representation" for row in entries
-                if row["id"] in CONTROLLED_SYNTAX_IDS), "Controlled syntax is representation only")
+                if row["id"] in CONTROLLED_SYNTAX_IDS), "Controlled syntax remains in its separately scoped disposition")
+    controlled_stages = syntax_ledger["dispositions"]["controlled_source_representation"]["stages"]
+    require(controlled_stages["native_source"] == "contextual" and all(
+        controlled_stages[stage] == "unsupported" for stage in ("operational", "implementation", "material", "export")),
+        "Controlled admission cannot upgrade execution, implementation, material or export stages")
     structures: dict[str, dict[str, Any]] = {}
     sources = ledger["sources"]
     require(type(sources) is list and all(type(row) is dict for row in sources)

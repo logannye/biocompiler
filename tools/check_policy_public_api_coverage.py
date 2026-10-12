@@ -35,8 +35,11 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "3ee1abd8fd3009416d3c6fe2f11c4fa3d22f62c0e8276ceec98536576d615f9e"
+REVIEWED_METADATA_SHA256 = "9d2e6fa9338a8ff650ec33d00a85c2b3398c1796eb5145a36d7ea54fb359cd6f"
 BEFORE_CONTROLLED_METADATA_SHA256 = "4af8785fd3710a393f53e630d8c13c570e9c81c16f8885c6062eae58af46e788"
+BEFORE_CONTROLLED_ADMISSION_METADATA_SHA256 = "3ee1abd8fd3009416d3c6fe2f11c4fa3d22f62c0e8276ceec98536576d615f9e"
+CONTROLLED_ADMISSION_PREFIXES = ("biocompiler.core_policy_controlled_composition.",
+                                "biocompiler.policy.controlled_material.")
 CONTROLLED_PREFIXES = ("biocompiler.policy.controlled_composition.",
     "biocompiler.policy.model.ControlledActivity", "biocompiler.policy.model.ControlledDeclaration")
 CONTROLLED_ADDITIONS = ("biocompiler.policy.model.CONTROLLED_COMPOSITION_SOURCE_PROFILE",
@@ -195,8 +198,8 @@ COMPOSITION_DEPENDENCIES = (
     'biocompiler.core_policy_implementation._two_observation_original',
 )
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior car_reference catalog chassis cli component_material component_selection controlled_composition coordination deployment effects entities examples expression_material finite_build handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs project_sources quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
-CLIENTS = ("core_policy_expression_material", "core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking", "core_policy_planning", "core_policy_quantitative_assurance")
+MODULES = tuple("__init__ behavior car_reference catalog chassis cli component_material component_selection controlled_composition controlled_material coordination deployment effects entities examples expression_material finite_build handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs project_sources quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
+CLIENTS = ("core_policy_controlled_composition", "core_policy_expression_material", "core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking", "core_policy_planning", "core_policy_quantitative_assurance")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py", "src/biocompiler/policy/data/car_rm61461_reference_v01.json")
 # These names remain compatible support surfaces, not cellular runtime APIs.
@@ -205,6 +208,7 @@ BUILDER_METHODS = tuple("__init__ qualified namespace add hole resolve executor 
 PATTERNS = tuple("bounded_response context_gate once_per_scope ordered_effects persistence_gate population_handoff".split())
 CLI = tuple("check inspect diff export-schema export-request assess-native compile-native check-lowering-native execute-native replay-execution-native compile-implementation-native check-implementation-native replay-implementation-native compile-material-native check-material-native replay-material-native export-material-native".split())
 OPERATIONS = {
+    "core_policy_controlled_composition.PolicyControlledCompositionClient.admit": ("admit-policy-component-material", ("request",)),
     "core_policy_expression_material.PolicyExpressionMaterialClient.compile": ("compile-policy-expression-material", ("request",)),
     "core_policy_expression_material.PolicyExpressionMaterialClient.check": ("check-policy-expression-material", ("request", "candidate")),
     "core_policy_expression_material.PolicyExpressionMaterialClient.replay": ("replay-policy-expression-material", ("request", "candidate", "report")),
@@ -620,11 +624,23 @@ def discover(root: Path) -> dict[str, Any]:
     for owner, (operation, keys) in OPERATIONS.items():
         module, symbol = owner.split(".", 1)
         node = symbols(trees["src/biocompiler/" + module + ".py"])[symbol]
-        calls = [x for x in ast.walk(node) if isinstance(x, ast.Call) and isinstance(x.func, ast.Attribute) and x.func.attr == "_call"]
+        controlled = owner == "core_policy_controlled_composition.PolicyControlledCompositionClient.admit"
+        calls = [x for x in ast.walk(node) if isinstance(x, ast.Call) and isinstance(x.func, ast.Attribute)
+                 and x.func.attr == ("call" if controlled else "_call")]
         require(len(calls) == 1 and len(calls[0].args) == 2, "Native route shape differs: " + owner)
         call = calls[0]
-        require(isinstance(call.args[0], ast.Constant) and call.args[0].value == operation
-                and isinstance(call.args[1], ast.Dict), "Native operation route differs: " + owner)
+        if controlled:
+            declaration = symbols(trees["src/biocompiler/" + module + ".py"])["OPERATION"]
+            require(isinstance(call.args[0], ast.Name) and call.args[0].id == "OPERATION"
+                    and isinstance(declaration, ast.Assign)
+                    and isinstance(declaration.value, ast.Constant) and declaration.value.value == operation
+                    and isinstance(call.func.value, ast.Attribute)
+                    and isinstance(call.func.value.value, ast.Name) and call.func.value.value.id == "self"
+                    and call.func.value.attr == "transport", "Controlled admission route differs")
+        else:
+            require(isinstance(call.args[0], ast.Constant) and call.args[0].value == operation,
+                    "Native operation route differs: " + owner)
+        require(isinstance(call.args[1], ast.Dict), "Native operation payload differs: " + owner)
         require(tuple(ast.literal_eval(k) for k in call.args[1].keys) == keys, "Native original-input inventory differs: " + owner)
         operations.append({"owner": "biocompiler." + owner, "operation": operation, "payload_fields": list(keys)})
     rows.sort(key=lambda row: row["id"])
@@ -737,10 +753,21 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
-    before_controlled = {
+    before_admission = {
         "witnesses": {key: value for key, value in metadata["witnesses"].items()
-                      if not key.startswith("controlled.")},
+                      if not key.startswith("controlled_rc3.")},
         "coverage": {key: value for key, value in coverage.items()
+                     if not key.startswith(CONTROLLED_ADMISSION_PREFIXES)},
+    }
+    encoded_admission = json.dumps(before_admission, ensure_ascii=True, sort_keys=True,
+        separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_admission["coverage"]) == 1933 and len(before_admission["witnesses"]) == 281
+            and digest(encoded_admission) == BEFORE_CONTROLLED_ADMISSION_METADATA_SHA256,
+            "Controlled admission must preserve every prior API evidence meaning")
+    before_controlled = {
+        "witnesses": {key: value for key, value in before_admission["witnesses"].items()
+                      if not key.startswith("controlled.")},
+        "coverage": {key: value for key, value in before_admission["coverage"].items()
                      if not key.startswith(CONTROLLED_PREFIXES) and key not in CONTROLLED_ADDITIONS},
     }
     encoded_controlled = json.dumps(before_controlled, ensure_ascii=True, sort_keys=True,
