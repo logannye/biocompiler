@@ -60,7 +60,14 @@ class CoreBoundaryTests(unittest.TestCase):
                 boundaries.check_boundaries(root)
 
     def copy_core(self):
+        # Every caller finishes one independent mutation before requesting the
+        # next copy. Release that completed fixture now, rather than retaining
+        # all copies in a parameterized test until its eventual teardown.
+        previous = getattr(self, "_core_directory", None)
+        if previous is not None:
+            previous.cleanup()
         directory = tempfile.TemporaryDirectory()
+        self._core_directory = directory
         self.addCleanup(directory.cleanup)
         root = Path(directory.name)
         shutil.copytree(boundaries.ROOT / "core", root / "core", ignore=shutil.ignore_patterns("_build"))
