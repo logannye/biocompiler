@@ -27,6 +27,7 @@ val of_json : ?path:string -> Json.t -> t
     Ordinary [of_json] continues to reject this profile and horizon. *)
 val expression_source_profile : string
 val of_expression_json : ?path:string -> Json.t -> t
+
 (** Additive controlled-source representation. This distinct token cannot enter
     any legacy checker/admission API; only its separately versioned admission
     path may interpret activity and mixed observation scopes. *)

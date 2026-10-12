@@ -31,6 +31,7 @@ type source = private {
 type t
 val schema_version : string
 val obligation_tag : obligation_kind -> string
+
 (** Fresh metered admission redecodes the complete original representation and
     resolves all references. Callback exceptions propagate; no partial token is
     returned and no mechanism input is consulted to derive source requirements. *)
@@ -38,6 +39,7 @@ val admit : charge:(int -> unit) -> document:D.controlled -> t
 val document : t -> D.controlled
 val typed : t -> source
 val report : t -> Json.t
+
 (** Complete ordered source declaration and definition occurrence mappings.
     These are source lowering correspondences, not producer claims. *)
 val correspondence : t -> Json.t

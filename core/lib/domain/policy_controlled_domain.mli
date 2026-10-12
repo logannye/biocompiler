@@ -58,6 +58,7 @@ val batch_to_json : input_batch -> Json.t
 
 type usage = { prefixes : int; transitions : int; histories : int; work : int }
 type enumeration = Complete of usage | Exhausted of usage | Cancelled of usage
+
 (** Every callback history is provisional until [Complete]. Contradictions and
     enclosing charge/callback exceptions propagate unchanged. Exhaustion and
     cancellation never establish complete input coverage or admission. *)

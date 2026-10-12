@@ -417,7 +417,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
                              separators=(',', ':'), allow_nan=False).encode('utf-8')
         with patch.object(c, 'REVIEWED_METADATA_SHA256', c.digest(encoded)):
-            with self.assertRaisesRegex(c.ApiCoverageError, 'Controlled representation must preserve'):
+            with self.assertRaisesRegex(c.ApiCoverageError, 'Controlled admission must preserve'):
                 c.validate(self.root, self.ledger)
 
     def test_project_sources_body_drift_rejects_after_file_repin(self):
@@ -824,8 +824,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         original = json.dumps({'witnesses': witnesses, 'coverage': retained}, ensure_ascii=True,
                               sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         self.assertEqual(c.digest(original), 'f16a88c77afaea4f7cbae56e80e38afc8d5a4c894616ca158578b707d393bb4a')
-        self.assertEqual((len(set(c.MODULES) - {'controlled_composition', 'car_reference', 'expression_material', 'project_sources', 'finite_build', 'component_selection', 'research_project', 'typed', 'modules', 'refinement', 'quantitative', 'module_linking', 'planning', 'quantitative_composition', 'quantitative_assurance', 'approximation', 'realization_evidence'}),
-                          len(set(c.CLIENTS) - {'core_policy_expression_material', 'core_policy_component_selection', 'core_policy_refinement', 'core_policy_module_linking', 'core_policy_planning', 'core_policy_quantitative_assurance'})), (29, 5))
+        self.assertEqual((len(set(c.MODULES) - {'controlled_material', 'controlled_composition', 'car_reference', 'expression_material', 'project_sources', 'finite_build', 'component_selection', 'research_project', 'typed', 'modules', 'refinement', 'quantitative', 'module_linking', 'planning', 'quantitative_composition', 'quantitative_assurance', 'approximation', 'realization_evidence'}),
+                          len(set(c.CLIENTS) - {'core_policy_controlled_composition', 'core_policy_expression_material', 'core_policy_component_selection', 'core_policy_refinement', 'core_policy_module_linking', 'core_policy_planning', 'core_policy_quantitative_assurance'})), (29, 5))
         component_rows = [row for key, row in self.ledger['coverage'].items()
                           if key.startswith(('biocompiler.core_policy_component_material.',
                                              'biocompiler.policy.component_material.'))

@@ -891,6 +891,7 @@ let check x = Diagnostic.require x "code" "message"
             and row["path"] not in coverage.COMPONENT_TRANSFER_NETWORK_SOURCES
             and row["path"] not in coverage.COMPONENT_ASSURED_SOURCES
             and row["path"] not in coverage.EXPRESSION_ROUTE_SOURCES
+            and row["path"] not in coverage.CONTROLLED_ADMISSION_SOURCES
             and row["path"] not in coverage.CONTROLLED_REPRESENTATION_SOURCES]
         projected["witness_paths"] = [row["path"] for row in self.original["witness_sources"]]
         encoded = json.dumps(projected, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
