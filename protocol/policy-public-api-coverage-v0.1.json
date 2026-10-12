@@ -4520,6 +4520,666 @@
         "selection.sdk_routes"
       ]
     },
+    "biocompiler.policy.controlled_composition.ActivityDeadlines": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityDeadlines.__post_init__": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition.ActivityDeadlines.antigen_off_ticks": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityDeadlines.component_off_ticks": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityDeadlines.controller_off_ticks": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityDeadlines.from_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityDeadlines.onset_ticks": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityDeadlines.reactivation_ticks": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityDeadlines.to_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityReadout": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityReadout.__post_init__": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition.ActivityReadout.activity": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityReadout.definition": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityReadout.from_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityReadout.physical_bands": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActivityReadout.to_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActualActivityDelays": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActualActivityDelays.__post_init__": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition.ActualActivityDelays.cessation_ticks": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActualActivityDelays.from_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActualActivityDelays.onset_ticks": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActualActivityDelays.reactivation_ticks": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ActualActivityDelays.to_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.CONTRACT_SCHEMA": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.__post_init__": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.actual_delays": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.controller": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.from_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.initial_activity": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.mechanism": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.products": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.profile": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.readout": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.requested_deadlines": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.schema_version": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.to_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControllerBinding": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControllerBinding.__post_init__": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition.ControllerBinding.definition": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControllerBinding.executor": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControllerBinding.from_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControllerBinding.scope": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ControllerBinding.to_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.MAX_DESCRIPTION_TICKS": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition.PROFILE": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition.ProductMemberBinding": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ProductMemberBinding.__post_init__": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition.ProductMemberBinding.cds_id": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ProductMemberBinding.from_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ProductMemberBinding.member_id": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ProductMemberBinding.product_definition": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ProductMemberBinding.product_parameter": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.ProductMemberBinding.to_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.SOURCE_AUTHORITY_SCHEMA": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.__init__": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot._snapshot_json": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.canonical_bytes": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.control_contract": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.document": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.from_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.material_status": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.native_status": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.project_context": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.sha256": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.to_data": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.with_document": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.description_delays",
+        "controlled.description_closed",
+        "controlled.snapshot_authority",
+        "controlled.snapshot_source_change"
+      ]
+    },
+    "biocompiler.policy.controlled_composition._definition": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition._object": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition._project_context": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition._ref": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition._require": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition._text": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_composition._ticks": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.policy.examples.NAMES": {
       "scope": "Exact source body/signature/decorator and dependency inventory only; no per-body semantic completeness or runtime support claim.",
       "status": "source_only",
@@ -5778,6 +6438,14 @@
         "shared.immutable_snapshots.5"
       ]
     },
+    "biocompiler.policy.model.CONTROLLED_COMPOSITION_SOURCE_PROFILE": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.source_roundtrip",
+        "controlled.source_rejection"
+      ]
+    },
     "biocompiler.policy.model.CapabilityAssessment": {
       "scope": "Selected shared immutable_snapshots controls; scope is the witness distinction, not every entrypoint or combination.",
       "status": "shared_invariant",
@@ -6552,6 +7220,91 @@
         "shared.immutable_snapshots.4",
         "shared.immutable_snapshots.5"
       ]
+    },
+    "biocompiler.policy.model.ControlledActivity": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.source_roundtrip",
+        "controlled.source_rejection"
+      ]
+    },
+    "biocompiler.policy.model.ControlledActivity.band": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.source_roundtrip",
+        "controlled.source_rejection"
+      ]
+    },
+    "biocompiler.policy.model.ControlledActivity.clock": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.source_roundtrip",
+        "controlled.source_rejection"
+      ]
+    },
+    "biocompiler.policy.model.ControlledActivity.contract": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.source_roundtrip",
+        "controlled.source_rejection"
+      ]
+    },
+    "biocompiler.policy.model.ControlledActivity.executor": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.source_roundtrip",
+        "controlled.source_rejection"
+      ]
+    },
+    "biocompiler.policy.model.ControlledActivity.gate": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.source_roundtrip",
+        "controlled.source_rejection"
+      ]
+    },
+    "biocompiler.policy.model.ControlledActivity.id": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.source_roundtrip",
+        "controlled.source_rejection"
+      ]
+    },
+    "biocompiler.policy.model.ControlledActivity.products": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.source_roundtrip",
+        "controlled.source_rejection"
+      ]
+    },
+    "biocompiler.policy.model.ControlledActivity.readout": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.source_roundtrip",
+        "controlled.source_rejection"
+      ]
+    },
+    "biocompiler.policy.model.ControlledActivity.subject": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.source_roundtrip",
+        "controlled.source_rejection"
+      ]
+    },
+    "biocompiler.policy.model.ControlledDeclaration": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
     },
     "biocompiler.policy.model.Declaration": {
       "scope": "Exact source body/signature/decorator and dependency inventory only; no per-body semantic completeness or runtime support claim.",
@@ -12550,10 +13303,23 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.policy.serialization._schema": {
+      "scope": "Inert controlled-composition representation dependency; no source semantics or native/material acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.policy.serialization._text_preflight": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
       "status": "dependency",
       "witnesses": []
+    },
+    "biocompiler.policy.serialization.controlled_composition_source_schema": {
+      "scope": "Shared controlled-description shape, version and original-snapshot controls only; not per-field semantic coverage, complete native authority, biological evidence or release acceptance.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled.source_roundtrip",
+        "controlled.source_rejection"
+      ]
     },
     "biocompiler.policy.serialization.document_digest": {
       "scope": "Selected shared ownership_source_maps controls; scope is the witness distinction, not every entrypoint or combination.",
@@ -21171,6 +21937,831 @@
         "syntax_sha256": "ed79ab7c0e6c81546656d1f47a61ae8e584b750e686b8fde9645698466e64dd8"
       },
       {
+        "id": "biocompiler.policy.controlled_composition.ActivityDeadlines",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityDeadlines"
+        },
+        "syntax_sha256": "3d9a5ae1d509a5f23536172ec2a42768d0f087046c2921e27add5f7db7dab8ed"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityDeadlines.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityDeadlines.__post_init__"
+        },
+        "syntax_sha256": "f6866a3eb45734299ade0e1ffd530ef4f6c3d3033db18e83b74f1acfb2676f41"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityDeadlines.antigen_off_ticks",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityDeadlines.antigen_off_ticks"
+        },
+        "syntax_sha256": "8a1a3a2febbe22e720215f0cde6a4aa65b3c8b31640756506b7b768785da7b71"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityDeadlines.component_off_ticks",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityDeadlines.component_off_ticks"
+        },
+        "syntax_sha256": "e63f04fb013b5dbdd1a140bfb9cb2584fb0ba551e1a5c1aa0c20ad2e135ddb40"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityDeadlines.controller_off_ticks",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityDeadlines.controller_off_ticks"
+        },
+        "syntax_sha256": "df7f8437aaba7a2e94804fab951d345e0403bdb2b96f35bc97de10bf1c26a55c"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityDeadlines.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> ActivityDeadlines",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityDeadlines.from_data"
+        },
+        "syntax_sha256": "6205249b5fe93ec23172ea6e1813a62d68133247d2381ab543e7243ebd8cfeb0"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityDeadlines.onset_ticks",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityDeadlines.onset_ticks"
+        },
+        "syntax_sha256": "8e745da7964821f7da46197bceb28e6015412fdf999f15ab12d31474e009ed81"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityDeadlines.reactivation_ticks",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityDeadlines.reactivation_ticks"
+        },
+        "syntax_sha256": "1380bd29bedfdf8140f3f05bb177fb6a3f3f64b995244c973ee91c75ae18b78b"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityDeadlines.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityDeadlines.to_data"
+        },
+        "syntax_sha256": "89c7394ef55563ceceaa450ed54a94dc97a8f6ff5583ae6ec8dfab3a4fc8bed5"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityReadout",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityReadout"
+        },
+        "syntax_sha256": "293ce3464603125d864c416469307d0ea855addb86f31289696a246bdc8de0b9"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityReadout.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityReadout.__post_init__"
+        },
+        "syntax_sha256": "9564b0b84bb5b4dafc884a4431b230c0355b9312a7a8008ead816d7aed4d4436"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityReadout.activity",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Ref",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityReadout.activity"
+        },
+        "syntax_sha256": "430027486ed2877ba7ab41e691a87d3c13dbe5b59a7bb29289d8053b7ba0f2e7"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityReadout.definition",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.DefinitionRef",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityReadout.definition"
+        },
+        "syntax_sha256": "de715646fa1945359a7034fe563fc1208bfb30ea9e0183239e9b22262bb1e29d"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityReadout.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> ActivityReadout",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityReadout.from_data"
+        },
+        "syntax_sha256": "1154f49d6a86a1067436a78cc8317463e2820320a11186ae7883a4f3df6b3916"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityReadout.physical_bands",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[Literal['background'], Literal['active']] = field(default=('background', 'active'), init=False)",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityReadout.physical_bands"
+        },
+        "syntax_sha256": "2f2518ee7bede13aee51e9bd4f5b491e9f0ebbec79c267cac17747c373961dce"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActivityReadout.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActivityReadout.to_data"
+        },
+        "syntax_sha256": "db1889164680c25ab8cb98cc555ac2758c96b89550cd6cbd271432d8cb30344b"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActualActivityDelays",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActualActivityDelays"
+        },
+        "syntax_sha256": "fae5608ad03d56896700b48530a2a4423551bfed0e366827d55cfb83c51cdd36"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActualActivityDelays.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActualActivityDelays.__post_init__"
+        },
+        "syntax_sha256": "f04b11bdc9a3f0e2d29161c3148b0b37ab000f5c2bdfdd4823d94a49fc867a70"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActualActivityDelays.cessation_ticks",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActualActivityDelays.cessation_ticks"
+        },
+        "syntax_sha256": "e68075bd7e1e581ceb545540abcce028a42b88bf810298f6944661a7e531746f"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActualActivityDelays.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> ActualActivityDelays",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActualActivityDelays.from_data"
+        },
+        "syntax_sha256": "bec0327ec550b33828951cdcaf6a0aad03c9b3289da180f4bbd55f15564072c1"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActualActivityDelays.onset_ticks",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActualActivityDelays.onset_ticks"
+        },
+        "syntax_sha256": "8e745da7964821f7da46197bceb28e6015412fdf999f15ab12d31474e009ed81"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActualActivityDelays.reactivation_ticks",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "int",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActualActivityDelays.reactivation_ticks"
+        },
+        "syntax_sha256": "1380bd29bedfdf8140f3f05bb177fb6a3f3f64b995244c973ee91c75ae18b78b"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ActualActivityDelays.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ActualActivityDelays.to_data"
+        },
+        "syntax_sha256": "7d1fa832f85077276d0eab8da48affc34828ba2772b273513dc73b4f2187e01f"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.CONTRACT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "CONTRACT_SCHEMA"
+        },
+        "syntax_sha256": "7c9c92688158e51bf7d7bd96120c6eaf55fa54fd4ad8f59dc9986fb3d656849a"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription"
+        },
+        "syntax_sha256": "ffda425b337fc986b150500d0cef1f16324b552cb62e08d1285da7914cbe712c"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription.__post_init__"
+        },
+        "syntax_sha256": "83ab05127eddc62a8f42abb7bb331b4afe1753903ab708d5e4de7e318228d937"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.actual_delays",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "ActualActivityDelays",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription.actual_delays"
+        },
+        "syntax_sha256": "a614ee6a3db6e825162356f6f674cb5030fd6fab5fe789296ebd7af5b5de4d4f"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.controller",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "ControllerBinding",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription.controller"
+        },
+        "syntax_sha256": "ad2ed758b5a24d5d3858a7ee26064d7216927d5b3bf2287d16f978c3fe2fcabe"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> ControlledCompositionContractDescription",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription.from_data"
+        },
+        "syntax_sha256": "422985b6b06322bc97f372684cdd1ac4af0cd69c9c8f15bafbd6b35431e0f627"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.initial_activity",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['background'] = field(default='background', init=False)",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription.initial_activity"
+        },
+        "syntax_sha256": "75faf86a6e370cb7a047c19ce822dd441ce559d366153e03564dba0d8ce307f3"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.mechanism",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['deterministic_delay'] = field(default='deterministic_delay', init=False)",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription.mechanism"
+        },
+        "syntax_sha256": "1a9c3ccda78e2bf18f0fe60c819939b537bb0a6959da22d6e7ec5d21f706b50d"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.products",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[ProductMemberBinding, ProductMemberBinding]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription.products"
+        },
+        "syntax_sha256": "867c697b8399a32d0698897a7efcad742d38678f8f73c3bc4fd0b99da3f30a79"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.profile",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "ClassVar[str] = PROFILE",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription.profile"
+        },
+        "syntax_sha256": "90aceb1829eedf6b9ef7adaa73a6bd3b760ea187306ea47a7b942fe4fc267cf5"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.readout",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "ActivityReadout",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription.readout"
+        },
+        "syntax_sha256": "d6e10fbe3b9aa2cf1d5066bb610f19ef91ad61d5a3735e961cce1f0cd4c962b9"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.requested_deadlines",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "ActivityDeadlines",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription.requested_deadlines"
+        },
+        "syntax_sha256": "3c484f0e9b838266e1ab0704ca0630353373a14ea0db4971c326d0d6ec38510c"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.schema_version",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "ClassVar[str] = CONTRACT_SCHEMA",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription.schema_version"
+        },
+        "syntax_sha256": "dcc0e891f7ffca480651a7dd40513b451429857c7267367e886f1aa5a07e2498"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControlledCompositionContractDescription.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControlledCompositionContractDescription.to_data"
+        },
+        "syntax_sha256": "9a3187b4a95559915589d93f99c59e9d5b39348ee4e5bb417df6864d8d68ef1b"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControllerBinding",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControllerBinding"
+        },
+        "syntax_sha256": "a49412881f786297ef02db961b65867fc043e7c45c35597c3f38f2fda52d593e"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControllerBinding.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControllerBinding.__post_init__"
+        },
+        "syntax_sha256": "5aa2791deab297e772f6d8f7c767b530ef065eef9b6a087f4ed6ca0c3f80a646"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControllerBinding.definition",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.DefinitionRef",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControllerBinding.definition"
+        },
+        "syntax_sha256": "de715646fa1945359a7034fe563fc1208bfb30ea9e0183239e9b22262bb1e29d"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControllerBinding.executor",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Ref",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControllerBinding.executor"
+        },
+        "syntax_sha256": "4a4f6f64ec22c80c313459f19a3e5104b88adbe2a44b1c61f7a8894e268c9193"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControllerBinding.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> ControllerBinding",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControllerBinding.from_data"
+        },
+        "syntax_sha256": "7cf49bfdddb7b1b983b5811fed4f553f7d317c7bd36d210f1e336e73fd3083d3"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControllerBinding.scope",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Literal['executor'] = field(default='executor', init=False)",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControllerBinding.scope"
+        },
+        "syntax_sha256": "ea8fb5b314863db4ed5096a6114be48b4a52b2bd7cb23b6745ca183158e39b19"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ControllerBinding.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ControllerBinding.to_data"
+        },
+        "syntax_sha256": "0336310622099a9fc7c0e34245cb4b628fccb8636acb070affb75c6bf94071b1"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.MAX_DESCRIPTION_TICKS",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "MAX_DESCRIPTION_TICKS"
+        },
+        "syntax_sha256": "0e611f0b612d194b472744b3c5f6826f0ed6a773a921c97f26e810b0a4e11ba2"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "PROFILE"
+        },
+        "syntax_sha256": "0d086e73d3446888553fda170e45b9bacaefaf7aa3fff22b3862727a0e18bab1"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ProductMemberBinding",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ProductMemberBinding"
+        },
+        "syntax_sha256": "70b34e1e432a55cf583136e9ec67d8f53bc70fc94b24ed342e772e2dd1a979e2"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ProductMemberBinding.__post_init__",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self -> None",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ProductMemberBinding.__post_init__"
+        },
+        "syntax_sha256": "0bf6be5e3e3a16448dd578c6c1f2de63505d28785cc32914cf811b0b71f00109"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ProductMemberBinding.cds_id",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ProductMemberBinding.cds_id"
+        },
+        "syntax_sha256": "d44474167c37a6ba16b6fe2a0be3ec114651ff16d83e297ed2ecef10d1ed9ff3"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ProductMemberBinding.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> ProductMemberBinding",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ProductMemberBinding.from_data"
+        },
+        "syntax_sha256": "64d39e3a45bf9cf000aa1938f26b300713deb16675bc7237a8f24e13c2bde04e"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ProductMemberBinding.member_id",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ProductMemberBinding.member_id"
+        },
+        "syntax_sha256": "7b6a3f801792bc896d98708d77b26455a29dbc5fbfa17b4943aa05effff9bb76"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ProductMemberBinding.product_definition",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.DefinitionRef",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ProductMemberBinding.product_definition"
+        },
+        "syntax_sha256": "214def536b26886ef13a05a3d35a8768bb3bd43387d75d283fa35c35fd266b31"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ProductMemberBinding.product_parameter",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "m.Ref",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ProductMemberBinding.product_parameter"
+        },
+        "syntax_sha256": "4b0e797bc65493327ddc70be7d4d36b4c9f41b5aeb2ad8a750764f86a65a6ad7"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.ProductMemberBinding.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "ProductMemberBinding.to_data"
+        },
+        "syntax_sha256": "6827707ca7da8899f4b5d797903c50ad712dd54e7a2da0c2c8a203ebdda16ee6"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SOURCE_AUTHORITY_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SOURCE_AUTHORITY_SCHEMA"
+        },
+        "syntax_sha256": "18cea3b3c0282d8a4c24203fc3c55882cafbedc071e4117643426ff69f4d8402"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot"
+        },
+        "syntax_sha256": "ca3c4e452588a8073b9ab9f118126a73c3c0e1084fa3f0586d4d9fa8a19dd4da"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.__init__",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, *, document: m.BuildRequest, control_contract: ControlledCompositionContractDescription, project_context: JsonValue -> None",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot.__init__"
+        },
+        "syntax_sha256": "39e613c718a2de8c49c4c63aefe3a93cbe0805201558bf1490cc12fc4f4639fe"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot._snapshot_json",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "bytes",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot._snapshot_json"
+        },
+        "syntax_sha256": "6a6eaaa271c233ab9aea1c2963cfb0a2393dffcdb2f7092dfc7c2668324f3852"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.canonical_bytes",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> bytes",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot.canonical_bytes"
+        },
+        "syntax_sha256": "c8cc8e63c57b5c7d61831c1f75fb95620974962695c25c5cfa793cbf4b9b2323"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.control_contract",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> ControlledCompositionContractDescription",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot.control_contract"
+        },
+        "syntax_sha256": "e7b15d23465a3b39728c3da8148eb2aa574213ae49372f7c75b49875038dd830"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.document",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> m.BuildRequest",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot.document"
+        },
+        "syntax_sha256": "083608b59fff75600dca2dd85b56eda7de52466e5277b0b303eea5f637428d99"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.from_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, value: JsonValue -> SourceAuthoritySnapshot",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot.from_data"
+        },
+        "syntax_sha256": "9218d10abf4baa2a4045d510d9057c83ead2fedffb1a7254399aac49a77db7de"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.material_status",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> Literal['not_performed']",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot.material_status"
+        },
+        "syntax_sha256": "74b035feed4f4ed0763cea87e03876f36505692269ec4137e9cce033bd5932e1"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.native_status",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> Literal['not_performed']",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot.native_status"
+        },
+        "syntax_sha256": "860465aa260b8390b35551638bcd48d9efd9fd4ca75813eeb434a73f3f08a5b2"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.project_context",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot.project_context"
+        },
+        "syntax_sha256": "df0584e9654c1e4be074b118f2587084213a6962323fc98542be19fb8b444c40"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.sha256",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> str",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot.sha256"
+        },
+        "syntax_sha256": "6252bae8d2c3fcbfff999a0822b4190cc2c94ea784aeef8ca1f4e50226b5ea4f"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.to_data",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot.to_data"
+        },
+        "syntax_sha256": "86496853068d8344b0e1113822cd5fa2af11fd8b689d8296354f6c4317d4a5a8"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition.SourceAuthoritySnapshot.with_document",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, document: m.BuildRequest -> SourceAuthoritySnapshot",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "SourceAuthoritySnapshot.with_document"
+        },
+        "syntax_sha256": "cfac2736a085e69e8ebeebebcd81293a9b34ad59abe305451c1950435e1888f6"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition._definition",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: object -> None",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "_definition"
+        },
+        "syntax_sha256": "2b42e6c282dc85a28104e3fa7b01994fdff5efaf8bd60a8aa6fef24adc5f3d48"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition._object",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue, keys: set[str], label: str -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "_object"
+        },
+        "syntax_sha256": "65dc3f35d9ad2f0f2d3eec9b2626e485c8ec7b153609803f45c91ba5cdb80ba0"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition._project_context",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "_project_context"
+        },
+        "syntax_sha256": "977d6c1a7e3ad4a4d83c03300db5924a73b8e815241af81d088d47bee0c7b5bd"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition._ref",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: object, kind: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "_ref"
+        },
+        "syntax_sha256": "e62728c60525ae5ecc785f23c35d734791d35a57354612752d74b3b014708575"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: object, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "b0cc7c435b48d671ad60c7da3cde90e5ffa2308d9253aecadc6cab4b00c81275"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition._text",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: object, label: str, maximum: int=256 -> str",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "_text"
+        },
+        "syntax_sha256": "ef56762cd86e66b19f42fd74da73384e75954ef423dea0548e16306a36825d5c"
+      },
+      {
+        "id": "biocompiler.policy.controlled_composition._ticks",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: object -> int",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_composition.py",
+          "symbol": "_ticks"
+        },
+        "syntax_sha256": "8b539ddec0c6115556f488c3aedac7664025c85bcc609b2d0b7f67da651374a8"
+      },
+      {
         "id": "biocompiler.policy.examples.NAMES",
         "kind": "value",
         "scope": "public_api",
@@ -22942,6 +24533,17 @@
         "syntax_sha256": "a753d1f7699dac87f754d9676071061bb27240cf7334e0bf6b78304b8973c934"
       },
       {
+        "id": "biocompiler.policy.model.CONTROLLED_COMPOSITION_SOURCE_PROFILE",
+        "kind": "value",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "CONTROLLED_COMPOSITION_SOURCE_PROFILE"
+        },
+        "syntax_sha256": "5f4ee81f91208241f27dff6dc44131dda24d76a8f4d9d285fd35a0dcfc5138e3"
+      },
+      {
         "id": "biocompiler.policy.model.CapabilityAssessment",
         "kind": "class",
         "scope": "public_api",
@@ -23723,6 +25325,127 @@
         "syntax_sha256": "bed76969f3214ce0eb75dd2f55f51eb9bd141bbe63a0ef6b64d144980d2e4d7f"
       },
       {
+        "id": "biocompiler.policy.model.ControlledActivity",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "ControlledActivity"
+        },
+        "syntax_sha256": "1b4e540c8f9656ea53e04d4ae71d73e4be90240ff3ffd967ede5f26449f1daa9"
+      },
+      {
+        "id": "biocompiler.policy.model.ControlledActivity.band",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> Expr",
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "ControlledActivity.band"
+        },
+        "syntax_sha256": "d8b4773a11cf5f933326889f13f925d7bd430835422d9915fb9212e9bcfec482"
+      },
+      {
+        "id": "biocompiler.policy.model.ControlledActivity.clock",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Ref",
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "ControlledActivity.clock"
+        },
+        "syntax_sha256": "5f08241a71b04b0efdbc3a5f86018eb80b123b21b16e5f71d7ddb31dfbb10c48"
+      },
+      {
+        "id": "biocompiler.policy.model.ControlledActivity.contract",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "DefinitionRef",
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "ControlledActivity.contract"
+        },
+        "syntax_sha256": "1ff41c554cc4d645cec7d497c0001f9d5e456043d500b29743a5a351abb83449"
+      },
+      {
+        "id": "biocompiler.policy.model.ControlledActivity.executor",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Ref",
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "ControlledActivity.executor"
+        },
+        "syntax_sha256": "0b84797cedfe14ca4c9e3195a23f2d6bf84ac10b992f2ea10bf8ca82da647245"
+      },
+      {
+        "id": "biocompiler.policy.model.ControlledActivity.gate",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Expr",
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "ControlledActivity.gate"
+        },
+        "syntax_sha256": "3c4d6fd309b8b871eab29d65ab287f57ff9657f1ca54bdec0d9c335ec449efd8"
+      },
+      {
+        "id": "biocompiler.policy.model.ControlledActivity.id",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "str",
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "ControlledActivity.id"
+        },
+        "syntax_sha256": "98027b84112a1c4a6e0e40fb916b7c84d3efbf4d18387b743c2011238a59d9f3"
+      },
+      {
+        "id": "biocompiler.policy.model.ControlledActivity.products",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "tuple[Ref, Ref]",
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "ControlledActivity.products"
+        },
+        "syntax_sha256": "1edab14a4ba606cf4482c5e15a10c4ce09a62715cb2b831d943c4ea231453712"
+      },
+      {
+        "id": "biocompiler.policy.model.ControlledActivity.readout",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "DefinitionRef",
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "ControlledActivity.readout"
+        },
+        "syntax_sha256": "728632be922f1e84d1095cf1b30301a1ec13573fea9527058ac1f3768b91abb3"
+      },
+      {
+        "id": "biocompiler.policy.model.ControlledActivity.subject",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "Ref",
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "ControlledActivity.subject"
+        },
+        "syntax_sha256": "614d95bba6fa3383194525a738ca27b6c930b25290c40b323575d4f7f5deca72"
+      },
+      {
+        "id": "biocompiler.policy.model.ControlledDeclaration",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "TypeAlias = Declaration | ControlledActivity",
+        "source": {
+          "path": "src/biocompiler/policy/model.py",
+          "symbol": "ControlledDeclaration"
+        },
+        "syntax_sha256": "7d50bc0ec63c65a50b753e74a94d76d4ab6a870c0bbf894d97403e29af660ac1"
+      },
+      {
         "id": "biocompiler.policy.model.Declaration",
         "kind": "value",
         "scope": "public_api",
@@ -24314,7 +26037,7 @@
           "path": "src/biocompiler/policy/model.py",
           "symbol": "Expr"
         },
-        "syntax_sha256": "975afc4b8459602ae586e22967e8408e58137a5d8c574441acced0d843557b47"
+        "syntax_sha256": "224ed20e51fcfe7011675aee049cefba523e096d2f6b625d5dbace49f2dfa350"
       },
       {
         "id": "biocompiler.policy.model.Expr.__and__",
@@ -24441,12 +26164,12 @@
         "id": "biocompiler.policy.model.Expr.op",
         "kind": "field",
         "scope": "public_api",
-        "signature": "Literal['literal', 'observe', 'state', 'parameter', 'all', 'any', 'not', 'eq', 'ne', 'lt', 'le', 'gt', 'ge', 'add', 'subtract', 'multiply', 'divide', 'exists', 'forall', 'count', 'distinct', 'holds', 'recently', 'followed_by', 'within', 'after', 'until', 'rising', 'updated', 'effect_event', 'message_event', 'call', 'integrate']",
+        "signature": "Literal['literal', 'observe', 'state', 'parameter', 'all', 'any', 'not', 'eq', 'ne', 'lt', 'le', 'gt', 'ge', 'add', 'subtract', 'multiply', 'divide', 'exists', 'forall', 'count', 'distinct', 'holds', 'recently', 'followed_by', 'within', 'after', 'until', 'rising', 'updated', 'effect_event', 'message_event', 'call', 'integrate', 'activity_band']",
         "source": {
           "path": "src/biocompiler/policy/model.py",
           "symbol": "Expr.op"
         },
-        "syntax_sha256": "d4fd175454593385cb4b8c1d858bfb6bec555f2de108bc1d807fa1c2e84aeb7d"
+        "syntax_sha256": "01a793b20c4c270c96fe9ca9e6c487fce61d68b08240404860fee32fab38b055"
       },
       {
         "id": "biocompiler.policy.model.Expr.ref",
@@ -25227,18 +26950,18 @@
           "path": "src/biocompiler/policy/model.py",
           "symbol": "PolicyProgram"
         },
-        "syntax_sha256": "48a1ca3692d74377232acae29eedb780b8b360d165caa88550cddd42034de084"
+        "syntax_sha256": "e783396a4d8892887c9b8b030e8e3bd69ac3c774a8cb9181467e6d1e55ae87aa"
       },
       {
         "id": "biocompiler.policy.model.PolicyProgram.declarations",
         "kind": "field",
         "scope": "public_api",
-        "signature": "tuple[Declaration, ...]",
+        "signature": "tuple[ControlledDeclaration, ...]",
         "source": {
           "path": "src/biocompiler/policy/model.py",
           "symbol": "PolicyProgram.declarations"
         },
-        "syntax_sha256": "e8a1fc1892237c8328c6471785ecfe918a1896b8d48f0c13e5a69891fb03f481"
+        "syntax_sha256": "1073c3c0a8d634a12d5a86c99dcdd7c0807ea5a90fdc3396ea54fcfc65721429"
       },
       {
         "id": "biocompiler.policy.model.PolicyProgram.id",
@@ -27229,7 +28952,7 @@
           "path": "src/biocompiler/policy/module_linking.py",
           "symbol": "prepare"
         },
-        "syntax_sha256": "1aa16e5c8ec9c382cfd1a0762545d8e7629ead633a155b3ea8e32cd4b37c885e"
+        "syntax_sha256": "82867df1f930c998ffa82ee3b68f48b2dc708e5586ff016485fd39884f11f826"
       },
       {
         "id": "biocompiler.policy.module_linking.replay",
@@ -32086,12 +33809,12 @@
         "id": "biocompiler.policy.serialization._decode",
         "kind": "function",
         "scope": "dependency",
-        "signature": "value: Any, expected: Any, budget: _Budget, depth: int, registry: dict[str, type], *, expression_source: bool=False -> Any",
+        "signature": "value: Any, expected: Any, budget: _Budget, depth: int, registry: dict[str, type], *, expression_source: bool=False, controlled_source: bool=False -> Any",
         "source": {
           "path": "src/biocompiler/policy/serialization.py",
           "symbol": "_decode"
         },
-        "syntax_sha256": "ac544c47187a414c0e684d95d87b47f125447f0bda04b52b9435c9a36bd33025"
+        "syntax_sha256": "204e1243a8d51bd011ab71e858a1c54729e222a47496e0f26f60e898a3568e97"
       },
       {
         "id": "biocompiler.policy.serialization._encode",
@@ -32138,6 +33861,17 @@
         "syntax_sha256": "d6ed3990d3da8ca635787f84c5eb964feb9203064206144f3f74964613caf249"
       },
       {
+        "id": "biocompiler.policy.serialization._schema",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "root_type: type[model.Record] | None=None, *, controlled_source: bool=False -> dict[str, JSONValue]",
+        "source": {
+          "path": "src/biocompiler/policy/serialization.py",
+          "symbol": "_schema"
+        },
+        "syntax_sha256": "f30a61714e86764adc96862afda35512f7646cc68aeb4c25b171fe42e257a23a"
+      },
+      {
         "id": "biocompiler.policy.serialization._text_preflight",
         "kind": "function",
         "scope": "dependency",
@@ -32147,6 +33881,17 @@
           "symbol": "_text_preflight"
         },
         "syntax_sha256": "71b4b10fb8421e103024ab017bea13c49c90db296bc41f3a841a8780cc375603"
+      },
+      {
+        "id": "biocompiler.policy.serialization.controlled_composition_source_schema",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": " -> dict[str, JSONValue]",
+        "source": {
+          "path": "src/biocompiler/policy/serialization.py",
+          "symbol": "controlled_composition_source_schema"
+        },
+        "syntax_sha256": "0eccc1410aebccb9e6ecb8ef6633a91685edf8338c4514bead701e9a58a5359e"
       },
       {
         "id": "biocompiler.policy.serialization.document_digest",
@@ -32201,7 +33946,7 @@
           "path": "src/biocompiler/policy/serialization.py",
           "symbol": "from_data"
         },
-        "syntax_sha256": "e8dac41cb0504b864b77a51c4d33400cb0063a9ed5525155ef96cddf5eaf77b7"
+        "syntax_sha256": "c1e1a2abd58afa413557ea5307877da9ee721ba27c24d6ff3586d2f3d56a7119"
       },
       {
         "id": "biocompiler.policy.serialization.from_data@overload1",
@@ -32300,7 +34045,7 @@
           "path": "src/biocompiler/policy/serialization.py",
           "symbol": "schema"
         },
-        "syntax_sha256": "ff4de2761e913ab460ff17d9fb89d4adaca960b9757c4c05e5b341eba4c2cfa3"
+        "syntax_sha256": "af9cbdbff22d4ab5c2f8b3add25197803c0c86af36028efb0e9c0166f6870764"
       },
       {
         "id": "biocompiler.policy.serialization.to_data",
@@ -32311,7 +34056,7 @@
           "path": "src/biocompiler/policy/serialization.py",
           "symbol": "to_data"
         },
-        "syntax_sha256": "5ea006605103b825907498ea7c4a908fa4b5a4610f97628f929e529bd8f0bfe3"
+        "syntax_sha256": "c02023ca378bb137f77850d4faecce23ad52ed360f44a1459e8e2e879da79d33"
       },
       {
         "id": "biocompiler.policy.time._window",
@@ -33598,7 +35343,7 @@
           "path": "src/biocompiler/policy/validation.py",
           "symbol": "_Checker"
         },
-        "syntax_sha256": "98ccf1641eb7268d4b4b21ed998bd64b1b03d788599acf54841fc46eec537beb"
+        "syntax_sha256": "e5a8e2a497c4516101ab759e02b5225a99995da5ba68d050988cf6b6a2a739cd"
       },
       {
         "id": "biocompiler.policy.validation._compatible",
@@ -33781,6 +35526,7 @@
       "biocompiler.policy.AuthoringError": "biocompiler.policy.programs.AuthoringError",
       "biocompiler.policy.BackendCapabilities": "biocompiler.policy.model.BackendCapabilities",
       "biocompiler.policy.BuildRequest": "biocompiler.policy.model.BuildRequest",
+      "biocompiler.policy.CONTROLLED_COMPOSITION_SOURCE_PROFILE": "biocompiler.policy.model.CONTROLLED_COMPOSITION_SOURCE_PROFILE",
       "biocompiler.policy.COUNT": "biocompiler.policy.values.COUNT",
       "biocompiler.policy.CapabilityAssessment": "biocompiler.policy.model.CapabilityAssessment",
       "biocompiler.policy.Channel": "biocompiler.policy.model.Channel",
@@ -33789,6 +35535,7 @@
       "biocompiler.policy.Clock": "biocompiler.policy.model.Clock",
       "biocompiler.policy.CompilationSubmission": "biocompiler.policy.model.CompilationSubmission",
       "biocompiler.policy.ContractClause": "biocompiler.policy.model.ContractClause",
+      "biocompiler.policy.ControlledActivity": "biocompiler.policy.model.ControlledActivity",
       "biocompiler.policy.DIMENSIONLESS": "biocompiler.policy.values.DIMENSIONLESS",
       "biocompiler.policy.Declaration": "biocompiler.policy.model.Declaration",
       "biocompiler.policy.DefinitionRef": "biocompiler.policy.model.DefinitionRef",
@@ -34079,7 +35826,7 @@
       "src/biocompiler/core_policy_quantitative_assurance.py": "19fbb1f6a1b3c7e90980757b9540abf88a53739822543d0df4b8dfc4319c350b",
       "src/biocompiler/core_policy_refinement.py": "ea059004962bc243a3dd12d30d89115ac192d303f2b79d6dc049eb049aca250b",
       "src/biocompiler/entrypoint.py": "7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8",
-      "src/biocompiler/policy/__init__.py": "d9a49240172a4d9ad0bdac6f1ddce3a2c8295b51d19048e6a799279800743d3b",
+      "src/biocompiler/policy/__init__.py": "72afe7b9339f4781622bcec48e6458d2f33daf8dcc25a7c6498e2c64a1e808b2",
       "src/biocompiler/policy/approximation.py": "df7ca7cd614cfd42b04bbd62c33174fdc3e823246825ee1b11af8ebd42fb20a8",
       "src/biocompiler/policy/behavior.py": "691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf",
       "src/biocompiler/policy/car_reference.py": "6cecfa4f52ab8d0e8c928198bbd308525e6a0c802383616b7cd7e16c1027ee9d",
@@ -34088,6 +35835,7 @@
       "src/biocompiler/policy/cli.py": "beaff7cf4994019f24fab7361e588a3702b32bb16d357bda42e16000a5060d0f",
       "src/biocompiler/policy/component_material.py": "e23f08b6113670c73363a0852b390e6d39d0d058fdd3a7a044f2ba1c04e61da1",
       "src/biocompiler/policy/component_selection.py": "10d6bcfa36283c57f01e952aecb71d6c9206aa8d119ae8503a669f059ffa5e80",
+      "src/biocompiler/policy/controlled_composition.py": "cdb3417943549452cd2cbba079ad4ad3ef6b73059c1dd0283af34c1dca130c18",
       "src/biocompiler/policy/coordination.py": "ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9",
       "src/biocompiler/policy/data/car_rm61461_reference_v01.json": "dcf0b3fe174ee48f68623785663b16ce96ce87ad2bbacbd851369e9ba1b46079",
       "src/biocompiler/policy/deployment.py": "cddace3d45f04ecd722a47849325c9ff6a41fc166b0e23253c2377f037eae29f",
@@ -34101,8 +35849,8 @@
       "src/biocompiler/policy/inspection.py": "7eca4c5bf12aab21899bb7c9e54b64f8255bae9759e7ebd6a4858bf0f5e76caf",
       "src/biocompiler/policy/logic.py": "cc0a0fe952f9c8aa16fb5714d0cd1972296154cf1e5e5deed4e7ea9ece3ddf4f",
       "src/biocompiler/policy/material.py": "5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79",
-      "src/biocompiler/policy/model.py": "cc0430615690c0a7a5e388b8d2821d03198b14c3f3044a6443a4d6f6747b1ec6",
-      "src/biocompiler/policy/module_linking.py": "87dd2eb7ffd36ff3bc76d2de4957eb3806e0da29cd58bc3c029c3f25a7a3efe2",
+      "src/biocompiler/policy/model.py": "5671c5626a56ac4b9f623fc170cc64cafea874a285132f6ae8dfd53e95e4832c",
+      "src/biocompiler/policy/module_linking.py": "4ccd772982fec32bd9042d1c80ba43af36df57c328e0d403c3b51b6c5473fb29",
       "src/biocompiler/policy/modules.py": "07060e46cac6551e77c7b2f97e3956539ba39ee3a1ec009d17429ea63a7e508f",
       "src/biocompiler/policy/native.py": "956e33656d6b5ee332fae215a56d667d7b88019d7853426440aa5502777dc9f0",
       "src/biocompiler/policy/observations.py": "24400413e0b42fad132d02d0841cfdc3f9307c452e64ec1b2283be7f389f5a26",
@@ -34118,12 +35866,12 @@
       "src/biocompiler/policy/refinement.py": "b576b28aa2813c46be1a778fa355de9fd8eb147c8ae892f7bbdfba226b84d27e",
       "src/biocompiler/policy/requirements.py": "80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b",
       "src/biocompiler/policy/research_project.py": "7345fba16805046f21f9026b610bf557aa3d4dfb3400a4fc1d59b0a2b8b919eb",
-      "src/biocompiler/policy/serialization.py": "4bd1f2dee570d079290b774ea94b059907df62a27793e47927b29ed8981c94f6",
+      "src/biocompiler/policy/serialization.py": "d1b9c0b7f54a379cfb106febdfb88e1553a401b049e9e3b3c49f4d9a85601c70",
       "src/biocompiler/policy/space.py": "c32bc67b86370f471fcabe54fdb61332f746130bc23e22d5a2ce7e08666b97c9",
       "src/biocompiler/policy/state.py": "94ef54313d4475428ca678258dfe59727c8dbbe8d327e26b79ba819dcc20d22d",
       "src/biocompiler/policy/time.py": "115fad72c39fa62587d1253e78a374162b0e1543ba146d8634773bab5d41b969",
       "src/biocompiler/policy/typed.py": "8ed5ed1df21bbee620d0ba6244932282ce2a1e785b8e185baa9a205a544bd1eb",
-      "src/biocompiler/policy/validation.py": "5e4232eeea39adae63e4dadae52afca363068ca28e344161e5806ceed5558529",
+      "src/biocompiler/policy/validation.py": "444066210976c54acfc295fb96d689e3fe54fb2d8655c9a6b55562f79034a6f9",
       "src/biocompiler/policy/values.py": "56b36e3e4cc8d2caad0bbd26e7ef626eed0b694a50731911e537f4454555bca5",
       "tools/check_policy_semantic_coverage.py": "5ddcaf8432b869bd2badfd5f0b0aa0179f5176e59ec53d879f502bcd7bccea47"
     },
@@ -34474,7 +36222,7 @@
       },
       {
         "path": "src/biocompiler/policy/__init__.py",
-        "syntax_sha256": "5444e85cd940472a89c61621cea027fa95eec4c75db8e3ae395ee5dda115bd39"
+        "syntax_sha256": "8a8a9fb3b269f81bed86000c85b34f986e20c5f857447b0746cac2a46c8dd293"
       },
       {
         "path": "src/biocompiler/policy/__init__.py",
@@ -34827,6 +36575,38 @@
       {
         "path": "src/biocompiler/policy/component_selection.py",
         "syntax_sha256": "d353098fa00494393f718df7a31515678d8316e0d762f6211dc6897c542854ad"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_composition.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_composition.py",
+        "syntax_sha256": "55ea55d2ef13599eee8d585d56a89b62d192256ff0b1ca9d79c3dac1d330a74d"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_composition.py",
+        "syntax_sha256": "e8157a73584becff04ba142bf301a16a3e95078563bad5119c5eb01211b23c01"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_composition.py",
+        "syntax_sha256": "d287bf9e47a567fa3f87d0e16d4252e015b047dd7e3b81ea77be50002240898c"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_composition.py",
+        "syntax_sha256": "f7ac139c8d303f3133275c9dde8aac7adc3d0f3c3088d16b0564bad7e3a59f9c"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_composition.py",
+        "syntax_sha256": "0c8b9fb5d93b665d0385eda7d2f189ef9e018abb0f2ac6ef76425ccbdec8d61d"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_composition.py",
+        "syntax_sha256": "a0ba56845c596308c7c07c8582f1b9a9df7d0ffb02d98753fe67805a0dd95370"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_composition.py",
+        "syntax_sha256": "1190e6b8053b8ead7512244bcf81f3cad0ed0bea760f0f9574ef38c88c3a270b"
       },
       {
         "path": "src/biocompiler/policy/coordination.py",
@@ -36221,6 +38001,7 @@
     "biocompiler.policy.model.BuildRequest.implementations": "field:BuildRequest.implementations",
     "biocompiler.policy.model.BuildRequest.profile": "field:BuildRequest.profile",
     "biocompiler.policy.model.BuildRequest.program": "field:BuildRequest.program",
+    "biocompiler.policy.model.CONTROLLED_COMPOSITION_SOURCE_PROFILE": "constant:CONTROLLED_COMPOSITION_SOURCE_PROFILE",
     "biocompiler.policy.model.CapabilityAssessment": "record:CapabilityAssessment",
     "biocompiler.policy.model.CapabilityAssessment.authoring_status": "field:CapabilityAssessment.authoring_status",
     "biocompiler.policy.model.CapabilityAssessment.backend_execution": "field:CapabilityAssessment.backend_execution",
@@ -36291,6 +38072,16 @@
     "biocompiler.policy.model.ContractClause.description": "field:ContractClause.description",
     "biocompiler.policy.model.ContractClause.expression": "field:ContractClause.expression",
     "biocompiler.policy.model.ContractClause.kind": "field:ContractClause.kind",
+    "biocompiler.policy.model.ControlledActivity": "record:ControlledActivity",
+    "biocompiler.policy.model.ControlledActivity.clock": "field:ControlledActivity.clock",
+    "biocompiler.policy.model.ControlledActivity.contract": "field:ControlledActivity.contract",
+    "biocompiler.policy.model.ControlledActivity.executor": "field:ControlledActivity.executor",
+    "biocompiler.policy.model.ControlledActivity.gate": "field:ControlledActivity.gate",
+    "biocompiler.policy.model.ControlledActivity.id": "field:ControlledActivity.id",
+    "biocompiler.policy.model.ControlledActivity.products": "field:ControlledActivity.products",
+    "biocompiler.policy.model.ControlledActivity.readout": "field:ControlledActivity.readout",
+    "biocompiler.policy.model.ControlledActivity.subject": "field:ControlledActivity.subject",
+    "biocompiler.policy.model.ControlledDeclaration": "alias:ControlledDeclaration",
     "biocompiler.policy.model.Declaration": "alias:Declaration",
     "biocompiler.policy.model.DefinitionRef": "record:DefinitionRef",
     "biocompiler.policy.model.DefinitionRef.digest": "field:DefinitionRef.digest",
@@ -37207,6 +38998,54 @@
       "symbol": "PolicyComponentMaterialTransportTests.test_whole_wrapper_budget_ledger_and_replay_mutations_reject",
       "syntax_sha256": "bcf163e57a795418270b89c79b53e74000edafc97a78974c52c8b7b6bc9be982"
     },
+    "controlled.description_closed": {
+      "distinction": "Closed inert descriptions reject unsupported fields and physical bands; no mechanism admission.",
+      "file_sha256": "a5c049e7936eb33cf5f0ecc76f85b6a002f9d9e26417b939ab263c711ee290fc",
+      "path": "tests/test_policy_controlled_composition_description.py",
+      "role": "rejection",
+      "symbol": "ControlledCompositionDescriptionTests.test_closed_literals_and_field_inventories_cannot_claim_acceptance",
+      "syntax_sha256": "7cdc41ef04311941ef55a6ca7a482392b3a1cf803264d64eecda9da993eb16f3"
+    },
+    "controlled.description_delays": {
+      "distinction": "Actual delays and requested deadlines are retained separately without evaluating either.",
+      "file_sha256": "a5c049e7936eb33cf5f0ecc76f85b6a002f9d9e26417b939ab263c711ee290fc",
+      "path": "tests/test_policy_controlled_composition_description.py",
+      "role": "positive",
+      "symbol": "ControlledCompositionDescriptionTests.test_versioned_closed_contract_keeps_actual_and_requested_delays_independent",
+      "syntax_sha256": "9cb37633e6b992586fd9ec2d622cdb819b03dfcbbbf62caaf879af1616e6103b"
+    },
+    "controlled.snapshot_authority": {
+      "distinction": "Source snapshot is detached, complete for its supplied fields and explicitly not native/material acceptance.",
+      "file_sha256": "a5c049e7936eb33cf5f0ecc76f85b6a002f9d9e26417b939ab263c711ee290fc",
+      "path": "tests/test_policy_controlled_composition_description.py",
+      "role": "mixed",
+      "symbol": "ControlledCompositionDescriptionTests.test_snapshot_is_deeply_detached_and_preserves_all_project_context",
+      "syntax_sha256": "c63ef24ecdfb6a48c95db8912156e61e3854e8983f3129c858b1a463a8729808"
+    },
+    "controlled.snapshot_source_change": {
+      "distinction": "Edited source changes identity while supplied mechanism/provenance/product pins remain original.",
+      "file_sha256": "a5c049e7936eb33cf5f0ecc76f85b6a002f9d9e26417b939ab263c711ee290fc",
+      "path": "tests/test_policy_controlled_composition_description.py",
+      "role": "mixed",
+      "symbol": "ControlledCompositionDescriptionTests.test_source_replacement_changes_identity_without_repairing_model_or_provenance",
+      "syntax_sha256": "19b2f4afd87803bc5c03c798e4932ecc94d066571cbb76983dc59eacb5d92a41"
+    },
+    "controlled.source_rejection": {
+      "distinction": "Legacy and standalone entry points reject new activity declarations and the controlled source root.",
+      "file_sha256": "8df0f0962939cef8222a84e6c2ce50795611fa654c81ca533de68d08fa58f474",
+      "path": "tests/test_policy_controlled_composition_source.py",
+      "role": "rejection",
+      "symbol": "ControlledCompositionSourceTests.test_old_profiles_and_standalone_new_records_remain_closed",
+      "syntax_sha256": "5ce3fdb3e9320c7092c1c332312eafea34fc6c431ba03c83db5af98cd78206a6"
+    },
+    "controlled.source_roundtrip": {
+      "distinction": "Explicit controlled source representation roundtrip only; no native admission.",
+      "file_sha256": "8df0f0962939cef8222a84e6c2ce50795611fa654c81ca533de68d08fa58f474",
+      "path": "tests/test_policy_controlled_composition_source.py",
+      "role": "positive",
+      "symbol": "ControlledCompositionSourceTests.test_additive_root_roundtrips_without_claiming_semantic_acceptance",
+      "syntax_sha256": "ce1fe566040d4f8d4b87d89c1b5cda6b8783e4b25b4598ba3461dad5b08b280d"
+    },
     "finite_build.authority": {
       "distinction": "Explicit source replacement preserves every other original and does not fabricate compatible model or material pins.",
       "file_sha256": "7bf906c7a3f724fe2217ab9057de622d1aaa996af1fce4f4438a8c8172615bdb",
@@ -37273,7 +39112,7 @@
     },
     "module_linking.closed": {
       "distinction": "Explicit module codec rejects unknown nested fields including private Ref extensions, stale complete-template pins, duplicate or unused templates, wrong record kinds and noninteger limits.",
-      "file_sha256": "a504c2a74527ee49aa2009f935b360bb3d147db166805a3b8d09107669bfc00a",
+      "file_sha256": "5c40d7da262875dd4ee2b1eae4921b62b86f95498c832a0a09fe15d75fece9e9",
       "path": "tests/test_policy_module_linking.py",
       "role": "rejection",
       "symbol": "ModuleBundleTests.test_closed_codec_rejects_unknown_fields_stale_pins_and_kind_confusion",
@@ -37281,7 +39120,7 @@
     },
     "module_linking.codec": {
       "distinction": "Closed bundle roundtrip retains original template ordering and source maps; proposed program and bundle snapshots are isolated from subsequent caller mutation. No native checked capability is constructed.",
-      "file_sha256": "a504c2a74527ee49aa2009f935b360bb3d147db166805a3b8d09107669bfc00a",
+      "file_sha256": "5c40d7da262875dd4ee2b1eae4921b62b86f95498c832a0a09fe15d75fece9e9",
       "path": "tests/test_policy_module_linking.py",
       "role": "positive",
       "symbol": "ModuleBundleTests.test_codec_retains_template_order_and_full_source_maps_with_isolated_snapshots",
@@ -37289,7 +39128,7 @@
     },
     "module_linking.export": {
       "distinction": "Fresh mocked linked export publishes the exact returned FASTA and nested module/material manifest as one paired ZIP and refuses overwrite. Legacy offline archive-consumer compatibility and native material execution are outside this witness.",
-      "file_sha256": "a504c2a74527ee49aa2009f935b360bb3d147db166805a3b8d09107669bfc00a",
+      "file_sha256": "5c40d7da262875dd4ee2b1eae4921b62b86f95498c832a0a09fe15d75fece9e9",
       "path": "tests/test_policy_module_linking.py",
       "role": "positive",
       "symbol": "ModuleMaterialTransportTests.test_material_publication_writes_exact_nested_manifest_and_fasta_atomically",
@@ -37297,7 +39136,7 @@
     },
     "module_linking.limits": {
       "distinction": "Pure-data preflight rejects cyclic, deep, oversized and callback-bearing original bundles before source decoding; caller work/port/instance limits also reject. No native resource-accounting equivalence is claimed.",
-      "file_sha256": "a504c2a74527ee49aa2009f935b360bb3d147db166805a3b8d09107669bfc00a",
+      "file_sha256": "5c40d7da262875dd4ee2b1eae4921b62b86f95498c832a0a09fe15d75fece9e9",
       "path": "tests/test_policy_module_linking.py",
       "role": "rejection",
       "symbol": "ModuleBundleTests.test_pure_codec_preflight_rejects_cycles_depth_bytes_nodes_and_callbacks",
@@ -37305,7 +39144,7 @@
     },
     "module_linking.material": {
       "distinction": "Inert compile/check/replay/export responses retain the complete existing material child and exact nested export manifest/FASTA while using the unchanged child transport validator. No native source, material or biological acceptance is established.",
-      "file_sha256": "a504c2a74527ee49aa2009f935b360bb3d147db166805a3b8d09107669bfc00a",
+      "file_sha256": "5c40d7da262875dd4ee2b1eae4921b62b86f95498c832a0a09fe15d75fece9e9",
       "path": "tests/test_policy_module_linking.py",
       "role": "positive",
       "symbol": "ModuleMaterialTransportTests.test_material_four_fresh_operations_retain_exact_child_wrapper",
@@ -37313,7 +39152,7 @@
     },
     "module_linking.negotiation": {
       "distinction": "Inert material transport requires exact negotiated producer metadata and explicit core production role; verify may check. No native producer execution is claimed.",
-      "file_sha256": "a504c2a74527ee49aa2009f935b360bb3d147db166805a3b8d09107669bfc00a",
+      "file_sha256": "5c40d7da262875dd4ee2b1eae4921b62b86f95498c832a0a09fe15d75fece9e9",
       "path": "tests/test_policy_module_linking.py",
       "role": "mixed",
       "symbol": "ModuleMaterialTransportTests.test_material_producer_negotiates_exact_profile_and_verify_cannot_compile",
@@ -37321,7 +39160,7 @@
     },
     "module_linking.rejection": {
       "distinction": "An inert failed material check retains descriptive module linkage and the complete failed child report; a forged successful export with no accepted child artifact rejects.",
-      "file_sha256": "a504c2a74527ee49aa2009f935b360bb3d147db166805a3b8d09107669bfc00a",
+      "file_sha256": "5c40d7da262875dd4ee2b1eae4921b62b86f95498c832a0a09fe15d75fece9e9",
       "path": "tests/test_policy_module_linking.py",
       "role": "mixed",
       "symbol": "ModuleMaterialTransportTests.test_material_rejection_preserves_original_linkage_without_export",
@@ -37329,7 +39168,7 @@
     },
     "module_linking.source": {
       "distinction": "Three authored modules expand to independently relocated complete source while retaining the prior artificial component library, composition rule, ordered graph premises and literal RNA. Pure Python source evidence only; native linkage and material execution remain unassessed.",
-      "file_sha256": "a504c2a74527ee49aa2009f935b360bb3d147db166805a3b8d09107669bfc00a",
+      "file_sha256": "5c40d7da262875dd4ee2b1eae4921b62b86f95498c832a0a09fe15d75fece9e9",
       "path": "tests/test_policy_module_linking.py",
       "role": "positive",
       "symbol": "ModuleBundleTests.test_three_modules_equal_independent_source_and_preserve_material_authority",
@@ -37337,7 +39176,7 @@
     },
     "module_linking.tamper": {
       "distinction": "Inert standalone responses with changed originals, source paths, template pins, lineage order, claim scope, replay body or resource counters reject; native semantic checking is not executed.",
-      "file_sha256": "a504c2a74527ee49aa2009f935b360bb3d147db166805a3b8d09107669bfc00a",
+      "file_sha256": "5c40d7da262875dd4ee2b1eae4921b62b86f95498c832a0a09fe15d75fece9e9",
       "path": "tests/test_policy_module_linking.py",
       "role": "rejection",
       "symbol": "ModuleTransportTests.test_lineage_pins_paths_order_semantic_claim_and_usage_tampering_reject",
@@ -37345,7 +39184,7 @@
     },
     "module_linking.transport": {
       "distinction": "Inert native protocol peer exercises fresh check and replay payloads, ordered original lineage and immutable response snapshots through the public proposal namespace. This is transport validation, not native elaboration proof.",
-      "file_sha256": "a504c2a74527ee49aa2009f935b360bb3d147db166805a3b8d09107669bfc00a",
+      "file_sha256": "5c40d7da262875dd4ee2b1eae4921b62b86f95498c832a0a09fe15d75fece9e9",
       "path": "tests/test_policy_module_linking.py",
       "role": "positive",
       "symbol": "ModuleTransportTests.test_fresh_standalone_check_replay_and_public_proposal_namespace",
@@ -38049,7 +39888,7 @@
     },
     "shared.closed_serialization.1": {
       "distinction": "Closed registry and exact wire roots with duplicate/missing/unknown-field rejection, bounded decoding and deterministic roundtrips; no imported Python extension authority.",
-      "file_sha256": "b1b1e0c9650e4b96950cddafa7c72cf175f6ebfc1a8806e05cf5562c33dc02d7",
+      "file_sha256": "886c29e7b904ce20597e5c7e4690dfcc121125b36c17ad3df12853e53e38f3a1",
       "path": "tests/test_policy_serialization.py",
       "role": "mixed",
       "symbol": "PolicySerializationTests.test_roundtrip_preserves_exact_scalar_types_and_declared_kind_fields",
@@ -38057,7 +39896,7 @@
     },
     "shared.closed_serialization.2": {
       "distinction": "Closed registry and exact wire roots with duplicate/missing/unknown-field rejection, bounded decoding and deterministic roundtrips; no imported Python extension authority.",
-      "file_sha256": "b1b1e0c9650e4b96950cddafa7c72cf175f6ebfc1a8806e05cf5562c33dc02d7",
+      "file_sha256": "886c29e7b904ce20597e5c7e4690dfcc121125b36c17ad3df12853e53e38f3a1",
       "path": "tests/test_policy_serialization.py",
       "role": "mixed",
       "symbol": "PolicySerializationTests.test_unknown_missing_duplicate_and_incompatible_declarations",
@@ -38065,7 +39904,7 @@
     },
     "shared.closed_serialization.3": {
       "distinction": "Closed registry and exact wire roots with duplicate/missing/unknown-field rejection, bounded decoding and deterministic roundtrips; no imported Python extension authority.",
-      "file_sha256": "b1b1e0c9650e4b96950cddafa7c72cf175f6ebfc1a8806e05cf5562c33dc02d7",
+      "file_sha256": "886c29e7b904ce20597e5c7e4690dfcc121125b36c17ad3df12853e53e38f3a1",
       "path": "tests/test_policy_serialization.py",
       "role": "mixed",
       "symbol": "PolicySerializationTests.test_registry_is_closed_against_later_python_subclasses",
@@ -38073,7 +39912,7 @@
     },
     "shared.closed_serialization.4": {
       "distinction": "Closed registry and exact wire roots with duplicate/missing/unknown-field rejection, bounded decoding and deterministic roundtrips; no imported Python extension authority.",
-      "file_sha256": "b1b1e0c9650e4b96950cddafa7c72cf175f6ebfc1a8806e05cf5562c33dc02d7",
+      "file_sha256": "886c29e7b904ce20597e5c7e4690dfcc121125b36c17ad3df12853e53e38f3a1",
       "path": "tests/test_policy_serialization.py",
       "role": "mixed",
       "symbol": "PolicySerializationTests.test_bounded_before_deep_parse_and_after_unicode_decoding",
@@ -38081,7 +39920,7 @@
     },
     "shared.closed_serialization.5": {
       "distinction": "Closed registry and exact wire roots with duplicate/missing/unknown-field rejection, bounded decoding and deterministic roundtrips; no imported Python extension authority.",
-      "file_sha256": "b1b1e0c9650e4b96950cddafa7c72cf175f6ebfc1a8806e05cf5562c33dc02d7",
+      "file_sha256": "886c29e7b904ce20597e5c7e4690dfcc121125b36c17ad3df12853e53e38f3a1",
       "path": "tests/test_policy_serialization.py",
       "role": "mixed",
       "symbol": "PolicySerializationTests.test_aggregate_payload_is_bounded_before_full_json_allocation",
@@ -38089,11 +39928,11 @@
     },
     "shared.closed_serialization.6": {
       "distinction": "Closed registry and exact wire roots with duplicate/missing/unknown-field rejection, bounded decoding and deterministic roundtrips; no imported Python extension authority.",
-      "file_sha256": "b1b1e0c9650e4b96950cddafa7c72cf175f6ebfc1a8806e05cf5562c33dc02d7",
+      "file_sha256": "886c29e7b904ce20597e5c7e4690dfcc121125b36c17ad3df12853e53e38f3a1",
       "path": "tests/test_policy_serialization.py",
       "role": "mixed",
       "symbol": "PolicySerializationTests.test_schema_comes_from_exact_registry_and_retains_semantic_kind",
-      "syntax_sha256": "827264c569a4dce708e5bd18aa7f981b4a25b39aa9ae6184627a253b8dd14f6b"
+      "syntax_sha256": "c951cd26495a1d0fb64e3a164b191e5989ab236889b0db7a3af22c3665016116"
     },
     "shared.exact_values.1": {
       "distinction": "Independent quantity wire literals, decimal text and scale comparisons, no bool/integer coercion or arbitrary objects. Explicit from_float is an opt-in conversion path.",
@@ -38129,7 +39968,7 @@
     },
     "shared.exact_values.5": {
       "distinction": "Independent quantity wire literals, decimal text and scale comparisons, no bool/integer coercion or arbitrary objects. Explicit from_float is an opt-in conversion path.",
-      "file_sha256": "b1b1e0c9650e4b96950cddafa7c72cf175f6ebfc1a8806e05cf5562c33dc02d7",
+      "file_sha256": "886c29e7b904ce20597e5c7e4690dfcc121125b36c17ad3df12853e53e38f3a1",
       "path": "tests/test_policy_serialization.py",
       "role": "mixed",
       "symbol": "PolicySerializationTests.test_decimal_text_and_float_rejection",
@@ -38137,7 +39976,7 @@
     },
     "shared.exact_values.6": {
       "distinction": "Independent quantity wire literals, decimal text and scale comparisons, no bool/integer coercion or arbitrary objects. Explicit from_float is an opt-in conversion path.",
-      "file_sha256": "b1b1e0c9650e4b96950cddafa7c72cf175f6ebfc1a8806e05cf5562c33dc02d7",
+      "file_sha256": "886c29e7b904ce20597e5c7e4690dfcc121125b36c17ad3df12853e53e38f3a1",
       "path": "tests/test_policy_serialization.py",
       "role": "mixed",
       "symbol": "PolicySerializationTests.test_no_truth_integer_coercion_or_arbitrary_objects",

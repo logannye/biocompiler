@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+from copy import deepcopy
 import hashlib
 import json
 from pathlib import Path
@@ -126,20 +127,40 @@ SOURCE_PINS = {'core/lib/checker/policy_admission.ml': '5f4418b9227fbc2db5fb86ea
  'core/lib/domain/policy_operational.ml': 'bd5d03f8acefed68ab0a8059041774479426928266351b325535a124e3e23d34',
  'core/lib/domain/policy_schema.ml': '8057ea511a25835f4e51c720ce815602f69839d0a664fc880c2f8f5bee918e78',
  'core/lib/realization_checker/policy_material_context_check.ml': '62190f46bc32fc648128c2efe4b88caab6375fddb0b9a78e392b0654d2b17ddb',
- 'src/biocompiler/policy/model.py': 'cc0430615690c0a7a5e388b8d2821d03198b14c3f3044a6443a4d6f6747b1ec6',
- 'src/biocompiler/policy/serialization.py': '4bd1f2dee570d079290b774ea94b059907df62a27793e47927b29ed8981c94f6',
- 'src/biocompiler/policy/validation.py': '5e4232eeea39adae63e4dadae52afca363068ca28e344161e5806ceed5558529',
+ 'src/biocompiler/policy/model.py': '5671c5626a56ac4b9f623fc170cc64cafea874a285132f6ae8dfd53e95e4832c',
+ 'src/biocompiler/policy/serialization.py': 'd1b9c0b7f54a379cfb106febdfb88e1553a401b049e9e3b3c49f4d9a85601c70',
+ 'src/biocompiler/policy/validation.py': '444066210976c54acfc295fb96d689e3fe54fb2d8655c9a6b55562f79034a6f9',
  'tools/check_policy_semantic_coverage.py': '5ddcaf8432b869bd2badfd5f0b0aa0179f5176e59ec53d879f502bcd7bccea47'}
-AST_PINS = {'src/biocompiler/policy/model.py': '71e0d901dcd0daa8612367ac50f5da7a49fce0f27f24abee57d3ebebad9a1fb9',
- 'src/biocompiler/policy/serialization.py': 'cb6cf5af995c021c8fe4dc527736a3ae0027f771ab4ff04d9baea09c2e758834',
- 'src/biocompiler/policy/validation.py': 'b9e1064ab7d629adfcf166c8c3a9f4e9513b7730a0a7daabd1b216e32ac9e524',
+AST_PINS = {'src/biocompiler/policy/model.py': 'ea3cc24bcdc2477b0451e64c786724f2372a51336c6b57721d6f9d224e879d15',
+ 'src/biocompiler/policy/serialization.py': 'a3e9c867eed8db4503ebc865669abdc189a7ba34aa29fa36667f3bc209b63838',
+ 'src/biocompiler/policy/validation.py': 'c1106cd274e4f2021a2b329e212d70ffda65b4ffc87740f553def867304ff501',
  'tools/check_policy_semantic_coverage.py': 'd6d5f8fe18da607c81255eae59c2edb5754baf7a79e91259bf86bfc08022f7c6'}
 INPUT_PINS = {'core/test/data/policy_documents_v01.json': 'c4c7f3251c882ed739eb3b733bb0eea0cd2965470e02e6293196e114b0a3aded',
  'core/test/data/policy_operational_v01.json': 'bd9dfbb65c456b75fa401049341e85a6de882e8f130b4c76dfdadd9b6dd08968',
  'core/test/data/policy_realization_source_v01.json': 'fa4008fb9196ed1a318a2b293f452d19227b9562c5d1dece16183e2110ceec51'}
-REVIEWED_DECLARATIONS_SHA256 = 'd14282bc3b056bf8552a8659d6c73f9e25cd4cfb64baa0abf9a6e43bb0a3186f'
+REVIEWED_DECLARATIONS_SHA256 = 'f9eecf14f26004a5dd2691b87b6d2e3cf191a6b66a9fa8c2e043f22e4a64a121'
+BEFORE_CONTROLLED_DECLARATIONS_SHA256 = 'd14282bc3b056bf8552a8659d6c73f9e25cd4cfb64baa0abf9a6e43bb0a3186f'
+# Exact regions were located by unique unchanged source bytes, not assumed offsets.
+CONTROLLED_VALIDATION_REANCHORS = {
+    (598, 600): (594, 596), (604, 604): (600, 600),
+    (605, 605): (601, 601), (612, 612): (608, 608),
+    (613, 613): (609, 609), (619, 619): (615, 615),
+    (623, 623): (619, 619), (629, 629): (625, 625),
+    (632, 660): (628, 656), (641, 641): (637, 637),
+    (655, 655): (651, 651), (741, 741): (736, 736),
+}
 SYNTAX_LEDGER = "protocol/policy-semantic-coverage-v0.1.json"
 FAMILY_LEDGER = "protocol/policy-material-rule-coverage-v0.1.json"
+CONTROLLED_SYNTAX_IDS = frozenset({
+    "alias:ControlledDeclaration",
+    "alternative:ControlledDeclaration.ControlledActivity",
+    "alternative:ControlledDeclaration.Declaration",
+    "constant:CONTROLLED_COMPOSITION_SOURCE_PROFILE",
+    "record:ControlledActivity",
+    *["field:ControlledActivity." + name for name in
+      ("clock", "contract", "executor", "gate", "id", "products", "readout", "subject")],
+    'operator:Expr.op="activity_band"',
+})
 
 
 class CoverageError(ValueError):
@@ -291,6 +312,25 @@ def declarations(ledger: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
+def before_controlled_representation(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Restore only reviewed anchor locations; all predicate bytes stay pinned."""
+    result = deepcopy(ledger)
+    for group in ("rules", "contexts"):
+        for row in result[group]:
+            for owner in row["owners"]:
+                if owner["path"] != "src/biocompiler/policy/validation.py":
+                    continue
+                location = owner["first_line"], owner["last_line"]
+                if location in CONTROLLED_VALIDATION_REANCHORS:
+                    first, last = CONTROLLED_VALIDATION_REANCHORS[location]
+                    offset = location[0] - first
+                    owner.update(first_line=first, last_line=last)
+                    owner["python_calls"] = [
+                        "L" + str(int(call.split("C")[0][1:]) - offset) + "C" + call.split("C")[1]
+                        for call in owner["python_calls"]]
+    return result
+
+
 def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
     if ledger is None:
         ledger = decode(read(root, LEDGER))
@@ -311,11 +351,15 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
     require(type(syntax_ledger) is dict and syntax_ledger.get("schema_version") == "biocompiler.policy_semantic_coverage.v0.1", "Wrong syntax ledger")
     require(type(family_ledger) is dict and family_ledger.get("schema_version") == "biocompiler.policy_material_rule_coverage.v0.1", "Wrong family ledger")
     entries, families = syntax_ledger.get("entries"), family_ledger.get("rules")
-    require(type(entries) is list and len(entries) == 614 and all(type(row) is dict and type(row.get("id")) is str for row in entries), "Changed 614 syntax census")
+    require(type(entries) is list and len(entries) == 628 and all(type(row) is dict and type(row.get("id")) is str for row in entries), "Changed 628 syntax census")
     require(type(families) is list and len(families) == 62 and all(type(row) is dict and type(row.get("id")) is str for row in families), "Changed 62 family census")
     syntax_ids = {row["id"] for row in entries}
     family_ids = {row["id"] for row in families}
-    require(len(syntax_ids) == 614 and len(family_ids) == 62, "Duplicate complementary identity")
+    require(len(syntax_ids) == 628 and len(family_ids) == 62, "Duplicate complementary identity")
+    require(CONTROLLED_SYNTAX_IDS <= syntax_ids and len(syntax_ids - CONTROLLED_SYNTAX_IDS) == 614,
+            "Changed pre-controlled syntax census")
+    require(all(row.get("disposition") == "controlled_source_representation" for row in entries
+                if row["id"] in CONTROLLED_SYNTAX_IDS), "Controlled syntax is representation only")
     structures: dict[str, dict[str, Any]] = {}
     sources = ledger["sources"]
     require(type(sources) is list and all(type(row) is dict for row in sources)
@@ -365,6 +409,8 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
         require(row["sha256"] == INPUT_PINS[row["path"]] == digest(read(root, row["path"])), "Changed original counterexample input")
     require(digest(canonical(declarations(ledger))) == REVIEWED_DECLARATIONS_SHA256,
             "Unreviewed source predicates/contexts/stage differences/linkage")
+    require(digest(canonical(declarations(before_controlled_representation(ledger)))) == BEFORE_CONTROLLED_DECLARATIONS_SHA256,
+            "Changed pre-controlled source predicates/contexts/stage differences/linkage")
     return {"schema_version": "biocompiler.policy_source_context_coverage_receipt.v0.1",
             "status": "source_slice_current", "rules": len(RULE_IDS), "contexts": len(CONTEXT_IDS),
             "sources": len(SOURCE_PINS), "counterexample_inputs": len(INPUT_PINS),

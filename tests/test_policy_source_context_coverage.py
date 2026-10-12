@@ -50,13 +50,40 @@ class PolicySourceContextCoverageTests(unittest.TestCase):
     def test_current_bounded_slice_leaves_full_census_and_semantics_open(self):
         result = coverage.check()
         self.assertEqual((result["rules"], result["contexts"], result["sources"]), (40, 43, 15))
-        self.assertEqual((result["syntax_rows"], result["families"]), (614, 62))
+        self.assertEqual((result["syntax_rows"], result["families"]), (628, 62))
         self.assertEqual(result["status"], "source_slice_current")
         self.assertEqual(result["whole_source_census"], "open")
         self.assertEqual(result["whole_stack_census"], "open")
         self.assertEqual(result["witness_sufficiency"], "not_assessed")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["native_execution"], "not_performed")
+
+    def test_controlled_representation_preserves_existing_source_slice(self):
+        entries = coverage.decode(coverage.read(coverage.ROOT, coverage.SYNTAX_LEDGER))["entries"]
+        controlled = {row["id"] for row in entries if row["disposition"] == "controlled_source_representation"}
+        self.assertEqual(controlled, coverage.CONTROLLED_SYNTAX_IDS)
+        self.assertEqual(len(controlled), 14)
+        self.assertEqual(len(entries) - len(controlled), 614)
+        previous = coverage.before_controlled_representation(self.original)
+        self.assertEqual(coverage.digest(coverage.canonical(coverage.declarations(previous))),
+                         "d14282bc3b056bf8552a8659d6c73f9e25cd4cfb64baa0abf9a6e43bb0a3186f")
+        changed = []
+        for group in ("rules", "contexts"):
+            for original, restored in zip(self.original[group], previous[group], strict=True):
+                for current_owner, previous_owner in zip(original["owners"], restored["owners"], strict=True):
+                    self.assertEqual(current_owner["region_sha256"], previous_owner["region_sha256"])
+                    self.assertEqual(current_owner["python_symbols"], previous_owner["python_symbols"])
+                    if current_owner != previous_owner:
+                        changed.append(original["id"])
+        self.assertEqual(len(changed), 20)
+        mapped_ids = {syntax_id for group in ("rules", "contexts")
+                      for row in self.original[group] for syntax_id in row["syntax_ids"]}
+        self.assertTrue(controlled.isdisjoint(mapped_ids))
+        for group in ("rules", "contexts"):
+            self.ledger = deepcopy(self.original)
+            with self.subTest(group=group):
+                self.reject(lambda value: value[group][0]["syntax_ids"].append("record:ControlledActivity"),
+                            "Unreviewed source predicates/contexts")
 
     def test_new_expression_syntax_is_present_but_outside_existing_source_slice(self):
         entries = coverage.decode(coverage.read(coverage.ROOT, coverage.SYNTAX_LEDGER))["entries"]
@@ -77,7 +104,7 @@ class PolicySourceContextCoverageTests(unittest.TestCase):
                                 "Unreviewed source predicates/contexts")
 
     def pre_expression_projection(self):
-        projected = deepcopy(self.original)
+        projected = coverage.before_controlled_representation(self.original)
         context = next(row for row in projected["contexts"]
                        if row["id"] == "source.context.duration.assurance_horizon")
         owner = next(row for row in context["owners"]
@@ -319,7 +346,7 @@ class PolicySourceContextCoverageTests(unittest.TestCase):
             value = json.loads(original)
             value[key].pop()
             path.write_text(json.dumps(value))
-            with self.assertRaisesRegex(coverage.CoverageError, "Changed (614 syntax|62 family) census"):
+            with self.assertRaisesRegex(coverage.CoverageError, "Changed (628 syntax|62 family) census"):
                 coverage.check(root, self.ledger)
             path.write_bytes(original)
 

@@ -11,6 +11,7 @@ from typing import Literal, TypeAlias
 
 PROFILE = "biocompiler.policy.v0.1"
 EXPRESSION_SOURCE_PROFILE = "biocompiler.policy_expression_source.v0.1"
+CONTROLLED_COMPOSITION_SOURCE_PROFILE = "biocompiler.policy_controlled_composition_source.v0.1"
 REGISTRY: dict[str, type[Record]] = {}
 
 
@@ -130,7 +131,7 @@ class DefinitionRef(Record):
 
 @dataclass(frozen=True)
 class Expr(Record):
-    op: Literal["literal", "observe", "state", "parameter", "all", "any", "not", "eq", "ne", "lt", "le", "gt", "ge", "add", "subtract", "multiply", "divide", "exists", "forall", "count", "distinct", "holds", "recently", "followed_by", "within", "after", "until", "rising", "updated", "effect_event", "message_event", "call", "integrate"]
+    op: Literal["literal", "observe", "state", "parameter", "all", "any", "not", "eq", "ne", "lt", "le", "gt", "ge", "add", "subtract", "multiply", "divide", "exists", "forall", "count", "distinct", "holds", "recently", "followed_by", "within", "after", "until", "rising", "updated", "effect_event", "message_event", "call", "integrate", "activity_band"]
     value_type: TypeSpec
     args: tuple[Expr, ...] = ()
     ref: Ref | None = None
@@ -452,7 +453,25 @@ class Requirement(Record):
     clock: Ref | None = None
 
 
+@dataclass(frozen=True)
+class ControlledActivity(Record):
+    """A declared activity endpoint; construction establishes no native support."""
+
+    id: str
+    executor: Ref
+    subject: Ref
+    clock: Ref
+    contract: DefinitionRef
+    gate: Expr
+    products: tuple[Ref, Ref]
+    readout: DefinitionRef
+
+    def band(self) -> Expr:
+        return Expr("activity_band", TEXT, ref=declaration_ref(self), scope=self.subject)
+
+
 Declaration: TypeAlias = Role | Subject | Encounter | SpatialScope | Clock | Observation | StateStore | Effect | Rule | Machine | Transition | Channel | Message | Requirement | Parameter
+ControlledDeclaration: TypeAlias = Declaration | ControlledActivity
 
 
 @dataclass(frozen=True)
@@ -555,7 +574,7 @@ class PolicyDraft(Record):
 class PolicyProgram(Record):
     id: str
     semantics: SemanticBundle
-    declarations: tuple[Declaration, ...]
+    declarations: tuple[ControlledDeclaration, ...]
     source_map: tuple[SourceSpan, ...] = ()
     profile: str = PROFILE
 

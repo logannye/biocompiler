@@ -147,7 +147,7 @@ def _encode(value: Any, budget: _Budget, depth: int, registry: dict[str, type]) 
     _fail('Policy values must use registered immutable declarations and exact scalar types.')
 
 
-def _decode(value: Any, expected: Any, budget: _Budget, depth: int, registry: dict[str, type], *, expression_source: bool = False) -> Any:
+def _decode(value: Any, expected: Any, budget: _Budget, depth: int, registry: dict[str, type], *, expression_source: bool = False, controlled_source: bool = False) -> Any:
     budget.visit(depth)
     origin, arguments = get_origin(expected), get_args(expected)
     if origin in (Union, types.UnionType):
@@ -155,7 +155,7 @@ def _decode(value: Any, expected: Any, budget: _Budget, depth: int, registry: di
         # Other alternatives use exact scalar type rules, never coercion.
         for option in arguments:
             try:
-                return _decode(value, option, budget, depth, registry, expression_source=expression_source)
+                return _decode(value, option, budget, depth, registry, expression_source=expression_source, controlled_source=controlled_source)
             except PolicySerializationError:
                 pass
         _fail('Policy value does not match any declared union alternative.')
@@ -167,10 +167,10 @@ def _decode(value: Any, expected: Any, budget: _Budget, depth: int, registry: di
         if type(value) is not list:
             _fail('Policy tuple fields require JSON arrays.')
         if len(arguments) == 2 and arguments[1] is Ellipsis:
-            return tuple(_decode(item, arguments[0], budget, depth + 1, registry, expression_source=expression_source) for item in value)
+            return tuple(_decode(item, arguments[0], budget, depth + 1, registry, expression_source=expression_source, controlled_source=controlled_source) for item in value)
         if len(value) != len(arguments):
             _fail('Policy tuple has the wrong number of elements.')
-        return tuple(_decode(item, item_type, budget, depth + 1, registry, expression_source=expression_source)
+        return tuple(_decode(item, item_type, budget, depth + 1, registry, expression_source=expression_source, controlled_source=controlled_source)
                      for item, item_type in zip(value, arguments))
     if expected is type(None):
         if value is not None:
@@ -208,18 +208,37 @@ def _decode(value: Any, expected: Any, budget: _Budget, depth: int, registry: di
         if actual is model.Unit:
             _decimal(value['scale'], budget)
         hints = get_type_hints(actual)
+        if actual is model.ControlledActivity and not controlled_source:
+            _fail('ControlledActivity is allowed only in an explicit controlled source root BuildRequest.')
+        if actual is model.Expr and value['op'] == 'activity_band' and not controlled_source:
+            _fail('Activity expressions require an explicit controlled source root BuildRequest.')
+        if actual is model.PolicyProgram and not controlled_source:
+            hints['declarations'] = tuple[model.Declaration, ...]
         if actual is model.AssuranceRequest:
             if expression_source:
                 if (value['horizon'] != 'not_applicable' or value['level'] != 'structural'
                         or value['assumptions'] != [] or value['tolerances'] != []):
                     _fail('Expression source requires static structural assurance with no assumptions or tolerances.')
+            elif controlled_source:
+                if value['level'] != 'bounded':
+                    _fail('Controlled source requires bounded assurance and an explicit quantity horizon.')
+                hints['horizon'] = model.Quantity
             else:
                 hints['horizon'] = model.Quantity | Literal['unbounded_requested']
+        if actual in (model.BuildRequest, model.PolicyProgram, model.PolicyDraft, model.SemanticBundle):
+            if controlled_source:
+                if actual is model.PolicyDraft:
+                    _fail('Controlled source does not admit a draft root or nested draft.')
+                required_profile = model.PROFILE if actual is model.SemanticBundle else model.CONTROLLED_COMPOSITION_SOURCE_PROFILE
+                if value['profile'] != required_profile:
+                    _fail('Controlled source requires exact root, program and semantic bundle profiles.')
+            elif value['profile'] == model.CONTROLLED_COMPOSITION_SOURCE_PROFILE:
+                _fail('Controlled source is allowed only as an explicit root BuildRequest.')
         if expression_source and actual in (model.PolicyProgram, model.SemanticBundle) and value['profile'] != model.PROFILE:
             _fail('Expression source retains the original nested program and semantic profiles.')
         if actual is model.BuildRequest and value['profile'] == model.EXPRESSION_SOURCE_PROFILE and not expression_source:
             _fail('Expression source is allowed only as an explicit root BuildRequest.')
-        decoded = {name: _decode(value[name], hints[name], budget, depth + 1, registry, expression_source=expression_source)
+        decoded = {name: _decode(value[name], hints[name], budget, depth + 1, registry, expression_source=expression_source, controlled_source=controlled_source)
                    for name in names}
         try:
             return actual(**decoded)
@@ -260,7 +279,8 @@ def to_data(document: model.Record, *, limits: SerializationLimits = DEFAULT_LIM
     # Frozen dataclasses do not enforce annotations at runtime. Reject malformed
     # directly constructed values as strictly as imported wire declarations.
     expression_source = type(document) is model.BuildRequest and document.profile == model.EXPRESSION_SOURCE_PROFILE
-    _decode(result, type(document), _Budget(limits), 0, registry, expression_source=expression_source)
+    controlled_source = type(document) is model.BuildRequest and document.profile == model.CONTROLLED_COMPOSITION_SOURCE_PROFILE
+    _decode(result, type(document), _Budget(limits), 0, registry, expression_source=expression_source, controlled_source=controlled_source)
     if len(json.dumps(result, ensure_ascii=False, separators=(',', ':'), allow_nan=False).encode('utf-8')) > limits.max_bytes:
         _fail('Policy document exceeds its byte limit.')
     return cast(dict[str, JSONValue], result)
@@ -284,8 +304,10 @@ def from_data(data: object, expected_type: type[model.Record] | None = None, *, 
         _fail('Policy document exceeds its byte limit.')
     expression_source = (type(data) is dict and data.get('$type') == 'BuildRequest'
                          and data.get('profile') == model.EXPRESSION_SOURCE_PROFILE)
+    controlled_source = (type(data) is dict and data.get('$type') == 'BuildRequest'
+                         and data.get('profile') == model.CONTROLLED_COMPOSITION_SOURCE_PROFILE)
     return cast(model.Record, _decode(data, expected_type or model.Record, _Budget(limits), 0, registry,
-                                     expression_source=expression_source))
+                                     expression_source=expression_source, controlled_source=controlled_source))
 
 
 def _text_preflight(text: str, limits: SerializationLimits) -> None:
@@ -425,9 +447,11 @@ def document_digest(document: model.Record, *, limits: SerializationLimits = DEF
     return hashlib.sha256(raw).hexdigest()
 
 
-def schema(root_type: type[model.Record] | None = None) -> dict[str, JSONValue]:
+def _schema(root_type: type[model.Record] | None = None, *, controlled_source: bool = False) -> dict[str, JSONValue]:
     """Generate syntactic JSON Schema from the same closed record/type registry."""
     registry = _registry()
+    if not controlled_source:
+        registry.pop('ControlledActivity')
 
     def shape(hint: Any) -> dict[str, Any]:
         origin, args = get_origin(hint), get_args(hint)
@@ -456,10 +480,14 @@ def schema(root_type: type[model.Record] | None = None) -> dict[str, JSONValue]:
     definitions = {}
     for name, kind in sorted(registry.items()):
         hints = get_type_hints(kind)
+        if kind is model.PolicyProgram and not controlled_source:
+            hints['declarations'] = tuple[model.Declaration, ...]
         if kind is model.AssuranceRequest:
             # The default exported language schema remains exactly v0.1.
             hints['horizon'] = model.Quantity | Literal['unbounded_requested']
         properties = {'$type': {'const': name}, **{item.name: shape(hints[item.name]) for item in fields(kind)}}
+        if kind is model.Expr and not controlled_source:
+            properties['op'] = {'enum': [item for item in get_args(hints['op']) if item != 'activity_band']}
         definitions[name] = {'type': 'object', 'properties': properties,
                              'required': list(properties), 'additionalProperties': False}
     if root_type is None:
@@ -471,6 +499,24 @@ def schema(root_type: type[model.Record] | None = None) -> dict[str, JSONValue]:
         _fail('Schema root must be a registered policy declaration.')
     return cast(dict[str, JSONValue], {'$schema': 'https://json-schema.org/draft/2020-12/schema',
             'title': 'Biocompiler policy declarations (representation only)', **root, '$defs': definitions})
+
+
+def schema(root_type: type[model.Record] | None = None) -> dict[str, JSONValue]:
+    """Export the unchanged v0.1 representation, excluding additive source records."""
+    return _schema(root_type)
+
+
+def controlled_composition_source_schema() -> dict[str, JSONValue]:
+    """Representation client only; compare with the independent versioned schema."""
+    result = _schema(model.BuildRequest, controlled_source=True)
+    result['$id'] = model.CONTROLLED_COMPOSITION_SOURCE_PROFILE
+    definitions = cast(dict[str, dict[str, Any]], result['$defs'])
+    for name in ('BuildRequest', 'PolicyProgram', 'SemanticBundle'):
+        definitions[name]['properties']['profile'] = {
+            'const': model.PROFILE if name == 'SemanticBundle' else model.CONTROLLED_COMPOSITION_SOURCE_PROFILE}
+    definitions['AssuranceRequest']['properties']['level'] = {'const': 'bounded'}
+    definitions['AssuranceRequest']['properties']['horizon'] = {'$ref': '#/$defs/Quantity'}
+    return result
 
 
 def expression_source_schema() -> dict[str, JSONValue]:

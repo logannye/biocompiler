@@ -47,16 +47,32 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (63, 1844, 305, 17, 39))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 657,
-            'independent_expansion': 28, 'shared_invariant': 800, 'source_only': 353})
-        self.assertEqual(len(self.ledger['syntax_links']), 359)
-        self.assertEqual(len(self.ledger['witnesses']), 275)
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (64, 1933, 307, 17, 39))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 677,
+            'independent_expansion': 28, 'shared_invariant': 869, 'source_only': 353})
+        self.assertEqual(len(self.ledger['syntax_links']), 370)
+        self.assertEqual(len(self.ledger['witnesses']), 281)
         self.assertEqual(result['status'], 'source_inventory_checked')
         self.assertEqual(result['runtime_protocol_scope'], c.RUNTIME_SCOPE)
         self.assertIn('not an exhaustive runtime-attribute census', result['runtime_protocol_scope'])
         self.assertIn('neither executed coverage', result['claim_scope'])
         self.assertEqual({r['id'].removeprefix('biocompiler.policy.') for r in self.ledger['inventory']['entries'] if r['scope'] == 'compatibility_support'}, c.SUPPORT)
+
+    def test_controlled_metadata_cannot_upgrade_existing_api_meanings(self):
+        # Even after a caller refreshes the current whole-ledger pin, the
+        # independent pre-extension projection must preserve prior meanings.
+        target = self.ledger['coverage']['biocompiler.policy.serialization.schema']
+        target['scope'] += ' Claims new native acceptance.'
+        metadata = {
+            'witnesses': {key: {name: value[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                          for key, value in self.ledger['witnesses'].items()},
+            'coverage': self.ledger['coverage'],
+        }
+        digest = c.digest(json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+            separators=(',', ':'), allow_nan=False).encode())
+        with patch.object(c, 'REVIEWED_METADATA_SHA256', digest):
+            with self.assertRaisesRegex(c.ApiCoverageError, 'Controlled representation must preserve'):
+                c.validate(self.root, self.ledger)
 
     def test_discovery_is_inert_even_for_source_with_executable_statements(self):
         before = {key for key in sys.modules if key.startswith('biocompiler')}
@@ -66,7 +82,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 1844)
+        self.assertEqual(len(found['entries']), 1933)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
 
@@ -74,7 +90,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         before = {key for key in sys.modules if key.startswith('biocompiler')}
         found = c.discover(self.root)
         self.assertEqual(found['exports'], self.original['inventory']['exports'])
-        self.assertEqual(len(found['exports']), 305)
+        self.assertEqual(len(found['exports']), 307)
         self.assertEqual(found['exports']['biocompiler.policy.refinement.PolicyRefinementClient'],
                          'biocompiler.core_policy_refinement.PolicyRefinementClient')
         self.assertEqual(found['exports']['biocompiler.policy.quantitative_assurance.PolicyQuantitativeAssuranceResult'],
@@ -235,8 +251,34 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
             c.validate(self.root, self.ledger)
 
-    def before_car_expression(self):
+    def before_controlled(self):
         projected = copy.deepcopy(self.ledger)
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+                                if not key.startswith(c.CONTROLLED_PREFIXES) and key not in c.CONTROLLED_ADDITIONS}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
+                                 if not key.startswith('controlled.')}
+        return projected
+
+    def test_controlled_preserves_all_1844_previous_api_meanings(self):
+        previous = self.before_controlled()
+        self.assertEqual((len(previous['coverage']), len(previous['witnesses'])), (1844, 275))
+        metadata = {'coverage': previous['coverage'], 'witnesses': {
+            key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+            for key, row in previous['witnesses'].items()}}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode('utf-8')
+        self.assertEqual(c.digest(encoded), '4af8785fd3710a393f53e630d8c13c570e9c81c16f8885c6062eae58af46e788')
+        self.assertEqual(c.digest(encoded), c.BEFORE_CONTROLLED_METADATA_SHA256)
+        additions = set(self.ledger['coverage']) - set(previous['coverage'])
+        self.assertEqual(len(additions), 89)
+        self.assertEqual(sum(self.ledger['coverage'][key]['status'] == 'dependency' for key in additions), 20)
+        self.assertEqual(sum(self.ledger['coverage'][key]['status'] == 'shared_invariant' for key in additions), 69)
+        witnesses = set(self.ledger['witnesses']) - set(previous['witnesses'])
+        self.assertEqual(len(witnesses), 6)
+        self.assertTrue(all(key.startswith('controlled.') for key in witnesses))
+
+    def before_car_expression(self):
+        projected = self.before_controlled()
         projected['coverage'] = {key: row for key, row in projected['coverage'].items()
                                 if not key.startswith(c.CAR_EXPRESSION_PREFIXES) and key not in c.CAR_EXPRESSION_ADDITIONS}
         projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
@@ -254,13 +296,14 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         self.assertEqual(c.digest(encoded), c.BEFORE_CAR_EXPRESSION_METADATA_SHA256)
         self.assertEqual(c.BEFORE_CAR_EXPRESSION_METADATA_SHA256,
                          'e1ddfce7015cf71ce9d82b5c9ca96520b9ecd682bd51d0fcf99f4ea4ce988bb1')
-        added = set(self.ledger['coverage']) - set(previous['coverage'])
+        current = self.before_controlled()
+        added = set(current['coverage']) - set(previous['coverage'])
         self.assertEqual(len(added), 77)
         self.assertEqual({key for key in added if not key.startswith(c.CAR_EXPRESSION_PREFIXES)},
                          set(c.CAR_EXPRESSION_ADDITIONS))
         for key in added:
-            self.assertIn('no native', self.ledger['coverage'][key]['scope'])
-        witnesses = set(self.ledger['witnesses']) - set(previous['witnesses'])
+            self.assertIn('no native', current['coverage'][key]['scope'])
+        witnesses = set(current['witnesses']) - set(previous['witnesses'])
         self.assertEqual(tuple(sum(key.startswith('car_expression.' + group + '.') for key in witnesses)
                                for group in ('transport', 'source', 'project')), (16, 9, 13))
 
@@ -297,10 +340,12 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'Source/API inventory drift'):
             c.validate(self.root, self.ledger)
 
-    def test_car_expression_reviewed_witness_ceiling_is_closed(self):
-        self.assertEqual(c.MAX_WITNESSES, 275)
-        self.ledger['witnesses']['car_expression.unreviewed'] = copy.deepcopy(
-            self.ledger['witnesses']['car_expression.transport.routes'])
+    def test_reviewed_witness_ceiling_is_closed(self):
+        self.assertEqual(c.MAX_WITNESSES, 290)
+        for index in range(c.MAX_WITNESSES - len(self.ledger['witnesses']) + 1):
+            self.ledger['witnesses']['controlled.unreviewed_' + str(index)] = copy.deepcopy(
+                self.ledger['witnesses']['controlled.source_roundtrip'])
+        self.assertEqual(len(self.ledger['witnesses']), 291)
         with self.assertRaisesRegex(c.ApiCoverageError, 'witness inventory'):
             c.validate(self.root, self.ledger)
 
@@ -338,7 +383,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
                              separators=(',', ':'), allow_nan=False).encode('utf-8')
         with patch.object(c, 'REVIEWED_METADATA_SHA256', c.digest(encoded)):
-            with self.assertRaisesRegex(c.ApiCoverageError, 'CAR expression must preserve'):
+            with self.assertRaisesRegex(c.ApiCoverageError, 'Controlled representation must preserve'):
                 c.validate(self.root, self.ledger)
 
     def test_project_sources_body_drift_rejects_after_file_repin(self):
@@ -693,7 +738,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         original = json.dumps({'witnesses': witnesses, 'coverage': projected['coverage']}, ensure_ascii=True,
                               sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         self.assertEqual(c.digest(original), '2367be4f22a4985eb15fce30dc799abfb254a22ae86f7de665e23fdc7ed800a2')
-        self.assertEqual((len(set(c.MODULES) - {'car_reference', 'expression_material', 'project_sources', 'finite_build', 'research_project', 'typed', 'modules', 'refinement', 'quantitative', 'module_linking', 'planning', 'quantitative_composition', 'quantitative_assurance', 'approximation', 'realization_evidence'}),
+        self.assertEqual((len(set(c.MODULES) - {'controlled_composition', 'car_reference', 'expression_material', 'project_sources', 'finite_build', 'research_project', 'typed', 'modules', 'refinement', 'quantitative', 'module_linking', 'planning', 'quantitative_composition', 'quantitative_assurance', 'approximation', 'realization_evidence'}),
                           len(set(c.CLIENTS) - {'core_policy_expression_material', 'core_policy_refinement', 'core_policy_module_linking', 'core_policy_planning', 'core_policy_quantitative_assurance'})), (30, 6))
         additions = {key: row for key, row in self.before_research_project()['coverage'].items()
                      if key not in projected['coverage']}
@@ -745,7 +790,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         original = json.dumps({'witnesses': witnesses, 'coverage': retained}, ensure_ascii=True,
                               sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         self.assertEqual(c.digest(original), 'f16a88c77afaea4f7cbae56e80e38afc8d5a4c894616ca158578b707d393bb4a')
-        self.assertEqual((len(set(c.MODULES) - {'car_reference', 'expression_material', 'project_sources', 'finite_build', 'component_selection', 'research_project', 'typed', 'modules', 'refinement', 'quantitative', 'module_linking', 'planning', 'quantitative_composition', 'quantitative_assurance', 'approximation', 'realization_evidence'}),
+        self.assertEqual((len(set(c.MODULES) - {'controlled_composition', 'car_reference', 'expression_material', 'project_sources', 'finite_build', 'component_selection', 'research_project', 'typed', 'modules', 'refinement', 'quantitative', 'module_linking', 'planning', 'quantitative_composition', 'quantitative_assurance', 'approximation', 'realization_evidence'}),
                           len(set(c.CLIENTS) - {'core_policy_expression_material', 'core_policy_component_selection', 'core_policy_refinement', 'core_policy_module_linking', 'core_policy_planning', 'core_policy_quantitative_assurance'})), (29, 5))
         component_rows = [row for key, row in self.ledger['coverage'].items()
                           if key.startswith(('biocompiler.core_policy_component_material.',

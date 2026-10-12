@@ -176,7 +176,9 @@ class ModuleBundleTests(unittest.TestCase):
         for key in ('template', 'template_pin', 'instance', 'port', 'limits'):
             self.assertFalse(schema['$defs'][key]['additionalProperties'])
         self.assertEqual(schema['$defs']['limits']['properties']['max_work']['maximum'], 16_000_000)
-        self.assertEqual(len(p.model.REGISTRY), 45)
+        self.assertEqual(len(p.schema()['$defs']), 45)
+        self.assertNotIn('ControlledActivity', p.schema()['$defs'])
+        self.assertEqual(set(p.model.REGISTRY), set(p.schema()['$defs']) | {'ControlledActivity'})
 
 
 class ModuleTransportTests(unittest.TestCase):

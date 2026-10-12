@@ -5,6 +5,7 @@ import ast
 import copy
 from contextlib import redirect_stderr, redirect_stdout
 import io
+import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -104,17 +105,51 @@ class PolicySemanticCoverageTests(unittest.TestCase):
         self.assertIn(before, original)
         destination.write_text(original.replace(before, after, 1), encoding='utf-8')
 
+    def test_controlled_representation_preserves_prior_meanings_without_native_claims(self):
+        disposition = self.ledger['dispositions']['controlled_source_representation']
+        for stage in ('native_source', 'operational', 'implementation', 'material', 'export'):
+            self.assertEqual(disposition['stages'][stage], 'unsupported')
+        additions = [row for row in self.ledger['entries']
+                     if row['disposition'] == 'controlled_source_representation']
+        self.assertEqual(len(additions), 14)
+        metadata = {
+            'dispositions': {key: value for key, value in self.ledger['dispositions'].items()
+                             if key != 'controlled_source_representation'},
+            'entries': {row['id']: row['disposition'] for row in self.ledger['entries']
+                        if row['disposition'] != 'controlled_source_representation'},
+        }
+        self.assertEqual(len(metadata['entries']), 614)
+        encoded = json.dumps(metadata, sort_keys=True, separators=(',', ':')).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), 'd4a375fbd1b78f69b3b7b824cf59129f73a5483840ebcc4f4173088e52a1f0b8')
+
+    def test_complete_legacy_ledger_projects_to_original_authority(self):
+        previous = copy.deepcopy(self.ledger)
+        for key in ('controlled_source_codec', 'controlled_native_shapes',
+                    'controlled_source_positive', 'controlled_source_rejection'):
+            del previous['references'][key]
+        del previous['dispositions']['controlled_source_representation']
+        previous['entries'] = [row for row in previous['entries']
+                               if row['disposition'] != 'controlled_source_representation']
+        prior_syntax = {'field:Expr.op': '458f087e9dbf52f86b45c668683885a58296580f3013037cfda65b77f6da7732', 'field:PolicyProgram.declarations': '27f183ff6e090f03aa3b429c38791a73ef35c148fd4469561dd28fdb70a3372c'}
+        for row in previous['entries']:
+            if row['id'] in prior_syntax:
+                row['syntax_sha256'] = prior_syntax[row['id']]
+        previous['known_gaps'] = [row for row in previous['known_gaps']
+                                  if row['id'] != 'controlled_composition_native']
+        encoded = json.dumps(previous, sort_keys=True, separators=(',', ':')).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), '4663b915d8989d3b765774ed683e63deb6bcdf5dadfa3b01095eab8ff30c0111')
+
     def test_current_inventory_retains_scope_and_every_stage(self):
         report = validate(self.root, self.ledger)
         self.assertEqual(report['status'], 'inventory_current')
         self.assertEqual(report['semantic_acceptance'], 'not_established')
-        self.assertEqual(report['counts'], {'alias': 2, 'alternative': 18, 'argument': 3,
-                         'constant': 6, 'field': 306, 'literal': 200, 'operator': 33, 'record': 46})
-        self.assertEqual(report['total_distinctions'], 614)
-        self.assertEqual(report['without_dedicated_witnesses'], 614)
+        self.assertEqual(report['counts'], {'alias': 3, 'alternative': 20, 'argument': 3,
+                         'constant': 7, 'field': 314, 'literal': 200, 'operator': 34, 'record': 47})
+        self.assertEqual(report['total_distinctions'], 628)
+        self.assertEqual(report['without_dedicated_witnesses'], 628)
         self.assertEqual(set(report['stage_counts']), set(STAGES))
         for stage in ('implementation', 'material', 'export'):
-            self.assertEqual(report['stage_counts'][stage], {'unsupported': 614})
+            self.assertEqual(report['stage_counts'][stage], {'unsupported': 628})
         self.assertIn('contextual_rule_matrix', {gap['id'] for gap in report['known_gaps']})
         by_id = {row['id']: row for row in self.ledger['entries']}
         for identity in ('record:CompilationSubmission', 'field:Deployment.delivery',
@@ -162,7 +197,7 @@ class PolicySemanticCoverageTests(unittest.TestCase):
         init.write_text('raise RuntimeError("Policy must not be imported")\n', encoding='utf-8')
         with (self.root / MODEL).open('a', encoding='utf-8') as handle:
             handle.write('\nraise RuntimeError("Model must not execute")\n')
-        self.assertEqual(len(discover(self.root)), 614)
+        self.assertEqual(len(discover(self.root)), 628)
         self.assertEqual(before, {name for name in sys.modules if name.startswith('biocompiler')})
 
     def test_new_record_in_model_requires_classification(self):
@@ -199,7 +234,7 @@ class PolicySemanticCoverageTests(unittest.TestCase):
             'from . import nonrecords as local\nfrom .nonrecords import Observation as Parent\n'
             'Alias = Parent\nclass Imported(Alias): pass\n'
             'class Qualified(local.Observation[int]): pass\n', encoding='utf-8')
-        self.assertEqual(len(discover(self.root)), 614)
+        self.assertEqual(len(discover(self.root)), 628)
 
     def test_real_record_with_an_existing_name_still_rejects_collision(self):
         (self.root / SOURCE_ROOT / 'new_records.py').write_text(
@@ -256,7 +291,7 @@ class PolicySemanticCoverageTests(unittest.TestCase):
             validate(self.root, self.ledger)
 
     def test_new_operator_is_not_covered_by_existing_expression_disposition(self):
-        self.source_edit('"message_event", "call", "integrate"]', '"message_event", "call", "integrate", "new_operator"]')
+        self.source_edit('"integrate", "activity_band"]', '"integrate", "activity_band", "new_operator"]')
         with self.assertRaisesRegex(CoverageError, 'missing=.*new_operator'):
             validate(self.root, self.ledger)
 
@@ -372,7 +407,7 @@ class PolicySemanticCoverageTests(unittest.TestCase):
         output = io.StringIO()
         with redirect_stdout(output):
             self.assertEqual(main(['--root', str(self.root)]), 0)
-        self.assertIn('614 distinctions', output.getvalue())
+        self.assertIn('628 distinctions', output.getvalue())
         self.assertIn('Semantic acceptance not established', output.getvalue())
         self.source_edit('column: int = 0', 'column: int = 1')
         error = io.StringIO()

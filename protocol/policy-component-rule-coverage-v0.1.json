@@ -2475,7 +2475,7 @@
     },
     {
       "path": "src/biocompiler/policy/module_linking.py",
-      "sha256": "87dd2eb7ffd36ff3bc76d2de4957eb3806e0da29cd58bc3c029c3f25a7a3efe2",
+      "sha256": "4ccd772982fec32bd9042d1c80ba43af36df57c328e0d403c3b51b6c5473fb29",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -3043,7 +3043,7 @@
     },
     {
       "path": "tests/test_policy_module_linking.py",
-      "sha256": "a504c2a74527ee49aa2009f935b360bb3d147db166805a3b8d09107669bfc00a"
+      "sha256": "5c40d7da262875dd4ee2b1eae4921b62b86f95498c832a0a09fe15d75fece9e9"
     },
     {
       "path": "tests/test_policy_multi_member_campaign.py",

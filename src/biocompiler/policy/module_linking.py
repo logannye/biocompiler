@@ -267,7 +267,12 @@ def prepare(bundle: ModuleBundle) -> ModuleProposal:
     original = bundle.to_data()
     snapshot = bundle_from_data(original)
     context = snapshot.context
-    program = mod.compose_modules(context.id, semantics=context.semantics, declarations=context.declarations,
+    # The standalone legacy source codec already excludes controlled activity.
+    # Keep that boundary explicit when narrowing the shared program record type.
+    mod._require(all(not isinstance(item, m.ControlledActivity) for item in context.declarations),
+                 "Controlled activity is outside the legacy module-linking profile")
+    declarations = cast(tuple[m.Declaration, ...], context.declarations)
+    program = mod.compose_modules(context.id, semantics=context.semantics, declarations=declarations,
         instances=snapshot.instances, source_map=context.source_map, limits=snapshot.limits._authoring())
     return ModuleProposal(encode_json({"modules": original, "program": _source(program)}))
 

@@ -579,6 +579,10 @@ class _Checker:
             names = [parameter.id for parameter in definition.parameters]
             self.require(len(names) == len(set(names)), "duplicate_parameter", "Definition parameters must have unique names.", location, definition.id)
         for index, declaration in enumerate(self.program.declarations):
+            if isinstance(declaration, m.ControlledActivity):
+                self.issue("unsupported_declaration", "Controlled activity has representation support only; this checker admits the legacy authoring profile.",
+                           self.base + f"/declarations/{index}", declaration.id)
+                continue
             self.require(declaration.id not in self.index, "duplicate_declaration", "Declaration IDs must be unique.", self.base + f"/declarations/{index}", declaration.id)
             self.require(_IDENTIFIER.fullmatch(declaration.id) is not None, "invalid_identifier", "Declaration IDs must be ASCII namespaced identifiers.", self.base + f"/declarations/{index}/id", declaration.id)
             self.index.setdefault(declaration.id, declaration)
@@ -654,7 +658,8 @@ class _Checker:
                     if _compatible(m.TypeSpec("quantity", lower.unit), m.TypeSpec("quantity", upper.unit)):
                         self.require(Fraction(lower.amount) * Fraction(lower.unit.scale) <= Fraction(upper.amount) * Fraction(upper.unit.scale), "bound_order", "Literal lower bound exceeds the upper bound.", path, owner)
         for index, declaration in enumerate(self.program.declarations):
-            self.declaration(declaration, self.base + f"/declarations/{index}")
+            if not isinstance(declaration, m.ControlledActivity):
+                self.declaration(declaration, self.base + f"/declarations/{index}")
         self.conflicts()
         if isinstance(self.document, m.BuildRequest):
             self.request()

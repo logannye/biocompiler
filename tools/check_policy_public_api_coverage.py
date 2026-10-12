@@ -35,7 +35,13 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "4af8785fd3710a393f53e630d8c13c570e9c81c16f8885c6062eae58af46e788"
+REVIEWED_METADATA_SHA256 = "3ee1abd8fd3009416d3c6fe2f11c4fa3d22f62c0e8276ceec98536576d615f9e"
+BEFORE_CONTROLLED_METADATA_SHA256 = "4af8785fd3710a393f53e630d8c13c570e9c81c16f8885c6062eae58af46e788"
+CONTROLLED_PREFIXES = ("biocompiler.policy.controlled_composition.",
+    "biocompiler.policy.model.ControlledActivity", "biocompiler.policy.model.ControlledDeclaration")
+CONTROLLED_ADDITIONS = ("biocompiler.policy.model.CONTROLLED_COMPOSITION_SOURCE_PROFILE",
+    "biocompiler.policy.serialization._schema",
+    "biocompiler.policy.serialization.controlled_composition_source_schema")
 BEFORE_CAR_EXPRESSION_METADATA_SHA256 = "e1ddfce7015cf71ce9d82b5c9ca96520b9ecd682bd51d0fcf99f4ea4ce988bb1"
 CAR_EXPRESSION_PREFIXES = ("biocompiler.core_policy_expression_material.",
                            "biocompiler.policy.expression_material.",
@@ -47,7 +53,7 @@ CAR_EXPRESSION_ADDITIONS = (
     "biocompiler.policy.research_project.ResearchProject.from_expression",
     "biocompiler.policy.serialization.expression_source_schema",
 )
-MAX_WITNESSES = 275
+MAX_WITNESSES = 290
 BEFORE_PROJECT_SOURCES_METADATA_SHA256 = "7dfbed0ecefc69a924c88a237a9d76b6ac67b6a69062c8e049cea02a0babc816"
 PROJECT_SOURCES_PREFIX = "biocompiler.policy.project_sources."
 BEFORE_TYPED_BUILD_METADATA_SHA256 = "bdcf13e67b4fc53276b8c2f1d9bece2290999dcabd9786aa22d3605b28a6b066"
@@ -189,7 +195,7 @@ COMPOSITION_DEPENDENCIES = (
     'biocompiler.core_policy_implementation._two_observation_original',
 )
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior car_reference catalog chassis cli component_material component_selection coordination deployment effects entities examples expression_material finite_build handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs project_sources quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
+MODULES = tuple("__init__ behavior car_reference catalog chassis cli component_material component_selection controlled_composition coordination deployment effects entities examples expression_material finite_build handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs project_sources quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
 CLIENTS = ("core_policy_expression_material", "core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking", "core_policy_planning", "core_policy_quantitative_assurance")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py", "src/biocompiler/policy/data/car_rm61461_reference_v01.json")
@@ -254,7 +260,7 @@ REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
  ('biocompiler.policy',
   'biocompiler.policy.model',
   'Arbitration Argument Assignment AssuranceRequest BackendCapabilities BuildRequest CapabilityAssessment Channel '
-  'ChassisProfile Clock CompilationSubmission ContractClause Declaration DefinitionRef DeliveryContract Deployment '
+  'ChassisProfile Clock CompilationSubmission ContractClause ControlledActivity CONTROLLED_COMPOSITION_SOURCE_PROFILE Declaration DefinitionRef DeliveryContract Deployment '
   'Document EVENT Effect EffectLifecycle Encounter Expr Hole INTEGER ImplementationBinding '
   'ImplementationCatalogLock Machine Message Observation PROFILE Parameter PolicyDraft PolicyProgram Quantity '
   'RNAConstraints Record Ref Requirement Role RoleBinding Rule Scope SemanticBundle SemanticDefinition SourceSpan '
@@ -591,7 +597,7 @@ def discover(root: Path) -> dict[str, Any]:
     reviewed_access = {module + "." + name: owner + "." + name
                        for module, owner, names in REVIEWED_EXPORT_GROUPS for name in names.split()}
     require(access == reviewed_access, "Reviewed export target/alias census differs")
-    require(len(exports.get("biocompiler.policy", [])) == 121 and len(access) == 305,
+    require(len(exports.get("biocompiler.policy", [])) == 123 and len(access) == 307,
             "Reviewed explicit export census differs")
     require(aliases == {"biocompiler.policy.inspection.summary": "biocompiler.policy.inspection.inspect",
                         "biocompiler.policy.inspection.render_html": "biocompiler.policy.inspection.to_html"}, "Reviewed compatibility/display aliases differ")
@@ -636,8 +642,8 @@ def syntax_links(entries: list[dict[str, Any]]) -> dict[str, str]:
             continue
         name, kind = row["source"]["symbol"], row["kind"]
         prefix = ("record:" if kind == "class" else "field:" if kind == "field" else
-                  "alias:" if name in ("Declaration", "Document") else
-                  "constant:" if name in ("PROFILE", "TRUTH", "EVENT", "INTEGER", "TEXT") else None)
+                  "alias:" if name in ("Declaration", "Document", "ControlledDeclaration") else
+                  "constant:" if name in ("PROFILE", "TRUTH", "EVENT", "INTEGER", "TEXT", "CONTROLLED_COMPOSITION_SOURCE_PROFILE") else None)
         if prefix:
             result[row["id"]] = prefix + name
     return result
@@ -731,9 +737,20 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
-    before_car_expression = {
-        "witnesses": {key: value for key, value in metadata["witnesses"].items() if not key.startswith("car_expression.")},
+    before_controlled = {
+        "witnesses": {key: value for key, value in metadata["witnesses"].items()
+                      if not key.startswith("controlled.")},
         "coverage": {key: value for key, value in coverage.items()
+                     if not key.startswith(CONTROLLED_PREFIXES) and key not in CONTROLLED_ADDITIONS},
+    }
+    encoded_controlled = json.dumps(before_controlled, ensure_ascii=True, sort_keys=True,
+        separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(len(before_controlled["coverage"]) == 1844 and len(before_controlled["witnesses"]) == 275
+            and digest(encoded_controlled) == BEFORE_CONTROLLED_METADATA_SHA256,
+            "Controlled representation must preserve every previous API evidence meaning")
+    before_car_expression = {
+        "witnesses": {key: value for key, value in before_controlled["witnesses"].items() if not key.startswith("car_expression.")},
+        "coverage": {key: value for key, value in before_controlled["coverage"].items()
                      if not key.startswith(CAR_EXPRESSION_PREFIXES) and key not in CAR_EXPRESSION_ADDITIONS},
     }
     encoded_car_expression = json.dumps(before_car_expression, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")

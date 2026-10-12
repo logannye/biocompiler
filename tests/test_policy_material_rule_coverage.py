@@ -45,7 +45,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 241)
+        self.assertEqual(result["sources"], 243)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
@@ -57,7 +57,32 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         self.assertEqual(result["expression_route"], {"rules": 7, "sources": 28, "witness_sources": 6,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "empirical_function": "not_established", "native_acceptance": "not_established"})
-        self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 614)
+        self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 628)
+
+    def test_controlled_shape_table_preserves_prior_material_meaning(self):
+        metadata = coverage.metadata_before_controlled_representation(self.original)
+        self.assertEqual(len(metadata["source_classifications"]), 241)
+        self.assertEqual(len(metadata["rules"]), 62)
+        self.assertEqual(len(metadata["witness_paths"]), 30)
+        encoded = json.dumps(metadata, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "d37a5f96a2491123bfeb3189b3b7a464c907c7a52da006562023a185e5b4e5be")
+        for name in coverage.CONTROLLED_REPRESENTATION_SOURCES:
+            row = next(row for row in self.original["sources"] if row["path"] == name)
+            self.assertEqual((row["disposition"], row["reason"]),
+                             ("outside_route", coverage.CONTROLLED_REPRESENTATION_REASON))
+            for disposition in ("dependency", "rule_owner"):
+                self.ledger = deepcopy(self.original)
+                with self.subTest(name=name, disposition=disposition):
+                    self.rejected(lambda value: next(row for row in value["sources"]
+                        if row["path"] == name).update(disposition=disposition), "Changed route exception")
+
+    def test_controlled_shape_table_bytes_still_require_review(self):
+        root = self.checkout()
+        path = root / coverage.CONTROLLED_REPRESENTATION_SOURCES[0]
+        path.write_bytes(path.read_bytes() + b"\n(* unreviewed shape change *)\n")
+        with self.assertRaisesRegex(coverage.CoverageError, "Stale reviewed source hash"):
+            coverage.check(root, self.ledger)
 
     def test_omitted_duplicate_reordered_or_invented_family_is_rejected(self):
         for mutate in (
@@ -850,7 +875,8 @@ let check x = Diagnostic.require x "code" "message"
             and row["path"] not in coverage.COMPONENT_TRANSFER_SOURCES
             and row["path"] not in coverage.COMPONENT_TRANSFER_NETWORK_SOURCES
             and row["path"] not in coverage.COMPONENT_ASSURED_SOURCES
-            and row["path"] not in coverage.EXPRESSION_ROUTE_SOURCES]
+            and row["path"] not in coverage.EXPRESSION_ROUTE_SOURCES
+            and row["path"] not in coverage.CONTROLLED_REPRESENTATION_SOURCES]
         projected["witness_paths"] = [row["path"] for row in self.original["witness_sources"]]
         encoded = json.dumps(projected, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),

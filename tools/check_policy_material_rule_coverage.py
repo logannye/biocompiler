@@ -102,6 +102,12 @@ ROUTE_EXCEPTIONS = {
     ) for suffix in ("ml", "mli")
 }
 ROUTE_EXCEPTIONS.update({path: EXPRESSION_REASON for path in EXPRESSION_ROUTE_SOURCES})
+CONTROLLED_REPRESENTATION_SOURCES = (
+    "core/lib/domain/policy_controlled_composition_schema.ml",
+    "core/lib/domain/policy_controlled_composition_schema.mli",
+)
+CONTROLLED_REPRESENTATION_REASON = "Additive controlled-composition source shape table only; no native source admission, execution, realization, material or publication authority."
+ROUTE_EXCEPTIONS.update({path: CONTROLLED_REPRESENTATION_REASON for path in CONTROLLED_REPRESENTATION_SOURCES})
 
 
 # Components form a separately negotiated composition route, not the original
@@ -499,6 +505,7 @@ BEFORE_FINITE_MACHINE_COMPONENT_METADATA_SHA256 = "394152e8ccbb347e9f272be773f44
 COMPONENT_METADATA_SHA256 = "e525d2456aabebfbc920ab795204b848dffb3ad8b8554ab4e42d95ccc1c7afed"
 BEFORE_EXPRESSION_METADATA_SHA256 = "762793a3f0df7bef61e00eccde1aeb78609c0fd4dd32bd72d4ea539c042d6091"
 EXPRESSION_METADATA_SHA256 = "e73bf4eca535337ed36ee59aadd6086b20ebf04e7bffc6e4bdb4c2849bc91c8b"
+BEFORE_CONTROLLED_REPRESENTATION_METADATA_SHA256 = "d37a5f96a2491123bfeb3189b3b7a464c907c7a52da006562023a185e5b4e5be"
 
 
 class CoverageError(ValueError):
@@ -672,12 +679,19 @@ def metadata_before_assured(ledger: dict[str, Any]) -> dict[str, Any]:
                                                    if row["path"] not in COMPONENT_ASSURED_SOURCES]}
 
 
-def metadata_before_expression(ledger: dict[str, Any]) -> dict[str, Any]:
-    """Remove only the new route classifications; preserve every old meaning."""
+def metadata_before_controlled_representation(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove only two inert schema classifications, preserving all old meaning."""
     return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
             "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
-                                       for row in ledger["sources"] if row["path"] not in EXPRESSION_ROUTE_SOURCES],
+                                       for row in ledger["sources"] if row["path"] not in CONTROLLED_REPRESENTATION_SOURCES],
             "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+
+
+def metadata_before_expression(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove only the new route classifications; preserve every old meaning."""
+    metadata = metadata_before_controlled_representation(ledger)
+    return {**metadata, "source_classifications": [row for row in metadata["source_classifications"]
+                                                   if row["path"] not in EXPRESSION_ROUTE_SOURCES]}
 
 
 def metadata_before_transfer_network(ledger: dict[str, Any]) -> dict[str, Any]:
@@ -1032,6 +1046,10 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
                                     separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(expression_previous) == BEFORE_EXPRESSION_METADATA_SHA256,
             "Changed pre-expression original material meaning/witness/classification metadata")
+    controlled_previous = json.dumps(metadata_before_controlled_representation(ledger), sort_keys=True,
+                                    separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(controlled_previous) == BEFORE_CONTROLLED_REPRESENTATION_METADATA_SHA256,
+            "Changed pre-controlled-representation material meaning/witness/classification metadata")
     return {"schema_version": SCHEMA, "status": "source_inventory_current", "claim_scope": CLAIM,
             "rules": len(rules), "sources": len(sources), "witness_sources": len(witnesses),
             "rules_with_pending_witnesses": pending, "semantic_proof": "not_established", "test_execution": "not_performed",

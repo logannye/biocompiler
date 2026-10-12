@@ -1,0 +1,211 @@
+{
+  "schema_version": "biocompiler.controlled_composition_profile.v0.1",
+  "status": "specification_only",
+  "source_profile": "biocompiler.policy_controlled_composition_source.v0.1",
+  "request_schema": "biocompiler.policy_component_material_request.v0.14",
+  "material_profile": "biocompiler.policy_controlled_composition_mrna.v0.1",
+  "source_root": "BuildRequest",
+  "nested_program_profile": "biocompiler.policy_controlled_composition_source.v0.1",
+  "semantic_bundle_profile": "biocompiler.policy.v0.1",
+  "product_scope": {
+    "recipient_species": "human",
+    "recipient_role": "T_cell",
+    "deployment_route": "in_vivo",
+    "payload_format": "RNA",
+    "executor_instances": 1,
+    "encounter_slots": 1,
+    "rna_members": 2,
+    "encoded_products": 2,
+    "orfs_per_member": 1,
+    "delivered_helpers": 0,
+    "external_controllers": 1,
+    "implementation_choices": 1
+  },
+  "activity": {
+    "declaration": "ControlledActivity",
+    "fields": [
+      "id",
+      "executor",
+      "subject",
+      "clock",
+      "contract",
+      "gate",
+      "products",
+      "readout"
+    ],
+    "expression": "activity_band",
+    "expression_type": "text",
+    "physical_bands": [
+      "background",
+      "active"
+    ],
+    "observation_map": "complete_original_pinned_readout_contract",
+    "source_gate": "encounter_antigen_and_executor_controller",
+    "availability": "separate_model_and_deployment_premise",
+    "evidence_statuses": [
+      "valid",
+      "missing",
+      "stale",
+      "invalid",
+      "conflicting"
+    ],
+    "unknown_is_physical_band": false,
+    "killing_implied": false,
+    "new_product_production_implied": false
+  },
+  "behavior": {
+    "source_meaning": "allowed_activity_relation_and_universal_bounded_requirements",
+    "mechanism_meaning": "independently_supplied_deterministic_transition_contract",
+    "candidate_correspondence": "exact_selected_model_reconstruction_and_execution",
+    "source_acceptance": "every_admitted_execution_satisfies_each_requested_requirement",
+    "initial_physical_activity": "background",
+    "physical_gate_inputs": [
+      "encounter_active",
+      "antigen_present",
+      "controller_enabled",
+      "protein_a_available",
+      "protein_b_available"
+    ],
+    "rna_loss_forces_protein_loss": false,
+    "cessation_cancelable": false,
+    "restoration_during_cessation": "finish_cessation_then_begin_reactivation_if_gate_holds",
+    "encounter_reset": "false_gate_boundary_cancel_onset_preserve_executor_activity_and_cessation_timer",
+    "encounter_end": "false_gate_boundary_cancel_onset_preserve_executor_activity_and_cessation_timer",
+    "missing_evidence": "preserve_physical_history_and_return_unknown_for_unresolved_required_evidence",
+    "nondeterministic_mechanism": "unsupported_in_v0.1",
+    "continuous_time_claims": "unsupported_in_v0.1",
+    "empirical_validation_required_for_conditional_software_acceptance": false,
+    "encounter_slot": "reusable_bounded_single_slot",
+    "start": "only_while_inactive_including_after_end_new_observation_generation",
+    "reset": "only_while_live_new_observation_generation",
+    "end": "only_while_live",
+    "actual_delays": "strictly_positive_integral_ticks_independent_of_source_deadlines",
+    "source_deadlines": "strictly_positive_integral_ticks",
+    "phases": [
+      "background",
+      "onset_pending",
+      "active",
+      "stopping",
+      "reactivation_pending"
+    ],
+    "required_source_obligations": [
+      "no_unauthorized_activation",
+      "initial_activation",
+      "controller_cessation",
+      "antigen_cessation",
+      "component_cessation",
+      "reactivation"
+    ],
+    "required_unknown_prevents_behavioral_acceptance": true,
+    "initial_encounter_state": "inactive",
+    "initial_timers": "none",
+    "gate_loss_before_activation": "cancel_pending_onset_or_reactivation_before_maturity",
+    "repeated_loss_during_cessation": "preserve_original_model_deadline_and_coalesce_same_cause_source_obligation",
+    "simultaneous_loss_obligations": "all_applicable_distinct_source_obligations",
+    "confirmed_protein_loss": "ordinary_non_cancelable_cessation_under_original_availability_contract",
+    "tick_order": [
+      "lifecycle",
+      "physical_and_evidence_batches",
+      "qualified_gate",
+      "activity_transition",
+      "source_requirements"
+    ]
+  },
+  "time": {
+    "basis": "integer_ticks_with_explicit_physical_unit_mapping",
+    "deadline_boundary": "inclusive",
+    "trigger_age_at_tick": "zero",
+    "domain": "explicit_finite_decision_domain_plus_declared_fixed_suffix",
+    "suffix": "hold_last_physical_inputs_with_no_new_encounter_events",
+    "minimum_suffix": "max_cessation_deadline_plus_max_onset_or_reactivation_deadline",
+    "incomplete_obligations": "non_accepting",
+    "resource_exhaustion": "non_accepting",
+    "coverage_endpoint": "modeled_activity_not_effect_attempts",
+    "required_witness": [
+      "background",
+      "active",
+      "background",
+      "active"
+    ],
+    "required_coverage": [
+      "active",
+      "background",
+      "antigen_absent_controller_enabled",
+      "controller_disabled_antigen_present",
+      "completed_reactivation"
+    ]
+  },
+  "authority_closure": [
+    "original_typed_program",
+    "source_semantic_definitions",
+    "source_requirements",
+    "complete_project_context",
+    "implementation_catalog",
+    "both_product_identities",
+    "independent_mechanism_contract",
+    "readout_mapping",
+    "complete_two_member_material",
+    "chemistry_and_member_order",
+    "deployment_and_availability",
+    "external_controller_identity_and_exposure",
+    "finite_domain_and_initial_state",
+    "execution_and_publication_limits",
+    "source_provenance_and_evidence_context"
+  ],
+  "operations_to_extend": [
+    "compile-policy-component-material",
+    "check-policy-component-material",
+    "replay-policy-component-material",
+    "export-policy-component-material"
+  ],
+  "native_admission": "not_implemented_by_this_specification",
+  "native_validation": "not_run",
+  "empirical_status": "unassessed",
+  "versions": {
+    "control_contract": "biocompiler.policy_controlled_composition_contract.v0.1",
+    "realization_request": "biocompiler.policy_controlled_composition_realization_request.v0.1",
+    "operating_domain": "biocompiler.policy_controlled_composition_domain.v0.1",
+    "mechanism": "biocompiler.policy_controlled_activity_model.v0.1",
+    "candidate": "biocompiler.policy_controlled_composition_candidate.v0.1",
+    "assessment": "biocompiler.policy_controlled_composition_assessment.v0.1",
+    "result": "biocompiler.core.policy_controlled_composition.v1",
+    "research_project": "biocompiler.research_project.v0.3",
+    "manifest": "biocompiler.policy_controlled_composition_manifest.v0.1",
+    "export": "biocompiler.policy_controlled_composition_export.v0.1",
+    "resources": "biocompiler.policy_controlled_composition_resources.v0.1",
+    "implementation": "biocompiler.ocaml.policy_controlled_composition.v0.1",
+    "validation_scope": "policy-controlled-composition-mrna-v0.1",
+    "source_authority": "biocompiler.policy_controlled_composition_source_authority.v0.1"
+  },
+  "capability_negotiation": {
+    "required": "exact_operation_source_request_profile_result_implementation_validation_scope_and_resource_family",
+    "fallback": "forbidden",
+    "advertisement": "only_after_complete_native_family_implementation",
+    "python_representation_is_capability": false
+  },
+  "diagnostic_families": [
+    "profile",
+    "source",
+    "scope",
+    "contract",
+    "domain",
+    "material",
+    "authority",
+    "requirement",
+    "evidence",
+    "resource",
+    "capability",
+    "publication"
+  ],
+  "result_dimensions": [
+    "source_admission",
+    "model_realization",
+    "bounded_requirements",
+    "material_correspondence",
+    "context_closure",
+    "publication",
+    "reference_fidelity",
+    "empirical_applicability",
+    "human_use"
+  ]
+}

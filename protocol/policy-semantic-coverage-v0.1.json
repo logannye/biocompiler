@@ -175,6 +175,38 @@
         "symbol": "ExpressionSourceTests.test_static_profile_rejects_temporal_or_nonstructural_assurance"
       },
       "scope": "Explicit new root rejects temporal horizons, nonstructural assurance, assumptions and tolerances; not proof of material or biological behavior."
+    },
+    "controlled_source_codec": {
+      "path": "src/biocompiler/policy/serialization.py",
+      "kind": "owner",
+      "anchor": {
+        "symbol": "controlled_composition_source_schema"
+      },
+      "scope": "Versioned source representation and explicit root guards only; no semantic admission."
+    },
+    "controlled_native_shapes": {
+      "path": "core/lib/domain/policy_controlled_composition_schema.ml",
+      "kind": "owner",
+      "anchor": {
+        "text": "let records ="
+      },
+      "scope": "Generated additive native shape vocabulary only; not wired to native admission."
+    },
+    "controlled_source_positive": {
+      "path": "tests/test_policy_controlled_composition_source.py",
+      "kind": "positive_control",
+      "anchor": {
+        "symbol": "ControlledCompositionSourceTests.test_additive_root_roundtrips_without_claiming_semantic_acceptance"
+      },
+      "scope": "Explicit controlled source root representation roundtrip; no model/material execution."
+    },
+    "controlled_source_rejection": {
+      "path": "tests/test_policy_controlled_composition_source.py",
+      "kind": "rejection_control",
+      "anchor": {
+        "symbol": "ControlledCompositionSourceTests.test_old_profiles_and_standalone_new_records_remain_closed"
+      },
+      "scope": "Old profiles and standalone roots reject new activity declarations and the controlled source root; no native execution."
     }
   },
   "dispositions": {
@@ -762,9 +794,56 @@
         "SM-01.2",
         "SM-08.1"
       ]
+    },
+    "controlled_source_representation": {
+      "stages": {
+        "authorable": "supported",
+        "python_structure": "contextual",
+        "native_source": "unsupported",
+        "operational": "unsupported",
+        "implementation": "unsupported",
+        "material": "unsupported",
+        "export": "unsupported"
+      },
+      "condition": "ControlledActivity and activity_band are shape-checked only within a bounded BuildRequest using the explicit controlled-composition source profile. The additive native shape table is not native admission. Legacy source entry points remain closed; source semantics, realization, material and publication are not implemented by this representation increment.",
+      "owners": {
+        "source": [
+          "python_model",
+          "controlled_source_codec"
+        ],
+        "native": [
+          "controlled_native_shapes",
+          "native_wire"
+        ]
+      },
+      "witnesses": {
+        "positive": [
+          "controlled_source_positive"
+        ],
+        "rejection": [
+          "controlled_source_rejection"
+        ],
+        "dedicated": false,
+        "scope": "Shared profile/shape controls only; not per-field semantic witnesses or current hosted acceptance."
+      },
+      "follow_up": [
+        "SM-RC3",
+        "SM-RC5",
+        "SM-RC7"
+      ]
     }
   },
   "entries": [
+    {
+      "id": "alias:ControlledDeclaration",
+      "kind": "alias",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "ControlledDeclaration"
+      },
+      "syntax_sha256": "a3e58ae8b0dc315c20950f7a440728730905bca2d5e3b9e721a095b98d7bbe0a",
+      "disposition": "controlled_source_representation"
+    },
     {
       "id": "alias:Declaration",
       "kind": "alias",
@@ -784,6 +863,26 @@
       },
       "syntax_sha256": "a8a17659b38305163d20c8551c964fd173f0604ef6b9d10653b4b49edae51294",
       "disposition": "source_representation"
+    },
+    {
+      "id": "alternative:ControlledDeclaration.ControlledActivity",
+      "kind": "alternative",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "ControlledDeclaration"
+      },
+      "syntax_sha256": "36a869803598a2886b89ee1f8676b2327c7feb2ea32145b4ab033b081ee8c90a",
+      "disposition": "controlled_source_representation"
+    },
+    {
+      "id": "alternative:ControlledDeclaration.Declaration",
+      "kind": "alternative",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "ControlledDeclaration"
+      },
+      "syntax_sha256": "2adc25aa82b0986eb94bdb80f5ce2db6ba0a08d4f5eea3d1512596f23bd52e9f",
+      "disposition": "controlled_source_representation"
     },
     {
       "id": "alternative:Declaration.Channel",
@@ -994,6 +1093,16 @@
       },
       "syntax_sha256": "8ce8b9c8e3bfbeb8a03d227074c2592473e86bfefe85a971c56539fc55fd3855",
       "disposition": "unsupported_operation"
+    },
+    {
+      "id": "constant:CONTROLLED_COMPOSITION_SOURCE_PROFILE",
+      "kind": "constant",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "CONTROLLED_COMPOSITION_SOURCE_PROFILE"
+      },
+      "syntax_sha256": "a55c8727ecf6f1cecefa681d936522a4127a5496e970a980046f2340b6cd5cc0",
+      "disposition": "controlled_source_representation"
     },
     {
       "id": "constant:EVENT",
@@ -1946,6 +2055,86 @@
       "disposition": "definition_clause_uninterpreted"
     },
     {
+      "id": "field:ControlledActivity.clock",
+      "kind": "field",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "ControlledActivity.clock"
+      },
+      "syntax_sha256": "3a9c45bd8d69eade27ff3597c21064ed7c19e6725b17893a811d7a75035feb06",
+      "disposition": "controlled_source_representation"
+    },
+    {
+      "id": "field:ControlledActivity.contract",
+      "kind": "field",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "ControlledActivity.contract"
+      },
+      "syntax_sha256": "897dc12ddfbf145472cff13bdd24e0e746e74ba963b74a6f97788c0fcf84d067",
+      "disposition": "controlled_source_representation"
+    },
+    {
+      "id": "field:ControlledActivity.executor",
+      "kind": "field",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "ControlledActivity.executor"
+      },
+      "syntax_sha256": "3a9c45bd8d69eade27ff3597c21064ed7c19e6725b17893a811d7a75035feb06",
+      "disposition": "controlled_source_representation"
+    },
+    {
+      "id": "field:ControlledActivity.gate",
+      "kind": "field",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "ControlledActivity.gate"
+      },
+      "syntax_sha256": "9ab9df2c72e30439afa0d993fb80a1f0046accc196d752ff6a836599ff8eedaa",
+      "disposition": "controlled_source_representation"
+    },
+    {
+      "id": "field:ControlledActivity.id",
+      "kind": "field",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "ControlledActivity.id"
+      },
+      "syntax_sha256": "2a6cec60e231d9a0a9f4b450dd6f00b45142b172eeb6f6f2c6a522d5e9ba9d39",
+      "disposition": "controlled_source_representation"
+    },
+    {
+      "id": "field:ControlledActivity.products",
+      "kind": "field",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "ControlledActivity.products"
+      },
+      "syntax_sha256": "1e443c4e54064e227476ab34208ff2514c1fdbdd1e7fa4a6864db13ab49e2bdc",
+      "disposition": "controlled_source_representation"
+    },
+    {
+      "id": "field:ControlledActivity.readout",
+      "kind": "field",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "ControlledActivity.readout"
+      },
+      "syntax_sha256": "897dc12ddfbf145472cff13bdd24e0e746e74ba963b74a6f97788c0fcf84d067",
+      "disposition": "controlled_source_representation"
+    },
+    {
+      "id": "field:ControlledActivity.subject",
+      "kind": "field",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "ControlledActivity.subject"
+      },
+      "syntax_sha256": "3a9c45bd8d69eade27ff3597c21064ed7c19e6725b17893a811d7a75035feb06",
+      "disposition": "controlled_source_representation"
+    },
+    {
       "id": "field:DefinitionRef.digest",
       "kind": "field",
       "source": {
@@ -2412,7 +2601,7 @@
         "path": "src/biocompiler/policy/model.py",
         "symbol": "Expr.op"
       },
-      "syntax_sha256": "458f087e9dbf52f86b45c668683885a58296580f3013037cfda65b77f6da7732",
+      "syntax_sha256": "5455442d0c45e0111eadd2c2f49d668b021b6d330b282f0df2e42a49373b1132",
       "disposition": "operational_contextual"
     },
     {
@@ -2992,7 +3181,7 @@
         "path": "src/biocompiler/policy/model.py",
         "symbol": "PolicyProgram.declarations"
       },
-      "syntax_sha256": "27f183ff6e090f03aa3b429c38791a73ef35c148fd4469561dd28fdb70a3372c",
+      "syntax_sha256": "ac3063722ff6045438dea4fc3eb323e4f68414618fab601372867dba27d23f72",
       "disposition": "operational_contextual"
     },
     {
@@ -6116,6 +6305,16 @@
       "disposition": "source_representation"
     },
     {
+      "id": "operator:Expr.op=\"activity_band\"",
+      "kind": "operator",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "Expr.op"
+      },
+      "syntax_sha256": "89604938bfad746be7983cf2e4ba4b9355b1e8081ff42d574a428402629cd1eb",
+      "disposition": "controlled_source_representation"
+    },
+    {
       "id": "operator:Expr.op=\"add\"",
       "kind": "operator",
       "source": {
@@ -6566,6 +6765,16 @@
       "disposition": "definition_clause_uninterpreted"
     },
     {
+      "id": "record:ControlledActivity",
+      "kind": "record",
+      "source": {
+        "path": "src/biocompiler/policy/model.py",
+        "symbol": "ControlledActivity"
+      },
+      "syntax_sha256": "2d8244ea30afd8bff4bd38bdd858fd8bcbf3bb2e632fe12efb30b18e6c7b9737",
+      "disposition": "controlled_source_representation"
+    },
+    {
       "id": "record:DefinitionRef",
       "kind": "record",
       "source": {
@@ -6936,6 +7145,11 @@
       "id": "material_bridge",
       "task": "SM-06.1",
       "description": "All rich-policy implementation/material/export stages remain unsupported until a separately checked supplied realization bridge exists."
+    },
+    {
+      "id": "controlled_composition_native",
+      "task": "SM-RC3",
+      "description": "The controlled source increment adds inert representation and generated shapes only. Source admission, independent execution, original-authority material bridge and native/installed acceptance remain pending RC3 through RC7."
     }
   ]
 }

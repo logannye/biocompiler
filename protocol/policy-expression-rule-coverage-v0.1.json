@@ -332,12 +332,12 @@
     },
     {
       "path": "src/biocompiler/policy/model.py",
-      "sha256": "cc0430615690c0a7a5e388b8d2821d03198b14c3f3044a6443a4d6f6747b1ec6",
+      "sha256": "5671c5626a56ac4b9f623fc170cc64cafea874a285132f6ae8dfd53e95e4832c",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
-          "ClassDef": 46,
-          "FunctionDef": 21,
+          "ClassDef": 47,
+          "FunctionDef": 22,
           "Raise": 12
         },
         "profile_literals": {
@@ -345,6 +345,7 @@
           "biocompiler.policy.model": 1,
           "biocompiler.policy.v0.1": 1,
           "biocompiler.policy_capability_assessment.v0.1": 2,
+          "biocompiler.policy_controlled_composition_source.v0.1": 1,
           "biocompiler.policy_expression_source.v0.1": 1,
           "biocompiler.policy_submission.v0.1": 2
         }
@@ -381,12 +382,12 @@
     },
     {
       "path": "src/biocompiler/policy/serialization.py",
-      "sha256": "4bd1f2dee570d079290b774ea94b059907df62a27793e47927b29ed8981c94f6",
+      "sha256": "d1b9c0b7f54a379cfb106febdfb88e1553a401b049e9e3b3c49f4d9a85601c70",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 3,
-          "FunctionDef": 32,
+          "FunctionDef": 34,
           "Raise": 8
         },
         "profile_literals": {

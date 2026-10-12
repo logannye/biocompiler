@@ -120,7 +120,7 @@ class PolicySerializationTests(unittest.TestCase):
 
     def test_schema_comes_from_exact_registry_and_retains_semantic_kind(self):
         document = schema()
-        self.assertEqual(set(document['$defs']), set(m.REGISTRY))
+        self.assertEqual(set(document['$defs']), set(m.REGISTRY) - {'ControlledActivity'})
         self.assertEqual(document['$defs']['Ref']['properties']['$type'], {'const': 'Ref'})
         self.assertEqual(document['$defs']['Ref']['properties']['kind'], {'type': 'string'})
         self.assertFalse(document['$defs']['Ref']['additionalProperties'])
