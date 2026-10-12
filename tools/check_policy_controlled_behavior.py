@@ -28,6 +28,7 @@ OBSERVATIONS = (
     "baseline-original", "construct-core", "check-core", "check-verify", "replay-core", "replay-verify",
     "missing-readout-original", "missing-readout-core", "missing-readout-verify",
     "late-model-original", "late-model-core", "late-model-verify",
+    "upper-bound-onset-original", "upper-bound-onset-core", "upper-bound-onset-verify",
     "request-binding", "assembly-delay", "assembly-context", "replay-forgery",
     "missing-readout-authority", "future-readout", "request-work-exhaustion",
     "domain-work-exhaustion", "closed-field", "verify-construction", "transport-cancellation",
@@ -97,12 +98,12 @@ def missing_readout(original):
     return changed
 
 
-def late_model(original):
+def late_model(original, onset_ticks=3):
     """Alter only supplied actual onset and its pins; source bound stays two."""
     changed = deepcopy(original)
     authority = changed["original"]
-    authority["mechanism_model"]["body"]["delays"]["onset_ticks"] = 3
-    authority["source_authority"]["control_contract"]["actual_delays"]["onset_ticks"] = 3
+    authority["mechanism_model"]["body"]["delays"]["onset_ticks"] = onset_ticks
+    authority["source_authority"]["control_contract"]["actual_delays"]["onset_ticks"] = onset_ticks
     body = json.dumps(authority["mechanism_model"]["body"], sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
     identity = authority["mechanism_model"]["identity"]
     identity["content_fingerprint"] = hashlib.sha256(body).hexdigest()
@@ -241,7 +242,8 @@ def run(args):
             retained("replay-" + role, original, replayed)
             require(replayed.report == built.report, "Fresh replay changed complete saved assessment")
         for name, request, expected in (("missing-readout", missing_readout(original), "unknown"),
-                                        ("late-model", late_model(original), "fail")):
+                                        ("late-model", late_model(original), "fail"),
+                                        ("upper-bound-onset", late_model(original, onset_ticks=10000), "fail")):
             observe(name + "-original", {"request": request, "expected_outcome": expected})
             altered = ControlledBehaviorRequest.from_request(request)
             produced = construct_behavior(altered, client=clients["core"])
@@ -255,6 +257,19 @@ def run(args):
                 onset = next(row for row in verified.report["requirements"] if row["id"] == "onset")
                 require(onset["fail"] > 0 and verified.report["counterexample"] is not None,
                         "Actual delay did not retain the original source deadline failure and witness")
+            if name == "upper-bound-onset":
+                witness = verified.report["counterexample"]
+                trace = witness["trace"]
+                require(verified.report["domain"]["pending_at_horizon"] is True
+                        and witness["pending_at_horizon"] is True
+                        and len(trace) == 11 and len(witness["source_monitor"]["history"]) == 11,
+                        "Upper-bound delay lost its complete pending horizon witness")
+                require(all(frame["input"]["tick"] == tick
+                            and frame["candidate"] == {"tick": tick, "band": "background", "activation_generation": None}
+                            and frame["model_reference"] == frame["candidate"]
+                            for tick, frame in enumerate(trace))
+                        and verified.report["coverage"]["active"] is False,
+                        "Upper-bound actual onset produced activity inside the unchanged horizon")
             retained(name + "-core", request, produced)
             retained(name + "-verify", request, verified)
         for name, (operation, payload) in adversaries(original, candidate, built.report).items():

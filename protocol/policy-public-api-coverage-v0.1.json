@@ -17623,7 +17623,7 @@
           "path": "src/biocompiler/core_policy_controlled_behavior.py",
           "symbol": "_candidate"
         },
-        "syntax_sha256": "1fd5bd09aee107015cdf047900b9e141ebe7267faad4c0cd791bea2d9d3ab881"
+        "syntax_sha256": "0edfe4989e5ef5209cedba83cf50de73be091459743f3bd78dcb5e8965e1e92f"
       },
       {
         "id": "biocompiler.core_policy_controlled_behavior._original",
@@ -17656,7 +17656,7 @@
           "path": "src/biocompiler/core_policy_controlled_behavior.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "3c293e63958c5b2bc0190fb9d206e2d01dc34330e613df7f56bc47bc60f98caf"
+        "syntax_sha256": "094999ab124d9419161858110a34ae946d391590bb5c15ee27b9a4428d7004d7"
       },
       {
         "id": "biocompiler.core_policy_controlled_composition.IMPLEMENTATION",
@@ -38095,7 +38095,7 @@
       "src/biocompiler/core_policy.py": "9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e",
       "src/biocompiler/core_policy_component_material.py": "152843138ccfa61f4b7dfd894eff697a919ac52964b77957c646f23b49589b51",
       "src/biocompiler/core_policy_component_selection.py": "20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9",
-      "src/biocompiler/core_policy_controlled_behavior.py": "b55d72e8088abe07e872532af1349ff8affb1613c578d1bdd7ccbb7abc0443ae",
+      "src/biocompiler/core_policy_controlled_behavior.py": "500d57616521034224665db6449fffcfb116cd538e3f7cd7e17992e2b814a9d0",
       "src/biocompiler/core_policy_controlled_composition.py": "308ec4aa6f5bde1d58ca5cf8a0ace46432a9fa3369a9234a91d4644580a1df65",
       "src/biocompiler/core_policy_controlled_material.py": "8783c81be2f6752789b57179e36a46b5dc0d9c5020270fbcb4ea23a6bcfadf9d",
       "src/biocompiler/core_policy_expression_material.py": "319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf",
@@ -41721,7 +41721,7 @@
     },
     "controlled_rc5.authority": {
       "distinction": "Complete original authority and explicit readout evidence stay detached and immutable; data construction confers no acceptance.",
-      "file_sha256": "178b91804f56c680c3babe4c640174a35a7eadd1026d6c7647c6889558d46872",
+      "file_sha256": "d2b50562bf0e17794294cc20ed0e779244d96162964e5aa4028f4e7bfb9653f4",
       "path": "tests/test_core_policy_controlled_behavior.py",
       "role": "positive",
       "symbol": "ControlledBehaviorTransportTests.test_original_wrapper_is_immutable_closed_and_keeps_typed_original",
@@ -41729,7 +41729,7 @@
     },
     "controlled_rc5.capability": {
       "distinction": "Exact scoped capabilities and executable roles are required; independent Verify cannot construct candidates.",
-      "file_sha256": "178b91804f56c680c3babe4c640174a35a7eadd1026d6c7647c6889558d46872",
+      "file_sha256": "d2b50562bf0e17794294cc20ed0e779244d96162964e5aa4028f4e7bfb9653f4",
       "path": "tests/test_core_policy_controlled_behavior.py",
       "role": "rejection",
       "symbol": "ControlledBehaviorTransportTests.test_verify_cannot_construct_or_accept_another_profile",
@@ -41737,7 +41737,7 @@
     },
     "controlled_rc5.evidence": {
       "distinction": "Malformed, incomplete, future-dated or falsely authored readout authority rejects at the inert transport boundary.",
-      "file_sha256": "178b91804f56c680c3babe4c640174a35a7eadd1026d6c7647c6889558d46872",
+      "file_sha256": "d2b50562bf0e17794294cc20ed0e779244d96162964e5aa4028f4e7bfb9653f4",
       "path": "tests/test_core_policy_controlled_behavior.py",
       "role": "rejection",
       "symbol": "ControlledBehaviorTransportTests.test_missing_stale_boolean_and_future_readout_authority_rejected",
@@ -41745,15 +41745,15 @@
     },
     "controlled_rc5.report": {
       "distinction": "Rehashed report scope, complete history counters, original identities and omitted requirements cannot bypass transport correspondence.",
-      "file_sha256": "178b91804f56c680c3babe4c640174a35a7eadd1026d6c7647c6889558d46872",
+      "file_sha256": "d2b50562bf0e17794294cc20ed0e779244d96162964e5aa4028f4e7bfb9653f4",
       "path": "tests/test_core_policy_controlled_behavior.py",
       "role": "rejection",
       "symbol": "ControlledBehaviorTransportTests.test_rehashed_scope_counter_binding_and_omission_forgery_rejected",
-      "syntax_sha256": "54702fd4478b6e497909cb138cdf87538bd1df00621ef1b154dc70231d689b66"
+      "syntax_sha256": "31229c0c092f6cbeb17c0fa2bff26d994934c832f7ef5541d8f4c6e1d2f8ec53"
     },
     "controlled_rc5.routes": {
       "distinction": "All three behavior-only operations preserve the complete original request, candidate and replay report; mocked execution is not native evidence.",
-      "file_sha256": "178b91804f56c680c3babe4c640174a35a7eadd1026d6c7647c6889558d46872",
+      "file_sha256": "d2b50562bf0e17794294cc20ed0e779244d96162964e5aa4028f4e7bfb9653f4",
       "path": "tests/test_core_policy_controlled_behavior.py",
       "role": "positive",
       "symbol": "ControlledBehaviorTransportTests.test_typed_wrappers_route_all_three_exact_operations",
@@ -41761,7 +41761,7 @@
     },
     "controlled_rc5.substitution": {
       "distinction": "Candidate and saved report substitution are rejected against independently supplied originals; replay requires a new native check.",
-      "file_sha256": "178b91804f56c680c3babe4c640174a35a7eadd1026d6c7647c6889558d46872",
+      "file_sha256": "d2b50562bf0e17794294cc20ed0e779244d96162964e5aa4028f4e7bfb9653f4",
       "path": "tests/test_core_policy_controlled_behavior.py",
       "role": "rejection",
       "symbol": "ControlledBehaviorTransportTests.test_full_candidate_and_replay_report_substitution_rejected",

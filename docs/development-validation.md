@@ -79,8 +79,10 @@ There are at most two workers in either phase, and no SDK calls are moved into
 unguarded worker threads inside a campaign. All 70 native suites and the complete 278-observation SDK census remain mandatory.
 The separate RC3 admission and RC4 structural material campaigns retain their
 own original inputs, actual-binary evidence and complete observation inventories.
-RC5 adds seven fixed native suites and a separate 23-observation reversible
-behavior campaign against the same fresh binaries. The prior 63 suites and all
+RC5 adds seven fixed native suites and a separate 26-observation reversible
+behavior campaign against the same fresh binaries, including a supplied
+10,000-tick onset that exceeds the finite horizon and retains a failed assessment.
+The prior 63 suites and all
 existing SDK, admission, material, quantitative and CAR observations remain.
 The typed finite path adds 18 researcher observations (two complete shapes,
 including typed roundtrip, fresh Core/Verify execution, paired publication and
@@ -153,9 +155,10 @@ static checks and require no native build. A focused file check does not cover
 the other configuration's imported dependency types.
 
 **Automatic profile-specific hosted routing is not implemented.** The current
-`policy-development.yml` still requires all 55 native suites, all 278 SDK
-observations (the original 260 plus 18 typed finite observations) and the
-21-observation quantitative-assurance campaign. Individual witnesses or future scoped runners must report their
+`policy-development.yml` requires all 70 native suites and 384 campaign
+observations: 278 across the ten SDK campaigns, 14 controlled admission,
+23 controlled material, 26 controlled behavior, 21 quantitative assurance and
+22 CAR observations. Individual witnesses or future scoped runners must report their
 own scope and cannot satisfy that complete census. Until explicit scoped routing
 exists, use the supported complete workflow for hosted development acceptance.
 Do not change CI triggers, required checks or final acceptance based on this

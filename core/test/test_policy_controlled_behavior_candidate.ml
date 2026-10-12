@@ -66,6 +66,15 @@ let run path =
   let changed_delay = C.of_json (changed ["primitives";"6";"onset_ticks"] (Json.int 2)) in
   require ((I.delays (C.implementation changed_delay)).onset_ticks = 2 &&
     C.fingerprint changed_delay <> C.fingerprint candidate) "Candidate delay change was normalized away";
+  (* Actual supplied mechanism delays have their own 10000-tick ceiling;
+     the finite observation horizon and requested source bounds stay separate. *)
+  List.iter (fun key -> List.iter (fun ticks ->
+    let body = changed ["primitives";"6";key] (Json.int ticks) in
+    let decoded = C.of_json body in
+    require (Json.equal (C.to_json decoded) body &&
+      C.fingerprint decoded <> C.fingerprint candidate)
+      "Valid actual mechanism delay was limited by the observation horizon")
+    [65;10000]) ["onset_ticks";"cessation_ticks";"reactivation_ticks"];
   let changed_body = C.of_json (changed ["semantics";"definitions";"17";"meaning"] (str "Foreign complete declared dependency")) in
   require (C.fingerprint changed_body <> C.fingerprint candidate) "Complete semantic bodies were omitted from identity";
   let charged = ref 0 in

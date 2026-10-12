@@ -14,10 +14,12 @@ from biocompiler.policy.controlled_behavior import ControlledBehaviorRequest
 
 class ControlledBehaviorCampaignTests(unittest.TestCase):
     def test_fixed_census_and_exact_negative_layers(self):
-        self.assertEqual(len(campaign.OBSERVATIONS),23)
-        self.assertEqual(len(set(campaign.OBSERVATIONS)),23)
+        self.assertEqual(len(campaign.OBSERVATIONS),26)
+        self.assertEqual(len(set(campaign.OBSERVATIONS)),26)
         self.assertEqual(campaign.OBSERVATIONS[:6],('baseline-original','construct-core','check-core','check-verify','replay-core','replay-verify'))
-        self.assertEqual(campaign.OBSERVATIONS[12:-1],tuple(campaign.NEGATIVE_DIAGNOSTICS))
+        self.assertEqual(campaign.OBSERVATIONS[12:15],('upper-bound-onset-original','upper-bound-onset-core','upper-bound-onset-verify'))
+        self.assertEqual(campaign.OBSERVATIONS[15:-1],tuple(campaign.NEGATIVE_DIAGNOSTICS))
+        self.assertEqual(len(campaign.NEGATIVE_DIAGNOSTICS),10)
         self.assertEqual(campaign.OBSERVATIONS[-1],'transport-cancellation')
         self.assertEqual(campaign.NEGATIVE_DIAGNOSTICS['assembly-delay'],'controlled_behavior_assembly_binding')
         self.assertEqual(campaign.NEGATIVE_DIAGNOSTICS['replay-forgery'],'controlled_behavior_assessment_mismatch')
@@ -33,6 +35,28 @@ class ControlledBehaviorCampaignTests(unittest.TestCase):
         digest=hashlib.sha256(json.dumps(body,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
         self.assertEqual(authority['mechanism_model']['identity']['content_fingerprint'],digest)
         self.assertEqual(authority['catalog_binding']['model_identity'],authority['mechanism_model']['identity'])
+        ControlledBehaviorRequest.from_request(changed)
+
+    def test_upper_bound_actual_onset_keeps_complete_source_and_domain(self):
+        raw=original();before=deepcopy(raw);changed=campaign.late_model(raw,onset_ticks=10000)
+        self.assertEqual(raw,before)
+        authority=changed['original'];contract=authority['source_authority']['control_contract']
+        self.assertEqual(contract['actual_delays']['onset_ticks'],10000)
+        self.assertEqual(authority['mechanism_model']['body']['delays']['onset_ticks'],10000)
+        self.assertEqual(contract['requested_deadlines']['onset_ticks'],2)
+        self.assertEqual(authority['operating_domain']['horizon_tick'],10)
+        self.assertEqual(authority['source_authority']['document'],raw['original']['source_authority']['document'])
+        self.assertEqual(authority['operating_domain'],raw['original']['operating_domain'])
+        self.assertEqual(changed['readout_evidence'],raw['readout_evidence'])
+        body=authority['mechanism_model']['body']
+        digest=hashlib.sha256(json.dumps(body,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
+        self.assertEqual(authority['mechanism_model']['identity']['content_fingerprint'],digest)
+        self.assertEqual(authority['catalog_binding']['model_identity'],authority['mechanism_model']['identity'])
+        restored=deepcopy(changed)
+        restored['original']['mechanism_model']=deepcopy(raw['original']['mechanism_model'])
+        restored['original']['source_authority']['control_contract']['actual_delays']['onset_ticks']=raw['original']['source_authority']['control_contract']['actual_delays']['onset_ticks']
+        restored['original']['catalog_binding']['model_identity']=deepcopy(raw['original']['catalog_binding']['model_identity'])
+        self.assertEqual(restored,raw)
         ControlledBehaviorRequest.from_request(changed)
 
     def test_readout_unknown_preserves_every_physical_input_and_full_authority(self):

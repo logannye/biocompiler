@@ -221,6 +221,7 @@ class ControlledBehaviorTransportTests(unittest.TestCase):
             lambda r:r['report']['composition']['modules'][0].update(member_id='foreign'),
             lambda r:r['report']['availability'][0].update(rna_unknown_evidence_frames=1),
             lambda r:r['report']['availability'][0].update(rna_absent_frames=23),
+            lambda r:r['report']['admission']['source_admission'].update(horizon_ticks=10.0),
             lambda r:r['report']['source_correspondence']['declarations'].pop(),
             lambda r:r['report']['assumptions'].clear(),lambda r:r['report'].update(extra={}),
             lambda r:r['usage'].update(preparation_charged_work=r['report']['budgets']['max_work']+1)]
@@ -251,6 +252,7 @@ class ControlledBehaviorTransportTests(unittest.TestCase):
             lambda r:r['counterexample']['source_monitor']['requirements'][1]['events'][0].update(action='invented'),
             lambda r:r['counterexample']['source_monitor']['requirements'][1]['events'][0].update(deadline_tick=True),
             lambda r:r['counterexample']['source_monitor']['requirements'][1]['events'][0].update(generation=True),
+            lambda r:r['counterexample']['source_monitor']['requirements'][1]['events'][0].pop('tick'),
             lambda r:r['counterexample']['source_monitor']['requirements'][1]['events'][0].update(extra=None),
             lambda r:r['counterexample']['source_monitor']['evidence_gaps'][0].update(status='valid'),
             lambda r:r['counterexample']['source_monitor']['evidence_gaps'][0].update(channel='rna_a')]
@@ -323,6 +325,95 @@ class ControlledBehaviorTransportTests(unittest.TestCase):
         self.assertEqual(onset['events'][1],{'tick':2,'action':'deadline_missed','trigger_tick':0,'deadline_tick':2,'generation':1})
         self.assertEqual(raw['original']['source_authority']['control_contract']['requested_deadlines']['onset_ticks'],2)
         self.assertEqual(raw['original']['mechanism_model']['body']['delays']['onset_ticks'],3)
+
+    def test_native_actual_delay_range_retains_complete_pending_failure(self):
+        for delay in (65,10000):
+            raw=original();authority=raw['original'];model=authority['mechanism_model']
+            model['body']['delays']['onset_ticks']=delay
+            model['identity']['content_fingerprint']=api._fingerprint(model['body'])
+            authority['catalog_binding']['model_identity']=deepcopy(model['identity'])
+            authority['source_authority']['control_contract']['actual_delays']['onset_ticks']=delay
+            proposal=candidate(raw);value=peer_result(raw,proposal);report=value['report']
+            _,_,literal=counterexample_peer(late=True)
+            retained=deepcopy(literal['report']['counterexample'])
+            report.update(status='not_accepted',outcome='fail',evidence_status='unknown',counterexample=retained)
+            report['domain']['pending_at_horizon']=True
+            report['coverage'].update(active=False,reversible_cycle=False)
+            retained['pending_at_horizon']=True
+            monitor=retained['source_monitor'];monitor.update(pending=True)
+            monitor['coverage'].update(active=False,reversible_cycle=False)
+            for aggregate,row in zip(report['requirements'],monitor['requirements']):
+                identity=row['id']
+                aggregate.update(**{'pass':2 if identity=='safety' else 0,'fail':2 if identity=='onset' else 0,
+                    'unknown':0,'not_exercised':0 if identity in ('safety','onset') else 2})
+                row.update(status='pass' if identity=='safety' else 'fail' if identity=='onset' else 'not_exercised',events=[])
+                if identity=='onset':
+                    row['events']=[{'tick':tick,'action':action,'trigger_tick':trigger,'deadline_tick':due,'generation':1}
+                        for tick,action,trigger,due in [(0,'triggered',0,2),(2,'deadline_missed',0,2),
+                            (5,'cancelled',0,2),(6,'triggered',6,8),(8,'deadline_missed',6,8)]]
+            # Literal complete first history: onset never completes; the input
+            # loss cancels its first demand and the restored demand is pending.
+            for frame,history in zip(retained['trace'],monitor['history']):
+                sample={'tick':frame['input']['tick'],'band':'background','activation_generation':None}
+                frame.update(candidate=deepcopy(sample),model_reference=deepcopy(sample))
+                history['activity']=sample
+            value['report_fingerprint']=api._fingerprint(report)
+            with self.subTest(delay=delay):
+                decoded=api._result(CoreResponse('peer',api.CHECK,'ok',value,(),'verify',CORE_VERSION),{'request':raw,'candidate':proposal})
+                self.assertEqual(decoded.report['outcome'],'fail')
+                self.assertTrue(decoded.report['domain']['pending_at_horizon'])
+                self.assertEqual(len(decoded.report['counterexample']['trace']),11)
+                self.assertEqual(decoded.candidate['implementation']['primitives'][6]['onset_ticks'],delay)
+        for bad in (0,True,10001):
+            proposal=candidate(original());proposal['implementation']['primitives'][6]['onset_ticks']=bad
+            with self.subTest(invalid_delay=bad),self.assertRaises(CoreProtocolError):api._candidate(proposal)
+
+    def test_complete_retained_summary_implications_and_original_event_bounds(self):
+        mutations=[lambda r:r.update(counterexample=None),
+            lambda r:r['counterexample'].update(model_correspondence=False),
+            lambda r:r['counterexample'].update(pending_at_horizon=True),
+            lambda r:r['counterexample'].update(deployment_evidence_unknown=True),
+            lambda r:r['counterexample']['source_monitor'].update(pending=True),
+            lambda r:r['counterexample']['source_monitor'].update(outcome='pass'),
+            lambda r:r['counterexample']['source_monitor']['requirements'][1]['events'][0].update(deadline_tick=128),
+            lambda r:r['counterexample']['source_monitor']['requirements'][1]['events'][0].update(trigger_tick=1,deadline_tick=3)]
+        for late in (False,True):
+            raw,proposal,value=counterexample_peer(late=late)
+            for mutate in mutations:
+                altered=deepcopy(value);mutate(altered['report']);altered['report_fingerprint']=api._fingerprint(altered['report'])
+                with self.subTest(late=late,mutation=mutate),self.assertRaises(CoreProtocolError):
+                    api._result(CoreResponse('peer',api.CHECK,'ok',altered,(),'verify',CORE_VERSION),{'request':raw,'candidate':proposal})
+            altered=deepcopy(value);altered['report']['model_correspondence']='incomplete'
+            altered['report']['composition']['whole_program_crosscheck']='not_accepted'
+            altered['report_fingerprint']=api._fingerprint(altered['report'])
+            with self.subTest(late=late,incomplete=True),self.assertRaises(CoreProtocolError):
+                api._result(CoreResponse('peer',api.CHECK,'ok',altered,(),'verify',CORE_VERSION),{'request':raw,'candidate':proposal})
+        raw,proposal,value=counterexample_peer(late=True);report=value['report']
+        report['domain']['pending_at_horizon']=True
+        report['counterexample']['pending_at_horizon']=True
+        report['counterexample']['source_monitor']['pending']=True
+        value['report_fingerprint']=api._fingerprint(report)
+        with self.assertRaisesRegex(CoreProtocolError,'uncertainty disappeared'):
+            api._result(CoreResponse('peer',api.CHECK,'ok',value,(),'verify',CORE_VERSION),{'request':raw,'candidate':proposal})
+        # A first UNKNOWN witness need not equal a later failing history. The
+        # retained model may match even while a later history mismatches.
+        raw,proposal,value=counterexample_peer();report=value['report']
+        report.update(outcome='fail',model_correspondence='fail');report['composition']['whole_program_crosscheck']='not_accepted'
+        report['requirements'][1].update(**{'unknown':1,'fail':1})
+        value['report_fingerprint']=api._fingerprint(report)
+        api._result(CoreResponse('peer',api.CHECK,'ok',value,(),'verify',CORE_VERSION),{'request':raw,'candidate':proposal})
+        # Pure global coverage failure has no first per-history failure to keep.
+        raw=original();domain=raw['original']['operating_domain']
+        for fixed in domain['fixed_inputs']:fixed['physical']['controller']='disabled'
+        domain['physical_factors'][0]['values']=['enabled']
+        proposal=candidate(raw);value=peer_result(raw,proposal);report=value['report']
+        report.update(status='not_accepted',outcome='fail')
+        report['coverage'].update(active=False,reversible_cycle=False,antigen_absent_controller_enabled=False)
+        for row in report['requirements']:
+            row.update(**{'pass':2 if row['id']=='safety' else 1 if row['id']=='onset' else 0,
+                'not_exercised':0 if row['id']=='safety' else 1 if row['id']=='onset' else 2})
+        value['report_fingerprint']=api._fingerprint(report)
+        api._result(CoreResponse('peer',api.CHECK,'ok',value,(),'verify',CORE_VERSION),{'request':raw,'candidate':proposal})
 
     def test_full_candidate_and_replay_report_substitution_rejected(self):
         def change(result):

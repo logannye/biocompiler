@@ -40,6 +40,10 @@ input batches. An independent reference interpreter uses the original actual
 mechanism delays. It imports neither the producer nor the candidate runtime.
 Both preserve disabling-before-activation priority, committed cessation despite
 restoration, delayed reactivation, and executor state across reset/end.
+Actual mechanism delays accept integers from 1 through 10,000, independently
+of the at-most-64-tick horizon and source bounds. A transition beyond the horizon
+retains its pending state and failed bounded assessment; transport cannot reject
+its otherwise valid candidate merely because the delay exceeds the horizon.
 
 The source monitor lowers six original requirements with their complete
 identities, source paths and contracts. It reads only the admitted source, the
@@ -57,7 +61,10 @@ activity was or is active, the physical gate qualifies, or any response or
 cessation obligation is pending. Any unresolved required observation makes the
 source assessment unknown, even if later observations recover. RNA evidence is
 checked independently on every tick as deployment evidence. The top-level
-evidence status concerns demanded evidence; member inventory rows also expose
+evidence status concerns demanded evidence and unresolved source assessment:
+pending source obligations at the horizon also leave it `unknown`, even when
+all observations are valid and a known deadline failure determines the outcome.
+Member inventory rows also expose
 undemanded protein evidence gaps in completely quiet frames. Unknown evidence
 never rewrites a physical input, cancels a physical transition, or removes a
 history. The report distinguishes unknown evidence, physical loss and admission
@@ -114,6 +121,11 @@ Replay recomputes the complete check before comparing saved evidence. A one-use
 publication guard binds the actual executable, operation, request ID and entire
 response frame under the same original budget. Python provides immutable input
 snapshots and strict transport, without evaluating biological behavior.
+Retained physical inputs use `enabled`/`disabled` for the controller and
+`present`/`absent` for the other channels. The reader preserves these categorical
+values, exact evidence ownership and complete histories, and rejects summaries
+that contradict retained requirements, samples, original deadlines or pending
+state. Those consistency checks do not independently execute the activity model.
 
 A successful result means conditional modeled behavior and source requirements
 hold in the complete declared finite domain. It carries no material/project

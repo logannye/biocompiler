@@ -79,7 +79,7 @@ def _candidate(value: JsonValue) -> dict[str, JsonValue]:
     _flags(activity, {"id": "activity", "op": "delayed_reversible", "initial_band": "background",
         "timer_scope": "executor", "activation_scope": "encounter_generation"}, "Activity ownership changed")
     for key in ("onset_ticks", "cessation_ticks", "reactivation_ticks"):
-        _count(activity[key], 64, 1)
+        _count(activity[key], 10_000, 1)
     _require(_same(primitives[7], {"id": "readout", "op": "activity_band"}), "Activity readout changed")
     wires: JsonValue = [{"from": source, "to": target, "input": key} for source, target, key in (
         ("encounter", "gate", "live"), ("antigen", "gate", "antigen"), ("controller", "gate", "controller"),
@@ -137,6 +137,8 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
     decoding = _count(usage["request_decoding_work"], total, 1)
     _admission(report["admission"], original, total, decoding)
     admitted = _record(_record(report["admission"])["source_admission"])
+    _require(_count(admitted["horizon_ticks"], 64, 1) == _record(original["operating_domain"])["horizon_tick"],
+             "Source admission changed its exact integral horizon")
     _require(_same(report["source_correspondence"], admitted["correspondence"]), "Behavior report lost exact source correspondence")
     coverage = _object(report["coverage"], _COVERAGE, "Complete non-vacuous behavior coverage")
     _require(all(type(item) is bool for item in coverage.values()), "Coverage flags must be exact booleans")
@@ -145,6 +147,8 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
     domain = _object(report["domain"], {"completion", "counters", "assessed_histories", "pending_at_horizon"}, "Complete domain assessment")
     _require(domain["completion"] in ("complete", "exhausted", "cancelled") and type(domain["pending_at_horizon"]) is bool,
              "Unknown completion or pending flag")
+    _require((report["model_correspondence"] == "incomplete") == (domain["completion"] != "complete"),
+             "Model correspondence completeness differs from domain completion")
     counters = _object(domain["counters"], {"prefixes", "transitions", "histories", "work"}, "Behavior domain census")
     limits = _record(_record(original["operating_domain"])["limits"])
     counts = {key: _count(raw, _count(limits["max_" + key], 16_000_000, 1)) for key, raw in counters.items()}
@@ -205,12 +209,19 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
         _require(row["evidence_status"] == ("unknown" if amounts["rna_unknown_evidence_frames"] + amounts["protein_unknown_evidence_frames"] else "resolved"), "Availability evidence status contradicts counts")
         rna_unknown |= amounts["rna_unknown_evidence_frames"] > 0
     _require(not (requirement_unknown or rna_unknown) or report["evidence_status"] == "unknown", "Behavior assessment suppressed relevant unknown evidence")
+    if domain["completion"] == "complete" and (requirement_fail or requirement_unknown or rna_unknown
+            or domain["pending_at_horizon"] is True or report["model_correspondence"] == "fail"):
+        _require(report["counterexample"] is not None, "Complete nonacceptance lost its required retained counterexample")
     if report["counterexample"] is not None:
         counterexample = _object(report["counterexample"], set("history_index reduction model_correspondence pending_at_horizon deployment_evidence_unknown source_monitor trace".split()), "Complete retained counterexample")
         _count(counterexample["history_index"], histories, 1)
         _require(counterexample["reduction"] == "none_complete_original_history", "Unvalidated counterexample reduction")
         for key in ("model_correspondence", "pending_at_horizon", "deployment_evidence_unknown"):
             _require(type(counterexample[key]) is bool, "Counterexample flags must be booleans")
+        _require(not counterexample["pending_at_horizon"] or domain["pending_at_horizon"] is True,
+                 "Retained pending transition disappeared from the aggregate")
+        _require(not counterexample["deployment_evidence_unknown"] or (rna_unknown and report["evidence_status"] == "unknown"),
+                 "Retained deployment gap disappeared from the aggregate")
         monitored = _object(counterexample["source_monitor"], set("schema_version profile complete outcome horizon_ticks last_tick pending evidence_policy requirements coverage evidence_gaps history".split()), "Original source monitor")
         horizon = _count(_record(original["operating_domain"])["horizon_tick"], 64, 1)
         _flags(monitored, {"schema_version": "biocompiler.policy_controlled_source_monitor.v0.1",
@@ -219,17 +230,21 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
             and monitored["outcome"] in ("pass", "fail", "unknown")
             and _count(monitored["horizon_ticks"], 64, 1) == horizon
             and _count(monitored["last_tick"], 64) == horizon, "Retained source monitor truncated original horizon")
+        _require(not monitored["pending"] or counterexample["pending_at_horizon"] is True,
+                 "Retained source obligation disappeared from pending accounting")
         monitored_coverage = _object(monitored["coverage"], _COVERAGE, "Counterexample coverage")
         _require(all(type(value) is bool for value in monitored_coverage.values())
                  and all(not value or coverage[key] for key, value in monitored_coverage.items()), "Counterexample coverage contradicts complete aggregate")
         monitored_rows = _rows(monitored["requirements"])
         _require(len(monitored_rows) == 6, "Source monitor omitted an obligation")
+        monitored_statuses: list[str] = []
         for raw, aggregate, authority in zip(monitored_rows, requirements, source_requirements):
             row = _object(raw, set("id source_path kind status deadline_ticks source_declaration contract events".split()), "Counterexample source obligation")
             for key in ("id", "kind", "source_path", "deadline_ticks"):
                 _require(_same(row[key], authority[key]), "Counterexample source correspondence changed")
             _require(row["status"] in ("pass", "fail", "unknown", "not_exercised") and aggregate[cast(str, row["status"])] != 0,
                      "Counterexample source status contradicts aggregate")
+            monitored_statuses.append(cast(str, row["status"]))
             _require(_same(row["source_declaration"], aggregate["original"]), "Counterexample source body changed")
             contract = _object(row["contract"], {"identity", "path", "reference", "body"}, "Original requirement contract")
             reference = _record(_record(aggregate["original"])["contract"])
@@ -240,15 +255,23 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
                 event = _record(raw_event)
                 if event.get("action") == "violation":
                     _object(event, {"tick", "action", "reason"}, "Source violation event")
+                    _count(event["tick"], horizon)
                     _require(event["reason"] in ("activation_without_uninterrupted_qualified_response",
                         "active_episode_changed_generation_without_background"), "Unknown source violation reason")
                 else:
                     _object(event, {"tick", "action", "trigger_tick", "deadline_tick", "generation"}, "Source deadline event")
+                    event_tick = _count(event["tick"], horizon)
                     _require(event["action"] in ("triggered", "cancelled", "discharged", "deadline_missed"), "Unknown source deadline action")
-                    trigger = _count(event["trigger_tick"], horizon)
-                    _count(event["deadline_tick"], 128, trigger + 1)
+                    trigger = _count(event["trigger_tick"], event_tick)
+                    deadline = _count(event["deadline_tick"], 128, trigger + 1)
+                    _require(deadline == trigger + _count(row["deadline_ticks"], 64, 1),
+                             "Source event changed its original deadline bound")
                     _count(event["generation"], 16, 1)
-                _count(event["tick"], horizon)
+        monitor_uncertain = "unknown" in monitored_statuses or monitored["pending"] is True or bool(_rows(monitored["evidence_gaps"]))
+        monitor_outcome = "fail" if "fail" in monitored_statuses else "unknown" if monitor_uncertain else "pass"
+        _require(monitored["outcome"] == monitor_outcome, "Retained source outcome contradicts its six obligations")
+        _require(not monitor_uncertain or report["evidence_status"] == "unknown",
+                 "Retained source uncertainty disappeared from the aggregate")
         for raw_gap in _rows(monitored["evidence_gaps"]):
             gap = _object(raw_gap, {"tick", "channel", "status"}, "Required evidence gap")
             _count(gap["tick"], horizon)
@@ -258,6 +281,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
         _require(len(trace) == _count(_record(original["operating_domain"])["horizon_tick"], 64, 1) + 1, "Counterexample dropped original history suffix")
         monitor_history = _rows(monitored["history"])
         _require(len(monitor_history) == len(trace), "Source monitor dropped original frames")
+        trace_corresponds = True
         for tick, (raw, raw_history) in enumerate(zip(trace, monitor_history)):
             frame = _object(raw, {"input", "candidate", "model_reference", "corresponds"}, "Counterexample frame")
             inputs = _object(frame["input"], set("tick event live generation generation_started_tick physical evidence".split()), "Original input batch")
@@ -302,6 +326,10 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
                     _count(sample_generation, generation, 1)
                 _require((sample_generation is None) == (sample["band"] == "background"), "Activity generation contradicts physical band")
             _require(frame["corresponds"] == _same(frame["candidate"], frame["model_reference"]), "Counterexample correspondence contradicts retained exact samples")
+            trace_corresponds = trace_corresponds and frame["corresponds"] is True
+        _require(counterexample["model_correspondence"] == trace_corresponds, "Retained model summary contradicts its complete trace")
+        _require(trace_corresponds or report["model_correspondence"] != "pass",
+                 "Retained model mismatch disappeared from the aggregate")
     _require(report["outcome"] in ("pass", "fail", "unknown"), "Unknown behavioral outcome")
     failed = requirement_fail or report["model_correspondence"] == "fail" or domain["pending_at_horizon"] is True or (domain["completion"] == "complete" and not all(coverage.values()))
     expected_outcome = "fail" if failed else "pass" if domain["completion"] == "complete" and report["evidence_status"] == "resolved" else "unknown"
