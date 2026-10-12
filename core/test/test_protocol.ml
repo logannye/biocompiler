@@ -19,7 +19,8 @@ let () =
      ["check-policy-component-selection";"replay-policy-component-selection";"export-policy-component-selection"] @
      Bioc_service.Realization_service.operations @ Bioc_service.Verification_workflow_service.operations @
      Bioc_service.Verification_workflow_authority.operations @
-     Bioc_service.Policy_controlled_composition_service.operations))
+     Bioc_service.Policy_controlled_composition_service.operations @
+     ["check-policy-controlled-material";"publish-policy-controlled-material"]))
     "Advertised operation census differs";
   require (List.filter ((=) (Json.String "policy-single-expression-mrna-v0.1"))
     (Json.array (Json.field "validation_scopes" fields)) = [Json.String "policy-single-expression-mrna-v0.1"])
@@ -66,6 +67,7 @@ let () =
       "policy_expression_material",Bioc_service.Policy_expression_material_service.profile;
       "policy_material",Bioc_service.Policy_material_service.profile;
       "policy_component_material",Bioc_service.Policy_component_material_service.profile;
+      "policy_controlled_composition_material",Bioc_service.Policy_controlled_material_service.profile;
       "policy_refinement",Bioc_service.Policy_refinement_service.profile;
       "policy_quantitative_assurance",Bioc_service.Policy_quantitative_assurance_service.profile;
       "policy_module_linking",Bioc_service.Policy_module_linking_service.profile;

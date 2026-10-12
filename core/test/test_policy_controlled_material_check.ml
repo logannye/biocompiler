@@ -73,7 +73,7 @@ let rec replace_text before after raw = match raw with
   | Json.Object fields -> Json.Object (List.map (fun (key,value) -> key,replace_text before after value) fields)
   | Json.Array values -> arr (List.map (replace_text before after) values)
   | _ -> raw
-let () =
+let run () =
   if Array.length Sys.argv <> 3 then failwith "Expected original request and independent material literal fixture";
   let original = read Sys.argv.(1) and fixture = read Sys.argv.(2) in
   let request = R.of_json original and literal = get "literal_candidate" fixture in
@@ -202,9 +202,19 @@ let () =
     (Json.int (admission_size + 256)) original) in
   rejected "controlled_material_publication_limit" (fun () ->
     run_check report_limited (bind report_limited literal));
-  let work_limited = R.of_json (put ["budgets";"max_work"] (Json.int 1) original) in
+  rejected "controlled_authority_request" (fun () ->
+    R.of_json (put ["budgets";"max_work"] (Json.int 1) original));
+  (* A complete typed request cannot carry a budget that already fails its own
+     decoder. Leave enough for that decode, but not the next complete candidate
+     decode, to exercise the checker's standalone live work owner separately. *)
+  let checker_allowance = R.decoding_work request + 1024 in
+  let work_limited = R.of_json (put ["budgets";"max_work"] (Json.int checker_allowance) original) in
+  let work_candidate = C.of_json (bind work_limited literal) in
+  let remaining_after_request = checker_allowance - R.decoding_work work_limited in
+  require (remaining_after_request > 0 && C.decoding_work work_candidate > remaining_after_request)
+    "Standalone checker exhaustion does not isolate the candidate decode budget";
   rejected "controlled_material_work_limit" (fun () ->
-    run_check work_limited (bind work_limited literal));
+    Check.check ~request:work_limited ~candidate:work_candidate ());
   let allowance:R.budgets = R.budgets request in
   let parent = W.create ~profile:"controlled-material-test" ~error_code:"original_parent_exhausted"
     ~maximum:allowance.max_work () in
@@ -223,3 +233,15 @@ let () =
   let failed_again = try ignore (Check.check ~parent:cancelled ~request ~candidate ()); false with Exit -> true in
   require failed_again "Cancelled live owner produced material evidence";
   Printf.printf "controlled material checker: %d literal and independent adversarial checks\n" !checks
+let () =
+  try run () with Diagnostic.Error diagnostic ->
+    let bounded limit value =
+      if String.length value <= limit then str value else str "<diagnostic field exceeds logging bound>" in
+    let detail = Json.Object [
+      "event",str "unexpected_controlled_material_checker_diagnostic";
+      "completed_checks",Json.int !checks;
+      "code",bounded 256 diagnostic.code;
+      "message",bounded 4096 diagnostic.message;
+      "path",(match diagnostic.path with None -> Json.Null | Some value -> bounded 1024 value)] in
+    Printf.eprintf "%s\n%!" (Canonical.encode detail);
+    raise (Diagnostic.Error diagnostic)
