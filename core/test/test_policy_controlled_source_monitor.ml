@@ -198,7 +198,16 @@ let lifecycle_controls original =
     [false;false;true;true;true;false;false;true;true;true;true]in
   let state=run admitted(domain original admitted reset)samples in
   require "encounter_reset_recovery preserves old residual generation"(not(M.failed state) && has_action state "antigen-off" "discharged" && List.assoc "reversible_cycle"(M.coverage state));
-  require "reset invalidates boundary antigen evidence without rewriting activity"(M.unknown state);
+  require "fresh new-generation absence resolves reset boundary"(M.satisfied state && not(M.unknown state));
+  let inherited_reset=List.mapi(fun tick value->if tick=3 then
+    update "evidence"(set "antigen"(evidence ~observed:(Some 2) tick(Some 1)))value else value)reset in
+  let inherited=run admitted(domain original admitted inherited_reset)samples in
+  require "reset invalidates inherited antigen evidence without rewriting activity"
+    (M.unknown inherited && not(M.failed inherited) &&
+      List.exists(fun gap->Json.equal(get "tick" gap)(Json.int 3) && text "channel" gap="antigen" && text "status" gap="stale")
+        (Json.array(get "evidence_gaps"(report inherited))) &&
+      List.map(get "activity")(Json.array(get "history"(report inherited)))=
+        List.map(get "activity")(Json.array(get "history"(report state))));
   let onset_reset=rows(fun tick->row ~event:(if tick=0 then "start" else if tick=1 then "reset" else "none")
     ~generation:(if tick<1 then 1 else 2) ~antigen:(tick<>1) tick)in
   let state=run admitted(domain original admitted onset_reset)
