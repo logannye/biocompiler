@@ -4222,7 +4222,7 @@
       "path": "src/biocompiler/core_policy_controlled_material.py",
       "disposition": "outside_route",
       "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
-      "sha256": "e5a3280bf88efeb0514977704fded0f5ab7e84cb0e492ad0142c18d5beb4984e",
+      "sha256": "bfa74bfc770bc2da99a228b28226eaa4ae760a50ace2d80606fcf88a29906a86",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {

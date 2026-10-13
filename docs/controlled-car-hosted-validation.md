@@ -36,9 +36,9 @@ local and is not relabeled as hosted source-byte inspection.
 
 ## Hosted route
 
-The owned local branch remains `codex/public-reference-readiness`. Push the
-coherent batch to its separate `codex/dev-policy/public-reference-readiness`
-remote branch to use the existing hosted development workflow. The branch's
+The owned local branch remains `codex/public-reference-readiness`. Its separate
+`codex/dev-policy/public-reference-readiness` remote branch uses the existing
+hosted development workflow. The branch's
 concurrency group cannot cancel another development branch or release run.
 
 Before native setup, the workflow binds the curated original, contract and
@@ -53,6 +53,28 @@ Core compilation, Verify export and independent reopen against complete original
 authority. Exact paired RNA output is compared with independently frozen
 expectations. Source edits and stale or altered material/contract/publication
 controls must retain their rejection or failed-assessment behavior.
+
+## Validation record
+
+Run [38339138494](https://github.com/logannye/biocompiler/actions/runs/38339138494)
+tested source `35deebfc5f8842bb33f80323e953627737af26b2` and was superseded during
+the mocked Python regression step. Read-only review found that the campaign
+incorrectly compared the four-field campaign identity with the ten-field native
+identity as whole objects. The correction joins exact revision/run/attempt and
+requires the push head to match while retaining both full identity records.
+Thirteen focused campaign tests passed on Python 3.11 and 3.14. The canceled run
+provides no native acceptance.
+
+Run [38339413132](https://github.com/logannye/biocompiler/actions/runs/38339413132),
+attempt 1, tested `ae5097f866500496398ecc9f7b08a3265b9b6318` on hosted Linux
+x86_64/Python 3.11.15. Source inventories and all 256 mocked Python tests passed
+(533.378 seconds). Strict typing then rejected an indirect `_semantic` import in
+the new transport reader. Native setup, compilation and execution did not run.
+The retained diagnostic artifact is `11786202729`, digest
+`sha256:2d5bccc39c71196684824d374649a2e4750cbd3d36f92dd8ea54ea15a51c86cd`.
+The direct owner import preserves behavior; both local strict typing gates and
+18 material/workflow tests pass. Typing now precedes the longer mocked test step.
+Fresh hosted validation is still required for the correction.
 
 ## Remaining release work
 

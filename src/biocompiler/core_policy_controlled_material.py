@@ -7,6 +7,7 @@ from typing import Callable, cast
 
 from . import core_policy_controlled_composition as admission
 from .core_client import CoreClient, CoreProtocolError, CoreResponse, JsonValue, _object, decode_json, encode_json
+from .core_policy import _semantic
 from .core_policy_material import PolicyMaterialResult, _artifact_members, _publication
 from .core_policy_operational import _fingerprint, _pin, _same
 
@@ -65,7 +66,7 @@ def _requests_nominal_translation(original: dict[str, JsonValue]) -> bool:
     bodies = [_record(row) for row in _rows(semantics["definitions"])]
     matches = [row for row in bodies if row.get("id") == definition["id"]]
     reference: JsonValue = {"$type": "DefinitionRef", "id": definition["id"], "version": "1",
-        "digest": _fingerprint(admission._semantic(definition))}
+        "digest": _fingerprint(_semantic(definition))}
     _require(len(pins) == len(matches) == 1 and _same(pins[0], reference) and _same(matches[0], definition),
              "Nominal translation requires the exact original definition and selected dependency")
     return True

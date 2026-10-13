@@ -18793,7 +18793,7 @@
           "path": "src/biocompiler/core_policy_controlled_material.py",
           "symbol": "_requests_nominal_translation"
         },
-        "syntax_sha256": "516a82e071e39a24008c2fee0a64da9d653296afed3e9ba8dc7643ebd8956a47"
+        "syntax_sha256": "80286740a38db60b9763132125418ff75de8e442318265c2037b0856c25c29d9"
       },
       {
         "id": "biocompiler.core_policy_controlled_material._require",
@@ -39234,7 +39234,7 @@
       "src/biocompiler/core_policy_component_selection.py": "20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9",
       "src/biocompiler/core_policy_controlled_behavior.py": "e740dc2a267c065cc6d4056010614f7b372f98db2777f410bb36d721a412c2cf",
       "src/biocompiler/core_policy_controlled_composition.py": "308ec4aa6f5bde1d58ca5cf8a0ace46432a9fa3369a9234a91d4644580a1df65",
-      "src/biocompiler/core_policy_controlled_material.py": "e5a3280bf88efeb0514977704fded0f5ab7e84cb0e492ad0142c18d5beb4984e",
+      "src/biocompiler/core_policy_controlled_material.py": "bfa74bfc770bc2da99a228b28226eaa4ae760a50ace2d80606fcf88a29906a86",
       "src/biocompiler/core_policy_controlled_workflow.py": "66f5a30b6e3260ab35167bab2cf6f5aa003cc99a584fe5216a43e47d7a76bdc2",
       "src/biocompiler/core_policy_expression_material.py": "319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf",
       "src/biocompiler/core_policy_implementation.py": "75abd92ee9ef28a34b0a9df5ad8ea133beb6d01f60bd2ae74f2d6f9cf064ab4f",
@@ -39473,6 +39473,10 @@
       {
         "path": "src/biocompiler/core_policy_controlled_material.py",
         "syntax_sha256": "f255311127c3c735ea86b68bf62c39a57aa405985d27c9ac0c8a73e4ccd786c2"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_material.py",
+        "syntax_sha256": "73a802ff3d51806befeddd6183c50399cb7c0966096d919af81c51c77951d3cc"
       },
       {
         "path": "src/biocompiler/core_policy_controlled_material.py",

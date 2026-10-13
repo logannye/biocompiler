@@ -62,6 +62,15 @@ independent reopening against independently supplied originals. Unchanged RNA
 is legitimate when the same fixed implementation satisfies two source programs;
 the explanation must make that resolution visible.
 
+The baseline contract's actual delays are all one tick, and supported deadlines
+are positive whole ticks. A zero or fractional deadline is a representation
+error, not an infeasible-behavior demonstration. Keep the deadline-failure gate
+open until a separately named, independently pinned software stress scenario
+supplies a slower mechanism, for example three-tick onset, and checks two- versus
+three-tick requested deadlines without changing that scenario's mechanism or
+RNAs. This scenario would be another explicit assumption, not a measurement or
+a revision of the baseline contract.
+
 ## Public references as reusable implementations
 
 Use the [planning inventory](../data/public_reference_programs/qualification-plan.json)
@@ -143,6 +152,28 @@ No numeric kinetic defaults or sample code implying a qualified real contract
 is introduced before its authority exists. The first real starter is gated on
 Milestones 1–3; artificial examples remain explicitly labeled.
 
+The smallest next authoring batch fixes `car197206-rna-v1`, contract version 2,
+CD19, AP21967 and the declared human CD8 T-cell context. A typed intent record
+will load the exact complete original through a public SDK function and delegate
+to the existing request-edit methods. It will accept exact time quantities,
+reject fractional ticks without rounding, and preserve the separation between
+requested deadlines and library-owned actual mechanism delays. Start with the
+supplied ten-tick domain; a different horizon needs a separately supplied,
+complete domain/readout snapshot rather than invented observations.
+
+Provide prepare, inspect, explain, compile/export and independent-reopen commands
+in a real example. Explanation must place requested deadlines beside assumed
+delays, identify the nominal clock, and trace requirements to products and RNA
+members. Use an authorized-original-input route while the asset-distribution
+obligation remains open; loading that complete original should require no manual
+nucleotide strings or internal JSON editing. Do not bundle external publication
+PDFs or HTML or relabel their acquisition as installed validation.
+
+Follow this with an installed rehearsal outside the source checkout using the
+same fresh hosted Core/Verify build, then a separately recorded unfamiliar-user
+trial. Independent dropout/lifecycle and unknown-readout cases remain release
+gates: losing an RNA alone must not imply instantaneous loss of its protein.
+
 ## Work batches and preservation
 
 1. **First batch, completed locally:** offline import tool and adversarial tests; use-case record,
@@ -154,6 +185,8 @@ Milestones 1–3; artificial examples remain explicitly labeled.
    choices. The [prepared real pack](controlled-car-reference-pack.md) now has
    independent expected outputs and an explicit conditional contract; hosted
    native admission and independent-person transcription review remain open.
+   The [hosted reference gate](controlled-car-hosted-validation.md) records the
+   exact validation revision and run separately from the prepared-input identity.
 3. **Researcher batch:** implement the facade, real starter/acquisition route,
    source-edit demonstrations and readable report through existing RC6.
 4. **Release batch:** freeze one integration candidate and complete Milestone 5

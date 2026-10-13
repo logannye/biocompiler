@@ -39,6 +39,12 @@ jobs:
           python -B -m tools.generate_policy_quantitative_composition_fixture --check
           python -B -m tools.generate_policy_approximation_fixture --check
           python -B -m tools.generate_policy_realization_evidence_fixture --check
+      - name: Type-check the complete Python transport and authoring boundary
+        run: |
+          python -m pip install --only-binary=:all: --platform any --require-hashes \
+            --target generated/typecheck -r tools/typecheck-requirements.txt
+          PYTHONPATH=generated/typecheck python -B -m mypy --config-file tools/mypy-core.ini | tee generated/development-feedback/types-core.log
+          PYTHONPATH=generated/typecheck python -B -m mypy --config-file tools/mypy-policy.ini | tee generated/development-feedback/types-policy.log
       - name: Check controlled reference preparation and transport with mocked native calls
         env:
           PYTHONPATH: src
@@ -54,12 +60,6 @@ jobs:
             tests.test_policy_material_rule_coverage \
             tests.test_policy_public_api_coverage -q \
             2>&1 | tee generated/development-feedback/controlled-reference-python-tests.log
-      - name: Type-check the complete Python transport and authoring boundary
-        run: |
-          python -m pip install --only-binary=:all: --platform any --require-hashes \
-            --target generated/typecheck -r tools/typecheck-requirements.txt
-          PYTHONPATH=generated/typecheck python -B -m mypy --config-file tools/mypy-core.ini | tee generated/development-feedback/types-core.log
-          PYTHONPATH=generated/typecheck python -B -m mypy --config-file tools/mypy-policy.ini | tee generated/development-feedback/types-policy.log
       - uses: ocaml/setup-ocaml@93303b622b2522e4411e295f9e77411a24912ac7
         with:
           ocaml-compiler: '5.4.0'
