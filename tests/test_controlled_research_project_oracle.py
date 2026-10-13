@@ -12,7 +12,7 @@ KINDS=('no_unauthorized_activation','initial_activation','controller_cessation',
 def document(packet, name):
     case=next(row for row in packet['expected']['cases'] if row['id']==name)
     original=packet['inputs'][name]; resources=original['limits']['resources']
-    status=case['status']; outcome={'accepted':'pass','material_fail':'fail','behavior_fail':'fail','unknown':'unknown'}[status]
+    status=case['status']; outcome={'accepted':'pass','behavior_fail':'fail','unknown':'unknown'}[status]
     counts=[]
     for kind in KINDS:
         if name=='missing-readout':c=(0,0,2,0)
@@ -43,11 +43,11 @@ def document(packet, name):
             'evidence_gaps':[{'tick':3,'channel':'activity','status':'missing'}] if status=='unknown' else []}
         behavior['counterexample']={'history_index':1,'reduction':'none_complete_original_history',
             'model_correspondence':True,'pending_at_horizon':False,'deployment_evidence_unknown':False,'trace':trace,'source_monitor':monitor}
-    material={'structure':{'outcome':'pass'},'outcome':'fail' if status=='material_fail' else 'pass',
+    material={'structure':{'outcome':'pass'},'outcome':'pass',
         'material_limits':{'member_order':case['member_order'],'expected_member_order':case['member_order'],
             'members':[{'member_id':member,'rna_nt':len(sequence),'within_limit':len(sequence)<=resources['max_member_rna_nt']} for member,sequence in zip(case['member_order'],case['sequences'])],
             'max_member_rna_nt':resources['max_member_rna_nt'],'max_total_rna_nt':resources['max_total_rna_nt'],
-            'total_rna_nt':sum(map(len,case['sequences'])),'outcome':'fail' if status=='material_fail' else 'pass'}}
+            'total_rna_nt':sum(map(len,case['sequences'])),'outcome':'pass'}}
     result={'request_fingerprint':campaign.digest(original),'artifact':None,'report':{
         'outcome':outcome,'status':'controlled_workflow_accepted' if outcome=='pass' else 'not_accepted',
         'project_context':original['behavior_request']['original']['source_authority']['project_context'],
@@ -66,10 +66,17 @@ class Controls(unittest.TestCase):
             mutation(result)
             with self.assertRaises(AssertionError):campaign.check_result(result,case,original)
 
-    def test_all_ten_literal_assessable_outcomes(self):
+    def test_eight_assessments_and_three_original_admission_rejections(self):
         for name in campaign.CASE_IDS:
-            if name!='short-horizon':
+            if name not in campaign.REJECTED:
                 with self.subTest(name=name):self.check(name)
+            else:
+                case=next(row for row in self.packet['expected']['cases'] if row['id']==name)
+                rejection={'status':'error','diagnostics':[{
+                    'code':'policy_controlled_domain' if name=='short-horizon' else 'controlled_authority_admission',
+                    'message':'Hold suffix cannot cover every original source deadline.' if name=='short-horizon' else 'Original RNA length exceeds supplied per-member/total resources.',
+                    'path':None}]}
+                with self.subTest(name=name):campaign.check_rejection(rejection,case)
 
     def test_wrong_specific_failure(self):
         def mutate(result):
@@ -84,8 +91,8 @@ class Controls(unittest.TestCase):
         self.check('missing-readout',mutate)
 
     def test_wrong_bound_and_deadline(self):
-        self.check('short-member',lambda r:r['report']['material']['material_limits']['members'][0].update(within_limit=True))
-        self.check('short-total',lambda r:r['report']['material']['material_limits'].update(max_total_rna_nt=34))
+        self.check('tight',lambda r:r['report']['material']['material_limits']['members'][0].update(within_limit=False))
+        self.check('tight',lambda r:r['report']['material']['material_limits'].update(max_total_rna_nt=33))
         self.check('slow-onset',lambda r:r['report']['behavior']['counterexample']['source_monitor']['requirements'][0]['events'][1].update(deadline_tick=3))
 
     def test_relaxed_original_does_not_invent_exercised_controller_stop(self):

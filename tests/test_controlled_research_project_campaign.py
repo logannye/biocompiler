@@ -1,5 +1,6 @@
 """Independent literal/census controls, never fabricated native acceptance."""
 from copy import deepcopy
+from collections import Counter
 import hashlib
 import json
 from pathlib import Path
@@ -48,5 +49,64 @@ class ControlledResearchProjectCampaignTests(unittest.TestCase):
     def test_native_run_requires_hosted_authority(self):
         with patch.dict('os.environ',{},clear=True),self.assertRaisesRegex(AssertionError,'hosted-only'):
             campaign.run(object())
+
+    def test_original_admission_rejections_require_exact_diagnostics(self):
+        packet=campaign.checked_assets()
+        for name in campaign.REJECTED:
+            case=next(row for row in packet['expected']['cases'] if row['id']==name)
+            expected={'status':'error','diagnostics':[{'code':'policy_controlled_domain' if name=='short-horizon' else 'controlled_authority_admission',
+                'message':'Hold suffix cannot cover every original source deadline.' if name=='short-horizon' else 'Original RNA length exceeds supplied per-member/total resources.','path':None}]}
+            with self.subTest(case=name):
+                campaign.check_rejection(expected,case)
+                mutations=[{'status':'ok'},{'status':'unsupported'},{'report':{'outcome':'pass'}},{'result':None}]
+                for change in mutations:
+                    with self.subTest(change=change),self.assertRaises(AssertionError):
+                        campaign.check_rejection({**deepcopy(expected),**change},case)
+                for key,value in (('code','controlled_workflow_work_limit'),('message','Another limit failed.'),('path','/resources')):
+                    changed=deepcopy(expected);changed['diagnostics'][0][key]=value
+                    with self.subTest(diagnostic=key),self.assertRaises(AssertionError):campaign.check_rejection(changed,case)
+                for diagnostics in ([],expected['diagnostics']*2):
+                    with self.subTest(diagnostics=diagnostics),self.assertRaises(AssertionError):
+                        campaign.check_rejection({**expected,'diagnostics':diagnostics},case)
+
+    def test_admission_rejection_cannot_replace_an_assessment_or_positive_case(self):
+        packet=campaign.checked_assets()
+        rejection={'status':'error','diagnostics':[{'code':'controlled_authority_admission',
+            'message':'Original RNA length exceeds supplied per-member/total resources.','path':None}]}
+        for case in packet['expected']['cases']:
+            with self.subTest(case=case['id']):
+                if case['id'] in campaign.REJECTED:
+                    with self.assertRaisesRegex(AssertionError,'cannot be replaced'):
+                        campaign.check_result({'report':{'outcome':'pass'}},case,packet['inputs'][case['id']])
+                else:
+                    with self.assertRaisesRegex(AssertionError,'Unexpected admission rejection'):
+                        campaign.check_rejection(rejection,case)
+
+    def test_complete_action_plan_retains_rejections_and_local_only_controls(self):
+        packet=campaign.checked_assets()
+        # Opaque proposals exercise routing only and are not native evidence.
+        candidate={'material_candidate':{'construction':{'inventory':{
+            'molecules':[{'id':'a','sequence':'CC'},{'id':'b','sequence':'CA'}],
+            'role_instances':[{'subject_id':'a','subject_fingerprint':'old-a'},
+                              {'subject_id':'b','subject_fingerprint':'old-b'}]}}}}
+        values={name+'-compile':{'candidate':deepcopy(candidate),'report':{'opaque':'inert'}} for name in campaign.ACCEPTED}
+        actions=campaign.expected_actions(packet,values)
+        self.assertEqual(len(actions),63)
+        self.assertEqual(Counter(row['role'] for row in actions),{'core':24,'verify':39})
+        self.assertEqual(Counter(row['operation'].split('-')[0] for row in actions),{'capabilities':31,'compile':12,'export':17,'check':2,'replay':1})
+        by_observation={row['observation']:row for row in actions if 'observation' in row}
+        for name in campaign.REJECTED:
+            self.assertEqual(by_observation[name+'-compile']['payload'],{'request':packet['inputs'][name]})
+            self.assertEqual(by_observation[name+'-compile']['role'],'core')
+            self.assertNotIn(name+'-export',by_observation)
+        self.assertFalse(set(('stale-project','changed-limits','transport-cancellation')) & set(by_observation))
+        for suffix,index in (('a',0),('b',1)):
+            changed=by_observation['changed-candidate-'+suffix]['payload']['candidate']['material_candidate']['construction']['inventory']
+            before=candidate['material_candidate']['construction']['inventory']
+            self.assertEqual(changed['molecules'][index]['sequence'],'G'+before['molecules'][index]['sequence'][1:])
+            self.assertEqual(changed['molecules'][1-index],before['molecules'][1-index])
+            self.assertEqual(changed['role_instances'][index]['subject_fingerprint'],campaign.digest(changed['molecules'][index]))
+            self.assertEqual(changed['role_instances'][1-index],before['role_instances'][1-index])
+        self.assertEqual(values['baseline-compile']['candidate'],candidate)
 
 if __name__=='__main__':unittest.main()

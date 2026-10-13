@@ -30,6 +30,7 @@ ASSETS = 'data/controlled_composition'
 EXAMPLE = 'examples/controlled_composition.py'
 CASE_IDS = ('baseline','tight','short-member','short-total','tight-deadlines','horizon-eleven','short-horizon','material-longer','slow-onset','relaxed-onset','missing-readout')
 ACCEPTED = ('baseline','tight','tight-deadlines','horizon-eleven','material-longer','relaxed-onset')
+REJECTED = ('short-member','short-total','short-horizon')
 CONTROLS = ('check-core','check-verify','replay-verify','changed-fasta-a','changed-fasta-b','changed-candidate-a','changed-candidate-b','changed-manifest','stale-project','changed-limits','transport-cancellation','verify-producer')
 OBSERVATIONS = tuple(case+'-'+step for case in CASE_IDS for step in
     (('original','prepared','compile','export','reverify','publication') if case in ACCEPTED else ('original','prepared','compile'))) + CONTROLS
@@ -76,7 +77,16 @@ def expected_fasta(case):
     return ''.join('>rna_%04d alphabet=RNA\n%s\n'%(i+1,sequence) for i,sequence in enumerate(case['sequences']))
 
 
+def check_rejection(result,case):
+    """Require the original's precise admission failure, without a result claim."""
+    require(case['id'] in REJECTED and case['status']==('domain_rejected' if case['id']=='short-horizon' else 'resource_rejected'),'Unexpected admission rejection case')
+    diagnostic=case['diagnostic']
+    require(set(diagnostic)=={'code','message'},'Incomplete independent rejection diagnostic')
+    require(result=={'status':'error','diagnostics':[{**diagnostic,'path':None}]},'Admission rejection occurred at an unrelated boundary')
+
+
 def check_result(result,case,original,*,exported=False):
+    require(case['status'] in ('accepted','behavior_fail','unknown'),'Admission rejection cannot be replaced with an assessment')
     report=result['report'];material=report['material'];behavior=report['behavior']
     require(result['request_fingerprint']==digest(original),'Result belongs to different complete original')
     require(report['project_context']==original['behavior_request']['original']['source_authority']['project_context'] and report['limits']==original['limits'],'Project context or limits substituted')
@@ -89,13 +99,13 @@ def check_result(result,case,original,*,exported=False):
     require(behavior['model_correspondence']=='pass','Candidate differs from supplied model')
     status=case['status'];wanted='pass' if status=='accepted' else 'unknown' if status=='unknown' else 'fail'
     require(report['outcome']==wanted and report['status']==('controlled_workflow_accepted' if wanted=='pass' else 'not_accepted'),'Joined literal outcome differs')
-    require(material['outcome']==('fail' if status=='material_fail' else 'pass'),'Material outcome differs')
+    require(material['outcome']=='pass','Material outcome differs')
     require(behavior['outcome']==('fail' if status=='behavior_fail' else 'unknown' if status=='unknown' else 'pass'),'Behavior outcome differs')
     resources=original['limits']['resources'];lengths=list(map(len,case['sequences']))
     require(limits=={'member_order':case['member_order'],'expected_member_order':case['member_order'],
         'members':[{'member_id':member,'rna_nt':length,'within_limit':length<=resources['max_member_rna_nt']} for member,length in zip(case['member_order'],lengths)],
         'max_member_rna_nt':resources['max_member_rna_nt'],'total_rna_nt':sum(lengths),
-        'max_total_rna_nt':resources['max_total_rna_nt'],'outcome':'fail' if status=='material_fail' else 'pass'},'Material failure did not preserve its exact independent member/total bound')
+        'max_total_rna_nt':resources['max_total_rna_nt'],'outcome':'pass'},'Material assessment did not preserve its exact independent member/total bound')
     kinds=('no_unauthorized_activation','initial_activation','controller_cessation','antigen_cessation','component_cessation','reactivation')
     require(tuple(row['kind'] for row in behavior['requirements'])==kinds,'Source requirement inventory/order changed')
     for row in behavior['requirements']:
@@ -195,12 +205,14 @@ def exercise(packet,example,core,verify,retain,folder):
         bundle=folder/(name+'.zip')
         try:built=example.compile_project(path,bundle,core=core,verify=verify)
         except ResearchProjectRejected as error:
-            require(case['status'] in ('material_fail','behavior_fail','unknown'),'Unexpected rejected positive case')
+            require(case['status'] in ('behavior_fail','unknown'),'Unexpected rejected assessment case')
             check_result(error.compiled.result,case,original);retain(name+'-compile',error.compiled.result)
             require(not bundle.exists(),'Rejected project published a bundle');continue
         except CoreRejected as error:
-            require(case['status']=='domain_rejected' and {d.code for d in error.response.diagnostics}=={'policy_controlled_domain'} and len(error.response.diagnostics)==1 and error.response.diagnostics[0].message=='Hold suffix cannot cover every original source deadline.','Domain rejection occurred at an unrelated boundary')
-            retain(name+'-compile',{'status':error.response.status,'diagnostics':[asdict(d) for d in error.response.diagnostics]});require(not bundle.exists(),'Rejected domain published a bundle');continue
+            require(error.response.result is None,'Admission rejection returned a result')
+            rejection={'status':error.response.status,'diagnostics':[asdict(d) for d in error.response.diagnostics]}
+            check_rejection(rejection,case)
+            retain(name+'-compile',rejection);require(not bundle.exists(),'Rejected original published a bundle');continue
         require(case['status']=='accepted','Nonaccepted fixture acquired acceptance')
         check_result(built.compiled.result,case,original);check_result(built.verified.result,case,original,exported=True)
         retain(name+'-compile',built.compiled.result);retain(name+'-export',built.verified.result)
@@ -304,7 +316,7 @@ def validate_receipt(receipt, evidence, *, root=ROOT):
         require(project=={'schema_version':'biocompiler.research_project.v0.3','route':'controlled_composition','request':original,'limits':original['limits'],**context},'Complete retained project changed')
         require(load(evidence/(name+'-project.json'))==project and prepared['preflight']['project_sha256']==digest(project) and prepared['preflight']['native_status']=='not_run','Project/preflight differs')
         result=values[name+'-compile']
-        if case['status']=='domain_rejected':require(result['status']=='error' and len(result['diagnostics'])==1 and result['diagnostics'][0]['code']=='policy_controlled_domain' and result['diagnostics'][0]['message']=='Hold suffix cannot cover every original source deadline.','Wrong domain rejection')
+        if name in REJECTED:check_rejection(result,case)
         else:check_result(result,case,original)
         if name in ACCEPTED:
             check_result(values[name+'-export'],case,original,exported=True)
@@ -331,8 +343,8 @@ def validate_receipt(receipt, evidence, *, root=ROOT):
             require(capabilities.profiles.get('policy_controlled_workflow')==(PRODUCER_PROFILE if action['role']=='core' else PROFILE) and VALIDATION_SCOPE in capabilities.validation_scopes,'Negotiated a different workflow profile')
             continue
         name=action['observation']
-        if name in ('short-horizon-compile','verify-producer'):
-            require(response.result is None and response.status==('error' if name=='short-horizon-compile' else 'unsupported'),'Wrong native rejection stage')
+        if name in tuple(case+'-compile' for case in REJECTED)+('verify-producer',):
+            require(response.result is None and response.status==('unsupported' if name=='verify-producer' else 'error'),'Wrong native rejection stage')
             require(values[name]=={'status':response.status,'diagnostics':[asdict(d) for d in response.diagnostics]},'Retained rejection differs from actual native frame')
         else:
             require(response.status=='ok','Unexpected native error replaced required complete evidence')
@@ -340,7 +352,8 @@ def validate_receipt(receipt, evidence, *, root=ROOT):
             if name in CONTROLS[3:8]:
                 if name.startswith('changed-candidate'):
                     report=checked['report'];material=report['material']
-                    require(checked['artifact'] is None and report['outcome']==material['outcome']=='fail' and material['structure']['content_reconstruction']['outcome']=='fail' and material['material_limits']['outcome']=='pass','Changed candidate failed at an unrelated boundary')
+                    structure=material['structure'];reconstruction=structure['content_reconstruction']
+                    require(checked['artifact'] is None and report['outcome']==material['outcome']=='fail' and reconstruction['outcome']=='fail' and reconstruction['diagnostics']==['fail:content:inventory'] and structure['structural_outcome']=='pass' and material['material_limits']['outcome']=='pass','Changed candidate failed at an unrelated boundary')
                     require(report['behavior']==values['baseline-compile']['report']['behavior'],'Material mutation changed independent behavior assessment')
                 else:require(checked==values['baseline-export'],'Changed exported bytes altered fresh native checking')
             else:require(checked==values[name],'Retained observation is not its exact fresh native result')
@@ -363,7 +376,7 @@ def validate_receipt(receipt, evidence, *, root=ROOT):
     require(values['check-core']['report']==values['baseline-compile']['report'],'Fresh check changed the complete compiled assessment')
     require(values['replay-verify']['report']==values['baseline-compile']['report'],'Replay altered saved assessment')
     require(values['transport-cancellation']=={'status':'cancelled','published':False},'Cancellation acquired publication')
-    require(values['verify-producer']['status']=='unsupported' and {d['code'] for d in values['verify-producer']['diagnostics']}=={'unsupported_operation'},'Verify producer boundary changed')
+    require(values['verify-producer']=={'status':'unsupported','diagnostics':[{'code':'unsupported_operation','message':'This executable does not implement the requested operation; no fallback or acceptance is granted.','path':'/operation'}]},'Verify producer boundary changed')
     timing=receipt['rehearsal'];require(tuple(row['name'] for row in timing['milestones'])==MILESTONES and timing['manual_interventions']==[] and timing['human_usability']=='unassessed' and timing['installation_timing']=='excluded','Rehearsal scope/census changed')
     times=[row['elapsed_ns'] for row in timing['milestones']]+[timing['total_elapsed_ns']]
     require(all(type(value) is int and 0<=value<2**63 for value in times) and times==sorted(times),'Malformed nonmonotonic rehearsal timing')

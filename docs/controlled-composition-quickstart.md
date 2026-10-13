@@ -25,8 +25,21 @@ The saved project retains the whole original request, component contracts,
 complete material authority, observation evidence, domain and exact limits.
 Its metadata comes from the original source context.
 
-Read `starter-manifest.json` for the exact SHA-256 of each `bin/` executable.
-Supply those values explicitly (replace the two placeholders below):
+Use the authenticated starter download and retain its original
+`starter-manifest.json`. Artifact extraction may remove executable permissions.
+From the starter directory, compare both binary hashes against that manifest,
+and restore owner execute permission only if both comparisons pass:
+
+```sh
+python -c 'import json; m=json.load(open("starter-manifest.json")); print("\n".join("{}  {}".format(m["files"][p]["sha256"], p) for p in ("bin/biocompiler-core", "bin/biocompiler-verify")))' |
+  sha256sum --check &&
+  chmod u+x bin/biocompiler-core bin/biocompiler-verify
+```
+
+This permission change preserves the exact binary bytes and their hashes. The
+comparison verifies agreement with the supplied manifest; the separately
+recorded authenticated download establishes its provenance. Read the two hashes
+from that manifest and supply them explicitly (replace the placeholders below):
 
 ```sh
 python examples/controlled_composition.py compile my-project.json my-pair.zip \
@@ -66,8 +79,8 @@ rehearsal records their actual checks:
 | Edit | Expected conditional result |
 | --- | --- |
 | Per-member 17, total 34 | Accepted, unchanged two 17-nt RNAs |
-| Per-member 16, total 34 | Material limit failure for both members |
-| Per-member 17, total 33 | Total material limit failure |
+| Per-member 16, total 34 | Admission rejects the supplied 17-nt RNA members before construction |
+| Per-member 17, total 33 | Admission rejects the supplied 34-nt total before construction |
 | Five requested deadlines of one tick | Accepted against actual one-tick delays |
 | Horizon 11 with explicitly supplied additional evidence | Accepted over both complete histories |
 | Horizon 9 | Rejected: insufficient hold suffix for original obligations |
@@ -75,6 +88,11 @@ rehearsal records their actual checks:
 | Supplied onset delay 3, requested onset deadline 2 | Behavioral failure; no pair |
 | Same onset-3 model, requested onset deadline 3 and horizon 11 | Accepted |
 | Missing activity readout at tick 3 | Unknown evidence; no pair |
+
+Complete original RNAs must fit the supplied resource ceilings. The two
+undersized-limit cases return `controlled_authority_admission` with
+`Original RNA length exceeds supplied per-member/total resources.` They produce
+no candidate, material assessment or accepted pair.
 
 Requested deadlines are source demands. Editing them does not rewrite actual
 mechanism delays. Extending a horizon requires explicit evidence and retains all

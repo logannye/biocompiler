@@ -19,7 +19,7 @@ defaults:
 jobs:
   development-feedback:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -70,22 +70,6 @@ jobs:
             --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
             --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
             --output "$GITHUB_WORKSPACE/generated/development-feedback/controlled-behavior.json"
-      - name: Exercise quantitative assurance through the same fresh native build
-        env:
-          PYTHONPATH: src
-        run: |
-          python -B tools/check_policy_quantitative_assurance.py \
-            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
-            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
-            --output "$GITHUB_WORKSPACE/generated/development-feedback/quantitative-assurance.json"
-      - name: Exercise all ten complete SDK campaigns in two bounded lanes
-        env:
-          PYTHONPATH: src
-        run: python -B tools/check_policy_development.py sdk-all
-      - name: Exercise the complete CAR reference workflow through the same build
-        env:
-          PYTHONPATH: src
-        run: python -B tools/check_policy_development.py car-payload-sdk
       - name: Exercise joined controlled projects through the same fresh native build
         env:
           PYTHONPATH: src
@@ -126,6 +110,22 @@ jobs:
             --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
             --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
             --output "$GITHUB_WORKSPACE/generated/development-feedback/controlled-composition-starter"
+      - name: Exercise quantitative assurance through the same fresh native build
+        env:
+          PYTHONPATH: src
+        run: |
+          python -B tools/check_policy_quantitative_assurance.py \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output "$GITHUB_WORKSPACE/generated/development-feedback/quantitative-assurance.json"
+      - name: Exercise all ten complete SDK campaigns in two bounded lanes
+        env:
+          PYTHONPATH: src
+        run: python -B tools/check_policy_development.py sdk-all
+      - name: Exercise the complete CAR reference workflow through the same build
+        env:
+          PYTHONPATH: src
+        run: python -B tools/check_policy_development.py car-payload-sdk
       - name: Retain diagnostic evidence even when native work fails
         if: always()
         uses: actions/upload-artifact@v4

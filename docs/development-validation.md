@@ -27,10 +27,24 @@ A separate selection witness retains 35 exact observations, including metered Co
 
 The command harness keeps its 900-second default. Only the exact fixed
 `selection-sdk` command receives a 1,800-second wall-clock envelope; the workflow
-has a finite 60-minute deadline. All 35 selection observations, native semantic
+has a finite 90-minute deadline. All 35 selection observations, native semantic
 work limits, publication budgets and rejection controls remain mandatory.
 A timeout retains failed feedback and any incomplete witness; it cannot produce
 complete campaign acceptance.
+
+RC6 runs its joined source campaign, installed repeat, Verify-only consumer and
+editable starter immediately after the controlled native campaigns, before the
+longer preserved SDK campaigns. All existing stages still run against the same
+fresh build. This brings failures in the new workflow forward without reducing
+the complete gate. Run [38326440110](https://github.com/logannye/biocompiler/actions/runs/38326440110),
+attempt 1, reached the joined source campaign 52 minutes 35 seconds after run creation;
+its first two accepted cases and subsequent size-limit rejection took another
+81 seconds. That measured partial run failed an expected-diagnostic assertion,
+not a timeout. The full joined campaign and an installed repeat add work beyond
+that partial execution. The bounded allowance therefore increases from 60 to
+90 minutes for this expanded gate; command deadlines, two-worker bounds and
+every observation remain unchanged. Historical passes do not qualify the
+corrected source.
 
 The workflow allowance increased from 45 to 60 minutes after typed-path run
 [38078555376](https://github.com/logannye/biocompiler/actions/runs/38078555376),

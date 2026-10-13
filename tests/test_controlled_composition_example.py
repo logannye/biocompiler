@@ -26,6 +26,28 @@ class ControlledCompositionExampleTests(unittest.TestCase):
             self.assertEqual(self.example._transport(args,'core'),'inert-client')
             client.assert_called_once_with(Path('bin/biocompiler-core').absolute(),role='core',expected_sha256='a'*64)
 
+    def test_literal_resource_edits_retain_originals_and_early_admission_boundary(self):
+        import hashlib
+        cases={case['id']:case for case in self.packet['expected']['cases']}
+        baseline=self.packet['inputs']['baseline']['behavior_request']['original']
+        originals={
+            'short-member':('25c99e1d40f84aab23f1183bb4974a42f14c0b9a5ce5413d849ed3c6778ad36d',16,34),
+            'short-total':('dd18af68a87f7286b6dea01171728f9703d93a5cbad5634d64f95180e5586fa7',17,33),
+        }
+        for name,(sha,member_limit,total_limit) in originals.items():
+            with self.subTest(case=name):
+                self.assertEqual(hashlib.sha256((ROOT/campaign.ASSETS/(name+'-input.json')).read_bytes()).hexdigest(),sha)
+                self.assertEqual(cases[name]['status'],'resource_rejected')
+                self.assertEqual(cases[name]['diagnostic'],{'code':'controlled_authority_admission',
+                    'message':'Original RNA length exceeds supplied per-member/total resources.'})
+                original=self.packet['inputs'][name]['behavior_request']['original']
+                self.assertEqual(original['material_authority'],baseline['material_authority'])
+                self.assertEqual(original['resources']['max_member_rna_nt'],member_limit)
+                self.assertEqual(original['resources']['max_total_rna_nt'],total_limit)
+                self.assertEqual(cases[name]['sequences'],['CCAUGGCUUAAGGAAAA','CCAUGGGUUAAGGAAAA'])
+        self.assertEqual(cases['short-horizon']['diagnostic'],{'code':'policy_controlled_domain',
+            'message':'Hold suffix cannot cover every original source deadline.'})
+
     def test_all_preparations_and_public_edits_equal_independent_originals(self):
         before=deepcopy(self.packet['inputs'])
         for case in self.packet['expected']['cases']:

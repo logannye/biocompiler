@@ -426,14 +426,23 @@ class PolicyDevelopmentSelectionSDKTests(unittest.TestCase):
             "python -B -m tools.generate_policy_approximation_fixture --check",
             "python -B -m tools.generate_policy_realization_evidence_fixture --check",
             "python -B tools/check_policy_development.py run",
+            "python -B tools/check_policy_controlled_composition.py \\",
+            "python -B tools/check_policy_controlled_material.py \\",
+            "python -B tools/check_policy_controlled_behavior.py \\",
+            "python -B tools/check_controlled_research_project.py \\",
+            "python -m pip install --only-binary=:all: --require-hashes -r tools/prebuilt-build-requirements.txt",
+            "python -m build --wheel --no-isolation \\",
+            "python -m pip install --no-deps --no-index --force-reinstall \\",
+            "python -B tools/check_controlled_research_project_installed.py \\",
+            "python -B tools/controlled_composition_starter.py \\",
             "python -B tools/check_policy_quantitative_assurance.py \\",
             "python -B tools/check_policy_development.py sdk-all",
             "python -B tools/check_policy_development.py car-payload-sdk",
         ])
         self.assertLess(text.index("tools/migration_inventory.py --check"), text.index("uses: ocaml/setup-ocaml@"))
-        self.assertEqual(text.count("PYTHONPATH: src"), 4)
+        self.assertEqual(text.count("PYTHONPATH: src"), 8)
         self.assertIn("path: generated/development-feedback/", text)
-        self.assertIn("timeout-minutes: 60", text)
+        self.assertIn("timeout-minutes: 90", text)
 
 
 class PolicyDevelopmentParallelSDKTests(unittest.TestCase):
