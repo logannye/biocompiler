@@ -10,7 +10,6 @@ let require condition message = incr checks; if not condition then failwith mess
 let obj fields = Json.Object fields
 let str value = Json.String value
 let get key raw = Json.field key (Json.object_fields raw)
-let text key raw = Json.string (get key raw)
 let set key value raw = obj ((key,value)::List.remove_assoc key (Json.object_fields raw))
 let rec edit path change raw = match path with
   | [] -> change raw
