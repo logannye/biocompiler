@@ -21,6 +21,14 @@ from biocompiler.policy import car_reference, project_sources
 from tests import test_core_policy_component_material as old_peer
 from tests import test_core_policy_expression_material as peer
 
+LEGACY = Path(__file__).resolve().parent / "conformance/policy-expression-material-v01"
+LEGACY_FILE_SHA256 = {
+    "project.json": "7ea5c93c8be93c5847b90cb94f59fe40610c82a48a8c1a37b85bb7e05538c5f1",
+    "manifest-v01.json": "527e8fa6bd3bf32d928430dfceba8e6a7edacf224662c69e367bee0e308d47ce",
+    "program.fasta": "89d195a729f58d4b30cd2859c0e7f912b012a71334eb282022cfd128139e990d",
+    "expression-v01.zip": "4adbab9d3c7be398b474e2e21c315c02731fbd81c5dde0b9f3cb84b44d9b7962",
+}
+
 
 class ExpressionResearchProjectTests(unittest.TestCase):
     def setUp(self):
@@ -146,6 +154,86 @@ class ExpressionResearchProjectTests(unittest.TestCase):
                 self.assertEqual(manifest["request"]["project_context"], self.project.request["project_context"])
                 self.assertNotIn("limits", manifest)
                 self.assertEqual(manifest["empirical"], "unassessed")
+
+    def test_frozen_v01_project_requires_fresh_v02_export_and_preserves_every_old_byte(self):
+        # These are immutable, actually saved v0.1 bytes, not a report rebuilt
+        # with the current peer and then relabelled as historical evidence.
+        frozen = {name: (LEGACY / name).read_bytes() for name in LEGACY_FILE_SHA256}
+        self.assertEqual({name: hashlib.sha256(raw).hexdigest() for name, raw in frozen.items()}, LEGACY_FILE_SHA256)
+        receipt = json.loads((LEGACY / "receipt.json").read_bytes())
+        self.assertEqual(receipt["source"]["revision"], "18ce1ac64fde799892683460360da008f9e6ae14")
+        self.assertEqual(receipt["files"], LEGACY_FILE_SHA256)
+        old_manifest = json.loads(frozen["manifest-v01.json"])
+        self.assertEqual(old_manifest["assessment"]["schema_version"], "biocompiler.policy_expression_material_assessment.v0.1")
+        self.assertEqual(old_manifest["assessment"]["implementation"], "biocompiler.ocaml.policy_expression_material_check.v0.1")
+        self.assertTrue(all("path" not in row for row in old_manifest["assessment"]["obligations"]))
+        self.assertEqual(frozen["program.fasta"], b">rna_0001 alphabet=RNA\nCCAUGGCUUAAGGAAAA\n")
+        loaded = project_api.ResearchProject.load(LEGACY / "project.json")
+        self.assertEqual(loaded.digest, LEGACY_FILE_SHA256["project.json"])
+        self.assertEqual(loaded.request, old_manifest["request"])
+        with tempfile.TemporaryDirectory() as directory, self.exchange():
+            old_path = Path(directory) / "saved-v01.zip"
+            old_path.write_bytes(frozen["expression-v01.zip"])
+            with self.assertRaisesRegex(project_api.ResearchProjectError, "independently verified exact FASTA/manifest pair"):
+                loaded.verify_bundle(old_path, verify=self.verify)
+            self.assertEqual([(role, call["operation"]) for role, call in self.calls], [
+                ("verify", "capabilities"), ("verify", "export-policy-expression-material")])
+            self.assertEqual(self.calls[-1][1]["payload"]["request"], loaded.request)
+            self.assertEqual(self.calls[-1][1]["payload"]["candidate"], old_manifest["candidate"])
+            self.assertEqual(old_path.read_bytes(), frozen["expression-v01.zip"])
+            fresh_path = Path(directory) / "fresh-v02.zip"
+            built = loaded.compile(output=fresh_path, core=self.core, verify=self.verify)
+            reopened = loaded.verify_bundle(fresh_path, verify=self.verify)
+            self.assertEqual(reopened.artifact, built.verified.artifact)
+            self.assertEqual(reopened.artifact["fasta"].encode(), frozen["program.fasta"])
+            self.assertEqual(reopened.candidate, old_manifest["candidate"])
+            self.assertEqual(reopened.artifact["manifest"]["request"], old_manifest["request"])
+            self.assertEqual(reopened.report["schema_version"], "biocompiler.policy_expression_material_assessment.v0.2")
+            self.assertEqual(reopened.report["implementation"], "biocompiler.ocaml.policy_expression_material_check.v0.2")
+            self.assertEqual(reopened.report["empirical"], "unassessed")
+            self.assertEqual(reopened.report["human_use"], "unassessed")
+            rows = {row["obligation"]: row for row in reopened.report["obligations"]}
+            self.assertEqual(len(rows), 19)
+            for name, status, path in (
+                ("safety_and_progress_satisfaction", "not_applicable", "/document/program"),
+                ("requested_assurance_not_established", "conditional", "/document/assurance"),
+                ("expression_material_correspondence", "conditional", "/document"),
+            ):
+                self.assertEqual((rows[name]["status"], rows[name]["path"]), (status, path))
+            with zipfile.ZipFile(fresh_path) as archive:
+                self.assertEqual(archive.namelist(), ["program.fasta", "manifest.json"])
+                self.assertEqual(archive.read("program.fasta"), frozen["program.fasta"])
+                self.assertNotEqual(archive.read("manifest.json"), frozen["manifest-v01.json"])
+            copied_source = Path(directory) / "same-original-project.json"
+            loaded.dump(copied_source)
+            self.assertEqual(copied_source.read_bytes(), frozen["project.json"])
+            self.assertEqual(old_path.read_bytes(), frozen["expression-v01.zip"])
+            self.assertNotEqual(fresh_path.read_bytes(), old_path.read_bytes())
+        self.assertEqual({name: (LEGACY / name).read_bytes() for name in frozen}, frozen)
+
+    def test_frozen_v01_report_relabelling_and_rehashing_cannot_replace_fresh_comparison(self):
+        loaded = project_api.ResearchProject.load(LEGACY / "project.json")
+        old_bytes = (LEGACY / "expression-v01.zip").read_bytes()
+        with zipfile.ZipFile(LEGACY / "expression-v01.zip") as archive:
+            members = [(entry, archive.read(entry)) for entry in archive.infolist()]
+        with tempfile.TemporaryDirectory() as directory, self.exchange():
+            forged = Path(directory) / "relabeled.zip"
+            with zipfile.ZipFile(forged, "w") as archive:
+                for entry, content in members:
+                    if entry.filename == "manifest.json":
+                        manifest = json.loads(content)
+                        manifest["assessment"]["schema_version"] = "biocompiler.policy_expression_material_assessment.v0.2"
+                        manifest["assessment"]["implementation"] = "biocompiler.ocaml.policy_expression_material_check.v0.2"
+                        manifest["bindings"]["assessment_fingerprint"] = peer.digest(manifest["assessment"])
+                        content = encode_json(manifest)
+                    archive.writestr(entry, content)
+            before = forged.read_bytes()
+            with self.assertRaisesRegex(project_api.ResearchProjectError, "independently verified exact FASTA/manifest pair"):
+                loaded.verify_bundle(forged, verify=self.verify)
+            self.assertEqual(self.calls[-1][0], "verify")
+            self.assertEqual(self.calls[-1][1]["operation"], "export-policy-expression-material")
+            self.assertEqual(forged.read_bytes(), before)
+        self.assertEqual((LEGACY / "expression-v01.zip").read_bytes(), old_bytes)
 
     def test_explicit_roles_and_installed_resolution_keep_producer_and_verifier_separate(self):
         with tempfile.TemporaryDirectory() as directory:

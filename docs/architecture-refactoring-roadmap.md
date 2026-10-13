@@ -1,9 +1,12 @@
 # Architecture refactoring roadmap
 
-Status: **planned implementation roadmap, 2026-10-13**. This documentation batch
-codifies the audit, architecture constraints and review practice. It does not
-implement the refactors below, repair the identified report defect, change a
-compiler profile, or grant new validation or release acceptance.
+Status: **M1 implemented in the working branch with focused local validation;
+direct native workflow probes passed; hosted/main acceptance pending, 2026-10-13**.
+M0 established this audit, architecture constraints and review practice. M1 now
+repairs the report/census contract under versioned assessment/checker/service
+identities; the later refactors remain planned. The retained main/release and
+local diagnostic baselines below remain historical evidence. They do not grant
+acceptance to the changed working tree or close the separate M2 admission gap.
 
 The objective remains high-level therapeutic programs compiled into exact,
 complete RNA payload specifications for human immune cells engineered in vivo.
@@ -43,9 +46,11 @@ that checkout explicitly; they are not claims about merged main.
 
 The audit classifications below distinguish a source/report defect from a
 potential selection failure and from intentional, safely rejected limitations.
-No new native build, executable test or hosted acceptance run is represented by
-this document. A source-inspected failure hypothesis remains a hypothesis until
-the specified reproduction runs against its recorded revision.
+The original architecture audit did not execute native probes. The later local
+baseline observations recorded below have their own exact source/binary/receipt
+identities; they are diagnostic evidence, not M1/M2 implementation or hosted
+acceptance. Other source-inspected failure hypotheses remain hypotheses until
+their specified reproductions run against recorded revisions.
 
 ## Target architecture
 
@@ -126,7 +131,7 @@ functions are the stable lookup keys if later edits move the lines.
 
 | ID / classification | Evidence | Consequence and required probe | Milestone |
 | --- | --- | --- | --- |
-| AR-01 — **confirmed source/report defect** | [Expression profile specification](car-expression-material-profile-design.md), lines 246, 250 and 263, assigns `not_applicable` or `conditional` to three obligations. [Native report construction](../core/lib/checker/policy_expression_material_check.ml), lines 76–78, groups `safety_and_progress_satisfaction`, `requested_assurance_not_established` and `expression_material_correspondence` as `discharged` when encoding/length pass. | The obligation ledger overstates or misclassifies its disposition relative to the documented contract. Top-level scope remains conditional, empirical/human-use status remains unassessed, and source admission rejects actual safety/progress demands: this is **not** evidence of a safety-requirement admission bypass. Independently assert the three statuses and their reasons; do not regenerate expected values from the implementation. | M1 |
+| AR-01 — **confirmed historical source/report defect; working-branch correction locally checked** | At the inspected main baseline, the [expression specification](https://github.com/logannye/biocompiler/blob/ae683603dfbac95aeee1b1bc15efa3f873d0c630/docs/car-expression-material-profile-design.md#L246) assigns `not_applicable` or `conditional` to three obligations; [native report construction](https://github.com/logannye/biocompiler/blob/ae683603dfbac95aeee1b1bc15efa3f873d0c630/core/lib/checker/policy_expression_material_check.ml#L76) instead groups `safety_and_progress_satisfaction`, `requested_assurance_not_established` and `expression_material_correspondence` as `discharged` when encoding/length pass. | M1 corrects these dispositions, original paths and evidence under v0.2 identities with independent literal regressions; hosted/main acceptance remains pending. The historical top-level scope remained conditional, empirical/human-use status unassessed, and admission rejected actual safety/progress demands: this is **not** evidence of a safety-requirement admission bypass. Preserve the original evidence rather than relabeling it. | M1 |
 | AR-02 — **confirmed scoped limitation** | [Component route preparation](../src/biocompiler/policy/component_material.py), `prepare_request`, lines 24–45, admits particular flag combinations and rejects others. Static expression [admission](../core/lib/checker/policy_expression_source_admission.ml), lines 62–78 and 148–167, has a different closed subset. | Source vocabulary is not uniformly compilable across paths. Exercise one declared capability combination through authoring, native admission, realization, material, Verify and installed export; identify the exact unsupported boundary. | M2 |
 | AR-03 — **confirmed scoped limitation** | [Implementation binding](../core/lib/checker/policy_implementation_binding_check.ml), lines 228–245 and 320–327, enforces exact operator structure and rejects requirement-only rising memory. [Requirement monitor](../core/lib/realization_checker/policy_requirement_monitor.ml), lines 128–131, resolves a rising event through an existing activation. | An observational property may require changing implementation topology before it can be checked. A semantically equivalent reordered/refactored expression may lack a correspondence witness. Test a property-only edge monitor and checked equivalent Boolean rewrites without adding therapeutic behavior. | M3 |
 | AR-04 — **inference, not reproduced** | [Staged lowering](../core/lib/compiler/policy_staged_lowering.ml), lines 197–217, sorts matching models by identity and chooses the first; lines 540–542 retry layouts only on missing-model errors. [Material producer](../core/lib/producer_service/policy_component_material_producer.ml), lines 22–27, lowers before material assembly. | Hypothesis: adding an earlier-sorting semantically matching model without a feasible material realization masks a later feasible model. Construct the two-model counterexample and vary insertion order and neutral identities. Do not label this a confirmed false negative until reproduced; if upstream admission prevents the case, retain that result and narrow the proposed fix. | M6 |
@@ -136,6 +141,32 @@ functions are the stable lookup keys if later edits move the lines.
 | AR-08 — **confirmed scoped limitation** | Main [expression producer](../core/lib/producer_service/policy_expression_material_producer.ml), lines 15–23, reconstructs supplied authority. Pending controlled `core/lib/checker/policy_controlled_composition_admission.ml`, lines 134–143, 181–194 and 222–234, restricts material to two direct complete roots, four regions each and ordinary CDS translation. | A shorter valid design from supplied alternate parts, a changed product allocation or a multi-product member requires caller-side reconstruction or a new profile. Test authorized alternatives that meet the same product requirement with different material; do not mistake a rejection-only source edit for sequence synthesis. | M6 |
 | AR-09 — **confirmed scoped limitation in pending controlled work** | `core/lib/domain/policy_controlled_activity_implementation.ml`, lines 4, 11–14 and 31–63, fixes eight primitives and positive onset/cessation/reactivation delays, with one gate and one cessation delay. | Distinct controller-loss, antigen-loss and protein-loss kinetics cannot be represented by that one mechanism family. Test a supplied cause-specific finite lifecycle model; retain explicit unsupported status until implemented. | M4, M5 |
 | AR-10 — **confirmed coarse dependency design; scaling impact to measure** | [Expression request identity](../core/lib/domain/policy_expression_material.ml), lines 98–116 and 168–173, binds complete project metadata. [Obligation evidence](../core/lib/checker/policy_expression_material_check.ml), lines 58–106, principally points to whole-source, whole-structure and contract pins. | A title edit and a CDS edit both invalidate the top-level artifact, correctly, but need different impact explanations. Measure repeated serialization and checking before changing granularity; preserve complete artifact identity while recording obligation-specific semantic dependencies. | M7 |
+| AR-11 — **locally reproduced declared-subset admission defect** | The [expression contract](car-expression-material-profile-design.md#closed-source-subset) prohibits supplied-definition formals and executable clauses. [Static admission](../core/lib/checker/policy_expression_source_admission.ml) checks complete pins/reachability but has no such guard. At the diagnostic baseline below, a repinned reachable definition with one unused integer formal passed fresh check and export. | Keep the documented restriction. Correct admission separately in M2 and test check/compile/export with complete repinning, valid empty-premise controls, unused formals, expression-bearing clauses and explicit text-only-clause treatment. Arithmetic-clause negative-obligation retention belongs to M1 only as a defensive report control; it does not add clause semantics. Literal-true-clause acceptance remains an unexecuted source-inspected hypothesis. | M2 |
+
+### Local diagnostic baseline for AR-01 and AR-11
+
+Local probes on 2026-10-13 used source
+`18ce1ac64fde799892683460360da008f9e6ae14` and Verify SHA-256
+`bdc3d026c58ba3634ef841ed1ef24103e061f26721274a6421da9cea3a31d1d3`.
+The retained six-case receipt is
+`generated/architecture-governance/m1-admission-probes/native-baseline/receipt.json`,
+SHA-256 `7d448d453a431b9dacc807604ad505b7a411ed3d6c81f915c3f08175fbfce6c5`.
+These are local diagnostic files, not published acceptance assets. The control
+and formal-parameter-only source both returned an accepted conditional report
+and export, each with 19 rows and identical FASTA SHA-256
+`89d195a729f58d4b30cd2859c0e7f912b012a71334eb282022cfd128139e990d`.
+The arithmetic-assumption-clause source returned 20 diagnostic rows, retained
+`derived_quantity_operation_semantics` as unresolved, and withheld export.
+The control still carries AR-01's three incorrect v0.1 dispositions; no v0.2
+paths or corrected dispositions are established by those observations.
+
+The formal-parameter check/export response SHA-256 values are respectively
+`829e76ef9698ac13691517d307b744047aff6e9e0dad3ffa8e26b7949f140d25` and
+`d411c43f36980bbf9efa37291f2ad55fb56b9d8855e60b36557ac13abfea0e71`.
+All probes keep empirical/human-use status unassessed. They demonstrate the
+admission/report behavior only, not execution of a supplied clause or a new
+supported source feature. No source semantics are broadened to legitimize the
+defect; AR-11 remains separately open after the working-branch M1 correction.
 
 No identity-bypass finding is asserted here. [Molecular identity](../core/lib/domain/molecule.ml),
 lines 187–225, distinguishes spelling from positioned chemistry and topology.
@@ -149,8 +180,8 @@ protections are preservation requirements for every milestone.
 | Milestone | Priority / dependency | Deliverable and status |
 | --- | --- | --- |
 | M0 — Baseline and architecture governance | First; this documentation batch | Charter, capability matrix, review guidance and this roadmap. Documentation verification is recorded by the integrating change; no implementation acceptance is implied. |
-| M1 — Repair claim dispositions | P0; M0 | Independently specified obligation outcomes and versioned correction of AR-01. **Planned.** |
-| M2 — Coherent profile contracts | P1; M0, compatible with M1 | Capability contracts and shared semantic boundaries with explicit adapters. **Planned.** |
+| M1 — Repair claim dispositions | P0; M0 | Independent obligation/census contract and versioned correction of AR-01. **Implemented in this working branch; focused local checks and direct native workflow probes passed; hosted/main acceptance pending.** |
+| M2 — Coherent profile contracts | P1; M0, compatible with M1 | Capability contracts, shared semantic boundaries and separate AR-11 admission-guard correction. **Planned; no guard correction implemented.** |
 | M3 — Separate properties and semantic refinement | P1; M1–M2 | Property-monitor state and checked correspondence independent of implementation spelling. **Planned.** |
 | M4 — Causal context and observation models | P1; M2–M3 | Executable supplied plant/deployment/observation abstractions with explicit uncertainty and time. **Planned.** |
 | M5 — Context-sensitive component composition | P1; M3–M4 | First independently checked assumption/guarantee and resource composition rule. **Planned.** |
@@ -185,35 +216,115 @@ Acceptance criteria:
 
 ## M1 — Correct claim dispositions and make their algebra explicit
 
-Applies AC-02, AC-05, AC-06 and AC-07. Repair AR-01 against an independent
-normative disposition table. Keep `discharged`, `conditional`, `not_applicable`,
-`unresolved`, failed requirements and unsupported semantics distinct. Explain
-which assurance is conditional and which static equalities were actually checked.
+Applies AC-02, AC-05, AC-06 and AC-07; affects CAP-11 and CAP-12.
+**Status: implemented in `codex/m1-obligation-dispositions`; focused local checks
+and direct native workflow probes passed; hosted/main acceptance pending.**
+The correction repairs AR-01 against the independent
+[v0.2 disposition contract](car-expression-material-profile-design.md#v02-disposition-contract)
+and [ADR 0010](decisions/0010-versioned-expression-obligation-dispositions.md).
+Keep `discharged`, `conditional`, `not_applicable`, `unresolved`, failed
+requirements and unsupported semantics distinct. M1 does not repair AR-11's
+source admission guard or widen the documented static subset.
 
 Acceptance criteria and probes:
 
-- For a successful static expression case, safety/progress is `not_applicable`;
-  requested assurance and expression/material correspondence are `conditional`
-  with the complete fresh conjunction and named premises. The encoding/length
-  objective may be discharged within its stated conditional scope.
-- Independent expected ledgers cover success, too-short material, changed
-  product, extra safety/temporal demands and unknown semantic definitions. The
-  source obligation census must be exact, with no duplicate, omitted or invented
-  IDs. Every disposition has a reason and appropriate dependencies.
-- Mutating only a disposition or dropping a premise rejects, including after
-  recomputing superficial hashes. Update native reports, Python readers, schema
-  expectations and fixtures together without deriving the expected table from
-  the report producer.
-- Version the affected interpretation/checker contract as required. Old saved
-  reports are rejected or handled by a narrowly specified explicit compatibility
-  path; fresh checking produces the corrected result. Do not relabel historical
-  reports as if they had carried the new meanings.
-- Preserve top-level conditional claim scope and unassessed empirical/human-use
-  status. Hosted validation records the exact revision; the documentation batch
-  itself does not close this milestone.
-- A successful supported source still compiles and exports under its supplied
-  premises after the ledger correction. Correct labels must not introduce an
-  empirical-evidence prerequisite for this software-only claim.
+- Use exactly three justified N/A rows: execution/lowering,
+  temporal/uncertainty and safety/progress. The encoding/length objective is
+  discharged only when its supported conjunction passes. Six broader
+  applicability/conjunction rows, including requested assurance and
+  expression/material correspondence, are conditional on success and unresolved
+  on failed conjunction. Normative definitions remain discharged and complete
+  supplied premises conditional; a material failure does not change those
+  meanings. Every row has exact stage, original-source path and fresh evidence.
+- In the SDK, reconstruct `9 + D` mandatory generic IDs from complete original
+  source, catalog and unique definition IDs; accepted final output is exactly `10 + D`.
+  Reject coherent omissions, duplicates, catalog/selection disagreement and a
+  generic child containing the reserved expression-correspondence ID. Preserve
+  extra original obligations only as unresolved negative diagnostics, never as
+  premises/N/A or by dropping them. Native source checking establishes extra
+  semantic origin; Python enforces retained transport/census consistency.
+- Independent literal ledgers cover success, exact-bound success, too-short RNA,
+  supported material failure, changed product, extra safety/temporal demands,
+  altered normative bodies and complete reachable supplied definitions. Include
+  source-order/path changes and the arithmetic-clause defensive negative case
+  without claiming supported clause compilation. Preserve early source rejection.
+- Mutate every disposition dimension, dependency and inventory coherently,
+  including recomputed report/manifest hashes. Native checks, Python transport
+  peers and the campaign oracle must not derive expected outcomes from the
+  production disposition grouping. Successful controls must still export exact
+  RNA; rejecting everything cannot satisfy this milestone.
+- Bump assessment, checker and service/producer identities to v0.2. Retain request,
+  source, candidate, resource, validation-scope, result/export/manifest schema
+  identities and original molecular/reference authority. Reject stale Core/Verify
+  material and Core producer capabilities before the requested operation, and
+  reject old/mixed report identities. Added source-path work is charged under
+  unchanged resource limits.
+- Load a frozen original v0.1 project, reject its old archive after fresh Verify
+  comparison, then export to a separate destination and reopen the new package.
+  Exact RNA remains unchanged; corrected report/manifest/archive identities
+  change. Preserve the old files byte-for-byte; no relabeling, converter or
+  historical fixture regeneration supplies migration authority.
+- Preserve top-level conditional scope and unassessed empirical/human-use status.
+  No new empirical prerequisite is added to ordinary conditional export. Record
+  focused feedback and required hosted/integration/installed and fresh actual-main
+  acceptance against their exact revisions. Local feedback and baseline defect
+  reproduction do not close those gates.
+
+### M1 local feedback and pending gates
+
+The content-bound working-tree feedback used base commit
+`18ce1ac64fde799892683460360da008f9e6ae14`; it is not a committed M1 revision or
+actual-main acceptance. The native runner retained complete core input inventories,
+helper/binary identities and before/after source checks. Its independent regression
+first failed against the unchanged v0.1 ledger at the literal complete-ledger
+assertion. After applying the correction, the focused build and three native
+suites passed: the mRNA driver reported 129 structure controls and 1,073
+expression/source/service controls, and the protocol and producer-protocol suites
+passed. The recorded successful local native source-diff digest was
+`fcd821c6284604393492a5e099ba7f33e2746bc6282042c52ff2a0615483f55f`.
+
+The retained native receipts are in the workspace container under
+`generated/local-native/runs/m1-red-independent-native/receipt.json` (SHA-256
+`a1fc1362f63a9eb701676f2dff1af79dd07c4b83d48b734c3ca963eef672dc08`) and
+`generated/local-native/runs/m1-green-initial-native/receipt.json` (SHA-256
+`f1a3ad85faf97f01b40e86138ed03a05e7b18fcd0f748183bf6e0a02ed889fe4`).
+These are retained local feedback files, not published acceptance assets.
+
+All 61 focused SDK, ResearchProject and CAR campaign tests passed on Python
+3.11.15 and 3.14.6; unittest-reported execution times were respectively 81.356 s
+and 72.360 s. Their receipts bind the five exercised implementation/test/tool
+files before and after execution, at checkout-local
+`generated/m1/focused-sdk-initial/py311.json` (SHA-256
+`bb74bd798b23ccae1f2f2024bd44efb675303577c9f88ffde9e4651596f10d2e`) and
+`generated/m1/focused-sdk-initial/py3146.json` (SHA-256
+`0c9e5e60b2e230054a746313977c43657d2831dd12583a626261100ab2e9f8b8`).
+Those SDK/project/campaign tests use the scoped transport and inert-peer controls;
+they do not substitute for actual native workflow evidence.
+
+The direct SDK/native probe then passed locally in 2.985 s. It exercised actual
+Core compilation and fresh Verify export/reopen; rejected the old ZIP after a
+fresh Verify export; preserved the old artificial RNA and every retained legacy
+file; and rejected four real old/new SDK/Core/Verify capability combinations.
+The public CAR compile/export/reopen also passed the independent 21-row oracle
+and frozen 1,776-nt authority. Its checkout-local receipt is
+`generated/m1/direct-sdk-probe/receipt.json`, SHA-256
+`b64ba90794412917d53b9438bba4b1d5ea51cc173b7af8401bc504ceb0bcfc63`.
+That receipt binds unchanged before/after source files and native binaries;
+its scope is local direct workflow feedback, not installed cross-platform or
+release acceptance. Both focused typing configurations passed (40 and 45 files),
+as did material/public-API coverage, workflow source lineage and core boundaries.
+
+The complete static source preflight passed for all 17 campaign corpora and
+three original source authorities. All 202 material/public-API coverage and core
+boundary regressions passed, as did 34 governance/inventory regressions. The
+assembled documentation governance and 4,444-entry migration inventory checks
+passed. Independent inventory review confirmed exactly three intended version-ID
+replacements and 26 added test references, with no removed references or changes
+to historical contracts, migration states or baseline authority.
+
+Hosted integration/installed checks and fresh actual-main acceptance remain pending.
+M1 is implemented with local feedback, not completed as an integration/release
+milestone. AR-11's formal-parameter admission correction remains separate M2 work.
 
 ## M2 — Consolidate semantic capability boundaries
 
@@ -244,6 +355,15 @@ Acceptance criteria and probes:
   into an older profile and exercise unsupported feature combinations.
 - Document the remaining exceptional profiles. Consolidation is not complete
   merely because old route flags have been renamed.
+- Close AR-11 as a separate admission correction: retain the documented rejection
+  of supplied-definition formals and executable clauses, specify the exact
+  expression-bearing versus text-only clause boundary, and independently test
+  valid controls plus fully repinned rejected inputs through native admission
+  and export. The observed unused-formal acceptance must reject after the guard
+  change. The unexecuted literal-true-clause probe needs its own reproduction;
+  the arithmetic-clause negative report alone does not prove guard completeness.
+  Version any changed admission contract explicitly rather than silently
+  expanding or redefining the supported subset in M1.
 
 ## M3 — Separate property monitoring from implementation structure
 
@@ -476,7 +596,8 @@ extend software acceptance to empirical or human-use acceptance.
   and newly supported profiles receive fresh acceptance for their actual revision;
   historical evidence remains historical.
 
-The next implementation action is M1's bounded report correction, accompanied by
-the independent AR-04 reproduction and M2 interface inventory as separate scoped
-work. The remaining milestones are a prioritized implementation plan, not an
-instruction to start the entire refactor in this documentation batch.
+The immediate next action is to complete M1's required integration/actual-main
+gates after the charter's fresh actual-main acceptance. The independent AR-04 reproduction
+and M2 interface/admission work remain separately scoped. Later milestones are
+a prioritized implementation plan, not an instruction to start the entire
+refactor in this batch.

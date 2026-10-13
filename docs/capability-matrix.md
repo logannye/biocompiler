@@ -2,7 +2,8 @@
 
 This is a human-readable inventory of what each layer can establish, reviewed
 on 2026-10-13 against main revision
-`ae683603dfbac95aeee1b1bc15efa3f873d0c630`. It accompanies the
+`ae683603dfbac95aeee1b1bc15efa3f873d0c630`, with the separately scoped working-branch
+M1 correction recorded below. It accompanies the
 [architecture charter](architecture-charter.md),
 [architecture review](architecture-review.md), and
 [refactoring roadmap](architecture-refactoring-roadmap.md).
@@ -19,18 +20,23 @@ necessary shape constraints; their Cartesian product is not a supported profile.
 
 | State | Evidence subject | Meaning in this inventory |
 | --- | --- | --- |
-| Main implemented | `ae683603dfbac95aeee1b1bc15efa3f873d0c630` | Source and interfaces present in the reviewed main tree. This document performs no new execution or release acceptance. Relative links refer to this tree. |
+| Main implemented | `ae683603dfbac95aeee1b1bc15efa3f873d0c630` | Source and interfaces present in the reviewed main tree. This document performs no new execution or release acceptance. Relative links follow the current checkout; the M1 correction is separately scoped below. |
 | Published snapshot | `car-payload-mvp-1`; GitHub release metadata checked 2026-10-13 identifies this main revision and publication at `2026-10-13T06:52:02Z` | Published first-CAR prerelease. The [release](https://github.com/logannye/biocompiler/releases/tag/car-payload-mvp-1) and its exact assets/receipts define the released scope; a main-source row does not automatically assert separate public-workflow qualification for every profile. Metadata inspection is not fresh execution or an asset audit. |
 | Earlier published snapshot | `researcher-alpha-1`, local tag resolves to `b81d4ee4dcc97c77f549b98a2994ddd7877839c9` | Historical alpha, not acceptance of later source. See the [alpha release](https://github.com/logannye/biocompiler/releases/tag/researcher-alpha-1). |
 | Pending controlled composition | Branch snapshot `0e76e25d5f08cca4ca87fd8778d0f4a0dd441039`; RC6 tested source `17a7352b5e6ed1d087c110bedb365132280152c7` | RC6 artificial joined workflow and one installed hosted slot only. Not merged or published in the main snapshot; broader RC7/RC8 gates remain open in its retained receipt. See CAP-14. |
 | Local E1 preparation | `11b6b6da94497fea9afae8dfa12dd900c7295f9f` | Second-reference source, tests and campaign preparation; no inherited first-release native or publication acceptance. See CAP-15. |
+| M1 working-branch correction | `codex/m1-obligation-dispositions`, based on `18ce1ac64fde799892683460360da008f9e6ae14`, with content-bound local receipts | v0.2 assessment/checker/service correction implemented; focused native/SDK checks and direct native workflow probes passed. Hosted/main acceptance remains pending. No new runtime or empirical capability. See the roadmap feedback record. |
 | Planned | No accepted implementation identified here | A requirement for future work, not an advertised runtime capability. See CAP-16. |
 
 The controlled-branch links below use immutable commit URLs because their files
 are absent from this main tree. Local-only E1 records use commit/path locators.
 Their dated validation records report historical observations;
 neither their results nor the published snapshot's results transfer to a changed
-revision. This review did not rerun native validation or refresh those branch gates.
+revision. The original inventory review did not rerun native validation or refresh
+those branch gates. The later local baseline admission probes referenced in
+CAP-11 are separately attributed diagnostic evidence, not acceptance of M1/M2.
+The later [M1 local feedback](architecture-refactoring-roadmap.md#m1-local-feedback-and-pending-gates)
+binds the changed working-tree contents; it does not transfer historical acceptance.
 
 ## Reading the dimensions
 
@@ -303,13 +309,37 @@ distinguishable from published historical chemistry. Expression/function evidenc
 retains its ex-vivo context, donor conflict and unresolved material/applicability
 questions.
 
-**Known open reporting defect:** the design specifies safety/progress as
+**Historical reporting defect (AR-01), corrected in the M1 working branch:** the design specifies safety/progress as
 `not_applicable`, and requested assurance and expression/material correspondence
-as `conditional`, but the main native checker and Python validator classify all
-three as `discharged` when the static
+as `conditional`, but the recorded v0.1 main native checker and Python validator
+classified all three as `discharged` when the static
 objective passes. Closed admission still rejects actual behavioral requirements;
 this is not evidence that safety/progress execution is supported. The
 [refactoring roadmap](architecture-refactoring-roadmap.md) retains the correction.
+
+**M1 implemented; scoped local checks and direct native workflows passed, hosted/main gates pending:** the
+[v0.2 contract](car-expression-material-profile-design.md#v02-disposition-contract)
+versions assessment/checker/service identities, adds source paths and fixes the
+complete successful/failed disposition table. The SDK reconstructs `9 + D`
+mandatory generic IDs from original source; accepted final output has exactly
+`10 + D`. Negative reports preserve unsupported extras as unresolved and cannot
+export. The correction leaves source/request/material semantics, complete
+reference authority and the successful exact RNA unchanged. It is implemented
+in the working branch with [local feedback](architecture-refactoring-roadmap.md#m1-local-feedback-and-pending-gates),
+not part of the recorded main or published snapshot. Direct native workflow
+probes passed locally; hosted/main acceptance remains pending.
+
+**Separate open admission defect (AR-11 / M2):** the documented static subset
+forbids supplied-definition formals and executable clauses, but the baseline
+admission has no corresponding guard. A repinned unused integer formal was
+accepted by local native check/export at
+`18ce1ac64fde799892683460360da008f9e6ae14`; the
+[roadmap provenance](architecture-refactoring-roadmap.md#local-diagnostic-baseline-for-ar-01-and-ar-11)
+identifies source, binary, receipt and responses. A supplied arithmetic clause
+reached checking but its extra unresolved obligation blocked export. These
+observations neither establish supported clause semantics nor broaden the
+contract. The guard correction and its admission regressions remain separate M2
+work; M1's ledger repair does not close this gap.
 
 Evidence: [expression design](car-expression-material-profile-design.md),
 [native disposition logic](../core/lib/checker/policy_expression_material_check.ml),
@@ -330,6 +360,22 @@ The static CAR workflow and finite-machine research builds use their distinct
 child profiles. Exact bytes, source-map changes, report scope and original
 authority remain bound even when two source revisions emit identical RNA.
 There is no generic export permission that overrides an unsupported child.
+
+**M1 migration contract implemented; direct native workflow probes passed locally:** existing
+expression projects retain their original project/request formats and can be
+freshly checked. Old or mixed assessment/checker/service identities must reject;
+old archives must fail the exact manifest comparison after fresh Verify export.
+A separate new export and reopen must preserve exact RNA and every old file,
+while corrected report/manifest/archive identities change. An identical FASTA,
+rehashed old report or saved PASS cannot substitute for the new assessment.
+See the [migration contract](car-expression-material-profile-design.md#m1-project-and-package-migration)
+and [ADR 0010](decisions/0010-versioned-expression-obligation-dispositions.md).
+Focused SDK/project/campaign controls passed on both supported Python versions.
+Actual native legacy-package/reopen, four mixed-version capability rejections and
+CAR compile/export/reopen also passed locally with exact retained material. The
+[feedback record](architecture-refactoring-roadmap.md#m1-local-feedback-and-pending-gates)
+binds those source/binary observations; hosted/main gates remain pending.
+Historical released assets and their receipts stay intact.
 
 Evidence: [research projects](../src/biocompiler/policy/research_project.py),
 [finite builds](policy-finite-build-v0.1.md),

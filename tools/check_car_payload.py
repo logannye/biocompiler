@@ -21,12 +21,12 @@ import time
 import zipfile
 
 try:
-    from .check_policy_core import canonical_digest, digest_file, read_json, source_identity
+    from .check_policy_core import canonical_digest, digest_file, read_json, semantic_digest, source_identity
     from .check_policy_development import git, identity, pin, source_snapshot
     from .check_policy_component_material import ComponentBoundary, NATIVE_PATHS, MAX_RECEIPT, MAX_EVIDENCE
     from .check_policy_material import archive_receipt
 except ImportError:
-    from check_policy_core import canonical_digest, digest_file, read_json, source_identity
+    from check_policy_core import canonical_digest, digest_file, read_json, semantic_digest, source_identity
     from check_policy_development import git, identity, pin, source_snapshot
     from check_policy_component_material import ComponentBoundary, NATIVE_PATHS, MAX_RECEIPT, MAX_EVIDENCE
     from check_policy_material import archive_receipt
@@ -201,7 +201,95 @@ def write_mutant(path, exported, kind):
             archive.writestr(entry, raw)
 
 
+# Independent v0.2 CAR ledger oracle: obligation, path, successful/failed
+# conjunction status, stage, and complete dependency selector. D = 11.
+CAR_EXPRESSION_LEDGER = (
+    ('policy_execution_and_lowering', '/document/program', 'not_applicable', 'not_applicable', 'closed_static_source_admission', 'SOURCE'),
+    ('temporal_and_uncertainty_semantics', '/document/program', 'not_applicable', 'not_applicable', 'closed_static_source_admission', 'SOURCE'),
+    ('safety_and_progress_satisfaction', '/document/program', 'not_applicable', 'not_applicable', 'closed_static_source_admission', 'SOURCE'),
+    ('realizability_and_target_suitability', '/document/deployment', 'conditional', 'unresolved', 'supplied_expression_localization_and_recipient_premises', 'JOIN'),
+    ('chassis_capability_and_delivery_suitability', '/document/deployment', 'conditional', 'unresolved', 'supplied_expression_localization_and_recipient_premises', 'JOIN'),
+    ('implementation_catalog_applicability', '/document/implementations', 'conditional', 'unresolved', 'supplied_expression_localization_and_recipient_premises', 'JOIN'),
+    ('requested_assurance_not_established', '/document/assurance', 'conditional', 'unresolved', 'supplied_expression_localization_and_recipient_premises', 'JOIN'),
+    ('implementation_applicability:car.rm61461.implementation', '/document/implementations/implementations/0', 'conditional', 'unresolved', 'complete_supplied_implementation_contract', 'JOIN'),
+    ('requirement_satisfaction:encode_car', '/document/program/declarations/6', 'discharged', 'unresolved', 'exact_static_encoding_and_length', 'JOIN'),
+    ('expression_material_correspondence', '/document', 'conditional', 'unresolved', 'supplied_expression_localization_and_recipient_premises', 'JOIN'),
+    ('semantic_definition:biocompiler.expression.objective.v1', '/document/program/semantics/definitions/0', 'discharged', 'discharged', 'closed_normative_static_interpretation', 0),
+    ('semantic_definition:biocompiler.expression.encode.v1', '/document/program/semantics/definitions/1', 'discharged', 'discharged', 'closed_normative_static_interpretation', 1),
+    ('semantic_definition:biocompiler.expression.nominal_translation.v1', '/document/program/semantics/definitions/2', 'discharged', 'discharged', 'closed_normative_static_interpretation', 2),
+    ('semantic_definition:car.rm61461.terminal_design', '/document/program/semantics/definitions/3', 'conditional', 'conditional', 'resolved_original_context_or_component_premise', 3),
+    ('semantic_definition:car.rm61461.surface_localization', '/document/program/semantics/definitions/4', 'conditional', 'conditional', 'resolved_original_context_or_component_premise', 4),
+    ('semantic_definition:car.rm61461.translation_capability', '/document/program/semantics/definitions/5', 'conditional', 'conditional', 'resolved_original_context_or_component_premise', 5),
+    ('semantic_definition:car.rm61461.human_environment', '/document/program/semantics/definitions/6', 'conditional', 'conditional', 'resolved_original_context_or_component_premise', 6),
+    ('semantic_definition:car.rm61461.delivery_premise', '/document/program/semantics/definitions/7', 'conditional', 'conditional', 'resolved_original_context_or_component_premise', 7),
+    ('semantic_definition:car.rm61461.human_t_cell', '/document/program/semantics/definitions/8', 'conditional', 'conditional', 'resolved_original_context_or_component_premise', 8),
+    ('semantic_definition:car.rm61461.expression_component', '/document/program/semantics/definitions/9', 'conditional', 'conditional', 'resolved_original_context_or_component_premise', 9),
+    ('semantic_definition:car.rm61461.reference_evidence', '/document/program/semantics/definitions/10', 'conditional', 'conditional', 'resolved_original_context_or_component_premise', 10),
+)
+
+
+
+def check_expression_ledger(value, request, *, accepted):
+    """Check the fixed CAR contract directly, independently of the SDK reader.
+
+    The original pinned CAR request supplies complete dependency bodies. Native
+    source/material child checks still establish their own conditional claims;
+    their hashes here bind exact fresh evidence, not biological correctness.
+    """
+    require(type(accepted) is bool, "CAR ledger expected conjunction is not boolean")
+    report = value["report"]
+    require(value["implementation"] == "biocompiler.ocaml.policy_expression_material.v0.2"
+            and report["schema_version"] == "biocompiler.policy_expression_material_assessment.v0.2"
+            and report["implementation"] == "biocompiler.ocaml.policy_expression_material_check.v0.2",
+            "CAR ledger requires fresh v0.2 interpretations")
+    require(report["status"] == ("checked_expression_material" if accepted else "not_accepted")
+            and report["all_original_obligations_dispositioned"] is accepted,
+            "CAR ledger closure differs from the independent case expectation")
+    document = request["document"]
+    definitions = document["program"]["semantics"]["definitions"]
+    definition_rows = [row for row in CAR_EXPRESSION_LEDGER if type(row[5]) is int]
+    require(type(definitions) is list and len(definitions) == 11
+            and [item["id"] for item in definitions] == [row[0].split(":", 1)[1] for row in definition_rows],
+            "CAR ledger original definition census/order changed")
+    entries = document["implementations"]["implementations"]
+    selected = request["selection"]["implementation"]
+    require(type(entries) is list and len(entries) == 1
+            and entries[0]["id"] == selected["id"] == "car.rm61461.implementation"
+            and entries[0]["version"] == selected["version"]
+            and canonical_digest(entries[0]) == selected["content_fingerprint"],
+            "CAR ledger original implementation binding changed")
+    require(request["selection"]["objective"] == "encode_car"
+            and document["program"]["declarations"][6]["id"] == "encode_car",
+            "CAR ledger original objective path changed")
+    admission, structure = report["source_admission"], report["structure"]
+    complete_ids = sorted(row[0] for row in CAR_EXPRESSION_LEDGER)
+    original_ids = [name for name in complete_ids if name != "expression_material_correspondence"]
+    require(same(admission["source_assessment"]["unresolved_obligations"], original_ids)
+            and same(admission["unresolved_obligations"], complete_ids),
+            "CAR ledger original/admission census or reserved obligation origin changed")
+    source = {"source": canonical_digest(admission)}
+    contract = request["expression_contract"]["identity"]
+    joined = {**source, "structure": canonical_digest(structure), "contract": contract}
+    expected = []
+    for obligation, path, success, failure, stage, dependency in CAR_EXPRESSION_LEDGER:
+        if dependency == "SOURCE":
+            evidence = source
+        elif dependency == "JOIN":
+            evidence = joined
+        else:
+            definition = definitions[dependency]
+            evidence = {**source, "definition": {"$type": "DefinitionRef", "id": definition["id"],
+                "version": definition["version"], "digest": semantic_digest(definition)},
+                "body": definition, "contract": contract}
+        expected.append({"obligation": obligation, "path": path,
+            "status": success if accepted else failure, "stage": stage, "evidence": evidence})
+    expected.sort(key=lambda row: row["obligation"])
+    require(same(report["obligations"], expected),
+            "CAR ledger differs from independent literal statuses/stages/paths/dependencies")
+
+
 def checked_result(value, packet, request, *, operation, accepted=True):
+    check_expression_ledger(value, request, accepted=accepted)
     from biocompiler.core_client import CoreResponse, CORE_VERSION
     from biocompiler.core_policy_expression_material import _result
     payload = {"request": request}

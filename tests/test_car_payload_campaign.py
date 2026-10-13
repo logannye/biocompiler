@@ -65,7 +65,7 @@ def report(request, actual):
     doc = request["document"]
     assessed = assessment(doc)
     definitions = doc["program"]["semantics"]["definitions"]
-    assessed["unresolved_obligations"] = sorted(["policy_execution_and_lowering", "temporal_and_uncertainty_semantics", "persistent_encounter_identity_lifetime", "state_lifetime_capacity_and_inheritance", "effect_authorization_feedback_and_cancellation", "arbitration_fairness_and_conflict_resolution", "safety_and_progress_satisfaction", "requested_assurance_not_established", "realizability_and_target_suitability", "implementation_catalog_applicability", "chassis_capability_and_delivery_suitability", "requirement_satisfaction:" + request["selection"]["objective"], "implementation_applicability:" + request["selection"]["implementation"]["id"], *["semantic_definition:" + value["id"] for value in definitions]])
+    assessed["unresolved_obligations"] = sorted(["policy_execution_and_lowering", "temporal_and_uncertainty_semantics", "safety_and_progress_satisfaction", "requested_assurance_not_established", "realizability_and_target_suitability", "implementation_catalog_applicability", "chassis_capability_and_delivery_suitability", "requirement_satisfaction:" + request["selection"]["objective"], "implementation_applicability:" + request["selection"]["implementation"]["id"], *["semantic_definition:" + value["id"] for value in definitions]])
     max_nt = next(value["value"] for value in doc["program"]["declarations"] if value["id"] == "maximum_rna_nt")
     body = request["expression_contract"]["body"]
     admission = {"schema_version": "biocompiler.policy_expression_source_admission.v0.1", "status": "admitted_static_expression_source", "request_fingerprint": digest(request), "source_artifact_digest": digest(doc), "source_semantic_digest": digest(semantic(doc)), "objective": request["selection"]["objective"], "objective_path": "/document/program/declarations/6", "product": body["product"], "maximum_rna_nt": max_nt,
@@ -76,24 +76,50 @@ def report(request, actual):
     passed = bound_ok and leaf["outcome"] == "pass"
     pins = {"source": digest(admission), "structure": digest(leaf), "contract": request["expression_contract"]["identity"]}
     rows = []
-    for name in admission["unresolved_obligations"]:
-        if name in {"policy_execution_and_lowering", "temporal_and_uncertainty_semantics", "persistent_encounter_identity_lifetime", "state_lifetime_capacity_and_inheritance", "effect_authorization_feedback_and_cancellation", "arbitration_fairness_and_conflict_resolution"}:
-            status, stage, evidence = "not_applicable", "closed_static_source_admission", {"source": digest(admission)}
-        elif name.startswith("semantic_definition:"):
-            definition_value = next(value for value in definitions if value["id"] == name.split(":", 1)[1])
-            interpreted = digest(definition_value) in api._NORMATIVE_DEFINITION_DIGESTS
-            status = "discharged" if interpreted else "conditional"
-            stage = "closed_normative_static_interpretation" if interpreted else "resolved_original_context_or_component_premise"
-            evidence = {"source": digest(admission), "definition": pin(definition_value), "body": definition_value, "contract": request["expression_contract"]["identity"]}
-        elif name in {"realizability_and_target_suitability", "implementation_catalog_applicability", "chassis_capability_and_delivery_suitability"}:
-            status, stage, evidence = "conditional" if passed else "unresolved", "supplied_expression_localization_and_recipient_premises", pins
-        elif name.startswith("implementation_applicability:"):
-            status, stage, evidence = "conditional" if passed else "unresolved", "complete_supplied_implementation_contract", pins
-        else:
-            status, stage, evidence = "discharged" if passed else "unresolved", "exact_static_encoding_and_length", pins
-        rows.append({"obligation": name, "status": status, "stage": stage, "evidence": evidence})
+    def add(name, path, success, failure, stage, evidence):
+        rows.append({"obligation": name, "path": path, "status": success if passed else failure,
+                     "stage": stage, "evidence": evidence})
+    source = {"source": digest(admission)}
+    for name in ("policy_execution_and_lowering", "temporal_and_uncertainty_semantics",
+                 "safety_and_progress_satisfaction"):
+        add(name, "/document/program", "not_applicable", "not_applicable",
+            "closed_static_source_admission", source)
+    for name, path in (
+            ("realizability_and_target_suitability", "/document/deployment"),
+            ("chassis_capability_and_delivery_suitability", "/document/deployment"),
+            ("implementation_catalog_applicability", "/document/implementations"),
+            ("requested_assurance_not_established", "/document/assurance"),
+            ("expression_material_correspondence", "/document")):
+        add(name, path, "conditional", "unresolved",
+            "supplied_expression_localization_and_recipient_premises", pins)
+    add("implementation_applicability:car.rm61461.implementation",
+        "/document/implementations/implementations/0", "conditional", "unresolved",
+        "complete_supplied_implementation_contract", pins)
+    add("requirement_satisfaction:encode_car", "/document/program/declarations/6",
+        "discharged", "unresolved", "exact_static_encoding_and_length", pins)
+    descriptors = (
+        ("biocompiler.expression.objective.v1", "discharged", "closed_normative_static_interpretation"),
+        ("biocompiler.expression.encode.v1", "discharged", "closed_normative_static_interpretation"),
+        ("biocompiler.expression.nominal_translation.v1", "discharged", "closed_normative_static_interpretation"),
+        ("car.rm61461.terminal_design", "conditional", "resolved_original_context_or_component_premise"),
+        ("car.rm61461.surface_localization", "conditional", "resolved_original_context_or_component_premise"),
+        ("car.rm61461.translation_capability", "conditional", "resolved_original_context_or_component_premise"),
+        ("car.rm61461.human_environment", "conditional", "resolved_original_context_or_component_premise"),
+        ("car.rm61461.delivery_premise", "conditional", "resolved_original_context_or_component_premise"),
+        ("car.rm61461.human_t_cell", "conditional", "resolved_original_context_or_component_premise"),
+        ("car.rm61461.expression_component", "conditional", "resolved_original_context_or_component_premise"),
+        ("car.rm61461.reference_evidence", "conditional", "resolved_original_context_or_component_premise"),
+    )
+    assert [definition["id"] for definition in definitions] == [row[0] for row in descriptors]
+    for index, (name, status, stage) in enumerate(descriptors):
+        definition_value = definitions[index]
+        evidence = {"source": digest(admission), "definition": pin(definition_value),
+                    "body": definition_value, "contract": request["expression_contract"]["identity"]}
+        add("semantic_definition:" + name, "/document/program/semantics/definitions/" + str(index),
+            status, status, stage, evidence)
+    rows.sort(key=lambda row: row["obligation"])
     requirement = {"id": request["selection"]["objective"], "path": admission["objective_path"], "status": "pass" if passed else "fail", "product": body["product"], "member": "payload", "cds": "cds", "maximum_rna_nt": max_nt, "actual_rna_nt": length, "length_status": "pass" if bound_ok else "fail", "localization": body["localization"], "localization_status": "supplied_premise", "diagnostics": [] if bound_ok else [{"code": "expression_rna_length_requirement", "path": admission["objective_path"], "message": "RNA exceeds source bound."}]}
-    return {"schema_version": api.REPORT_SCHEMA, "profile": api.REQUEST_PROFILE, "implementation": "biocompiler.ocaml.policy_expression_material_check.v0.1", "resource_profile": api.RESOURCE_PROFILE, "request_fingerprint": digest(request), "candidate_fingerprint": digest(actual), "invocation_fingerprint": digest({"request": request, "candidate": actual}), "status": "checked_expression_material" if passed else "not_accepted", "claim_scope": api.CLAIM, "premise": api.PREMISE,
+    return {"schema_version": "biocompiler.policy_expression_material_assessment.v0.2", "profile": api.REQUEST_PROFILE, "implementation": "biocompiler.ocaml.policy_expression_material_check.v0.2", "resource_profile": api.RESOURCE_PROFILE, "request_fingerprint": digest(request), "candidate_fingerprint": digest(actual), "invocation_fingerprint": digest({"request": request, "candidate": actual}), "status": "checked_expression_material" if passed else "not_accepted", "claim_scope": api.CLAIM, "premise": api.PREMISE,
         "source_admission": admission, "structure": leaf, "requirements": [requirement], "obligations": rows, "all_original_obligations_dispositioned": passed, "budgets": request["budgets"], "empirical": "unassessed", "human_use": "unassessed", "artifact": "withheld", "export": "withheld", "usage": {"unit": "logical_data_visits_and_child_semantic_work", "charged_work": 10000, "request_decoding_work": 2000}}
 
 
@@ -102,7 +128,7 @@ def mock_result(payload, operation):
     request = deepcopy(payload["request"])
     actual = deepcopy(payload.get("candidate", literal_candidate(request)))
     checked = report(request, actual)
-    return {"schema_version": api.RESULT_SCHEMA, "implementation": api.IMPLEMENTATION, "resource_profile": api.RESOURCE_PROFILE,
+    return {"schema_version": api.RESULT_SCHEMA, "implementation": "biocompiler.ocaml.policy_expression_material.v0.2", "resource_profile": api.RESOURCE_PROFILE,
         "validation_scope": api.VALIDATION_SCOPE, "request_fingerprint": digest(request), "candidate_fingerprint": digest(actual),
         "invocation_fingerprint": digest({"request": request,"candidate": actual}), "report_fingerprint": digest(checked),
         "candidate": actual,"report": checked,
@@ -163,6 +189,111 @@ def make_evidence(folder, *, installed=False):
 
 
 class CarPayloadCampaignTests(unittest.TestCase):
+    def test_direct_campaign_oracle_checks_literal_v02_ledgers_without_sdk_reader(self):
+        packet = fixture_packet()
+        for case, accepted, counts in (("base", True, {"not_applicable": 3, "discharged": 4, "conditional": 14}),
+                                       ("tight", True, {"not_applicable": 3, "discharged": 4, "conditional": 14}),
+                                       ("short", False, {"not_applicable": 3, "discharged": 3, "conditional": 8, "unresolved": 7})):
+            request = car.request_for(packet, case)
+            value = mock_result({"request": request}, "compile-policy-expression-material")
+            with self.subTest(case=case), patch.object(api, "_result", side_effect=AssertionError("SDK reader forbidden")) as reader:
+                car.check_expression_ledger(value, request, accepted=accepted)
+                reader.assert_not_called()
+            rows = value["report"]["obligations"]
+            self.assertEqual(len(rows), 21)
+            self.assertEqual({status: sum(row["status"] == status for row in rows) for status in counts}, counts)
+
+    def test_campaign_oracle_rejects_every_row_mutation_with_coherent_report_hashes(self):
+        packet = fixture_packet()
+        for case, accepted in (("base", True), ("short", False)):
+            request = car.request_for(packet, case)
+            original = mock_result({"request": request}, "compile-policy-expression-material")
+            for index, original_row in enumerate(original["report"]["obligations"]):
+                mutations = {
+                    "status": lambda row: row.update(status="unresolved" if row["status"] != "unresolved" else "discharged"),
+                    "stage": lambda row: row.update(stage="exact_static_encoding_and_length" if row["stage"] != "exact_static_encoding_and_length" else "unimplemented_obligation"),
+                    "path": lambda row: row.update(path=row["path"] + "/stale"),
+                    "evidence": lambda row: row.update(evidence={}),
+                    "extra_key": lambda row: row.update(unreviewed=True),
+                }
+                for label, mutate in mutations.items():
+                    value = deepcopy(original)
+                    mutate(value["report"]["obligations"][index])
+                    value["report_fingerprint"] = digest(value["report"])
+                    with self.subTest(case=case, obligation=original_row["obligation"], mutation=label), \
+                            patch.object(api, "_result", side_effect=AssertionError("SDK reader forbidden")) as reader:
+                        with self.assertRaisesRegex(AssertionError, "CAR ledger differs"):
+                            car.check_expression_ledger(value, request, accepted=accepted)
+                        reader.assert_not_called()
+
+    def test_checked_result_applies_campaign_oracle_before_sdk_consumer(self):
+        packet = fixture_packet()
+        request = packet["request"]
+        value = mock_result({"request": request}, "compile-policy-expression-material")
+        row = next(row for row in value["report"]["obligations"]
+                   if row["obligation"] == "requested_assurance_not_established")
+        row.update(status="discharged", stage="exact_static_encoding_and_length")
+        value["report_fingerprint"] = digest(value["report"])
+        with patch.object(api, "_result", return_value=object()) as reader:
+            with self.assertRaisesRegex(AssertionError, "CAR ledger differs"):
+                car.checked_result(value, packet, request, operation="compile")
+            reader.assert_not_called()
+
+    def test_campaign_oracle_rejects_coherent_census_and_reserved_origin_attacks(self):
+        packet = fixture_packet()
+        for case, accepted in (("base", True), ("short", False)):
+            request = car.request_for(packet, case)
+            original = mock_result({"request": request}, "compile-policy-expression-material")
+            mandatory = original["report"]["source_admission"]["source_assessment"]["unresolved_obligations"]
+            def rehash(value):
+                admission = value["report"]["source_admission"]
+                for row in value["report"]["obligations"]:
+                    if row["evidence"] is not None:
+                        row["evidence"]["source"] = digest(admission)
+                value["report_fingerprint"] = digest(value["report"])
+            for name in mandatory:
+                value = deepcopy(original)
+                admission = value["report"]["source_admission"]
+                admission["source_assessment"]["unresolved_obligations"].remove(name)
+                admission["unresolved_obligations"].remove(name)
+                value["report"]["obligations"] = [row for row in value["report"]["obligations"] if row["obligation"] != name]
+                rehash(value)
+                with self.subTest(case=case, omitted=name), self.assertRaisesRegex(AssertionError, "CAR ledger original/admission census"):
+                    car.check_expression_ledger(value, request, accepted=accepted)
+            for name in ("persistent_encounter_identity_lifetime", "state_lifetime_capacity_and_inheritance",
+                         "effect_authorization_feedback_and_cancellation", "arbitration_fairness_and_conflict_resolution"):
+                value = deepcopy(original)
+                admission = value["report"]["source_admission"]
+                admission["source_assessment"]["unresolved_obligations"] = sorted([*mandatory, name])
+                admission["unresolved_obligations"] = sorted([*admission["unresolved_obligations"], name])
+                value["report"]["obligations"].append({"obligation": name, "path": "/document/program",
+                    "status": "not_applicable", "stage": "closed_static_source_admission", "evidence": {"source": "0" * 64}})
+                value["report"]["obligations"].sort(key=lambda row: row["obligation"])
+                rehash(value)
+                with self.subTest(case=case, phantom=name), self.assertRaisesRegex(AssertionError, "CAR ledger original/admission census"):
+                    car.check_expression_ledger(value, request, accepted=accepted)
+            value = deepcopy(original)
+            child = value["report"]["source_admission"]["source_assessment"]
+            child["unresolved_obligations"] = sorted([*mandatory, "expression_material_correspondence"])
+            rehash(value)
+            with self.subTest(case=case, reserved_origin=True), self.assertRaisesRegex(AssertionError, "reserved obligation origin"):
+                car.check_expression_ledger(value, request, accepted=accepted)
+
+    def test_campaign_oracle_rejects_old_and_mixed_versions_and_duplicate_rows(self):
+        packet = fixture_packet()
+        request = packet["request"]
+        original = mock_result({"request": request}, "compile-policy-expression-material")
+        for label, edit in (
+                ("service", lambda value: value.update(implementation="biocompiler.ocaml.policy_expression_material.v0.1")),
+                ("schema", lambda value: value["report"].update(schema_version="biocompiler.policy_expression_material_assessment.v0.1")),
+                ("checker", lambda value: value["report"].update(implementation="biocompiler.ocaml.policy_expression_material_check.v0.1")),
+                ("duplicate", lambda value: value["report"]["obligations"].append(deepcopy(value["report"]["obligations"][0])))):
+            value = deepcopy(original)
+            edit(value)
+            value["report_fingerprint"] = digest(value["report"])
+            with self.subTest(mutation=label), self.assertRaisesRegex(AssertionError, "CAR ledger"):
+                car.check_expression_ledger(value, request, accepted=True)
+
     def test_complete_public_path_joins_twenty_two_observations_and_all_twenty_nine_files(self):
         with tempfile.TemporaryDirectory() as d:
             packet,values,fields = make_evidence(d)

@@ -132,6 +132,374 @@ let fixture authority =
     "structure_authority",authority; "budgets",obj ["profile",str E.resource_profile; "max_work",Json.int E.max_work;
       "max_report_bytes",Json.int 1_000_000; "max_report_nodes",Json.int 100_000]]
 let admit raw = Check.admit (E.of_json raw)
+
+(* M1 O01--O23 native contract oracle. Status/stage/path expectations below are
+   literal normative test authority, independent of producer disposition code.
+   Child checkers supply separately replayed dependency bytes, never row meanings. *)
+type m1_evidence = M1_source | M1_join | M1_definition of string
+let m1_contract_rows = [
+  "policy_execution_and_lowering", "not_applicable", "not_applicable", "closed_static_source_admission", "/document/program", M1_source;
+  "temporal_and_uncertainty_semantics", "not_applicable", "not_applicable", "closed_static_source_admission", "/document/program", M1_source;
+  "safety_and_progress_satisfaction", "not_applicable", "not_applicable", "closed_static_source_admission", "/document/program", M1_source;
+  "realizability_and_target_suitability", "conditional", "unresolved", "supplied_expression_localization_and_recipient_premises", "/document/deployment", M1_join;
+  "chassis_capability_and_delivery_suitability", "conditional", "unresolved", "supplied_expression_localization_and_recipient_premises", "/document/deployment", M1_join;
+  "implementation_catalog_applicability", "conditional", "unresolved", "supplied_expression_localization_and_recipient_premises", "/document/implementations", M1_join;
+  "requested_assurance_not_established", "conditional", "unresolved", "supplied_expression_localization_and_recipient_premises", "/document/assurance", M1_join;
+  "implementation_applicability:artificial.expression.entry", "conditional", "unresolved", "complete_supplied_implementation_contract", "/document/implementations/implementations/0", M1_join;
+  "requirement_satisfaction:encode", "discharged", "unresolved", "exact_static_encoding_and_length", "/document/program/declarations/6", M1_join;
+  "expression_material_correspondence", "conditional", "unresolved", "supplied_expression_localization_and_recipient_premises", "/document", M1_join;
+  "semantic_definition:biocompiler.expression.objective.v1", "discharged", "discharged", "closed_normative_static_interpretation", "/document/program/semantics/definitions/0", M1_definition "biocompiler.expression.objective.v1";
+  "semantic_definition:biocompiler.expression.encode.v1", "discharged", "discharged", "closed_normative_static_interpretation", "/document/program/semantics/definitions/1", M1_definition "biocompiler.expression.encode.v1";
+  "semantic_definition:biocompiler.expression.nominal_translation.v1", "discharged", "discharged", "closed_normative_static_interpretation", "/document/program/semantics/definitions/2", M1_definition "biocompiler.expression.nominal_translation.v1";
+  "semantic_definition:artificial.expression", "conditional", "conditional", "resolved_original_context_or_component_premise", "/document/program/semantics/definitions/3", M1_definition "artificial.expression";
+  "semantic_definition:artificial.surface", "conditional", "conditional", "resolved_original_context_or_component_premise", "/document/program/semantics/definitions/4", M1_definition "artificial.surface";
+  "semantic_definition:artificial.environment", "conditional", "conditional", "resolved_original_context_or_component_premise", "/document/program/semantics/definitions/5", M1_definition "artificial.environment";
+  "semantic_definition:artificial.delivery", "conditional", "conditional", "resolved_original_context_or_component_premise", "/document/program/semantics/definitions/6", M1_definition "artificial.delivery";
+  "semantic_definition:artificial.chassis_model", "conditional", "conditional", "resolved_original_context_or_component_premise", "/document/program/semantics/definitions/7", M1_definition "artificial.chassis_model";
+  "semantic_definition:artificial.capability", "conditional", "conditional", "resolved_original_context_or_component_premise", "/document/program/semantics/definitions/8", M1_definition "artificial.capability"
+]
+let m1_items key value = Json.array (get key value)
+let m1_named id values = List.find (fun value -> get "id" value = str id) values
+let m1_index id values =
+  match List.filter_map (fun (index,value) -> if get "id" value = str id then Some index else None)
+    (List.mapi (fun index value -> index,value) values) with
+  | [index] -> index
+  | _ -> failwith ("M1 oracle requires exactly one original ID: " ^ id)
+let m1_definition_ref body = obj ["$type",str "DefinitionRef"; "id",get "id" body;
+  "version",get "version" body; "digest",str (D.document_digest body)]
+let m1_definitions raw = Json.array (at ["document";"program";"semantics";"definitions"] raw)
+let m1_sort_rows values = List.sort (fun left right ->
+  String.compare (Json.string (get "obligation" left)) (Json.string (get "obligation" right))) values
+let m1_ids rows = List.map (fun row -> Json.string (get "obligation" row)) rows
+let m1_extra = "derived_quantity_operation_semantics"
+let m1_extra_row = obj ["obligation",str m1_extra; "path",str "/document";
+  "status",str "unresolved"; "stage",str "unimplemented_obligation"; "evidence",Json.Null]
+let m1_envelope literal = obj ["schema_version",str "biocompiler.policy_expression_material_candidate.v0.1";
+  "construction",literal]
+let m1_expect ~success ~extra raw literal report =
+  let original = E.of_json raw and candidate = K.of_json literal in
+  require (get "request_fingerprint" report = str (E.fingerprint original) &&
+    get "candidate_fingerprint" report = str (Canonical.fingerprint (m1_envelope literal)) &&
+    get "invocation_fingerprint" report = str (Canonical.fingerprint
+      (obj ["request",raw; "candidate",m1_envelope literal]))) "M1 report lost exact invocation bindings";
+  let source = Check.admit original in
+  let source_report = Check.report source in
+  let structural = Structure.check ~source ~candidate () in
+  let structure_report = Structure.report structural in
+  require (Json.equal (get "source_admission" report) source_report &&
+    Json.equal (get "structure" report) structure_report) "M1 child reports differ from fresh independent checking";
+  let source_pin = str (Canonical.fingerprint source_report)
+  and structure_pin = str (Canonical.fingerprint structure_report)
+  and contract = at ["expression_contract";"identity"] raw in
+  let definitions = m1_definitions raw in
+  require (List.length definitions = 9 &&
+    List.length (List.sort_uniq String.compare (List.map (fun row -> Json.string (get "id" row)) definitions)) = 9)
+    "M1 artificial oracle definition inventory changed";
+  let entries = Json.array (at ["document";"implementations";"implementations"] raw) in
+  require (List.length entries = 1) "M1 oracle needs exactly one original implementation";
+  let entry = List.hd entries in
+  let selected = at ["selection";"implementation"] raw in
+  require (get "id" entry = str "artificial.expression.entry" && get "id" selected = get "id" entry &&
+    get "version" selected = get "version" entry &&
+    get "content_fingerprint" selected = str (Canonical.fingerprint entry)) "M1 original implementation identity mismatch";
+  let declarations = Json.array (at ["document";"program";"declarations"] raw) in
+  let expected = List.map (fun (id,passed,failed,stage,path,kind) ->
+    let path,evidence = match kind with
+    | M1_source -> path,obj ["source",source_pin]
+    | M1_join ->
+        let path = if id = "requirement_satisfaction:encode" then
+          "/document/program/declarations/" ^ string_of_int (m1_index "encode" declarations) else path in
+        path,obj ["source",source_pin; "structure",structure_pin; "contract",contract]
+    | M1_definition id ->
+        let index = m1_index id definitions and body = m1_named id definitions in
+        "/document/program/semantics/definitions/" ^ string_of_int index,
+        obj ["source",source_pin; "definition",m1_definition_ref body; "body",body; "contract",contract] in
+    obj ["obligation",str id; "path",str path; "status",str (if success then passed else failed);
+      "stage",str stage; "evidence",evidence]) m1_contract_rows in
+  let expected = m1_sort_rows (expected @ (if extra then [m1_extra_row] else [])) in
+  require (Json.equal (get "obligations" report) (arr expected))
+    "M1 complete independently specified ledger differs (status, stage, path, evidence, order or exact keys)";
+  let ids = m1_ids expected in
+  let original_ids = List.filter ((<>) "expression_material_correspondence") ids in
+  require (get "unresolved_obligations" (Check.source_assessment source) = arr (List.map str original_ids) &&
+    get "unresolved_obligations" source_report = arr (List.map str ids)) "M1 original/admission ledger census mismatch";
+  require (get "schema_version" report = str "biocompiler.policy_expression_material_assessment.v0.2" &&
+    get "implementation" report = str "biocompiler.ocaml.policy_expression_material_check.v0.2")
+    "M1 corrected interpretation must carry v0.2 assessment/checker identities";
+  require (get "all_original_obligations_dispositioned" report = Json.Bool (success && not extra) &&
+    get "status" report = str (if success && not extra then "checked_expression_material" else "not_accepted") &&
+    at ["requirements";"0";"status"] report = str (if success then "pass" else "fail"))
+    "M1 objective result was confused with complete conditional acceptance";
+  List.iter (fun key -> require (get key report = str "unassessed") "M1 promoted biological/human claims") ["empirical";"human_use"];
+  require (get "claim_scope" report = str "conditional_encoding_and_localization" &&
+    get "premise" report = str "supplied_expression_localization_recipient_and_nominal_translation_contracts" &&
+    get "physical_translation" structure_report = str "unassessed" &&
+    get "artifact" report = str "withheld" && get "export" report = str "withheld") "M1 lost conditional or publication boundaries";
+  let count status = List.length (List.filter (fun row -> get "status" row = str status) expected) in
+  require ((count "not_applicable",count "discharged",count "conditional",count "unresolved") =
+    (if success then (3,4,12,(if extra then 1 else 0)) else (3,3,6,7))) "M1 literal disposition census changed"
+let m1_repin_definition id replacement raw =
+  let rec replace = function
+    | Json.Object fields ->
+        (match List.assoc_opt "$type" fields,List.assoc_opt "id" fields with
+        | Some (Json.String "SemanticDefinition"),Some (Json.String found) when found = id -> replacement
+        | Some (Json.String "DefinitionRef"),Some (Json.String found) when found = id -> m1_definition_ref replacement
+        | _ -> obj (List.map (fun (key,value) -> key,replace value) fields))
+    | Json.Array values -> arr (List.map replace values)
+    | value -> value in
+  replace raw |> repin_entry |> repin_contract
+let m1_expr op kind args value = obj ["$type",str "Expr"; "op",str op;
+  "value_type",obj ["$type",str "TypeSpec"; "kind",str kind; "unit",Json.Null; "entity_kind",Json.Null];
+  "args",arr args; "value",value; "ref",Json.Null; "scope",Json.Null; "contract",Json.Null;
+  "duration",Json.Null; "clock",Json.Null; "coverage",Json.Null; "binding",Json.Null]
+let m1_generic raw = Bioc_checker.Policy_check.check (D.of_expression_json (get "document" raw))
+let m1_valid raw =
+  let result = m1_generic raw in
+  require (get "status" result = str "valid") ("M1 source probe is not generically valid: " ^ Canonical.encode result)
+let m1_rehash wrapper = set "report_fingerprint" (str (Canonical.fingerprint (get "report" wrapper))) wrapper
+let m1_rebind_source wrapper =
+  let source_pin = str (Canonical.fingerprint (at ["report";"source_admission"] wrapper)) in
+  wrapper |> edit ["report";"obligations"] (fun rows -> arr (List.map (fun row ->
+    match get "evidence" row with
+    | Json.Object fields when List.mem_assoc "source" fields -> edit ["evidence"] (set "source" source_pin) row
+    | _ -> row) (Json.array rows))) |> m1_rehash
+let m1_row id report = List.find (fun row -> get "obligation" row = str id) (m1_items "obligations" report)
+let m1_edit_row id change = edit ["report";"obligations"] (fun rows ->
+  arr (List.map (fun row -> if get "obligation" row = str id then change row else row) (Json.array rows)))
+let m1_replay_reject raw wrapped saved =
+  require (get "report_fingerprint" saved = str (Canonical.fingerprint (get "report" saved)))
+    "M1 replay attack has a stale outer report hash";
+  rejected_code "policy_expression_replay" (fun () -> Service.handle ~operation:"replay-policy-expression-material"
+    (obj ["request",raw; "candidate",wrapped; "report",saved]))
+let m1_mutate_inventory change_ids change_rows saved =
+  saved |> edit ["report";"source_admission";"source_assessment";"unresolved_obligations"]
+    (fun ids -> arr (change_ids (Json.array ids)))
+  |> edit ["report";"source_admission";"unresolved_obligations"] (fun ids -> arr (change_ids (Json.array ids)))
+  |> edit ["report";"obligations"] (fun rows -> arr (change_rows (Json.array rows))) |> m1_rebind_source
+let m1_native_controls raw literal =
+  let wrapped = m1_envelope literal in
+  let check request content = Material.check ~request:(E.of_json request) ~candidate:(K.of_json content) in
+  let export request content = Service.check ~export:true ~request ~candidate:(m1_envelope content) in
+  let with_bound count = put ["document";"program";"declarations";"5";"value"] (Json.int count) raw in
+  require (get "schema_version" raw = str "biocompiler.policy_expression_material_request.v0.1" &&
+    get "profile" raw = str "biocompiler.policy_single_expression_mrna.v0.1" &&
+    at ["document";"profile"] raw = str "biocompiler.policy_expression_source.v0.1" &&
+    at ["budgets";"profile"] raw = str "biocompiler.policy_expression_material_resources.v0.1" &&
+    at ["expression_contract";"body";"schema_version"] raw = str "biocompiler.policy_expression_contract.v0.1")
+    "O19 M1 changed an original request/source/resource/contract version";
+  (* O01: literal success, private acceptance token and independent child evidence. *)
+  let passed = check raw literal in
+  m1_expect ~success:true ~extra:false raw literal (Material.report passed);
+  require (Option.is_some (Material.accepted passed)) "O01 lost conditional acceptance token";
+  let saved = Service.check ~export:false ~request:raw ~candidate:wrapped in
+  require (get "implementation" saved = str "biocompiler.ocaml.policy_expression_material.v0.2" &&
+    get "schema_version" saved = str "biocompiler.core.policy_expression_material.v1" &&
+    get "validation_scope" saved = str "policy-single-expression-mrna-v0.1" &&
+    get "artifact" saved = Json.Null) "O01 service identity or check-only publication changed";
+  List.iter (fun advertised -> require (get "implementation" advertised = str "biocompiler.ocaml.policy_expression_material.v0.2")
+    "O19 service capability advertises obsolete interpretation") [Service.profile;Service.producer_profile];
+  (* O02--O03: exact supported bound; failure does not create safety obligations. *)
+  let exact = with_bound 17 and short = with_bound 16 in
+  m1_expect ~success:true ~extra:false exact literal (Material.report (check exact literal));
+  let failed = check short literal in
+  m1_expect ~success:false ~extra:false short literal (Material.report failed);
+  require (Material.accepted failed = None && at ["requirements";"0";"actual_rna_nt"] (Material.report failed) = Json.int 17 &&
+    at ["requirements";"0";"length_status"] (Material.report failed) = str "fail" &&
+    at ["requirements";"0";"diagnostics";"0";"code"] (Material.report failed) = str "expression_rna_length_requirement" &&
+    at ["requirements";"0";"diagnostics";"0";"path"] (Material.report failed) = str "/document/program/declarations/6")
+    "O03 lost exact bound diagnostic or withheld token";
+  rejected_code "policy_expression_export_not_accepted" (fun () -> export short literal);
+  let failed_saved = Service.check ~export:false ~request:short ~candidate:wrapped in
+  (* O04: changed MA -> ME bases, with only untrusted molecule pins refreshed. *)
+  let changed_literal = put ["inventory";"molecules";"0";"sequence"] (str "CCAUGGAAUAAGGAAAA") literal in
+  let molecule = N.of_json (at ["inventory";"molecules";"0"] changed_literal) in
+  let changed_literal = put ["inventory";"role_instances";"0";"subject_fingerprint"] (str (N.fingerprint molecule)) changed_literal in
+  let changed_checked = check raw changed_literal in
+  m1_expect ~success:false ~extra:false raw changed_literal (Material.report changed_checked);
+  require (Material.accepted changed_checked = None &&
+    at ["structure";"content_outcome"] (Material.report changed_checked) = str "fail") "O04 source-unauthorized product mutation accepted";
+  rejected_code "policy_expression_export_not_accepted" (fun () -> export raw changed_literal);
+  (* O05--O06: real original mutations; unsupported probes pass generic checking. *)
+  List.iter (fun path -> let edited = put path (str "different.product") raw |> repin_contract in
+    m1_valid edited; rejected_code "policy_expression_source_binding" (fun () -> admit edited))
+    [["expression_contract";"body";"product";"id"];["document";"program";"declarations";"1";"value"]];
+  let yes = m1_expr "literal" "truth" [] (Json.Bool true) in
+  List.iter (fun kind ->
+    let requirement = at ["document";"program";"declarations";"6"] raw
+      |> set "id" (str ("actual." ^ kind)) |> set "kind" (str kind) |> set "contract" Json.Null
+      |> set "condition" yes |> set "response" (if kind = "progress" then yes else Json.Null) in
+    let edited = edit ["document";"program";"declarations"] (fun values -> arr (Json.array values @ [requirement])) raw in
+    m1_valid edited; rejected_code "policy_expression_source_unsupported" (fun () -> admit edited)) ["safety";"progress"];
+  let temporal = put ["document";"program";"declarations";"6";"horizon"] (str "unbounded_requested") raw in
+  m1_valid temporal; rejected_code "policy_expression_source_unsupported" (fun () -> admit temporal);
+  (* O07: dynamic locators are resolved from originals, never descriptor positions. *)
+  let reordered = raw |> edit ["document";"program";"declarations"] (fun rows -> arr (List.rev (Json.array rows)))
+    |> edit ["document";"program";"semantics";"definitions"] (fun rows -> arr (List.rev (Json.array rows))) in
+  let reordered_report = Material.report (check reordered literal) in
+  m1_expect ~success:true ~extra:false reordered literal reordered_report;
+  require (get "request_fingerprint" reordered_report <> get "request_fingerprint" (Material.report passed) &&
+    at ["source_admission";"source_artifact_digest"] reordered_report <>
+    at ["source_admission";"source_artifact_digest"] (Material.report passed)) "O07 reordered original artifact retained stale identity";
+  (* O08--O09: complete, consistently repinned normative and supplied bodies. *)
+  List.iter (fun id ->
+    let body = m1_named id (m1_definitions raw) |> set "meaning" (str "Changed complete normative descriptor") in
+    let edited = m1_repin_definition id body raw in
+    m1_valid edited; rejected_code "policy_expression_source_unsupported" (fun () -> admit edited))
+    ["biocompiler.expression.objective.v1";"biocompiler.expression.encode.v1";"biocompiler.expression.nominal_translation.v1"];
+  let supplied_body = m1_named "artificial.environment" (m1_definitions raw)
+    |> set "meaning" (str "Changed explicitly supplied environment premise")
+    |> set "assumptions" (arr [str "Retained artificial assumption; empirical status remains unassessed."]) in
+  let supplied = m1_repin_definition "artificial.environment" supplied_body raw in
+  m1_expect ~success:true ~extra:false supplied literal (Material.report (check supplied literal));
+  let unconsumed = edit ["document";"program";"semantics";"definitions"]
+    (fun values -> arr (Json.array values @ [definition "m1.unconsumed" "environment"])) raw in
+  m1_valid unconsumed; rejected_code "policy_expression_source_unsupported" (fun () -> admit unconsumed);
+  (* O10: negative defense against the separately recorded M2 admission gap.
+     No regression requires continued acceptance of unused formal parameters. *)
+  let integer value = m1_expr "literal" "integer" [] (Json.int value) in
+  let arithmetic = m1_expr "eq" "truth" [m1_expr "multiply" "integer" [integer 2;integer 3] Json.Null;integer 6] Json.Null in
+  let extra_body = m1_named "artificial.environment" (m1_definitions raw) |> set "clauses"
+    (arr [obj ["$type",str "ContractClause"; "kind",str "assumption";
+      "description",str "Artificial arithmetic demand retained for unresolved-obligation checking."; "expression",arithmetic]]) in
+  let extra_request = m1_repin_definition "artificial.environment" extra_body raw in
+  m1_valid extra_request;
+  let extra_checked = check extra_request literal in
+  m1_expect ~success:true ~extra:true extra_request literal (Material.report extra_checked);
+  require (Material.accepted extra_checked = None) "O10 genuine unknown source obligation received a private token";
+  rejected_code "policy_expression_export_not_accepted" (fun () -> export extra_request literal);
+  let extra_saved = Service.check ~export:false ~request:extra_request ~candidate:wrapped in
+  let ordinary_ids = m1_ids (get "report" saved |> m1_items "obligations") in
+  (* O11: coherent deletion of every required row from all returned inventories. *)
+  List.iter (fun id ->
+    m1_mutate_inventory (List.filter ((<>) (str id)))
+      (List.filter (fun row -> get "obligation" row <> str id)) saved |> m1_replay_reject raw wrapped) ordinary_ids;
+  (* O12: phantom runtime/arbitrary obligations cannot acquire a fallback premise. *)
+  List.iter (fun id -> List.iter (fun status ->
+    let phantom = obj ["obligation",str id; "path",str "/document"; "status",str status;
+      "stage",str "closed_static_source_admission"; "evidence",obj ["source",str "placeholder"]] in
+    m1_mutate_inventory (fun ids -> List.sort compare (str id :: ids))
+      (fun rows -> m1_sort_rows (phantom :: rows)) saved |> m1_replay_reject raw wrapped)
+    ["not_applicable";"conditional";"discharged"])
+    ["persistent_encounter_identity_lifetime";"state_lifetime_capacity_and_inheritance";
+     "effect_authorization_feedback_and_cancellation";"arbitration_fairness_and_conflict_resolution";"m1.arbitrary"];
+  (* O13--O15: duplicates, every status category, every exact reason and path. *)
+  List.iter (fun id ->
+    let row = m1_row id (get "report" saved) in
+    m1_mutate_inventory (fun ids -> if List.mem (str id) ids then List.sort compare (str id :: ids) else ids)
+      (fun rows -> m1_sort_rows (row :: rows)) saved |> m1_replay_reject raw wrapped;
+    let different = if get "status" row = str "discharged" then "conditional" else "discharged" in
+    saved |> m1_edit_row id (set "status" (str different)) |> m1_rehash |> m1_replay_reject raw wrapped;
+    List.iter (fun (key,value) -> saved |> m1_edit_row id (set key value) |> m1_rehash |> m1_replay_reject raw wrapped)
+      ["stage",str "m1.changed_reason"; "path",str (if get "path" row = str "/document/assurance" then "/document/program" else "/document/assurance")]) ordinary_ids;
+  let duplicate_id = "semantic_definition:artificial.environment" in
+  m1_mutate_inventory (fun ids -> List.sort compare (str duplicate_id :: ids))
+    (fun rows -> m1_sort_rows (m1_row duplicate_id (get "report" failed_saved) :: rows)) failed_saved
+    |> m1_replay_reject short wrapped;
+  (* O16: remove/substitute every required dependency key, with fresh outer hash. *)
+  List.iter (fun id ->
+    let evidence = get "evidence" (m1_row id (get "report" saved)) in
+    List.iter (fun (key,_) ->
+      saved |> m1_edit_row id (edit ["evidence"] (fun value -> obj (List.remove_assoc key (Json.object_fields value))))
+        |> m1_rehash |> m1_replay_reject raw wrapped;
+      let replacement = match key with
+        | "source" | "structure" -> str (String.make 64 '0')
+        | "contract" -> set "content_fingerprint" (str (String.make 64 '0')) (get key evidence)
+        | "definition" -> set "digest" (str (String.make 64 '0')) (get key evidence)
+        | "body" -> set "meaning" (str "Contradictory supplied descriptor") (get key evidence)
+        | _ -> failwith "Unexpected oracle evidence key" in
+      let substitute row = if key = "body" then row
+        |> put ["evidence";"body"] replacement
+        |> put ["evidence";"definition"] (m1_definition_ref replacement)
+        else edit ["evidence"] (set key replacement) row in
+      saved |> m1_edit_row id substitute |> m1_rehash |> m1_replay_reject raw wrapped)
+      (Json.object_fields evidence)) ordinary_ids;
+  failed_saved |> m1_edit_row "requirement_satisfaction:encode"
+    (put ["evidence";"source"] (str (Canonical.fingerprint (at ["report";"source_admission"] saved))))
+    |> m1_rehash |> m1_replay_reject short wrapped;
+  let changed_saved = Service.check ~export:false ~request:raw ~candidate:(m1_envelope changed_literal) in
+  changed_saved |> m1_edit_row "expression_material_correspondence"
+    (put ["evidence";"structure"] (str (Canonical.fingerprint (at ["report";"structure"] saved))))
+    |> m1_rehash |> m1_replay_reject raw (m1_envelope changed_literal);
+  (* O17--O18: genuine extra cannot disappear or be promoted by report surgery. *)
+  extra_saved |> edit ["report";"source_admission";"unresolved_obligations"]
+    (fun ids -> arr (List.filter ((<>) (str m1_extra)) (Json.array ids)))
+    |> edit ["report";"obligations"] (fun rows -> arr (List.filter (fun row -> get "obligation" row <> str m1_extra) (Json.array rows)))
+    |> m1_rebind_source |> m1_replay_reject extra_request wrapped;
+  List.iter (fun promote -> extra_saved |> promote |> m1_rehash |> m1_replay_reject extra_request wrapped)
+    [put ["report";"status"] (str "checked_expression_material");
+     put ["report";"all_original_obligations_dispositioned"] (Json.Bool true);
+     m1_edit_row m1_extra (set "status" (str "conditional"));
+     (fun value -> value |> put ["report";"status"] (str "checked_expression_material")
+       |> put ["report";"all_original_obligations_dispositioned"] (Json.Bool true)
+       |> m1_edit_row m1_extra (set "status" (str "conditional")))];
+  (* O19: all seven old/current version mixtures, plus the coherent old ledger. *)
+  let old_versions = [(["report";"schema_version"],"biocompiler.policy_expression_material_assessment.v0.1");
+    (["report";"implementation"],"biocompiler.ocaml.policy_expression_material_check.v0.1");
+    (["implementation"],"biocompiler.ocaml.policy_expression_material.v0.1")] in
+  List.iter (fun mask ->
+    let edited = List.fold_left (fun value (index,(path,version)) ->
+      if mask land (1 lsl index) <> 0 then put path (str version) value else value)
+      saved (List.mapi (fun index value -> index,value) old_versions) in
+    edited |> m1_rehash |> m1_replay_reject raw wrapped) [1;2;3;4;5;6;7];
+  let old_ledger = saved |> edit ["report";"obligations"] (fun rows -> arr (List.map (fun row ->
+    let row = obj (List.remove_assoc "path" (Json.object_fields row)) in
+    if List.mem (Json.string (get "obligation" row)) ["safety_and_progress_satisfaction";
+      "requested_assurance_not_established";"expression_material_correspondence"] then
+      row |> set "status" (str "discharged") |> set "stage" (str "exact_static_encoding_and_length")
+      |> set "evidence" (get "evidence" (m1_row "requirement_satisfaction:encode" (get "report" saved))) else row)
+      (Json.array rows))) in
+  let old_ledger = List.fold_left (fun value (path,version) -> put path (str version) value) old_ledger old_versions in
+  old_ledger |> m1_rehash |> m1_replay_reject raw wrapped;
+  (* O20 native slice: exact paired export and embedded v0.2 assessment. Archive,
+     ResearchProject reopen and CAR peers remain the separate SDK/campaign suite. *)
+  let fasta = ">rna_0001 alphabet=RNA\nCCAUGGCUUAAGGAAAA\n" in
+  List.iter (fun request ->
+    let exported = export request literal in
+    let artifact = get "artifact" exported and report = get "report" exported in
+    let manifest = get "manifest" artifact in
+    m1_expect ~success:true ~extra:false request literal report;
+    require (get "schema_version" artifact = str "biocompiler.policy_expression_mrna_export.v0.1" &&
+      get "schema_version" manifest = str "biocompiler.policy_expression_mrna_manifest.v0.1" &&
+      Json.equal (get "bindings" manifest) (obj [
+        "request_fingerprint",str (E.fingerprint (E.of_json request));
+        "candidate_fingerprint",str (Canonical.fingerprint wrapped);
+        "invocation_fingerprint",str (Canonical.fingerprint (obj ["request",request; "candidate",wrapped]));
+        "assessment_fingerprint",str (Canonical.fingerprint report)])) "O20 manifest binding/version boundary differs";
+    require (get "fasta" artifact = str fasta && get "fasta_sha256" artifact = str (Canonical.sha256 fasta) &&
+      get "fasta_sha256" manifest = str (Canonical.sha256 fasta) &&
+      get "manifest_sha256" artifact = str (Canonical.fingerprint manifest) &&
+      Json.equal (get "request" manifest) request && Json.equal (get "candidate" manifest) wrapped &&
+      Json.equal (get "assessment" manifest) report &&
+      at ["bindings";"assessment_fingerprint"] manifest = str (Canonical.fingerprint report) &&
+      Json.equal (at ["members";"0";"molecule"] manifest) (at ["inventory";"molecules";"0"] literal))
+      "O20 exact paired export lost original authority or RNA/chemistry bytes";
+    List.iter (fun key -> require (get key manifest = str "unassessed") "O20 export upgraded evidence") ["empirical";"human_use"])
+    [raw;exact];
+  require (E.fingerprint (E.of_json raw) <> E.fingerprint (E.of_json exact)) "O02 supported bound failed to rebind originals";
+  (* O21: reserved correspondence must not originate in the generic child, even
+     while final union cardinality and all visible ledger rows remain unchanged. *)
+  List.iter (fun (request,saved) -> saved |> edit ["report";"source_admission";"source_assessment";"unresolved_obligations"]
+    (fun ids -> arr (List.sort compare (str "expression_material_correspondence" :: Json.array ids)))
+    |> m1_rebind_source |> m1_replay_reject request wrapped) [raw,saved;short,failed_saved];
+  (* O22: actual original catalog census and exact selected identity mismatches. *)
+  let entry = at ["document";"implementations";"implementations";"0"] raw in
+  List.iter (fun entries -> let edited = put ["document";"implementations";"implementations"] (arr entries) raw in
+    m1_valid edited; rejected_code "policy_expression_source_unsupported" (fun () -> admit edited))
+    [[];[entry;set "id" (str "second.entry") entry]];
+  List.iter (fun (field,value) -> let edited = put ["selection";"implementation";field] value raw in
+    m1_valid edited; rejected_code "policy_expression_source_binding" (fun () -> admit edited))
+    ["id",str "different.entry";"version",str "2";"content_fingerprint",str (String.make 64 '0')];
+  (* O23: full original duplicate IDs, before any set or path-map construction. *)
+  let duplicate = m1_named "artificial.environment" (m1_definitions raw) in
+  List.iter (fun duplicate ->
+    let edited = edit ["document";"program";"semantics";"definitions"] (fun rows -> arr (Json.array rows @ [duplicate])) raw in
+    let generic = m1_generic edited in
+    require (get "status" generic = str "invalid" &&
+      List.exists (fun diagnostic -> get "code" diagnostic = str "duplicate_definition") (m1_items "diagnostics" generic))
+      "O23 duplicate original definition was hidden by set construction";
+    rejected_code "policy_expression_source_invalid" (fun () -> admit edited))
+    [duplicate;duplicate |> set "version" (str "2") |> set "meaning" (str "Conflicting duplicate original body")]
+
 let run fixture_path =
   let material_fixture = read fixture_path in
   let raw = fixture (at ["request";"material_contract";"body";"structure_authority"] material_fixture) in
@@ -237,6 +605,7 @@ let run fixture_path =
   (* The candidate below is separately retained literal data. No expected bases,
      geometry, molecule chemistry or product are obtained from the producer. *)
   let literal = at ["candidate_parts";"construction"] material_fixture in
+  m1_native_controls raw literal;
   let candidate = K.of_json literal in
   let envelope candidate = obj ["schema_version",str Material.candidate_schema; "construction",candidate] in
   let wrapped = envelope literal in
