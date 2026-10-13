@@ -85,6 +85,11 @@ def check_rejection(result,case):
     require(result=={'status':'error','diagnostics':[{**diagnostic,'path':None}]},'Admission rejection occurred at an unrelated boundary')
 
 
+def check_changed_limits(result,original):
+    changed=deepcopy(original);changed['limits']['horizon_tick']+=1
+    require(result=={'status':'rejected','boundary':'exact_limits_projection','message':'Workflow limits differ from complete original authority','original':changed},'Detached limit projection rejected at wrong boundary')
+
+
 def check_result(result,case,original,*,exported=False):
     require(case['status'] in ('accepted','behavior_fail','unknown'),'Admission rejection cannot be replaced with an assessment')
     report=result['report'];material=report['material'];behavior=report['behavior']
@@ -242,8 +247,8 @@ def exercise(packet,example,core,verify,retain,folder):
     from biocompiler.policy.controlled_workflow import ControlledWorkflowRequest
     try:ControlledWorkflowRequest.from_request(altered)
     except CoreProtocolError as error:
-        require('limits' in str(error) and 'original' in str(error),'Changed limits failed at unrelated boundary')
-        retain('changed-limits',{'status':'rejected','boundary':'exact_limits_projection','message':str(error),'original':altered})
+        rejection={'status':'rejected','boundary':'exact_limits_projection','message':str(error),'original':altered}
+        check_changed_limits(rejection,request);retain('changed-limits',rejection)
     else:raise AssertionError('Detached workflow limits accepted')
     output=folder/'cancelled.zip'
     try:example.compile_project(folder/'baseline-project.json',output,core=core,verify=verify,cancelled=lambda:True)
@@ -370,8 +375,7 @@ def validate_receipt(receipt, evidence, *, root=ROOT):
         message='Independent Verify did not produce an accepted pair' if name.startswith('changed-candidate') else 'Bundle differs from the independently verified exact FASTA/manifest pair'
         require(values[name]=={'status':'rejected','boundary':boundary,'message':message,'bundle':file_pin(target)},'Mutation sidecar lost its exact rejection or bytes')
     require(values['stale-project']=={'status':'rejected','boundary':'independent_originals','message':'Bundle original authority differs from the independently supplied current project'},'Stale project rejected at wrong boundary')
-    changed=deepcopy(packet['inputs']['baseline']);changed['limits']['horizon_tick']+=1
-    require(values['changed-limits']=={'status':'rejected','boundary':'exact_limits_projection','message':'Joined limits must exactly equal the complete original authority','original':changed},'Detached limit projection rejected at wrong boundary')
+    check_changed_limits(values['changed-limits'],packet['inputs']['baseline'])
     require(values['check-core']==values['check-verify'],'Fresh Core/Verify check mismatch')
     require(values['check-core']['report']==values['baseline-compile']['report'],'Fresh check changed the complete compiled assessment')
     require(values['replay-verify']['report']==values['baseline-compile']['report'],'Replay altered saved assessment')

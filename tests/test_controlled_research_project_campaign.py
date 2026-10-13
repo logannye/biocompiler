@@ -109,4 +109,20 @@ class ControlledResearchProjectCampaignTests(unittest.TestCase):
             self.assertEqual(changed['role_instances'][1-index],before['role_instances'][1-index])
         self.assertEqual(values['baseline-compile']['candidate'],candidate)
 
+    def test_changed_limits_requires_the_actual_typed_facade_boundary(self):
+        from biocompiler.core_client import CoreProtocolError
+        from biocompiler.policy.controlled_workflow import ControlledWorkflowRequest
+        original=campaign.checked_assets()['inputs']['baseline']
+        changed=deepcopy(original);changed['limits']['horizon_tick']+=1
+        with self.assertRaises(CoreProtocolError) as caught:
+            ControlledWorkflowRequest.from_request(changed)
+        self.assertEqual(str(caught.exception),'Workflow limits differ from complete original authority')
+        rejection={'status':'rejected','boundary':'exact_limits_projection','message':str(caught.exception),'original':changed}
+        campaign.check_changed_limits(rejection,original)
+        for change in ({'message':'Joined limits must exactly equal the complete original authority'},
+                       {'status':'accepted'},{'boundary':'native_rejection'},{'original':original},
+                       {'result':{'report':{'outcome':'pass'}}}):
+            with self.subTest(change=change),self.assertRaisesRegex(AssertionError,'wrong boundary'):
+                campaign.check_changed_limits({**rejection,**change},original)
+
 if __name__=='__main__':unittest.main()
