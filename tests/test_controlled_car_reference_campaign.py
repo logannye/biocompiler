@@ -35,6 +35,30 @@ class ControlledCarReferenceCampaignTests(unittest.TestCase):
         self.assertEqual(packet["project"].preflight().native_status, "not_run")
         self.assertEqual(packet["project"].controlled.native_status, "not_performed")
 
+    def test_identity_join_accepts_richer_native_authority_and_rejects_stale_source_or_run(self):
+        revision = "35deebfc5f8842bb33f80323e953627737af26b2"
+        identity = {"revision": revision, "head_revision": revision,
+                    "run_id": "38333487924", "run_attempt": "1"}
+        authority = {"revision": revision, "tree": "a" * 40,
+                     "run_id": "38333487924", "run_attempt": "1", "event": "push",
+                     "ref": "refs/heads/codex/dev-policy/public-reference-readiness",
+                     "repository": "example/biocompiler",
+                     "workflow_ref": "example/biocompiler/.github/workflows/policy-development.yml@refs/heads/codex/dev-policy/public-reference-readiness",
+                     "system": "Linux", "machine": "x86_64"}
+        before = deepcopy(authority)
+        campaign.check_native_identity(identity, authority)
+        self.assertEqual(authority, before)
+        self.assertNotEqual(set(identity), set(authority))
+        for field, value in (("revision", "b" * 40), ("head_revision", "b" * 40),
+                             ("run_id", "38333487925"), ("run_attempt", "2")):
+            with self.subTest(side="campaign", field=field), self.assertRaisesRegex(AssertionError, "identity differ"):
+                campaign.check_native_identity({**identity, field: value}, authority)
+            if field != "head_revision":
+                with self.subTest(side="native", field=field), self.assertRaisesRegex(AssertionError, "identity differ"):
+                    campaign.check_native_identity(identity, {**authority, field: value})
+        with self.assertRaisesRegex(AssertionError, "identity differ"):
+            campaign.check_native_identity(identity, {**authority, "event": "pull_request"})
+
     def test_changed_original_oracle_contract_or_local_source_cannot_enter_native(self):
         with tempfile.TemporaryDirectory() as directory:
             changed = Path(directory) / "project.json"

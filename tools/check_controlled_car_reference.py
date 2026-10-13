@@ -342,6 +342,16 @@ def expected_actions(values):
     return actions
 
 
+def check_native_identity(identity, native_identity):
+    """Join source/run pins to the richer identity of the push-only native lane."""
+    require(native_identity.get("event") == "push" and identity == {
+        "revision": native_identity.get("revision"),
+        "head_revision": native_identity.get("revision"),
+        "run_id": native_identity.get("run_id"),
+        "run_attempt": native_identity.get("run_attempt"),
+    }, "Campaign and same-run native source identity differ")
+
+
 def validate_receipt(receipt, folder, packet):
     """Recheck retained bytes and actual invocation correspondence, without execution."""
     from biocompiler.core_client import _response, _capabilities
@@ -350,8 +360,8 @@ def validate_receipt(receipt, folder, packet):
             "Incomplete campaign receipt")
     require(receipt["inputs"] == packet["pins"] and tuple(row["name"] for row in receipt["observations"]) == OBSERVATIONS,
             "Missing, reordered or stale observations")
-    require(receipt["script"] == file_pin(__file__) and receipt["identity"] == receipt["native_authority"]["identity"],
-            "Campaign script or same-run native source identity differs")
+    require(receipt["script"] == file_pin(__file__), "Campaign script changed")
+    check_native_identity(receipt["identity"], receipt["native_authority"]["identity"])
     require(receipt["empirical_status"] == receipt["human_use"] == "unassessed" and
             receipt["source_acquisition"] == "separately_audited_not_replayed_hosted", "Campaign evidence scope promoted")
     values = {}
