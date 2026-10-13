@@ -1132,7 +1132,9 @@
     ]
   },
   "authorized_input_import_contract": {
-    "implementation_status": "planned_for_separate_coherent_RC2_batch_not_implemented_here",
+    "implementation_status": "tracked_offline_fragment_importer_local_validation_only",
+    "implementation_path": "tools/import_controlled_car_reference.py",
+    "validation_record": "docs/public-reference-first-batch.md",
     "original_authority": [
       "wu-linked-patent-WO2014127261A1.pdf",
       "patent-us-publication.pdf",

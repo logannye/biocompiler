@@ -21,6 +21,12 @@ Software acceptance under supplied contracts does not require proof that those
 contracts hold in living cells. Empirical support, reference fidelity and
 permitted use remain separately reported dimensions.
 
+The [software release and public-data plan](public-data-release-roadmap.md)
+sets **product Milestone 5** as the release target, runs public-data
+qualification in parallel and defers new wet-lab work. Product milestones are
+separate from the RC1–RC8 engineering checkpoints below; all required hosted
+acceptance and integration gates remain in scope for the software release.
+
 ## Delivery outcome
 
 A researcher can author or load the program, supply one complete paired

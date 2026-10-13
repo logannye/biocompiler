@@ -1,0 +1,78 @@
+{
+  "schema": "biocompiler.public_reference_qualification_plan.v0.1",
+  "kind": "planning_metadata_only_not_admission_authority",
+  "assessment_date": "2026-10-12",
+  "release_target": "product_milestone_5",
+  "new_wet_lab_work": "deferred",
+  "qualification_track": "parallel_to_software_release",
+  "axis_definitions": [
+    "material_completeness",
+    "construct_to_assay_identity",
+    "context_endpoint_applicability"
+  ],
+  "references": [
+    {
+      "id": "WO2025096878A9-RM_61461-SEQ151",
+      "role": "reuse_existing_single_expression_baseline",
+      "public_source": "https://patents.google.com/patent/WO2025096878A9/en",
+      "local_record": "docs/car-rm61461-qualification.md",
+      "material_completeness": "complete_nominal_rna_with_explicit_designer_terminal_choice",
+      "construct_to_assay_identity": "patent_named_construct_association_donor_attribution_conflict_retained",
+      "context_endpoint_applicability": "source_reported_human_t_cell_ex_vivo_expression_and_coculture_not_controlled_two_rna_or_human_in_vivo",
+      "evaluation_role": "retrospective",
+      "next_action": "reuse_existing_pack_and_independent_source_checker_without_transferring_acceptance"
+    },
+    {
+      "id": "WO2025096878A9-RM_61321-SEQ113",
+      "role": "reuse_separately_owned_second_expression_reference",
+      "public_source": "https://patents.google.com/patent/WO2025096878A9/en",
+      "owned_branch": "codex/dev-policy/car-second-reference",
+      "inspected_revision": "11b6b6da94497fea9afae8dfa12dd900c7295f9f",
+      "record_at_revision": "docs/car-rm61321-qualification.md",
+      "material_completeness": "complete_nominal_rna_with_explicit_designer_terminal_choice",
+      "construct_to_assay_identity": "patent_named_construct_association_donor_attribution_conflict_retained",
+      "context_endpoint_applicability": "source_reported_human_t_cell_ex_vivo_expression_and_coculture_not_controlled_two_rna_or_human_in_vivo",
+      "evaluation_role": "retrospective",
+      "next_action": "preserve_owner_local_preparation_and_pending_native_installed_release_gates_then_reconcile"
+    },
+    {
+      "id": "WO2014127261A1-197-206",
+      "role": "controlled_release_material_critical_path",
+      "public_source": "https://patents.google.com/patent/WO2014127261A1/en",
+      "local_record": "data/car_controlled_reference/source-inventory.json",
+      "material_completeness": "literal_coding_fragments_and_products_no_complete_rnas",
+      "construct_to_assay_identity": "patent_pair_reported_wu_pair_identity_unresolved",
+      "context_endpoint_applicability": "source_reported_control_and_cytotoxicity_in_engineered_human_cd8_t_cells_not_proposed_two_mrna_adaptation_or_receptor_cessation_bounds",
+      "evaluation_role": "retrospective",
+      "next_action": "offline_import_then_independent_material_review_complete_rna_authority_and_adaptation_specific_contract"
+    },
+    {
+      "id": "WU2015-Ib-IId",
+      "role": "separate_mechanism_evidence",
+      "public_source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4721629/",
+      "local_record": "docs/car-controlled-reference-acquisition.md",
+      "material_completeness": "not_qualified_as_complete_rna_pair",
+      "construct_to_assay_identity": "paper_pair_named_no_exact_join_to_selected_patent_pair",
+      "context_endpoint_applicability": "ap21967_dependent_control_in_lentivirally_engineered_cells_killing_windows_not_rapid_signaling_cessation_bounds",
+      "evaluation_role": "retrospective",
+      "next_action": "preserve_separate_identity_and_only_transfer_claims_after_exact_join_and_scope_review"
+    },
+    {
+      "id": "HUNTER2025-improved-CAR2",
+      "role": "targeted_construct_identity_acquisition",
+      "public_source": "https://doi.org/10.1126/science.ads8473",
+      "material_completeness": "exact_complete_rna_identity_not_yet_qualified_here",
+      "construct_to_assay_identity": "related_patent_citation_does_not_join_named_rna",
+      "context_endpoint_applicability": "unassessed_pending_exact_construct_join",
+      "evaluation_role": "not_predeclared_held_out",
+      "next_action": "inspect_primary_supplements_and_construct_records_for_exact_identity_before_using_outcomes"
+    }
+  ],
+  "reuse_rules": {
+    "sequence_redistribution": "record_terms_separately_use_authorized_local_inputs_where_needed",
+    "source_bytes": "reuse_pinned_originals_do_not_duplicate_bulk_downloads",
+    "parameter_origins": ["measured", "source_derived", "designer_assumed", "unresolved"],
+    "held_out": "freeze_extraction_contracts_metrics_and_construct_assay_donor_or_source_family_partitions_before_outcomes",
+    "empirical_or_clinical_promotion": false
+  }
+}

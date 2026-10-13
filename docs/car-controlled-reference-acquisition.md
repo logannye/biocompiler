@@ -113,21 +113,32 @@ The ignored acquisition directory contains:
   #197/#206 reconstructions. The former deliberately lacks termination and is
   not a therapeutic RNA export.
 
-Exact hashes for these local artifacts are in the source inventory. Replay the
-check with ordinary Python from this checkout; no package install or native
-execution is involved:
+Exact hashes for these local artifacts are in the source inventory. The tracked
+offline importer now replays the four original input files using ordinary Python
+on macOS/Linux; no package install, network access or native execution is involved.
+Point it at the retained authorized-input directory. Keep output in an owned
+checkout and use a fresh path:
 
 ```text
-python3 generated/car-controlled-composition/reference-acquisition/check_patent_transcription.py
+mkdir -p generated/public-reference-readiness
+python3 -B tools/import_controlled_car_reference.py \
+  --inputs /absolute/path/to/retained/reference-acquisition \
+  --output generated/public-reference-readiness/fragment-import.json
 ```
 
-## Authorized-input import contract for a later RC2 batch
+The output is an inert metadata receipt with component/product hashes and exact
+spans, not a sequence export or an admitted molecular pack. The historical
+ignored checker and receipt remain acquisition evidence, not this tool's
+acceptance authority. The [first batch record](public-reference-first-batch.md)
+records fresh replay and local validation.
+
+## Authorized-input import contract
 
 Keep sequence-bearing assets as explicitly supplied local inputs while
 redistribution remains unassessed. An importer must accept the two raw pinned
 PDFs and both entered record files, check their pinned bytes before parsing,
-reject symlinks/path escape or extra/unbounded inputs, and replay the material
-checks rather than accept a saved PASS. Require exactly the recorded domains,
+reject symlink inputs/path escape or extra/unbounded requested authority, and
+replay the material checks rather than accept a saved PASS. Require exactly the recorded domains,
 tags, two distinct unnumbered linkers and fixed construct order. Record the
 literal/manual acquisition status, checks and explicit user input authority in
 the imported pack. Do not fetch, replace bases, strip tags, optimize codons,
@@ -138,8 +149,12 @@ original PDFs and transcription hashes in the inventory provide the expected
 authority. Product hashes in the receipt are derived checks, not substitutes
 for those original inputs. RNA-design input is a different required authority;
 an incomplete RNA manifest must fail admission even when material checks pass.
-This contract is recorded for a later implementation batch; no tracked importer
-or package data was added here.
+The tracked tool accepts only the four fixed file names, opens them relative to
+the supplied directory, and verifies their sizes and hashes against the tracked
+inventory before parsing either transcription. Other retained acquisition files
+are not consumed. Publication is atomic and never overwrites an existing path.
+No sequence-bearing package data is added. Fresh import still does not close
+complete RNA design, independent-person review or native admission.
 
 ## Exact outstanding two-RNA design inputs
 
@@ -196,10 +211,10 @@ values.
    primary pairing is established. Only a Wu-labeled reproduction needs
    the open I.b/II.d join and assay-variant mapping. This is not a mandatory
    dependency of the independently named patent reference.
-2. Carry the bounded manual reconciliation and its limitations into an
-   authorized-input import/check path, then obtain fresh material checking
-   against the original pins. This checkpoint checks the exact literal domains
-   and joins; it does not implement that importer or admit a molecular pack.
+2. The tracked authorized-input importer now replays the bounded reconciliation
+   against original pins and retains its acquisition limitations. Independent
+   source-transcription review or stronger original material authority remains
+   open; this consistency check does not admit a molecular pack.
    Do not guess bases, normalize synonymous linkers, infer missing junctions or
    silently repair later discrepancies. Complete CDS/RNA termination choices
    remain separately supplied adaptation inputs.
@@ -208,9 +223,9 @@ values.
    manifest-only features. No complete two-mRNA design has been verified here.
    Removing a reporter, supplying termination or adding transcript context is
    an explicit adaptation, not reproduction of the original molecular material.
-4. Record permitted redistribution for each acquired asset or provide an
-   authorized-input import path. Public accessibility, a patent citation and a
-   successful download are not affirmative asset-distribution permissions.
+4. Preserve the authorized-input route and record permitted redistribution
+   before bundling acquired assets. Public accessibility, a patent citation and
+   a successful download are not affirmative asset-distribution permissions.
    Rights remain unassessed; this checkpoint makes no freedom-to-operate claim.
 
 ## Conditional compilation and empirical status
