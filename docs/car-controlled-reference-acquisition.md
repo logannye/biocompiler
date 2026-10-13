@@ -9,6 +9,11 @@ molecular pack or a completed RNA design. It supports the
 The machine-readable record is
 [`source-inventory.json`](../data/car_controlled_reference/source-inventory.json).
 
+The subsequent [reference-pack batch](controlled-car-reference-pack.md) now
+prepares a separately named, complete nominal two-RNA adaptation and conditional
+controller/readout contract. This does not change what the original publications
+supplied, establish the adaptation experimentally, or complete native admission.
+
 Only metadata and this assessment are source files. Downloaded originals,
 retrieval failures and inspection derivatives remain under the ignored
 `generated/car-controlled-composition/reference-acquisition/` directory. Every
@@ -218,11 +223,11 @@ values.
    Do not guess bases, normalize synonymous linkers, infer missing junctions or
    silently repair later discrepancies. Complete CDS/RNA termination choices
    remain separately supplied adaptation inputs.
-3. Supply two complete RNA designs separately: exact regions, ordering, CDS
-   mappings, untranslated regions, end chemistry, tail specification and all
-   manifest-only features. No complete two-mRNA design has been verified here.
-   Removing a reporter, supplying termination or adding transcript context is
-   an explicit adaptation, not reproduction of the original molecular material.
+3. The separate `car197206-rna-v1` design supplies complete regions, ordering,
+   CDS mappings, chemistry and tails, with independent expected sequence/product
+   identities. Native validation remains pending. Supplying termination and
+   transplanting transcript context are explicit adaptations, not reproduction
+   of complete RNA material from the original controlled-CAR publication.
 4. Preserve the authorized-input route and record permitted redistribution
    before bundling acquired assets. Public accessibility, a patent citation and
    a successful download are not affirmative asset-distribution permissions.

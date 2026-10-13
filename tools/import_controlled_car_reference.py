@@ -210,7 +210,8 @@ def reconstruct(figures, listing, pins):
     return components, products
 
 
-def inspect(input_root, *, inventory_path=INVENTORY):
+def load_inputs(input_root, *, inventory_path=INVENTORY):
+    """Return freshly pinned immutable input bytes for one bounded invocation."""
     inventory_raw = _read(inventory_path, MAX_JSON_BYTES)
     pins = authority(inventory_raw)
     root = Path(input_root)
@@ -224,6 +225,11 @@ def inspect(input_root, *, inventory_path=INVENTORY):
     for name, raw in inputs.items():
         require(len(raw) == pins[name]["size_bytes"] and digest(raw) == pins[name]["sha256"], "Original input pin differs: " + name)
         require(name not in PDFS or raw.startswith(b"%PDF-"), "Original source lacks PDF signature")
+    return inventory_raw, pins, inputs
+
+
+def inspect(input_root, *, inventory_path=INVENTORY):
+    inventory_raw, pins, inputs = load_inputs(input_root, inventory_path=inventory_path)
     components, products = reconstruct(*(decode(inputs[name]) for name in ENTRIES), pins)
     report = {"schema": "biocompiler.controlled_car_fragment_import.v0.1", "reference": REFERENCE,
               "status": "fresh_literal_material_consistency_only", "input_pins": pins,

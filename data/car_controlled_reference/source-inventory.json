@@ -2,7 +2,16 @@
   "schema": "biocompiler.car_controlled_reference.source_inventory.v0.1",
   "inventory_kind": "provenance_metadata_only",
   "assessment_date": "2026-10-12",
-  "rc2_status": "partial_manual_patent_material_consistency_checked_complete_rna_designs_open",
+  "rc2_status": "original_fragments_checked_separate_nominal_adaptation_prepared_native_gate_open",
+  "separate_nominal_adaptation": {
+    "id": "car197206-rna-v1",
+    "status": "complete_design_and_conditional_contract_preparation_native_validation_pending",
+    "expected_material": "data/car_controlled_reference/rna-adaptation-expected.json",
+    "controller_readout": "data/car_controlled_reference/controller-readout-contract.json",
+    "preparation_tool": "tools/prepare_controlled_car_reference.py",
+    "record": "docs/controlled-car-reference-pack.md",
+    "changes_original_publication_to_complete_rna_evidence": false
+  },
   "reference_candidate": {
     "publication_doi": "10.1126/science.aab4077",
     "pmcid": "PMC4721629",

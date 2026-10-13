@@ -21,15 +21,17 @@ and this repository record describe the same release boundary.
 | Program | CD19-dependent CAR activity enabled by one external controller; cessation and reactivation within a declared finite domain. |
 | Molecular family | An explicitly designed two-mRNA adaptation of `WO2014127261A1-197-206`. Both products must be available in the same recipient. |
 | Recipient | One declared human CD8 T-cell context. Intended product deployment remains in vivo; each evidence record keeps its actual experimental context. |
-| Controller | External small molecule. AP21967 is proposed, not yet qualified for this exact adaptation. The selected patent record says rapalog; the Wu/AP21967 evidence cannot silently supply this join. |
-| Observable | A named signaling-activity readout with units, background/active bands and observation lag. Its exact observation map is open. Killing is a separate endpoint. |
-| Material | Exactly two complete coding RNAs, one product per member, complete nominal chemistry, no helper/controller RNA. The acquired coding fragments are incomplete RNA authority. |
+| Controller | External AP21967; the patent's Clontech catalog number is joined to the manufacturer record. Effective exposure in the new RNA adaptation is an explicit categorical assumption. |
+| Observable | Named latent modeled receptor/signaling activity with ordinal background/active bands and a one-tick freshness rule. No calibrated assay conversion is claimed; killing remains separate. |
+| Material | Exactly two complete coding RNAs, one product per member, complete nominal chemistry, no helper/controller RNA. The new `car197206-rna-v1` pack supplies explicit designs; source publications still supply only the original fragments. |
 | Editable intent | Five response deadlines, finite horizon, member/total RNA size ceilings and supported context declarations. Antigen, mechanism family and controller are fixed for this release. |
 | Release claim | Exact checked material plus conditional behavior under explicit contracts; public-evidence scope reported separately. |
 
-The exact controller binding and observation map are blockers for the real
-example, not defaults to be guessed. Background is a measured or explicitly
-assumed range, not biological zero. Cessation cannot reverse completed cellular
+The [reference-pack batch](controlled-car-reference-pack.md) freezes the
+controller identity and conditional model interface. All timing, effective
+availability and activity-band interpretations remain explicit uncalibrated
+scenario assumptions. A biological assay-to-model map remains unqualified.
+Background is not biological zero. Cessation cannot reverse completed cellular
 effects. No administration or dosing regimen is generated.
 
 ## Completion gates
@@ -143,13 +145,15 @@ Milestones 1–3; artificial examples remain explicitly labeled.
 
 ## Work batches and preservation
 
-1. **This batch:** offline import tool and adversarial tests; use-case record,
+1. **First batch, completed locally:** offline import tool and adversarial tests; use-case record,
    public qualification inventory and facade specification. Freshly replay the
    already retained originals. Keep imported metadata inert and incomplete.
-2. **Material/contract batch:** independently review transcription or obtain
+2. **Material/contract batch, nominal preparation complete:** independently review transcription or obtain
    stronger original authority; close complete RNA/design inputs and exact
    controller/readout binding. Keep source facts separate from adaptation
-   choices. Implement the real pack with independent expected outputs.
+   choices. The [prepared real pack](controlled-car-reference-pack.md) now has
+   independent expected outputs and an explicit conditional contract; hosted
+   native admission and independent-person transcription review remain open.
 3. **Researcher batch:** implement the facade, real starter/acquisition route,
    source-edit demonstrations and readable report through existing RC6.
 4. **Release batch:** freeze one integration candidate and complete Milestone 5

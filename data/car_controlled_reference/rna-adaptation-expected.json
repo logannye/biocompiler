@@ -1,0 +1,379 @@
+{
+  "schema_version": "biocompiler.controlled_car_rna_adaptation_expected.v0.1",
+  "adaptation_id": "WO2014127261A1-197-206:RM61461-context:single-UAA:v1",
+  "kind": "independent_expected_metadata_no_sequences",
+  "coordinates": "zero_based_half_open",
+  "original_input_pins": [
+    {
+      "name": "wu-linked-patent-WO2014127261A1.pdf",
+      "bytes": 6392682,
+      "sha256": "324d9d765144de730d1fa898abf57b4b516260ed0e2d8d82eedab4f541e2e397"
+    },
+    {
+      "name": "patent-us-publication.pdf",
+      "bytes": 8210417,
+      "sha256": "87565b78e73ad5778d6efabc1783e69daa53e25682f615f9b162954f78d96bb5"
+    },
+    {
+      "name": "patent-domain-transcription.json",
+      "bytes": 13656,
+      "sha256": "4e5436388a7ad3e299c7bc3fcc231c2613c6e4629d0c5dca0f1b143989fe97f4"
+    },
+    {
+      "name": "patent-listing-transcription.json",
+      "bytes": 8979,
+      "sha256": "90b5d45632af7685df893d8ddec77e0a6700ee268a04310395dda1cedd54b2ec"
+    },
+    {
+      "name": "23-1871-WO_SequenceListing.xml",
+      "bytes": 669450,
+      "sha256": "7df4fd171f285adc6e5d0b37442a8bc77ab1b28c275b04a52c822ed15e7b938e"
+    }
+  ],
+  "supporting_factual_pack": {
+    "path": "src/biocompiler/policy/data/car_rm61461_reference_v01.json",
+    "sha256": "dcf0b3fe174ee48f68623785663b16ce96ce87ad2bbacbd851369e9ba1b46079",
+    "role": "existing_qualified_source_attribution_not_substitute_for_original_XML"
+  },
+  "assembly_plan": {
+    "member_count": 2,
+    "order": [
+      "complete_SEQ11_5prime_UTR",
+      "exact_source_coding_fragment",
+      "single_designer_UAA_termination",
+      "complete_SEQ34_3prime_UTR",
+      "SEQ151_encoded_110_A_tail"
+    ],
+    "original_coding_fragments_preserved": true,
+    "tags_and_linkers_preserved": true,
+    "codon_optimization": false,
+    "new_initiator_or_kozak_bases": false,
+    "termination_provenance": "designer_supplied_single_UAA_not_historical_patent_terminal_sequence",
+    "double_stop_reused": false
+  },
+  "shared_regions": [
+    {
+      "role": "five_prime_utr",
+      "length_nt": 79,
+      "rna_sha256": "0f754ffb021fca9f4791eb91c7dedc8ae26285a6025d36e4971ea84bdd241544",
+      "authority_locator": "WO2025096878A9 SEQ11; SEQ151[0,79)"
+    },
+    {
+      "role": "single_stop",
+      "length_nt": 3,
+      "rna_sha256": "c2bf2f06324f983cf1501110f3c491bb6e70362c74b8263d1bb14f767d7dba9f",
+      "authority_locator": "Designer supplied; standard-code termination"
+    },
+    {
+      "role": "three_prime_utr",
+      "length_nt": 126,
+      "rna_sha256": "1beae69ea89ae065b69438bfbfdd83663c567970e59fc22aad475058f2529acd",
+      "authority_locator": "WO2025096878A9 SEQ34; SEQ151[1540,1666)"
+    },
+    {
+      "role": "encoded_poly_a",
+      "length_nt": 110,
+      "rna_sha256": "50968cf735e3f6a47834ae3745816234f72fd156aef1bec4b6a7d3a3151773bc",
+      "authority_locator": "WO2025096878A9 SEQ151[1666,1776)"
+    }
+  ],
+  "members": [
+    {
+      "construct": "197",
+      "rna_nt": 1830,
+      "rna_sha256": "b222d0b58b6de3349f1afe3c70e7d82f2099e5865d3e753b4aa02ff6ee9d0953",
+      "source_coding_fragment_dna_nt": 1512,
+      "source_coding_fragment_dna_sha256": "9db5b2beadc78efbdcc32ac5e0a5d98b93cc6edd5fc094262d28dba3abe2ddea",
+      "source_coding_fragment_rna_sha256": "53f548aa6e3c9856947113dbff8aecd4ef1555d3455861ff971b2820c1e555ec",
+      "protein_aa": 504,
+      "protein_sha256": "15c4999ca0be97c3bdf1180bdf1bd3d43a3d812f08b25651e17b840fc6e29513",
+      "product_content_fingerprint": "ae31c5c3a386b7681eddb8ced8410317fca6b14330ee7733197cac6d5fba23d0",
+      "product_content_schema_version": "biocompiler.policy_mrna_product_content.v0.1",
+      "product_content_encoding": "UTF8_canonical_sorted_keys_compact_JSON_no_newline",
+      "regions": [
+        {
+          "role": "five_prime_utr",
+          "start": 0,
+          "end": 79,
+          "rna_sha256": "0f754ffb021fca9f4791eb91c7dedc8ae26285a6025d36e4971ea84bdd241544"
+        },
+        {
+          "role": "orf_excluding_stop",
+          "start": 79,
+          "end": 1591,
+          "rna_sha256": "53f548aa6e3c9856947113dbff8aecd4ef1555d3455861ff971b2820c1e555ec"
+        },
+        {
+          "role": "single_stop",
+          "start": 1591,
+          "end": 1594,
+          "rna_sha256": "c2bf2f06324f983cf1501110f3c491bb6e70362c74b8263d1bb14f767d7dba9f"
+        },
+        {
+          "role": "three_prime_utr",
+          "start": 1594,
+          "end": 1720,
+          "rna_sha256": "1beae69ea89ae065b69438bfbfdd83663c567970e59fc22aad475058f2529acd"
+        },
+        {
+          "role": "encoded_poly_a",
+          "start": 1720,
+          "end": 1830,
+          "rna_sha256": "50968cf735e3f6a47834ae3745816234f72fd156aef1bec4b6a7d3a3151773bc"
+        }
+      ],
+      "coding_region_including_single_stop": {
+        "start": 79,
+        "end": 1594
+      },
+      "domain_spans": [
+        {
+          "block_id": "1",
+          "rna_start": 79,
+          "rna_end": 142,
+          "source_figure": "8A",
+          "source_pdf_page_one_based": 90,
+          "source_dna_sequence_id": 1,
+          "source_protein_sequence_id": 2
+        },
+        {
+          "block_id": "3",
+          "rna_start": 142,
+          "rna_end": 172,
+          "source_figure": "8A",
+          "source_pdf_page_one_based": 90,
+          "source_dna_sequence_id": 3,
+          "source_protein_sequence_id": 4
+        },
+        {
+          "block_id": "5",
+          "rna_start": 172,
+          "rna_end": 898,
+          "source_figure": "8A",
+          "source_pdf_page_one_based": 90,
+          "source_dna_sequence_id": 5,
+          "source_protein_sequence_id": 6
+        },
+        {
+          "block_id": "7",
+          "rna_start": 898,
+          "rna_end": 1105,
+          "source_figure": "8B",
+          "source_pdf_page_one_based": 91,
+          "source_dna_sequence_id": 7,
+          "source_protein_sequence_id": 8
+        },
+        {
+          "block_id": "197-short-linker",
+          "rna_start": 1105,
+          "rna_end": 1111,
+          "source_figure": "8B",
+          "source_pdf_page_one_based": 91,
+          "source_dna_sequence_id": null,
+          "source_protein_sequence_id": null
+        },
+        {
+          "block_id": "23",
+          "rna_start": 1111,
+          "rna_end": 1237,
+          "source_figure": "8B",
+          "source_pdf_page_one_based": 91,
+          "source_dna_sequence_id": 23,
+          "source_protein_sequence_id": 24
+        },
+        {
+          "block_id": "19",
+          "rna_start": 1237,
+          "rna_end": 1267,
+          "source_figure": "8B",
+          "source_pdf_page_one_based": 91,
+          "source_dna_sequence_id": 19,
+          "source_protein_sequence_id": 20
+        },
+        {
+          "block_id": "11",
+          "rna_start": 1267,
+          "rna_end": 1591,
+          "source_figure": "8B",
+          "source_pdf_page_one_based": 91,
+          "source_dna_sequence_id": 11,
+          "source_protein_sequence_id": 12
+        }
+      ],
+      "maximal_terminal_A_run_nt": 111,
+      "encoded_tail_nt": 110,
+      "id": "car197"
+    },
+    {
+      "construct": "206",
+      "rna_nt": 2097,
+      "rna_sha256": "dcb106b01b02357b0604349b8a0f81f8ce35f14ba19d0e1ac90c58ea1a5bfc7b",
+      "source_coding_fragment_dna_nt": 1779,
+      "source_coding_fragment_dna_sha256": "55b4858cd32d96f421206bdb68256176d03d19652b72034625226c487b579299",
+      "source_coding_fragment_rna_sha256": "969001c0b1ceb3dd54527d674350eade67df625fbc2baca33a880ef6cf12dc26",
+      "protein_aa": 593,
+      "protein_sha256": "86d60b35c58fa5562df9fd780a5d9914eec45510febc67e54cece2a040b7f472",
+      "product_content_fingerprint": "fbe0f4a7c4a8ae0744cf9a8d241c6f812b695ce8499c687f7bee999ef2cd67f4",
+      "product_content_schema_version": "biocompiler.policy_mrna_product_content.v0.1",
+      "product_content_encoding": "UTF8_canonical_sorted_keys_compact_JSON_no_newline",
+      "regions": [
+        {
+          "role": "five_prime_utr",
+          "start": 0,
+          "end": 79,
+          "rna_sha256": "0f754ffb021fca9f4791eb91c7dedc8ae26285a6025d36e4971ea84bdd241544"
+        },
+        {
+          "role": "orf_excluding_stop",
+          "start": 79,
+          "end": 1858,
+          "rna_sha256": "969001c0b1ceb3dd54527d674350eade67df625fbc2baca33a880ef6cf12dc26"
+        },
+        {
+          "role": "single_stop",
+          "start": 1858,
+          "end": 1861,
+          "rna_sha256": "c2bf2f06324f983cf1501110f3c491bb6e70362c74b8263d1bb14f767d7dba9f"
+        },
+        {
+          "role": "three_prime_utr",
+          "start": 1861,
+          "end": 1987,
+          "rna_sha256": "1beae69ea89ae065b69438bfbfdd83663c567970e59fc22aad475058f2529acd"
+        },
+        {
+          "role": "encoded_poly_a",
+          "start": 1987,
+          "end": 2097,
+          "rna_sha256": "50968cf735e3f6a47834ae3745816234f72fd156aef1bec4b6a7d3a3151773bc"
+        }
+      ],
+      "coding_region_including_single_stop": {
+        "start": 79,
+        "end": 1861
+      },
+      "domain_spans": [
+        {
+          "block_id": "27",
+          "rna_start": 79,
+          "rna_end": 223,
+          "source_figure": "9A",
+          "source_pdf_page_one_based": 92,
+          "source_dna_sequence_id": 27,
+          "source_protein_sequence_id": 28
+        },
+        {
+          "block_id": "29",
+          "rna_start": 223,
+          "rna_end": 295,
+          "source_figure": "9A",
+          "source_pdf_page_one_based": 92,
+          "source_dna_sequence_id": 29,
+          "source_protein_sequence_id": 30
+        },
+        {
+          "block_id": "206-short-linker",
+          "rna_start": 295,
+          "rna_end": 301,
+          "source_figure": "9A",
+          "source_pdf_page_one_based": 92,
+          "source_dna_sequence_id": null,
+          "source_protein_sequence_id": null
+        },
+        {
+          "block_id": "23",
+          "rna_start": 301,
+          "rna_end": 427,
+          "source_figure": "8B",
+          "source_pdf_page_one_based": 91,
+          "source_dna_sequence_id": 23,
+          "source_protein_sequence_id": 24
+        },
+        {
+          "block_id": "31",
+          "rna_start": 427,
+          "rna_end": 475,
+          "source_figure": "9A",
+          "source_pdf_page_one_based": 92,
+          "source_dna_sequence_id": 31,
+          "source_protein_sequence_id": 32
+        },
+        {
+          "block_id": "33",
+          "rna_start": 475,
+          "rna_end": 754,
+          "source_figure": "9B",
+          "source_pdf_page_one_based": 93,
+          "source_dna_sequence_id": 33,
+          "source_protein_sequence_id": 34
+        },
+        {
+          "block_id": "15",
+          "rna_start": 754,
+          "rna_end": 784,
+          "source_figure": "9B",
+          "source_pdf_page_one_based": 93,
+          "source_dna_sequence_id": 15,
+          "source_protein_sequence_id": 16
+        },
+        {
+          "block_id": "17",
+          "rna_start": 784,
+          "rna_end": 1120,
+          "source_figure": "9B",
+          "source_pdf_page_one_based": 93,
+          "source_dna_sequence_id": 17,
+          "source_protein_sequence_id": 18
+        },
+        {
+          "block_id": "19",
+          "rna_start": 1120,
+          "rna_end": 1150,
+          "source_figure": "8B",
+          "source_pdf_page_one_based": 91,
+          "source_dna_sequence_id": 19,
+          "source_protein_sequence_id": 20
+        },
+        {
+          "block_id": "21",
+          "rna_start": 1150,
+          "rna_end": 1858,
+          "source_figure": "9C",
+          "source_pdf_page_one_based": 94,
+          "source_dna_sequence_id": 21,
+          "source_protein_sequence_id": 22
+        }
+      ],
+      "maximal_terminal_A_run_nt": 111,
+      "encoded_tail_nt": 110,
+      "id": "car206"
+    }
+  ],
+  "chemistry_design": {
+    "kind": "designer_adopted_nominal_chemistry_not_source_verified_for_adaptation",
+    "five_prime_cap": "Cap1_Cap_AG_m7G_5prime_ppp_5prime_2primeOMeA_pG",
+    "cap_anchor": "WO2025096878A9 [00408]",
+    "uridine_replacement": "all_uridines_N1_methylpseudouridine",
+    "position_zero": "2prime_O_methyladenosine",
+    "three_prime_end": "designer_supplied_3prime_hydroxyl",
+    "modification_inventory": "declared_complete_no_additional_modifications",
+    "tail": "represented_terminal_exact_110_A"
+  },
+  "independent_arithmetic": {
+    "runtime": "CPython 3.11.15, preinstalled macOS aarch64 interpreter",
+    "method": "Original XML entries and separately entered printed listing DNA; compare figure DNA and protein records; independently concatenate fixed order and translate standard code; no producer or product implementation imported.",
+    "producer_output_used_as_expected": false,
+    "independent_person_pixel_review": false,
+    "supported_version_test_or_native_validation": false,
+    "supported_python_arithmetic_replay": true
+  },
+  "evidence_limits": [
+    "New cross_source_nominal_RNA_design_not_published_complete_controlled_RNA",
+    "Same_operator_visual_transcription_remains_trusted_acquisition_step",
+    "Unprocessed_full_translation_products_include_source_tags_and_signal_sequences",
+    "Expression_processing_localization_and_controller_function_of_adaptation_unassessed",
+    "Wu2015_pair_identity_not_established",
+    "No_native_compiler_or_release_acceptance",
+    "No_human_use_admission_or_new_experimental_evidence"
+  ]
+}

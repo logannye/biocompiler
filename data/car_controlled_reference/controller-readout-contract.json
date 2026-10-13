@@ -1,0 +1,220 @@
+{
+  "schema_version": "biocompiler.controlled_car_reference_contract.v0.1",
+  "id": "WO2014127261A1-197-206-rna-adaptation-control",
+  "version": "1",
+  "reference_identity": "WO2014127261A1-197-206",
+  "claim_scope": "supplied_conditional_receptor_activity_model_only",
+  "intended_target": {
+    "species": "human",
+    "recipient_class": "immune",
+    "lineage": "T_cell",
+    "subtype": "CD8_T_cell",
+    "route": "in_vivo",
+    "co_delivery": "same_recipient",
+    "empirical_status": "unassessed"
+  },
+  "evidence_classification": {
+    "allowed_origins": ["measured", "source_derived", "designer_assumed", "unresolved"],
+    "measured_records": [],
+    "measured_records_limit": "No new measurements or calibrated kinetics are supplied. Public reports are recorded as source_derived claims with their original experiment context."
+  },
+  "sources": [
+    {
+      "id": "wu-linked-patent-WO2014127261A1.html",
+      "locator": "https://patents.google.com/patent/WO2014127261A1/en",
+      "version": "2014-08-21",
+      "sha256": "c507932c815e06fb116ea5452960b37276d4d19ee52fc2626cde1949e5536b42",
+      "role": "Public patent report of selected pair and controller catalog identity; not RNA-adaptation kinetics.",
+      "reuse_terms": "Public source retained as authorized local input; redistribution rights unassessed; original bytes not bundled."
+    },
+    {
+      "id": "clontech-heterodimerization-citations-2012.pdf",
+      "locator": "https://takara.co.kr/file/manual/pdf/heteroCitations_FL_633289_0212_IN.pdf",
+      "version": "2012-02",
+      "sha256": "7fe04c5c881eec85e64d50fd8604c1bd0fc7d050a146c4c6c1fcbfc9ccc519e3",
+      "role": "Manufacturer catalog identity join for AP21967 and A/C Heterodimerizer catalog 635055.",
+      "reuse_terms": "Copyright 2012 Clontech; public source retained locally, not redistributed. Product and publication rights are not inferred from availability."
+    },
+    {
+      "id": "wu-2015-pmc.html",
+      "locator": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4721629/",
+      "version": "2015-science-aab4077",
+      "sha256": "89bad8a5539434627e8a6c674d15a2eba84c98cd2dd4f00e0f461927f6a1d79f",
+      "role": "Separate mechanism background and evidence-scope limits; no sequence or kinetic evidence transfer to the patent pair.",
+      "reuse_terms": "Public source retained as authorized local input; redistribution rights unassessed; original bytes not bundled."
+    }
+  ],
+  "source_assets": [
+    {
+      "source_id": "wu-linked-patent-WO2014127261A1.html",
+      "asset_name": "wu-linked-patent-WO2014127261A1.html",
+      "inventory": "data/car_controlled_reference/source-inventory.json",
+      "size_bytes": 1299195,
+      "inspection": "Existing retained bytes rehashed; primary patent paragraphs 00276, 00277 and 00282 reviewed."
+    },
+    {
+      "source_id": "clontech-heterodimerization-citations-2012.pdf",
+      "asset_name": "clontech-heterodimerization-citations-2012.pdf",
+      "local_path": "generated/public-reference-readiness/clontech-heterodimerization-citations-2012.pdf",
+      "size_bytes": 553980,
+      "acquisition_limit_bytes": 1048576,
+      "media_signature": "%PDF-1.3",
+      "inspection": "PDF page 1 rendered and visually inspected, including the product table and manufacturer notice."
+    },
+    {
+      "source_id": "wu-2015-pmc.html",
+      "asset_name": "wu-2015-pmc.html",
+      "inventory": "data/car_controlled_reference/source-inventory.json",
+      "size_bytes": 206529,
+      "inspection": "Existing retained bytes rehashed; Figure 2 and the results paragraphs describing the three-stage killing experiment reviewed."
+    }
+  ],
+  "controller": {
+    "id": "AP21967",
+    "source_label": "A/C Heterodimerizer",
+    "source_catalog": "Clontech 635055",
+    "identity_origin": "source_derived",
+    "identity_join": [
+      {
+        "source_id": "wu-linked-patent-WO2014127261A1.html",
+        "locator": "Example 1, paragraphs [00276]-[00277]",
+        "claim": "The source identifies its rapalog as A/C Heterodimerizer, Clontech catalog 635055."
+      },
+      {
+        "source_id": "clontech-heterodimerization-citations-2012.pdf",
+        "locator": "PDF page 1, introductory paragraph and product table",
+        "claim": "The manufacturer maps AP21967 to A/C Heterodimerizer, including catalog 635055."
+      }
+    ],
+    "identity_limit": "Catalog-name identity only; no chemical analysis of the original experimental lot or sequence identity join to Wu I.b/II.d.",
+    "scope": "executor",
+    "physical_values": ["disabled", "enabled"],
+    "physical_input_meaning": "Supplied effective controller exposure at the modeled receptor, without a numerical concentration threshold.",
+    "exposure_mapping_origin": "designer_assumed",
+    "is_rna_member": false,
+    "dosing_or_administration_contract": null
+  },
+  "readout": {
+    "id": "latent_controlled_receptor_activity",
+    "physical_bands": ["background", "active"],
+    "scope": "executor",
+    "meaning": "Two categorical bands of the supplied receptor-activity state; neither band is a calibrated experimental endpoint.",
+    "origin": "designer_assumed",
+    "numeric_threshold": null,
+    "assay_conversion": null,
+    "background_means_zero_cytotoxicity": false,
+    "reported_source_endpoint": {
+      "origin": "source_derived",
+      "source_id": "wu-linked-patent-WO2014127261A1.html",
+      "locator": "Figure 15; paragraphs [00277] and [00282]",
+      "constructs": ["197", "206"],
+      "context": "Lentivirally engineered human primary CD8 T cells; cognate CD19 and noncognate target-cell comparison.",
+      "endpoint": "Reported drug-dependent cytotoxicity from target-cell survival measurements.",
+      "transfer_to_modeled_receptor_bands": "unresolved"
+    }
+  },
+  "mechanism": {
+    "profile": "deterministic_delay",
+    "origin": "designer_assumed",
+    "gate": ["antigen_present", "controller_enabled", "protein_197_available", "protein_206_available"],
+    "antigen_identity": "human_CD19",
+    "antigen_identity_origin": "source_derived",
+    "antigen_threshold_origin": "designer_assumed",
+    "antigen_scope": "encounter_generation",
+    "controller_and_activity_scope": "executor",
+    "semantics": [
+      "All four gate inputs must qualify for delayed activation.",
+      "Disabling is processed before activation.",
+      "A committed cessation timer survives restoration of its gate inputs.",
+      "Reactivation has its own supplied delay.",
+      "Encounter end or reset does not reset executor-owned controller or activity state.",
+      "RNA presence and functional protein availability are independent supplied inputs; RNA loss alone does not trigger protein-dependent cessation."
+    ]
+  },
+  "scenario": {
+    "clock_seconds_per_tick": 1,
+    "horizon_tick": 10,
+    "intervention_cutoff_tick": 6,
+    "freshness_ticks": 1,
+    "initial_activity": "background",
+    "actual_delays": {
+      "onset_ticks": 1,
+      "cessation_ticks": 1,
+      "reactivation_ticks": 1
+    },
+    "requested_deadlines": {
+      "onset_ticks": 2,
+      "controller_off_ticks": 2,
+      "antigen_off_ticks": 2,
+      "component_off_ticks": 2,
+      "reactivation_ticks": 2
+    }
+  },
+  "scenario_origin": "designer_assumed",
+  "scenario_limit": "The one-second clock is an arbitrary physical-time instantiation for software checking. It is not a measured or predicted one-second biological response. Actual delays and independently authored source deadlines remain distinct authorities; public assay windows supply neither.",
+  "observation_contract": {
+    "origin": "designer_assumed",
+    "schedule": "One executor-owned readout evidence sample per integer tick from zero through the horizon, with explicit status and observed tick.",
+    "freshness": "The scenario freshness applies to all six input channels and the activity readout; valid, missing and stale evidence retain RC5 semantics.",
+    "status_limit": "Valid means supplied software observation evidence in this scenario, not a laboratory measurement.",
+    "missingness": "Unknown required evidence does not rewrite physical inputs, cancel transitions or establish absence.",
+    "scope": "Complete declared finite domain only; no numerical biological simulation."
+  },
+  "assumptions": [
+    "Both designer-supplied RNA members reach the same declared human CD8 T-cell executor in the intended in-vivo deployment; delivery is not demonstrated.",
+    "Each supplied protein-availability input represents sufficient correctly localized functional product at the cell surface; it is independent of the corresponding cytoplasmic RNA-presence input.",
+    "Effective AP21967 exposure is supplied categorically; concentration thresholds, pharmacokinetics, dosing and administration are outside this model.",
+    "The two products follow the supplied reversible delayed-AND abstraction; applying that abstraction to this RNA adaptation is unassessed.",
+    "Background and active are uncalibrated model bands and are not measured target-cell killing, cytokine release or clinical benefit; background does not mean zero cytotoxicity.",
+    "Actual delays of one tick and requested deadlines of two ticks are independently supplied modeling choices, not values extracted from public experiments.",
+    "The one-second-per-tick clock, ten-tick horizon, six-tick intervention cutoff and one-tick freshness bound are uncalibrated software-scenario assumptions and make no biological timing prediction.",
+    "Cessation of modeled receptor activity neither reverses earlier target-cell injury nor guarantees cessation of downstream cellular effects.",
+    "Categorical availability does not quantify protein concentration, expression, member ratio or molecular stoichiometry and cannot discharge requirements for those quantities.",
+    "The patent-pair identity is retained without asserting sequence identity with Wu I.b plus II.d; no Wu kinetic or assay evidence is transferred to this adaptation."
+  ],
+  "unsupported_quantitative_requests": [
+    "controller_concentration_or_exposure_threshold",
+    "rna_copy_number_or_delivery_fraction",
+    "protein_expression_or_surface_abundance",
+    "member_expression_ratio_or_molecular_stoichiometry",
+    "calibrated_cytotoxicity_or_cytokine_output",
+    "patient_dose_or_administration_schedule"
+  ],
+  "unsupported_request_policy": "Preserve such requirements as unsupported; binary availability, nominal resource capacities and this scenario cannot satisfy them.",
+  "unresolved_obligations": [
+    {
+      "id": "two-rna-in-vivo-applicability",
+      "origin": "unresolved",
+      "claim": "Same-recipient delivery, translation, localization, availability and function of the two-RNA adaptation in human CD8 T cells in vivo.",
+      "empirical_status": "unassessed"
+    },
+    {
+      "id": "calibrated-activity-and-reversibility",
+      "origin": "unresolved",
+      "claim": "Adaptation-specific observation thresholds, background, onset, cessation and reactivation kinetics.",
+      "empirical_status": "unassessed"
+    },
+    {
+      "id": "wu-patent-exact-construct-join",
+      "origin": "unresolved",
+      "claim": "Exact sequence and assay-variant identity between the patent pair and Wu I.b/II.d.",
+      "source_id": "wu-2015-pmc.html",
+      "locator": "Figure 2A-B; Results on three-stage on/off/on killing, referencing Figure S8",
+      "limit": "The reported 36-hour killing stages are not receptor-shutdown bounds and do not calibrate this contract."
+    },
+    {
+      "id": "therapeutic-and-clinical-efficacy",
+      "origin": "unresolved",
+      "claim": "Therapeutic function, clinical safety and human-use admission.",
+      "empirical_status": "unassessed"
+    }
+  ],
+  "validation_boundary": {
+    "native_profile": "biocompiler.policy_controlled_composition_mrna.v0.1",
+    "native_validation_environment": "hosted_only",
+    "requires_fresh_material_and_behavior_checks": true,
+    "saved_pass_is_authority": false,
+    "empirical_validation_required_for_conditional_software_check": false,
+    "conditional_check_establishes_empirical_function": false
+  }
+}

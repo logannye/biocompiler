@@ -40,11 +40,11 @@
       "role": "controlled_release_material_critical_path",
       "public_source": "https://patents.google.com/patent/WO2014127261A1/en",
       "local_record": "data/car_controlled_reference/source-inventory.json",
-      "material_completeness": "literal_coding_fragments_and_products_no_complete_rnas",
+      "material_completeness": "source_supplies_fragments_separate_complete_nominal_two_rna_adaptation_prepared",
       "construct_to_assay_identity": "patent_pair_reported_wu_pair_identity_unresolved",
       "context_endpoint_applicability": "source_reported_control_and_cytotoxicity_in_engineered_human_cd8_t_cells_not_proposed_two_mrna_adaptation_or_receptor_cessation_bounds",
       "evaluation_role": "retrospective",
-      "next_action": "offline_import_then_independent_material_review_complete_rna_authority_and_adaptation_specific_contract"
+      "next_action": "hosted_native_validation_of_prepared_car197206_rna_v1_and_conditional_contract_then_researcher_facade"
     },
     {
       "id": "WU2015-Ib-IId",
