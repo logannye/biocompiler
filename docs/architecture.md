@@ -1,5 +1,11 @@
 # Architecture
 
+For current architectural commitments, use the [charter](architecture-charter.md),
+[capability matrix](capability-matrix.md) and
+[refactoring roadmap](architecture-refactoring-roadmap.md). This document retains
+earlier implementation snapshots; their statements about migration or pending
+validation apply to their named profiles and checkpoints, not all current paths.
+
 The [bounded policy instance profile](policy-instance-composition-v0.1.md) is the
 current core implementation increment: named component instances, typed links,
 whole-root material joins and independent whole-program checking. It preserves

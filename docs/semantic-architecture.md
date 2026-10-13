@@ -1,5 +1,11 @@
 # Therapeutic specifications as checked programs
 
+The [architecture charter](architecture-charter.md) defines the cross-layer
+invariants. Use the [capability matrix](capability-matrix.md) for current bounded
+support and the [refactoring roadmap](architecture-refactoring-roadmap.md) for
+the target architecture and its migration gates. The detailed semantic profiles
+below retain their own versioned contracts.
+
 Python is the authoring language. The versioned policy language is the semantic
 contract. A Python class layout, callback or package version is not that contract:
 the closed wire specification identifies the records and their fields, while

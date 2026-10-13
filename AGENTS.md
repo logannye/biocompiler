@@ -1,5 +1,44 @@
 # Working on biocompiler
 
+## Architecture contract for future work
+
+The [architecture charter](docs/architecture-charter.md) governs new design and
+refactoring decisions. Start with the [capability matrix](docs/capability-matrix.md)
+to distinguish authoring, executable support, molecular realization, export and
+evidence. Follow the [refactoring roadmap](docs/architecture-refactoring-roadmap.md)
+for priorities and acceptance criteria, and the proportional
+[review criteria](docs/architecture-review.md) for each affected boundary.
+These documents set design requirements; they do not certify existing profiles
+or supersede their versioned contracts and exact-revision validation records.
+
+- Preserve all source obligations through every pass. Separate faithful
+  translation, satisfaction of a requirement under a model, exact molecular
+  identity, empirical support and human-use admission in reports and exports.
+- Keep cell-accessible observations separate from physical state and evaluator
+  evidence. Make time, uncertainty, scope, units, state ownership, resource use
+  and assumption dependencies explicit wherever a supported claim needs them.
+- Prefer shared typed representations and explicit capability constraints over
+  an example-specific compiler/profile. A new reference normally supplies data
+  to existing passes. Version a profile when its semantic contract changes;
+  record unsupported combinations rather than suggesting arbitrary composition.
+- Keep proposal/search and independent acceptance separate. A source hash,
+  producer verdict, favorable simulation or shared expected-output fixture is
+  not independent authority. Make material feasibility part of implementation
+  selection; separate candidate validity from search completeness/optimality.
+- For semantic, admission, selection, material or report changes, identify the
+  affected charter IDs and capability rows, update them or explain why their
+  boundaries remain unchanged, and add independently specified positive and
+  adversarial checks appropriate to the change. Update an ADR for changes to a
+  trust boundary or a deliberate architectural deviation. Documentation-only
+  corrections need only link/consistency checks, not a new ADR or native build.
+- Run `python -B tools/check_architecture_governance.py` locally for changes to
+  this guidance. CI also checks document references and principle coverage.
+  That check is documentation integrity only, not semantic or release acceptance.
+- Work incrementally through the roadmap; preserve existing APIs, rejection
+  behavior, frozen authorities and active worktree ownership until a versioned,
+  independently checked migration replaces them. Never rewrite old evidence to
+  make a new design appear already validated.
+
 Current product clarification, 2026-09-30: therapeutic program design is the
 input and corresponding payload RNA sequences are the output. New product work
 targets human immune cells engineered in vivo and RNA genetic payloads only.
@@ -115,8 +154,10 @@ running checks unless a necessary correction changes the tested revision.
 
 ## Native build storage
 
-Production semantic paths currently use Python; the accepted migration adds an
-experimental OCaml core and TypeScript Studio sources. Follow
+Semantic authority is profile-specific: migrated operations use the OCaml core;
+older Python workflows retain their explicitly documented scope. TypeScript
+owns Studio presentation. Consult the capability matrix rather than treating
+historical migration snapshots as a blanket authority declaration. Follow
 `docs/language-migration-roadmap.md` and `protocol/core-v1.md`; do not promote
 structural intent validation into translation acceptance or silently switch an
 unmigrated operation's authority. Keep editing and static work local, and run
