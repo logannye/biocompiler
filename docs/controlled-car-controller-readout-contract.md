@@ -100,6 +100,15 @@ source-derived observations in their original context; every numerical model
 parameter is designer-assumed. Exact molecule construction, finite-domain
 behavior checking and empirical qualification remain separate results.
 
+Contract version 2 adds an explicit nominal translation premise as the eleventh
+assumption. The selected implementation depends on the exact model definition
+`biocompiler.controlled.nominal_translation.v1`: standard-code translation with
+one stop, projecting declared N1-methylpseudouridine at canonical U positions
+to parent U for nominal sequence comparison. This is a separate conditional
+structural interpretation; physical translation, processing and expression
+remain unmeasured. The existing ordinary structural route keeps its rejection
+of modified coding regions. The RNA and encoded-protein identities are unchanged.
+
 The native helper must preserve complete material product pins, these original
 assumptions and the contract's whole-file identity in the researcher project.
 The six-field `sources` rows can enter native project context directly; the

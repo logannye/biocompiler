@@ -47,8 +47,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (71, 2113, 307, 17, 50))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 779,
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (71, 2115, 307, 17, 50))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 781,
             'independent_expansion': 28, 'shared_invariant': 947, 'source_only': 353})
         self.assertEqual(len(self.ledger['syntax_links']), 370)
         self.assertEqual(len(self.ledger['witnesses']), 308)
@@ -71,7 +71,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         digest = c.digest(json.dumps(metadata, ensure_ascii=True, sort_keys=True,
             separators=(',', ':'), allow_nan=False).encode())
         with patch.object(c, 'REVIEWED_METADATA_SHA256', digest):
-            with self.assertRaisesRegex(c.ApiCoverageError, 'Joined workflow must preserve'):
+            with self.assertRaisesRegex(c.ApiCoverageError, 'Controlled nominal reader must preserve'):
                 c.validate(self.root, self.ledger)
 
     def test_discovery_is_inert_even_for_source_with_executable_statements(self):
@@ -82,7 +82,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 2113)
+        self.assertEqual(len(found['entries']), 2115)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
 
@@ -254,7 +254,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
     def before_controlled_workflow(self):
         projected = copy.deepcopy(self.ledger)
         projected['coverage'] = {key: row for key, row in projected['coverage'].items()
-            if not key.startswith(c.CONTROLLED_WORKFLOW_PREFIXES) and key not in c.CONTROLLED_WORKFLOW_ADDITIONS}
+            if not key.startswith(c.CONTROLLED_WORKFLOW_PREFIXES) and key not in c.CONTROLLED_WORKFLOW_ADDITIONS
+            and key not in c.CONTROLLED_NOMINAL_DEPENDENCIES}
         projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
             if not key.startswith('controlled_rc6.')}
         return projected
@@ -487,7 +488,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
                              separators=(',', ':'), allow_nan=False).encode('utf-8')
         with patch.object(c, 'REVIEWED_METADATA_SHA256', c.digest(encoded)):
-            with self.assertRaisesRegex(c.ApiCoverageError, 'Joined workflow must preserve'):
+            with self.assertRaisesRegex(c.ApiCoverageError, 'Controlled nominal reader must preserve'):
                 c.validate(self.root, self.ledger)
 
     def test_project_sources_body_drift_rejects_after_file_repin(self):

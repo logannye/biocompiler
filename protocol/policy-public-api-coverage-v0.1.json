@@ -1734,12 +1734,22 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.core_policy_controlled_material._nominal_translation_definition": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.core_policy_controlled_material._normalized_authority": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
       "status": "dependency",
       "witnesses": []
     },
     "biocompiler.core_policy_controlled_material._normalized_content": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material._requests_nominal_translation": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
       "status": "dependency",
       "witnesses": []
@@ -18742,6 +18752,17 @@
         "syntax_sha256": "57de224ee1ec96b19756f025e94301f5c64cae3ec5fe863698c770b47cdd6a9b"
       },
       {
+        "id": "biocompiler.core_policy_controlled_material._nominal_translation_definition",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": " -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "_nominal_translation_definition"
+        },
+        "syntax_sha256": "b92a71d8d3e23ed0b3bd774bd63fdbf8ee4c2dd1c02ef7b2be5e70fa58b70237"
+      },
+      {
         "id": "biocompiler.core_policy_controlled_material._normalized_authority",
         "kind": "function",
         "scope": "dependency",
@@ -18762,6 +18783,17 @@
           "symbol": "_normalized_content"
         },
         "syntax_sha256": "326206e6927787dc487d203de3b7f278ff2ad0286ff84cd123d6d4e0d7409ad7"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material._requests_nominal_translation",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "original: dict[str, JsonValue] -> bool",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "_requests_nominal_translation"
+        },
+        "syntax_sha256": "516a82e071e39a24008c2fee0a64da9d653296afed3e9ba8dc7643ebd8956a47"
       },
       {
         "id": "biocompiler.core_policy_controlled_material._require",
@@ -18794,7 +18826,7 @@
           "path": "src/biocompiler/core_policy_controlled_material.py",
           "symbol": "_structure"
         },
-        "syntax_sha256": "89b915c881834aaa1c639f1c7222992fd50069ce7770c42200b3b780a86842cf"
+        "syntax_sha256": "474e1822f0a9dbf86601617d9e87df34621a7f3ed7563fc98f67dd1693141d87"
       },
       {
         "id": "biocompiler.core_policy_controlled_material._validate_report",
@@ -39202,7 +39234,7 @@
       "src/biocompiler/core_policy_component_selection.py": "20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9",
       "src/biocompiler/core_policy_controlled_behavior.py": "e740dc2a267c065cc6d4056010614f7b372f98db2777f410bb36d721a412c2cf",
       "src/biocompiler/core_policy_controlled_composition.py": "308ec4aa6f5bde1d58ca5cf8a0ace46432a9fa3369a9234a91d4644580a1df65",
-      "src/biocompiler/core_policy_controlled_material.py": "2c34b6902e17496e1ab07672a26f47ac3278aabc2f6e254818854ea14408179d",
+      "src/biocompiler/core_policy_controlled_material.py": "e5a3280bf88efeb0514977704fded0f5ab7e84cb0e492ad0142c18d5beb4984e",
       "src/biocompiler/core_policy_controlled_workflow.py": "66f5a30b6e3260ab35167bab2cf6f5aa003cc99a584fe5216a43e47d7a76bdc2",
       "src/biocompiler/core_policy_expression_material.py": "319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf",
       "src/biocompiler/core_policy_implementation.py": "75abd92ee9ef28a34b0a9df5ad8ea133beb6d01f60bd2ae74f2d6f9cf064ab4f",
@@ -42944,7 +42976,7 @@
     },
     "controlled_rc4.manifest_tamper": {
       "distinction": "Complete manifest originals and ordered FASTA bytes stay bound even after local rehashing.",
-      "file_sha256": "e33cbdd06f3a8bf3a2d0ae2c8424c56452201575a69020dc964f768087143c60",
+      "file_sha256": "2d2f3efd6a85f386009ab67e7e53b8c39940c962294b47caf6a6dd267cc409c5",
       "path": "tests/test_core_policy_controlled_material.py",
       "role": "rejection",
       "symbol": "ControlledMaterialTransportTests.test_rehashed_manifest_and_fasta_tampering_rejected",
@@ -42976,7 +43008,7 @@
     },
     "controlled_rc4.transport_capability": {
       "distinction": "Exact separate material capability and executable role are required; Verify cannot construct.",
-      "file_sha256": "e33cbdd06f3a8bf3a2d0ae2c8424c56452201575a69020dc964f768087143c60",
+      "file_sha256": "2d2f3efd6a85f386009ab67e7e53b8c39940c962294b47caf6a6dd267cc409c5",
       "path": "tests/test_core_policy_controlled_material.py",
       "role": "rejection",
       "symbol": "ControlledMaterialTransportTests.test_verifier_never_constructs_and_capability_must_match_exactly",
@@ -42984,7 +43016,7 @@
     },
     "controlled_rc4.transport_snapshot": {
       "distinction": "Detached structural result snapshots retain complete originals and literal two-member correspondence; artificial peer evidence is not native acceptance.",
-      "file_sha256": "e33cbdd06f3a8bf3a2d0ae2c8424c56452201575a69020dc964f768087143c60",
+      "file_sha256": "2d2f3efd6a85f386009ab67e7e53b8c39940c962294b47caf6a6dd267cc409c5",
       "path": "tests/test_core_policy_controlled_material.py",
       "role": "positive",
       "symbol": "ControlledMaterialTransportTests.test_literal_oracle_and_immutable_result_round_trip",
@@ -42992,7 +43024,7 @@
     },
     "controlled_rc4.transport_tamper": {
       "distinction": "Rehashed material evidence cannot change original context, bindings, structural inventory or claim scope.",
-      "file_sha256": "e33cbdd06f3a8bf3a2d0ae2c8424c56452201575a69020dc964f768087143c60",
+      "file_sha256": "2d2f3efd6a85f386009ab67e7e53b8c39940c962294b47caf6a6dd267cc409c5",
       "path": "tests/test_core_policy_controlled_material.py",
       "role": "rejection",
       "symbol": "ControlledMaterialTransportTests.test_rehashed_report_original_scope_and_material_tampering_rejected",

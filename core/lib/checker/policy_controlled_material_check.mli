@@ -11,6 +11,7 @@ module S = Policy_mrna_structure_check
 val schema_version : string
 val implementation_version : string
 type result
+type checked_structure
 type checked_controlled_material
 
 (** The optional live parent owns earlier decoding/production and subsequent
@@ -27,7 +28,8 @@ val invocation_fingerprint : result -> string
 val request : checked_controlled_material -> R.t
 val candidate : checked_controlled_material -> C.t
 val admission : checked_controlled_material -> A.t
-val structure : checked_controlled_material -> S.checked_structure
+val structure : checked_controlled_material -> checked_structure
+val structure_evidence : checked_structure -> Json.t
 val content : checked_controlled_material -> K.t
 val evidence : checked_controlled_material -> Json.t
 

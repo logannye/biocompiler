@@ -28,6 +28,7 @@ PRODUCER_PROFILE: dict[str, JsonValue] = {**PROFILE, "operations": [CHECK, PUBLI
 _RESULT_FIELDS = set("schema_version implementation resource_profile validation_scope request_fingerprint candidate_fingerprint invocation_fingerprint candidate report_fingerprint report artifact usage".split())
 _REPORT_FIELDS = set("schema_version profile implementation stage status outcome claim_scope request_fingerprint candidate_fingerprint invocation_fingerprint admission structure material_limits bindings context resources budgets behavior_status empirical_status human_use therapeutic_export".split())
 _STRUCTURE_FIELDS = set("schema_version profile implementation_version claim_scope authority_fingerprint candidate_fingerprint content_reconstruction content_outcome structural_outcome outcome checked_clauses PM-08_scope unassessed_clauses members diagnostics context_status implementation policy material_binding export".split())
+_NOMINAL_STRUCTURE_FIELDS = _STRUCTURE_FIELDS | {"source_request_fingerprint", "nominal_translation_definition", "physical_translation_status"}
 _OUTCOMES = {"pass", "fail", "unsupported", "unknown"}
 _record = admission._record
 _rows = admission._rows
@@ -41,6 +42,33 @@ def _require(condition: bool, message: str) -> None:
 
 def _flags(value: dict[str, JsonValue], expected: dict[str, JsonValue], label: str) -> None:
     _require(all(value.get(key) == item for key, item in expected.items()), label)
+
+
+def _nominal_translation_definition() -> dict[str, JsonValue]:
+    """Exact transport premise; this reader does not evaluate translation."""
+    return {"$type": "SemanticDefinition", "id": "biocompiler.controlled.nominal_translation.v1",
+        "version": "1", "category": "model",
+        "meaning": "Decode canonical parent RNA bases with the standard genetic code and one terminal stop; declared N1-methylpseudouridine at canonical U positions is projected to U for nominal sequence correspondence only. Physical translation of modified nucleotides, processing and biological expression remain unmeasured assumptions.",
+        "parameters": [], "result": None, "clauses": [], "assumptions": [],
+        "executor_kind": None, "subject_kind": None}
+
+
+def _requests_nominal_translation(original: dict[str, JsonValue]) -> bool:
+    definition = _nominal_translation_definition()
+    entry = _record(_record(original["catalog_binding"])["entry"])
+    dependencies = [_record(row) for row in _rows(entry["dependencies"])]
+    pins = [row for row in dependencies if row.get("id") == definition["id"]]
+    if not pins:
+        return False
+    document = _record(_record(original["source_authority"])["document"])
+    semantics = _record(_record(document["program"])["semantics"])
+    bodies = [_record(row) for row in _rows(semantics["definitions"])]
+    matches = [row for row in bodies if row.get("id") == definition["id"]]
+    reference: JsonValue = {"$type": "DefinitionRef", "id": definition["id"], "version": "1",
+        "digest": _fingerprint(admission._semantic(definition))}
+    _require(len(pins) == len(matches) == 1 and _same(pins[0], reference) and _same(matches[0], definition),
+             "Nominal translation requires the exact original definition and selected dependency")
+    return True
 
 
 def _candidate(value: JsonValue) -> dict[str, JsonValue]:
@@ -144,14 +172,26 @@ def _normalized_content(value: dict[str, JsonValue]) -> dict[str, JsonValue]:
 
 
 def _structure(value: JsonValue, original: dict[str, JsonValue], candidate: dict[str, JsonValue]) -> str:
-    report = _object(value, _STRUCTURE_FIELDS, "Complete independent structural assessment")
+    nominal = _requests_nominal_translation(original)
+    report = _object(value, _NOMINAL_STRUCTURE_FIELDS if nominal else _STRUCTURE_FIELDS,
+                     "Complete independent structural assessment")
     material = _normalized_authority(_record(original["material_authority"]))
     content = _normalized_content(_record(candidate["construction"]))
-    _flags(report, {"schema_version": "biocompiler.policy_mrna_structure_assessment.v0.1",
-        "profile": "biocompiler.policy_mrna_completeness.v0.1",
-        "implementation_version": "biocompiler.ocaml.policy_mrna_structure_check.v0.1",
-        "claim_scope": "exact_supplied_mrna_structure_and_derivation_only",
-        "PM-08_scope": "supplied_construction_region_chemistry_product_declaration_provenance_only",
+    if nominal:
+        _flags(report, {"schema_version": "biocompiler.policy_controlled_nominal_structure_assessment.v0.1",
+            "profile": "biocompiler.policy_controlled_nominal_structure.v0.1",
+            "implementation_version": "biocompiler.ocaml.policy_controlled_nominal_structure_check.v0.1",
+            "claim_scope": "exact_supplied_mrna_structure_under_explicit_controlled_nominal_translation_premise",
+            "physical_translation_status": "unassessed"}, "Nominal structural leaf upgraded its limited scope")
+        _pin(report["source_request_fingerprint"], original, "Nominal translation original request")
+        _require(_same(report["nominal_translation_definition"], _nominal_translation_definition()),
+                 "Nominal structural leaf changed its exact source premise")
+    else:
+        _flags(report, {"schema_version": "biocompiler.policy_mrna_structure_assessment.v0.1",
+            "profile": "biocompiler.policy_mrna_completeness.v0.1",
+            "implementation_version": "biocompiler.ocaml.policy_mrna_structure_check.v0.1",
+            "claim_scope": "exact_supplied_mrna_structure_and_derivation_only"}, "Structural leaf upgraded its limited scope")
+    _flags(report, {"PM-08_scope": "supplied_construction_region_chemistry_product_declaration_provenance_only",
         "checked_clauses": ["PM-02", "PM-03", "PM-04", "PM-05", "PM-06", "PM-07", "PM-09"],
         "unassessed_clauses": ["PM-01", "PM-08_external_component_binding", "PM-10", "PM-11", "PM-12"],
         "context_status": "unassessed", "implementation": "unassessed", "policy": "unassessed",

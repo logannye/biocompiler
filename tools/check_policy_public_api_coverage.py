@@ -35,7 +35,12 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "e378227cdd10f1357c559aa7873490c74135a18bc4446fa957c2b6930e4aeee0"
+REVIEWED_METADATA_SHA256 = "20c626d365813c620e041e963254ae451084588d3458ed038e7748a1484dfe19"
+BEFORE_CONTROLLED_NOMINAL_METADATA_SHA256 = "e378227cdd10f1357c559aa7873490c74135a18bc4446fa957c2b6930e4aeee0"
+CONTROLLED_NOMINAL_DEPENDENCIES = frozenset({
+    "biocompiler.core_policy_controlled_material._nominal_translation_definition",
+    "biocompiler.core_policy_controlled_material._requests_nominal_translation",
+})
 BEFORE_CONTROLLED_WORKFLOW_METADATA_SHA256 = "fb1502f84b66fd2e3c64800741fc86b36d4b4b77d11bc330235ab526571ec061"
 CONTROLLED_WORKFLOW_PREFIXES = ("biocompiler.core_policy_controlled_workflow.", "biocompiler.policy.controlled_workflow.")
 CONTROLLED_WORKFLOW_ADDITIONS = (
@@ -778,10 +783,16 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
+    before_nominal = {"witnesses": metadata["witnesses"],
+        "coverage": {key: value for key, value in coverage.items() if key not in CONTROLLED_NOMINAL_DEPENDENCIES}}
+    encoded_nominal = json.dumps(before_nominal, ensure_ascii=True, sort_keys=True,
+        separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(digest(encoded_nominal) == BEFORE_CONTROLLED_NOMINAL_METADATA_SHA256,
+            "Controlled nominal reader must preserve every previous API evidence meaning")
     before_workflow = {
         "witnesses": {key: value for key, value in metadata["witnesses"].items()
                       if not key.startswith("controlled_rc6.")},
-        "coverage": {key: value for key, value in coverage.items()
+        "coverage": {key: value for key, value in before_nominal["coverage"].items()
                      if not key.startswith(CONTROLLED_WORKFLOW_PREFIXES) and key not in CONTROLLED_WORKFLOW_ADDITIONS},
     }
     encoded_workflow = json.dumps(before_workflow, ensure_ascii=True, sort_keys=True,

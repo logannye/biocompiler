@@ -8,6 +8,7 @@ module N = Bioc_domain.Molecule
 module Input = Bioc_domain.Policy_material_request
 module A = Policy_controlled_composition_admission
 module S = Policy_mrna_structure_check
+module Nominal = Policy_controlled_structure_check
 module W = Work_budget
 let schema_version = "biocompiler.policy_controlled_composition_material_assessment.v0.1"
 let implementation_version = "biocompiler.ocaml.policy_controlled_material_check.v0.1"
@@ -16,8 +17,9 @@ let obj fields = Json.Object fields
 let arr values = Json.Array values
 let get key raw = Json.field key (Json.object_fields raw)
 let strings values = arr (List.map str values)
+type checked_structure = Ordinary of S.checked_structure | Nominal of Nominal.checked_structure
 type checked_controlled_material = {
-  original:R.t; proposal:C.t; admitted:A.t; structural:S.checked_structure; assessment:Json.t;
+  original:R.t; proposal:C.t; admitted:A.t; structural:checked_structure; assessment:Json.t;
 }
 type result = {
   owner:W.t; assessment:Json.t; outcome_value:E.outcome;
@@ -35,7 +37,9 @@ let request (value:checked_controlled_material) = value.original
 let candidate (value:checked_controlled_material) = value.proposal
 let admission (value:checked_controlled_material) = value.admitted
 let structure (value:checked_controlled_material) = value.structural
-let content (value:checked_controlled_material) = S.content value.structural
+let structure_evidence = function Ordinary value -> S.evidence value | Nominal value -> Nominal.evidence value
+let content (value:checked_controlled_material) = match value.structural with
+  | Ordinary value -> S.content value | Nominal value -> Nominal.content value
 let evidence (value:checked_controlled_material) = value.assessment
 let measure owner raw = Input.preflight ~max_bytes:8_323_072 ~max_nodes:249_968
   ~max_depth:128 ~charge:(W.charge owner) raw
@@ -65,8 +69,17 @@ let check ?parent ~request:original ~candidate:proposed () =
     "controlled_material_request_binding"
     "Material candidate is not bound to the complete independently supplied original request.";
   let admitted = A.admit ~charge:(W.charge owner) request in
-  let structural = S.check ~parent:owner ~authority:(R.material request)
-    ~candidate:(C.construction candidate) () in
+  let structural_report,structural_outcome,structural_checked =
+    if Nominal.requests_nominal_translation ~charge:(W.charge owner) ~admitted ~request then (
+      let result = Nominal.check ~parent:owner ~admitted ~request
+        ~candidate:(C.construction candidate) () in
+      Nominal.report result,Nominal.outcome result,
+        Option.map (fun value -> Nominal value) (Nominal.checked_structure result))
+    else (
+      let result = S.check ~parent:owner ~authority:(R.material request)
+        ~candidate:(C.construction candidate) () in
+      S.report result,S.outcome result,
+        Option.map (fun value -> Ordinary value) (S.checked_structure result)) in
   (* The leaf already performs private independent reconstruction. Repeating
      reconstruction here would neither add an oracle nor strengthen a claim. *)
   let raw = R.raw request in
@@ -90,7 +103,7 @@ let check ?parent ~request:original ~candidate:proposed () =
   let limits_pass = List.length members = 2 && member_order = expected_order &&
     List.for_all (fun (member:N.t) -> String.length (N.sequence member) <= maximum_member) members &&
     !total <= maximum_total in
-  let outcome_value = if limits_pass then S.outcome structural else E.Fail in
+  let outcome_value = if limits_pass then structural_outcome else E.Fail in
   let material_limits = obj ["member_order",strings member_order;
     "expected_member_order",strings expected_order; "members",arr actual_lengths;
     "max_member_rna_nt",Json.int maximum_member; "total_rna_nt",Json.int !total;
@@ -98,7 +111,7 @@ let check ?parent ~request:original ~candidate:proposed () =
     "outcome",str (if limits_pass then "pass" else "fail")] in
   let invocation_identity = fingerprint owner (obj [
     "request_fingerprint",str request_identity; "candidate_fingerprint",str candidate_identity]) in
-  let complete = outcome_value = E.Pass && Option.is_some (S.checked_structure structural) in
+  let complete = outcome_value = E.Pass && Option.is_some structural_checked in
   let assessment = obj ["schema_version",str schema_version; "profile",str R.profile;
     "implementation",str implementation_version; "stage",str "material";
     "status",str (if complete then "checked_controlled_material" else "not_accepted");
@@ -106,7 +119,7 @@ let check ?parent ~request:original ~candidate:proposed () =
     "claim_scope",str "exact_supplied_two_member_rna_structure_only";
     "request_fingerprint",str request_identity; "candidate_fingerprint",str candidate_identity;
     "invocation_fingerprint",str invocation_identity;
-    "admission",A.report admitted; "structure",S.report structural;
+    "admission",A.report admitted; "structure",structural_report;
     "material_limits",material_limits;
     "bindings",get "product_bindings" (get "assembly" raw);
     "context",get "context" raw; "resources",resources; "budgets",get "budgets" raw;
@@ -121,7 +134,7 @@ let check ?parent ~request:original ~candidate:proposed () =
   W.reserve_json output assessment;
   Diagnostic.require (not (W.exhausted owner)) "controlled_material_work_limit"
     "Exhausted work cannot produce a material capability.";
-  let checked = match complete,S.checked_structure structural with
+  let checked = match complete,structural_checked with
     | true,Some structural -> Some {original=request; proposal=candidate; admitted;
         structural; assessment}
     | _ -> None in

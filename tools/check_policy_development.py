@@ -25,7 +25,7 @@ except ImportError:
 
 SCHEMA = "biocompiler.development-feedback.v0.1"
 WORKFLOW = ".github/workflows/policy-development.yml"
-SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "data/researcher_alpha",
+SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "data/researcher_alpha", "data/car_controlled_reference",
                 "examples/researcher_alpha.py", "data/controlled_composition", "examples/controlled_composition.py", "data/car_payload", "examples/car_payload.py", "docs/controlled-composition-quickstart.md", "pyproject.toml")
 SUITES = (
     ('test_policy_quantitative_composition', ('data/policy_quantitative_composition_v01.json', 'data/policy_quantitative_network_v01.json')),

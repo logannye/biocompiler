@@ -19,6 +19,35 @@ def literal():
     return json.loads((ROOT/'core/test/data/policy_controlled_material_v01.json').read_text())
 
 
+def nominal_definition():
+    # An independent literal report expectation, not the production reader's constant.
+    return {'$type':'SemanticDefinition','id':'biocompiler.controlled.nominal_translation.v1',
+        'version':'1','category':'model',
+        'meaning':'Decode canonical parent RNA bases with the standard genetic code and one terminal stop; declared N1-methylpseudouridine at canonical U positions is projected to U for nominal sequence correspondence only. Physical translation of modified nucleotides, processing and biological expression remain unmeasured assumptions.',
+        'parameters':[],'result':None,'clauses':[],'assumptions':[],
+        'executor_kind':None,'subject_kind':None}
+
+
+def nominal_original():
+    request=original();definition=nominal_definition()
+    document=request['source_authority']['document']
+    document['program']['semantics']['definitions'].append(definition)
+    reference={'$type':'DefinitionRef','id':definition['id'],'version':'1','digest':api._fingerprint(definition)}
+    entry=request['catalog_binding']['entry'];entry['dependencies'].append(reference)
+    selected=next(row for row in document['implementations']['implementations'] if row['id']==entry['id'])
+    selected['dependencies'].append(deepcopy(reference))
+    return request
+
+
+def nominal_structure(structure, request):
+    structure.update(schema_version='biocompiler.policy_controlled_nominal_structure_assessment.v0.1',
+        profile='biocompiler.policy_controlled_nominal_structure.v0.1',
+        implementation_version='biocompiler.ocaml.policy_controlled_nominal_structure_check.v0.1',
+        claim_scope='exact_supplied_mrna_structure_under_explicit_controlled_nominal_translation_premise',
+        source_request_fingerprint=api._fingerprint(request), nominal_translation_definition=nominal_definition(),
+        physical_translation_status='unassessed')
+
+
 def peer_result(request, candidate, operation):
     content=candidate['construction']; material=api._normalized_authority(request['material_authority'])
     construction_authority={'schema_version':'biocompiler.construction_content_authority.v0.1',
@@ -87,6 +116,69 @@ class Peer:
 
 
 class ControlledMaterialTransportTests(unittest.TestCase):
+    def test_nominal_profile_is_explicit_source_bound_and_works_in_joined_reader(self):
+        request=nominal_original();candidate=literal()['literal_candidate']
+        candidate['request_fingerprint']=api._fingerprint(request)
+        def nominal_peer(result):
+            nominal_structure(result['report']['structure'],request)
+            result['report_fingerprint']=api._fingerprint(result['report'])
+        result=api.PolicyControlledMaterialClient(Peer(mutate=nominal_peer)).check_material(request,candidate)
+        self.assertEqual(result.report['structure']['physical_translation_status'],'unassessed')
+        self.assertEqual(result.report['structure']['nominal_translation_definition'],nominal_definition())
+        # Joined results use the same leaf reader and must not fall back to the old schema.
+        from tests import test_core_policy_controlled_workflow as workflow
+        joined=workflow.original();joined['behavior_request']['original']=request
+        joined['limits']=workflow.api._limits(joined['behavior_request'])
+        def nominal_joined(result):
+            nominal_structure(result['report']['material']['structure'],request)
+            workflow.repin(result)
+        checked=workflow.api.PolicyControlledWorkflowClient(workflow.Peer(mutate=nominal_joined)).check(
+            joined,workflow.candidate(joined))
+        self.assertEqual(checked.report['material']['structure'],result.report['structure'])
+
+    def test_nominal_report_cannot_drop_or_upgrade_premise_and_source_binding(self):
+        request=nominal_original();candidate=literal()['literal_candidate']
+        candidate['request_fingerprint']=api._fingerprint(request)
+        mutations=[lambda s:s.update(schema_version='biocompiler.policy_mrna_structure_assessment.v0.1'),
+            lambda s:s.update(profile='biocompiler.policy_mrna_completeness.v0.1'),
+            lambda s:s.update(implementation_version='biocompiler.ocaml.policy_mrna_structure_check.v0.1'),
+            lambda s:s.update(claim_scope='exact_supplied_mrna_structure_and_derivation_only'),
+            lambda s:s.update(source_request_fingerprint='0'*64),
+            lambda s:s.update(physical_translation_status='pass'),
+            lambda s:s['nominal_translation_definition'].update(meaning='Physical translation established'),
+            lambda s:s['nominal_translation_definition'].update(extra=True),
+            lambda s:s.pop('source_request_fingerprint'),lambda s:s.pop('nominal_translation_definition'),
+            lambda s:s.pop('physical_translation_status'),lambda s:s.update(extra=True)]
+        for mutate in mutations:
+            def forged(result):
+                structure=result['report']['structure'];nominal_structure(structure,request);mutate(structure)
+                result['report_fingerprint']=api._fingerprint(result['report'])
+            with self.subTest(mutate=mutate),self.assertRaises(CoreProtocolError):
+                api.PolicyControlledMaterialClient(Peer(mutate=forged)).check_material(request,candidate)
+        # Even a fully rehashed ordinary report cannot erase a selected nominal premise.
+        with self.assertRaises(CoreProtocolError):
+            api.PolicyControlledMaterialClient(Peer()).check_material(request,candidate)
+
+    def test_nominal_report_requires_unique_exact_definition_and_selected_dependency(self):
+        def altered_body(request):
+            body=request['source_authority']['document']['program']['semantics']['definitions'][-1]
+            body['meaning']='Physical translation established'
+            request['catalog_binding']['entry']['dependencies'][-1]['digest']=api._fingerprint(body)
+        mutations=[lambda r:r['catalog_binding']['entry']['dependencies'].pop(),
+            lambda r:r['catalog_binding']['entry']['dependencies'][-1].update(digest='0'*64),
+            lambda r:r['catalog_binding']['entry']['dependencies'].append(deepcopy(r['catalog_binding']['entry']['dependencies'][-1])),
+            lambda r:r['source_authority']['document']['program']['semantics']['definitions'].pop(),
+            lambda r:r['source_authority']['document']['program']['semantics']['definitions'].append(nominal_definition()),
+            altered_body]
+        for mutate in mutations:
+            request=nominal_original();mutate(request);candidate=literal()['literal_candidate']
+            candidate['request_fingerprint']=api._fingerprint(request)
+            def forged(result):
+                nominal_structure(result['report']['structure'],request)
+                result['report_fingerprint']=api._fingerprint(result['report'])
+            with self.subTest(mutate=mutate),self.assertRaises(CoreProtocolError):
+                api.PolicyControlledMaterialClient(Peer(mutate=forged)).check_material(request,candidate)
+
     def test_literal_oracle_and_immutable_result_round_trip(self):
         fixture=literal(); request=original(); candidate=fixture['literal_candidate']
         self.assertEqual(api._fingerprint(request),fixture['request_sha256'])

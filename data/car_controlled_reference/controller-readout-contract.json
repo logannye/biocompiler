@@ -1,7 +1,7 @@
 {
   "schema_version": "biocompiler.controlled_car_reference_contract.v0.1",
   "id": "WO2014127261A1-197-206-rna-adaptation-control",
-  "version": "1",
+  "version": "2",
   "reference_identity": "WO2014127261A1-197-206",
   "claim_scope": "supplied_conditional_receptor_activity_model_only",
   "intended_target": {
@@ -170,8 +170,17 @@
     "The one-second-per-tick clock, ten-tick horizon, six-tick intervention cutoff and one-tick freshness bound are uncalibrated software-scenario assumptions and make no biological timing prediction.",
     "Cessation of modeled receptor activity neither reverses earlier target-cell injury nor guarantees cessation of downstream cellular effects.",
     "Categorical availability does not quantify protein concentration, expression, member ratio or molecular stoichiometry and cannot discharge requirements for those quantities.",
-    "The patent-pair identity is retained without asserting sequence identity with Wu I.b plus II.d; no Wu kinetic or assay evidence is transferred to this adaptation."
+    "The patent-pair identity is retained without asserting sequence identity with Wu I.b plus II.d; no Wu kinetic or assay evidence is transferred to this adaptation.",
+    "Decode canonical parent RNA bases with the standard genetic code and one terminal stop; declared N1-methylpseudouridine at canonical U positions is projected to U for nominal sequence correspondence only. Physical translation of modified nucleotides, processing and biological expression remain unmeasured assumptions."
   ],
+  "nominal_translation": {
+    "origin": "designer_assumed",
+    "definition_id": "biocompiler.controlled.nominal_translation.v1",
+    "definition_version": "1",
+    "category": "model",
+    "meaning": "Decode canonical parent RNA bases with the standard genetic code and one terminal stop; declared N1-methylpseudouridine at canonical U positions is projected to U for nominal sequence correspondence only. Physical translation of modified nucleotides, processing and biological expression remain unmeasured assumptions.",
+    "scope": "Explicit dependency of the selected controlled implementation; does not broaden ordinary structural acceptance."
+  },
   "unsupported_quantitative_requests": [
     "controller_concentration_or_exposure_threshold",
     "rna_copy_number_or_delivery_fraction",

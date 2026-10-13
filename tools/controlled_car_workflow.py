@@ -24,7 +24,7 @@ from biocompiler.policy.serialization import to_data
 MEMBERS = ("car197", "car206")
 PRODUCTS = ("WO2014127261A1.construct197", "WO2014127261A1.construct206")
 PREFIX = "car.controlled197206"
-CONTRACT_CANONICAL_SHA256 = "c60b0d304f03fdd80a965b2a38772c177bc97bd5fe1d91a8864847fa38e7da24"
+CONTRACT_CANONICAL_SHA256 = "a03d8f272fd89530a52d6d7d7a403e777d5c842d133d215ced80265c1c1f8f35"
 KEYS = ("antigen", "controller", "rna_a", "rna_b", "protein_a", "protein_b")
 SCENARIO = {
     "clock_seconds_per_tick": 1, "horizon_tick": 10,
@@ -105,7 +105,7 @@ The current discrete scenario intentionally refuses automatic timing calibration
 """
     _require(type(contract) is dict and contract.get("schema_version") == "biocompiler.controlled_car_reference_contract.v0.1"
              and contract.get("id") == "WO2014127261A1-197-206-rna-adaptation-control"
-             and contract.get("version") == "1"
+             and contract.get("version") == "2"
              and contract.get("reference_identity") == "WO2014127261A1-197-206"
              and contract.get("claim_scope") == "supplied_conditional_receptor_activity_model_only",
              "Unsupported original contract identity or claim scope")
@@ -159,6 +159,9 @@ The current discrete scenario intentionally refuses automatic timing calibration
     localization = _definition("localization", "interface", "Both products are assumed available in functional membrane-associated form; trafficking and co-localization are unmeasured.")
     realization = _definition("mechanism", "model",
         "Uncalibrated deterministic one-tick onset, cessation and reactivation scenario; no quantitative expression, stoichiometry or drug washout prediction.")
+    projection = contract["nominal_translation"]
+    nominal_translation = p.SemanticDefinition(projection["definition_id"], projection["definition_version"],
+        projection["category"], projection["meaning"])
     role = p.Role("tcell", (capability.ref,))
     target = p.Subject("target", "cell", "encounter", executor=p.declaration_ref(role), encounter=_ref("Encounter", "contact"))
     encounter = p.Encounter("contact", p.declaration_ref(role), p.declaration_ref(target), encounter_def.ref, "explicit_event")
@@ -193,7 +196,7 @@ The current discrete scenario intentionally refuses automatic timing calibration
             deadline=None if deadline is None else quantity(deadline), horizon=quantity(10),
             applies_to=(p.declaration_ref(activity),), contract=definition.ref, clock=p.declaration_ref(clock)))
     definitions = (capability, encounter_def, antigen_def, controller_def, operation, readout,
-                   *obligation_defs, chassis_def, delivery_def, localization, realization, *descriptors)
+                   *obligation_defs, chassis_def, delivery_def, localization, realization, nominal_translation, *descriptors)
     declarations = (role, target, encounter, clock, *observations, *products, activity, *requirements)
     locations = {"tcell": (7, "/intended_target"), "target": (116, "/mechanism"),
         "contact": (116, "/mechanism/semantics"), "clock": (134, "/scenario"),
@@ -216,7 +219,7 @@ The current discrete scenario intentionally refuses automatic timing calibration
             delivery_def.ref, delivery_def.ref, "same_recipient", delivery_def.ref),
         p.RNAConstraints(design_count=1, member_count=2, helper_count=0, orf_count=2, product_count=2))
     entry = p.ImplementationBinding(PREFIX + ".implementation", "1", operation.ref, realization.ref,
-        (chassis.id,), ("RNA",), (localization.ref, *(item.ref for item in descriptors)), ())
+        (chassis.id,), ("RNA",), (localization.ref, nominal_translation.ref, *(item.ref for item in descriptors)), ())
     document = p.BuildRequest(program, deployment, p.ImplementationCatalogLock(PREFIX + ".catalog", "1", (entry,)),
         p.AssuranceRequest(tuple(item.id for item in requirements), "bounded", quantity(10)),
         profile=p.CONTROLLED_COMPOSITION_SOURCE_PROFILE)

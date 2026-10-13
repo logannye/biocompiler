@@ -8,7 +8,9 @@ module M = Bioc_domain.Policy_mrna_structure
 module N = Bioc_domain.Molecule
 module E = Bioc_domain.Construction_assessment
 module Check = Bioc_checker.Policy_controlled_material_check
-module S = Bioc_checker.Policy_mrna_structure_check
+module Nominal = Bioc_checker.Policy_controlled_structure_check
+module Admission = Bioc_checker.Policy_controlled_composition_admission
+module Document = Bioc_domain.Policy_document
 module W = Bioc_checker.Work_budget
 let checks = ref 0
 let require condition message = incr checks; if not condition then failwith message
@@ -73,6 +75,32 @@ let rec replace_text before after raw = match raw with
   | Json.Object fields -> Json.Object (List.map (fun (key,value) -> key,replace_text before after value) fields)
   | Json.Array values -> arr (List.map (replace_text before after) values)
   | _ -> raw
+(* This independently supplied literal premise is not copied from the checker.
+   Its exact body and selected dependency are original interpretation authority. *)
+let nominal_definition () = Json.Object [
+  "$type",str "SemanticDefinition";"id",str "biocompiler.controlled.nominal_translation.v1";
+  "version",str "1";"category",str "model";
+  "meaning",str "Decode canonical parent RNA bases with the standard genetic code and one terminal stop; declared N1-methylpseudouridine at canonical U positions is projected to U for nominal sequence correspondence only. Physical translation of modified nucleotides, processing and biological expression remain unmeasured assumptions.";
+  "parameters",arr [];"result",Json.Null;"clauses",arr [];"assumptions",arr [];
+  "executor_kind",Json.Null;"subject_kind",Json.Null]
+let with_nominal_definition definition original =
+  let pin = Json.Object ["$type",str "DefinitionRef";"id",get "id" definition;
+    "version",get "version" definition;"digest",str (Document.document_digest definition)] in
+  let append value values = arr (Json.array values @ [value]) in
+  original
+  |> edit ["source_authority";"document";"program";"semantics";"definitions"] (append definition)
+  |> edit ["source_authority";"document";"implementations";"implementations";"0";"dependencies"] (append pin)
+  |> edit ["catalog_binding";"entry";"dependencies"] (append pin)
+let with_modification modification original literal =
+  let modifications = arr [modification] in
+  let original = List.fold_left (fun raw index -> raw
+    |> put (root_path index @ ["chemistry";"modifications"]) modifications
+    |> put ["material_authority";"members";string_of_int index;"chemistry";"modifications"] modifications)
+    original [0;1] in
+  let literal = List.fold_left (fun raw index ->
+    put (molecule_path index @ ["chemistry";"modifications"]) modifications raw) literal [0;1] in
+  let request = R.of_json original in
+  request, literal |> rebind_roles |> bind request
 let run () =
   if Array.length Sys.argv <> 3 then failwith "Expected original request and independent material literal fixture";
   let original = read Sys.argv.(1) and fixture = read Sys.argv.(2) in
@@ -94,7 +122,7 @@ let run () =
     C.fingerprint (Check.candidate accepted) = C.fingerprint candidate &&
     K.fingerprint (Check.content accepted) = K.fingerprint content &&
     Json.equal (Check.evidence accepted) report) "Abstract material capability lost exact original authority";
-  require (Json.equal (S.evidence (Check.structure accepted)) (get "structure" report))
+  require (Json.equal (Check.structure_evidence (Check.structure accepted)) (get "structure" report))
     "Material capability lost independent structural evidence";
   require (get "stage" report = str "material" && get "status" report = str "checked_controlled_material" &&
     get "claim_scope" report = str "exact_supplied_two_member_rna_structure_only") "Material scope changed";
@@ -168,6 +196,66 @@ let run () =
   require (at ["structure";"content_outcome"] (Check.report provenance) = str "fail" &&
     at ["structure";"structural_outcome"] (Check.report provenance) = str "pass")
     "Exact original provenance was reduced to declared status or sequence identity";
+  let modification = Json.Object [
+    "schema_version",str "biocompiler.base_modification.v0.1";"id",str "all-u";
+    "identity",Json.Object ["schema_version",str "biocompiler.chemical_identity.v0.1";
+      "namespace",str "biocompiler.chemical";"accession",str "n1_methylpseudouridine";"version",str "1"];
+    "canonical_base",str "U";"scope",str "all_matching_bases";"positions",arr [];
+    "provenance",at (root_path 0 @ ["provenance"]) original] in
+  let unpremised,unpremised_literal = with_modification modification original literal in
+  let unsupported = no_material "modified CDS without nominal premise" unpremised unpremised_literal in
+  require (Check.outcome unsupported = E.Unsupported && structure_code "modified_cds_uninterpreted" unsupported)
+    "Recognized chemistry silently enabled a nominal translation premise";
+  let nominal_original = with_nominal_definition (nominal_definition ()) original in
+  let nominal,nominal_literal = with_modification modification nominal_original literal in
+  let nominal_result = run_check nominal nominal_literal in
+  require (Check.outcome nominal_result = E.Pass && Option.is_some (Check.accepted nominal_result))
+    "Explicit source-bound nominal parent-U projection did not pass";
+  let nominal_report = Check.report nominal_result in
+  require (at ["structure";"profile"] nominal_report = str "biocompiler.policy_controlled_nominal_structure.v0.1" &&
+    at ["structure";"physical_translation_status"] nominal_report = str "unassessed" &&
+    at ["structure";"source_request_fingerprint"] nominal_report = str (R.fingerprint nominal))
+    "Nominal structural evidence lost its explicit source or empirical boundary";
+  require (Json.equal (Check.structure_evidence (Check.structure (Option.get (Check.accepted nominal_result))))
+    (get "structure" nominal_report)) "Nominal material token lost independent structural evidence";
+  require (List.map (get "translated_product") (Json.array (at ["structure";"members"] nominal_report)) = [str "MA";str "MG"])
+    "Nominal parent-base translation changed exact expected products";
+  ignore (Check.replay ~request:nominal ~candidate:(C.of_json nominal_literal) nominal_report);
+  rejected "controlled_material_assessment_mismatch" (fun () ->
+    Check.replay ~request:nominal ~candidate:(C.of_json nominal_literal) report);
+  let positional = modification |> set "scope" (str "positions") |> set "positions" (arr [Json.int 3]) in
+  let positional_request,positional_literal = with_modification positional nominal_original literal in
+  require (Check.outcome (run_check positional_request positional_literal) = E.Pass)
+    "Recognized explicit-position nominal parent-U projection did not pass";
+  List.iter (fun (label,path,value) ->
+    let changed = put path (str value) modification in
+    let changed_request,changed_literal = with_modification changed nominal_original literal in
+    let result = no_material label changed_request changed_literal in
+    require (Check.outcome result = E.Unsupported && structure_code "modified_cds_uninterpreted" result)
+      (label ^ " escaped the closed nominal chemistry identity"))
+    ["foreign modification namespace",["identity";"namespace"],"software_fixture.chemical";
+     "uninterpreted modified residue",["identity";"accession"],"uninterpreted_modified_u";
+     "uninterpreted chemistry version",["identity";"version"],"2"];
+  let altered_definition = nominal_definition () |> set "meaning" (str "Source asserts measured physical translation") in
+  let altered_original = with_nominal_definition altered_definition original in
+  let altered_request,altered_literal = with_modification modification altered_original literal in
+  rejected "controlled_nominal_translation_premise" (fun () -> run_check altered_request altered_literal);
+  let admitted_nominal = Admission.admit ~charge:(fun _ -> ()) nominal in
+  rejected "controlled_nominal_translation_premise" (fun () -> Nominal.check
+    ~admitted:admitted_nominal ~request ~candidate:(C.construction candidate) ());
+  let admitted_unpremised = Admission.admit ~charge:(fun _ -> ()) unpremised in
+  rejected "controlled_nominal_translation_premise" (fun () -> Nominal.check
+    ~admitted:admitted_unpremised ~request:unpremised ~candidate:(C.construction (C.of_json unpremised_literal)) ());
+  let wrong_nominal = nominal_literal |> put (molecule_path 0 @ ["sequence"])
+    (str "CCAUGGGUUAAGGAAAA") |> rebind_roles in
+  let wrong_nominal_result = no_material "nominal premise with wrong protein" nominal wrong_nominal in
+  require (structure_code "complete_product_spelling_mismatch" wrong_nominal_result)
+    "Nominal projection weakened full product correspondence";
+  let nominal_chemistry_loss = nominal_literal |> put (molecule_path 0 @ ["chemistry";"modifications"])
+    (arr []) |> rebind_roles in
+  let lost_chemistry = no_material "nominal candidate removes declared chemistry" nominal nominal_chemistry_loss in
+  require (structure_code "original_full_chemistry_mismatch" lost_chemistry)
+    "Nominal projection erased declared chemical identity";
   let shortened = literal |> put ["construction";"member_order"] (arr [str "rna-a"])
     |> edit material_path (fun values -> arr [List.hd (Json.array values)]) |> rebind_roles in
   ignore (no_material "missing complete second member" request shortened);

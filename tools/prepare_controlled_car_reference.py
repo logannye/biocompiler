@@ -34,7 +34,7 @@ DESIGN = "car197206-rna-v1"
 EXPECTED = ROOT / "data/car_controlled_reference/rna-adaptation-expected.json"
 CONTRACT = ROOT / "data/car_controlled_reference/controller-readout-contract.json"
 EXPECTED_SHA256 = "0d99c83fed06166de5ba8ccc718f9e544c0dc2328bac55f8b8d9911fad763b86"
-CONTRACT_SHA256 = "8ab4fec05b4c5ecff846a9f222e04396761bfcb3081516f1d7815757ec80ca70"
+CONTRACT_SHA256 = "9778b47fd2bf31caf66148b5ca3f9faa31173e19bdfa5adb14c7c66cf506bde7"
 CATALOG_SHA256 = "7fe04c5c881eec85e64d50fd8604c1bd0fc7d050a146c4c6c1fcbfc9ccc519e3"
 CATALOG_BYTES = 553_980
 CATALOG_URL = "https://takara.co.kr/file/manual/pdf/heteroCitations_FL_633289_0212_IN.pdf"
@@ -242,7 +242,8 @@ def prepare(*, inputs, original_xml, reference_pdf, controller_catalog, design):
         "WO2025096878A9": utr_check.PDF_URL,
         "controlled.car197206.adaptation": "repository:data/car_controlled_reference/rna-adaptation-expected.json",
         "controlled.car197206.contract": "repository:data/car_controlled_reference/controller-readout-contract.json"}
-    source_records = [_source(identity, raw, locators[identity], "Original source or explicit adaptation/scenario authority; biological applicability separately unassessed")
+    source_records = [_source(identity, raw, locators[identity], "Original source or explicit adaptation/scenario authority; biological applicability separately unassessed",
+                              version=contract["version"] if identity == "controlled.car197206.contract" else "1")
                       for identity, raw in source_bytes.items()]
     assets = {row["source_id"]: row for row in contract["source_assets"]}
     require(set(assets) == {"wu-linked-patent-WO2014127261A1.html", "wu-2015-pmc.html", "clontech-heterodimerization-citations-2012.pdf"},

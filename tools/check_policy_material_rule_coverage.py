@@ -175,6 +175,16 @@ ROUTE_EXCEPTIONS.update({path: CONTROLLED_WORKFLOW_REASON for path in CONTROLLED
 EXTRA_SOURCES += tuple(path for path in CONTROLLED_WORKFLOW_SOURCES if path.endswith(".py"))
 BEFORE_CONTROLLED_WORKFLOW_METADATA_SHA256 = "ee7ef85112f44ef6ff539c2269ed50e1b6e163d639a789dce27584f576c35a2d"
 
+# A new, explicitly source-bound controlled nominal leaf does not change either
+# the original ordinary-CDS route or the separate expression route's meanings.
+CONTROLLED_NOMINAL_MATERIAL_SOURCES = (
+    "core/lib/checker/policy_controlled_structure_check.ml",
+    "core/lib/checker/policy_controlled_structure_check.mli",
+)
+CONTROLLED_NOMINAL_MATERIAL_REASON = "Separate controlled material nominal parent-base correspondence under the exact admitted selected-implementation premise; recognized N1-methylpseudouridine at canonical U only. No ordinary-CDS or expression-route acceptance, physical translation, empirical function or therapeutic authority."
+ROUTE_EXCEPTIONS.update({path: CONTROLLED_NOMINAL_MATERIAL_REASON for path in CONTROLLED_NOMINAL_MATERIAL_SOURCES})
+BEFORE_CONTROLLED_NOMINAL_MATERIAL_METADATA_SHA256 = "131eddf32537b8f8e8177536bebce56579f045bac296a1ff7c80a8af77acdb9a"
+
 # Components form a separately negotiated composition route, not the original
 # whole-kernel profile. Keep this path census closed and independently reviewed.
 COMPONENT_MODULES = (
@@ -744,34 +754,37 @@ def metadata_before_assured(ledger: dict[str, Any]) -> dict[str, Any]:
                                                    if row["path"] not in COMPONENT_ASSURED_SOURCES]}
 
 
-def metadata_before_controlled_workflow(ledger: dict[str, Any]) -> dict[str, Any]:
-    """Remove only RC6 route additions, preserving all prior evidence meanings."""
+def metadata_before_controlled_nominal_material(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove only the new nominal leaf, retaining complete prior RC6 metadata."""
     return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
             "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
-                for row in ledger["sources"] if row["path"] not in CONTROLLED_WORKFLOW_SOURCES],
+                for row in ledger["sources"] if row["path"] not in CONTROLLED_NOMINAL_MATERIAL_SOURCES],
             "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+
+
+def metadata_before_controlled_workflow(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove later additions and RC6, preserving all prior evidence meanings."""
+    metadata = metadata_before_controlled_nominal_material(ledger)
+    return {**metadata, "source_classifications": [row for row in metadata["source_classifications"]
+                                                   if row["path"] not in CONTROLLED_WORKFLOW_SOURCES]}
 
 
 def metadata_before_controlled_behavior(ledger: dict[str, Any]) -> dict[str, Any]:
-    """Remove only RC5 route additions, preserving the complete RC4 meanings."""
-    return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
-            "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
-                for row in ledger["sources"] if row["path"] not in CONTROLLED_BEHAVIOR_SOURCES + CONTROLLED_WORKFLOW_SOURCES],
-            "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+    """Remove later additions and RC5, preserving the complete RC4 meanings."""
+    metadata = metadata_before_controlled_workflow(ledger)
+    return {**metadata, "source_classifications": [row for row in metadata["source_classifications"]
+                                                   if row["path"] not in CONTROLLED_BEHAVIOR_SOURCES]}
 
 
 def metadata_before_controlled_material(ledger: dict[str, Any]) -> dict[str, Any]:
     """Remove RC4 additions and restore the one shared helper's RC3 scope."""
-    classifications = [
-        {key: row[key] for key in ("path", "disposition", "reason")}
-        for row in ledger["sources"] if row["path"] not in CONTROLLED_MATERIAL_SOURCES + CONTROLLED_BEHAVIOR_SOURCES + CONTROLLED_WORKFLOW_SOURCES
-    ]
+    metadata = metadata_before_controlled_behavior(ledger)
+    classifications = [{**row} for row in metadata["source_classifications"]
+                       if row["path"] not in CONTROLLED_MATERIAL_SOURCES]
     for row in classifications:
         if row["path"] in CONTROLLED_MATERIAL_SHARED_SOURCES:
             row["reason"] = CONTROLLED_ADMISSION_REASON
-    return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
-            "source_classifications": classifications,
-            "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+    return {**metadata, "source_classifications": classifications}
 
 
 def metadata_before_controlled_admission(ledger: dict[str, Any]) -> dict[str, Any]:
@@ -1147,6 +1160,10 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
                                     separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(expression_previous) == BEFORE_EXPRESSION_METADATA_SHA256,
             "Changed pre-expression original material meaning/witness/classification metadata")
+    nominal_previous = json.dumps(metadata_before_controlled_nominal_material(ledger), sort_keys=True,
+                                  separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(nominal_previous) == BEFORE_CONTROLLED_NOMINAL_MATERIAL_METADATA_SHA256,
+            "Changed pre-controlled-nominal-material meaning/witness/classification metadata")
     workflow_previous = json.dumps(metadata_before_controlled_workflow(ledger), sort_keys=True,
                                    separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(workflow_previous) == BEFORE_CONTROLLED_WORKFLOW_METADATA_SHA256,

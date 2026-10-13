@@ -1,10 +1,11 @@
 # Controlled composition: RC4 exact supplied RNA pair
 
-RC4 constructs and independently checks complete artificial two-member RNA
-material under the RC3 original-authority profile. This is a structural stage.
-Reversible activity, source-to-mechanism behavior, joined therapeutic export and
-research-project reopen remain later roadmap stages. The artificial MA/MG
-fixtures are software controls, not usable CAR sequences or biological evidence.
+RC4 constructs and independently checks complete supplied two-member RNA
+material under the RC3 original-authority profile. This is a structural stage;
+RC5 adds conditional modeled activity and RC6 joins the software assessments with
+research-project publication and reopen. The artificial MA/MG fixtures are
+software controls, not usable CAR sequences or biological evidence. The public
+CAR reference adaptation remains conditional research material.
 
 ## Authority and construction
 
@@ -31,13 +32,39 @@ construction route. Neither construction nor checking publishes an artifact.
 
 ## Independent material checking
 
-The new checker reparses complete originals, freshly runs RC3 admission, and
-calls the existing independent mRNA structural checker. That checker privately
-reconstructs expected content from independent template roots; it never imports
-the producer. Every nucleotide, assembly correspondence, RNA region, ordinary
-CDS translation, full protein identity, topology, cap/end chemistry, represented
-tail and delivered-member order remains authoritative. Actual member and total
-RNA lengths must satisfy the supplied resource ceilings.
+The checker reparses complete originals, freshly runs RC3 admission, and
+dispatches to an independent ordinary or explicitly nominal mRNA structural
+checker. Each privately reconstructs expected content from independent template
+roots and never imports the producer. Every nucleotide, assembly correspondence,
+RNA region, declared translation interpretation, full protein identity, topology,
+cap/end chemistry, represented tail and delivered-member order remains
+authoritative. Actual member and total RNA lengths must satisfy the supplied
+resource ceilings.
+
+The ordinary branch retains its existing PM-06 rejection of modified CDSs. The
+separate `biocompiler.policy_controlled_nominal_structure.v0.1` branch requires
+the exact supported `biocompiler.controlled.nominal_translation.v1` semantic
+definition in the original source and its exact pinned reference among the
+selected implementation's dependencies. Merely annotating chemistry or adding
+an unused definition cannot select that branch. Its fresh admission token must
+belong to this exact original request.
+
+Under that explicit premise, declared
+`biocompiler.chemical/n1_methylpseudouridine/v1` at canonical U positions can be
+projected to U for nominal sequence correspondence. The supported interpretation
+uses the standard genetic code, an AUG start, one terminal stop, and no recoding;
+unknown modifications affecting the CDS remain unsupported. Complete chemistry
+and position checks still apply. The branch has its own opaque structural token
+and assessment profile; it cannot manufacture the ordinary checker's token or
+enter the separate expression-material route. The enclosing controlled-material
+token privately retains the selected branch and its evidence.
+
+Nominal evidence reports the exact translation premise and
+`physical_translation_status: unassessed`. It checks the expected protein
+spelling under a supplied interpretation, without establishing physical
+translation, expression, folding, assembly, delivery or therapeutic function.
+The public reference's chemistry and translation premise remain explicit design
+assumptions; public CAR protein evidence does not validate its complete mRNAs.
 
 Candidate-local hashes or an imported PASS do not replace originals. Changes to
 UTRs, synonymous CDSs, chemistry, member assignment or original model/context
@@ -91,3 +118,9 @@ their full supported development census. Local feedback is pure Python, typing
 and static/source checks only; native validation runs on hosted CI. A development
 run does not replace RC7 integration/cross-platform/installed acceptance or RC8
 release qualification.
+
+The source inventory classifies the controlled nominal leaf separately and pins
+its complete source and lexical guard/profile census. A historical metadata
+projection preserves all prior RC6 and older rule meanings and witness gaps;
+the expression inventory remains unchanged. These are review tripwires and
+source-presence checks, not native test execution or biological qualification.

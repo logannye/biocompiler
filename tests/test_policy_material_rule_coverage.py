@@ -45,7 +45,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 302)
+        self.assertEqual(result["sources"], 304)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
@@ -108,6 +108,33 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
             self.ledger = deepcopy(self.original)
             self.rejected(lambda value: next(row for row in value["sources"]
                 if row["path"] == name).update(disposition="rule_owner"), "Changed route exception")
+
+    def test_controlled_nominal_leaf_preserves_all_prior_rc6_meanings(self):
+        metadata = coverage.metadata_before_controlled_nominal_material(self.original)
+        self.assertEqual(len(metadata["source_classifications"]), 302)
+        self.assertEqual(len(metadata["rules"]), 62)
+        self.assertEqual(len(metadata["witness_paths"]), 30)
+        encoded = json.dumps(metadata, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "131eddf32537b8f8e8177536bebce56579f045bac296a1ff7c80a8af77acdb9a")
+        self.assertEqual(len(coverage.CONTROLLED_NOMINAL_MATERIAL_SOURCES), 2)
+        for name in coverage.CONTROLLED_NOMINAL_MATERIAL_SOURCES:
+            row = next(row for row in self.original["sources"] if row["path"] == name)
+            self.assertEqual((row["disposition"], row["reason"]),
+                             ("outside_route", coverage.CONTROLLED_NOMINAL_MATERIAL_REASON))
+            self.assertNotIn(name, coverage.EXPRESSION_SOURCES)
+            for disposition in ("dependency", "rule_owner"):
+                self.ledger = deepcopy(self.original)
+                with self.subTest(name=name, disposition=disposition):
+                    self.rejected(lambda value: next(row for row in value["sources"]
+                        if row["path"] == name).update(disposition=disposition), "Changed route exception")
+
+    def test_controlled_nominal_leaf_bytes_still_require_review(self):
+        root = self.checkout()
+        path = root / coverage.CONTROLLED_NOMINAL_MATERIAL_SOURCES[0]
+        path.write_bytes(path.read_bytes() + b"\n(* unreviewed nominal change *)\n")
+        with self.assertRaisesRegex(coverage.CoverageError, "Stale reviewed source hash"):
+            coverage.check(root, self.ledger)
 
     def test_controlled_behavior_preserves_complete_rc4_metadata(self):
         metadata = coverage.metadata_before_controlled_behavior(self.original)
@@ -944,6 +971,7 @@ let check x = Diagnostic.require x "code" "message"
             and row["path"] not in coverage.COMPONENT_TRANSFER_NETWORK_SOURCES
             and row["path"] not in coverage.COMPONENT_ASSURED_SOURCES
             and row["path"] not in coverage.EXPRESSION_ROUTE_SOURCES
+            and row["path"] not in coverage.CONTROLLED_NOMINAL_MATERIAL_SOURCES
             and row["path"] not in coverage.CONTROLLED_WORKFLOW_SOURCES
             and row["path"] not in coverage.CONTROLLED_BEHAVIOR_SOURCES
             and row["path"] not in coverage.CONTROLLED_MATERIAL_SOURCES

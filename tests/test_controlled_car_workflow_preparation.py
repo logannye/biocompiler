@@ -101,6 +101,12 @@ class ControlledCarWorkflowPreparationTests(unittest.TestCase):
         self.assertEqual(len(interpreted), 12)
         self.assertTrue(all(item.clauses[0].expression.value.startswith("biocompiler.controlled_source.")
                             for item in interpreted))
+        nominal = definitions["biocompiler.controlled.nominal_translation.v1"]
+        self.assertEqual(nominal.category, "model")
+        self.assertEqual(nominal.meaning, contract()["nominal_translation"]["meaning"])
+        self.assertIn(nominal.meaning, source.to_data()["project_context"]["assumptions"])
+        self.assertEqual((nominal.parameters, nominal.clauses, nominal.assumptions), ((), (), ()))
+        self.assertIn(nominal.ref, document.implementations.implementations[0].dependencies)
 
     def test_model_products_pins_scope_and_assumptions_match_full_authority(self):
         original = prepare().behavior.original.to_request()
@@ -187,6 +193,7 @@ class ControlledCarWorkflowPreparationTests(unittest.TestCase):
     def test_contract_relabeling_or_empirical_promotion_cannot_enter_helper(self):
         material, sources = artificial_material()
         mutations = (lambda value: value.update(reference_identity="different_pair"),
+                     lambda value: value["nominal_translation"].update(meaning="physical translation established"),
                      lambda value: value["controller"].update(id="rapamycin"),
                      lambda value: value["readout"].update(id="measured_cytotoxicity"),
                      lambda value: value["readout"].update(background_means_zero_cytotoxicity=True),

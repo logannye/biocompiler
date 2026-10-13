@@ -7,6 +7,12 @@ acceptance and the researcher-facing release remain open. The intended use
 remains human immune cells engineered in vivo. No experimental result for the
 new RNA adaptation is asserted.
 
+The [hosted-validation batch](controlled-car-hosted-validation.md) freezes a
+curated complete input at `data/car_controlled_reference/project.json` and
+introduces contract version 2's explicit nominal translation premise. The local
+checkpoint below records the preceding version 1 preparation; its identity is
+historical and does not transfer to the revised original.
+
 ## What the pack contains
 
 | Input | Authority and scope |

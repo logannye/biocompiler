@@ -149,6 +149,15 @@ does not package releases or cancel a release workflow. Native work remains
 hosted. Batch tracker updates at useful implementation and validation boundaries
 while independent development continues during full release validation.
 
+The public controlled-CAR branch adds a separate real-reference campaign after
+the complete native suite phase. Its curated complete original request and
+independent expected RNA identities are included in the source census. It uses
+the same fresh binaries and preserves all existing suites and campaigns.
+External publication-byte acquisition remains separately audited; hosted native
+acceptance does not claim to re-read those PDFs or HTML. See the
+[batch record](controlled-car-hosted-validation.md) for the versioned nominal
+translation premise, exact original identity and outstanding release gates.
+
 ## Work in coherent batches
 
 The user reaffirmed this as the default Biocompiler development process on

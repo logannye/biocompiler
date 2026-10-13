@@ -235,7 +235,7 @@
       "path": "core/lib/checker/policy_controlled_material_check.ml",
       "disposition": "outside_route",
       "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
-      "sha256": "20c799a05b9135d24efa0221401b550e975c7fe9e782f5a21e09daaf8b6759d0",
+      "sha256": "b578c23ac644c4c5f674af4ac0c219ef01dea8f6a724ef90e7ad3400c9305c26",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -251,7 +251,7 @@
       "path": "core/lib/checker/policy_controlled_material_check.mli",
       "disposition": "outside_route",
       "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
-      "sha256": "213408c88dd26447db97a41e0d93c845f6c4cd4170aa66d1383757a371ba76a3",
+      "sha256": "8b596b5582b4595da13ffe84977e2b9ce17072669814b31c1919d0a5453c423a",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -315,6 +315,39 @@
       },
       "disposition": "outside_route",
       "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/checker/policy_controlled_structure_check.ml",
+      "sha256": "b66ac61e65c2c1fc9df24aaa6e47dc062841ef651b58548aabc7743de28dbf6f",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 5,
+          "supported": 15,
+          "verify": 22
+        },
+        "profile_literals": {
+          "biocompiler.chemical": 1,
+          "biocompiler.controlled.nominal_translation.v1": 1,
+          "biocompiler.ocaml.policy_controlled_nominal_structure_check.v0.1": 1,
+          "biocompiler.policy_controlled_nominal_structure.v0.1": 1,
+          "biocompiler.policy_controlled_nominal_structure_assessment.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled material nominal parent-base correspondence under the exact admitted selected-implementation premise; recognized N1-methylpseudouridine at canonical U only. No ordinary-CDS or expression-route acceptance, physical translation, empirical function or therapeutic authority."
+    },
+    {
+      "path": "core/lib/checker/policy_controlled_structure_check.mli",
+      "sha256": "f71ebbb27987823526e1b0a4c70a8832a0fedcf0bdfa4b773adcbb9e933608e4",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate controlled material nominal parent-base correspondence under the exact admitted selected-implementation premise; recognized N1-methylpseudouridine at canonical U only. No ordinary-CDS or expression-route acceptance, physical translation, empirical function or therapeutic authority."
     },
     {
       "path": "core/lib/checker/policy_correspondence.ml",
@@ -4189,27 +4222,31 @@
       "path": "src/biocompiler/core_policy_controlled_material.py",
       "disposition": "outside_route",
       "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
-      "sha256": "2c34b6902e17496e1ab07672a26f47ac3278aabc2f6e254818854ea14408179d",
+      "sha256": "e5a3280bf88efeb0514977704fded0f5ab7e84cb0e492ad0142c18d5beb4984e",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 13,
+          "FunctionDef": 15,
           "Raise": 3
         },
         "profile_literals": {
           "biocompiler.construction_content.v0.1": 1,
           "biocompiler.construction_content_assessment.v0.1": 1,
           "biocompiler.construction_content_authority.v0.1": 1,
+          "biocompiler.controlled.nominal_translation.v1": 1,
           "biocompiler.core.policy_controlled_material.v1": 1,
           "biocompiler.molecular_content_inventory.v0.1": 1,
           "biocompiler.ocaml.construction_content_check.v0.1": 1,
           "biocompiler.ocaml.policy_controlled_material.v0.1": 1,
           "biocompiler.ocaml.policy_controlled_material_check.v0.1": 1,
+          "biocompiler.ocaml.policy_controlled_nominal_structure_check.v0.1": 1,
           "biocompiler.ocaml.policy_mrna_structure_check.v0.1": 1,
           "biocompiler.policy_controlled_composition_material_assessment.v0.1": 1,
           "biocompiler.policy_controlled_composition_material_candidate.v0.1": 1,
           "biocompiler.policy_controlled_composition_material_manifest.v0.1": 1,
+          "biocompiler.policy_controlled_nominal_structure.v0.1": 1,
+          "biocompiler.policy_controlled_nominal_structure_assessment.v0.1": 1,
           "biocompiler.policy_mrna_completeness.v0.1": 1,
           "biocompiler.policy_mrna_structure_assessment.v0.1": 1
         }
