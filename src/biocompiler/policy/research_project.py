@@ -15,7 +15,7 @@ from pathlib import Path
 import re
 import stat
 import tempfile
-from typing import Callable, Literal, Sequence, cast
+from typing import Callable, Literal, Sequence, TYPE_CHECKING, cast
 import zipfile
 
 from biocompiler.core_client import CoreCancelled, CoreClient, CoreProtocolError, JsonValue, decode_json, encode_json
@@ -29,11 +29,15 @@ from .expression_material import ExpressionMaterialRequest
 from .finite_build import FiniteMachineBuild
 from .material import _destination, _verify_staged
 
+if TYPE_CHECKING:
+    from .controlled_workflow import ControlledWorkflowRequest
+
 SCHEMA = "biocompiler.research_project.v0.1"
 EXPRESSION_SCHEMA = "biocompiler.research_project.v0.2"
+CONTROLLED_SCHEMA = "biocompiler.research_project.v0.3"
 MAX_PROJECT_BYTES = 8 * 1024 * 1024
 MAX_BUNDLE_BYTES = 16 * 1024 * 1024
-Route = Literal["component_material", "component_selection", "expression_material"]
+Route = Literal["component_material", "component_selection", "expression_material", "controlled_composition"]
 
 
 class ResearchProjectError(ValueError):
@@ -111,6 +115,10 @@ class ProjectBuild:
 def _route(request: JsonValue) -> Route:
     _require(type(request) is dict, "A complete original component or selection request is required")
     row = cast(dict[str, JsonValue], request)
+    if row.get("schema_version") == "biocompiler.policy_controlled_workflow_request.v0.1":
+        from .controlled_workflow import ControlledWorkflowRequest
+        ControlledWorkflowRequest.from_request(row)
+        return "controlled_composition"
     if row.get("schema_version") in (component.REQUEST_SCHEMA, component.INSTANCE_REQUEST_SCHEMA,
                                    component.PREREQUISITE_REQUEST_SCHEMA, component.TWO_OBSERVATION_REQUEST_SCHEMA,
                                    component.MULTI_MEMBER_REQUEST_SCHEMA, component.GROUNDED_HELPER_REQUEST_SCHEMA,
@@ -130,15 +138,24 @@ def _project(value: JsonValue) -> dict[str, JsonValue]:
     _require(type(value) is dict and set(value) == {"schema_version", "project_id", "title", "route", "request", "limits", "sources", "assumptions"},
              "Research project requires its complete versioned fields, original request, limits and provenance")
     row = cast(dict[str, JsonValue], value)
-    _require(row["schema_version"] in (SCHEMA, EXPRESSION_SCHEMA), "Unsupported research project schema")
+    _require(row["schema_version"] in (SCHEMA, EXPRESSION_SCHEMA, CONTROLLED_SCHEMA), "Unsupported research project schema")
     _text(row["project_id"], "Project id", 128)
     _text(row["title"], "Project title")
     _require(row["route"] == _route(row["request"]), "Project route differs from its complete original request")
     request = cast(dict[str, JsonValue], row["request"])
-    if row["route"] == "expression_material":
+    if row["route"] == "controlled_composition":
+        from .controlled_workflow import ControlledWorkflowRequest
+        _require(row["schema_version"] == CONTROLLED_SCHEMA, "Controlled workflow requires project v0.3")
+        controlled = ControlledWorkflowRequest.from_request(request)
+        _require(encode_json(row["limits"]) == encode_json(controlled.limits),
+                 "Project limits differ from complete native workflow authority")
+        context = {key: row[key] for key in ("project_id", "title", "sources", "assumptions")}
+        _require(encode_json(context) == encode_json(controlled.behavior.original.source_authority.project_context),
+                 "Complete project metadata and source records differ from native original authority")
+    elif row["route"] == "expression_material":
         _require(row["schema_version"] == EXPRESSION_SCHEMA and row["limits"] is None,
                  "Static expression projects require v0.2 and no temporal execution limits")
-        context: dict[str, JsonValue] = {key: row[key] for key in ("project_id", "title", "sources", "assumptions")}
+        context = {key: row[key] for key in ("project_id", "title", "sources", "assumptions")}
         _require(encode_json(context) == encode_json(request.get("project_context")),
                  "Complete project metadata and source records differ from native original authority")
     else:
@@ -192,7 +209,7 @@ def _transport(value: CoreClient | None, role: Literal["core", "verify"], operat
 
 
 def _client(route: Route, transport: CoreClient) -> component.PolicyComponentMaterialClient | selection.PolicyComponentSelectionClient:
-    _require(route != "expression_material", "Static expression uses its separate typed client")
+    _require(route in ("component_material", "component_selection"), "This route uses its separate typed client")
     return (component.PolicyComponentMaterialClient(transport) if route == "component_material"
             else selection.PolicyComponentSelectionClient(transport))
 
@@ -239,6 +256,15 @@ class ResearchProject:
             "request": request, "limits": None, **context})
 
     @classmethod
+    def from_controlled(cls, build: ControlledWorkflowRequest) -> ResearchProject:
+        """Retain joined originals and their exact source metadata and limits."""
+        from .controlled_workflow import ControlledWorkflowRequest
+        _require(type(build) is ControlledWorkflowRequest, "An explicit typed controlled workflow request is required")
+        context = build.behavior.original.source_authority.project_context
+        return cls.from_data({"schema_version": CONTROLLED_SCHEMA, "route": "controlled_composition",
+            "request": build.to_request(), "limits": build.limits, **context})
+
+    @classmethod
     def from_data(cls, value: JsonValue) -> ResearchProject:
         """Freeze an inert versioned project; this does not run semantic admission."""
         return cls(encode_json(value, limit=MAX_PROJECT_BYTES))
@@ -268,6 +294,13 @@ class ResearchProject:
         """Reopen the complete static source and supplied material authority."""
         _require(self.route == "expression_material", "This project does not use static expression material")
         return ExpressionMaterialRequest.from_request(self.request)
+
+    @property
+    def controlled(self) -> ControlledWorkflowRequest:
+        """Reopen complete joined authority without native checking or inferred inputs."""
+        _require(self.route == "controlled_composition", "This project does not use controlled composition")
+        from .controlled_workflow import ControlledWorkflowRequest
+        return ControlledWorkflowRequest.from_request(self.request)
 
     @property
     def build(self) -> FiniteMachineBuild:
@@ -338,11 +371,15 @@ class ResearchProject:
         _cancel(cancelled)
         route = self.route
         suffix = {"component_material": "policy-component-material", "component_selection": "policy-component-selection",
-                  "expression_material": "policy-expression-material"}[route]
+                  "expression_material": "policy-expression-material", "controlled_composition": "policy-controlled-workflow"}[route]
         producer = _transport(core, "core", "compile-" + suffix, timeout_seconds)
         verifier = _transport(verify, "verify", "export-" + suffix, timeout_seconds)
         compiled: PolicyMaterialResult
-        if route == "expression_material":
+        if route == "controlled_composition":
+            from biocompiler import core_policy_controlled_workflow as controlled
+            compiled = controlled.PolicyControlledWorkflowClient(producer).compile(self.request, cancelled=cancelled)
+            accepted = controlled.ACCEPTED_STATUS
+        elif route == "expression_material":
             compiled = expression.PolicyExpressionMaterialClient(producer).compile(self.request, cancelled=cancelled)
             accepted = expression.ACCEPTED_STATUS
         else:
@@ -354,7 +391,12 @@ class ResearchProject:
             raise ResearchProjectRejected(compiled)
         _cancel(cancelled)
         verified: PolicyMaterialResult
-        if route == "component_material":
+        if route == "controlled_composition":
+            from . import controlled_workflow
+            verified = controlled_workflow.export(self.controlled, candidate=compiled.candidate,
+                client=controlled.PolicyControlledWorkflowClient(verifier), output=Path(output),
+                input_paths=self._input_paths, replace=replace, cancelled=cancelled)
+        elif route == "component_material":
             verified = component_material.export(self.request, candidate=compiled.candidate, limits=self.limits,
                 client=component.PolicyComponentMaterialClient(verifier), output=Path(output),
                 input_paths=self._input_paths, replace=replace, cancelled=cancelled)
@@ -398,10 +440,16 @@ class ResearchProject:
                  "Bundle original authority differs from the independently supplied current project")
         route = self.route
         suffix = {"component_material": "policy-component-material", "component_selection": "policy-component-selection",
-                  "expression_material": "policy-expression-material"}[route]
+                  "expression_material": "policy-expression-material", "controlled_composition": "policy-controlled-workflow"}[route]
+        if route == "controlled_composition":
+            _require(encode_json(original.get("limits")) == encode_json(self.limits),
+                     "Bundle limits differ from the independently supplied current project")
         verifier = _transport(verify, "verify", "export-" + suffix, timeout_seconds)
         fresh: PolicyMaterialResult
-        if route == "expression_material":
+        if route == "controlled_composition":
+            from biocompiler.core_policy_controlled_workflow import PolicyControlledWorkflowClient
+            fresh = PolicyControlledWorkflowClient(verifier).export(self.request, original["candidate"], cancelled=cancelled)
+        elif route == "expression_material":
             _require("limits" not in original, "Static expression manifest cannot invent temporal limits")
             fresh = expression.PolicyExpressionMaterialClient(verifier).export(self.request, original["candidate"], cancelled=cancelled)
         else:

@@ -48,7 +48,7 @@ let literals () =
   let producer_operations=["compile-architecture";"export-architecture";"compile-policy";
     "compile-policy-implementation";"compile-policy-expression-material";"compile-policy-material";"compile-policy-component-material";
     "compile-policy-component-selection";"compile-policy-module-material";"compile-policy-quantitative-assurance";
-    "construct-policy-controlled-material";"construct-policy-controlled-behavior";
+    "construct-policy-controlled-material";"construct-policy-controlled-behavior";"compile-policy-controlled-workflow";
     "plan-policy-target";"replay-policy-target-plan"] in
   let base=match Base.handle Protocol.Verify (request "capabilities" (obj [])) with
     | Protocol.Ok,Some value,[] -> value | _ -> failwith "Base capabilities failed" in
@@ -82,7 +82,8 @@ let literals () =
         Bioc_producer_service.Synthetic_inspection_service.profiles)))
     "Complete producer profile inventory changed";
   List.iter(fun(name,value)->
-    let expected=if name="policy_controlled_composition_behavior"then Bioc_service.Policy_controlled_behavior_service.producer_profile
+    let expected=if name="policy_controlled_workflow"then Bioc_service.Policy_controlled_workflow_service.producer_profile
+    else if name="policy_controlled_composition_behavior"then Bioc_service.Policy_controlled_behavior_service.producer_profile
     else if name="policy_controlled_composition_material"then obj(List.map(fun(key,value)->key,
       if key="operations"then arr(Json.array value @ [str "construct-policy-controlled-material"])
       else value)(Json.object_fields value))
@@ -134,7 +135,7 @@ let literals () =
   assert_fields ["operations";"request_schema";"build_schema";"export_schema";"assessment_schema";"implementation";
     "resource_profile";"checker_implementation";"checker_resource_profile";"validation_scope"] Service.profile;
   List.iter (fun operation -> rejected "missing_field" (fun () ->
-    if operation="compile-policy-component-selection" || (operation="construct-policy-controlled-material" || operation="construct-policy-controlled-behavior") then
+    if operation="compile-policy-component-selection" || (operation="construct-policy-controlled-material" || operation="construct-policy-controlled-behavior" || operation="compile-policy-controlled-workflow") then
       ignore (Service.scoped_handle Protocol.Core (request operation (obj [])))
     else ignore (call Protocol.Core operation (obj [])))) producer_operations;
   rejected "unknown_field" (fun () -> success "compile-architecture" (obj ["request",Json.parse literal_request;"assessment",obj []]));

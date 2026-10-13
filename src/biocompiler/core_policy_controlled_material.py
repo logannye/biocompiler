@@ -96,6 +96,8 @@ def _admission(value: JsonValue, original: dict[str, JsonValue], total: int, dec
     _require(counts["prefixes"] == counts["transitions"] + 1 and counts["histories"] <= counts["transitions"]
              and counts["work"] <= total - decoding, "Retained enumeration exceeds cumulative work")
     admission._source(report["source_admission"], authority, domain)
+    _require(_count(_record(report["source_admission"])["horizon_ticks"], 64, 1) == domain["horizon_tick"],
+             "Retained source admission changed its exact integral horizon")
 
 
 def _normalized_authority(value: dict[str, JsonValue]) -> dict[str, JsonValue]:
@@ -210,23 +212,14 @@ class PolicyControlledMaterialResult(PolicyMaterialResult):
     """Immutable structural evidence; it never grants therapeutic export authority."""
 
 
-def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyControlledMaterialResult:
-    _require(response.operation in (CONSTRUCT, CHECK, PUBLISH) and response.status == "ok" and not response.diagnostics,
-             "Material checkpoint requires an unambiguous native response")
-    original = _record(payload["request"])
-    value = _object(response.result, _RESULT_FIELDS, "Complete material-only result")
-    _flags(value, {"schema_version": RESULT_SCHEMA, "implementation": IMPLEMENTATION,
-        "resource_profile": admission.RESOURCE_PROFILE, "validation_scope": VALIDATION_SCOPE}, "Material result changed its negotiated profile")
-    candidate = _candidate(value["candidate"])
-    _pin(candidate["request_fingerprint"], original, "Candidate original request")
-    if "candidate" in payload:
-        _require(_same(candidate, payload["candidate"]), "Native checker substituted the supplied candidate")
-    request_hash = _pin(value["request_fingerprint"], original, "Complete request")
-    candidate_hash = _pin(value["candidate_fingerprint"], candidate, "Complete candidate")
-    invocation_hash = _pin(value["invocation_fingerprint"], {"request_fingerprint": request_hash,
-        "candidate_fingerprint": candidate_hash}, "Material invocation")
-    report = _object(value["report"], _REPORT_FIELDS, "Material-only assessment")
-    report_hash = _pin(value["report_fingerprint"], report, "Complete assessment")
+def _validate_report(report: dict[str, JsonValue], request: dict[str, JsonValue],
+                     candidate: dict[str, JsonValue], *, total: int, decoding: int) -> None:
+    """Validate retained leaf evidence directly; this grants no native capability."""
+    _object(report, _REPORT_FIELDS, "Complete retained material assessment")
+    original = request
+    request_hash = _fingerprint(request)
+    candidate_hash = _fingerprint(candidate)
+    invocation_hash = _fingerprint({"request_fingerprint": request_hash, "candidate_fingerprint": candidate_hash})
     _flags(report, {"schema_version": REPORT_SCHEMA, "profile": admission.REQUEST_PROFILE,
         "implementation": "biocompiler.ocaml.policy_controlled_material_check.v0.1", "stage": "material",
         "claim_scope": "exact_supplied_two_member_rna_structure_only", "request_fingerprint": request_hash,
@@ -237,10 +230,6 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
         _require(_same(report[key], original[key]), "Material report changed original " + key)
     _require(_same(report["bindings"], _record(original["assembly"])["product_bindings"]), "Material bindings changed original identities")
     budgets = _record(original["budgets"])
-    usage = _object(value["usage"], {"unit", "preparation_charged_work", "request_decoding_work", "publication"}, "Material work accounting")
-    _flags(usage, {"unit": "logical_data_visits_and_child_semantic_work", "publication": "requires_original_one_shot_frame_guard"}, "Material work accounting changed")
-    total = _count(usage["preparation_charged_work"], cast(int, budgets["max_work"]), 1)
-    decoding = _count(usage["request_decoding_work"], total, 1)
     _admission(report["admission"], original, total, decoding)
     structural_outcome = _structure(report["structure"], original, candidate)
     content = _record(candidate["construction"])
@@ -264,6 +253,34 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
     _require(_same(report["material_limits"], expected_limits), "Material accounting differs from original bounds and complete candidate")
     outcome = structural_outcome if passed else "fail"
     _require(report["outcome"] == outcome and report["status"] == (ACCEPTED_STATUS if outcome == "pass" else "not_accepted"), "Material verdict contradicts independent leaf or limits")
+    _publication(report, cast(int, budgets["max_report_bytes"]), cast(int, budgets["max_report_nodes"]))
+
+
+def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyControlledMaterialResult:
+    _require(response.operation in (CONSTRUCT, CHECK, PUBLISH) and response.status == "ok" and not response.diagnostics,
+             "Material checkpoint requires an unambiguous native response")
+    original = _record(payload["request"])
+    value = _object(response.result, _RESULT_FIELDS, "Complete material-only result")
+    _flags(value, {"schema_version": RESULT_SCHEMA, "implementation": IMPLEMENTATION,
+        "resource_profile": admission.RESOURCE_PROFILE, "validation_scope": VALIDATION_SCOPE}, "Material result changed its negotiated profile")
+    candidate = _candidate(value["candidate"])
+    _pin(candidate["request_fingerprint"], original, "Candidate original request")
+    if "candidate" in payload:
+        _require(_same(candidate, payload["candidate"]), "Native checker substituted the supplied candidate")
+    request_hash = _pin(value["request_fingerprint"], original, "Complete request")
+    candidate_hash = _pin(value["candidate_fingerprint"], candidate, "Complete candidate")
+    invocation_hash = _pin(value["invocation_fingerprint"], {"request_fingerprint": request_hash,
+        "candidate_fingerprint": candidate_hash}, "Material invocation")
+    report = _object(value["report"], _REPORT_FIELDS, "Material-only assessment")
+    report_hash = _pin(value["report_fingerprint"], report, "Complete assessment")
+    budgets = _record(original["budgets"])
+    usage = _object(value["usage"], {"unit", "preparation_charged_work", "request_decoding_work", "publication"}, "Material work accounting")
+    _flags(usage, {"unit": "logical_data_visits_and_child_semantic_work", "publication": "requires_original_one_shot_frame_guard"}, "Material work accounting changed")
+    total = _count(usage["preparation_charged_work"], cast(int, budgets["max_work"]), 1)
+    decoding = _count(usage["request_decoding_work"], total, 1)
+    _validate_report(report, original, candidate, total=total, decoding=decoding)
+    outcome = report["outcome"]
+    content = _record(candidate["construction"])
     artifact = value["artifact"]
     if response.operation != PUBLISH or outcome != "pass":
         _require(artifact is None, "Unchecked or nonpublication result returned material bytes")

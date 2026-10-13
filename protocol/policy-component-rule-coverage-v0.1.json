@@ -1407,7 +1407,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "795538de5c55def28919e4dbf18256baaeeb669c26c0b7c2a03f480d16c3612a",
+      "sha256": "81cd02c27f2fb44e3c1c8468d1d7ad22af16a2996428051c7d60a49399468a8c",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -2012,11 +2012,11 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "23c7c0b504aebf4219c170973b90f7aaf94e406adbedd93c0f8d126f19de73d1",
+      "sha256": "73de1d401968171ca266d37fff97d5bbea916e1489d88966110342544c3257f3",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 4,
+          "Diagnostic.fail": 5,
           "Diagnostic.require": 9
         },
         "profile_literals": {
@@ -2029,7 +2029,7 @@
     },
     {
       "path": "core/lib/service/service.mli",
-      "sha256": "1d8145498ef9313f482ab30d24cfc38ddc1ce8a8ec13570598465ddf1a37d2e8",
+      "sha256": "c341abd3346c1e447aa66b3c52d2f90f0b639ec70dfc0209a83c156bbe1d2889",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},

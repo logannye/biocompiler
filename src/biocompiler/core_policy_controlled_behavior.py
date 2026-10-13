@@ -95,29 +95,20 @@ class PolicyControlledBehaviorResult(PolicyMaterialResult):
     """Finite conditional behavior evidence; material joining remains unperformed."""
 
 
-def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyControlledBehaviorResult:
-    value = _object(response.result, _RESULT_FIELDS, "Controlled behavior result")
-    _flags(value, {"schema_version": RESULT_SCHEMA, "implementation": IMPLEMENTATION,
-        "resource_profile": admission.RESOURCE_PROFILE, "validation_scope": VALIDATION_SCOPE}, "Behavior result changed negotiated profile")
-    request = _original(payload["request"])
+def _validate_report(report: dict[str, JsonValue], request: dict[str, JsonValue],
+                     candidate: dict[str, JsonValue], *, total: int, decoding: int) -> None:
+    """Validate retained leaf evidence directly; this grants no native capability."""
+    _object(report, _REPORT_FIELDS, "Complete retained behavior assessment")
     original = _record(request["original"])
-    candidate = _candidate(value["candidate"])
-    _pin(candidate["request_fingerprint"], request, "Candidate complete behavior authority")
-    if "candidate" in payload:
-        _require(_same(candidate, payload["candidate"]), "Native checker substituted supplied candidate")
-    request_hash = _pin(value["request_fingerprint"], request, "Complete behavior request")
-    candidate_hash = _pin(value["candidate_fingerprint"], candidate, "Complete behavior candidate")
-    invocation_hash = _pin(value["invocation_fingerprint"], {"request_fingerprint": request_hash,
-        "candidate_fingerprint": candidate_hash}, "Behavior invocation")
-    report = _object(value["report"], _REPORT_FIELDS, "Complete behavioral assessment")
-    report_hash = _pin(value["report_fingerprint"], report, "Complete behavioral assessment")
+    request_hash = _fingerprint(request)
+    candidate_hash = _fingerprint(candidate)
+    invocation_hash = _fingerprint({"request_fingerprint": request_hash, "candidate_fingerprint": candidate_hash})
     _flags(report, {"schema_version": REPORT_SCHEMA, "profile": admission.REQUEST_PROFILE,
         "implementation": "biocompiler.ocaml.policy_controlled_behavior_check.v0.1", "stage": "behavior",
         "claim_scope": "conditional_supplied_model_and_source_requirements_in_complete_finite_domain",
         "request_fingerprint": request_hash, "candidate_fingerprint": candidate_hash, "invocation_fingerprint": invocation_hash,
         "material_status": "not_joined", "empirical_status": "unassessed", "human_use": "unassessed",
         "therapeutic_export": "withheld"}, "Behavior assessment upgraded its conditional scope")
-    _require(value["artifact"] is None, "Behavior-only operation cannot publish a material artifact")
     for key in ("context", "resources", "budgets"):
         _require(_same(report[key], original[key]), "Behavior report changed complete original " + key)
     source = _record(original["source_authority"])
@@ -131,10 +122,6 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
     _require(_same({key: activity[key] for key in ("onset_ticks", "cessation_ticks", "reactivation_ticks")}, delays), "Candidate primitive delays differ from supplied actual model")
     _require(_same(report["assumptions"], _record(source["project_context"])["assumptions"]), "Behavior report changed supplied assumptions")
     budgets = _record(original["budgets"])
-    usage = _object(value["usage"], {"unit", "preparation_charged_work", "request_decoding_work", "publication"}, "Behavior work accounting")
-    _flags(usage, {"unit": "logical_data_visits_and_child_semantic_work", "publication": "requires_original_one_shot_frame_guard"}, "Behavior work accounting changed")
-    total = _count(usage["preparation_charged_work"], cast(int, budgets["max_work"]), 1)
-    decoding = _count(usage["request_decoding_work"], total, 1)
     _admission(report["admission"], original, total, decoding)
     admitted = _record(_record(report["admission"])["source_admission"])
     _require(_count(admitted["horizon_ticks"], 64, 1) == _record(original["operating_domain"])["horizon_tick"],
@@ -340,6 +327,32 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyCont
         _require(all(coverage.values()) and report["model_correspondence"] == "pass"
             and report["evidence_status"] == "resolved" and report["counterexample"] is None,
             "Behavior acceptance lacks complete resolved evidence and non-vacuous coverage")
+    _publication(report, cast(int, budgets["max_report_bytes"]), cast(int, budgets["max_report_nodes"]))
+
+
+def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyControlledBehaviorResult:
+    value = _object(response.result, _RESULT_FIELDS, "Controlled behavior result")
+    _flags(value, {"schema_version": RESULT_SCHEMA, "implementation": IMPLEMENTATION,
+        "resource_profile": admission.RESOURCE_PROFILE, "validation_scope": VALIDATION_SCOPE}, "Behavior result changed negotiated profile")
+    request = _original(payload["request"])
+    original = _record(request["original"])
+    candidate = _candidate(value["candidate"])
+    _pin(candidate["request_fingerprint"], request, "Candidate complete behavior authority")
+    if "candidate" in payload:
+        _require(_same(candidate, payload["candidate"]), "Native checker substituted supplied candidate")
+    request_hash = _pin(value["request_fingerprint"], request, "Complete behavior request")
+    candidate_hash = _pin(value["candidate_fingerprint"], candidate, "Complete behavior candidate")
+    invocation_hash = _pin(value["invocation_fingerprint"], {"request_fingerprint": request_hash,
+        "candidate_fingerprint": candidate_hash}, "Behavior invocation")
+    report = _object(value["report"], _REPORT_FIELDS, "Complete behavioral assessment")
+    report_hash = _pin(value["report_fingerprint"], report, "Complete behavioral assessment")
+    budgets = _record(original["budgets"])
+    usage = _object(value["usage"], {"unit", "preparation_charged_work", "request_decoding_work", "publication"}, "Behavior work accounting")
+    _flags(usage, {"unit": "logical_data_visits_and_child_semantic_work", "publication": "requires_original_one_shot_frame_guard"}, "Behavior work accounting changed")
+    total = _count(usage["preparation_charged_work"], cast(int, budgets["max_work"]), 1)
+    decoding = _count(usage["request_decoding_work"], total, 1)
+    _validate_report(report, request, candidate, total=total, decoding=decoding)
+    _require(value["artifact"] is None, "Behavior-only operation cannot publish a material artifact")
     if response.operation == REPLAY:
         _require(_same(report, payload["report"]), "Replay substituted supplied report instead of exact fresh comparison")
     _publication(report, cast(int, budgets["max_report_bytes"]), cast(int, budgets["max_report_nodes"]))

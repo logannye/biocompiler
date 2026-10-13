@@ -47,11 +47,11 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (69, 2058, 307, 17, 46))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 749,
-            'independent_expansion': 28, 'shared_invariant': 922, 'source_only': 353})
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (71, 2113, 307, 17, 50))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 779,
+            'independent_expansion': 28, 'shared_invariant': 947, 'source_only': 353})
         self.assertEqual(len(self.ledger['syntax_links']), 370)
-        self.assertEqual(len(self.ledger['witnesses']), 300)
+        self.assertEqual(len(self.ledger['witnesses']), 308)
         self.assertEqual(result['status'], 'source_inventory_checked')
         self.assertEqual(result['runtime_protocol_scope'], c.RUNTIME_SCOPE)
         self.assertIn('not an exhaustive runtime-attribute census', result['runtime_protocol_scope'])
@@ -71,7 +71,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         digest = c.digest(json.dumps(metadata, ensure_ascii=True, sort_keys=True,
             separators=(',', ':'), allow_nan=False).encode())
         with patch.object(c, 'REVIEWED_METADATA_SHA256', digest):
-            with self.assertRaisesRegex(c.ApiCoverageError, 'Controlled behavior must preserve'):
+            with self.assertRaisesRegex(c.ApiCoverageError, 'Joined workflow must preserve'):
                 c.validate(self.root, self.ledger)
 
     def test_discovery_is_inert_even_for_source_with_executable_statements(self):
@@ -82,7 +82,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 2058)
+        self.assertEqual(len(found['entries']), 2113)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
 
@@ -251,8 +251,26 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
             c.validate(self.root, self.ledger)
 
-    def before_controlled_behavior(self):
+    def before_controlled_workflow(self):
         projected = copy.deepcopy(self.ledger)
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+            if not key.startswith(c.CONTROLLED_WORKFLOW_PREFIXES) and key not in c.CONTROLLED_WORKFLOW_ADDITIONS}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
+            if not key.startswith('controlled_rc6.')}
+        return projected
+
+    def test_controlled_workflow_preserves_all_2058_rc5_api_meanings(self):
+        previous = self.before_controlled_workflow()
+        metadata = {'coverage': previous['coverage'], 'witnesses': {
+            key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+            for key, row in previous['witnesses'].items()}}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode()
+        self.assertEqual((len(previous['coverage']), len(previous['witnesses'])), (2058, 300))
+        self.assertEqual(c.digest(encoded), 'fb1502f84b66fd2e3c64800741fc86b36d4b4b77d11bc330235ab526571ec061')
+
+    def before_controlled_behavior(self):
+        projected = self.before_controlled_workflow()
         projected['coverage'] = {key: row for key, row in projected['coverage'].items()
                                 if not key.startswith(c.CONTROLLED_BEHAVIOR_PREFIXES)}
         projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
@@ -324,7 +342,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         self.assertEqual(sum(self.ledger['coverage'][key]['status'] == 'dependency' for key in additions), 33)
         self.assertEqual(sum(self.ledger['coverage'][key]['status'] == 'shared_invariant' for key in additions), 27)
         operations = [row for row in self.ledger['inventory']['operations']
-                      if not row['owner'].startswith(c.CONTROLLED_MATERIAL_PREFIXES + c.CONTROLLED_BEHAVIOR_PREFIXES)]
+                      if not row['owner'].startswith(c.CONTROLLED_MATERIAL_PREFIXES + c.CONTROLLED_BEHAVIOR_PREFIXES + c.CONTROLLED_WORKFLOW_PREFIXES)]
         controlled = [row for row in operations if row['owner'].startswith(c.CONTROLLED_ADMISSION_PREFIXES)]
         self.assertEqual(controlled, [{'owner': 'biocompiler.core_policy_controlled_composition.PolicyControlledCompositionClient.admit',
             'operation': 'admit-policy-component-material', 'payload_fields': ['request']}])
@@ -427,11 +445,11 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             c.validate(self.root, self.ledger)
 
     def test_reviewed_witness_ceiling_is_closed(self):
-        self.assertEqual(c.MAX_WITNESSES, 300)
+        self.assertEqual(c.MAX_WITNESSES, 320)
         for index in range(c.MAX_WITNESSES - len(self.ledger['witnesses']) + 1):
             self.ledger['witnesses']['controlled.unreviewed_' + str(index)] = copy.deepcopy(
                 self.ledger['witnesses']['controlled.source_roundtrip'])
-        self.assertEqual(len(self.ledger['witnesses']), 301)
+        self.assertEqual(len(self.ledger['witnesses']), 321)
         with self.assertRaisesRegex(c.ApiCoverageError, 'witness inventory'):
             c.validate(self.root, self.ledger)
 
@@ -469,7 +487,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
                              separators=(',', ':'), allow_nan=False).encode('utf-8')
         with patch.object(c, 'REVIEWED_METADATA_SHA256', c.digest(encoded)):
-            with self.assertRaisesRegex(c.ApiCoverageError, 'Controlled behavior must preserve'):
+            with self.assertRaisesRegex(c.ApiCoverageError, 'Joined workflow must preserve'):
                 c.validate(self.root, self.ledger)
 
     def test_project_sources_body_drift_rejects_after_file_repin(self):
@@ -824,8 +842,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         original = json.dumps({'witnesses': witnesses, 'coverage': projected['coverage']}, ensure_ascii=True,
                               sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         self.assertEqual(c.digest(original), '2367be4f22a4985eb15fce30dc799abfb254a22ae86f7de665e23fdc7ed800a2')
-        self.assertEqual((len(set(c.MODULES) - {'controlled_behavior', 'controlled_material', 'controlled_composition', 'car_reference', 'expression_material', 'project_sources', 'finite_build', 'research_project', 'typed', 'modules', 'refinement', 'quantitative', 'module_linking', 'planning', 'quantitative_composition', 'quantitative_assurance', 'approximation', 'realization_evidence'}),
-                          len(set(c.CLIENTS) - {'core_policy_controlled_behavior', 'core_policy_controlled_material', 'core_policy_controlled_composition', 'core_policy_expression_material', 'core_policy_refinement', 'core_policy_module_linking', 'core_policy_planning', 'core_policy_quantitative_assurance'})), (30, 6))
+        self.assertEqual((len(set(c.MODULES) - {'controlled_workflow', 'controlled_behavior', 'controlled_material', 'controlled_composition', 'car_reference', 'expression_material', 'project_sources', 'finite_build', 'research_project', 'typed', 'modules', 'refinement', 'quantitative', 'module_linking', 'planning', 'quantitative_composition', 'quantitative_assurance', 'approximation', 'realization_evidence'}),
+                          len(set(c.CLIENTS) - {'core_policy_controlled_workflow', 'core_policy_controlled_behavior', 'core_policy_controlled_material', 'core_policy_controlled_composition', 'core_policy_expression_material', 'core_policy_refinement', 'core_policy_module_linking', 'core_policy_planning', 'core_policy_quantitative_assurance'})), (30, 6))
         additions = {key: row for key, row in self.before_research_project()['coverage'].items()
                      if key not in projected['coverage']}
         self.assertEqual(len(additions), 50)
@@ -876,8 +894,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         original = json.dumps({'witnesses': witnesses, 'coverage': retained}, ensure_ascii=True,
                               sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         self.assertEqual(c.digest(original), 'f16a88c77afaea4f7cbae56e80e38afc8d5a4c894616ca158578b707d393bb4a')
-        self.assertEqual((len(set(c.MODULES) - {'controlled_behavior', 'controlled_material', 'controlled_composition', 'car_reference', 'expression_material', 'project_sources', 'finite_build', 'component_selection', 'research_project', 'typed', 'modules', 'refinement', 'quantitative', 'module_linking', 'planning', 'quantitative_composition', 'quantitative_assurance', 'approximation', 'realization_evidence'}),
-                          len(set(c.CLIENTS) - {'core_policy_controlled_behavior', 'core_policy_controlled_material', 'core_policy_controlled_composition', 'core_policy_expression_material', 'core_policy_component_selection', 'core_policy_refinement', 'core_policy_module_linking', 'core_policy_planning', 'core_policy_quantitative_assurance'})), (29, 5))
+        self.assertEqual((len(set(c.MODULES) - {'controlled_workflow', 'controlled_behavior', 'controlled_material', 'controlled_composition', 'car_reference', 'expression_material', 'project_sources', 'finite_build', 'component_selection', 'research_project', 'typed', 'modules', 'refinement', 'quantitative', 'module_linking', 'planning', 'quantitative_composition', 'quantitative_assurance', 'approximation', 'realization_evidence'}),
+                          len(set(c.CLIENTS) - {'core_policy_controlled_workflow', 'core_policy_controlled_behavior', 'core_policy_controlled_material', 'core_policy_controlled_composition', 'core_policy_expression_material', 'core_policy_component_selection', 'core_policy_refinement', 'core_policy_module_linking', 'core_policy_planning', 'core_policy_quantitative_assurance'})), (29, 5))
         component_rows = [row for key, row in self.ledger['coverage'].items()
                           if key.startswith(('biocompiler.core_policy_component_material.',
                                              'biocompiler.policy.component_material.'))

@@ -120,12 +120,12 @@ class PolicyDevelopmentTests(unittest.TestCase):
             "test_policy_component_material_service", "test_protocol", "test_producer_protocol",
             "test_policy_implementation_binding",
             "test_policy_preservation_check", "test_policy_candidate_congruence_check", "test_policy_candidate_transition_congruence", "test_policy_material_binding", "test_policy_material_context",
-            "test_policy_material_check", "test_policy_mrna_structure", "test_construction_content", "test_policy_controlled_source", "test_policy_controlled_domain", "test_policy_controlled_composition_admission", "test_policy_controlled_composition_service", 'test_policy_controlled_material_candidate', 'test_policy_controlled_material_producer', 'test_policy_controlled_material_check', 'test_policy_controlled_material_service', 'test_policy_controlled_behavior_candidate', 'test_policy_controlled_behavior_producer', 'test_policy_controlled_activity', 'test_policy_controlled_source_monitor', 'test_policy_controlled_model_reference', 'test_policy_controlled_behavior_check', 'test_policy_controlled_behavior_service'])
+            "test_policy_material_check", "test_policy_mrna_structure", "test_construction_content", "test_policy_controlled_source", "test_policy_controlled_domain", "test_policy_controlled_composition_admission", "test_policy_controlled_composition_service", 'test_policy_controlled_material_candidate', 'test_policy_controlled_material_producer', 'test_policy_controlled_material_check', 'test_policy_controlled_material_service', 'test_policy_controlled_behavior_candidate', 'test_policy_controlled_behavior_producer', 'test_policy_controlled_activity', 'test_policy_controlled_source_monitor', 'test_policy_controlled_model_reference', 'test_policy_controlled_behavior_check', 'test_policy_controlled_behavior_service', 'test_policy_controlled_workflow_request_candidate', 'test_policy_controlled_workflow_check', 'test_policy_controlled_workflow_service'])
         self.assertEqual(self.calls[:2], [
             ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"],
             ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]])
-        self.assertEqual(len(self.calls), 72)
-        self.assertEqual(len(result["suites"]), 70)
+        self.assertEqual(len(self.calls), 75)
+        self.assertEqual(len(result["suites"]), 73)
         for name, fixtures in (
             ("test_policy_admitted_ir", ["policy_operational_v01.json", "policy_staged_regimen_source_v01.json", "policy_implementation_binding_v01.json"]),
             ("test_policy_finite_machine", ["policy_finite_machine_v01.json"]),
@@ -246,8 +246,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
             dev.run(self.root)
         result = self.report()
-        self.assertEqual(len(self.calls), 72)
-        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 69)
+        self.assertEqual(len(self.calls), 75)
+        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 72)
         self.assertEqual(result["suites"][1]["status"], "failed")
         self.assertEqual(result["status"], "failed")
 
@@ -301,7 +301,7 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(set(writers), {coordinator})
         self.assertEqual([row["name"] for row in result["suites"]], [row["name"] for row in suites])
         self.assertCountEqual(completed, [row["name"] for row in suites])
-        self.assertEqual(len({row["log"] for row in result["suites"]}), 70)
+        self.assertEqual(len({row["log"] for row in result["suites"]}), 73)
         dev.validate_native_feedback(self.root, result, dev.preparation(self.root))
 
     def test_parallel_suite_timeout_retains_every_other_outcome(self):
@@ -318,9 +318,9 @@ class PolicyDevelopmentTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
                 dev.run(self.root)
         report = self.report()
-        self.assertEqual(len(self.calls), 72)
+        self.assertEqual(len(self.calls), 75)
         self.assertEqual([row["name"] for row in report["suites"]], [name for name, _ in dev.SUITES])
-        self.assertEqual([row["status"] for row in report["suites"]].count("passed"), 69)
+        self.assertEqual([row["status"] for row in report["suites"]].count("passed"), 72)
         self.assertEqual(report["suites"][1]["status"], "failed")
         self.assertNotIn("returncode", report["suites"][1])
         self.assertIn("900", report["suites"][1]["error"])

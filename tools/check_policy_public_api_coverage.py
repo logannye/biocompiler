@@ -35,7 +35,16 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "fb1502f84b66fd2e3c64800741fc86b36d4b4b77d11bc330235ab526571ec061"
+REVIEWED_METADATA_SHA256 = "e378227cdd10f1357c559aa7873490c74135a18bc4446fa957c2b6930e4aeee0"
+BEFORE_CONTROLLED_WORKFLOW_METADATA_SHA256 = "fb1502f84b66fd2e3c64800741fc86b36d4b4b77d11bc330235ab526571ec061"
+CONTROLLED_WORKFLOW_PREFIXES = ("biocompiler.core_policy_controlled_workflow.", "biocompiler.policy.controlled_workflow.")
+CONTROLLED_WORKFLOW_ADDITIONS = (
+    "biocompiler.policy.research_project.CONTROLLED_SCHEMA",
+    "biocompiler.policy.research_project.ResearchProject.from_controlled",
+    "biocompiler.policy.research_project.ResearchProject.controlled",
+    "biocompiler.core_policy_controlled_material._validate_report",
+    "biocompiler.core_policy_controlled_behavior._validate_report",
+)
 BEFORE_CONTROLLED_METADATA_SHA256 = "4af8785fd3710a393f53e630d8c13c570e9c81c16f8885c6062eae58af46e788"
 BEFORE_CONTROLLED_ADMISSION_METADATA_SHA256 = "3ee1abd8fd3009416d3c6fe2f11c4fa3d22f62c0e8276ceec98536576d615f9e"
 BEFORE_CONTROLLED_MATERIAL_METADATA_SHA256 = "9d2e6fa9338a8ff650ec33d00a85c2b3398c1796eb5145a36d7ea54fb359cd6f"
@@ -62,7 +71,7 @@ CAR_EXPRESSION_ADDITIONS = (
     "biocompiler.policy.research_project.ResearchProject.from_expression",
     "biocompiler.policy.serialization.expression_source_schema",
 )
-MAX_WITNESSES = 300
+MAX_WITNESSES = 320
 BEFORE_PROJECT_SOURCES_METADATA_SHA256 = "7dfbed0ecefc69a924c88a237a9d76b6ac67b6a69062c8e049cea02a0babc816"
 PROJECT_SOURCES_PREFIX = "biocompiler.policy.project_sources."
 BEFORE_TYPED_BUILD_METADATA_SHA256 = "bdcf13e67b4fc53276b8c2f1d9bece2290999dcabd9786aa22d3605b28a6b066"
@@ -204,8 +213,8 @@ COMPOSITION_DEPENDENCIES = (
     'biocompiler.core_policy_implementation._two_observation_original',
 )
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior car_reference catalog chassis cli component_material component_selection controlled_composition controlled_material controlled_behavior coordination deployment effects entities examples expression_material finite_build handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs project_sources quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
-CLIENTS = ("core_policy_controlled_behavior", "core_policy_controlled_material", "core_policy_controlled_composition", "core_policy_expression_material", "core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking", "core_policy_planning", "core_policy_quantitative_assurance")
+MODULES = tuple("__init__ behavior car_reference catalog chassis cli component_material component_selection controlled_composition controlled_material controlled_behavior controlled_workflow coordination deployment effects entities examples expression_material finite_build handoff implementation inspection logic material model module_linking modules native observations operational patterns planning programs project_sources quantitative quantitative_composition quantitative_assurance approximation realization_evidence refinement requirements research_project serialization space state time typed validation values".split())
+CLIENTS = ("core_policy_controlled_workflow", "core_policy_controlled_behavior", "core_policy_controlled_material", "core_policy_controlled_composition", "core_policy_expression_material", "core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection", "core_policy_refinement", "core_policy_module_linking", "core_policy_planning", "core_policy_quantitative_assurance")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py", "src/biocompiler/policy/data/car_rm61461_reference_v01.json")
 # These names remain compatible support surfaces, not cellular runtime APIs.
@@ -214,6 +223,10 @@ BUILDER_METHODS = tuple("__init__ qualified namespace add hole resolve executor 
 PATTERNS = tuple("bounded_response context_gate once_per_scope ordered_effects persistence_gate population_handoff".split())
 CLI = tuple("check inspect diff export-schema export-request assess-native compile-native check-lowering-native execute-native replay-execution-native compile-implementation-native check-implementation-native replay-implementation-native compile-material-native check-material-native replay-material-native export-material-native".split())
 OPERATIONS = {
+    "core_policy_controlled_workflow.PolicyControlledWorkflowClient.compile": ("compile-policy-controlled-workflow", ("request",)),
+    "core_policy_controlled_workflow.PolicyControlledWorkflowClient.check": ("check-policy-controlled-workflow", ("request", "candidate")),
+    "core_policy_controlled_workflow.PolicyControlledWorkflowClient.replay": ("replay-policy-controlled-workflow", ("request", "candidate", "report")),
+    "core_policy_controlled_workflow.PolicyControlledWorkflowClient.export": ("export-policy-controlled-workflow", ("request", "candidate")),
     "core_policy_controlled_behavior.PolicyControlledBehaviorClient.construct_behavior": ("construct-policy-controlled-behavior", ("request",)),
     "core_policy_controlled_behavior.PolicyControlledBehaviorClient.check_behavior": ("check-policy-controlled-behavior", ("request", "candidate")),
     "core_policy_controlled_behavior.PolicyControlledBehaviorClient.replay_behavior": ("replay-policy-controlled-behavior", ("request", "candidate", "report")),
@@ -765,10 +778,20 @@ def validate(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     require(digest(encoded) == REVIEWED_METADATA_SHA256,
             "Reviewed API witness/coverage metadata differs; independent scope review is required")
-    before_behavior = {
+    before_workflow = {
         "witnesses": {key: value for key, value in metadata["witnesses"].items()
-                      if not key.startswith("controlled_rc5.")},
+                      if not key.startswith("controlled_rc6.")},
         "coverage": {key: value for key, value in coverage.items()
+                     if not key.startswith(CONTROLLED_WORKFLOW_PREFIXES) and key not in CONTROLLED_WORKFLOW_ADDITIONS},
+    }
+    encoded_workflow = json.dumps(before_workflow, ensure_ascii=True, sort_keys=True,
+        separators=(",", ":"), allow_nan=False).encode("utf-8")
+    require(digest(encoded_workflow) == BEFORE_CONTROLLED_WORKFLOW_METADATA_SHA256,
+            "Joined workflow must preserve every prior API evidence meaning")
+    before_behavior = {
+        "witnesses": {key: value for key, value in before_workflow["witnesses"].items()
+                      if not key.startswith("controlled_rc5.")},
+        "coverage": {key: value for key, value in before_workflow["coverage"].items()
                      if not key.startswith(CONTROLLED_BEHAVIOR_PREFIXES)},
     }
     encoded_behavior = json.dumps(before_behavior, ensure_ascii=True, sort_keys=True,

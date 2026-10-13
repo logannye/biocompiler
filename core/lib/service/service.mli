@@ -5,7 +5,7 @@ type scoped_reply = {
   before_encode:Bioc_wire.Json.t -> unit;
 }
 
-(** Selection and controlled-admission operations require their one-shot guard
+(** Selection and controlled operations require their one-shot guard
     on the actual complete protocol frame. Other operations fall through. *)
 val scoped_handle : Bioc_wire.Protocol.executable -> Bioc_wire.Protocol.request -> scoped_reply option
 val run : ?handler:(Bioc_wire.Protocol.executable -> Bioc_wire.Protocol.request ->
@@ -13,6 +13,6 @@ val run : ?handler:(Bioc_wire.Protocol.executable -> Bioc_wire.Protocol.request 
   ?scoped_handler:(Bioc_wire.Protocol.executable -> Bioc_wire.Protocol.request -> scoped_reply option) ->
   Bioc_wire.Protocol.executable -> unit
 
-(** Legacy low-level dispatch. Selection and controlled-admission routes use
-    [scoped_handle] through [run]; controlled admission rejects bypasses here. *)
+(** Legacy low-level dispatch. Selection and controlled routes use
+    [scoped_handle] through [run]; controlled routes reject bypasses here. *)
 val handle : Bioc_wire.Protocol.executable -> Bioc_wire.Protocol.request -> Bioc_wire.Protocol.status * Bioc_wire.Json.t option * Bioc_wire.Diagnostic.t list

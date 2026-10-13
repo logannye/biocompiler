@@ -159,6 +159,22 @@ ROUTE_EXCEPTIONS.update({path: CONTROLLED_BEHAVIOR_REASON for path in CONTROLLED
 EXTRA_SOURCES += tuple(path for path in CONTROLLED_BEHAVIOR_SOURCES if path.endswith(".py"))
 BEFORE_CONTROLLED_BEHAVIOR_METADATA_SHA256 = "9acb8edfeb5f5995ac379d2ea21fd6681184d765ed9967d6260aeb70442b8b68"
 
+CONTROLLED_WORKFLOW_SOURCES = tuple(sorted([
+    *[f"core/lib/{directory}/{name}.{suffix}" for directory, name in (
+        ("domain", "policy_controlled_workflow_request"),
+        ("domain", "policy_controlled_workflow_candidate"),
+        ("compiler", "policy_controlled_workflow_producer"),
+        ("realization_checker", "policy_controlled_workflow_check"),
+        ("service", "policy_controlled_workflow_format"),
+        ("service", "policy_controlled_workflow_service"),
+    ) for suffix in ("ml", "mli")],
+    "src/biocompiler/core_policy_controlled_workflow.py", "src/biocompiler/policy/controlled_workflow.py",
+]))
+CONTROLLED_WORKFLOW_REASON = "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
+ROUTE_EXCEPTIONS.update({path: CONTROLLED_WORKFLOW_REASON for path in CONTROLLED_WORKFLOW_SOURCES})
+EXTRA_SOURCES += tuple(path for path in CONTROLLED_WORKFLOW_SOURCES if path.endswith(".py"))
+BEFORE_CONTROLLED_WORKFLOW_METADATA_SHA256 = "ee7ef85112f44ef6ff539c2269ed50e1b6e163d639a789dce27584f576c35a2d"
+
 # Components form a separately negotiated composition route, not the original
 # whole-kernel profile. Keep this path census closed and independently reviewed.
 COMPONENT_MODULES = (
@@ -728,11 +744,19 @@ def metadata_before_assured(ledger: dict[str, Any]) -> dict[str, Any]:
                                                    if row["path"] not in COMPONENT_ASSURED_SOURCES]}
 
 
+def metadata_before_controlled_workflow(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Remove only RC6 route additions, preserving all prior evidence meanings."""
+    return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
+            "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
+                for row in ledger["sources"] if row["path"] not in CONTROLLED_WORKFLOW_SOURCES],
+            "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+
+
 def metadata_before_controlled_behavior(ledger: dict[str, Any]) -> dict[str, Any]:
     """Remove only RC5 route additions, preserving the complete RC4 meanings."""
     return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
             "source_classifications": [{key: row[key] for key in ("path", "disposition", "reason")}
-                for row in ledger["sources"] if row["path"] not in CONTROLLED_BEHAVIOR_SOURCES],
+                for row in ledger["sources"] if row["path"] not in CONTROLLED_BEHAVIOR_SOURCES + CONTROLLED_WORKFLOW_SOURCES],
             "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
 
 
@@ -740,7 +764,7 @@ def metadata_before_controlled_material(ledger: dict[str, Any]) -> dict[str, Any
     """Remove RC4 additions and restore the one shared helper's RC3 scope."""
     classifications = [
         {key: row[key] for key in ("path", "disposition", "reason")}
-        for row in ledger["sources"] if row["path"] not in CONTROLLED_MATERIAL_SOURCES + CONTROLLED_BEHAVIOR_SOURCES
+        for row in ledger["sources"] if row["path"] not in CONTROLLED_MATERIAL_SOURCES + CONTROLLED_BEHAVIOR_SOURCES + CONTROLLED_WORKFLOW_SOURCES
     ]
     for row in classifications:
         if row["path"] in CONTROLLED_MATERIAL_SHARED_SOURCES:
@@ -1123,6 +1147,10 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
                                     separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(expression_previous) == BEFORE_EXPRESSION_METADATA_SHA256,
             "Changed pre-expression original material meaning/witness/classification metadata")
+    workflow_previous = json.dumps(metadata_before_controlled_workflow(ledger), sort_keys=True,
+                                   separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(workflow_previous) == BEFORE_CONTROLLED_WORKFLOW_METADATA_SHA256,
+            "Changed pre-controlled-workflow meaning/witness/classification metadata")
     behavior_previous = json.dumps(metadata_before_controlled_behavior(ledger), sort_keys=True,
                                    separators=(",", ":"), ensure_ascii=False).encode()
     require(digest(behavior_previous) == BEFORE_CONTROLLED_BEHAVIOR_METADATA_SHA256,

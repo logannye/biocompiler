@@ -1184,3 +1184,21 @@
  (modules test_policy_controlled_behavior_service)
  (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_service bioc_producer_service zarith)
  (action (run %{test} %{dep:data/policy_controlled_behavior_v01.json})))
+
+(test
+ (name test_policy_controlled_workflow_request_candidate)
+ (modules test_policy_controlled_workflow_request_candidate)
+ (libraries bioc_wire bioc_domain bioc_compiler zarith)
+ (action (run %{test} %{dep:data/policy_controlled_workflow_v01.json} %{dep:data/policy_controlled_material_v01.json} %{dep:data/policy_controlled_behavior_candidate_v01.json})))
+
+(test
+ (name test_policy_controlled_workflow_check)
+ (modules test_policy_controlled_workflow_check)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith)
+ (action (run %{test} %{dep:data/policy_controlled_workflow_v01.json} %{dep:data/policy_controlled_material_v01.json} %{dep:data/policy_controlled_behavior_candidate_v01.json})))
+
+(test
+ (name test_policy_controlled_workflow_service)
+ (modules test_policy_controlled_workflow_service)
+ (libraries bioc_wire bioc_domain bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_controlled_workflow_v01.json} %{dep:data/policy_controlled_material_v01.json})))

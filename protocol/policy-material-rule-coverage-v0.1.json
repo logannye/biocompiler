@@ -679,6 +679,30 @@
       }
     },
     {
+      "path": "core/lib/compiler/policy_controlled_workflow_producer.ml",
+      "sha256": "1acfd34b86f58b0a88c0632e5de0a444104bc5a2d15cc3cfe08bd2e74da1d3bd",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {
+          "biocompiler.ocaml.policy_controlled_workflow_producer.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
+    },
+    {
+      "path": "core/lib/compiler/policy_controlled_workflow_producer.mli",
+      "sha256": "32e8600a0b6d70c3def86651ec9cd0636762923b1fe1d52e1cead977d0d6a103",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
+    },
+    {
       "path": "core/lib/compiler/policy_implementation_lowering.ml",
       "sha256": "7d4c50e5ca5738176e837221456e0601208f5791578782ac1e7354222ccf9b61",
       "census": {
@@ -1507,6 +1531,59 @@
         "guards": {},
         "profile_literals": {}
       }
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_workflow_candidate.ml",
+      "sha256": "2cc1ef5865aaafac563b29779144a3d42997fb297b47363bfd2836a57e3193a4",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 4
+        },
+        "profile_literals": {
+          "biocompiler.policy_controlled_workflow_candidate.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_workflow_candidate.mli",
+      "sha256": "ddcbaf25f391b4bee99b13d5f51aa699f343aa6fd9bcc18346d4d7634afe300a",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_workflow_request.ml",
+      "sha256": "e6ee4de05960480f0ec48bc02d5452a59862468f39fa4b29c4dbdd78603262d6",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 5
+        },
+        "profile_literals": {
+          "biocompiler.policy_controlled_workflow_limits.v0.1": 1,
+          "biocompiler.policy_controlled_workflow_request.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
+    },
+    {
+      "path": "core/lib/domain/policy_controlled_workflow_request.mli",
+      "sha256": "20e151d50872c6834c73c7cf8969330127d390c36fd5a44a63f37549f91c90a0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
     },
     {
       "path": "core/lib/domain/policy_coupled_wire.ml",
@@ -2486,7 +2563,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "795538de5c55def28919e4dbf18256baaeeb669c26c0b7c2a03f480d16c3612a",
+      "sha256": "81cd02c27f2fb44e3c1c8468d1d7ad22af16a2996428051c7d60a49399468a8c",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -2752,6 +2829,33 @@
       },
       "disposition": "outside_route",
       "reason": "Separate RC5 conditional reversible activity execution, six source requirement monitors and complete bounded independent behavior checking only; no legacy material authority, joined project, empirical function or therapeutic export."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_controlled_workflow_check.ml",
+      "sha256": "09f79c299e707e20de6673434716c4e20405d94fa5ca5ed1b08d90624f9954b7",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 7
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_controlled_workflow_check.v0.1": 1,
+          "biocompiler.policy_controlled_workflow_assessment.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_controlled_workflow_check.mli",
+      "sha256": "b95476ce81e07aba6fbaf1821b6f0ba2032e2b85bd2cef3da0257102160e70fc",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
     },
     {
       "path": "core/lib/realization_checker/policy_material_binding_check.ml",
@@ -3408,6 +3512,63 @@
       }
     },
     {
+      "path": "core/lib/service/policy_controlled_workflow_format.ml",
+      "sha256": "c4f756225ac390ed12287f3274043a4d6303bd39f7cb0f24026e0fe78d4a311a",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1
+        },
+        "profile_literals": {
+          "biocompiler.policy_controlled_workflow_manifest.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
+    },
+    {
+      "path": "core/lib/service/policy_controlled_workflow_format.mli",
+      "sha256": "9c87e61e036dba3e38dc341ca37b4e9598503fa5cb3e995ccda6448086efe8ca",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
+    },
+    {
+      "path": "core/lib/service/policy_controlled_workflow_service.ml",
+      "sha256": "75c6c79537e9a945b2dfb641858be58e648d4d0a54a53c6f8b421cec65d89449",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 8
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_controlled_workflow.v1": 1,
+          "biocompiler.ocaml.policy_controlled_workflow.v0.1": 1,
+          "biocompiler.policy_controlled_composition_mrna.v0.1": 1,
+          "biocompiler.policy_controlled_composition_source.v0.1": 1,
+          "biocompiler.policy_controlled_workflow_request.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
+    },
+    {
+      "path": "core/lib/service/policy_controlled_workflow_service.mli",
+      "sha256": "b327bb146c2c73cf74e8cd8e8c53ec29df5c6cb31266d9d95f9da7e11eb43d48",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
+    },
+    {
       "path": "core/lib/service/policy_expression_material_service.ml",
       "sha256": "08566f72e8188f0e55718dc02aef0c022722969c9caf11a437331f8737ecaa81",
       "census": {
@@ -3654,11 +3815,11 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "23c7c0b504aebf4219c170973b90f7aaf94e406adbedd93c0f8d126f19de73d1",
+      "sha256": "73de1d401968171ca266d37fff97d5bbea916e1489d88966110342544c3257f3",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 4,
+          "Diagnostic.fail": 5,
           "Diagnostic.require": 9
         },
         "profile_literals": {
@@ -3673,7 +3834,7 @@
     },
     {
       "path": "core/lib/service/service.mli",
-      "sha256": "1d8145498ef9313f482ab30d24cfc38ddc1ce8a8ec13570598465ddf1a37d2e8",
+      "sha256": "c341abd3346c1e447aa66b3c52d2f90f0b639ec70dfc0209a83c156bbe1d2889",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -3976,12 +4137,12 @@
     },
     {
       "path": "src/biocompiler/core_policy_controlled_behavior.py",
-      "sha256": "500d57616521034224665db6449fffcfb116cd538e3f7cd7e17992e2b814a9d0",
+      "sha256": "e740dc2a267c065cc6d4056010614f7b372f98db2777f410bb36d721a412c2cf",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 8,
+          "FunctionDef": 9,
           "Raise": 1
         },
         "profile_literals": {
@@ -4028,12 +4189,12 @@
       "path": "src/biocompiler/core_policy_controlled_material.py",
       "disposition": "outside_route",
       "reason": "Separate controlled-composition RC4 two-member structural construction, independent exact material checking and atomic pair publication only; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export.",
-      "sha256": "8783c81be2f6752789b57179e36a46b5dc0d9c5020270fbcb4ea23a6bcfadf9d",
+      "sha256": "2c34b6902e17496e1ab07672a26f47ac3278aabc2f6e254818854ea14408179d",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 12,
+          "FunctionDef": 13,
           "Raise": 3
         },
         "profile_literals": {
@@ -4053,6 +4214,30 @@
           "biocompiler.policy_mrna_structure_assessment.v0.1": 1
         }
       }
+    },
+    {
+      "path": "src/biocompiler/core_policy_controlled_workflow.py",
+      "sha256": "66f5a30b6e3260ab35167bab2cf6f5aa003cc99a584fe5216a43e47d7a76bdc2",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 10,
+          "Raise": 1
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_controlled_workflow.v1": 1,
+          "biocompiler.ocaml.policy_controlled_workflow.v0.1": 1,
+          "biocompiler.ocaml.policy_controlled_workflow_check.v0.1": 1,
+          "biocompiler.policy_controlled_workflow_assessment.v0.1": 1,
+          "biocompiler.policy_controlled_workflow_candidate.v0.1": 1,
+          "biocompiler.policy_controlled_workflow_limits.v0.1": 1,
+          "biocompiler.policy_controlled_workflow_manifest.v0.1": 1,
+          "biocompiler.policy_controlled_workflow_request.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
     },
     {
       "path": "src/biocompiler/core_policy_expression_material.py",
@@ -4411,6 +4596,23 @@
       },
       "disposition": "outside_route",
       "reason": "Shared controlled-composition RC3 complete-authority preparation plus separate RC4 material-only transport helpers and atomic pair publication; no legacy whole-kernel admission, activity execution, requirement satisfaction, empirical acceptance or therapeutic export."
+    },
+    {
+      "path": "src/biocompiler/policy/controlled_workflow.py",
+      "sha256": "c6bd9b7f6416b853aaa1d9e9b48940d5c9ccc6d67c5260b905af68d7b445d56f",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 1,
+          "FunctionDef": 20,
+          "Raise": 1
+        },
+        "profile_literals": {
+          "biocompiler.controlled_source.": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Additive RC6 fresh native material and conditional behavior join under complete original project and cumulative budget; exact paired export and independent-original Verify-only reopen do not establish empirical function or human use."
     },
     {
       "path": "src/biocompiler/policy/expression_material.py",

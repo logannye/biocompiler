@@ -48,7 +48,7 @@ all native work hosted under the applicable authorization.
 | RC3 | Complete for admission and finite input-domain support | Closed v0.14 original authority, native source/material/context closure, complete finite-domain enumeration, guarded read-only admission and immutable Python transport. Hosted development validation and independently audited evidence are bound to `8b4506ed5013e21b1dbb58c34e22d31cd9b84df2`; see the RC3 validation receipt. |
 | RC4 | Complete for the direct-root artificial two-RNA subset | Fresh native construction, independent full-pair reconstruction and atomic structural publication; no behavior or numeric stoichiometric-range claim. Hosted development and independently audited evidence bind `a2a1d53345987cfd339bef17e696fa5141293b76`; see the RC4 validation checkpoint. |
 | RC5 | Complete for the artificial reversible-behavior subset; quantitative condition open | Independent candidate/model/source assessments, complete finite-domain checking and bounded evidence publication. Hosted development and independent audits bind `eb8f74ea2ce51c461496a5e845bc55d5e64d9edd`; see the RC5 validation receipt. |
-| RC6 | Planned | Complete ResearchProject, export/reopen and installed starter. |
+| RC6 | Implementation candidate; validation pending | Joined native checking, ResearchProject v0.3, exact paired export/reopen and an editable artificial starter are being validated. No earlier RC5 pass transfers to this candidate. |
 | RC7 | Planned | Coherent hosted, cross-platform, installed and artifact acceptance. |
 | RC8 | Planned | Reconcile, integrate, validate actual main and publish under its own evidence. |
 
@@ -300,3 +300,25 @@ open under RC2 and the conditional RC5 item. RC6 joined material/project/export,
 RC7 installed/cross-platform acceptance and RC8 integration/release remain open.
 Behavior reports keep material `not_joined`, empirical/human-use status
 `unassessed`, and therapeutic export withheld.
+
+## RC6 implementation candidate
+
+The additive joined workflow uses one complete original authority, including
+readout evidence, explicit projected limits and complete project context. Fresh
+native material and behavior checks share a cumulative work owner. Both private
+accepted capabilities are required for paired export. The retained child reports
+keep their original scopes; only the new joined report asserts their conjunction.
+See [the joined workflow contract](controlled-workflow-v0.1.md).
+
+ResearchProject v0.3 adds preparation, explicit typed edits, Core compilation,
+fresh Verify export and independently supplied original-project Verify-only
+reopen. Existing v0.1/v0.2 routes retain their schema and lightweight import
+behavior. The starter uses artificial complete inputs and independently authored
+expected outcomes; edits preserve actual mechanism parameters. Native, source
+campaign, installed rehearsal and artifact-audit results are pending for this
+candidate. RC7 cross-platform acceptance and RC8 release remain separate.
+
+Local OCaml/Dune/Coq use is authorized, but the shared installation could not be
+located in this shell or the bounded workspace/toolchain searches. No second
+environment or local native build tree was created. Local Python checks reuse
+the installed runtimes and typing tools. Hosted validation remains required.

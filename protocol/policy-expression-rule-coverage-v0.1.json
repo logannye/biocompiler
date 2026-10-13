@@ -201,7 +201,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "795538de5c55def28919e4dbf18256baaeeb669c26c0b7c2a03f480d16c3612a",
+      "sha256": "81cd02c27f2fb44e3c1c8468d1d7ad22af16a2996428051c7d60a49399468a8c",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -240,11 +240,11 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "23c7c0b504aebf4219c170973b90f7aaf94e406adbedd93c0f8d126f19de73d1",
+      "sha256": "73de1d401968171ca266d37fff97d5bbea916e1489d88966110342544c3257f3",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 4,
+          "Diagnostic.fail": 5,
           "Diagnostic.require": 9
         },
         "profile_literals": {
@@ -367,17 +367,19 @@
     },
     {
       "path": "src/biocompiler/policy/research_project.py",
-      "sha256": "7345fba16805046f21f9026b610bf557aa3d4dfb3400a4fc1d59b0a2b8b919eb",
+      "sha256": "f58208cb47c30c644f488581231fa737e2d94bf7585180b70c452bf997caf226",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 6,
-          "FunctionDef": 31,
+          "FunctionDef": 33,
           "Raise": 6
         },
         "profile_literals": {
+          "biocompiler.policy_controlled_workflow_request.v0.1": 1,
           "biocompiler.research_project.v0.1": 1,
-          "biocompiler.research_project.v0.2": 1
+          "biocompiler.research_project.v0.2": 1,
+          "biocompiler.research_project.v0.3": 1
         }
       }
     },

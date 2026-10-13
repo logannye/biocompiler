@@ -1392,6 +1392,11 @@
       "status": "dependency",
       "witnesses": []
     },
+    "biocompiler.core_policy_controlled_behavior._validate_report": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.core_policy_controlled_composition.IMPLEMENTATION": {
       "scope": "Closed RC3 preparation/transport dependency; no independent source, activity, construction, material or export acceptance.",
       "status": "dependency",
@@ -1750,6 +1755,214 @@
       "witnesses": []
     },
     "biocompiler.core_policy_controlled_material._structure": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_material._validate_report": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.ACCEPTED_STATUS": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.CANDIDATE_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.CHECK": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.COMPILE": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.EXPORT": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.IMPLEMENTATION": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.LIMITS_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.MANIFEST_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.PRODUCER_PROFILE": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.PROFILE": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient._call": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.check": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.compile": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.export": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.replay": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.transport": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowResult": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.core_policy_controlled_workflow.REPLAY": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.REPORT_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.REQUEST_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.RESULT_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow.VALIDATION_SCOPE": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow._candidate": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow._limits": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow._original": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow._require": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.core_policy_controlled_workflow._result": {
       "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
       "status": "dependency",
       "witnesses": []
@@ -6081,6 +6294,260 @@
         "controlled_rc4.publication_pair",
         "controlled_rc4.publication_failure",
         "controlled_rc4.publication_cancel"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest._json": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.behavior": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.from_behavior": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.from_request": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.limits": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.native_status": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.sha256": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.to_request": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.with_deadlines": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.with_horizon": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.with_material_authority": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.with_rna_limits": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow._duration": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_workflow._limits": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_workflow._record": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_workflow._require": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_workflow._rows": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
+    "biocompiler.policy.controlled_workflow.check": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.compile": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.export": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
+    "biocompiler.policy.controlled_workflow.replay": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
       ]
     },
     "biocompiler.policy.examples.NAMES": {
@@ -13739,6 +14206,11 @@
         "refinement.namespace"
       ]
     },
+    "biocompiler.policy.research_project.CONTROLLED_SCHEMA": {
+      "scope": "Retained dependency identity/body; not independently promoted to runtime API or acceptance.",
+      "status": "dependency",
+      "witnesses": []
+    },
     "biocompiler.policy.research_project.EXPRESSION_SCHEMA": {
       "scope": "Reviewed source dependency or profile constant; source inventory alone grants no native, material, empirical, installed or release acceptance.",
       "status": "dependency",
@@ -13863,6 +14335,20 @@
         "research_project.diagnostics"
       ]
     },
+    "biocompiler.policy.research_project.ResearchProject.controlled": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
+      ]
+    },
     "biocompiler.policy.research_project.ResearchProject.data": {
       "scope": "Selected researcher-project structural and mocked transport/publication controls only; no native semantic execution, general dataclass protocol coverage, installed acceptance or release proof is inferred.",
       "status": "shared_invariant",
@@ -13901,6 +14387,20 @@
         "finite_build.roundtrip",
         "finite_build.workflow",
         "finite_build.roles"
+      ]
+    },
+    "biocompiler.policy.research_project.ResearchProject.from_controlled": {
+      "scope": "Selected complete-original joined workflow transport and project controls; native semantic checking, installed acceptance and empirical function are not inferred from this static inventory.",
+      "status": "shared_invariant",
+      "witnesses": [
+        "controlled_rc6.transport",
+        "controlled_rc6.limits",
+        "controlled_rc6.evidence",
+        "controlled_rc6.work",
+        "controlled_rc6.project",
+        "controlled_rc6.original",
+        "controlled_rc6.edits",
+        "controlled_rc6.immutable"
       ]
     },
     "biocompiler.policy.research_project.ResearchProject.from_data": {
@@ -17656,7 +18156,18 @@
           "path": "src/biocompiler/core_policy_controlled_behavior.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "094999ab124d9419161858110a34ae946d391590bb5c15ee27b9a4428d7004d7"
+        "syntax_sha256": "c430d9812d418fca7ca4d6ac71191162c28a5bcb2b8f796dc34b9350f67fc67a"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_behavior._validate_report",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "report: dict[str, JsonValue], request: dict[str, JsonValue], candidate: dict[str, JsonValue], *, total: int, decoding: int -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_behavior.py",
+          "symbol": "_validate_report"
+        },
+        "syntax_sha256": "794db7bf35c7f3076eb9d699461a0a059030c6ffd1d3fcb68418e91451a3ffb8"
       },
       {
         "id": "biocompiler.core_policy_controlled_composition.IMPLEMENTATION",
@@ -18206,7 +18717,7 @@
           "path": "src/biocompiler/core_policy_controlled_material.py",
           "symbol": "_admission"
         },
-        "syntax_sha256": "6eb09f364a923f20beca0918bf4e28d17cbc4351b49cfba370e3c2f0594da5d8"
+        "syntax_sha256": "5cdcfbd0e886564e918b5f3eb67d9000e206e65419787205437f8cbc9902138a"
       },
       {
         "id": "biocompiler.core_policy_controlled_material._candidate",
@@ -18272,7 +18783,7 @@
           "path": "src/biocompiler/core_policy_controlled_material.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "a3c50b2ecdb8c0ee4c9e02d2391c92717150fe059a49b36d222451ce30cb845e"
+        "syntax_sha256": "1f543f80ad997d65efefe81716629011262065c0a09a29adce7f3a13a0140507"
       },
       {
         "id": "biocompiler.core_policy_controlled_material._structure",
@@ -18284,6 +18795,325 @@
           "symbol": "_structure"
         },
         "syntax_sha256": "89b915c881834aaa1c639f1c7222992fd50069ce7770c42200b3b780a86842cf"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_material._validate_report",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "report: dict[str, JsonValue], request: dict[str, JsonValue], candidate: dict[str, JsonValue], *, total: int, decoding: int -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_material.py",
+          "symbol": "_validate_report"
+        },
+        "syntax_sha256": "c5cccc692919a23d9614b780bc8e5f660146ac76125f60a26e0c812962f85e29"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.ACCEPTED_STATUS",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "ACCEPTED_STATUS"
+        },
+        "syntax_sha256": "ff0a771ecbee487e012b4083002f2732df82cd649f7163f1635eb1ce714f60d7"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.CANDIDATE_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "CANDIDATE_SCHEMA"
+        },
+        "syntax_sha256": "889da57d68e7e57396b7726329ec6664d45157b4220eb5bd320f719d7034f77a"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.CHECK",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "CHECK"
+        },
+        "syntax_sha256": "c56f80be399d97c42147f3a975d919e0b3555c3eeb895d7f50cef57a399fbccd"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.COMPILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "COMPILE"
+        },
+        "syntax_sha256": "f7341f9f0c33d1e1d7d6bf7087b3f99953be78de1611626092be3e20f313fa80"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.EXPORT",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "EXPORT"
+        },
+        "syntax_sha256": "32179fcecdfef31666fae48737ab40f11b1ead7c25a30fd2b047bc2806a96444"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.IMPLEMENTATION",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "IMPLEMENTATION"
+        },
+        "syntax_sha256": "20697090d10d8688363a9d62a3edd898dbadbfa445211484cdda8391dc063015"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.LIMITS_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "LIMITS_SCHEMA"
+        },
+        "syntax_sha256": "51d29af9f5cadf4de4421b7a9ef2bf97d4945adcd71e77167e48163c9e136582"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.MANIFEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "MANIFEST_SCHEMA"
+        },
+        "syntax_sha256": "07dcbeb9fa7a878b0f5f79939e3b8f5622c92203b57950cce11f1166a9b6e8b3"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.PRODUCER_PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**PROFILE, 'operations': [CHECK, REPLAY, EXPORT, COMPILE]}",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "PRODUCER_PROFILE"
+        },
+        "syntax_sha256": "d76fd58cb349d02107502636fa22d1f207d7ec0e8c484b10b3b13e02e40fef99"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.PROFILE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": "dict[str, JsonValue] = {**admission.PROFILE, 'operations': [CHECK, REPLAY, EXPORT], 'request_schema': REQUEST_SCHEMA, 'candidate_schema': CANDIDATE_SCHEMA, 'limits_schema': LIMITS_SCHEMA, 'schema_version': RESULT_SCHEMA, 'implementation': IMPLEMENTATION, 'validation_scope': VALIDATION_SCOPE, 'stage': 'joined', 'artifact': 'checked_pair'}",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "PROFILE"
+        },
+        "syntax_sha256": "556786e14929266103df49d8b75f756610dabcab18f0e2099181720872f630db"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "PolicyControlledWorkflowClient"
+        },
+        "syntax_sha256": "4161929c13bb2501a154c958a0f2b2441deebc8a778d38a7f2a1eea56639a227"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient._call",
+        "kind": "method",
+        "scope": "dependency",
+        "signature": "self, operation: str, payload: dict[str, JsonValue], *, cancelled: Callable[[], bool] | None -> PolicyControlledWorkflowResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "PolicyControlledWorkflowClient._call"
+        },
+        "syntax_sha256": "0dd30b54ec91af1196c78315157a3c7ed846dd6195df33f349f267ed87fb52f4"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.check",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, candidate: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyControlledWorkflowResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "PolicyControlledWorkflowClient.check"
+        },
+        "syntax_sha256": "d36d186d30452755d7593200937b4960eebfc8f37801f3b4526be424dedf2648"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.compile",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyControlledWorkflowResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "PolicyControlledWorkflowClient.compile"
+        },
+        "syntax_sha256": "9e17f9e3d875f286bed341a4a94fa9e2b1a32c701b8b84fb2724e7e0bd4ffdd4"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.export",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, candidate: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyControlledWorkflowResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "PolicyControlledWorkflowClient.export"
+        },
+        "syntax_sha256": "8f461a01685f8166b44942d50084c1421183e5061abc17c261556f6c4a7fd9f2"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.replay",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, request: JsonValue, candidate: JsonValue, report: JsonValue, *, cancelled: Callable[[], bool] | None=None -> PolicyControlledWorkflowResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "PolicyControlledWorkflowClient.replay"
+        },
+        "syntax_sha256": "4ba349b0cc9089786245693e842639ad595c9ccbba94438ea13b739470829515"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.transport",
+        "kind": "field",
+        "scope": "public_api",
+        "signature": "CoreClient",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "PolicyControlledWorkflowClient.transport"
+        },
+        "syntax_sha256": "1c12c2e5fa920a7d4a3b392accc30ac4494ca7f385e0c49042eefabe997d2df4"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowResult",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "PolicyControlledWorkflowResult"
+        },
+        "syntax_sha256": "f35da72c58c3454bc71f48524d702e05c471d1789ba7c7f1a57bafc2fa4d9b50"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.REPLAY",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "REPLAY"
+        },
+        "syntax_sha256": "75ec115c9fb522d93dc95904f0f6df0e44e9e3d785d78f6f390c92d3f70e5ff5"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.REPORT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "REPORT_SCHEMA"
+        },
+        "syntax_sha256": "d4b258d3c54464562d80eadae340d1798e79d3cf62a98aa9ad06b5148bf926d2"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.REQUEST_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "REQUEST_SCHEMA"
+        },
+        "syntax_sha256": "81315b832e181dff9305275ba4e21d57cb3e5f746409c79593d71b9d40568630"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.RESULT_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "RESULT_SCHEMA"
+        },
+        "syntax_sha256": "d0e3ea1e67b8e8bef00dc97202bf92a3817bc670e280f8b70d693986d2160d95"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow.VALIDATION_SCOPE",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "VALIDATION_SCOPE"
+        },
+        "syntax_sha256": "b0b92812c8b085c82a17b23fa525e4e43c6215233c0875382c390526648065a6"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow._candidate",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "_candidate"
+        },
+        "syntax_sha256": "5e31a975611ea6a5d358898fd44122d4a24d80bd43fa064ad48bd0f4422ea284"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow._limits",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "behavior_request: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "_limits"
+        },
+        "syntax_sha256": "8a891fbfe6d07ceb5d893ee31415a29993312439429d662f0bcd2a8024be98ec"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow._original",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "_original"
+        },
+        "syntax_sha256": "2ec05eee08ccbf9bc19caa9c4e748d2c4fe501c24388b6133e55cc869c3a3b6f"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: bool, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "db013ee1f3fbb0723ca9ef0828a33661ee82acb6aac6f1fa25dc2bd87ff62365"
+      },
+      {
+        "id": "biocompiler.core_policy_controlled_workflow._result",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "response: CoreResponse, payload: dict[str, JsonValue] -> PolicyControlledWorkflowResult",
+        "source": {
+          "path": "src/biocompiler/core_policy_controlled_workflow.py",
+          "symbol": "_result"
+        },
+        "syntax_sha256": "79fe5df9e47db92f0be82226532332d6a1f672ccc1c2d1861eb34a77b9da2465"
       },
       {
         "id": "biocompiler.core_policy_expression_material.ACCEPTED_STATUS",
@@ -25038,6 +25868,248 @@
           "symbol": "publish_material"
         },
         "syntax_sha256": "17b72330226e3727a1a7386191ce95793833c6845db48373c702548983292e5c"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest",
+        "kind": "class",
+        "scope": "public_api",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest"
+        },
+        "syntax_sha256": "fda71145d17b93fd8f9ef295249544d77d88c704048ab6669d9f4d7120640a9a"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest._json",
+        "kind": "field",
+        "scope": "dependency",
+        "signature": "bytes",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest._json"
+        },
+        "syntax_sha256": "63a3a2ddaadf5a73736870745782248d5e282639c5108317f7b22e8f736eecff"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.behavior",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> ControlledBehaviorRequest",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest.behavior"
+        },
+        "syntax_sha256": "e5c99f319c5050927eab61eabc801e1d20a2c5723669693be27174d401c84e61"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.from_behavior",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, behavior: ControlledBehaviorRequest -> ControlledWorkflowRequest",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest.from_behavior"
+        },
+        "syntax_sha256": "e35394fe76daf4dc298ded5a0fa670fee7483755cd4660fb1e5fa8d490c0b0c7"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.from_request",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, request: JsonValue -> ControlledWorkflowRequest",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest.from_request"
+        },
+        "syntax_sha256": "1fc6dff955fe60bd0901b482e6d5064f0cb917cfa30bb2ba5979bd393bd4436b"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.limits",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest.limits"
+        },
+        "syntax_sha256": "ce0229a5e7799313b1cea8f3c4ebf2c1dabaada5b1e146f8fab92d64d7382bf6"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.native_status",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> str",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest.native_status"
+        },
+        "syntax_sha256": "010fcf4155c5cd40b60be828f4c74f03cac43a3ac07343f600920e2b9624fcde"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.sha256",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> str",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest.sha256"
+        },
+        "syntax_sha256": "de844a26abc765ea4d8924cc4af6a699614e10a5091cbce58e3eb44f35e57ad1"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.to_request",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest.to_request"
+        },
+        "syntax_sha256": "ec926e05e28aa7492fa88f4051d750aced2d2f9168f412b17ad2121035f0ad1c"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.with_deadlines",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, *, onset_ticks: int | None=None, controller_off_ticks: int | None=None, antigen_off_ticks: int | None=None, component_off_ticks: int | None=None, reactivation_ticks: int | None=None -> ControlledWorkflowRequest",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest.with_deadlines"
+        },
+        "syntax_sha256": "c7db07a9cc4ecfe1c16056333600f0aa2562c8f5bd552834f29348a1c56c76c1"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.with_horizon",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, horizon_tick: int, *, readout_evidence: JsonValue, operating_domain: JsonValue | None=None -> ControlledWorkflowRequest",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest.with_horizon"
+        },
+        "syntax_sha256": "0174261ee928b2cb7ab935f9c06469ad68522a76f94af25f295848526eb9a3ef"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.with_material_authority",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, authority: JsonValue -> ControlledWorkflowRequest",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest.with_material_authority"
+        },
+        "syntax_sha256": "fa5d6dd7e83e2716f0782bd3365d9565d8f2236908f9f7d321217c9f7020bf27"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.ControlledWorkflowRequest.with_rna_limits",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "self, *, max_member_rna_nt: int, max_total_rna_nt: int -> ControlledWorkflowRequest",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "ControlledWorkflowRequest.with_rna_limits"
+        },
+        "syntax_sha256": "1e50658eecf792b6fcf3af05257b72d4288c7a421d89c273f8cb9bc34288edde"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow._duration",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "original: dict[str, JsonValue], ticks: int -> JsonValue",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "_duration"
+        },
+        "syntax_sha256": "679f1fc198f050606ed935a3ccf22f5accbe4d4a1849bf06214733af0b087088"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow._limits",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "behavior: ControlledBehaviorRequest -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "_limits"
+        },
+        "syntax_sha256": "22f265b4805274b90e136aaebde697f34d075e565ad36d615baca00f135f6c0f"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow._record",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> dict[str, JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "_record"
+        },
+        "syntax_sha256": "e24216a53859cc641d7136f3661ecbf22619c16197c0dec7d287645d4b1b386c"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow._require",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "condition: object, message: str -> None",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "_require"
+        },
+        "syntax_sha256": "fbc69c04c8c515bebc3608b40bdf0e930f090ec6e1bc787cea3f4775fa0b8541"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow._rows",
+        "kind": "function",
+        "scope": "dependency",
+        "signature": "value: JsonValue -> list[JsonValue]",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "_rows"
+        },
+        "syntax_sha256": "cce7c8c7be17387ae58f9dcbb496f07d5784a10988ec610f0816aa997937aa8f"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.check",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: ControlledWorkflowRequest, *, candidate: JsonValue, client: PolicyControlledWorkflowClient, cancelled: Callable[[], bool] | None=None -> PolicyControlledWorkflowResult",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "check"
+        },
+        "syntax_sha256": "dc5e82e72a923752cf8f91f67eed23ef8654b665ec8ec041754be4a789b6314c"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.compile",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: ControlledWorkflowRequest, *, client: PolicyControlledWorkflowClient, cancelled: Callable[[], bool] | None=None -> PolicyControlledWorkflowResult",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "compile"
+        },
+        "syntax_sha256": "8608feefe28346a393e1f179bb3258fcd8a7c6f2561b2be5e98b66ea71825bd2"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.export",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: ControlledWorkflowRequest, *, candidate: JsonValue, client: PolicyControlledWorkflowClient, output: Path, input_paths: Iterable[Path]=(), replace: bool=False, cancelled: Callable[[], bool] | None=None -> PolicyControlledWorkflowResult",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "export"
+        },
+        "syntax_sha256": "e1c58dbb43ccb36284c417cd0cd4703dbeb01f40eb9ce2941f5b98d684db3878"
+      },
+      {
+        "id": "biocompiler.policy.controlled_workflow.replay",
+        "kind": "function",
+        "scope": "public_api",
+        "signature": "request: ControlledWorkflowRequest, *, candidate: JsonValue, report: JsonValue, client: PolicyControlledWorkflowClient, cancelled: Callable[[], bool] | None=None -> PolicyControlledWorkflowResult",
+        "source": {
+          "path": "src/biocompiler/policy/controlled_workflow.py",
+          "symbol": "replay"
+        },
+        "syntax_sha256": "34e507e0ba89262ac8c24b87c7a512d0a4e94241e4a752932f08488aa2ae8ce9"
       },
       {
         "id": "biocompiler.policy.examples.NAMES",
@@ -35270,6 +36342,17 @@
         "syntax_sha256": "1f19ccdd40452adbae33e5ca85ad52ef582f08d6224daa01647d056dcf966400"
       },
       {
+        "id": "biocompiler.policy.research_project.CONTROLLED_SCHEMA",
+        "kind": "value",
+        "scope": "dependency",
+        "signature": null,
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "CONTROLLED_SCHEMA"
+        },
+        "syntax_sha256": "9f863a40f458068bfc3a74d2f161db27bfdb805d27d18cbf69e23362b30805aa"
+      },
+      {
         "id": "biocompiler.policy.research_project.EXPRESSION_SCHEMA",
         "kind": "value",
         "scope": "dependency",
@@ -35454,7 +36537,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "ResearchProject"
         },
-        "syntax_sha256": "0ce7aa69b40ab9a2ca4b1b7fe06e9c6ec82d47a1f3e6ec24f9915bdb09b696d5"
+        "syntax_sha256": "6168641b614714f3f45b30627b74ffdc292659a7d03839f49fb6bcd081147634"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.__post_init__",
@@ -35509,7 +36592,18 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "ResearchProject.compile"
         },
-        "syntax_sha256": "b6cc29e2a6b26484a192b561942605c193be07eadd8db1e69466d6a960842fa3"
+        "syntax_sha256": "e1b5b039f15be913eb2bf9e98d4e3e94dbafe150dca1649ca6540cd03ea4dda4"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.controlled",
+        "kind": "property",
+        "scope": "public_api",
+        "signature": "self -> ControlledWorkflowRequest",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.controlled"
+        },
+        "syntax_sha256": "6801376adde00b790e0166e6ab02d55db33c3cc6683dc13f09b9e8942768ac3c"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.data",
@@ -35565,6 +36659,17 @@
           "symbol": "ResearchProject.from_build"
         },
         "syntax_sha256": "b7f9589486cae796a20227aa70f690a059eb5160264976e81c1d09c59d576883"
+      },
+      {
+        "id": "biocompiler.policy.research_project.ResearchProject.from_controlled",
+        "kind": "method",
+        "scope": "public_api",
+        "signature": "cls, build: ControlledWorkflowRequest -> ResearchProject",
+        "source": {
+          "path": "src/biocompiler/policy/research_project.py",
+          "symbol": "ResearchProject.from_controlled"
+        },
+        "syntax_sha256": "26870b2198cfae5caae50c7908ee2fce523bde1ff08d8e48155df452be5b8719"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProject.from_data",
@@ -35663,7 +36768,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "ResearchProject.verify_bundle"
         },
-        "syntax_sha256": "02b5100ead1d3279eb720bb67c1b9aa808a39636901e6fee847a5ab37f838c6f"
+        "syntax_sha256": "104d1a74cb0fff82b0d33162fa432620c0b9a5127016a73760627ffa50391de4"
       },
       {
         "id": "biocompiler.policy.research_project.ResearchProjectError",
@@ -35740,7 +36845,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "Route"
         },
-        "syntax_sha256": "69fb3c4243927804dfa0dc60194ac8afdc830bd0c0b48f4cda795a06509cb825"
+        "syntax_sha256": "a704621ee1084e8e79318d6c81ac1ae85c3292cc5703274083efa490e102c9b2"
       },
       {
         "id": "biocompiler.policy.research_project.SCHEMA",
@@ -35861,7 +36966,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "_client"
         },
-        "syntax_sha256": "d8f61dc54261668dbd4c8d7abc9e0ec70c25ebbb7d919628160a16a45a3f7025"
+        "syntax_sha256": "7091230945c9609bcd753ec52837de85240236d2a7da7417d9d7ed4c0365206c"
       },
       {
         "id": "biocompiler.policy.research_project._project",
@@ -35872,7 +36977,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "_project"
         },
-        "syntax_sha256": "dc2091c190619d8456b73a75265c12ab3d78ec2693202a1ac906b6e67b18990b"
+        "syntax_sha256": "5050b7d8ff1cea431d0209fd0d5ebcac87c0ff6cff7050da232176faa4b92181"
       },
       {
         "id": "biocompiler.policy.research_project._read_file",
@@ -35905,7 +37010,7 @@
           "path": "src/biocompiler/policy/research_project.py",
           "symbol": "_route"
         },
-        "syntax_sha256": "d5c6f08dae869ed0f79818c165479a67669e3d1effb8edfc66545a5df99f0e6d"
+        "syntax_sha256": "e5c27785842c9f32609b76d0a130e42f3cd3ed5b2a43f88337e981b162ea6f7d"
       },
       {
         "id": "biocompiler.policy.research_project._text",
@@ -38095,9 +39200,10 @@
       "src/biocompiler/core_policy.py": "9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e",
       "src/biocompiler/core_policy_component_material.py": "152843138ccfa61f4b7dfd894eff697a919ac52964b77957c646f23b49589b51",
       "src/biocompiler/core_policy_component_selection.py": "20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9",
-      "src/biocompiler/core_policy_controlled_behavior.py": "500d57616521034224665db6449fffcfb116cd538e3f7cd7e17992e2b814a9d0",
+      "src/biocompiler/core_policy_controlled_behavior.py": "e740dc2a267c065cc6d4056010614f7b372f98db2777f410bb36d721a412c2cf",
       "src/biocompiler/core_policy_controlled_composition.py": "308ec4aa6f5bde1d58ca5cf8a0ace46432a9fa3369a9234a91d4644580a1df65",
-      "src/biocompiler/core_policy_controlled_material.py": "8783c81be2f6752789b57179e36a46b5dc0d9c5020270fbcb4ea23a6bcfadf9d",
+      "src/biocompiler/core_policy_controlled_material.py": "2c34b6902e17496e1ab07672a26f47ac3278aabc2f6e254818854ea14408179d",
+      "src/biocompiler/core_policy_controlled_workflow.py": "66f5a30b6e3260ab35167bab2cf6f5aa003cc99a584fe5216a43e47d7a76bdc2",
       "src/biocompiler/core_policy_expression_material.py": "319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf",
       "src/biocompiler/core_policy_implementation.py": "75abd92ee9ef28a34b0a9df5ad8ea133beb6d01f60bd2ae74f2d6f9cf064ab4f",
       "src/biocompiler/core_policy_material.py": "e3b990c93130fb7d0b74462e30bf87dc5cd5f42d582a0808163f1a6ba965b5cf",
@@ -38119,6 +39225,7 @@
       "src/biocompiler/policy/controlled_behavior.py": "0c3436546edf867965a6ade48cbae4f4b211e10c4bacaa4ea4d4d03f8b7146a9",
       "src/biocompiler/policy/controlled_composition.py": "cdb3417943549452cd2cbba079ad4ad3ef6b73059c1dd0283af34c1dca130c18",
       "src/biocompiler/policy/controlled_material.py": "b26ec6dc51daa8ad94d4de6b226cd3afd24d4c4bb8be2cfb0bf20f10dd5b37ea",
+      "src/biocompiler/policy/controlled_workflow.py": "c6bd9b7f6416b853aaa1d9e9b48940d5c9ccc6d67c5260b905af68d7b445d56f",
       "src/biocompiler/policy/coordination.py": "ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9",
       "src/biocompiler/policy/data/car_rm61461_reference_v01.json": "dcf0b3fe174ee48f68623785663b16ce96ce87ad2bbacbd851369e9ba1b46079",
       "src/biocompiler/policy/deployment.py": "cddace3d45f04ecd722a47849325c9ff6a41fc166b0e23253c2377f037eae29f",
@@ -38148,7 +39255,7 @@
       "src/biocompiler/policy/realization_evidence.py": "377a5180f9bb123bd30e3828ad0cd60f0b0466befdb5d9a3e2d9b7f6679f8850",
       "src/biocompiler/policy/refinement.py": "b576b28aa2813c46be1a778fa355de9fd8eb147c8ae892f7bbdfba226b84d27e",
       "src/biocompiler/policy/requirements.py": "80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b",
-      "src/biocompiler/policy/research_project.py": "7345fba16805046f21f9026b610bf557aa3d4dfb3400a4fc1d59b0a2b8b919eb",
+      "src/biocompiler/policy/research_project.py": "f58208cb47c30c644f488581231fa737e2d94bf7585180b70c452bf997caf226",
       "src/biocompiler/policy/serialization.py": "d1b9c0b7f54a379cfb106febdfb88e1553a401b049e9e3b3c49f4d9a85601c70",
       "src/biocompiler/policy/space.py": "c32bc67b86370f471fcabe54fdb61332f746130bc23e22d5a2ce7e08666b97c9",
       "src/biocompiler/policy/state.py": "94ef54313d4475428ca678258dfe59727c8dbbe8d327e26b79ba819dcc20d22d",
@@ -38374,6 +39481,46 @@
       {
         "path": "src/biocompiler/core_policy_controlled_material.py",
         "syntax_sha256": "2d4aea4e86ac7a64834967908436c1ddf79d28c13424603c13ab53379dd62158"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_workflow.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_workflow.py",
+        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_workflow.py",
+        "syntax_sha256": "e8157a73584becff04ba142bf301a16a3e95078563bad5119c5eb01211b23c01"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_workflow.py",
+        "syntax_sha256": "67ee0f2195b5dd6d32007ab0636061358254666e071561ec389ec9c59836707c"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_workflow.py",
+        "syntax_sha256": "9415dd7eb8e6496923d1e67bfa61dc5f52dfceda9d40a9bccfedf7acbbde100a"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_workflow.py",
+        "syntax_sha256": "68f92fe380f4ea9ebc50c28175ccea2d9e62a603b71122e55ac485c0a59892a3"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_workflow.py",
+        "syntax_sha256": "a58dc3c1c1142d609d4093b1b6197f45aac96a35642f6dbf6baa07ed003cb79c"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_workflow.py",
+        "syntax_sha256": "f255311127c3c735ea86b68bf62c39a57aa405985d27c9ac0c8a73e4ccd786c2"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_workflow.py",
+        "syntax_sha256": "9f9fc31c453a43fb3d74921b4469ccba04cbc0bd67d9cee834f1cac8085687d1"
+      },
+      {
+        "path": "src/biocompiler/core_policy_controlled_workflow.py",
+        "syntax_sha256": "c74f63c2a38409f6bcd706260983979e014832f6cf51aa246ddab0a125d43390"
       },
       {
         "path": "src/biocompiler/core_policy_expression_material.py",
@@ -39122,6 +40269,74 @@
       {
         "path": "src/biocompiler/policy/controlled_material.py",
         "syntax_sha256": "b8e35922068dd6458d94a9973394d2f3034592519d6f185bce20fb9f85434377"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "69361818c7e28246d04848ed12305d895ebe8312a342832092b281b8f5046bf2"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "f224f00728a8ce2e542545796512a0b31018b3b7b859ca6ee484fb2d2b3a48ab"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "2b3612428a0e129fb71d22e664c06f9a0235c62e3241ae9d06049ed9e3a80dfa"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "e8157a73584becff04ba142bf301a16a3e95078563bad5119c5eb01211b23c01"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "b57c69ae5c2ef8b591a83cb86e074c28bc51985ccdacbba23baf8bf82e12c205"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "87740c3b4e641e9788fa31ef692a70c7a4498b0fea3bfdd20866dd2cd6791039"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "906a441f3c87807ccfa61aaf4d3fcd6397db18aa9a7e360e3fdc3a91cc89cfd5"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "19df226bb42d44ae34a767bfcd20de473052bd74e16001bc2eb2c5dabe59bd87"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "c54349562be6d51afe27a0ad23cce3d2e0544c95017b0fb9a2712398a6bb3036"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "d353098fa00494393f718df7a31515678d8316e0d762f6211dc6897c542854ad"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "d800f6c5aaa18f3312677bad277730bdf0d8536e1d08fd54e2c1fd7170005370"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "a0ba56845c596308c7c07c8582f1b9a9df7d0ffb02d98753fe67805a0dd95370"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "347a2d27cc9f71081c593a81605a8613a8b29ec7707da265953f119be964a41c"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "f7e4160d5220c19990937850dc547d135b2c6aaabb932099494ad6cb82b8355e"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "8a599ad81d6df83cf7eb85620ef5b66270a08d7fbedca9cd1a20debad2d6b13a"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "d673a4007a8454a77d94d30a4638f5b4af006309e20d0fcb5f445d57b929ebb5"
+      },
+      {
+        "path": "src/biocompiler/policy/controlled_workflow.py",
+        "syntax_sha256": "0064bec4a239ef32690347ee8f2fb20b99afad54b2c9988bc7bf23f8cd929e0b"
       },
       {
         "path": "src/biocompiler/policy/coordination.py",
@@ -39925,7 +41140,7 @@
       },
       {
         "path": "src/biocompiler/policy/research_project.py",
-        "syntax_sha256": "c00916fd8873d036c861ab99babe5ecaa5246ec92cebb21f351e0836c6a1fd79"
+        "syntax_sha256": "5ea77ab1258dd3b934f9054edd52b104f66288a8bb818d9fd90df52ac3185127"
       },
       {
         "path": "src/biocompiler/policy/research_project.py",
@@ -39970,6 +41185,38 @@
       {
         "path": "src/biocompiler/policy/research_project.py",
         "syntax_sha256": "e57aafed655f7eee9b18cd7fecf1afd0b142611d3a2b69b317ffd399d9270521"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "dd8642d99cb7b8c4006a0f7cba585c2c8a5eb7c54a3afd3e271e272c40841fda"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "dd8642d99cb7b8c4006a0f7cba585c2c8a5eb7c54a3afd3e271e272c40841fda"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "dd8642d99cb7b8c4006a0f7cba585c2c8a5eb7c54a3afd3e271e272c40841fda"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "dd8642d99cb7b8c4006a0f7cba585c2c8a5eb7c54a3afd3e271e272c40841fda"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "dd8642d99cb7b8c4006a0f7cba585c2c8a5eb7c54a3afd3e271e272c40841fda"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "a2a2247dcaf08be7a6794648b16850ade2caf5ec8b4a856bfe2a59101f319871"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "94e89e04712cdf9a8b62e526e9fbd792f5ad68574b0d5da9cf138423c3aab540"
+      },
+      {
+        "path": "src/biocompiler/policy/research_project.py",
+        "syntax_sha256": "353cb380e39966e543e813041deb5fd8ee1670cd4e31748000a32618f362a661"
       },
       {
         "path": "src/biocompiler/policy/serialization.py",
@@ -40129,6 +41376,38 @@
       }
     ],
     "operations": [
+      {
+        "operation": "compile-policy-controlled-workflow",
+        "owner": "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.compile",
+        "payload_fields": [
+          "request"
+        ]
+      },
+      {
+        "operation": "check-policy-controlled-workflow",
+        "owner": "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.check",
+        "payload_fields": [
+          "request",
+          "candidate"
+        ]
+      },
+      {
+        "operation": "replay-policy-controlled-workflow",
+        "owner": "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.replay",
+        "payload_fields": [
+          "request",
+          "candidate",
+          "report"
+        ]
+      },
+      {
+        "operation": "export-policy-controlled-workflow",
+        "owner": "biocompiler.core_policy_controlled_workflow.PolicyControlledWorkflowClient.export",
+        "payload_fields": [
+          "request",
+          "candidate"
+        ]
+      },
       {
         "operation": "construct-policy-controlled-behavior",
         "owner": "biocompiler.core_policy_controlled_behavior.PolicyControlledBehaviorClient.construct_behavior",
@@ -41766,6 +43045,70 @@
       "role": "rejection",
       "symbol": "ControlledBehaviorTransportTests.test_full_candidate_and_replay_report_substitution_rejected",
       "syntax_sha256": "0b06dc1f128ba2988968258b923651de4fca553eeaffe62bc2dcfa9ef35f5e6a"
+    },
+    "controlled_rc6.edits": {
+      "distinction": "Requested deadline edits preserve the actual supplied mechanism and unedited source fields; native assessment remains necessary.",
+      "file_sha256": "421a1a5c6698f87516d7eb763e8de5f7ee59a8a7ccfb5a26dac187bd6b148b43",
+      "path": "tests/test_policy_controlled_workflow.py",
+      "role": "mixed",
+      "symbol": "ControlledWorkflowTests.test_all_deadline_edits_change_source_and_domain_without_rewriting_actual_model",
+      "syntax_sha256": "7e8624fe2c5f9aefe196679ec73d8dd78ce53603a754e30eab345d174de74e11"
+    },
+    "controlled_rc6.evidence": {
+      "distinction": "Repinned child report verdicts, scopes and identities cannot create joined evidence through the transport.",
+      "file_sha256": "5f785c0e19f6e9cfcbae5f05bd688f4898a74f6de04cc45e1f2508d35a8cadb2",
+      "path": "tests/test_core_policy_controlled_workflow.py",
+      "role": "rejection",
+      "symbol": "ControlledWorkflowTransportTests.test_repinning_nested_scope_verdict_or_authority_does_not_authorize_join",
+      "syntax_sha256": "977f2230dc85ab1cde9c370a326e0726bfb84feef02d09616b3a7475add820e2"
+    },
+    "controlled_rc6.immutable": {
+      "distinction": "The typed joined snapshot detaches complete original and limit authority and grants no native acceptance.",
+      "file_sha256": "421a1a5c6698f87516d7eb763e8de5f7ee59a8a7ccfb5a26dac187bd6b148b43",
+      "path": "tests/test_policy_controlled_workflow.py",
+      "role": "positive",
+      "symbol": "ControlledWorkflowTests.test_complete_snapshot_limits_and_reopened_behavior_are_detached",
+      "syntax_sha256": "6a23fbc330927907aa6130e1303e14dc9d477ee974ae676fb0f2fd4856316ff4"
+    },
+    "controlled_rc6.limits": {
+      "distinction": "Every explicit original limit remains equal before launch; mismatched duplicate authority never becomes an override.",
+      "file_sha256": "5f785c0e19f6e9cfcbae5f05bd688f4898a74f6de04cc45e1f2508d35a8cadb2",
+      "path": "tests/test_core_policy_controlled_workflow.py",
+      "role": "rejection",
+      "symbol": "ControlledWorkflowTransportTests.test_complete_limits_reject_every_mismatched_projection_before_launch",
+      "syntax_sha256": "7cd660394f783e4b5a68153c95af24c567609b87291de99b224196de767ea2c9"
+    },
+    "controlled_rc6.original": {
+      "distinction": "Foreign original project authority and unequal complete limits reject before executable discovery, without recovering authority from saved evidence.",
+      "file_sha256": "849ccde215b9bc748a60e47619782533a4dce14f19414aaef8591d910b00c100",
+      "path": "tests/test_policy_controlled_research_project.py",
+      "role": "rejection",
+      "symbol": "ControlledResearchProjectTests.test_foreign_original_and_bundle_limits_reject_before_executable_discovery",
+      "syntax_sha256": "b15b6c0f99a2cadf65c7bbf2dbf06bdee99175fd30d1240746fedf87773d33dd"
+    },
+    "controlled_rc6.project": {
+      "distinction": "The public controlled project route uses Core then fresh Verify and independently supplied originals for exact paired reopen; inert tests do not establish installed acceptance.",
+      "file_sha256": "849ccde215b9bc748a60e47619782533a4dce14f19414aaef8591d910b00c100",
+      "path": "tests/test_policy_controlled_research_project.py",
+      "role": "positive",
+      "symbol": "ControlledResearchProjectTests.test_core_compile_fresh_verify_export_and_verify_only_reopen_preserve_every_byte",
+      "syntax_sha256": "ad3e5fd8206304143e40c07531fa9f94f0b1573c5c8bc7a3d1e84d6b7bf47313"
+    },
+    "controlled_rc6.transport": {
+      "distinction": "Complete originals and both fresh child reports remain bound through all four native routes; inert peer tests do not prove native acceptance.",
+      "file_sha256": "5f785c0e19f6e9cfcbae5f05bd688f4898a74f6de04cc45e1f2508d35a8cadb2",
+      "path": "tests/test_core_policy_controlled_workflow.py",
+      "role": "positive",
+      "symbol": "ControlledWorkflowTransportTests.test_four_operations_preserve_complete_original_and_immutable_pair",
+      "syntax_sha256": "2e8d582081fa53a74114b66d36c04631c1fff88815210738c00e7eada1900fa4"
+    },
+    "controlled_rc6.work": {
+      "distinction": "Report work must cover three separately charged native enumeration traversals under the complete original ceiling; mocked work is not native accounting proof.",
+      "file_sha256": "5f785c0e19f6e9cfcbae5f05bd688f4898a74f6de04cc45e1f2508d35a8cadb2",
+      "path": "tests/test_core_policy_controlled_workflow.py",
+      "role": "rejection",
+      "symbol": "ControlledWorkflowTransportTests.test_cumulative_work_and_report_publication_are_bounded",
+      "syntax_sha256": "83b8e9f8bcfa4a9f91d7c2988f2f3ec57af7b9d041983b907b737c504c1fee00"
     },
     "finite_build.authority": {
       "distinction": "Explicit source replacement preserves every other original and does not fabricate compatible model or material pins.",

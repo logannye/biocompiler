@@ -66,10 +66,11 @@ let capabilities executable request =
   | Protocol.Ok, Some original, [] ->
       let changed = Json.object_fields original |> List.map (fun (key, value) -> key,
           match key with
-          | "operations" -> Json.Array (Json.array value @ List.map str (operations @ ["compile-policy"; "compile-policy-implementation"; "compile-policy-expression-material"; "compile-policy-material"; "compile-policy-component-material"; "compile-policy-component-selection"; "compile-policy-module-material"; "compile-policy-quantitative-assurance"] @ [Bioc_service.Policy_controlled_material_service.producer_operation; Bioc_service.Policy_controlled_behavior_service.producer_operation] @ Policy_target_planning.operations @ Synthetic_producer_service.operations @ Synthetic_producer_public_service.operations @ Synthetic_inspection_service.operations))
+          | "operations" -> Json.Array (Json.array value @ List.map str (operations @ ["compile-policy"; "compile-policy-implementation"; "compile-policy-expression-material"; "compile-policy-material"; "compile-policy-component-material"; "compile-policy-component-selection"; "compile-policy-module-material"; "compile-policy-quantitative-assurance"] @ [Bioc_service.Policy_controlled_material_service.producer_operation; Bioc_service.Policy_controlled_behavior_service.producer_operation; Bioc_service.Policy_controlled_workflow_service.producer_operation] @ Policy_target_planning.operations @ Synthetic_producer_service.operations @ Synthetic_producer_public_service.operations @ Synthetic_inspection_service.operations))
           | "validation_scopes" -> Json.Array (Json.array value @ List.map str (validation_scope :: Policy_target_planning.validation_scope :: Synthetic_producer_service.validation_scopes @ Synthetic_producer_public_service.validation_scopes @ Synthetic_inspection_service.validation_scopes))
           | "profiles" -> obj (List.map(fun(name,body)->name,
-              if name="policy_controlled_composition_behavior" then Bioc_service.Policy_controlled_behavior_service.producer_profile
+              if name="policy_controlled_workflow" then Bioc_service.Policy_controlled_workflow_service.producer_profile
+              else if name="policy_controlled_composition_behavior" then Bioc_service.Policy_controlled_behavior_service.producer_profile
               else if name="policy_controlled_composition_material" then Bioc_service.Policy_controlled_material_service.producer_profile
               else if name="policy_coupled_wire" then obj(List.map(fun(key,value)->key,
                 if key="operations" then Json.Array(Json.array value @
@@ -144,5 +145,9 @@ let scoped_handle executable (request:Protocol.request) =
     let result,before_encode=Bioc_service.Policy_controlled_behavior_service.prepare_generated
       ~executable ~request ~produce:(fun ~charge original ->
         Bioc_compiler.Policy_controlled_behavior_producer.construct_candidate ~charge original) in
+    Some {Base.status=Protocol.Ok;result=Some result;diagnostics=[];before_encode})
+  else if executable=Protocol.Core && request.operation=Bioc_service.Policy_controlled_workflow_service.producer_operation then (
+    let result,before_encode=Bioc_service.Policy_controlled_workflow_service.prepare_generated
+      ~executable ~request ~produce:Bioc_compiler.Policy_controlled_workflow_producer.construct_candidate in
     Some {Base.status=Protocol.Ok;result=Some result;diagnostics=[];before_encode})
   else Base.scoped_handle executable request

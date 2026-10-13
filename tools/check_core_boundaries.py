@@ -65,6 +65,9 @@ PRIVATE_TEST_TOOLS = {
         {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "bioc_policy_instance_test_support"}, "test_support"),
 }
 TESTS = {
+    'test_policy_controlled_workflow_request_candidate': {'bioc_wire', 'bioc_domain', 'bioc_compiler', 'zarith'},
+    'test_policy_controlled_workflow_check': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_realization_checker', 'zarith'},
+    'test_policy_controlled_workflow_service': {'bioc_wire', 'bioc_domain', 'bioc_service', 'bioc_producer_service', 'zarith'},
     'test_policy_controlled_behavior_candidate': {'bioc_wire', 'bioc_domain', 'zarith'},
     'test_policy_controlled_behavior_producer': {'bioc_wire', 'bioc_domain', 'bioc_compiler', 'zarith'},
     'test_policy_controlled_activity': {'bioc_wire', 'bioc_domain', 'bioc_candidate_runtime', 'zarith'},
@@ -690,6 +693,9 @@ def check_boundaries(root: Path):
                         "%{env:BIOCOMPILER_PIPELINE_SESSION_DECLARATION=missing}",
                         "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}"]]]
                 policy_fixtures = {
+                    'test_policy_controlled_workflow_request_candidate': ['policy_controlled_workflow_v01.json', 'policy_controlled_material_v01.json', 'policy_controlled_behavior_candidate_v01.json'],
+                    'test_policy_controlled_workflow_check': ['policy_controlled_workflow_v01.json', 'policy_controlled_material_v01.json', 'policy_controlled_behavior_candidate_v01.json'],
+                    'test_policy_controlled_workflow_service': ['policy_controlled_workflow_v01.json', 'policy_controlled_material_v01.json'],
                     'test_policy_controlled_behavior_candidate': ['policy_controlled_behavior_candidate_v01.json'],
                     'test_policy_controlled_behavior_producer': ['policy_controlled_behavior_v01.json', 'policy_controlled_behavior_candidate_v01.json'],
                     'test_policy_controlled_activity': ['policy_controlled_domain_v01.json', 'policy_controlled_behavior_candidate_v01.json'],

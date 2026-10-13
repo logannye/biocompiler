@@ -26,7 +26,7 @@ except ImportError:
 SCHEMA = "biocompiler.development-feedback.v0.1"
 WORKFLOW = ".github/workflows/policy-development.yml"
 SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "data/researcher_alpha",
-                "examples/researcher_alpha.py", "data/car_payload", "examples/car_payload.py", "pyproject.toml")
+                "examples/researcher_alpha.py", "data/controlled_composition", "examples/controlled_composition.py", "data/car_payload", "examples/car_payload.py", "docs/controlled-composition-quickstart.md", "pyproject.toml")
 SUITES = (
     ('test_policy_quantitative_composition', ('data/policy_quantitative_composition_v01.json', 'data/policy_quantitative_network_v01.json')),
     ('test_policy_approximation', ('data/policy_approximation_v01.json',)),
@@ -99,6 +99,9 @@ SUITES = (
     ('test_policy_controlled_model_reference', ('data/policy_controlled_behavior_v01.json',)),
     ('test_policy_controlled_behavior_check', ('data/policy_controlled_behavior_v01.json',)),
     ('test_policy_controlled_behavior_service', ('data/policy_controlled_behavior_v01.json',)),
+    ('test_policy_controlled_workflow_request_candidate', ('data/policy_controlled_workflow_v01.json', 'data/policy_controlled_material_v01.json', 'data/policy_controlled_behavior_candidate_v01.json')),
+    ('test_policy_controlled_workflow_check', ('data/policy_controlled_workflow_v01.json', 'data/policy_controlled_material_v01.json', 'data/policy_controlled_behavior_candidate_v01.json')),
+    ('test_policy_controlled_workflow_service', ('data/policy_controlled_workflow_v01.json', 'data/policy_controlled_material_v01.json')),
 )
 DEPENDENCIES = ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"]
 BUILD = ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]

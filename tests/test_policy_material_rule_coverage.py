@@ -45,7 +45,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 288)
+        self.assertEqual(result["sources"], 302)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
@@ -90,6 +90,21 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
                              ("outside_route", coverage.CONTROLLED_MATERIAL_SHARED_REASON
                               if name in coverage.CONTROLLED_MATERIAL_SHARED_SOURCES
                               else coverage.CONTROLLED_ADMISSION_REASON))
+            self.ledger = deepcopy(self.original)
+            self.rejected(lambda value: next(row for row in value["sources"]
+                if row["path"] == name).update(disposition="rule_owner"), "Changed route exception")
+
+    def test_controlled_workflow_preserves_all_rc5_material_meanings(self):
+        metadata = coverage.metadata_before_controlled_workflow(self.original)
+        self.assertEqual(len(metadata["source_classifications"]), 288)
+        encoded = json.dumps(metadata, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "ee7ef85112f44ef6ff539c2269ed50e1b6e163d639a789dce27584f576c35a2d")
+        self.assertEqual(len(coverage.CONTROLLED_WORKFLOW_SOURCES), 14)
+        for name in coverage.CONTROLLED_WORKFLOW_SOURCES:
+            row = next(row for row in self.original["sources"] if row["path"] == name)
+            self.assertEqual((row["disposition"], row["reason"]),
+                             ("outside_route", coverage.CONTROLLED_WORKFLOW_REASON))
             self.ledger = deepcopy(self.original)
             self.rejected(lambda value: next(row for row in value["sources"]
                 if row["path"] == name).update(disposition="rule_owner"), "Changed route exception")
@@ -929,6 +944,7 @@ let check x = Diagnostic.require x "code" "message"
             and row["path"] not in coverage.COMPONENT_TRANSFER_NETWORK_SOURCES
             and row["path"] not in coverage.COMPONENT_ASSURED_SOURCES
             and row["path"] not in coverage.EXPRESSION_ROUTE_SOURCES
+            and row["path"] not in coverage.CONTROLLED_WORKFLOW_SOURCES
             and row["path"] not in coverage.CONTROLLED_BEHAVIOR_SOURCES
             and row["path"] not in coverage.CONTROLLED_MATERIAL_SOURCES
             and row["path"] not in coverage.CONTROLLED_ADMISSION_SOURCES
