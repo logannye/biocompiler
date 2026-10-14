@@ -1,0 +1,25 @@
+{
+  "binaries": {
+    "core": "fd83c239cc9ba4260814f443ff3ac288be5161fe4e47f85df92f34a191236332",
+    "verify": "bdc3d026c58ba3634ef841ed1ef24103e061f26721274a6421da9cea3a31d1d3"
+  },
+  "files": {
+    "expression-v01.zip": "4adbab9d3c7be398b474e2e21c315c02731fbd81c5dde0b9f3cb84b44d9b7962",
+    "manifest-v01.json": "527e8fa6bd3bf32d928430dfceba8e6a7edacf224662c69e367bee0e308d47ce",
+    "program.fasta": "89d195a729f58d4b30cd2859c0e7f912b012a71334eb282022cfd128139e990d",
+    "project.json": "7ea5c93c8be93c5847b90cb94f59fe40610c82a48a8c1a37b85bb7e05538c5f1"
+  },
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "project_sha256": "7ea5c93c8be93c5847b90cb94f59fe40610c82a48a8c1a37b85bb7e05538c5f1",
+  "python": "3.11.15",
+  "report_implementation": "biocompiler.ocaml.policy_expression_material_check.v0.1",
+  "report_schema": "biocompiler.policy_expression_material_assessment.v0.1",
+  "result": "compile, fresh Verify export, and reopen passed; retained original source and exact RNA",
+  "scope": "local native legacy artificial project baseline; not hosted acceptance",
+  "seconds": 0.7382897092029452,
+  "source": {
+    "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "revision": "18ce1ac64fde799892683460360da008f9e6ae14",
+    "tree": "cace3c653a7f622e9f7b9680db394abc35108da9"
+  }
+}

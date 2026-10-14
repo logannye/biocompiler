@@ -210,15 +210,16 @@
     },
     {
       "path": "core/lib/checker/policy_expression_material_check.ml",
-      "sha256": "39cd6ca68825dce59bfd6373b1d98a16d6f656f52870dfcd1c97ac5c349ee41b",
+      "sha256": "f1081020365c595775613bcd85dd97132b2fc852e652387c6d129d2b52398cdb",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.require": 1
+          "Diagnostic.require": 1,
+          "unsupported": 3
         },
         "profile_literals": {
-          "biocompiler.ocaml.policy_expression_material_check.v0.1": 1,
-          "biocompiler.policy_expression_material_assessment.v0.1": 1,
+          "biocompiler.ocaml.policy_expression_material_check.v0.2": 1,
+          "biocompiler.policy_expression_material_assessment.v0.2": 1,
           "biocompiler.policy_expression_material_candidate.v0.1": 1
         }
       },
@@ -2833,7 +2834,7 @@
     },
     {
       "path": "core/lib/service/policy_expression_material_service.ml",
-      "sha256": "08566f72e8188f0e55718dc02aef0c022722969c9caf11a437331f8737ecaa81",
+      "sha256": "9c95fe5c14e6400a170159313b5645aab37ad217ec3456e3534371e43ba8c407",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -2842,7 +2843,7 @@
         },
         "profile_literals": {
           "biocompiler.core.policy_expression_material.v1": 1,
-          "biocompiler.ocaml.policy_expression_material.v0.1": 1,
+          "biocompiler.ocaml.policy_expression_material.v0.2": 1,
           "biocompiler.policy_expression_material_candidate.v0.1": 1,
           "biocompiler.policy_expression_mrna_export.v0.1": 1,
           "biocompiler.policy_expression_mrna_manifest.v0.1": 1
@@ -3400,7 +3401,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_expression_material.py",
-      "sha256": "319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf",
+      "sha256": "10b39e55514bc2f93d6378e18db83092feadf585627b89d6e3c6b43b39e72feb",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -3414,11 +3415,11 @@
           "biocompiler.construction_content_authority.v0.1": 1,
           "biocompiler.core.policy_expression_material.v1": 1,
           "biocompiler.ocaml.construction_content_check.v0.1": 1,
-          "biocompiler.ocaml.policy_expression_material.v0.1": 1,
-          "biocompiler.ocaml.policy_expression_material_check.v0.1": 1,
+          "biocompiler.ocaml.policy_expression_material.v0.2": 1,
+          "biocompiler.ocaml.policy_expression_material_check.v0.2": 1,
           "biocompiler.ocaml.policy_expression_structure_check.v0.1": 1,
           "biocompiler.policy_expression_contract.v0.1": 1,
-          "biocompiler.policy_expression_material_assessment.v0.1": 1,
+          "biocompiler.policy_expression_material_assessment.v0.2": 1,
           "biocompiler.policy_expression_material_candidate.v0.1": 1,
           "biocompiler.policy_expression_material_request.v0.1": 1,
           "biocompiler.policy_expression_material_resources.v0.1": 1,

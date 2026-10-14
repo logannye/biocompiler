@@ -21,8 +21,8 @@ SOURCE_PROFILE = "biocompiler.policy_expression_source.v0.1"
 CONTRACT_SCHEMA = "biocompiler.policy_expression_contract.v0.1"
 CANDIDATE_SCHEMA = "biocompiler.policy_expression_material_candidate.v0.1"
 RESULT_SCHEMA = "biocompiler.core.policy_expression_material.v1"
-REPORT_SCHEMA = "biocompiler.policy_expression_material_assessment.v0.1"
-IMPLEMENTATION = "biocompiler.ocaml.policy_expression_material.v0.1"
+REPORT_SCHEMA = "biocompiler.policy_expression_material_assessment.v0.2"
+IMPLEMENTATION = "biocompiler.ocaml.policy_expression_material.v0.2"
 RESOURCE_PROFILE = "biocompiler.policy_expression_material_resources.v0.1"
 VALIDATION_SCOPE = "policy-single-expression-mrna-v0.1"
 EXPORT_SCHEMA = "biocompiler.policy_expression_mrna_export.v0.1"
@@ -175,7 +175,33 @@ def _source(response: CoreResponse, request: dict[str, JsonValue], report: dict[
     _integer(admission["maximum_rna_nt"], "Source RNA ceiling", 1_000_000, minimum=1)
     _require(_same(admission["product"], body["product"]), "Source product differs from original contract")
     obligations = _rows(checked.assessment["unresolved_obligations"], "Source obligations")
-    expected_obligations = cast(JsonValue, sorted(set(cast(list[str], obligations)) | {"expression_material_correspondence"}))
+    # The child inventory cannot serve as its own authority. Reconstruct the
+    # mandatory IDs from complete originals while retaining unsupported extras
+    # for negative diagnostics; their semantic origin remains native authority.
+    definitions = _rows(_record(program.get("semantics"), "Original semantics").get("definitions"), "Original definitions")
+    definition_ids = [source._text(_record(value, "Original definition").get("id"), "Original definition id") for value in definitions]
+    _require(len(definition_ids) == len(set(definition_ids)), "Duplicate original semantic definition id")
+    implementations = _rows(_record(document.get("implementations"), "Original catalog").get("implementations"), "Original implementations")
+    _require(len(implementations) == 1, "Static source requires exactly one original implementation")
+    implementation = _record(implementations[0], "Original implementation")
+    selected = _identity(selection["implementation"], "registry")
+    _require(implementation.get("id") == selected["id"] and implementation.get("version") == selected["version"],
+             "Selected implementation differs from the original catalog entry")
+    _pin(selected["content_fingerprint"], implementation, "Complete original implementation")
+    mandatory = {
+        "policy_execution_and_lowering", "temporal_and_uncertainty_semantics", "safety_and_progress_satisfaction",
+        "realizability_and_target_suitability", "chassis_capability_and_delivery_suitability",
+        "implementation_catalog_applicability", "requested_assurance_not_established",
+        "implementation_applicability:" + cast(str, selected["id"]),
+        "requirement_satisfaction:" + cast(str, admission["objective"]),
+        *("semantic_definition:" + name for name in definition_ids),
+    }
+    child_ids = [source._text(value, "Source obligation id") for value in obligations]
+    _require(len(child_ids) == len(set(child_ids)) and mandatory.issubset(child_ids),
+             "Source obligation census omitted or duplicated an original obligation")
+    _require("expression_material_correspondence" not in child_ids,
+             "Generic source cannot supply the reserved expression correspondence obligation")
+    expected_obligations = cast(JsonValue, sorted([*child_ids, "expression_material_correspondence"]))
     _require(_same(admission["unresolved_obligations"], expected_obligations), "Admission omitted or reordered an original obligation")
     return admission
 
@@ -256,37 +282,48 @@ def _requirements_and_ledger(request: dict[str, JsonValue], candidate: dict[str,
     document = _record(request["document"], "Source")
     program = _record(document.get("program"), "Program")
     definitions = _rows(_record(program.get("semantics"), "Semantics").get("definitions"), "Definitions")
-    definition_ids = {source._text(_record(value, "Definition").get("id"), "Definition id") for value in definitions}
+    definition_index = {source._text(_record(value, "Definition").get("id"), "Definition id"):
+                        (index, _record(value, "Definition")) for index, value in enumerate(definitions)}
     source_pin = _fingerprint(admission)
     pins: JsonValue = {"source": source_pin, "structure": _fingerprint(report["structure"]), "contract": contract["identity"]}
     rows = _rows(report["obligations"], "Complete obligation ledger")
     _require(_same([_record(row, "Obligation").get("obligation") for row in rows], admission["unresolved_obligations"]), "Original obligation census or order changed")
-    na = {"policy_execution_and_lowering", "temporal_and_uncertainty_semantics", "persistent_encounter_identity_lifetime", "state_lifetime_capacity_and_inheritance", "effect_authorization_feedback_and_cancellation", "arbitration_fairness_and_conflict_resolution"}
-    exact = {"safety_and_progress_satisfaction", "requested_assurance_not_established", "expression_material_correspondence", "requirement_satisfaction:" + cast(str, admission["objective"])}
-    conditional = {"realizability_and_target_suitability", "implementation_catalog_applicability", "chassis_capability_and_delivery_suitability"}
+    na = {"policy_execution_and_lowering", "temporal_and_uncertainty_semantics", "safety_and_progress_satisfaction"}
+    conditional_paths = {
+        "realizability_and_target_suitability": "/document/deployment",
+        "chassis_capability_and_delivery_suitability": "/document/deployment",
+        "implementation_catalog_applicability": "/document/implementations",
+        "requested_assurance_not_established": "/document/assurance",
+        "expression_material_correspondence": "/document",
+    }
     implementation_id = _record(selection["implementation"], "Implementation")["id"]
     closed = True
     for value in rows:
-        row = _object(value, {"obligation", "status", "stage", "evidence"}, "Obligation disposition")
+        row = _object(value, {"obligation", "path", "status", "stage", "evidence"}, "Obligation disposition")
         name = source._text(row["obligation"], "Obligation id")
         status, stage, evidence = "unresolved", "unimplemented_obligation", cast(JsonValue, None)
+        path = "/document"
         if name in na:
             status, stage, evidence = "not_applicable", "closed_static_source_admission", {"source": source_pin}
-        elif name in exact:
+            path = "/document/program"
+        elif name == "requirement_satisfaction:" + cast(str, admission["objective"]):
             status, stage, evidence = ("discharged" if objective_ok else "unresolved"), "exact_static_encoding_and_length", pins
-        elif name in conditional or name == "implementation_applicability:" + cast(str, implementation_id):
+            path = cast(str, admission["objective_path"])
+        elif name in conditional_paths or name == "implementation_applicability:" + cast(str, implementation_id):
             status = "conditional" if objective_ok else "unresolved"
-            stage = "supplied_expression_localization_and_recipient_premises" if name in conditional else "complete_supplied_implementation_contract"
+            stage = "supplied_expression_localization_and_recipient_premises" if name in conditional_paths else "complete_supplied_implementation_contract"
+            path = conditional_paths.get(name, "/document/implementations/implementations/0")
             evidence = pins
-        elif name.startswith("semantic_definition:") and name[len("semantic_definition:"):] in definition_ids:
-            definition = next(_record(value, "Definition") for value in definitions if _record(value, "Definition").get("id") == name[len("semantic_definition:"):])
+        elif name.startswith("semantic_definition:") and name[len("semantic_definition:"):] in definition_index:
+            index, definition = definition_index[name[len("semantic_definition:"):]]
+            path = f"/document/program/semantics/definitions/{index}"
             interpreted = _fingerprint(definition) in _NORMATIVE_DEFINITION_DIGESTS
             status = "discharged" if interpreted else "conditional"
             stage = "closed_normative_static_interpretation" if interpreted else "resolved_original_context_or_component_premise"
             evidence = {"source": source_pin, "definition": {"$type": "DefinitionRef", "id": definition["id"],
                 "version": definition["version"], "digest": _fingerprint(source._semantic(definition))},
                 "body": definition, "contract": contract["identity"]}
-        _require(row["status"] == status and row["stage"] == stage and _same(row["evidence"], evidence), "Obligation changed its exact disposition or evidence")
+        _require(row["path"] == path and row["status"] == status and row["stage"] == stage and _same(row["evidence"], evidence), "Obligation changed its exact path, disposition or evidence")
         closed = closed and status != "unresolved"
     _require(type(report["all_original_obligations_dispositioned"]) is bool and report["all_original_obligations_dispositioned"] == closed, "Obligation closure contradicts complete ledger")
     _require(report["status"] == ("checked_expression_material" if objective_ok and closed else "not_accepted"), "Expression status contradicts its complete evidence")
@@ -331,7 +368,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyExpr
     candidate = _object(result["candidate"], {"schema_version", "construction"}, "Complete expression candidate")
     _require(candidate["schema_version"] == CANDIDATE_SCHEMA and ("candidate" not in payload or _same(candidate, payload["candidate"])), "Checking changed the supplied expression candidate")
     report = _object(result["report"], _REPORT_FIELDS, "Complete expression evidence")
-    fixed: dict[str, JsonValue] = {"schema_version": REPORT_SCHEMA, "profile": REQUEST_PROFILE, "implementation": "biocompiler.ocaml.policy_expression_material_check.v0.1",
+    fixed: dict[str, JsonValue] = {"schema_version": REPORT_SCHEMA, "profile": REQUEST_PROFILE, "implementation": "biocompiler.ocaml.policy_expression_material_check.v0.2",
         "resource_profile": RESOURCE_PROFILE, "claim_scope": CLAIM, "premise": PREMISE, "empirical": "unassessed", "human_use": "unassessed", "artifact": "withheld", "export": "withheld"}
     _require(all(report[key] == value for key, value in fixed.items()), "Expression report changed its conditional scope")
     request_hash = _pin(result["request_fingerprint"], request, "Complete original request")

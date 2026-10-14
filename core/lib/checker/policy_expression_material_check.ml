@@ -8,7 +8,7 @@ module A = Policy_expression_source_admission
 module S = Policy_expression_structure_check
 module W = Work_budget
 let candidate_schema = "biocompiler.policy_expression_material_candidate.v0.1"
-let implementation_version = "biocompiler.ocaml.policy_expression_material_check.v0.1"
+let implementation_version = "biocompiler.ocaml.policy_expression_material_check.v0.2"
 let str value = Json.String value
 let obj values = Json.Object values
 let arr values = Json.Array values
@@ -58,37 +58,46 @@ let check ~request:original ~candidate:proposed =
   let source_pin = fingerprint budget (A.report source)
   and structure_pin = fingerprint budget (S.report structural) in
   let definitions = Json.array (get "definitions" (get "semantics" (D.program (A.document source)))) in
-  let defined_ids = List.map (text "id") definitions in
+  let module Meter = Policy_generation_meter.Make (struct let charge = W.charge budget end) in
+  let indexed_definitions = Meter.List.mapi (fun index definition ->
+    let id = Meter.Json.string (Meter.Json.field "id" (Json.object_fields definition)) in
+    index,id,definition) definitions in
   let suffix prefix value = if String.starts_with ~prefix value then
     Some (String.sub value (String.length prefix) (String.length value - String.length prefix)) else None in
   let premise_pins = obj ["source",str source_pin; "structure",str structure_pin;
     "contract",Pin.to_json contract.identity] in
+  let unsupported = "unresolved", "unimplemented_obligation", "/document", Json.Null in
+  let supplied path =
+    (if objective_ok then "conditional" else "unresolved"),
+    "supplied_expression_localization_and_recipient_premises", path, premise_pins in
   let disposition obligation =
-    W.charge budget (String.length obligation + List.length defined_ids);
-    (* The closed source admission proves absence of temporal/state/effect
-       declarations. Their generic vocabulary obligations are explicitly N/A,
-       never claims about execution, cancellation or physical persistence. *)
+    W.charge budget (String.length obligation + List.length definitions);
+    (* These three dispositions assert absence of demands in the admitted
+       static source, independently of the material/length outcome. *)
     match obligation with
     | "policy_execution_and_lowering" | "temporal_and_uncertainty_semantics"
-    | "persistent_encounter_identity_lifetime" | "state_lifetime_capacity_and_inheritance"
-    | "effect_authorization_feedback_and_cancellation" | "arbitration_fairness_and_conflict_resolution" ->
-        "not_applicable", "closed_static_source_admission", obj ["source",str source_pin]
-    | "safety_and_progress_satisfaction" | "requested_assurance_not_established"
-    | "expression_material_correspondence" ->
-        (if objective_ok then "discharged" else "unresolved"), "exact_static_encoding_and_length", premise_pins
-    | "realizability_and_target_suitability" | "implementation_catalog_applicability"
-    | "chassis_capability_and_delivery_suitability" ->
-        (if objective_ok then "conditional" else "unresolved"), "supplied_expression_localization_and_recipient_premises", premise_pins
+    | "safety_and_progress_satisfaction" ->
+        "not_applicable", "closed_static_source_admission", "/document/program", obj ["source",str source_pin]
+    | "realizability_and_target_suitability" | "chassis_capability_and_delivery_suitability" ->
+        supplied "/document/deployment"
+    | "implementation_catalog_applicability" -> supplied "/document/implementations"
+    | "requested_assurance_not_established" -> supplied "/document/assurance"
+    | "expression_material_correspondence" -> supplied "/document"
     | _ ->
       match suffix "requirement_satisfaction:" obligation with
       | Some id when id = A.objective_id source ->
-          (if objective_ok then "discharged" else "unresolved"), "exact_static_encoding_and_length", premise_pins
+          (if objective_ok then "discharged" else "unresolved"), "exact_static_encoding_and_length", A.objective_path source, premise_pins
       | _ -> match suffix "implementation_applicability:" obligation with
         | Some id when id = Pin.id selected.implementation ->
-            (if objective_ok then "conditional" else "unresolved"), "complete_supplied_implementation_contract", premise_pins
+            (if objective_ok then "conditional" else "unresolved"), "complete_supplied_implementation_contract",
+            "/document/implementations/implementations/0", premise_pins
         | _ -> match suffix "semantic_definition:" obligation with
-          | Some id when List.mem id defined_ids ->
-              let definition=List.find(fun value->text "id" value=id)definitions in
+          | Some id -> (match Meter.List.find_opt (fun (_,name,_) -> Meter.String.equal name id) indexed_definitions with
+            | Some (index,_,definition) ->
+              (* Admission bounds definitions to 64; reserve index rendering
+                 before allocation and meter the complete source-path copy. *)
+              W.charge budget 3;
+              let path = Meter.append_string "/document/program/semantics/definitions/" (string_of_int index) in
               let normative=[R.objective_definition();R.operation_definition();R.translation_definition()]in
               let definition_bytes=measure budget definition in
               List.iter(fun value->ignore(measure budget value);W.charge budget definition_bytes)normative;
@@ -98,12 +107,14 @@ let check ~request:original ~candidate:proposed =
               let interpreted=List.exists(Json.equal definition)normative in
               (if interpreted then "discharged" else "conditional"),
               (if interpreted then "closed_normative_static_interpretation" else "resolved_original_context_or_component_premise"),
+              path,
               obj ["source",str source_pin;"definition",R.definition_ref_to_json(R.definition_ref definition);
                 "body",definition;"contract",Pin.to_json contract.identity]
-          | _ -> "unresolved", "unimplemented_obligation", Json.Null in
+            | None -> unsupported)
+          | None -> unsupported in
   let obligations = A.unresolved_obligations source in
-  let ledger = List.map (fun obligation -> let status,stage,evidence = disposition obligation in
-    obj ["obligation",str obligation; "status",str status; "stage",str stage; "evidence",evidence]) obligations in
+  let ledger = List.map (fun obligation -> let status,stage,path,evidence = disposition obligation in
+    obj ["obligation",str obligation; "path",str path; "status",str status; "stage",str stage; "evidence",evidence]) obligations in
   let ledger_closed = List.for_all (fun row -> text "status" row <> "unresolved") ledger in
   let complete = objective_ok && ledger_closed in
   let candidate_pin = fingerprint budget candidate_raw in
@@ -117,7 +128,7 @@ let check ~request:original ~candidate:proposed =
     "localization",A.localization source; "localization_status",str "supplied_premise";
     "diagnostics",arr (if bound_ok then [] else [obj ["code",str "expression_rna_length_requirement";
       "path",str (A.objective_path source); "message",str "The exact original RNA exceeds the source length bound or has no single complete member."]])] in
-  let fields = ["schema_version",str "biocompiler.policy_expression_material_assessment.v0.1";
+  let fields = ["schema_version",str "biocompiler.policy_expression_material_assessment.v0.2";
     "profile",str R.profile; "implementation",str implementation_version; "resource_profile",str R.resource_profile;
     "request_fingerprint",str (R.fingerprint request); "candidate_fingerprint",str candidate_pin;
     "invocation_fingerprint",str invocation_pin;

@@ -97,38 +97,106 @@ def structure(request, actual):
     return result
 
 
+# Literal M1 contract oracle. These values come from the normative disposition
+# table and the versioned correction proposal, never from a production grouping.
+REPORT_V02 = "biocompiler.policy_expression_material_assessment.v0.2"
+CHECKER_V02 = "biocompiler.ocaml.policy_expression_material_check.v0.2"
+SERVICE_V02 = "biocompiler.ocaml.policy_expression_material.v0.2"
+EXACT_FASTA = ">rna_0001 alphabet=RNA\nCCAUGGCUUAAGGAAAA\n"
+FIXED_DISPOSITIONS = (
+    ("policy_execution_and_lowering", "not_applicable", "not_applicable", "closed_static_source_admission", "/document/program", "source"),
+    ("temporal_and_uncertainty_semantics", "not_applicable", "not_applicable", "closed_static_source_admission", "/document/program", "source"),
+    ("safety_and_progress_satisfaction", "not_applicable", "not_applicable", "closed_static_source_admission", "/document/program", "source"),
+    ("realizability_and_target_suitability", "conditional", "unresolved", "supplied_expression_localization_and_recipient_premises", "/document/deployment", "join"),
+    ("chassis_capability_and_delivery_suitability", "conditional", "unresolved", "supplied_expression_localization_and_recipient_premises", "/document/deployment", "join"),
+    ("implementation_catalog_applicability", "conditional", "unresolved", "supplied_expression_localization_and_recipient_premises", "/document/implementations", "join"),
+    ("requested_assurance_not_established", "conditional", "unresolved", "supplied_expression_localization_and_recipient_premises", "/document/assurance", "join"),
+    ("implementation_applicability:artificial.expression.entry", "conditional", "unresolved", "complete_supplied_implementation_contract", "/document/implementations/implementations/0", "join"),
+    ("requirement_satisfaction:encode", "discharged", "unresolved", "exact_static_encoding_and_length", "/document/program/declarations/6", "join"),
+    ("expression_material_correspondence", "conditional", "unresolved", "supplied_expression_localization_and_recipient_premises", "/document", "join"),
+)
+DEFINITION_DISPOSITIONS = (
+    ("biocompiler.expression.objective.v1", "discharged", "closed_normative_static_interpretation"),
+    ("biocompiler.expression.encode.v1", "discharged", "closed_normative_static_interpretation"),
+    ("biocompiler.expression.nominal_translation.v1", "discharged", "closed_normative_static_interpretation"),
+    ("artificial.expression", "conditional", "resolved_original_context_or_component_premise"),
+    ("artificial.surface", "conditional", "resolved_original_context_or_component_premise"),
+    ("artificial.environment", "conditional", "resolved_original_context_or_component_premise"),
+    ("artificial.delivery", "conditional", "resolved_original_context_or_component_premise"),
+    ("artificial.chassis_model", "conditional", "resolved_original_context_or_component_premise"),
+    ("artificial.capability", "conditional", "resolved_original_context_or_component_premise"),
+)
+PHANTOM_RUNTIME_IDS = (
+    "persistent_encounter_identity_lifetime",
+    "state_lifetime_capacity_and_inheritance",
+    "effect_authorization_feedback_and_cancellation",
+    "arbitration_fairness_and_conflict_resolution",
+)
+
+
+def literal_ledger(request, admission, leaf, passed):
+    """Supply inert report bytes from the independent literal contract table."""
+    source_pin = digest(admission)
+    contract = request["expression_contract"]["identity"]
+    evidence = {"source": {"source": source_pin},
+        "join": {"source": source_pin, "structure": digest(leaf), "contract": contract}}
+    rows = []
+    for name, success, failure, stage, path, dependency in FIXED_DISPOSITIONS:
+        if name == "requirement_satisfaction:encode":
+            path = admission["objective_path"]
+        rows.append({"obligation": name, "path": path,
+            "status": success if passed else failure, "stage": stage,
+            "evidence": deepcopy(evidence[dependency])})
+    normative = {value["id"]: value for value in
+        original()["document"]["program"]["semantics"]["definitions"]
+        if value["id"] in {name for name, status, _ in DEFINITION_DISPOSITIONS if status == "discharged"}}
+    seen = set()
+    for index, value in enumerate(request["document"]["program"]["semantics"]["definitions"]):
+        # Malicious-peer tests deliberately present duplicate originals while
+        # claiming a unique child census; the SDK must reject the originals.
+        if value["id"] in seen:
+            continue
+        seen.add(value["id"])
+        interpreted = value == normative.get(value["id"])
+        rows.append({"obligation": "semantic_definition:" + value["id"],
+            "path": f"/document/program/semantics/definitions/{index}",
+            "status": "discharged" if interpreted else "conditional",
+            "stage": "closed_normative_static_interpretation" if interpreted else "resolved_original_context_or_component_premise",
+            "evidence": {"source": source_pin, "definition": pin(value),
+                "body": deepcopy(value), "contract": deepcopy(contract)}})
+    return sorted(rows, key=lambda row: row["obligation"])
+
+
+def rehash_result(value, *, rebind_dependencies=False):
+    """Rehash transport attacks without consulting production dispositions."""
+    checked = value["report"]
+    if rebind_dependencies:
+        for row in checked["obligations"]:
+            evidence = row["evidence"]
+            if isinstance(evidence, dict):
+                if "source" in evidence:
+                    evidence["source"] = digest(checked["source_admission"])
+                if "structure" in evidence:
+                    evidence["structure"] = digest(checked["structure"])
+    value["report_fingerprint"] = digest(checked)
+
+
 def report(request, actual):
     doc = request["document"]
     assessed = assessment(doc)
     definitions = doc["program"]["semantics"]["definitions"]
-    assessed["unresolved_obligations"] = sorted(["policy_execution_and_lowering", "temporal_and_uncertainty_semantics", "persistent_encounter_identity_lifetime", "state_lifetime_capacity_and_inheritance", "effect_authorization_feedback_and_cancellation", "arbitration_fairness_and_conflict_resolution", "safety_and_progress_satisfaction", "requested_assurance_not_established", "realizability_and_target_suitability", "implementation_catalog_applicability", "chassis_capability_and_delivery_suitability", "requirement_satisfaction:encode", "implementation_applicability:artificial.expression.entry", *["semantic_definition:" + value["id"] for value in definitions]])
+    assessed["unresolved_obligations"] = sorted({*[row[0] for row in FIXED_DISPOSITIONS if row[0] != "expression_material_correspondence"], *["semantic_definition:" + value["id"] for value in definitions]})
     max_nt = next(value["value"] for value in doc["program"]["declarations"] if value["id"] == "maximum_rna_nt")
     body = request["expression_contract"]["body"]
-    admission = {"schema_version": "biocompiler.policy_expression_source_admission.v0.1", "status": "admitted_static_expression_source", "request_fingerprint": digest(request), "source_artifact_digest": digest(doc), "source_semantic_digest": digest(semantic(doc)), "objective": "encode", "objective_path": "/document/program/declarations/6", "product": body["product"], "maximum_rna_nt": max_nt,
+    objective_index = next(index for index, value in enumerate(doc["program"]["declarations"]) if value["$type"] == "Requirement")
+    admission = {"schema_version": "biocompiler.policy_expression_source_admission.v0.1", "status": "admitted_static_expression_source", "request_fingerprint": digest(request), "source_artifact_digest": digest(doc), "source_semantic_digest": digest(semantic(doc)), "objective": "encode", "objective_path": f"/document/program/declarations/{objective_index}", "product": body["product"], "maximum_rna_nt": max_nt,
         "unresolved_obligations": sorted([*assessed["unresolved_obligations"], "expression_material_correspondence"]), "source_assessment": assessed, "temporal_execution": "not_requested_by_supported_objective", "expression_claim": "withheld", "empirical_realization": "unassessed", "human_use": "unassessed", "export": "withheld"}
     leaf = structure(request, actual)
     length = len(actual["construction"]["inventory"]["molecules"][0]["sequence"])
     passed = length <= max_nt
-    pins = {"source": digest(admission), "structure": digest(leaf), "contract": request["expression_contract"]["identity"]}
-    rows = []
-    for name in admission["unresolved_obligations"]:
-        if name in {"policy_execution_and_lowering", "temporal_and_uncertainty_semantics", "persistent_encounter_identity_lifetime", "state_lifetime_capacity_and_inheritance", "effect_authorization_feedback_and_cancellation", "arbitration_fairness_and_conflict_resolution"}:
-            status, stage, evidence = "not_applicable", "closed_static_source_admission", {"source": digest(admission)}
-        elif name.startswith("semantic_definition:"):
-            definition_value = next(value for value in definitions if value["id"] == name.split(":", 1)[1])
-            interpreted = definition_value in definitions[:3]
-            status = "discharged" if interpreted else "conditional"
-            stage = "closed_normative_static_interpretation" if interpreted else "resolved_original_context_or_component_premise"
-            evidence = {"source": digest(admission), "definition": pin(definition_value), "body": definition_value, "contract": request["expression_contract"]["identity"]}
-        elif name in {"realizability_and_target_suitability", "implementation_catalog_applicability", "chassis_capability_and_delivery_suitability"}:
-            status, stage, evidence = "conditional" if passed else "unresolved", "supplied_expression_localization_and_recipient_premises", pins
-        elif name.startswith("implementation_applicability:"):
-            status, stage, evidence = "conditional" if passed else "unresolved", "complete_supplied_implementation_contract", pins
-        else:
-            status, stage, evidence = "discharged" if passed else "unresolved", "exact_static_encoding_and_length", pins
-        rows.append({"obligation": name, "status": status, "stage": stage, "evidence": evidence})
+    rows = literal_ledger(request, admission, leaf, passed)
     requirement = {"id": "encode", "path": admission["objective_path"], "status": "pass" if passed else "fail", "product": body["product"], "member": "payload", "cds": "cds", "maximum_rna_nt": max_nt, "actual_rna_nt": length, "length_status": "pass" if passed else "fail", "localization": body["localization"], "localization_status": "supplied_premise", "diagnostics": [] if passed else [{"code": "expression_rna_length_requirement", "path": admission["objective_path"], "message": "RNA exceeds source bound."}]}
-    return {"schema_version": api.REPORT_SCHEMA, "profile": api.REQUEST_PROFILE, "implementation": "biocompiler.ocaml.policy_expression_material_check.v0.1", "resource_profile": api.RESOURCE_PROFILE, "request_fingerprint": digest(request), "candidate_fingerprint": digest(actual), "invocation_fingerprint": digest({"request": request, "candidate": actual}), "status": "checked_expression_material" if passed else "not_accepted", "claim_scope": api.CLAIM, "premise": api.PREMISE,
+    return {"schema_version": REPORT_V02, "profile": api.REQUEST_PROFILE, "implementation": CHECKER_V02, "resource_profile": api.RESOURCE_PROFILE, "request_fingerprint": digest(request), "candidate_fingerprint": digest(actual), "invocation_fingerprint": digest({"request": request, "candidate": actual}), "status": "checked_expression_material" if passed else "not_accepted", "claim_scope": api.CLAIM, "premise": api.PREMISE,
         "source_admission": admission, "structure": leaf, "requirements": [requirement], "obligations": rows, "all_original_obligations_dispositioned": passed, "budgets": request["budgets"], "empirical": "unassessed", "human_use": "unassessed", "artifact": "withheld", "export": "withheld", "usage": {"unit": "logical_data_visits_and_child_semantic_work", "charged_work": 10000, "request_decoding_work": 2000}}
 
 
@@ -148,7 +216,7 @@ def result(payload, operation="check-policy-expression-material"):
     request = deepcopy(payload["request"])
     actual = deepcopy(payload.get("candidate", candidate()))
     checked = report(request, actual)
-    return {"schema_version": api.RESULT_SCHEMA, "implementation": api.IMPLEMENTATION, "resource_profile": api.RESOURCE_PROFILE, "validation_scope": api.VALIDATION_SCOPE,
+    return {"schema_version": api.RESULT_SCHEMA, "implementation": SERVICE_V02, "resource_profile": api.RESOURCE_PROFILE, "validation_scope": api.VALIDATION_SCOPE,
         "request_fingerprint": digest(request), "candidate_fingerprint": digest(actual), "invocation_fingerprint": digest({"request": request, "candidate": actual}), "report_fingerprint": digest(checked),
         "candidate": actual, "report": checked, "artifact": artifact(request, actual, checked) if operation == "export-policy-expression-material" else None,
         "usage": {"unit": "logical_data_visits_and_child_semantic_work", "total_charged_work": 20000, "checker_charged_work": 10000}}
@@ -189,6 +257,326 @@ class ExpressionMaterialTransportTests(unittest.TestCase):
 
     def client(self, role="verify"):
         return api.PolicyExpressionMaterialClient(CoreClient(Path(sys.executable), role=role))
+
+    def assert_literal_dispositions(self, checked, *, passed):
+        """Independent table equality, including every dependency field."""
+        rows = checked.report["obligations"]
+        admission = checked.report["source_admission"]
+        source = {"source": digest(admission)}
+        joined = {**source, "structure": digest(checked.report["structure"]),
+                  "contract": self.request["expression_contract"]["identity"]}
+        expected = []
+        declarations = self.request["document"]["program"]["declarations"]
+        objective_index = next(index for index, row in enumerate(declarations) if row["id"] == "encode")
+        for name, success, failure, stage, path, dependency in FIXED_DISPOSITIONS:
+            if name == "requirement_satisfaction:encode":
+                path = f"/document/program/declarations/{objective_index}"
+            expected.append({"obligation": name, "path": path, "status": success if passed else failure,
+                "stage": stage, "evidence": deepcopy(source if dependency == "source" else joined)})
+        definitions = self.request["document"]["program"]["semantics"]["definitions"]
+        for name, status, stage in DEFINITION_DISPOSITIONS:
+            index, value = next((index, value) for index, value in enumerate(definitions) if value["id"] == name)
+            expected.append({"obligation": "semantic_definition:" + name,
+                "path": f"/document/program/semantics/definitions/{index}", "status": status, "stage": stage,
+                "evidence": {**source, "definition": pin(value), "body": value,
+                    "contract": self.request["expression_contract"]["identity"]}})
+        self.assertEqual(rows, sorted(expected, key=lambda row: row["obligation"]))
+        self.assertEqual(len(rows), 19)
+        counts = {status: sum(row["status"] == status for row in rows)
+                  for status in ("not_applicable", "discharged", "conditional", "unresolved")}
+        self.assertEqual(counts, {"not_applicable": 3, "discharged": 4 if passed else 3,
+                                 "conditional": 12 if passed else 6, "unresolved": 0 if passed else 7})
+        self.assertEqual(len(admission["source_assessment"]["unresolved_obligations"]), 18)
+        self.assertNotIn("expression_material_correspondence", admission["source_assessment"]["unresolved_obligations"])
+        self.assertTrue(set(PHANTOM_RUNTIME_IDS).isdisjoint(row["obligation"] for row in rows))
+
+    def test_m1_literal_success_and_failed_conjunction_tables_and_exact_rna(self):
+        self.assertEqual((api.REPORT_SCHEMA, api.IMPLEMENTATION), (REPORT_V02, SERVICE_V02))
+        self.assertEqual((api.REQUEST_SCHEMA, api.CANDIDATE_SCHEMA, api.RESOURCE_PROFILE, api.VALIDATION_SCOPE, api.SOURCE_PROFILE),
+            ("biocompiler.policy_expression_material_request.v0.1", "biocompiler.policy_expression_material_candidate.v0.1",
+             "biocompiler.policy_expression_material_resources.v0.1", "policy-single-expression-mrna-v0.1", "biocompiler.policy_expression_source.v0.1"))
+        for ceiling, passed in ((1000, True), (17, True), (16, False)):
+            with self.subTest(ceiling=ceiling):
+                next(row for row in self.request["document"]["program"]["declarations"] if row["id"] == "maximum_rna_nt")["value"] = ceiling
+                with self.peer():
+                    checked = self.client().check(self.request, self.candidate)
+                self.assert_literal_dispositions(checked, passed=passed)
+                self.assertEqual(checked.report["schema_version"], REPORT_V02)
+                self.assertEqual(checked.report["implementation"], CHECKER_V02)
+                self.assertEqual(checked.report["requirements"][0]["actual_rna_nt"], 17)
+                self.assertEqual(checked.report["requirements"][0]["status"], "pass" if passed else "fail")
+                self.assertEqual(checked.report["all_original_obligations_dispositioned"], passed)
+                self.assertEqual(checked.report["empirical"], "unassessed")
+                self.assertEqual(checked.report["human_use"], "unassessed")
+                if passed:
+                    with self.peer():
+                        exported = self.client().export(self.request, self.candidate)
+                    self.assertEqual(exported.artifact["fasta"], EXACT_FASTA)
+                    self.assertEqual(exported.candidate, self.candidate)
+                else:
+                    self.assertEqual(checked.report["requirements"][0]["diagnostics"][0]["code"], "expression_rna_length_requirement")
+                    with self.peer(), self.assertRaises(CoreProtocolError):
+                        self.client().export(self.request, self.candidate)
+
+    def test_m1_material_failure_keeps_failed_child_dependencies_and_static_absences(self):
+        self.candidate["construction"]["inventory"]["molecules"][0]["sequence"] = "CCAUGGAAUAAGGAAAA"
+        def failed_material(value):
+            checked = value["report"]
+            checked["structure"]["content_reconstruction"].update(outcome="fail", reconstructed_fingerprint=None,
+                diagnostics=[{"code": "fixture_content_mismatch", "path": "/candidate", "message": "Independent negative transport fixture."}])
+            checked["structure"].update(content_outcome="fail", outcome="fail",
+                diagnostics=[{"code": "fixture_content_mismatch", "path": "/candidate", "message": "Independent negative transport fixture."}])
+            checked["requirements"][0]["status"] = "fail"
+            by_id = {row["obligation"]: row for row in checked["obligations"]}
+            for name, _, failure, _, _, _ in FIXED_DISPOSITIONS:
+                by_id[name]["status"] = failure
+            checked.update(status="not_accepted", all_original_obligations_dispositioned=False)
+            rehash_result(value, rebind_dependencies=True)
+        with self.peer(mutate=failed_material):
+            checked = self.client().check(self.request, self.candidate)
+        self.assert_literal_dispositions(checked, passed=False)
+        self.assertEqual(checked.report["requirements"][0]["length_status"], "pass")
+        self.assertEqual(checked.status, "not_accepted")
+        self.assertIsNone(checked.artifact)
+        with self.peer(mutate=failed_material), self.assertRaises(CoreProtocolError):
+            self.client().export(self.request, self.candidate)
+
+    def test_m1_paths_follow_original_occurrences_and_normative_bodies_survive_reordering(self):
+        program = self.request["document"]["program"]
+        program["semantics"]["definitions"].reverse()
+        program["declarations"] = program["declarations"][-1:] + program["declarations"][:-1]
+        with self.peer():
+            checked = self.client().check(self.request, self.candidate)
+        self.assert_literal_dispositions(checked, passed=True)
+        self.assertEqual(checked.report["source_admission"]["objective_path"], "/document/program/declarations/0")
+        self.assertEqual(checked.report["empirical"], "unassessed")
+
+    def test_m1_coherent_mandatory_census_deletions_and_duplicates_reject(self):
+        mandatory = sorted([row[0] for row in FIXED_DISPOSITIONS if row[0] != "expression_material_correspondence"]
+                           + ["semantic_definition:" + row[0] for row in DEFINITION_DISPOSITIONS])
+        self.assertEqual(len(mandatory), 18)
+        for maximum in (1000, 16):
+            next(row for row in self.request["document"]["program"]["declarations"] if row["id"] == "maximum_rna_nt")["value"] = maximum
+            for name in mandatory:
+                for attack in ("delete", "duplicate"):
+                    def mutate(value, name=name, attack=attack):
+                        checked = value["report"]
+                        admission = checked["source_admission"]
+                        for ids in (admission["source_assessment"]["unresolved_obligations"], admission["unresolved_obligations"]):
+                            ids.remove(name) if attack == "delete" else ids.append(name)
+                            ids.sort()
+                        rows = checked["obligations"]
+                        row = next(row for row in rows if row["obligation"] == name)
+                        rows.remove(row) if attack == "delete" else rows.append(deepcopy(row))
+                        rows.sort(key=lambda row: row["obligation"])
+                        rehash_result(value, rebind_dependencies=True)
+                    with self.subTest(maximum=maximum, name=name, attack=attack), self.peer(mutate=mutate), self.assertRaises(CoreProtocolError):
+                        self.client().check(self.request, self.candidate)
+
+    def test_m1_failed_conjunction_cannot_reuse_successful_dispositions_or_source_evidence(self):
+        successful = {row["obligation"]: row for row in report(self.request, self.candidate)["obligations"]}
+        next(row for row in self.request["document"]["program"]["declarations"] if row["id"] == "maximum_rna_nt")["value"] = 16
+        for name, success, failure, _, _, _ in FIXED_DISPOSITIONS:
+            if failure != "unresolved":
+                continue
+            for field, replacement in (("status", success), ("evidence", successful[name]["evidence"])):
+                def mutate(value, name=name, field=field, replacement=replacement):
+                    next(row for row in value["report"]["obligations"] if row["obligation"] == name)[field] = deepcopy(replacement)
+                    rehash_result(value)
+                with self.subTest(name=name, field=field), self.peer(mutate=mutate), self.assertRaises(CoreProtocolError):
+                    self.client().check(self.request, self.candidate)
+
+    def test_m1_phantom_or_unknown_obligations_cannot_be_blessed_by_a_coherent_peer(self):
+        for name in (*PHANTOM_RUNTIME_IDS, "unsupported.extra"):
+            for status in ("not_applicable", "conditional", "discharged"):
+                def mutate(value, name=name, status=status):
+                    checked = value["report"]
+                    admission = checked["source_admission"]
+                    for ids in (admission["source_assessment"]["unresolved_obligations"], admission["unresolved_obligations"]):
+                        ids.append(name)
+                        ids.sort()
+                    checked["obligations"].append({"obligation": name, "path": "/document", "status": status,
+                        "stage": "closed_static_source_admission" if status == "not_applicable" else "supplied_expression_localization_and_recipient_premises",
+                        "evidence": {"source": digest(admission)}})
+                    checked["obligations"].sort(key=lambda row: row["obligation"])
+                    rehash_result(value, rebind_dependencies=True)
+                with self.subTest(name=name, status=status), self.peer(mutate=mutate), self.assertRaises(CoreProtocolError):
+                    self.client().check(self.request, self.candidate)
+
+    def test_m1_every_status_stage_path_and_dependency_is_authoritative(self):
+        control = report(self.request, self.candidate)
+        for original_row in control["obligations"]:
+            name = original_row["obligation"]
+            mutations = [("status", "conditional" if original_row["status"] == "discharged" else "discharged"),
+                ("stage", "invented_reason"), ("path", "/document/assurance" if name == "safety_and_progress_satisfaction" else "/foreign")]
+            for key in original_row["evidence"]:
+                altered = deepcopy(original_row["evidence"])
+                del altered[key]
+                mutations.append(("evidence", altered))
+                altered = deepcopy(original_row["evidence"])
+                if key in ("source", "structure"):
+                    altered[key] = "0" * 64
+                elif key == "body":
+                    altered[key]["meaning"] += " Changed premise."
+                elif key == "definition":
+                    altered[key]["digest"] = "0" * 64
+                else:
+                    altered[key]["content_fingerprint"] = "0" * 64
+                mutations.append(("evidence", altered))
+            for field, replacement in mutations:
+                def mutate(value, name=name, field=field, replacement=replacement):
+                    next(row for row in value["report"]["obligations"] if row["obligation"] == name)[field] = deepcopy(replacement)
+                    rehash_result(value)  # Do not repair the deliberately wrong dependency.
+                with self.subTest(name=name, field=field, replacement=replacement), self.peer(mutate=mutate), self.assertRaises(CoreProtocolError):
+                    self.client().check(self.request, self.candidate)
+
+    @staticmethod
+    def add_unresolved_extra(value):
+        """Transport consistency fixture; genuine semantic origin is tested natively."""
+        checked = value["report"]
+        admission = checked["source_admission"]
+        name = "derived_quantity_operation_semantics"
+        for ids in (admission["source_assessment"]["unresolved_obligations"], admission["unresolved_obligations"]):
+            ids.append(name)
+            ids.sort()
+        checked["obligations"].append({"obligation": name, "path": "/document", "status": "unresolved",
+            "stage": "unimplemented_obligation", "evidence": None})
+        checked["obligations"].sort(key=lambda row: row["obligation"])
+        checked.update(status="not_accepted", all_original_obligations_dispositioned=False)
+        rehash_result(value, rebind_dependencies=True)
+
+    def test_m1_unknown_extra_is_retained_only_in_a_negative_diagnostic_report(self):
+        with self.peer(mutate=self.add_unresolved_extra):
+            checked = self.client().check(self.request, self.candidate)
+        self.assertEqual(checked.status, "not_accepted")
+        self.assertEqual(checked.report["requirements"][0]["status"], "pass")
+        self.assertEqual(len(checked.report["obligations"]), 20)
+        self.assertEqual(next(row for row in checked.report["obligations"] if row["obligation"] == "derived_quantity_operation_semantics"),
+            {"obligation": "derived_quantity_operation_semantics", "path": "/document", "status": "unresolved", "stage": "unimplemented_obligation", "evidence": None})
+        self.assertFalse(checked.report["all_original_obligations_dispositioned"])
+        self.assertIsNone(checked.artifact)
+        for attack in ("drop", "promote", "claim_closed"):
+            def mutate(value, attack=attack):
+                self.add_unresolved_extra(value)
+                checked = value["report"]
+                row = next(row for row in checked["obligations"] if row["obligation"] == "derived_quantity_operation_semantics")
+                if attack == "drop":
+                    checked["obligations"].remove(row)
+                    checked["source_admission"]["unresolved_obligations"].remove(row["obligation"])
+                elif attack == "promote":
+                    row.update(status="conditional", stage="supplied_expression_localization_and_recipient_premises")
+                else:
+                    checked.update(status="checked_expression_material", all_original_obligations_dispositioned=True)
+                rehash_result(value, rebind_dependencies=True)
+            with self.subTest(attack=attack), self.peer(mutate=mutate), self.assertRaises(CoreProtocolError):
+                self.client().check(self.request, self.candidate)
+        with self.peer(mutate=self.add_unresolved_extra), self.assertRaises(CoreProtocolError):
+            self.client().export(self.request, self.candidate)
+
+    def test_m1_reserved_profile_obligation_cannot_originate_in_generic_child(self):
+        for maximum in (1000, 16):
+            next(row for row in self.request["document"]["program"]["declarations"] if row["id"] == "maximum_rna_nt")["value"] = maximum
+            def mutate(value):
+                ids = value["report"]["source_admission"]["source_assessment"]["unresolved_obligations"]
+                ids.append("expression_material_correspondence")
+                ids.sort()
+                # The final ledger still contains exactly one profile row.
+                rehash_result(value, rebind_dependencies=True)
+            with self.subTest(maximum=maximum), self.peer(mutate=mutate), self.assertRaises(CoreProtocolError):
+                self.client().check(self.request, self.candidate)
+
+    def test_m1_original_catalog_and_definition_occurrences_cannot_be_collapsed(self):
+        for attack in ("no_entry", "two_entries", "different_id", "different_version", "different_body", "duplicate_definition", "conflicting_definition"):
+            self.request = original()
+            entries = self.request["document"]["implementations"]["implementations"]
+            definitions = self.request["document"]["program"]["semantics"]["definitions"]
+            if attack == "no_entry":
+                entries.clear()
+            elif attack == "two_entries":
+                entries.append({**deepcopy(entries[0]), "id": "another.entry"})
+            elif attack == "different_id":
+                entries[0]["id"] = "another.entry"
+            elif attack == "different_version":
+                entries[0]["version"] = "2"
+            elif attack == "different_body":
+                entries[0]["payload_formats"] = ["RNA", "DNA"]
+            else:
+                duplicate = deepcopy(definitions[-1])
+                if attack == "conflicting_definition":
+                    duplicate.update(version="2", meaning="Different complete original body.")
+                definitions.append(duplicate)
+            with self.subTest(attack=attack), self.peer(), self.assertRaises(CoreProtocolError):
+                self.client().check(self.request, self.candidate)
+
+    def test_m1_supplied_unknown_descriptor_stays_conditional_with_complete_body(self):
+        definitions = self.request["document"]["program"]["semantics"]["definitions"]
+        old = next(row for row in definitions if row["id"] == "artificial.environment")
+        old_pin = pin(old)
+        old["meaning"] = "Supplied environmental applicability remains unknown; no executable interpretation."
+        new_pin = pin(old)
+        def repin(value):
+            if isinstance(value, dict):
+                if value == old_pin:
+                    value.update(new_pin)
+                else:
+                    for item in value.values():
+                        repin(item)
+            elif isinstance(value, list):
+                for item in value:
+                    repin(item)
+        repin(self.request)
+        self.request["expression_contract"]["identity"]["content_fingerprint"] = digest(self.request["expression_contract"]["body"])
+        with self.peer():
+            checked = self.client().check(self.request, self.candidate)
+        row = next(row for row in checked.report["obligations"] if row["obligation"] == "semantic_definition:artificial.environment")
+        self.assertEqual((row["status"], row["stage"]), ("conditional", "resolved_original_context_or_component_premise"))
+        self.assertEqual(row["evidence"]["definition"], new_pin)
+        self.assertEqual(row["evidence"]["body"], old)
+        self.assertEqual(row["evidence"]["contract"], self.request["expression_contract"]["identity"])
+
+    def test_m1_additional_reachable_descriptive_premise_expands_the_exact_census(self):
+        supplied = definition("artificial.additional_environment", "environment", "Additional supplied environment premise; applicability is unknown.")
+        self.request["document"]["program"]["semantics"]["definitions"].append(supplied)
+        self.request["document"]["deployment"]["environment"].append(pin(supplied))
+        self.request["expression_contract"]["body"]["deployment"] = deepcopy(self.request["document"]["deployment"])
+        self.request["expression_contract"]["identity"]["content_fingerprint"] = digest(self.request["expression_contract"]["body"])
+        with self.peer():
+            checked = self.client().check(self.request, self.candidate)
+        self.assertEqual(checked.status, "checked_expression_material")
+        self.assertEqual(len(checked.report["source_admission"]["source_assessment"]["unresolved_obligations"]), 19)
+        self.assertEqual(len(checked.report["obligations"]), 20)
+        row = next(row for row in checked.report["obligations"] if row["obligation"] == "semantic_definition:artificial.additional_environment")
+        self.assertEqual(row, {"obligation": "semantic_definition:artificial.additional_environment",
+            "path": "/document/program/semantics/definitions/9", "status": "conditional",
+            "stage": "resolved_original_context_or_component_premise",
+            "evidence": {"source": digest(checked.report["source_admission"]), "definition": pin(supplied),
+                "body": supplied, "contract": self.request["expression_contract"]["identity"]}})
+
+    def test_m1_old_or_mixed_assessment_checker_service_versions_reject(self):
+        for mask in range(1, 8):
+            def mutate(value, mask=mask):
+                if mask & 1:
+                    value["report"]["schema_version"] = "biocompiler.policy_expression_material_assessment.v0.1"
+                if mask & 2:
+                    value["report"]["implementation"] = "biocompiler.ocaml.policy_expression_material_check.v0.1"
+                if mask & 4:
+                    value["implementation"] = "biocompiler.ocaml.policy_expression_material.v0.1"
+                rehash_result(value)
+            with self.subTest(mask=mask), self.peer(mutate=mutate), self.assertRaises(CoreProtocolError):
+                self.client().check(self.request, self.candidate)
+        for role, profile in (("verify", "policy_expression_material"),
+                              ("core", "policy_expression_material"),
+                              ("core", "policy_expression_material_producer")):
+            self.calls.clear()
+            def old_capability(value, profile=profile):
+                value["profiles"][profile]["implementation"] = "biocompiler.ocaml.policy_expression_material.v0.1"
+            with self.subTest(role=role, profile=profile):
+                with self.peer(role, caps=old_capability), self.assertRaises(CoreProtocolError):
+                    if role == "core":
+                        self.client(role).compile(self.request)
+                    else:
+                        self.client(role).check(self.request, self.candidate)
+                self.assertEqual([call["operation"] for call in self.calls], ["capabilities"])
 
     def test_complete_compile_check_replay_export_routes(self):
         with self.peer("core"):

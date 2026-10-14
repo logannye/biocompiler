@@ -24,7 +24,7 @@ REVIEWED_ADDITIONS = {
     # CAR expression/project additions are explicitly excluded from original
     # workflow authority, including the separate public example.
     'examples/car_payload.py': '1605c8f92443a184953921df950c4c39a10b95e3420d39d361da08658e7caae0',
-    'src/biocompiler/core_policy_expression_material.py': '319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf',
+    'src/biocompiler/core_policy_expression_material.py': '10b39e55514bc2f93d6378e18db83092feadf585627b89d6e3c6b43b39e72feb',
     'src/biocompiler/policy/car_reference.py': '6cecfa4f52ab8d0e8c928198bbd308525e6a0c802383616b7cd7e16c1027ee9d',
     'src/biocompiler/policy/expression_material.py': '2fecd744564db34e9629f981ff619d9f7aa7bef6cadf245d7e5446bc876621fe',
     'src/biocompiler/policy/project_sources.py': '19c72e4330ad3ab03fd07bb77ba7fac5c5f4510a84bb918fbc53b70a3e7430fa',

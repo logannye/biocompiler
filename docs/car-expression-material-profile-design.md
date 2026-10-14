@@ -1,8 +1,18 @@
-# Proposed exact expression-material profile for the CAR MVP
+# Exact expression-material profile for the CAR MVP
 
-Status: **implemented source candidate; hosted native, installed and release
-acceptance pending**. This records the bounded C3 decision for the
-[CAR MVP roadmap](car-mvp-and-expansion-roadmap-2026-10-10.md).
+Status: **M1 v0.2 assessment correction implemented in the working branch;
+focused local validation and direct native workflow probes passed; hosted/main
+acceptance pending**. The correction follows
+[ADR 0010](decisions/0010-versioned-expression-obligation-dispositions.md) and
+[M1 in the refactoring roadmap](architecture-refactoring-roadmap.md#m1--correct-claim-dispositions-and-make-their-algebra-explicit).
+The [capability matrix](capability-matrix.md#cap-11-static-car-expression) retains
+the separately recorded main and published snapshots.
+
+The original C3 preparation status was **implemented source candidate; hosted
+native, installed and release acceptance pending**. That historical status and
+the bounded C3 decision in the
+[CAR MVP roadmap](car-mvp-and-expansion-roadmap-2026-10-10.md) are preserved;
+M1 does not rewrite their evidence or reference pins.
 The [first research task](car-first-research-task.md) selects RM_61461 for a
 scoped nominal-reference handoff. Its [qualification record](car-rm61461-qualification.md)
 separates copied sequence, source-declared chemistry, an explicit designer-supplied
@@ -121,15 +131,51 @@ reachable definition closure, including the normative definitions and every
 recipient/deployment/catalog/localization reference; unused definitions are
 unsupported rather than silently ignored.
 
+**Separate open admission gap (AR-11 / M2):** the inspected v0.1 admission
+implementation checks pins and reachability but does not enforce the documented
+supplied-definition clause/formal restriction. A complete repinned definition
+with one unused integer formal was accepted by fresh native check and export at
+`18ce1ac64fde799892683460360da008f9e6ae14`; the
+[roadmap audit register](architecture-refactoring-roadmap.md#audit-register)
+records the exact local diagnostic provenance. An arithmetic assumption clause
+also reached material checking, but its extra unresolved obligation withheld
+export. Those observations do not make clauses or formals part of the supported
+subset. M1 changes report dispositions and census consistency only. A later M2
+guard correction needs separate admission tests, including an explicit treatment
+of text-only clauses; no supplied clause is executed or discharged by M1.
+
 ## 3. Original authority and wire records
 
-Versioned implementation names:
+### M1 version boundary
 
-- Request schema: `biocompiler.policy_expression_material_request.v0.1`.
-- Profile: `biocompiler.policy_single_expression_mrna.v0.1`.
-- Contract-body schema: `biocompiler.policy_expression_contract.v0.1`.
-- Assessment schema: `biocompiler.policy_expression_material_assessment.v0.1`.
-- Export manifest schema: `biocompiler.policy_expression_mrna_manifest.v0.1`.
+The implemented v0.2 boundary changes only these report/implementation identities:
+
+| Identity | Historical baseline | Working-branch M1 |
+| --- | --- | --- |
+| Assessment schema | `biocompiler.policy_expression_material_assessment.v0.1` | `biocompiler.policy_expression_material_assessment.v0.2` |
+| Native checker | `biocompiler.ocaml.policy_expression_material_check.v0.1` | `biocompiler.ocaml.policy_expression_material_check.v0.2` |
+| Service/producer implementation | `biocompiler.ocaml.policy_expression_material.v0.1` | `biocompiler.ocaml.policy_expression_material.v0.2` |
+
+These existing identities and their source/material meanings remain unchanged:
+
+| Identity | Retained value |
+| --- | --- |
+| Request schema | `biocompiler.policy_expression_material_request.v0.1` |
+| Material profile | `biocompiler.policy_single_expression_mrna.v0.1` |
+| Source profile | `biocompiler.policy_expression_source.v0.1` |
+| Contract-body schema | `biocompiler.policy_expression_contract.v0.1` |
+| Candidate schema | `biocompiler.policy_expression_material_candidate.v0.1` |
+| Result envelope | `biocompiler.core.policy_expression_material.v1` |
+| Resource profile | `biocompiler.policy_expression_material_resources.v0.1` |
+| Validation scope | `policy-single-expression-mrna-v0.1` |
+| Export schema | `biocompiler.policy_expression_mrna_export.v0.1` |
+| Manifest schema | `biocompiler.policy_expression_mrna_manifest.v0.1` |
+
+The generic source, static-admission and nominal-structure child schemas and
+implementations also remain unchanged. No source semantics, operation signature,
+material authority, normative definition or reference-record pin is replaced by
+this correction. Retaining a request/profile identity does not make an old
+assessment compatible with the changed disposition contract.
 
 The request is a closed record with exactly `schema_version`, `profile`,
 `project_context`, `document`, `selection`, `expression_contract`, `structure_authority` and
@@ -235,34 +281,149 @@ Fresh checking must perform these steps in order:
    checked token. Replay freshly repeats steps 1–7 and compares the complete
    result; it never trusts a saved PASS or a historical token.
 
-The generic source obligations require a **closed, complete disposition census**,
-not an arbitrary list of exceptions. Under the subset above it is exactly the
-following nine fixed/instantiated entries plus one per semantic definition:
+### v0.2 disposition contract
 
-| Original obligation | Permitted successful disposition and evidence |
+Every ledger row has exactly `obligation`, `path`, `status`, `stage` and
+`evidence`. `stage` is the reason code. Rows are ordered by ascending obligation
+ID and have unique IDs. Preserve the complete fresh original generic source
+assessment inside the admission report and preserve its complete assumption
+ledger. A row path is a primary original-source locator, not a proof or an
+exhaustive list of dependencies.
+
+Let `A` be the complete fresh `source_admission` report, `S` the complete fresh
+`structure` report, `C` the complete original
+`request.expression_contract.identity`, and `H` the existing canonical JSON
+fingerprint. Let `d[i]` be the complete original definition at index `i` in
+`document.program.semantics.definitions`. The evidence records below have exactly
+the displayed keys and values:
+
+```text
+SOURCE = {"source": H(A)}
+JOIN = {"source": H(A), "structure": H(S), "contract": C}
+DEF(i) = {
+  "source": H(A),
+  "definition": {
+    "$type": "DefinitionRef",
+    "id": d[i].id,
+    "version": d[i].version,
+    "digest": H(semantic_projection(d[i]))
+  },
+  "body": d[i],
+  "contract": C
+}
+```
+
+The semantic projection is the existing policy definition-digest convention;
+`body` retains the entire original definition, including fields omitted by that
+projection. Hashes bind the identified bytes, not their physical truth. On a
+failed conjunction, evidence must bind fresh child reports from that invocation,
+retaining their actual outcomes, rather than a previous successful invocation.
+For example, a failed RNA-length bound may retain passing source and structure
+children; a failed material child retains its failure.
+
+The following stage abbreviations are only table notation; the wire value is
+the full literal in the second column:
+
+| Alias | Exact `stage` |
 | --- | --- |
-| `policy_execution_and_lowering` | `not_applicable` to runtime execution, justified by the closed absence of runtime declarations; link the new static source-to-material derivation separately. |
-| `temporal_and_uncertainty_semantics` | `not_applicable`, justified by static assurance and rejection of all temporal/uncertain declarations or requested guarantees. |
-| `safety_and_progress_satisfaction` | `not_applicable`, because there are no safety/progress requirements in the admitted source; adding one rejects. |
-| `realizability_and_target_suitability` | `conditional`: exact material is independently checked; physical realization and recipient suitability remain the explicitly pinned supplied premises. |
-| `chassis_capability_and_delivery_suitability` | `conditional`: exact recipient/deployment/capability correspondence plus the complete supplied applicability premises; no empirical suitability PASS. |
-| `implementation_catalog_applicability` | `conditional`: exact selected entry and contract/dependency correspondence, with its unresolved physical premises. |
-| `requested_assurance_not_established` | `conditional`: link the new structural objective result and its premises; establish no stronger assurance level. |
-| `implementation_applicability:<entry-id>` | `conditional`: link that exact entry, expression contract and material/CDS correspondence. |
-| `requirement_satisfaction:<objective-id>` | `discharged` within the explicitly conditional profile: all encoding, localization-contract correspondence and length checks pass under the named premises. |
-| `semantic_definition:<definition-id>` | `discharged` only for a recognized normative descriptor; otherwise `conditional`, linked to that complete reachable supplied premise. |
+| NA | `closed_static_source_admission` |
+| SUPPLIED | `supplied_expression_localization_and_recipient_premises` |
+| ENTRY | `complete_supplied_implementation_contract` |
+| EXACT | `exact_static_encoding_and_length` |
+| NORMATIVE | `closed_normative_static_interpretation` |
+| PREMISE | `resolved_original_context_or_component_premise` |
+| UNSUPPORTED | `unimplemented_obligation` |
 
-Every disposition contains the original ID, source path, reason code and relevant
-checked-clause or premise identities. Preserve the entire original source
-assessment as a child report. Require set equality with its independently
-reconstructed obligation IDs, reject duplicates, and reject any unexpected ID
-instead of defaulting it to a premise. Preserve every original assumption in a
-separate complete ledger. In particular, a new checker obligation cannot vanish
-because the source still appears superficially static.
-The new source profile additionally declares
-`expression_material_correspondence`; its conditional disposition must link the
-entire fresh conjunction. This is not a claim that the generic v0.1 checker
-already discharged it.
+Success in the table means the admitted source's fresh encoding, material and
+length conjunction passes. Failure means that this supported conjunction fails
+after admission. Malformed or unsupported source and resource failures retain
+their existing early diagnostics; they need not produce a completed ledger.
+
+| Obligation | Success `status` | Failed conjunction `status` | `stage` | `path` | `evidence` |
+| --- | --- | --- | --- | --- | --- |
+| `policy_execution_and_lowering` | `not_applicable` | `not_applicable` | NA | `/document/program` | SOURCE |
+| `temporal_and_uncertainty_semantics` | `not_applicable` | `not_applicable` | NA | `/document/program` | SOURCE |
+| `safety_and_progress_satisfaction` | `not_applicable` | `not_applicable` | NA | `/document/program` | SOURCE |
+| `realizability_and_target_suitability` | `conditional` | `unresolved` | SUPPLIED | `/document/deployment` | JOIN |
+| `chassis_capability_and_delivery_suitability` | `conditional` | `unresolved` | SUPPLIED | `/document/deployment` | JOIN |
+| `implementation_catalog_applicability` | `conditional` | `unresolved` | SUPPLIED | `/document/implementations` | JOIN |
+| `requested_assurance_not_established` | `conditional` | `unresolved` | SUPPLIED | `/document/assurance` | JOIN |
+| `implementation_applicability:<entry-id>` | `conditional` | `unresolved` | ENTRY | `/document/implementations/implementations/0` | JOIN |
+| `requirement_satisfaction:<objective-id>` | `discharged` | `unresolved` | EXACT | `/document/program/declarations/<j>` | JOIN |
+| `expression_material_correspondence` | `conditional` | `unresolved` | SUPPLIED | `/document` | JOIN |
+| `semantic_definition:<definition-id>` for a complete recognized normative definition | `discharged` | `discharged` | NORMATIVE | `/document/program/semantics/definitions/<i>` | DEF(i) |
+| `semantic_definition:<definition-id>` for another complete reachable supplied definition | `conditional` | `conditional` | PREMISE | `/document/program/semantics/definitions/<i>` | DEF(i) |
+| Additional unsupported generic obligation (negative report only) | `unresolved` | `unresolved` | UNSUPPORTED | `/document` | `null` |
+
+`j` and `i` are actual zero-based positions in the complete original lists,
+without reordering the source. Derive the implementation entry ID from the
+original one-entry catalog, not just the selected pin or returned child. Require
+its ID, version and canonical content fingerprint to match selection. Reject
+duplicate original definition IDs before constructing a set or index map, even
+if duplicate bodies are equal. Recognition of a normative descriptor requires
+its complete prescribed body, not its ID or position alone. The three recognized
+normative definitions are `biocompiler.expression.objective.v1`,
+`biocompiler.expression.encode.v1` and
+`biocompiler.expression.nominal_translation.v1`; their existing full bodies and
+pins remain unchanged.
+
+For the nine-definition artificial control (`D = 9`), the final 19-row success
+ledger has three N/A, four discharged and twelve conditional rows. A failed
+material/encoding/length conjunction has three N/A, three discharged, six
+conditional and seven unresolved rows. These counts supplement full row equality;
+they cannot detect a substituted ID, path, stage or dependency on their own.
+
+The first three rows assert checked absence of runtime, temporal and
+safety/progress demands. A failed RNA check does not create those demands;
+therefore these dispositions remain N/A. Safety/progress uses `/document/program`
+because its absence must hold throughout the source, not just requested
+assurance. Temporal absence additionally relies on static assurance through
+`SOURCE`. Deployment/catalog/assurance paths likewise locate the primary demand;
+`JOIN` retains the wider conjunction and original contract premises. The exact
+objective is discharged only within this conditional profile. It cannot
+discharge requested assurance or the expression/material premise itself.
+
+### Mandatory census and negative diagnostics
+
+The Python reader independently reconstructs the generic mandatory census from
+complete originals: seven fixed IDs (the first seven table rows), one original implementation ID,
+one original objective ID, and one ID per original semantic definition. If `D`
+is the number of unique original definitions, that is `9 + D` mandatory generic
+IDs. Accepted source under the documented subset has exactly that census; the
+expression layer adds `expression_material_correspondence` once, giving exactly
+`10 + D` final rows. Do not use the returned source obligation list as its own
+expected authority.
+
+Require `expression_material_correspondence` to be absent from the generic
+child before adding it. A set union must not conceal a forged prior occurrence.
+Missing mandatory IDs, duplicates, a reserved-ID occurrence in the generic
+child, or disagreement between child, admission and final ledger inventories
+are malformed report data, even if the final report says `not_accepted`.
+
+An additional genuine generic obligation rejects acceptance and remains visible
+as the final table row: `unresolved`, `unimplemented_obligation`, `/document`,
+null evidence. The admission inventory must equal the complete child inventory
+plus the one reserved expression ID, and the final ledger must equal that
+admission inventory. Never intersect away extras, promote them to a supplied
+premise, or grant N/A to the four runtime-only obligations
+`persistent_encounter_identity_lifetime`,
+`state_lifetime_capacity_and_inheritance`,
+`effect_authorization_feedback_and_cancellation` and
+`arbitration_fairness_and_conflict_resolution`. Those IDs are absent from a
+correctly admitted static success census.
+
+An otherwise passing material/objective check can coexist with an unresolved
+extra. Ordinary rows then retain their locally justified successful dispositions,
+but `all_original_obligations_dispositioned` is false, overall status is
+`not_accepted`, and no accepted token or export exists. The arithmetic-clause
+probe described under AR-11 exercises this defensive negative path outside the
+documented subset; it does not establish supported clause compilation.
+
+Native source checking establishes the semantic origin of generic extras.
+Python reconstructs mandatory IDs and checks transport/census consistency; it
+does not become a second semantic interpreter. This does not claim that Python
+can detect every coherently forged unsupported extra in an already-negative
+report. No extra can gain acceptance through that limitation.
 
 The result names `status` (`checked_expression_material` or `not_accepted`),
 `claim_scope` (`conditional_encoding_and_localization`), the supplied premise,
@@ -277,7 +438,7 @@ review. C2 qualification and C6 release must independently satisfy their own exi
 
 ## 5. Fixed limits and publication route
 
-Implemented ceilings, still requiring hosted acceptance and measured headroom, are one member/product/ORF, seven source declarations, at most 64 semantic
+The existing ceilings are one member/product/ORF, seven source declarations, at most 64 semantic
 definitions and 32 dependency/evidence refs combined. All exact definition
 resolution and inventory scans are charged. The request is bounded to 4,000,000
 canonical bytes, 100,000 values/object keys and depth 64; the original source also
@@ -292,7 +453,8 @@ reported `total_charged_work` belongs to checking and publication, not the prior
 proposal phase. This is not a CPU-time measurement or a single combined
 producer-plus-checker allowance. Preflight, decoding, original hashing, lookups, reconstruction,
 translation, report creation and publication all consume actual work; no cached
-acceptance or uncharged serialization is permitted.
+acceptance or uncharged serialization is permitted. M1 must charge added source
+path/index lookups within those same limits; the correction does not raise them.
 
 Full report/manifest/result publication must fit the existing ordinary protocol
 envelope and an explicitly declared operation output budget. Admission of an
@@ -324,6 +486,31 @@ make a finite-machine request masquerade as this route. A fresh Verify invocatio
 reopens the pair against a separately supplied original project and compares all
 exported bytes. The route uses `biocompiler.research_project.v0.2` with `limits: null`.
 Existing v0.1 routes and byte representations remain unchanged.
+
+### M1 project and package migration
+
+Reject old or mixed assessment/checker/service identities rather than relabeling
+old evidence. Core and Verify must advertise the exact current material profile;
+Core's compile operation additionally requires the current producer profile.
+A stale capability rejects before invoking the requested operation. A stale or
+mixed response rejects even if its request, candidate and hashes are coherent.
+
+A separately retained original expression project remains loadable because its
+project/request/source formats are unchanged. Fresh compilation/checking and
+export may produce the corrected assessment for the same exact material. Export
+to a separate destination and preserve the old project, archive, manifest and
+FASTA bytes. Reopening an old archive still performs fresh Verify export against
+the retained original project and compares the exact FASTA/manifest pair; its old
+manifest must reject after that fresh comparison. An identical FASTA is
+insufficient to accept an obsolete assessment. A newly exported package must
+reopen under the new identities and preserve the exact original RNA.
+
+The corrected report includes paths and new dispositions/versions. Its bytes,
+fingerprint, dependent manifest/archive identity and measured publication work
+therefore change, while the original request/candidate/material and successful
+FASTA remain unchanged. Do not rewrite historical validation projections,
+released assets, reference packs, normative descriptors or independently pinned
+expected reference material to make old records appear v0.2-validated.
 
 ## 6. Minimal implementation surface and acceptance controls
 
@@ -375,10 +562,33 @@ Required positive and negative controls are:
   budget exhaustion, publication overflow or tampered FASTA/manifest withholds
   export; a separate Verify invocation freshly rejects the changed pair.
 
+M1 additionally requires independently specified complete success/failure rows,
+including stages, original occurrence paths and exact evidence keys. Reordered
+source declarations/definitions must yield current indices. Coherently rehashed
+omission, insertion, duplicate, status, path and premise mutations must reject;
+include the reserved expression ID inserted into the generic child, original
+catalog/selection disagreement and duplicate original definition IDs. Negative
+extras must remain unresolved without suppressing ordinary diagnostics. Frozen
+v0.1 project/package controls must prove the migration and unchanged successful
+FASTA above. Expected dispositions must not be derived from the producer's
+classification logic. The implemented controls have the scoped local results
+recorded below; complete workflow and hosted acceptance remain separate gates.
+
 Local pure typing/roundtrip/transport/source-subset controls provide fast
 feedback. Native producer/checker independence, real construction, negative
 cases, installed Core-to-Verify publication and cross-platform identity require
-the existing coherent hosted, integration and actual-main gates. The current implementation claims none of those hosted results yet.
+the existing coherent hosted, integration and actual-main gates. The original
+C3 preparation record asserted none of those hosted results at drafting time;
+its later main/published evidence remains separately recorded in the capability
+matrix. M1 is implemented in `codex/m1-obligation-dispositions`. Its independent
+native regression first rejected the old ledger; the corrected native build and
+focused native/SDK controls passed against recorded working-tree contents. See
+the [M1 feedback record](architecture-refactoring-roadmap.md#m1-local-feedback-and-pending-gates)
+for counts and retained receipt identities. Direct native legacy-package,
+mixed-version and CAR workflow probes also passed locally. Hosted
+integration/installed validation and fresh actual-main acceptance remain pending.
+Local results do not establish
+a new published snapshot or close the separate M2 admission gap.
 
 ## 7. Source basis for the decision
 

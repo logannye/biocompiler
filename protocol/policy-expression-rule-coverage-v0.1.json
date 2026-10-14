@@ -29,15 +29,16 @@
     },
     {
       "path": "core/lib/checker/policy_expression_material_check.ml",
-      "sha256": "39cd6ca68825dce59bfd6373b1d98a16d6f656f52870dfcd1c97ac5c349ee41b",
+      "sha256": "f1081020365c595775613bcd85dd97132b2fc852e652387c6d129d2b52398cdb",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.require": 1
+          "Diagnostic.require": 1,
+          "unsupported": 3
         },
         "profile_literals": {
-          "biocompiler.ocaml.policy_expression_material_check.v0.1": 1,
-          "biocompiler.policy_expression_material_assessment.v0.1": 1,
+          "biocompiler.ocaml.policy_expression_material_check.v0.2": 1,
+          "biocompiler.policy_expression_material_assessment.v0.2": 1,
           "biocompiler.policy_expression_material_candidate.v0.1": 1
         }
       }
@@ -212,7 +213,7 @@
     },
     {
       "path": "core/lib/service/policy_expression_material_service.ml",
-      "sha256": "08566f72e8188f0e55718dc02aef0c022722969c9caf11a437331f8737ecaa81",
+      "sha256": "9c95fe5c14e6400a170159313b5645aab37ad217ec3456e3534371e43ba8c407",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -221,7 +222,7 @@
         },
         "profile_literals": {
           "biocompiler.core.policy_expression_material.v1": 1,
-          "biocompiler.ocaml.policy_expression_material.v0.1": 1,
+          "biocompiler.ocaml.policy_expression_material.v0.2": 1,
           "biocompiler.policy_expression_material_candidate.v0.1": 1,
           "biocompiler.policy_expression_mrna_export.v0.1": 1,
           "biocompiler.policy_expression_mrna_manifest.v0.1": 1
@@ -273,7 +274,7 @@
     },
     {
       "path": "src/biocompiler/core_policy_expression_material.py",
-      "sha256": "319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf",
+      "sha256": "10b39e55514bc2f93d6378e18db83092feadf585627b89d6e3c6b43b39e72feb",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -287,11 +288,11 @@
           "biocompiler.construction_content_authority.v0.1": 1,
           "biocompiler.core.policy_expression_material.v1": 1,
           "biocompiler.ocaml.construction_content_check.v0.1": 1,
-          "biocompiler.ocaml.policy_expression_material.v0.1": 1,
-          "biocompiler.ocaml.policy_expression_material_check.v0.1": 1,
+          "biocompiler.ocaml.policy_expression_material.v0.2": 1,
+          "biocompiler.ocaml.policy_expression_material_check.v0.2": 1,
           "biocompiler.ocaml.policy_expression_structure_check.v0.1": 1,
           "biocompiler.policy_expression_contract.v0.1": 1,
-          "biocompiler.policy_expression_material_assessment.v0.1": 1,
+          "biocompiler.policy_expression_material_assessment.v0.2": 1,
           "biocompiler.policy_expression_material_candidate.v0.1": 1,
           "biocompiler.policy_expression_material_request.v0.1": 1,
           "biocompiler.policy_expression_material_resources.v0.1": 1,
@@ -406,7 +407,7 @@
     },
     {
       "path": "core/test/test_policy_expression_source_admission.ml",
-      "sha256": "66cda142e7a61d91a4f8681ed0cd457b7fa6f7c96bad7776579e95b988bfb59c"
+      "sha256": "1380975d338eafbce92a2286de752a5e94e4734140d90514760a7a0d0cf8b064"
     },
     {
       "path": "core/test/test_policy_mrna_structure.ml",
@@ -414,7 +415,7 @@
     },
     {
       "path": "tests/test_core_policy_expression_material.py",
-      "sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8"
+      "sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487"
     },
     {
       "path": "tests/test_policy_project_sources.py",
@@ -597,6 +598,11 @@
           "path": "core/test/test_policy_expression_source_admission.ml",
           "anchor": "Original obligation census was not preserved by material conjunction",
           "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_expression_source_admission.ml",
+          "anchor": "M1 complete independently specified ledger differs (status, stage, path, evidence, order or exact keys)",
+          "occurrence": 1
         }
       ],
       "negative": [
@@ -608,6 +614,11 @@
         {
           "path": "core/test/test_policy_expression_source_admission.ml",
           "anchor": "Conditional material checking upgraded biological or recipient premises",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_expression_source_admission.ml",
+          "anchor": "O10 genuine unknown source obligation received a private token",
           "occurrence": 1
         }
       ],
@@ -728,6 +739,11 @@
           "path": "tests/test_core_policy_expression_material.py",
           "anchor": "def test_typed_routes_and_atomic_exact_export",
           "occurrence": 1
+        },
+        {
+          "path": "tests/test_core_policy_expression_material.py",
+          "anchor": "def test_m1_literal_success_and_failed_conjunction_tables_and_exact_rna",
+          "occurrence": 1
         }
       ],
       "negative": [
@@ -739,6 +755,16 @@
         {
           "path": "tests/test_core_policy_expression_material.py",
           "anchor": "def test_capability_role_and_transport_fail_closed",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_core_policy_expression_material.py",
+          "anchor": "def test_m1_every_status_stage_path_and_dependency_is_authoritative",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_core_policy_expression_material.py",
+          "anchor": "def test_m1_old_or_mixed_assessment_checker_service_versions_reject",
           "occurrence": 1
         }
       ],

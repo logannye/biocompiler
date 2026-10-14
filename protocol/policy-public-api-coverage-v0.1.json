@@ -15800,7 +15800,7 @@
           "path": "src/biocompiler/core_policy_expression_material.py",
           "symbol": "IMPLEMENTATION"
         },
-        "syntax_sha256": "002b0c6dd39ed7b29332aa04ddcb7b1296e0abd29c5a457afe5d5b81efa6ba48"
+        "syntax_sha256": "7dba36b531a108c1eb11df096547ac5f202ccadddc06b358a175cef75cc64d69"
       },
       {
         "id": "biocompiler.core_policy_expression_material.MANIFEST_SCHEMA",
@@ -15976,7 +15976,7 @@
           "path": "src/biocompiler/core_policy_expression_material.py",
           "symbol": "REPORT_SCHEMA"
         },
-        "syntax_sha256": "ebfae5d83a8a15066d332fe9a92d055fc9cfe7a14e8350d0fa3cdb26f4214647"
+        "syntax_sha256": "00f44c62a6ff7d1de260af841dd8f16d028182e313b14a3a8f08367259af9f4a"
       },
       {
         "id": "biocompiler.core_policy_expression_material.REQUEST_PROFILE",
@@ -16130,7 +16130,7 @@
           "path": "src/biocompiler/core_policy_expression_material.py",
           "symbol": "_requirements_and_ledger"
         },
-        "syntax_sha256": "88260465dfcdfffac7e0ede885b96f47966d27e199b0bb99e6a951367bdf2e6a"
+        "syntax_sha256": "d9f7f8f6f327a6acef24a8cf223745369a3abbdd72223d8732e19dfc4469707d"
       },
       {
         "id": "biocompiler.core_policy_expression_material._result",
@@ -16141,7 +16141,7 @@
           "path": "src/biocompiler/core_policy_expression_material.py",
           "symbol": "_result"
         },
-        "syntax_sha256": "d5485958306eefd34d894890eb35cf87e4557f46327c2d35800cae48bb0d92ac"
+        "syntax_sha256": "5a8a1712aa3c5937fd9ec4f0980cf31f11a551f2d023978881bd792c5694abc0"
       },
       {
         "id": "biocompiler.core_policy_expression_material._rows",
@@ -16163,7 +16163,7 @@
           "path": "src/biocompiler/core_policy_expression_material.py",
           "symbol": "_source"
         },
-        "syntax_sha256": "1e0b8353a8f2e8f5a46ace1f301ae04d953bb35114b0225f7e7db35c9e14dc76"
+        "syntax_sha256": "9d843be6279cd78dd5a78d8c35c9a69c873e13a2521411f57e5e1d3b338a3f31"
       },
       {
         "id": "biocompiler.core_policy_expression_material._structure",
@@ -34070,7 +34070,7 @@
       "src/biocompiler/core_policy.py": "9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e",
       "src/biocompiler/core_policy_component_material.py": "152843138ccfa61f4b7dfd894eff697a919ac52964b77957c646f23b49589b51",
       "src/biocompiler/core_policy_component_selection.py": "20dab2dab0bfcc2e1205292217b0764037a832da5cb67ade1be9f618fe0117f9",
-      "src/biocompiler/core_policy_expression_material.py": "319056c9ea34d606ad8b849ba1c4495eb46ebc531f427fc487b079a26913a1cf",
+      "src/biocompiler/core_policy_expression_material.py": "10b39e55514bc2f93d6378e18db83092feadf585627b89d6e3c6b43b39e72feb",
       "src/biocompiler/core_policy_implementation.py": "75abd92ee9ef28a34b0a9df5ad8ea133beb6d01f60bd2ae74f2d6f9cf064ab4f",
       "src/biocompiler/core_policy_material.py": "e3b990c93130fb7d0b74462e30bf87dc5cd5f42d582a0808163f1a6ba965b5cf",
       "src/biocompiler/core_policy_module_linking.py": "8c6cb783a929dc4e4bd7f191af8d228905ef314d1c0ff3e7c9fa584f9e4fd165",
@@ -36777,7 +36777,7 @@
     },
     "car_expression.project.bound": {
       "distinction": "A supported RNA-bound edit retains native diagnostic evidence and prevents output publication under a mocked rejection.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "rejection",
       "symbol": "ExpressionResearchProjectTests.test_changed_maximum_rna_length_returns_diagnostics_and_no_output",
@@ -36785,7 +36785,7 @@
     },
     "car_expression.project.bundle": {
       "distinction": "Tampered archive temporal limits or complete source context reject on fresh verification.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "rejection",
       "symbol": "ExpressionResearchProjectTests.test_expression_bundle_cannot_add_temporal_limits_or_replace_source_context",
@@ -36793,7 +36793,7 @@
     },
     "car_expression.project.cancel": {
       "distinction": "Cancellation or Verify failure preserves existing output and never publishes a producer-only result.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "rejection",
       "symbol": "ExpressionResearchProjectTests.test_cancellation_after_core_and_verify_failure_preserve_existing_output",
@@ -36801,7 +36801,7 @@
     },
     "car_expression.project.chemistry": {
       "distinction": "Nominal source chemistry and explicit designer terminal chemistry retain distinct provenance; no default or forged designer choice is accepted.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "mixed",
       "symbol": "ExpressionResearchProjectTests.test_real_reference_chemistry_keeps_source_and_explicit_designer_authorities_distinct",
@@ -36809,7 +36809,7 @@
     },
     "car_expression.project.context": {
       "distinction": "Every outer project field and six source-record fields must equal the native original request context; coherent changes change identity.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "mixed",
       "symbol": "ExpressionResearchProjectTests.test_every_project_context_field_and_source_record_is_original_authority",
@@ -36817,7 +36817,7 @@
     },
     "car_expression.project.fresh": {
       "distinction": "Coherently changing both outer and request metadata cannot authorize an old exported bundle.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "rejection",
       "symbol": "ExpressionResearchProjectTests.test_changed_metadata_on_both_sides_cannot_reopen_old_bundle",
@@ -36825,7 +36825,7 @@
     },
     "car_expression.project.pipeline": {
       "distinction": "Mocked Core production, separate fresh Verify export and independent bundle reopening retain full exact originals and paired archive bytes.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "positive",
       "symbol": "ExpressionResearchProjectTests.test_core_compile_fresh_verify_paired_export_and_reopen_use_exact_originals",
@@ -36833,7 +36833,7 @@
     },
     "car_expression.project.reference": {
       "distinction": "CAR starter preserves independently frozen nominal RNA/protein hashes, source-part intervals, two stops and encoded tail without native checking.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "positive",
       "symbol": "ExpressionResearchProjectTests.test_real_reference_starter_keeps_independent_bases_product_parts_and_double_stop",
@@ -36841,7 +36841,7 @@
     },
     "car_expression.project.roles": {
       "distinction": "Explicit and installed executable selection preserve separate producer and verifier roles in inert project orchestration.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "mixed",
       "symbol": "ExpressionResearchProjectTests.test_explicit_roles_and_installed_resolution_keep_producer_and_verifier_separate",
@@ -36849,7 +36849,7 @@
     },
     "car_expression.project.roundtrip": {
       "distinction": "Project v0.2 typed import and canonical save/load preserve complete static source/metadata snapshots and explicitly report native not_run.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "mixed",
       "symbol": "ExpressionResearchProjectTests.test_typed_roundtrip_and_canonical_load_save_preserve_complete_static_authority",
@@ -36857,7 +36857,7 @@
     },
     "car_expression.project.routes": {
       "distinction": "Expression project schema/route/null temporal limits remain isolated from legacy project formats.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "rejection",
       "symbol": "ExpressionResearchProjectTests.test_schema_route_and_timeless_limits_are_closed_without_legacy_conversion",
@@ -36865,7 +36865,7 @@
     },
     "car_expression.project.source_budget": {
       "distinction": "Complete source/assumption metadata are bound, and fixed source-inspection limits accommodate the declared public PDF without fetching or authenticating it.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "positive",
       "symbol": "ExpressionResearchProjectTests.test_real_project_pins_complete_context_and_source_budget_fits_known_pdf_without_loading_it",
@@ -36873,7 +36873,7 @@
     },
     "car_expression.project.static_edit": {
       "distinction": "Source length edits change request identity while preserving exact material and a static, timeless seven-declaration program.",
-      "file_sha256": "465881a6054bb9ec00e8023da11e955ea19d58d84e219e57abed85f5d0270a7f",
+      "file_sha256": "8383b79a19e8eb14bfbc24e0ef1ee598b31600dbcdb9024638f7f3de05550138",
       "path": "tests/test_policy_expression_research_project.py",
       "role": "positive",
       "symbol": "ExpressionResearchProjectTests.test_real_bound_edit_changes_source_identity_without_rewriting_material_or_adding_runtime",
@@ -36953,7 +36953,7 @@
     },
     "car_expression.transport.accounting": {
       "distinction": "Complete request/candidate/invocation identity and exact bounded checker/outer accounting cannot be forged or reduced.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "rejection",
       "symbol": "ExpressionMaterialTransportTests.test_rejects_complete_invocation_and_work_accounting_forgery",
@@ -36961,7 +36961,7 @@
     },
     "car_expression.transport.capabilities": {
       "distinction": "Missing or changed profile, wrong executable role and unavailable transport reject without a fallback.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "rejection",
       "symbol": "ExpressionMaterialTransportTests.test_capability_role_and_transport_fail_closed",
@@ -36969,7 +36969,7 @@
     },
     "car_expression.transport.context_bounds": {
       "distinction": "Project UTF-8 byte bounds, complete source census and hashes reject malformed inputs while preserving surrounding text exactly.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "mixed",
       "symbol": "ExpressionMaterialTransportTests.test_exact_project_context_utf8_and_source_census_bounds",
@@ -36977,7 +36977,7 @@
     },
     "car_expression.transport.export_mutation": {
       "distinction": "Rehashing a changed manifest cannot authorize substituted original authority, members, claims or FASTA bytes.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "rejection",
       "symbol": "ExpressionMaterialTransportTests.test_rejects_export_mutation_even_with_updated_manifest_digest",
@@ -36985,7 +36985,7 @@
     },
     "car_expression.transport.forgery": {
       "distinction": "Rehashed claim, source occurrence, obligation, translation, material and requirement forgeries reject at the transport boundary.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "rejection",
       "symbol": "ExpressionMaterialTransportTests.test_rejects_rehashed_claim_ledger_source_and_structure_forgery",
@@ -36993,7 +36993,7 @@
     },
     "car_expression.transport.fresh_context": {
       "distinction": "Changed project metadata and nominal stop interpretation cannot reuse earlier full response evidence.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "rejection",
       "symbol": "ExpressionMaterialTransportTests.test_project_metadata_and_nominal_model_edits_invalidate_retained_results",
@@ -37001,7 +37001,7 @@
     },
     "car_expression.transport.normative": {
       "distinction": "Exact normative definition bodies are distinguished from conditional context premises; transport cannot promote localization premises to proof.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "mixed",
       "symbol": "ExpressionMaterialTransportTests.test_complete_normative_definitions_and_context_premises_remain_distinct",
@@ -37009,7 +37009,7 @@
     },
     "car_expression.transport.originals": {
       "distinction": "Wrong request profile, unknown fields, invalid resource allowances, stale contract pins and malformed project sources reject.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "rejection",
       "symbol": "ExpressionMaterialTransportTests.test_closed_originals_and_budget_rejections",
@@ -37017,7 +37017,7 @@
     },
     "car_expression.transport.output_bounds": {
       "distinction": "Complete response evidence enforces original node limits and rejects unknown wrapper fields.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "rejection",
       "symbol": "ExpressionMaterialTransportTests.test_publication_ceiling_and_unknown_field_are_not_ignored",
@@ -37025,7 +37025,7 @@
     },
     "car_expression.transport.publication": {
       "distinction": "Typed wrappers preserve all routes and atomically publish exact inert FASTA/manifest bytes without replacing an existing output.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "mixed",
       "symbol": "ExpressionMaterialTransportTests.test_typed_routes_and_atomic_exact_export",
@@ -37033,7 +37033,7 @@
     },
     "car_expression.transport.rejection": {
       "distinction": "An explicit native rejection is propagated with original diagnostic identity and never becomes a Python candidate.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "rejection",
       "symbol": "ExpressionMaterialTransportTests.test_explicit_rejection_never_becomes_a_python_candidate",
@@ -37041,7 +37041,7 @@
     },
     "car_expression.transport.replay": {
       "distinction": "Full-wrapper replay mismatch and publication on a non-export operation reject.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "rejection",
       "symbol": "ExpressionMaterialTransportTests.test_rejects_forged_replay_and_nonexport_publication",
@@ -37049,7 +37049,7 @@
     },
     "car_expression.transport.routes": {
       "distinction": "Four inert native-wire routes retain exact originals, the complete replay wrapper and conditional export fields without temporal limits.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "positive",
       "symbol": "ExpressionMaterialTransportTests.test_complete_compile_check_replay_export_routes",
@@ -37057,7 +37057,7 @@
     },
     "car_expression.transport.snapshot": {
       "distinction": "Request snapshot precedes negotiation; retained result reads and frozen records cannot mutate the original evidence.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "positive",
       "symbol": "ExpressionMaterialTransportTests.test_snapshot_before_negotiation_and_detached_evidence",
@@ -37065,7 +37065,7 @@
     },
     "car_expression.transport.source_edit": {
       "distinction": "An edited source RNA bound is retained, with failing inert evidence and export denial; no native semantic result is asserted.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "mixed",
       "symbol": "ExpressionMaterialTransportTests.test_semantic_source_edit_is_retained_and_can_fail_without_export",
@@ -37073,7 +37073,7 @@
     },
     "car_expression.transport.typed": {
       "distinction": "Typed source/selection/budgets preserve complete original request snapshots; untyped source construction rejects.",
-      "file_sha256": "6ad017dad6c561cd5b73c2eed5b01b363e997b4a6b77f175bae5c2489bd25dd8",
+      "file_sha256": "87f520410da2b9ccc994a0dc4a77e02b2abd7557774d80fe4cf1cfe131cf1487",
       "path": "tests/test_core_policy_expression_material.py",
       "role": "mixed",
       "symbol": "ExpressionMaterialTransportTests.test_typed_constructor_and_exact_import_are_immutable",
