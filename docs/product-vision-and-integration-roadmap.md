@@ -1,5 +1,12 @@
 # Biocompiler product vision and integration roadmap
 
+The [architecture charter](architecture-charter.md) makes this product direction
+an engineering contract. The [refactoring roadmap](architecture-refactoring-roadmap.md)
+prioritizes structural changes and acceptance tests; the
+[capability matrix](capability-matrix.md) distinguishes implemented support from
+pending and planned work. Preserve the standalone delivery and lab-integration
+boundaries below while applying that charter.
+
 Product direction established 2026-10-08; CAR-first delivery order updated
 2026-10-10 in the [CAR MVP and expansion roadmap](car-mvp-and-expansion-roadmap-2026-10-10.md).
 

@@ -1,5 +1,27 @@
 # Development cadence and validation
 
+## Architecture review in the feedback loop
+
+Use the [architecture charter](architecture-charter.md),
+[capability matrix](capability-matrix.md) and
+[review criteria](architecture-review.md) before changing a compiler boundary.
+The [refactoring roadmap](architecture-refactoring-roadmap.md) defines the
+independent acceptance probes for each planned migration. Select the affected
+probes; a roadmap entry is not evidence that a capability exists.
+
+Run `python -B tools/check_architecture_governance.py` for guidance changes and
+`python -B -m unittest tests.test_architecture_governance` when changing the
+checker. Both are offline, standard-library-only checks with no compiler import
+or native execution. CI runs them before native setup. They check principle
+coverage, required navigation links and local references in the maintained
+architecture documents; they cannot decide whether a semantic claim is true.
+Record applicable charter IDs, changed capability boundaries (or a reason they
+are unchanged), validation scope and remaining obligations in the PR template.
+Keep tiny documentation fixes proportional: no new ADR or native build solely
+for a spelling or link correction. All existing PR/release gates remain intact.
+
+## Existing validation protocol
+
 This protocol reduces feedback time while preserving the compiler's existing
 validation coverage and independent checks. The release workflow remains
 [Python checks](../.github/workflows/ci.yml). Development feedback has a separate

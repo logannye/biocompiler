@@ -416,6 +416,8 @@ class PolicyDevelopmentSelectionSDKTests(unittest.TestCase):
             elif line.startswith("          python "):
                 commands.append(line.strip())
         self.assertEqual(commands, [
+            "python -B tools/check_architecture_governance.py",
+            "python -B -m unittest tests.test_architecture_governance",
             "python -B tools/check_policy_development.py prepare",
             "python -B tools/generate_policy_wire_schema.py --check",
             "python -B tools/check_policy_source_context_coverage.py",

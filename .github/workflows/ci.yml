@@ -43,6 +43,8 @@ jobs:
         env:
           PYTHONPATH: src:.
         run: |
+          python -B tools/check_architecture_governance.py
+          python -B -m unittest tests.test_architecture_governance
           python -B tools/check_policy_material_rule_coverage.py
           python -B tools/check_policy_public_api_coverage.py
           python -B -m unittest tests.test_core_conformance.ComponentCapabilityConformanceTests tests.test_core_conformance.SelectionCapabilityConformanceTests tests.test_core_conformance.InstanceCapabilityConformanceTests tests.test_core_conformance.PrerequisiteCapabilityConformanceTests tests.test_core_conformance.TwoObservationCapabilityConformanceTests tests.test_core_conformance.MultiMemberCapabilityConformanceTests tests.test_core_conformance.GroundedHelperCapabilityConformanceTests tests.test_core_conformance.CurrentCapabilityConformanceTests
